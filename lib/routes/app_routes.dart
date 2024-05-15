@@ -1,0 +1,39 @@
+part of 'app_pages.dart';
+
+abstract class Routes {
+  static const launcher = '/';
+  static const splash = '/splash';
+  static const login = '/login';
+  static const forgotPassword = '/forgotPassword';
+  static const otp = '/otpVerification';
+  static const resetPassword = '/resetPassword';
+  static const signUp = '/signUp1';
+  static const signUp2 = '/signUp2';
+  static const mainscreen = '/mainScreen';
+  static const addclassified = '/addClassified';
+  static const mlmclassifieddetail = '/mlmClassifiedDetailScreen';
+  static const messagescreen = '/messageScreen';
+  static const messagedetailscreen = '/messageDetailScreen';
+  static const aboutus = '/aboutUs';
+  static const contactus = '/contactUs';
+  static const advertisewithus = '/advertiseWithUs';
+  static const followers = '/followers';
+  static const notification = '/notification';
+  static const notificatiosetting = '/notificatioSetting';
+  static const mlmcompanies = '/mlmCompanies';
+  static const mlmcompaniesdetails = '/mlmCompaniesDetails';
+  static const profilescreen = '/profileScreen';
+  static const accountsettingscreen = '/accountSettingScreen';
+  static const mlmclassified = '/mlmClassified';
+  static const mlmquationanswer = '/mlmQuationAnswer';
+  static const question = '/question';
+  static const favourite = '/favourite';
+  static const mlmnews = '/mlmNews';
+  static const mlmblog = '/mlmBlog';
+  static const advertising = '/advertising';
+  static const video = '/video';
+  static const tutorialvideo = '/tutorialVideo';
+  static const planandcompanyinterest = '/PlanandCompanyInterest';
+  static const premiumplan = '/PremiumPlan';
+  static const referearn = '/referEarn';
+}

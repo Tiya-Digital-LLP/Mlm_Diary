@@ -1,0 +1,203 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/extension_classes.dart';
+import 'package:mlmdiary/utils/text_style.dart';
+
+class ManageClassifiedCard extends StatelessWidget {
+  final String userImage;
+  final String userName;
+  final String postTitle;
+  final String postCaption;
+  final String postImage;
+  final VoidCallback onDelete;
+  const ManageClassifiedCard({
+    super.key,
+    required this.userImage,
+    required this.userName,
+    required this.postTitle,
+    required this.postCaption,
+    required this.postImage,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(14),
+        color: AppColors.white,
+      ),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Image.asset(
+                  postImage,
+                  height: 97,
+                  width: 105,
+                  fit: BoxFit.fill,
+                ),
+                10.sbw,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        postTitle,
+                        style: textStyleW700(
+                            size.width * 0.038, AppColors.blackText),
+                      ),
+                      Text(
+                        postCaption,
+                        style: textStyleW400(size.width * 0.035,
+                            AppColors.blackText.withOpacity(0.8)),
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          20.sbh,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    SizedBox(
+                      height: size.height * 0.028,
+                      width: size.height * 0.028,
+                      child: SvgPicture.asset(Assets.svgLike),
+                    ),
+                    const SizedBox(
+                      width: 7,
+                    ),
+                    Text(
+                      "50k",
+                      style: TextStyle(
+                          fontFamily: "Metropolis",
+                          fontWeight: FontWeight.w600,
+                          fontSize: size.width * 0.045),
+                    ),
+                    const SizedBox(
+                      width: 15,
+                    ),
+                    SizedBox(
+                      height: size.height * 0.028,
+                      width: size.height * 0.028,
+                      child: SvgPicture.asset(Assets.svgView),
+                    ),
+                    const SizedBox(
+                      width: 7,
+                    ),
+                    Text(
+                      "286",
+                      style: TextStyle(
+                          fontFamily: "Metropolis",
+                          fontWeight: FontWeight.w600,
+                          fontSize: size.width * 0.045),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    InkWell(
+                      onTap: () {},
+                      child: Ink(
+                        height: size.height * 0.030,
+                        width: size.height * 0.030,
+                        child: SvgPicture.asset(Assets.svgPostBoost),
+                      ),
+                    ),
+                    10.sbw,
+                    InkWell(
+                      onTap: () {},
+                      child: Ink(
+                        height: size.height * 0.030,
+                        width: size.height * 0.030,
+                        child: SvgPicture.asset(Assets.svgPostEdit),
+                      ),
+                    ),
+                    10.sbw,
+                    InkWell(
+                      onTap: onDelete,
+                      child: Ink(
+                        height: size.height * 0.030,
+                        width: size.height * 0.030,
+                        child: SvgPicture.asset(Assets.svgPostDelete),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          10.sbh,
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(14),
+              color: AppColors.white,
+              border: const Border(bottom: BorderSide(color: Colors.grey)),
+            ),
+          ),
+          10.sbh,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  width: 100,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(40),
+                    color: AppColors.greenBorder.withOpacity(0.5),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Approved',
+                      style: textStyleW500(
+                          size.width * 0.035, AppColors.blackText),
+                    ),
+                  ),
+                ),
+                Container(
+                  width: 120,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(40),
+                    color: AppColors.primaryColor,
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Post on top',
+                      style: textStyleW500(size.width * 0.035, AppColors.white),
+                    ),
+                  ),
+                ),
+                20.sbw,
+                Text(
+                  '20 min ago',
+                  style: textStyleW500(
+                      size.width * 0.028, AppColors.blackText.withOpacity(0.5)),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

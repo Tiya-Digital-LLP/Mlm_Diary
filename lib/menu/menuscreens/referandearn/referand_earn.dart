@@ -1,0 +1,44 @@
+import 'package:flutter/material.dart';
+import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/text_style.dart';
+import 'package:mlmdiary/widgets/custom_back_button.dart';
+
+class ReferEarn extends StatefulWidget {
+  const ReferEarn({super.key});
+
+  @override
+  State<ReferEarn> createState() => _ReferEarnState();
+}
+
+class _ReferEarnState extends State<ReferEarn> {
+  @override
+  Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        scrolledUnderElevation: 0,
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        leading: Padding(
+          padding: EdgeInsets.all(size.height * 0.012),
+          child: const Align(
+            alignment: Alignment.topLeft,
+            child: CustomBackButton(),
+          ),
+        ),
+        elevation: 0,
+        title: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Refer & Earn',
+              style: textStyleW700(size.width * 0.048, AppColors.blackText),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
