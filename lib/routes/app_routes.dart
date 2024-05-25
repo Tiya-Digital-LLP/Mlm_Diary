@@ -11,6 +11,7 @@ abstract class Routes {
   static const signUp2 = '/signUp2';
   static const mainscreen = '/mainScreen';
   static const addclassified = '/addClassified';
+  static const manageClassifiedplusicon = '/manageClassifiedplusicon';
   static const mlmclassifieddetail = '/mlmClassifiedDetailScreen';
   static const messagescreen = '/messageScreen';
   static const messagedetailscreen = '/messageDetailScreen';
@@ -29,7 +30,16 @@ abstract class Routes {
   static const question = '/question';
   static const favourite = '/favourite';
   static const mlmnews = '/mlmNews';
+  static const mlmnewsdetails = '/mlmNewsDetails';
+  static const newsplusicon = '/newsPlusIcon';
+  static const addnews = '/addNews';
+  static const addpost = '/addPost';
+
   static const mlmblog = '/mlmBlog';
+  static const mlmblogdetails = '/mlmBlogDetails';
+  static const blogplusicon = '/blogPlusIcon';
+  static const addblog = '/addBlog';
+
   static const advertising = '/advertising';
   static const video = '/video';
   static const tutorialvideo = '/tutorialVideo';

@@ -30,17 +30,16 @@ class PasswordBorderTextField extends StatefulWidget {
   });
 
   @override
-  State<PasswordBorderTextField> createState() =>
+  // ignore: library_private_types_in_public_api
+  _PasswordBorderTextFieldState createState() =>
       _PasswordBorderTextFieldState();
 }
 
 class _PasswordBorderTextFieldState extends State<PasswordBorderTextField> {
-  late final PasswordFieldController controller;
+  final obscureText = true.obs;
 
-  @override
-  void initState() {
-    super.initState();
-    controller = PasswordFieldController();
+  void toggleObscureText() {
+    obscureText.value = !obscureText.value;
   }
 
   @override
@@ -60,53 +59,42 @@ class _PasswordBorderTextFieldState extends State<PasswordBorderTextField> {
         borderRadius: BorderRadius.circular(14),
         color: Colors.white,
       ),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              onChanged: (value) {
-                // Ensure onChanged callback is provided and not null
-                widget.onChanged?.call(value);
+      child: Obx(
+        () => Row(
+          children: [
+            Expanded(
+              child: TextField(
+                onChanged: widget.onChanged,
+                readOnly: widget.readOnly,
+                keyboardType: widget.keyboard,
+                inputFormatters: widget.textInputType,
+                maxLength: widget.maxLength,
+                controller: widget.controller,
+                obscureText: obscureText.value,
+                obscuringCharacter: "●",
+                style:
+                    TextStyle(fontSize: size.width * 0.04, color: Colors.black),
+                cursorColor: Colors.black,
+                decoration: InputDecoration(
+                  counterText: "",
+                  hintText: widget.hint,
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
+            InkWell(
+              onTap: () {
+                toggleObscureText();
+                log("${obscureText.value}");
               },
-              readOnly: widget.readOnly,
-              keyboardType: widget.keyboard,
-              inputFormatters: widget.textInputType,
-              maxLength: widget.maxLength,
-              controller: widget.controller,
-              obscureText: controller.obscureText.value,
-              obscuringCharacter: "●",
-              style:
-                  TextStyle(fontSize: size.width * 0.04, color: Colors.black),
-              cursorColor: Colors.black,
-              decoration: InputDecoration(
-                counterText: "",
-                hintText: widget.hint,
-                border: InputBorder.none,
+              child: Icon(
+                obscureText.value ? Icons.visibility_off : Icons.visibility,
+                color: AppColors.blackText,
               ),
             ),
-          ),
-          InkWell(
-            onTap: () {
-              controller.obscureText.value = !controller.obscureText.value;
-              log("${controller.obscureText.value}");
-            },
-            child: Obx(
-              () => Icon(
-                controller.obscureText.value
-                    ? Icons.visibility_off
-                    : Icons.visibility,
-                color: controller.obscureText.value
-                    ? AppColors.blackText
-                    : AppColors.blackText,
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
-}
-
-class PasswordFieldController extends GetxController {
-  RxBool obscureText = true.obs;
 }

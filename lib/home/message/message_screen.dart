@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:mlmdiary/chat_card.dart';
+import 'package:mlmdiary/home/message/chat_card.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';

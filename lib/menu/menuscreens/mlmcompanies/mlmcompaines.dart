@@ -8,7 +8,7 @@ import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/lists.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
-import 'package:mlmdiary/widgets/custom_filter.dart';
+import 'package:mlmdiary/widgets/customfilter/custom_filter.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
 
 class MlmCompanies extends StatefulWidget {

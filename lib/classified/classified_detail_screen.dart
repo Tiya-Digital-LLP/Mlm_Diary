@@ -388,8 +388,8 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
                           onTap: () => controller.toggleLike(),
                           child: Icon(
                             controller.isLiked.value
-                                ? Icons.favorite
-                                : Icons.favorite_border,
+                                ? Icons.thumb_up_off_alt_rounded
+                                : Icons.thumb_up_off_alt_outlined,
                             color: controller.isLiked.value
                                 ? AppColors.primaryColor
                                 : null,

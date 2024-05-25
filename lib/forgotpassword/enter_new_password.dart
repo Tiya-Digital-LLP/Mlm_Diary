@@ -8,6 +8,7 @@ import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
 import 'package:mlmdiary/widgets/custom_button.dart';
 import 'package:mlmdiary/widgets/password_border_text_field.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EnterNewPasswordScreen extends StatefulWidget {
   const EnterNewPasswordScreen({super.key});
@@ -19,6 +20,21 @@ class EnterNewPasswordScreen extends StatefulWidget {
 class _EnterNewPasswordScreenState extends State<EnterNewPasswordScreen> {
   final ForgotPasswordController controller =
       Get.put(ForgotPasswordController());
+
+  int? userId;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserId();
+  }
+
+  Future<void> fetchUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userId = prefs.getInt('userId');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,9 +113,17 @@ class _EnterNewPasswordScreenState extends State<EnterNewPasswordScreen> {
               btnColor: AppColors.primaryColor,
               titleColor: AppColors.white,
               onTap: () {
+                // Check if passwords match
                 if (controller.password.value.text !=
                     controller.confirmPassword.value.text) {
-                  ToastUtils.showToast("Both Password Should be Same..");
+                  ToastUtils.showToast("Both Passwords Should be the Same.");
+                } else {
+                  // Call the method to send the change password request
+                  controller.sendChangePasswordRequest(
+                    context,
+                    userId!,
+                    controller.password.value.text,
+                  );
                 }
               },
             ),

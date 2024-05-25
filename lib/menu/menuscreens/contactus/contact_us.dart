@@ -22,7 +22,7 @@ class ContactUs extends StatefulWidget {
 }
 
 class _ContactUsState extends State<ContactUs> {
-  final ClasifiedController controller = Get.put(ClasifiedController());
+  final ContactusController controller = Get.put(ContactusController());
   final Rx<Country?> _selectedCountry = Rx<Country?>(null);
   List listitem2 = ['Feedback/Suggestions', 'Advetiesment'];
   final RxString _selectedItem = RxString('');

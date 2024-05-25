@@ -2,6 +2,7 @@ import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/modal_class/classfied_class.dart';
 import 'package:mlmdiary/modal_class/manage_quation_class.dart';
 import 'package:mlmdiary/modal_class/mlmcompany_class.dart';
+import 'package:mlmdiary/modal_class/news_class.dart';
 import 'package:mlmdiary/modal_class/people_may_know_details.dart';
 import 'package:mlmdiary/modal_class/post_class.dart';
 import 'package:mlmdiary/modal_class/user_class.dart';
@@ -35,6 +36,7 @@ List<String> planList = [
   "Autopool Plan",
   "Binary",
 ];
+
 List<String> subCategoryList = [
   "Sub Category 1",
   "Sub Category 2",
@@ -42,6 +44,15 @@ List<String> subCategoryList = [
   "Sub Category 4",
   "Sub Category 5",
   "Sub Category 6",
+];
+
+List<String> userTypeList = [
+  "UserType 1",
+  "UserType 2",
+  "UserType 3",
+  "UserType 4",
+  "UserType 5",
+  "UserType 6",
 ];
 
 class BottomBarItem {
@@ -158,6 +169,44 @@ List classifiedList = [
   ClassifiedList(
       userImage: Assets.imagesIcon,
       userName: "Rutvik Korat",
+      postTitle: "Hello all here we are selling",
+      postCaption:
+          "Look my collection, i really want to share about my last trip to bail. Please check guys!",
+      postImage: Assets.imagesProductImage),
+];
+
+List newsList = [
+  NewsClassList(
+      userImage: Assets.imagesIcon,
+      userName: "Aman Talaviya",
+      postTitle: "Hello all here we are selling",
+      postCaption:
+          "Look my collection, i really want to share about my last trip to bail. Please check guys!",
+      postImage: Assets.imagesProductImage),
+  NewsClassList(
+      userImage: Assets.imagesIcon,
+      userName: "Vijay Makwana",
+      postTitle: "Hello all here we are selling",
+      postCaption:
+          "Look my collection, i really want to share about my last trip to bail. Please check guys!",
+      postImage: Assets.imagesProductImage),
+  NewsClassList(
+      userImage: Assets.imagesIcon,
+      userName: "Shubham Khatari",
+      postTitle: "Hello all here we are selling",
+      postCaption:
+          "Look my collection, i really want to share about my last trip to bail. Please check guys!",
+      postImage: Assets.imagesProductImage),
+  NewsClassList(
+      userImage: Assets.imagesIcon,
+      userName: "Nisarg",
+      postTitle: "Hello all here we are selling",
+      postCaption:
+          "Look my collection, i really want to share about my last trip to bail. Please check guys!",
+      postImage: Assets.imagesProductImage),
+  NewsClassList(
+      userImage: Assets.imagesIcon,
+      userName: "Ajay Pate;",
       postTitle: "Hello all here we are selling",
       postCaption:
           "Look my collection, i really want to share about my last trip to bail. Please check guys!",

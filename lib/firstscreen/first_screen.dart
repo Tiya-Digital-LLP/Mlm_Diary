@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/classified/classified.dart';
-import 'package:mlmdiary/database.dart';
+import 'package:mlmdiary/database/database.dart';
 import 'package:mlmdiary/firstscreen/home_controller.dart';
 import 'package:mlmdiary/home/home_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/terms&condition/advertise_with_us_screen.dart';
@@ -27,7 +27,7 @@ class _FirstScreenState extends State<FirstScreen> {
       backgroundColor: AppColors.white,
       body: Obx(
         () => controller.newIndex.value == 0
-            ? const HomeScreen()
+            ? HomeScreen()
             : controller.newIndex.value == 1
                 ? const ClassifiedScreen()
                 : controller.newIndex.value == 2

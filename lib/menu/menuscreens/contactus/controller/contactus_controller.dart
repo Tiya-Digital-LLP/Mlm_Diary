@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
 import 'package:mlmdiary/utils/lists.dart';
 
-class ClasifiedController extends GetxController {
+class ContactusController extends GetxController {
   Rx<TextEditingController> name = TextEditingController().obs;
   Rx<TextEditingController> email = TextEditingController().obs;
   Rx<TextEditingController> company = TextEditingController().obs;

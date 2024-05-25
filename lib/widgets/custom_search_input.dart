@@ -30,6 +30,7 @@ class CustomSearchInput extends StatelessWidget {
           controller: controller,
           textInputAction: TextInputAction.search,
           decoration: InputDecoration(
+            contentPadding: const EdgeInsets.only(top: -4),
             border: InputBorder.none,
             prefixIconConstraints: const BoxConstraints(minWidth: 24),
             prefixIcon: Padding(

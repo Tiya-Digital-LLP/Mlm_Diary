@@ -51,6 +51,7 @@ class _CustomLocationInputState extends State<CustomLocationInput> {
           textInputAction: TextInputAction.search,
           decoration: InputDecoration(
             border: InputBorder.none,
+            contentPadding: const EdgeInsets.only(top: -4),
             prefixIconConstraints: const BoxConstraints(minWidth: 24),
             suffixIconConstraints: const BoxConstraints(minWidth: 24),
             prefixIcon: Padding(

@@ -38,12 +38,16 @@ class Assets {
   static const String svgComment = 'assets/svg/comment.svg';
   static const String svgContactUsBgImage = 'assets/svg/Contact_us_bg_image.svg';
   static const String svgDatabase = 'assets/svg/database.svg';
+  static const String svgDelete = 'assets/svg/Delete.svg';
   static const String svgDocumentText = 'assets/svg/document-text.svg';
   static const String svgDollarCircle = 'assets/svg/dollar-circle.svg';
+  static const String svgEditSquare = 'assets/svg/Edit Square.svg';
   static const String svgEye = 'assets/svg/eye.svg';
+  static const String svgFail = 'assets/svg/fail.svg';
   static const String svgFilter = 'assets/svg/filter.svg';
   static const String svgGrid3 = 'assets/svg/grid-3.svg';
   static const String svgHome = 'assets/svg/home.svg';
+  static const String svgImage = 'assets/svg/Image.svg';
   static const String svgInstagram = 'assets/svg/Instagram.svg';
   static const String svgLike = 'assets/svg/like.svg';
   static const String svgLocation = 'assets/svg/location.svg';
@@ -77,6 +81,7 @@ class Assets {
   static const String svgTelegram = 'assets/svg/Telegram.svg';
   static const String svgTwitter = 'assets/svg/Twitter.svg';
   static const String svgUploadImage = 'assets/svg/upload_image.svg';
+  static const String svgVideo = 'assets/svg/Video.svg';
   static const String svgVideoOctagon = 'assets/svg/video-octagon.svg';
   static const String svgView = 'assets/svg/view.svg';
   static const String svgWhatsappIcon = 'assets/svg/whatsapp_icon.svg';

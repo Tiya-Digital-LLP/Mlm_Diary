@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/forgotpassword/controller/forgot_password_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
-import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -57,13 +56,21 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               20.sbh,
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: BorderTextField(
-                  controller: controller.email.value,
-                  hint: " Enter Your Email/Mobile",
-                  textInputType: const [],
-                  keyboard: TextInputType.text,
-                  byDefault: !controller.isEmailTyping.value,
-                  maxLength: 25,
+                child: Obx(
+                  () => BorderTextField(
+                    height: 65,
+                    controller: controller.email.value,
+                    hint: " Enter Your Email/Mobile",
+                    textInputType: const [],
+                    isError: controller.emailError.value,
+                    keyboard: TextInputType.name,
+                    byDefault: !controller.isEmailTyping.value,
+                    maxLength: 25,
+                    onChanged: (value) {
+                      controller.emailValidation();
+                      controller.isEmailTyping.value = true;
+                    },
+                  ),
                 ),
               ),
               30.sbh,
@@ -74,7 +81,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   btnColor: AppColors.primaryColor,
                   titleColor: AppColors.white,
                   onTap: () {
-                    Get.toNamed(Routes.otp);
+                    controller.emailValidation();
+                    if (!controller.emailError.value) {
+                      controller.forgotValidation(context);
+                    }
                   },
                 ),
               ),

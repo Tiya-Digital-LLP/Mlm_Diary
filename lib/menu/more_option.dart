@@ -2,11 +2,13 @@
 
 import 'dart:core';
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/menu/controller/profile_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
@@ -32,16 +34,18 @@ class Choice {
 
 const List<Choice> choices = <Choice>[
   Choice(title: 'Account Setting', icon: Assets.svgProfile, id: '1'),
-  Choice(title: 'MLM Classified', icon: Assets.svgGrid3, id: '2'),
-  Choice(title: 'MLM News', icon: Assets.svgClipboardText, id: '3'),
+  Choice(title: 'Manage Classified', icon: Assets.svgGrid3, id: '2'),
+  Choice(title: 'Manage News', icon: Assets.svgClipboardText, id: '3'),
   Choice(title: 'MLM Database', icon: Assets.svgArchive, id: '4'),
-  Choice(title: 'MLM Blog', icon: Assets.svgDocumentText, id: '5'),
-  Choice(title: 'MLM Companies', icon: Assets.svgBuilding4, id: '6'),
+  Choice(title: 'Manage Blog', icon: Assets.svgDocumentText, id: '5'),
+  Choice(title: 'Manage Companies', icon: Assets.svgBuilding4, id: '6'),
   Choice(title: 'Favourite', icon: Assets.svgBookmark, id: '7'),
   Choice(title: 'Advertising', icon: Assets.svgPresentionChart, id: '8'),
   Choice(title: 'Following/ Followers', icon: Assets.svgProfile2user, id: '9'),
   Choice(
-      title: 'MLM Question/ Answer', icon: Assets.svgMessageQuestion, id: '10'),
+      title: 'Manage Question/ Answer',
+      icon: Assets.svgMessageQuestion,
+      id: '10'),
   Choice(title: 'MLM Videos', icon: Assets.svgPlayCircle, id: '11'),
   Choice(title: 'Tutorial Video', icon: Assets.svgVideoOctagon, id: '12'),
   Choice(title: 'Plan & Company Interest', icon: Assets.svgStar, id: '13'),
@@ -51,6 +55,8 @@ const List<Choice> choices = <Choice>[
 ];
 
 class _moreState extends State<MoreOptionScreen> {
+  final ProfileController controller = Get.put(ProfileController());
+
   String? packageName;
 
   @override
@@ -61,7 +67,7 @@ class _moreState extends State<MoreOptionScreen> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-
+    final userProfile = controller.userProfile.value.userProfile;
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0,
@@ -86,7 +92,10 @@ class _moreState extends State<MoreOptionScreen> {
             children: [
               GestureDetector(
                 onTap: () {
-                  Get.toNamed(Routes.profilescreen);
+                  Get.toNamed(
+                    Routes.profilescreen,
+                    arguments: controller.userProfile.value.userProfile,
+                  );
                 },
                 child: Container(
                   height: 75,
@@ -100,24 +109,39 @@ class _moreState extends State<MoreOptionScreen> {
                   ),
                   child: Row(
                     children: [
-                      SizedBox(
-                        width: 44,
-                        height: 44,
-                        child: Image.asset(Assets.imagesIcon),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(13.0),
+                        child: CachedNetworkImage(
+                          imageUrl: userProfile!.userimage ?? Assets.imagesIcon,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => Container(),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
+                        ),
                       ),
                       10.sbw,
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text('Aman Talaviya',
+                      Obx(() {
+                        if (controller.isLoading.value) {
+                          return const CircularProgressIndicator();
+                        }
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              userProfile.name ?? 'N/A',
                               style: textStyleW700(
-                                  size.width * 0.040, AppColors.blackText)),
-                          Text('Aman',
+                                  size.width * 0.040, AppColors.blackText),
+                            ),
+                            Text(
+                              userProfile.company ?? 'N/A',
                               style: textStyleW400(
-                                  size.width * 0.032, AppColors.blackText)),
-                        ],
-                      )
+                                  size.width * 0.032, AppColors.blackText),
+                            ),
+                          ],
+                        );
+                      }),
                     ],
                   ),
                 ),
@@ -746,7 +770,10 @@ class _moreState extends State<MoreOptionScreen> {
                   onTap: () async {
                     switch (record.id) {
                       case '1':
-                        Get.toNamed(Routes.accountsettingscreen);
+                        Get.toNamed(
+                          Routes.accountsettingscreen,
+                          arguments: {'controller': controller},
+                        );
                         break;
                       case '2':
                         Get.toNamed(Routes.mlmclassified);

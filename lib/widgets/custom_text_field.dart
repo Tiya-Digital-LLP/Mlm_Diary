@@ -23,8 +23,7 @@ class CustomTextField extends StatelessWidget {
     final Size size = MediaQuery.of(context).size;
     return Container(
       width: size.width,
-      padding: EdgeInsets.symmetric(
-          horizontal: size.width * 0.05, vertical: size.height * 0.01),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(
         border: Border.all(
             color: byDefault
@@ -58,8 +57,9 @@ class CustomTextField extends StatelessWidget {
             height: 8,
           ),
           SizedBox(
-            height: 25,
+            height: 12,
             child: TextField(
+              cursorHeight: 20,
               onChanged: (value) {
                 onChanged!();
               },

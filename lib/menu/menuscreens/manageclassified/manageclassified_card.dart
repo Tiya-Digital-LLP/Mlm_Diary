@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -122,7 +124,9 @@ class ManageClassifiedCard extends StatelessWidget {
                     ),
                     10.sbw,
                     InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        Get.toNamed(Routes.manageClassifiedplusicon);
+                      },
                       child: Ink(
                         height: size.height * 0.030,
                         width: size.height * 0.030,

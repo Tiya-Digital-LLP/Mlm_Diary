@@ -1,7 +1,13 @@
+import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:mlmdiary/data/constants.dart';
+import 'package:mlmdiary/generated/login_entity.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
-import 'package:mlmdiary/utils/common_toast.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginController extends GetxController {
   Rx<TextEditingController> email = TextEditingController().obs;
@@ -13,7 +19,9 @@ class LoginController extends GetxController {
   RxBool isPasswordTyping = false.obs;
 
   emailValidation() {
-    if (email.value.text.isEmpty) {
+    String emailPattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+    RegExp regex = RegExp(emailPattern);
+    if (email.value.text.isEmpty || !regex.hasMatch(email.value.text)) {
       emailError.value = true;
     } else {
       emailError.value = false;
@@ -28,22 +36,76 @@ class LoginController extends GetxController {
     }
   }
 
-  void loginValidation() {
+  void loginValidation(BuildContext context) {
     if (email.value.text.isEmpty && password.value.text.isEmpty) {
-      ToastUtils.showToast("Please Enter Email and Password");
+      showToast("Please Enter Email and \nPassword", context);
     } else if (email.value.text.isEmpty) {
-      ToastUtils.showToast("Please Enter Email");
+      showToast("Please Enter Email", context);
     } else if (password.value.text.isEmpty) {
-      ToastUtils.showToast("Please Enter Password");
+      showToast("Please Enter Password", context);
     } else if (password.value.text.length < 6) {
-      ToastUtils.showToast("Password Must be 6 Character Long");
+      showToast("Password Must be 6 Character Long", context);
     } else {
-      Get.offAllNamed(Routes.mainscreen);
+      login(context);
     }
   }
 
-  void login(context) {
-    email.value.clear();
-    password.value.clear();
+  Future<void> login(BuildContext context) async {
+    final response = await http.post(
+      Uri.parse('${Constants.baseUrl}${Constants.login}'),
+      body: {
+        'email': email.value.text,
+        'password': password.value.text,
+      },
+    );
+
+    if (kDebugMode) {
+      print('Response status: ${response.statusCode}');
+    }
+    if (kDebugMode) {
+      print('Response body: ${response.body}');
+    }
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      LoginEntity loginEntity = LoginEntity.fromJson(responseData);
+
+      if (loginEntity.result == 1) {
+        // Print the entire response including access token
+        if (kDebugMode) {
+          print('Login successful! Full response: $responseData');
+        }
+
+        // Show success toast
+        // ignore: use_build_context_synchronously
+        showToast('Login successful!', context);
+
+        // Store token
+        await saveAccessToken(loginEntity.apiToken);
+
+        // Check for redirection
+        if (responseData.containsKey('redirect_to_company') &&
+            responseData['redirect_to_company'] == true) {
+          // Redirect to sign up 2
+          Get.offAllNamed(Routes.mainscreen);
+        } else {
+          // Redirect to main screen
+          Get.offAllNamed(Routes.mainscreen);
+        }
+      } else {
+        // ignore: use_build_context_synchronously
+        showToast(loginEntity.message ?? "Login failed", context);
+      }
+    } else {
+      // Show error message if response status code is not 200
+      // ignore: use_build_context_synchronously
+      showToast("Login failed: ${response.reasonPhrase}", context);
+    }
+  }
+
+  Future<void> saveAccessToken(String? token) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(Constants.accessToken, token ?? '');
+    await prefs.setBool(Constants.isLoggedIn, true);
   }
 }

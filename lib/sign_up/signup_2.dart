@@ -1,75 +1,59 @@
-import 'dart:developer';
 import 'dart:io' as io;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
+import 'package:flutter_google_places_hoc081098/google_maps_webservice_places.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 
 import 'package:get/get.dart';
+import 'package:google_api_headers/google_api_headers.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:mlmdiary/generated/assets.dart';
-import 'package:mlmdiary/sign_up/signup_controller.dart';
+import 'package:mlmdiary/generated/get_plan_list_entity.dart';
+import 'package:mlmdiary/sign_up/controller/signup2_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/common_header.dart';
 import 'package:mlmdiary/utils/common_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
-import 'package:mlmdiary/utils/lists.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/border_text_field.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
 import 'package:mlmdiary/widgets/custom_border_container.dart';
 import 'package:mlmdiary/widgets/custom_button.dart';
+import 'package:path_provider/path_provider.dart';
 
 class AddMoreDetails extends StatefulWidget {
-  const AddMoreDetails({super.key});
+  const AddMoreDetails({
+    super.key,
+  });
 
   @override
   State<AddMoreDetails> createState() => _AddMoreDetailsState();
 }
 
 class _AddMoreDetailsState extends State<AddMoreDetails> {
-  final SignupController controller = Get.put(SignupController());
-  PickedFile? _imagefiles;
-  io.File? file, file1, file2;
+  final Signup2Controller controller = Get.put(Signup2Controller());
   final ImagePicker _picker = ImagePicker();
+  Rx<io.File?> file = Rx<io.File?>(null);
+  final TextEditingController _loc = TextEditingController();
+  Color _color5 = Colors.black26;
+  late double lat = 0.0;
+  late double log = 0.0;
+
+  String googleApikey = "AIzaSyB3s5ixJVnWzsXoUZaP9ISDp_80GXWJXuU";
 
   @override
   void initState() {
-    _getLocation();
     super.initState();
-  }
-
-  Future<void> _getLocation() async {
-    try {
-      final Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
-
-      final List<Placemark> placeMarks = await placemarkFromCoordinates(
-        position.latitude,
-        position.longitude,
-      );
-
-      if (placeMarks.isNotEmpty) {
-        final Placemark placeMark = placeMarks.first;
-
-        if (placeMark.locality != null) {
-          setState(() {
-            controller.location.value.text = placeMark.locality!;
-          });
-        }
-      }
-    } catch (e) {
-      log('Error getting location: $e');
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: AppColors.white,
       body: SafeArea(
@@ -94,14 +78,49 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                 SizedBox(
                   height: size.height * 0.01,
                 ),
-                Stack(
-                  children: [
-                    Column(
+                Obx(
+                  () => ClipRRect(
+                    borderRadius: BorderRadius.circular(13.05),
+                    child: Stack(
                       children: [
-                        imageprofile(context),
+                        CircleAvatar(
+                          radius: 60.0,
+                          child: GestureDetector(
+                            child: ClipOval(
+                              child: file.value != null
+                                  ? Image.file(
+                                      file.value!,
+                                      height: 120,
+                                      width: 120,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Image.asset(
+                                      Assets.imagesIcon,
+                                    ),
+                            ),
+                            onTap: () {
+                              if (file.value == null) {
+                                showModalBottomSheet(
+                                  backgroundColor: Colors.white,
+                                  context: context,
+                                  builder: (context) => bottomsheet(context),
+                                );
+                              }
+                            },
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 3.0,
+                          right: 5.0,
+                          child: SizedBox(
+                            width: 40,
+                            height: 33,
+                            child: Image.asset(Assets.imagesCamera),
+                          ),
+                        ),
                       ],
                     ),
-                  ],
+                  ),
                 ),
                 SizedBox(
                   height: size.height * 0.015,
@@ -213,6 +232,7 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                 ),
                 Obx(() => BorderTextField(
                       maxLength: 25,
+                      height: 65,
                       keyboard: TextInputType.name,
                       textInputType: const [],
                       hint: "Company Name",
@@ -239,24 +259,21 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                             controller.getSelectedPlanOptionsTextController(),
                         readOnly: true,
                         onTap: () {
-                          log("BEFORE ==  ${controller.planTypeError.value}");
-
                           showBottomSheetFunc(
-                              context, size, controller, planList);
+                              context, size, controller, controller.planList);
                           controller.planCategoryValidation();
-
-                          log("AFTER == ${controller.planTypeError.value}");
                         },
                         style: textStyleW500(
                             size.width * 0.04, AppColors.blackText),
                         cursorColor: AppColors.blackText,
                         decoration: InputDecoration(
-                            hintText: "Select Plan",
-                            border: InputBorder.none,
-                            suffixIcon: Icon(
-                              Icons.arrow_drop_down,
-                              color: AppColors.blackText,
-                            )),
+                          hintText: "Select Plan",
+                          border: InputBorder.none,
+                          suffixIcon: Icon(
+                            Icons.arrow_drop_down,
+                            color: AppColors.blackText,
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -264,19 +281,104 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                 SizedBox(
                   height: size.height * 0.015,
                 ),
-                Obx(() => BorderTextField(
-                      maxLength: 25,
-                      keyboard: TextInputType.name,
-                      textInputType: const [],
-                      hint: "Loaction",
-                      controller: controller.location.value,
-                      isError: controller.locationError.value,
-                      byDefault: !controller.isLocationTyping.value,
-                      onChanged: (value) {
-                        controller.locationValidation();
-                        controller.isLocationTyping.value = true;
-                      },
-                    )),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(25.0, 5.0, 25.0, 5.0),
+                  child: TextFormField(
+                    controller: controller.location.value,
+                    readOnly: true,
+                    style: const TextStyle(
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black,
+                        fontFamily: 'assets/fonst/Metropolis-Black.otf'),
+                    onTap: () async {
+                      var place = await PlacesAutocomplete.show(
+                        context: context,
+                        apiKey: googleApikey,
+                        mode: Mode.overlay,
+                        types: ['geocode', 'establishment'],
+                        strictbounds: false,
+                        onError: (err) {},
+                      );
+
+                      if (place != null) {
+                        setState(() {
+                          controller.location.value.text =
+                              place.description.toString();
+                          _loc.text = controller.location.value.text;
+                          _color5 = AppColors.greenBorder;
+                        });
+
+                        final plist = GoogleMapsPlaces(
+                          apiKey: googleApikey,
+                          apiHeaders:
+                              await const GoogleApiHeaders().getHeaders(),
+                        );
+                        String placeid = place.placeId ?? "0";
+                        final detail = await plist.getDetailsByPlaceId(placeid);
+                        for (var component in detail.result.addressComponents) {
+                          for (var type in component.types) {
+                            if (type == "administrative_area_level_1") {
+                              controller.state.value.text = component.longName;
+                            } else if (type == "locality") {
+                              controller.city.value.text = component.longName;
+                            } else if (type == "country") {
+                              controller.country.value.text =
+                                  component.longName;
+                            }
+                          }
+                        }
+
+                        final geometry = detail.result.geometry!;
+                        setState(() {
+                          lat = geometry.location.lat;
+                          log = geometry.location.lng;
+                        });
+                      }
+                    },
+                    decoration: InputDecoration(
+                      hintText: "Location/ Address / City *",
+                      hintStyle: const TextStyle(
+                              fontSize: 15.0,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black,
+                              fontFamily: 'assets/fonst/Metropolis-Black.otf')
+                          .copyWith(color: Colors.black45),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 1, color: _color5),
+                          borderRadius: BorderRadius.circular(10.0)),
+                      border: OutlineInputBorder(
+                          borderSide: BorderSide(width: 1, color: _color5),
+                          borderRadius: BorderRadius.circular(10.0)),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 1, color: _color5),
+                          borderRadius: BorderRadius.circular(10.0)),
+                    ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        setState(() {
+                          _color5 = AppColors.redText;
+                        });
+                      } else {}
+                      return null;
+                    },
+                    onFieldSubmitted: (value) {
+                      if (value.isEmpty) {
+                        Fluttertoast.showToast(
+                            timeInSecForIosWeb: 2,
+                            msg:
+                                'Please Search and Save your Business Location');
+                        setState(() {
+                          _color5 = AppColors.redText;
+                        });
+                      } else if (value.isNotEmpty) {
+                        setState(() {
+                          _color5 = AppColors.greenBorder;
+                        });
+                      }
+                    },
+                  ),
+                ),
                 Expanded(
                   child: Container(),
                 ),
@@ -285,9 +387,38 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                   btnColor: AppColors.primaryColor,
                   titleColor: AppColors.white,
                   onTap: () {
-                    if (controller.imageFile == null) {
-                      ToastUtils.showToast("Please Add Your Profile Picture");
-                    } else {}
+                    if (file.value == null) {
+                      ToastUtils.showToast("Please Upload Photo");
+                    } else if (controller.companyName.value.text.isEmpty) {
+                      ToastUtils.showToast("Please Enter Company Name");
+                    } else {
+                      if (controller.selectedCountPlan > 0) {
+                        // Retrieve city information from the location text field
+                        if (controller.city.value.text.isEmpty) {
+                          Fluttertoast.showToast(
+                            msg: "Please select a valid location.",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                            fontSize: 16.0,
+                          );
+                        } else {
+                          controller.saveCompanyDetails(
+                            imageFile: file.value,
+                          );
+                        }
+                      } else {
+                        Fluttertoast.showToast(
+                          msg: "Please select at least one plan.",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          fontSize: 16.0,
+                        );
+                      }
+                    }
                   },
                 ),
                 SizedBox(
@@ -304,9 +435,9 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
 
   void showBottomSheetFunc(
     BuildContext context,
-    Size size,
-    SignupController controller,
-    List<String> planList,
+    size,
+    Signup2Controller controller,
+    List<GetPlanListPlan> planList,
   ) {
     showModalBottomSheet(
       context: context,
@@ -315,7 +446,8 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(30.0)),
       ),
       builder: (BuildContext context) {
-        return SingleChildScrollView(
+        return FractionallySizedBox(
+          heightFactor: 0.9,
           child: Container(
             padding: const EdgeInsets.all(16.0),
             decoration: const BoxDecoration(
@@ -326,6 +458,7 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
               ),
             ),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Center(
@@ -346,51 +479,52 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                         textStyleW600(size.width * 0.045, AppColors.blackText),
                   ),
                 ),
-                const SizedBox(height: 20),
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  itemCount: planList.length,
-                  itemBuilder: (context, index) {
-                    return Column(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            controller.togglePlanSelected(index);
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 16),
-                            child: Row(
-                              children: [
-                                Obx(
-                                  () => GestureDetector(
-                                    onTap: () {
-                                      controller.togglePlanSelected(index);
-                                    },
-                                    child: Image.asset(
-                                      (controller.isPlanSelectedList[index])
-                                          ? Assets.imagesTrueCircle
-                                          : Assets.imagesCircle,
+                20.sbh,
+                Flexible(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: planList.length,
+                    itemBuilder: (context, index) {
+                      return Column(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              controller.togglePlanSelected(index);
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 16),
+                              child: Row(
+                                children: [
+                                  Obx(
+                                    () => GestureDetector(
+                                      onTap: () {
+                                        controller.togglePlanSelected(index);
+                                      },
+                                      child: Image.asset(
+                                        controller.isPlanSelectedList[index]
+                                            ? Assets.imagesTrueCircle
+                                            : Assets.imagesCircle,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                const SizedBox(width: 15),
-                                Text(
-                                  planList[index],
-                                  style: textStyleW500(
-                                      size.width * 0.041, AppColors.blackText),
-                                ),
-                              ],
+                                  15.sbw,
+                                  Text(
+                                    planList[index].name ?? '',
+                                    style: textStyleW500(size.width * 0.041,
+                                        AppColors.blackText),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 20),
-                      ],
-                    );
-                  },
+                          20.sbh,
+                        ],
+                      );
+                    },
+                  ),
                 ),
-                const SizedBox(height: 100),
                 Center(
                   child: CustomButton(
                     title: "Continue",
@@ -398,7 +532,7 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                     titleColor: AppColors.white,
                     onTap: () {
                       if (controller.selectedCountPlan > 0) {
-                        Navigator.pop(context);
+                        Get.back();
                       } else {
                         Fluttertoast.showToast(
                           msg: "Please select at least one field.",
@@ -420,43 +554,9 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
     );
   }
 
-  Widget imageprofile(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        showModalBottomSheet(
-          context: context,
-          builder: (context) => bottomsheet(),
-        );
-      },
-      child: Center(
-        child: Stack(
-          children: <Widget>[
-            CircleAvatar(
-              radius: 60.0,
-              backgroundImage: _imagefiles == null
-                  ? const AssetImage(Assets.imagesIcon) as ImageProvider
-                  : FileImage(file!),
-              backgroundColor: const Color.fromARGB(255, 240, 238, 238),
-            ),
-            Positioned(
-              bottom: 3.0,
-              right: 5.0,
-              child: SizedBox(
-                width: 40,
-                height: 33,
-                child: Image.asset(Assets.imagesCamera),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget bottomsheet() {
+  Widget bottomsheet(BuildContext context) {
     return Container(
       height: 100.0,
-      width: MediaQuery.of(context).size.width,
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Column(
         children: <Widget>[
@@ -495,40 +595,120 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
     );
   }
 
-  void takephoto(ImageSource imageSource) async {
-    final pickedfile = await _picker.pickImage(source: imageSource);
+  Future<void> takephoto(ImageSource imageSource) async {
+    final pickedfile =
+        await _picker.pickImage(source: imageSource, imageQuality: 100);
+    if (pickedfile != null && pickedfile.path.isNotEmpty) {
+      io.File imageFile = io.File(pickedfile.path);
+      int fileSizeInBytes = imageFile.lengthSync();
+      double fileSizeInKB = fileSizeInBytes / 1024;
 
-    _imagefiles = pickedfile as PickedFile?;
-    file = await _cropImage(imagefile: io.File(_imagefiles!.path));
+      if (kDebugMode) {
+        print('Original image size: $fileSizeInKB KB');
+      }
 
-    Get.back();
+      if (fileSizeInKB > 5000) {
+        Fluttertoast.showToast(msg: 'Please Select an image below 5 MB');
+        return;
+      }
+
+      if (fileSizeInKB < 200) {
+        Fluttertoast.showToast(msg: 'Please Select an image above 200 KB');
+        return;
+      }
+
+      io.File? processedFile = imageFile;
+
+      processedFile = await _cropImage(imageFile);
+      if (processedFile == null) {
+        Fluttertoast.showToast(msg: 'Image cropping failed');
+        return;
+      }
+
+      double processedFileSizeInKB = processedFile.lengthSync() / 1024;
+
+      if (processedFileSizeInKB > 250) {
+        processedFile = await _compressImage(processedFile);
+        if (processedFile == null) {
+          Fluttertoast.showToast(msg: 'Image compression failed');
+          return;
+        }
+      }
+
+      double finalFileSizeInKB = processedFile.lengthSync() / 1024;
+      if (kDebugMode) {
+        print('Final image size: $finalFileSizeInKB KB');
+      }
+
+      file.value = processedFile;
+
+      Get.back();
+    } else {
+      Fluttertoast.showToast(msg: 'Please select an image');
+    }
   }
 
-  Future<io.File?> _cropImage({required io.File imagefile}) async {
-    if (_imagefiles != null) {
-      final croppedFile = await ImageCropper().cropImage(
-          sourcePath: _imagefiles!.path,
-          compressFormat: ImageCompressFormat.jpg,
-          compressQuality: 100,
-          uiSettings: [
-            AndroidUiSettings(
-                toolbarTitle: 'Cropper',
-                toolbarColor: AppColors.primaryColor,
-                toolbarWidgetColor: Colors.white,
-                initAspectRatio: CropAspectRatioPreset.original,
-                lockAspectRatio: false),
-            IOSUiSettings(
-              title: 'Cropper',
-            ),
-          ]);
-      if (croppedFile != null) {
-        setState(() {});
-        return io.File(croppedFile.path);
-      } else {
-        return io.File(_imagefiles!.path);
-      }
+  Future<io.File?> _cropImage(io.File imageFile) async {
+    final croppedFile = await ImageCropper().cropImage(
+      sourcePath: imageFile.path,
+      compressFormat: ImageCompressFormat.jpg,
+      compressQuality: 100,
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: 'Cropper',
+          toolbarColor: AppColors.primaryColor,
+          toolbarWidgetColor: Colors.white,
+          initAspectRatio: CropAspectRatioPreset.original,
+          lockAspectRatio: false,
+        ),
+        IOSUiSettings(
+          title: 'Cropper',
+        ),
+      ],
+    );
+
+    if (croppedFile != null) {
+      return io.File(croppedFile.path);
     } else {
       return null;
     }
+  }
+
+  Future<io.File?> _compressImage(io.File imageFile) async {
+    final dir = await getTemporaryDirectory();
+    final targetPath = '${dir.path}/temp.jpg';
+
+    int quality = 90;
+    io.File? compressedFile;
+    while (true) {
+      final result = await FlutterImageCompress.compressAndGetFile(
+        imageFile.absolute.path,
+        targetPath,
+        quality: quality,
+      );
+
+      if (result == null) {
+        return null;
+      }
+
+      compressedFile = io.File(result.path);
+      double fileSizeInKB = compressedFile.lengthSync() / 1024;
+
+      if (fileSizeInKB <= 250 && fileSizeInKB >= 200) {
+        break;
+      }
+
+      if (fileSizeInKB < 200) {
+        quality += 5;
+      } else {
+        quality -= 5;
+      }
+
+      if (quality <= 0 || quality > 100) {
+        break;
+      }
+    }
+
+    return compressedFile;
   }
 }

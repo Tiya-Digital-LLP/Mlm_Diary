@@ -51,6 +51,7 @@ class BorderTextField extends StatelessWidget {
         ),
         child: Center(
           child: TextField(
+            cursorHeight: 20,
             autocorrect: false,
             readOnly: readOnly,
             keyboardType: keyboard,
