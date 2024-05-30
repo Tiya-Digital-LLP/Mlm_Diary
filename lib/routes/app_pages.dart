@@ -10,6 +10,7 @@ import 'package:mlmdiary/home/addblog/add_blog.dart';
 import 'package:mlmdiary/home/addnews/add_news.dart';
 import 'package:mlmdiary/home/notification/notification.dart';
 import 'package:mlmdiary/home/notification/notification_setting_screen.dart';
+import 'package:mlmdiary/home/searchbar_screen.dart';
 import 'package:mlmdiary/login/login_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/aboutus/about_us.dart';
 import 'package:mlmdiary/menu/menuscreens/accountsetting/account_setting_screen.dart';
@@ -91,7 +92,6 @@ class AppPages {
       name: Routes.mlmclassifieddetail,
       page: () => ClassidiedDetailsScreen(
         key: UniqueKey(),
-        post: Get.arguments,
       ),
     ),
     GetPage(
@@ -229,6 +229,10 @@ class AppPages {
     GetPage(
       name: Routes.addpost,
       page: () => const AddPost(),
+    ),
+    GetPage(
+      name: Routes.search,
+      page: () => const SearchBarApp(),
     ),
   ];
 }

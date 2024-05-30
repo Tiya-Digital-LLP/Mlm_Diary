@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -12,17 +13,37 @@ class ManageClassifiedCard extends StatelessWidget {
   final String userName;
   final String postTitle;
   final String postCaption;
-  final String postImage;
+  final String postTime;
   final VoidCallback onDelete;
+
   const ManageClassifiedCard({
     super.key,
     required this.userImage,
     required this.userName,
     required this.postTitle,
     required this.postCaption,
-    required this.postImage,
+    required this.postTime,
     required this.onDelete,
   });
+
+  String formatPostTime(String postTime) {
+    DateTime now = DateTime.now();
+    DateTime time = DateTime.parse(postTime);
+    Duration difference = now.difference(time);
+    if (difference.inDays == 0) {
+      if (difference.inHours == 0) {
+        if (difference.inMinutes == 0) {
+          return 'Just now';
+        }
+        return '${difference.inMinutes} min ago';
+      }
+      return '${difference.inHours} hour ago';
+    } else if (difference.inDays == 1) {
+      return 'Yesterday';
+    } else {
+      return '${time.day}-${time.month}-${time.year}';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,11 +60,15 @@ class ManageClassifiedCard extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Image.asset(
-                  postImage,
+                // Replace Image.asset with CachedNetworkImage
+                CachedNetworkImage(
+                  imageUrl: userImage,
                   height: 97,
                   width: 105,
                   fit: BoxFit.fill,
+                  placeholder: (context, url) =>
+                      const CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
                 ),
                 10.sbw,
                 Expanded(
@@ -59,14 +84,13 @@ class ManageClassifiedCard extends StatelessWidget {
                         postCaption,
                         style: textStyleW400(size.width * 0.035,
                             AppColors.blackText.withOpacity(0.8)),
-                      )
+                      ),
                     ],
                   ),
                 ),
               ],
             ),
           ),
-          20.sbh,
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
@@ -193,7 +217,7 @@ class ManageClassifiedCard extends StatelessWidget {
                 ),
                 20.sbw,
                 Text(
-                  '20 min ago',
+                  formatPostTime(postTime),
                   style: textStyleW500(
                       size.width * 0.028, AppColors.blackText.withOpacity(0.5)),
                 ),

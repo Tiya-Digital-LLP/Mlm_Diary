@@ -9,7 +9,9 @@ class Assets {
   static const String imagesAdwithus3 = 'assets/images/Adwithus3.png';
   static const String imagesBg = 'assets/images/bg.png';
   static const String imagesCamera = 'assets/images/camera.png';
+  static const String imagesCancel = 'assets/images/cancel.png';
   static const String imagesCheck = 'assets/images/check.png';
+  static const String imagesChecked = 'assets/images/checked.png';
   static const String imagesCircle = 'assets/images/circle.png';
   static const String imagesEllipse = 'assets/images/Ellipse.png';
   static const String imagesIcon = 'assets/images/icon.png';
@@ -24,6 +26,7 @@ class Assets {
   static const String imagesSplashImage = 'assets/images/splash_image.png';
   static const String imagesSquare = 'assets/images/square.png';
   static const String imagesTrueCircle = 'assets/images/true_circle.png';
+  static const String imagesVerified = 'assets/images/verified.png';
   static const String svgArchive = 'assets/svg/archive.svg';
   static const String svgBack = 'assets/svg/back.svg';
   static const String svgBannerAd = 'assets/svg/banner_ad.svg';

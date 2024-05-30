@@ -46,4 +46,5 @@ abstract class Routes {
   static const planandcompanyinterest = '/PlanandCompanyInterest';
   static const premiumplan = '/PremiumPlan';
   static const referearn = '/referEarn';
+  static const search = '/search';
 }

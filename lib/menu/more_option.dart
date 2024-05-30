@@ -62,6 +62,7 @@ class _moreState extends State<MoreOptionScreen> {
   @override
   void initState() {
     super.initState();
+    controller.fetchUserProfile();
   }
 
   @override
@@ -110,13 +111,19 @@ class _moreState extends State<MoreOptionScreen> {
                   child: Row(
                     children: [
                       ClipRRect(
-                        borderRadius: BorderRadius.circular(13.0),
-                        child: CachedNetworkImage(
-                          imageUrl: userProfile!.userimage ?? Assets.imagesIcon,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => Container(),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
+                        borderRadius: BorderRadius.circular(30.0),
+                        child: CircleAvatar(
+                          radius: 30,
+                          child: CachedNetworkImage(
+                            imageUrl:
+                                userProfile!.userimage ?? Assets.imagesIcon,
+                            fit: BoxFit.cover,
+                            width: 60,
+                            height: 60,
+                            placeholder: (context, url) => Container(),
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
+                          ),
                         ),
                       ),
                       10.sbw,

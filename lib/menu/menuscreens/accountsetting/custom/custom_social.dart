@@ -24,61 +24,60 @@ class _CustomSocialState extends State<CustomSocial> {
     return SizedBox(
       height: MediaQuery.of(context).size.height,
       child: Scaffold(
-        backgroundColor: AppColors.background,
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Obx(
-            () => Column(
-              children: [
-                buildSocialInput(
-                  controller: controller.instat.value,
-                  asset: Assets.svgInstagram,
-                  hintText: "Copy & Paste Instagram URL",
-                ),
-                15.sbh,
-                buildSocialInput(
-                  controller: controller.youtube.value,
-                  asset: Assets.svgYoutube,
-                  hintText: "Copy & Paste YouTube URL",
-                ),
-                15.sbh,
-                buildSocialInput(
-                  controller: controller.facebook.value,
-                  asset: Assets.svgLogosFacebook,
-                  hintText: "Copy & Paste Facebook URL",
-                ),
-                15.sbh,
-                buildSocialInput(
-                  controller: controller.linkdn.value,
-                  asset: Assets.svgLogosLinkedinIcon,
-                  hintText: "Copy & Paste LinkedIn URL",
-                ),
-                15.sbh,
-                buildSocialInput(
-                  controller: controller.twitter.value,
-                  asset: Assets.svgTwitter,
-                  hintText: "Copy & Paste Twitter URL",
-                ),
-                15.sbh,
-                buildSocialInput(
-                  controller: controller.telegram.value,
-                  asset: Assets.svgTelegram,
-                  hintText: "Copy & Paste Telegram URL",
-                ),
-                45.sbh,
-                NormalButton(
-                    onPressed: () async {
-                      if (kDebugMode) {
-                        print('tap');
-                      }
-                      await controller.updateSocialMedia();
-                    },
-                    text: 'Save & Update'),
-              ],
+          backgroundColor: AppColors.background,
+          body: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Obx(
+              () => Column(
+                children: [
+                  buildSocialInput(
+                    controller: controller.instat.value,
+                    asset: Assets.svgInstagram,
+                    hintText: "Copy & Paste Instagram URL",
+                  ),
+                  15.sbh,
+                  buildSocialInput(
+                    controller: controller.youtube.value,
+                    asset: Assets.svgYoutube,
+                    hintText: "Copy & Paste YouTube URL",
+                  ),
+                  15.sbh,
+                  buildSocialInput(
+                    controller: controller.facebook.value,
+                    asset: Assets.svgLogosFacebook,
+                    hintText: "Copy & Paste Facebook URL",
+                  ),
+                  15.sbh,
+                  buildSocialInput(
+                    controller: controller.linkdn.value,
+                    asset: Assets.svgLogosLinkedinIcon,
+                    hintText: "Copy & Paste LinkedIn URL",
+                  ),
+                  15.sbh,
+                  buildSocialInput(
+                    controller: controller.twitter.value,
+                    asset: Assets.svgTwitter,
+                    hintText: "Copy & Paste Twitter URL",
+                  ),
+                  15.sbh,
+                  buildSocialInput(
+                    controller: controller.telegram.value,
+                    asset: Assets.svgTelegram,
+                    hintText: "Copy & Paste Telegram URL",
+                  ),
+                  45.sbh,
+                  NormalButton(
+                      onPressed: () async {
+                        if (kDebugMode) {
+                          print('tap');
+                        }
+                        await controller.updateSocialMedia();
+                      },
+                      text: 'Save & Update'),
+                ],
+              ),
             ),
-          ),
-        ),
-      ),
+          )),
     );
   }
 

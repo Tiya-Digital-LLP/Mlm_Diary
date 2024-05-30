@@ -85,7 +85,6 @@ class _EnterOTPScreenState extends State<EnterOTPScreen> {
             ),
             OtpTextField(
               numberOfFields: 6,
-              otp: otp,
               onSubmit: (String verificationCode) {
                 // Verify OTP
                 if (verificationCode == otp.toString()) {

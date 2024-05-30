@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/generated/get_user_profile_entity.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 
 class AboutMeSection extends StatelessWidget {
   final Size size;
-
-  const AboutMeSection({required this.size, super.key});
+  final userProfile = Get.arguments as GetUserProfileUserProfile;
+  AboutMeSection({required this.size, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +67,7 @@ class AboutMeSection extends StatelessWidget {
                 Text('About me',
                     style: textStyleW400(size.width * 0.035, AppColors.grey)),
                 Text(
-                  'Since electricity prices in Europe have reached record highs and all we hear and read about are electricity shortages, everyone is talking about saving electricity. And this applies not only to us but also to manufacturers and users in the plastics processing industry.',
+                  userProfile.aboutyou ?? 'N/A',
                   style: textStyleW500(size.width * 0.035, AppColors.blackText),
                 ),
               ],
@@ -82,7 +84,7 @@ class AboutMeSection extends StatelessWidget {
                 Text('About me',
                     style: textStyleW400(size.width * 0.035, AppColors.grey)),
                 Text(
-                  'Since electricity prices in Europe have reached record highs and all we hear and read about are electricity shortages, everyone is talking about saving electricity. And this applies not only to us but also to manufacturers and users in the plastics processing industry.',
+                  userProfile.aboutcompany ?? 'N/A',
                   style: textStyleW500(size.width * 0.035, AppColors.blackText),
                 ),
               ],

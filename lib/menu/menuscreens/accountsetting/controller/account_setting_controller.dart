@@ -16,10 +16,9 @@ import 'package:mlmdiary/generated/get_user_profile_entity.dart';
 import 'package:mlmdiary/generated/get_user_type_entity.dart';
 import 'package:mlmdiary/generated/update_phone_no_entity.dart';
 import 'package:mlmdiary/generated/update_phone_verify_otp_entity.dart';
-import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/generated/update_social_media_entity.dart';
 import 'package:mlmdiary/utils/common_toast.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
-import 'package:mlmdiary/utils/lists.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AccountSeetingController extends GetxController {
@@ -48,6 +47,8 @@ class AccountSeetingController extends GetxController {
   Rx<TextEditingController> twitter = TextEditingController().obs;
   Rx<TextEditingController> telegram = TextEditingController().obs;
   Rx<TextEditingController> linkdn = TextEditingController().obs;
+
+  RxString userImage = ''.obs;
 
   final RxList<bool> isPlanSelectedList = RxList<bool>([]);
   final RxList<bool> isTypeSelectedList = RxList<bool>([]);
@@ -104,7 +105,6 @@ class AccountSeetingController extends GetxController {
     fetchUserTypes();
     fetchPlanList();
     fetchUserProfile();
-
     super.onInit();
   }
 
@@ -141,29 +141,31 @@ class AccountSeetingController extends GetxController {
         aboutyou.value.text = userProfileEntity.userProfile?.aboutyou ?? '';
         aboutcompany.value.text =
             userProfileEntity.userProfile?.aboutcompany ?? '';
+        userImage.value = userProfileEntity.userProfile?.userimage ?? '';
 
-        // Fetch user types and update isTypeSelectedList based on the user profile
-        if (responseData['usertypes'] != null) {
-          List<dynamic> userTypesData = responseData['usertypes'];
-          userTypes.assignAll(userTypesData
-              .map((e) => GetUserTypeUsertype.fromJson(e))
-              .toList());
+        // Update isTypeSelectedList based on user's selected MLM types
+        isTypeSelectedList.clear(); // Clear existing selections
+        for (var type in userTypes) {
+          // Check if the user has selected the current type
+          bool isSelected =
+              userProfileEntity.userProfile?.immlm?.contains(type.name ?? '') ??
+                  false;
+          isTypeSelectedList.add(isSelected);
+        }
 
-          // Initialize isTypeSelectedList with false values
-          isTypeSelectedList
-              .assignAll(List.generate(userTypes.length, (index) => false));
+        //Update isplanselected
 
-          // Update isTypeSelectedList based on the user profile
-          if (userProfileEntity.userProfile?.immlm != null) {
-            List<String> userTypeList = List<String>.from(
-                userProfileEntity.userProfile!.immlm! as Iterable);
-            for (var userType in userTypeList) {
-              int index = userTypes.indexWhere((e) => e.name == userType);
-              if (index != -1) {
-                isTypeSelectedList[index] = true;
-              }
-            }
-          }
+        isPlanSelectedList.clear(); // Clear existing selections
+        for (var type in planList) {
+          // Check if the user has selected the current type
+          bool isSelected =
+              userProfileEntity.userProfile?.plan?.contains(type.name ?? '') ??
+                  false;
+          isPlanSelectedList.add(isSelected);
+        }
+
+        if (kDebugMode) {
+          print('Account Settings Data: $responseData');
         }
       } else {
         Get.snackbar('Error', 'Failed to fetch user profile');
@@ -178,7 +180,7 @@ class AccountSeetingController extends GetxController {
   void mlmCategoryValidation() {
     bool hasSelectedCategory = false;
 
-    for (bool isSelected in isTrueList) {
+    for (bool isSelected in isTypeSelectedList) {
       if (isSelected) {
         hasSelectedCategory = true;
         break;
@@ -328,7 +330,7 @@ class AccountSeetingController extends GetxController {
         request.fields['state'] = state.value.text;
         request.fields['country'] = country.value.text;
         request.fields['pincode'] = '360022';
-        request.fields['address'] = 'ahemdabad';
+        request.fields['address'] = 'Ahemdabad';
         request.fields['api_token'] = apiToken ?? '';
         request.fields['aboutyou'] = aboutyou.value.text;
         request.fields['aboutcompany'] = aboutcompany.value.text;
@@ -544,22 +546,24 @@ class AccountSeetingController extends GetxController {
       var connectivityResult = await Connectivity().checkConnectivity();
       // ignore: unrelated_type_equality_checks
       if (connectivityResult != ConnectivityResult.none) {
-        final response = await http.post(
-          Uri.parse('${Constants.baseUrl}${Constants.updatesocialmedia}'),
-          body: jsonEncode({
-            'fblink': facebook.value.text,
-            'instalink': instat.value.text,
-            'twiterlink': twitter.value.text,
-            'lilink': linkdn.value.text,
-            'youlink': youtube.value.text,
-            'telink': telegram.value.text,
-            'api_token': apiToken,
-          }),
-        );
+        var uri =
+            Uri.parse('${Constants.baseUrl}${Constants.updatesocialmedia}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['fblink'] = facebook.value.text;
+        request.fields['instalink'] = instat.value.text;
+        request.fields['twiterlink'] = twitter.value.text;
+        request.fields['lilink'] = linkdn.value.text;
+        request.fields['youlink'] = youtube.value.text;
+        request.fields['telink'] = telegram.value.text;
+        request.fields['api_token'] = apiToken ?? '';
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
 
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
-          var updateSocialMediaEntity = ChangeEmailEntity.fromJson(data);
+          var updateSocialMediaEntity = UpdateSocialMediaEntity.fromJson(data);
           Fluttertoast.showToast(
             msg: "Success: ${updateSocialMediaEntity.toString()}",
             toastLength: Toast.LENGTH_LONG,
@@ -779,8 +783,15 @@ class AccountSeetingController extends GetxController {
   }
 
   void planCategoryValidation() {
-    // ignore: unrelated_type_equality_checks
-    planTypeError.value = selectedCountPlan == 0;
+    bool hasSelectedPlan = false;
+
+    for (bool isSelected in isPlanSelectedList) {
+      if (isSelected) {
+        hasSelectedPlan = true;
+        break;
+      }
+    }
+    planTypeError.value = !hasSelectedPlan;
   }
 
   void mobileOtpValidation() {
@@ -806,9 +817,6 @@ class AccountSeetingController extends GetxController {
       mobileError.value = false;
     }
   }
-
-  final RxList<bool> isTrueList =
-      RxList<bool>(List.generate(mlmList.length, (index) => false));
 
   void toggleSelected(int index) {
     isTypeSelectedList[index] = !isTypeSelectedList[index];

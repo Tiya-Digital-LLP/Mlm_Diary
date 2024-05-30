@@ -1,8 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/generated/get_banner_entity.dart';
+import 'package:mlmdiary/home/controller/homescreen_controller.dart';
 import 'package:mlmdiary/home/post_card.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/home/suggestion_user_card.dart';
@@ -11,14 +14,30 @@ import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/lists.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-// ignore: must_be_immutable
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   final _search = TextEditingController();
   final isSearchVisible = RxBool(false);
   int backPressedCount = 0;
   final GlobalKey _popupMenuButtonKey = GlobalKey();
-  HomeScreen({super.key});
+  final HomeController controller = Get.put(HomeController());
+  final PageController pageController = PageController(initialPage: 0);
+  int getSliderIndex = 0;
+  bool isFirstTime = true;
+
+  @override
+  void initState() {
+    super.initState();
+    controller.fetchBanners();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +89,7 @@ class HomeScreen extends StatelessWidget {
                               // SEARCH ICON
                               GestureDetector(
                                 onTap: () {
-                                  isSearchVisible.toggle();
+                                  Get.toNamed(Routes.search);
                                 },
                                 child: SizedBox(
                                   height: size.height * 0.036,
@@ -162,10 +181,10 @@ class HomeScreen extends StatelessWidget {
                           SizedBox(
                             width: size.width,
                             height: size.height * 0.22,
-                            child: Image.asset(
-                              Assets.imagesLabel,
-                              fit: BoxFit.fill,
-                            ),
+                            child: Obx(() {
+                              final banners = controller.banners;
+                              return sliderHome(banners);
+                            }),
                           ),
                           SizedBox(
                             height: size.height * 0.005,
@@ -312,5 +331,89 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget sliderHome(List<GetBannerData> banners) {
+    // Define a page controller with desired properties
+    PageController pageController = PageController(
+      initialPage: 0, // Set the initial page index
+      viewportFraction: 1,
+    );
+
+    return SizedBox(
+      height: MediaQuery.of(context).size.width / 1.9,
+      child: Stack(
+        alignment: Alignment.bottomRight,
+        children: [
+          // Use PageView.builder with the defined page controller
+          PageView.builder(
+            controller: pageController,
+            itemCount: banners.length,
+            itemBuilder: (context, index) {
+              final banner = banners[index];
+              return GestureDetector(
+                onTap: () {
+                  if (kDebugMode) {
+                    print('Banner Web Link: ${banner.weblink}');
+                  }
+                  if (banner.weblink != null && banner.weblink!.isNotEmpty) {
+                    launchURL(banner.weblink!);
+                  } else {
+                    if (kDebugMode) {
+                      print('Banner Web Link is either null or empty');
+                    }
+                  }
+                },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: Image.network(
+                    banner.image ?? '',
+                    fit: BoxFit.fill,
+                    width: 2500.0,
+                  ),
+                ),
+              );
+            },
+            onPageChanged: (index) {},
+          ),
+          Positioned(
+            bottom: 10,
+            right: 16,
+            child: SizedBox(
+              height: 8,
+              child: ListView.builder(
+                itemCount: banners.length,
+                scrollDirection: Axis.horizontal,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  return Container(
+                    width: 7,
+                    height: 7,
+                    margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.circular(3.5),
+                      color: index == 0
+                          ? AppColors.primaryColor
+                          : const Color(0xFFD9D9D9),
+                    ),
+                  );
+                },
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  void launchURL(String url) async {
+    // ignore: deprecated_member_use
+    if (await canLaunch(url)) {
+      // ignore: deprecated_member_use
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }

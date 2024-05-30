@@ -1,31 +1,32 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:html_unescape/html_unescape.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 
+// ignore: must_be_immutable
 class ClassifiedCard extends StatelessWidget {
   final String userImage;
   final String userName;
   final String postTitle;
-  final String postCaption;
-  final String postImage;
 
   ClassifiedCard({
     super.key,
     required this.userImage,
     required this.userName,
     required this.postTitle,
-    required this.postCaption,
-    required this.postImage,
   });
   final ClasifiedController controller = Get.put(ClasifiedController());
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
+    String decodedPostTitle = HtmlUnescape().convert(postTitle);
     return Container(
       padding: EdgeInsets.symmetric(
           horizontal: size.width * 0.035, vertical: size.height * 0.01),
@@ -43,7 +44,7 @@ class ClassifiedCard extends StatelessWidget {
                   radius: size.width * 0.07,
                   child: ClipOval(
                     child: Image.asset(
-                      userImage,
+                      Assets.imagesIcon,
                       height: 100,
                       width: 100,
                       fit: BoxFit.cover,
@@ -59,7 +60,7 @@ class ClassifiedCard extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          userName,
+                          'Aman Talaviya',
                           style: textStyleW700(
                               size.width * 0.043, AppColors.blackText),
                         ),
@@ -80,15 +81,17 @@ class ClassifiedCard extends StatelessWidget {
             SizedBox(
               height: size.height * 0.01,
             ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                userName,
+                style: textStyleW700(size.width * 0.040, AppColors.blackText),
+              ),
+            ),
             Align(
               alignment: Alignment.topLeft,
-              child: Text(
-                postTitle,
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.blackText,
-                  fontSize: size.width * 0.040,
-                ),
+              child: Html(
+                data: decodedPostTitle,
               ),
             ),
             SizedBox(
@@ -97,7 +100,7 @@ class ClassifiedCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(right: 15),
               child: Text(
-                postCaption,
+                postTitle,
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
                   color: AppColors.blackText,
@@ -114,9 +117,14 @@ class ClassifiedCard extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
               ),
-              child: Image.asset(
-                postImage,
+              child: CachedNetworkImage(
+                imageUrl: userImage,
+                height: 97,
+                width: 105,
                 fit: BoxFit.fill,
+                placeholder: (context, url) =>
+                    const CircularProgressIndicator(),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
             ),
             SizedBox(

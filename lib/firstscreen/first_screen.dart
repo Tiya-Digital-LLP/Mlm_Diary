@@ -27,7 +27,7 @@ class _FirstScreenState extends State<FirstScreen> {
       backgroundColor: AppColors.white,
       body: Obx(
         () => controller.newIndex.value == 0
-            ? HomeScreen()
+            ? const HomeScreen()
             : controller.newIndex.value == 1
                 ? const ClassifiedScreen()
                 : controller.newIndex.value == 2

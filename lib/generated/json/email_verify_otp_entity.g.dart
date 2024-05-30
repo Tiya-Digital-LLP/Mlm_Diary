@@ -1,5 +1,5 @@
 import 'package:mlmdiary/generated/json/base/json_convert_content.dart';
-import 'package:mlmdiary/email_verify_otp_entity.dart';
+import 'package:mlmdiary/generated/email_verify_otp_entity.dart';
 
 EmailVerifyOtpEntity $EmailVerifyOtpEntityFromJson(Map<String, dynamic> json) {
   final EmailVerifyOtpEntity emailVerifyOtpEntity = EmailVerifyOtpEntity();

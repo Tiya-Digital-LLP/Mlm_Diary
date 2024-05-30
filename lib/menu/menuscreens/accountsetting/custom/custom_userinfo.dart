@@ -1,11 +1,12 @@
 import 'dart:io' as io;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
+import 'package:flutter_google_places_hoc081098/google_maps_webservice_places.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:google_api_headers/google_api_headers.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mlmdiary/generated/assets.dart';
@@ -13,7 +14,7 @@ import 'package:mlmdiary/generated/get_plan_list_entity.dart';
 import 'package:mlmdiary/generated/get_user_type_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/accountsetting/controller/account_setting_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
-import 'package:mlmdiary/utils/common_toast.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/border_text_field.dart';
@@ -37,6 +38,7 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
   late final String tabContent;
   final AccountSeetingController controller =
       Get.put(AccountSeetingController());
+  final TextEditingController _loc = TextEditingController();
 
   final ImagePicker _picker = ImagePicker();
   Rx<io.File?> file = Rx<io.File?>(null);
@@ -53,414 +55,450 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        GestureDetector(
-          onTap: () {},
-          child: Padding(
-            padding: const EdgeInsets.only(top: 20),
-            child: Stack(
-              children: <Widget>[
-                Obx(
-                  () => ClipRRect(
-                    borderRadius: BorderRadius.circular(13.05),
-                    child: Stack(
-                      children: [
-                        CircleAvatar(
-                          radius: 60.0,
-                          child: GestureDetector(
-                            child: ClipOval(
-                              child: file.value != null
-                                  ? Image.file(
-                                      file.value!,
-                                      height: 120,
-                                      width: 120,
-                                      fit: BoxFit.cover,
-                                    )
-                                  : Image.asset(
-                                      Assets.imagesIcon,
-                                    ),
-                            ),
-                            onTap: () {
-                              if (file.value == null) {
-                                showModalBottomSheet(
-                                  backgroundColor: Colors.white,
-                                  context: context,
-                                  builder: (context) => bottomsheet(context),
-                                );
-                              }
-                            },
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 3.0,
-                          right: 5.0,
-                          child: SizedBox(
-                            width: 40,
-                            height: 33,
-                            child: Image.asset(Assets.imagesCamera),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        10.sbh,
-        Obx(
-          () => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: BorderContainer(
-              isError: controller.mlmTypeError.value,
-              height: 65,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: TextField(
-                  controller: controller.getSelectedOptionsTextController(),
-                  readOnly: true,
-                  onTap: () {
-                    showBottomSheetFunc(
-                        context, size, controller, controller.userTypes);
-                    controller.mlmCategoryValidation();
-                  },
-                  style: textStyleW500(size.width * 0.04, AppColors.blackText),
-                  cursorColor: AppColors.blackText,
-                  decoration: InputDecoration(
-                    hintText: "I am a MLM*",
-                    border: InputBorder.none,
-                    suffixIcon: Icon(
-                      Icons.arrow_drop_down,
-                      color: AppColors.blackText,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-        10.sbh,
-        Obx(
-          () => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: BorderTextField(
-              maxLength: 25,
-              keyboard: TextInputType.name,
-              textInputType: const [],
-              hint: "Your Name",
-              controller: controller.name.value,
-              height: 65,
-              byDefault: !controller.isNameTyping.value,
-            ),
-          ),
-        ),
-        10.sbh,
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Obx(
-            () => Row(
-              children: [
-                Text(
-                  "Gender",
-                  style: textStyleW400(
-                      size.width * 0.045, AppColors.blackText.withOpacity(0.5)),
-                ),
-                20.sbw,
-                InkWell(
-                  onTap: () {
-                    controller.isGenderToggle.value = true;
-                  },
-                  child: Row(
-                    children: [
-                      Stack(
-                        children: [
-                          Image.asset(
-                            Assets.imagesCircle,
-                            color: (controller.isGenderToggle.value == true)
-                                ? AppColors.primaryColor
-                                : AppColors.blackText.withOpacity(0.5),
-                          ),
-                          (controller.isGenderToggle.value == true)
-                              ? Positioned(
-                                  top: 3,
-                                  left: 3,
-                                  child:
-                                      Image.asset(Assets.imagesSelectedCircle))
-                              : Container()
-                        ],
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        "Male",
-                        style: (controller.isGenderToggle.value == true)
-                            ? textStyleW500(
-                                size.width * 0.045, AppColors.primaryColor)
-                            : textStyleW400(
-                                size.width * 0.045,
-                                AppColors.blackText.withOpacity(0.5),
-                              ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  width: 20,
-                ),
-                InkWell(
-                  onTap: () {
-                    controller.isGenderToggle.value = false;
-                  },
-                  child: Row(
-                    children: [
-                      Stack(
-                        children: [
-                          Image.asset(
-                            Assets.imagesCircle,
-                            color: (controller.isGenderToggle.value == false)
-                                ? AppColors.primaryColor
-                                : AppColors.blackText.withOpacity(0.5),
-                          ),
-                          (controller.isGenderToggle.value == false)
-                              ? Positioned(
-                                  top: 3,
-                                  left: 3,
-                                  child:
-                                      Image.asset(Assets.imagesSelectedCircle))
-                              : Container()
-                        ],
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        "Female",
-                        style: (controller.isGenderToggle.value == false)
-                            ? textStyleW500(
-                                size.width * 0.045, AppColors.primaryColor)
-                            : textStyleW400(
-                                size.width * 0.045,
-                                AppColors.blackText.withOpacity(0.5),
-                              ),
-                      )
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-        ),
-        10.sbh,
-        Obx(
-          () => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: BorderTextField(
-              maxLength: 25,
-              keyboard: TextInputType.name,
-              textInputType: const [],
-              hint: "Company",
-              controller: controller.companyname.value,
-              byDefault: !controller.isCompanyNameTyping.value,
-              height: 65,
-            ),
-          ),
-        ),
-        10.sbh,
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Obx(
-            () => BorderContainer(
-              isError: controller.planTypeError.value,
-              height: 60,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: TextField(
-                  controller: TextEditingController(
-                    // Ensure userProfile is not null before accessing its properties
-                    text: (controller
-                            .getSelectedPlanOptionsTextController()
-                            .value
-                            .text
-                            .isNotEmpty)
-                        ? controller
-                            .getSelectedPlanOptionsTextController()
-                            .value
-                            .text
-                        : (controller.userProfile.value.userProfile?.plan ??
-                            ''),
-                  ),
-                  readOnly: true,
-                  onTap: () {
-                    showBottomSheetFuncPlan(
-                        context, size, controller, controller.planList);
-                    controller.planCategoryValidation();
-                  },
-                  style: textStyleW500(size.width * 0.04, AppColors.blackText),
-                  cursorColor: AppColors.blackText,
-                  decoration: InputDecoration(
-                      hintText: "Select Plan",
-                      border: InputBorder.none,
-                      suffixIcon: Icon(
-                        Icons.arrow_drop_down,
-                        color: AppColors.blackText,
-                      )),
-                ),
-              ),
-            ),
-          ),
-        ),
-        10.sbh,
-        Padding(
-          padding: const EdgeInsets.fromLTRB(25.0, 5.0, 25.0, 5.0),
-          child: Obx(() => TextFormField(
-                controller: controller.location.value,
-                readOnly: true,
-                style: const TextStyle(
-                    fontSize: 15.0,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.black,
-                    fontFamily: 'assets/fonst/Metropolis-Black.otf'),
-                onTap: () async {
-                  var place = await PlacesAutocomplete.show(
+    return Obx(() {
+      if (controller.isLoading.value) {
+        return const Center(child: CircularProgressIndicator());
+      } else {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            GestureDetector(
+              onTap: () {
+                if (file.value == null) {
+                  showModalBottomSheet(
+                    backgroundColor: Colors.white,
                     context: context,
-                    apiKey: googleApikey,
-                    mode: Mode.overlay,
-                    types: ['geocode', 'establishment'],
-                    strictbounds: false,
-                    onError: (err) {},
+                    builder: (context) => bottomsheet(context),
                   );
-
-                  if (place != null) {
-                    setState(() {
-                      controller.location.value.text =
-                          place.description.toString();
-                      controller.validateAddress();
-                    });
-                  }
-                },
-                decoration: InputDecoration(
-                  hintText: "Location/ Address / City *",
-                  hintStyle: const TextStyle(
-                          fontSize: 15.0,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black,
-                          fontFamily: 'assets/fonst/Metropolis-Black.otf')
-                      .copyWith(color: Colors.black45),
-                  enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          width: 1,
-                          color: controller.addressValidationColor.value),
-                      borderRadius: BorderRadius.circular(10.0)),
-                  border: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          width: 1,
-                          color: controller.addressValidationColor.value),
-                      borderRadius: BorderRadius.circular(10.0)),
-                  focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          width: 1,
-                          color: controller.addressValidationColor.value),
-                      borderRadius: BorderRadius.circular(10.0)),
+                }
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: Stack(
+                  children: <Widget>[
+                    Obx(
+                      () => ClipRRect(
+                        borderRadius: BorderRadius.circular(13.05),
+                        child: CircleAvatar(
+                          radius: 60.0,
+                          child: file.value != null
+                              ? ClipOval(
+                                  child: Image.file(
+                                    file.value!,
+                                    height: 120,
+                                    width: 120,
+                                    fit: BoxFit.cover,
+                                  ),
+                                )
+                              : controller.userImage.value.isNotEmpty
+                                  ? ClipOval(
+                                      child: Image.network(
+                                        controller.userImage.value,
+                                        height: 120,
+                                        width: 120,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    )
+                                  : ClipOval(
+                                      child: Image.asset(
+                                        Assets.imagesIcon,
+                                        height: 120,
+                                        width: 120,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 3.0,
+                      right: 5.0,
+                      child: SizedBox(
+                        width: 40,
+                        height: 33,
+                        child: Image.asset(Assets.imagesCamera),
+                      ),
+                    ),
+                  ],
                 ),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return "The address field is required.";
-                  }
-                  return null;
-                },
-              )),
-        ),
-        10.sbh,
-        Obx(
-          () => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: DiscriptionTextField(
-              maxLength: 25,
-              keyboard: TextInputType.name,
-              textInputType: const [],
-              hint: "About you",
-              controller: controller.aboutyou.value,
-              byDefault: !controller.isAboutTyping.value,
-              height: 95,
+              ),
             ),
-          ),
-        ),
-        10.sbh,
-        Obx(
-          () => Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16,
+            10.sbh,
+            Obx(
+              () => Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: BorderContainer(
+                  isError: controller.mlmTypeError.value,
+                  height: 65,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: TextField(
+                      controller: controller.getSelectedOptionsTextController(),
+                      readOnly: true,
+                      onTap: () {
+                        showBottomSheetFunc(
+                            context, size, controller, controller.userTypes);
+                        controller.mlmCategoryValidation();
+                      },
+                      style:
+                          textStyleW500(size.width * 0.04, AppColors.blackText),
+                      cursorColor: AppColors.blackText,
+                      decoration: InputDecoration(
+                        hintText: "I am a MLM*",
+                        border: InputBorder.none,
+                        suffixIcon: Icon(
+                          Icons.arrow_drop_down,
+                          color: AppColors.blackText,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
-            child: DiscriptionTextField(
-              maxLength: 25,
-              keyboard: TextInputType.name,
-              textInputType: const [],
-              hint: "About company",
-              controller: controller.aboutcompany.value,
-              byDefault: !controller.isAboutCompany.value,
-              height: 95,
+            10.sbh,
+            Obx(
+              () => Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: BorderTextField(
+                  maxLength: 25,
+                  keyboard: TextInputType.name,
+                  textInputType: const [],
+                  hint: "Your Name",
+                  controller: controller.name.value,
+                  height: 65,
+                  byDefault: !controller.isNameTyping.value,
+                ),
+              ),
             ),
-          ),
-        ),
-        20.sbh,
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: NormalButton(
-            onPressed: handleSaveButtonPressed,
-            text: 'Save',
-          ),
-        ),
-      ],
-    );
+            10.sbh,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Obx(
+                () => Row(
+                  children: [
+                    Text(
+                      "Gender",
+                      style: textStyleW400(size.width * 0.045,
+                          AppColors.blackText.withOpacity(0.5)),
+                    ),
+                    20.sbw,
+                    InkWell(
+                      onTap: () {
+                        controller.isGenderToggle.value = true;
+                      },
+                      child: Row(
+                        children: [
+                          Stack(
+                            children: [
+                              Image.asset(
+                                Assets.imagesCircle,
+                                color: (controller.isGenderToggle.value == true)
+                                    ? AppColors.primaryColor
+                                    : AppColors.blackText.withOpacity(0.5),
+                              ),
+                              (controller.isGenderToggle.value == true)
+                                  ? Positioned(
+                                      top: 3,
+                                      left: 3,
+                                      child: Image.asset(
+                                          Assets.imagesSelectedCircle))
+                                  : Container()
+                            ],
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            "Male",
+                            style: (controller.isGenderToggle.value == true)
+                                ? textStyleW500(
+                                    size.width * 0.045, AppColors.primaryColor)
+                                : textStyleW400(
+                                    size.width * 0.045,
+                                    AppColors.blackText.withOpacity(0.5),
+                                  ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    InkWell(
+                      onTap: () {
+                        controller.isGenderToggle.value = false;
+                      },
+                      child: Row(
+                        children: [
+                          Stack(
+                            children: [
+                              Image.asset(
+                                Assets.imagesCircle,
+                                color:
+                                    (controller.isGenderToggle.value == false)
+                                        ? AppColors.primaryColor
+                                        : AppColors.blackText.withOpacity(0.5),
+                              ),
+                              (controller.isGenderToggle.value == false)
+                                  ? Positioned(
+                                      top: 3,
+                                      left: 3,
+                                      child: Image.asset(
+                                          Assets.imagesSelectedCircle))
+                                  : Container()
+                            ],
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            "Female",
+                            style: (controller.isGenderToggle.value == false)
+                                ? textStyleW500(
+                                    size.width * 0.045, AppColors.primaryColor)
+                                : textStyleW400(
+                                    size.width * 0.045,
+                                    AppColors.blackText.withOpacity(0.5),
+                                  ),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            10.sbh,
+            Obx(
+              () => Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: BorderTextField(
+                  maxLength: 25,
+                  keyboard: TextInputType.name,
+                  textInputType: const [],
+                  hint: "Company",
+                  controller: controller.companyname.value,
+                  byDefault: !controller.isCompanyNameTyping.value,
+                  height: 65,
+                ),
+              ),
+            ),
+            10.sbh,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Obx(
+                () => BorderContainer(
+                  isError: controller.planTypeError.value,
+                  height: 60,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: TextField(
+                      controller:
+                          controller.getSelectedPlanOptionsTextController(),
+                      readOnly: true,
+                      onTap: () {
+                        showBottomSheetFuncPlan(
+                            context, size, controller, controller.planList);
+                        controller.planCategoryValidation();
+                      },
+                      style:
+                          textStyleW500(size.width * 0.04, AppColors.blackText),
+                      cursorColor: AppColors.blackText,
+                      decoration: InputDecoration(
+                          hintText: "Select Plan",
+                          border: InputBorder.none,
+                          suffixIcon: Icon(
+                            Icons.arrow_drop_down,
+                            color: AppColors.blackText,
+                          )),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            10.sbh,
+            Padding(
+                padding: const EdgeInsets.fromLTRB(25.0, 5.0, 25.0, 5.0),
+                child: Obx(
+                  () => TextFormField(
+                    controller: controller.location.value,
+                    readOnly: true,
+                    style: const TextStyle(
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black,
+                        fontFamily: 'assets/fonst/Metropolis-Black.otf'),
+                    onTap: () async {
+                      var place = await PlacesAutocomplete.show(
+                        context: context,
+                        apiKey: googleApikey,
+                        mode: Mode.overlay,
+                        types: ['geocode', 'establishment'],
+                        strictbounds: false,
+                        onError: (err) {},
+                      );
+
+                      if (place != null) {
+                        setState(() {
+                          controller.location.value.text =
+                              place.description.toString();
+                          _loc.text = controller.location.value.text;
+                          controller.validateAddress();
+                        });
+                        final plist = GoogleMapsPlaces(
+                          apiKey: googleApikey,
+                          apiHeaders:
+                              await const GoogleApiHeaders().getHeaders(),
+                        );
+                        String placeid = place.placeId ?? "0";
+                        final detail = await plist.getDetailsByPlaceId(placeid);
+                        for (var component in detail.result.addressComponents) {
+                          for (var type in component.types) {
+                            if (type == "administrative_area_level_1") {
+                              controller.state.value.text = component.longName;
+                            } else if (type == "locality") {
+                              controller.city.value.text = component.longName;
+                            } else if (type == "country") {
+                              controller.country.value.text =
+                                  component.longName;
+                            }
+                          }
+                        }
+
+                        final geometry = detail.result.geometry!;
+                        setState(() {
+                          lat = geometry.location.lat;
+                          log = geometry.location.lng;
+                        });
+                      }
+                    },
+                    decoration: InputDecoration(
+                      hintText: "Location/ Address / City *",
+                      hintStyle: const TextStyle(
+                              fontSize: 15.0,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black,
+                              fontFamily: 'assets/fonst/Metropolis-Black.otf')
+                          .copyWith(color: Colors.black45),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              width: 1,
+                              color: controller.addressValidationColor.value),
+                          borderRadius: BorderRadius.circular(10.0)),
+                      border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              width: 1,
+                              color: controller.addressValidationColor.value),
+                          borderRadius: BorderRadius.circular(10.0)),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              width: 1,
+                              color: controller.addressValidationColor.value),
+                          borderRadius: BorderRadius.circular(10.0)),
+                    ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        setState(() {
+                          controller.validateAddress();
+                        });
+                      } else {}
+                      return null;
+                    },
+                    onFieldSubmitted: (value) {
+                      if (value.isEmpty) {
+                        Fluttertoast.showToast(
+                            timeInSecForIosWeb: 2,
+                            msg:
+                                'Please Search and Save your Business Location');
+                        setState(() {
+                          controller.validateAddress();
+                        });
+                      } else if (value.isNotEmpty) {
+                        setState(() {
+                          controller.validateAddress();
+                        });
+                      }
+                    },
+                  ),
+                )),
+            10.sbh,
+            Obx(
+              () => Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: DiscriptionTextField(
+                  maxLength: 25,
+                  keyboard: TextInputType.name,
+                  textInputType: const [],
+                  hint: "About you",
+                  controller: controller.aboutyou.value,
+                  byDefault: !controller.isAboutTyping.value,
+                  height: 95,
+                ),
+              ),
+            ),
+            10.sbh,
+            Obx(
+              () => Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                ),
+                child: DiscriptionTextField(
+                  maxLength: 25,
+                  keyboard: TextInputType.name,
+                  textInputType: const [],
+                  hint: "About company",
+                  controller: controller.aboutcompany.value,
+                  byDefault: !controller.isAboutCompany.value,
+                  height: 95,
+                ),
+              ),
+            ),
+            20.sbh,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: NormalButton(
+                onPressed: handleSaveButtonPressed,
+                text: 'Save',
+              ),
+            ),
+          ],
+        );
+      }
+    });
   }
 
   // Method to handle save button pressed
   Future<void> handleSaveButtonPressed() async {
-    if (file.value == null) {
-      showToast("Please Upload Photo");
+    if (file.value == null && controller.userImage.value.isEmpty) {
+      showToast("Please Upload Photo", context);
     } else if (controller
         .getSelectedOptionsTextController()
         .value
         .text
         .isEmpty) {
-      showToast("Please Enter UserTypes");
+      showToast("Please Enter UserTypes", context);
     } else if (controller.name.value.text.isEmpty) {
-      showToast("Please Enter Your Name");
+      showToast("Please Enter Your Name", context);
     } else if (controller.companyname.value.text.isEmpty) {
-      showToast("Please Enter Company Name");
+      showToast("Please Enter Company Name", context);
     } else if (controller.location.value.text.isEmpty) {
-      showToast("The address field is required.");
+      showToasterrorborder("The address field is required.", context);
     } else if (controller.isTypeSelectedList.contains(true)) {
       if (controller.city.value.text.isEmpty) {
-        showToast("Please select a valid location.");
+        showToast("Please select a valid location.", context);
       } else {
         // Perform address validation
         if (controller.addressValidationColor.value != AppColors.redText) {
           await controller.fetchUserProfile();
           await controller.updateUserProfile(imageFile: file.value);
         } else {
-          showToast("Please enter a valid address.");
+          showToast("Please enter a valid address.", context);
         }
       }
     } else {
-      showToast("Please select at least one plan.");
+      showToast("Please select at least one plan.", context);
     }
-  }
-
-// Method to show toast messages
-  void showToast(String message) {
-    Fluttertoast.showToast(
-      msg: message,
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.BOTTOM,
-      backgroundColor: Colors.red,
-      textColor: Colors.white,
-      fontSize: 16.0,
-    );
   }
 
   Widget bottomsheet(BuildContext context) {
@@ -481,7 +519,7 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
             children: <Widget>[
               TextButton.icon(
                   onPressed: () {
-                    takephoto(ImageSource.camera);
+                    _pickImage(ImageSource.camera);
                   },
                   icon: Icon(Icons.camera, color: AppColors.primaryColor),
                   label: Text(
@@ -490,7 +528,7 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                   )),
               TextButton.icon(
                   onPressed: () {
-                    takephoto(ImageSource.gallery);
+                    _pickImage(ImageSource.gallery);
                   },
                   icon: Icon(Icons.image, color: AppColors.primaryColor),
                   label: Text(
@@ -505,10 +543,11 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
   }
 
   void showBottomSheetFunc(
-      BuildContext context,
-      Size size,
-      AccountSeetingController controller,
-      List<GetUserTypeUsertype> userTypes) {
+    BuildContext context,
+    Size size,
+    AccountSeetingController controller,
+    List<GetUserTypeUsertype> userTypes,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -539,7 +578,7 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                     height: 5,
                   ),
                 ),
-                SizedBox(height: 5),
+                5.sbh,
                 Center(
                   child: Text(
                     'I am a MLM*',
@@ -576,17 +615,24 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                                     ),
                                   ),
                                 ),
-                                SizedBox(width: 15),
+                                15.sbw,
                                 Text(
                                   userTypes[index].name ?? '',
                                   style: textStyleW500(
-                                      size.width * 0.041, AppColors.blackText),
+                                    size.width * 0.041,
+                                    controller.isTypeSelectedList[
+                                            index] // Highlight selected MLM type
+                                        ? AppColors
+                                            .primaryColor // Apply highlight color
+                                        : AppColors
+                                            .blackText, // Apply default color
+                                  ),
                                 ),
                               ],
                             ),
                           ),
                         ),
-                        SizedBox(height: 20),
+                        20.sbh,
                       ],
                     );
                   },
@@ -620,54 +666,41 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
     );
   }
 
-  Future<void> takephoto(ImageSource imageSource) async {
-    final pickedfile =
-        await _picker.pickImage(source: imageSource, imageQuality: 100);
-    if (pickedfile != null && pickedfile.path.isNotEmpty) {
-      io.File imageFile = io.File(pickedfile.path);
+  Future<void> _pickImage(ImageSource source) async {
+    final pickedFile =
+        await _picker.pickImage(source: source, imageQuality: 100);
+    if (pickedFile != null) {
+      io.File imageFile = io.File(pickedFile.path);
       int fileSizeInBytes = imageFile.lengthSync();
       double fileSizeInKB = fileSizeInBytes / 1024;
 
-      if (kDebugMode) {
-        print('Original image size: $fileSizeInKB KB');
-      }
-
       if (fileSizeInKB > 5000) {
-        Fluttertoast.showToast(msg: 'Please Select an image below 5 MB');
+        Fluttertoast.showToast(msg: 'Please select an image below 5 MB');
         return;
       }
 
       if (fileSizeInKB < 200) {
-        Fluttertoast.showToast(msg: 'Please Select an image above 200 KB');
+        Fluttertoast.showToast(msg: 'Please select an image above 200 KB');
         return;
       }
 
-      io.File? processedFile = imageFile;
+      io.File? croppedFile = await _cropImage(imageFile);
+      if (croppedFile != null) {
+        double croppedFileSizeInKB = croppedFile.lengthSync() / 1024;
 
-      processedFile = await _cropImage(imageFile);
-      if (processedFile == null) {
-        Fluttertoast.showToast(msg: 'Image cropping failed');
-        return;
-      }
-
-      double processedFileSizeInKB = processedFile.lengthSync() / 1024;
-
-      if (processedFileSizeInKB > 250) {
-        processedFile = await _compressImage(processedFile);
-        if (processedFile == null) {
-          Fluttertoast.showToast(msg: 'Image compression failed');
-          return;
+        if (croppedFileSizeInKB > 250) {
+          croppedFile = await _compressImage(croppedFile);
+          if (croppedFile == null) {
+            Fluttertoast.showToast(msg: 'Image compression failed');
+            return;
+          }
         }
+
+        file.value = croppedFile;
+        Get.back();
+      } else {
+        Fluttertoast.showToast(msg: 'Image cropping failed');
       }
-
-      double finalFileSizeInKB = processedFile.lengthSync() / 1024;
-      if (kDebugMode) {
-        print('Final image size: $finalFileSizeInKB KB');
-      }
-
-      file.value = processedFile;
-
-      Get.back();
     } else {
       Fluttertoast.showToast(msg: 'Please select an image');
     }
@@ -691,18 +724,12 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
         ),
       ],
     );
-
-    if (croppedFile != null) {
-      return io.File(croppedFile.path);
-    } else {
-      return null;
-    }
+    return croppedFile != null ? io.File(croppedFile.path) : null;
   }
 
   Future<io.File?> _compressImage(io.File imageFile) async {
     final dir = await getTemporaryDirectory();
     final targetPath = '${dir.path}/temp.jpg';
-
     int quality = 90;
     io.File? compressedFile;
     while (true) {
@@ -723,136 +750,131 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
         break;
       }
 
-      if (fileSizeInKB < 200) {
-        quality += 5;
-      } else {
-        quality -= 5;
-      }
-
+      quality = fileSizeInKB < 200 ? quality + 5 : quality - 5;
       if (quality <= 0 || quality > 100) {
         break;
       }
     }
-
     return compressedFile;
   }
-}
 
-void showBottomSheetFuncPlan(
-  BuildContext context,
-  Size size,
-  AccountSeetingController controller,
-  List<GetPlanListPlan> planList,
-) {
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(30.0)),
-    ),
-    builder: (BuildContext context) {
-      return FractionallySizedBox(
-        heightFactor: 0.9,
-        child: Container(
-          padding: const EdgeInsets.all(16.0),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(30.0),
-              topRight: Radius.circular(30.0),
+  void showBottomSheetFuncPlan(
+    BuildContext context,
+    Size size,
+    AccountSeetingController controller,
+    List<GetPlanListPlan> planList,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30.0)),
+      ),
+      builder: (BuildContext context) {
+        return FractionallySizedBox(
+          heightFactor: 0.9,
+          child: Container(
+            padding: const EdgeInsets.all(16.0),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(30.0),
+                topRight: Radius.circular(30.0),
+              ),
             ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: AppColors.grey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: AppColors.grey,
+                    ),
+                    width: 80,
+                    height: 5,
                   ),
-                  width: 80,
-                  height: 5,
                 ),
-              ),
-              5.sbh,
-              Center(
-                child: Text(
-                  'Select Plan',
-                  style: textStyleW600(size.width * 0.045, AppColors.blackText),
+                5.sbh,
+                Center(
+                  child: Text(
+                    'Select Plan',
+                    style:
+                        textStyleW600(size.width * 0.045, AppColors.blackText),
+                  ),
                 ),
-              ),
-              20.sbh,
-              Flexible(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  itemCount: planList.length,
-                  itemBuilder: (context, index) {
-                    return Column(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            controller.togglePlanSelected(index);
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 16),
-                            child: Row(
-                              children: [
-                                Obx(
-                                  () => GestureDetector(
-                                    onTap: () {
-                                      controller.togglePlanSelected(index);
-                                    },
-                                    child: Image.asset(
-                                      (controller.isPlanSelectedList[index])
-                                          ? Assets.imagesTrueCircle
-                                          : Assets.imagesCircle,
+                20.sbh,
+                Flexible(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: planList.length,
+                    itemBuilder: (context, index) {
+                      return Column(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              controller.togglePlanSelected(index);
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 16),
+                              child: Row(
+                                children: [
+                                  Obx(
+                                    () => GestureDetector(
+                                      onTap: () {
+                                        controller.togglePlanSelected(index);
+                                      },
+                                      child: Image.asset(
+                                        (controller.isPlanSelectedList[index])
+                                            ? Assets.imagesTrueCircle
+                                            : Assets.imagesCircle,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                15.sbw,
-                                Text(
-                                  planList[index].name ?? '',
-                                  style: textStyleW500(
-                                      size.width * 0.041, AppColors.blackText),
-                                ),
-                              ],
+                                  15.sbw,
+                                  Text(
+                                    planList[index].name ?? '',
+                                    style: textStyleW500(size.width * 0.041,
+                                        AppColors.blackText),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        20.sbh,
-                      ],
-                    );
-                  },
-                ),
-              ),
-              Center(
-                child: CustomButton(
-                  title: "Continue",
-                  btnColor: AppColors.primaryColor,
-                  titleColor: AppColors.white,
-                  onTap: () {
-                    if (controller.selectedCountPlan > 0) {
-                      Get.back();
-                    } else {
-                      Fluttertoast.showToast(
-                        msg: "Please select at least one field.",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        backgroundColor: Colors.red,
-                        textColor: Colors.white,
-                        fontSize: 16.0,
+                          20.sbh,
+                        ],
                       );
-                    }
-                  },
+                    },
+                  ),
                 ),
-              ),
-            ],
+                Center(
+                  child: CustomButton(
+                    title: "Continue",
+                    btnColor: AppColors.primaryColor,
+                    titleColor: AppColors.white,
+                    onTap: () {
+                      if (controller.selectedCountPlan > 0) {
+                        Get.back();
+                      } else {
+                        Fluttertoast.showToast(
+                          msg: "Please select at least one field.",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          fontSize: 16.0,
+                        );
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-      );
-    },
-  );
+        );
+      },
+    );
+  }
 }

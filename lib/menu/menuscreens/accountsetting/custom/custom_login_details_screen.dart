@@ -20,10 +20,10 @@ class CustomLoginDetailsScreen extends StatefulWidget {
   const CustomLoginDetailsScreen({super.key});
 
   @override
-  State<CustomLoginDetailsScreen> createState() => _SignupPageState();
+  State<CustomLoginDetailsScreen> createState() => _LoginPageState();
 }
 
-class _SignupPageState extends State<CustomLoginDetailsScreen> {
+class _LoginPageState extends State<CustomLoginDetailsScreen> {
   final Rx<Country?> selectedCountry = Rx<Country?>(null);
   final AccountSeetingController controller =
       Get.put(AccountSeetingController());

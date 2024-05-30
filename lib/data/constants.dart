@@ -29,4 +29,12 @@ class Constants {
   static const String updatesocialmedia = "/updateSocialMedia";
   static const String updateemail = "/changeemailRequest";
   static const String updateemailphoneotp = "/updateEmailVerify";
+  static const String getbanner = "/getbanner";
+  static const String getvideolist = "/videolist";
+  static const String getcategorylist = "/getcategory";
+  static const String getsubcategorylist = "/getsubcategory";
+  static const String saveclassified = "/saveclassified";
+  static const String manageclassified = "/myclassifiedlist";
+  static const String getcompany = "/getcompany";
+  static const String getclassified = "/getclassified";
 }

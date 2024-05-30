@@ -1,16 +1,27 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
+import 'package:mlmdiary/data/constants.dart';
+import 'package:mlmdiary/generated/manage_classified_entity.dart';
 import 'package:mlmdiary/utils/common_toast.dart';
 import 'package:mlmdiary/utils/lists.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ManageClasifiedController extends GetxController {
   Rx<TextEditingController> title = TextEditingController().obs;
   Rx<TextEditingController> discription = TextEditingController().obs;
   Rx<TextEditingController> url = TextEditingController().obs;
   Rx<TextEditingController> location = TextEditingController().obs;
+  // API data
+  RxList<ManageClassifiedData> classifiedList = <ManageClassifiedData>[].obs;
+  RxBool isLoading = false.obs;
   var isLiked = false.obs;
   var isBookMarked = false.obs;
 
@@ -40,6 +51,68 @@ class ManageClasifiedController extends GetxController {
 
   // READ ONLY FIELDS
   RxBool titleReadOnly = false.obs;
+
+  // Method to fetch data from API
+  Future<void> fetchClassifieds({int page = 1}) async {
+    isLoading.value = true;
+    String device = '';
+    if (Platform.isAndroid) {
+      device = 'android';
+    } else if (Platform.isIOS) {
+      device = 'ios';
+    }
+    if (kDebugMode) {
+      print('Device Name: $device');
+    }
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString('apiToken');
+    try {
+      // Check internet connection
+      var connectivityResult = await (Connectivity().checkConnectivity());
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult == ConnectivityResult.none) {
+        ToastUtils.showToast("No internet connection");
+        isLoading.value = false;
+        return;
+      }
+
+      // Prepare query parameters
+      Map<String, String> queryParams = {
+        'api_token': apiToken ?? '',
+        'device': device,
+        'page': page.toString(),
+      };
+
+      // Build URL
+      Uri uri = Uri.parse(Constants.baseUrl + Constants.manageclassified)
+          .replace(queryParameters: queryParams);
+
+      // Make HTTP GET request
+      final response = await http.post(uri);
+
+      if (response.statusCode == 200) {
+        // Parse JSON data
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        final ManageClassifiedEntity classifiedEntity =
+            ManageClassifiedEntity.fromJson(responseData);
+
+        // Update state with fetched data
+        if (page == 1) {
+          classifiedList.assignAll(classifiedEntity.data!);
+        } else {
+          classifiedList.addAll(classifiedEntity.data!);
+        }
+      } else {
+        // Handle error response
+        ToastUtils.showToast("Failed to fetch data");
+      }
+    } catch (error) {
+      // Handle network or parsing errors
+      ToastUtils.showToast("An error occurred: $error");
+    } finally {
+      isLoading.value = false;
+    }
+  }
 
   void titleValidation() {
     String enteredTitle = title.value.text;

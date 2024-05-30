@@ -1,19 +1,17 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
-import 'package:mlmdiary/modal_class/classfied_class.dart';
+import 'package:mlmdiary/generated/get_classified_entity.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 
 class ClassidiedDetailsScreen extends StatefulWidget {
-  final ClassifiedList post;
-
-  const ClassidiedDetailsScreen({required Key key, required this.post})
-      : super(key: key);
+  const ClassidiedDetailsScreen({required Key key}) : super(key: key);
 
   @override
   State<ClassidiedDetailsScreen> createState() =>
@@ -22,6 +20,7 @@ class ClassidiedDetailsScreen extends StatefulWidget {
 
 class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
   final ClasifiedController controller = Get.put(ClasifiedController());
+  final post = Get.arguments as GetClassifiedData;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +56,7 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
                             radius: size.width * 0.07,
                             child: ClipOval(
                               child: Image.asset(
-                                widget.post.userImage,
+                                Assets.imagesIcon,
                                 height: 100,
                                 width: 100,
                                 fit: BoxFit.cover,
@@ -73,7 +72,7 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
                               Row(
                                 children: [
                                   Text(
-                                    widget.post.userName,
+                                    'Aman Talaviya',
                                     style: textStyleW700(size.width * 0.043,
                                         AppColors.blackText),
                                   ),
@@ -105,9 +104,15 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                         ),
-                        child: Image.asset(
-                          widget.post.postImage,
+                        child: CachedNetworkImage(
+                          imageUrl: post.imagePath ?? '',
+                          height: 97,
+                          width: 105,
                           fit: BoxFit.fill,
+                          placeholder: (context, url) =>
+                              const CircularProgressIndicator(),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
                         ),
                       ),
                     ),
@@ -121,7 +126,7 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
                       child: Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          widget.post.postTitle,
+                          post.description ?? '',
                           style: TextStyle(
                             fontWeight: FontWeight.w700,
                             color: AppColors.blackText,
@@ -388,7 +393,7 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
                           onTap: () => controller.toggleLike(),
                           child: Icon(
                             controller.isLiked.value
-                                ? Icons.thumb_up_off_alt_rounded
+                                ? Icons.thumb_up_off_alt_sharp
                                 : Icons.thumb_up_off_alt_outlined,
                             color: controller.isLiked.value
                                 ? AppColors.primaryColor

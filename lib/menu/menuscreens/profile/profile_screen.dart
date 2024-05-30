@@ -26,10 +26,16 @@ class _ProfileScreenState extends State<ProfileScreen>
   late TabController _tabController;
   final userProfile = Get.arguments as GetUserProfileUserProfile;
 
+  RxBool isFollowing = false.obs;
+
   void deletePost(int index) {
     setState(() {
       postList.removeAt(index);
     });
+  }
+
+  void _toggleFollow() {
+    isFollowing.value = !isFollowing.value;
   }
 
   @override
@@ -75,10 +81,10 @@ class _ProfileScreenState extends State<ProfileScreen>
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(13.0),
+                      borderRadius: BorderRadius.circular(60.0),
                       child: CachedNetworkImage(
                         imageUrl: userProfile.userimage ?? Assets.imagesIcon,
-                        fit: BoxFit.contain,
+                        fit: BoxFit.cover,
                         height: 100,
                         width: 100,
                         placeholder: (context, url) => Container(),
@@ -98,7 +104,9 @@ class _ProfileScreenState extends State<ProfileScreen>
                         Text(
                           '${userProfile.city ?? 'N/A'}${userProfile.state ?? 'N/A'}${userProfile.country ?? 'N/A'}',
                           style: textStyleW500(
-                              size.width * 0.035, AppColors.blackText),
+                            size.width * 0.035,
+                            AppColors.blackText,
+                          ),
                         ),
                         Text(
                           userProfile.company ?? '',
@@ -115,75 +123,77 @@ class _ProfileScreenState extends State<ProfileScreen>
                   ],
                 ),
                 20.sbh,
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: SizedBox(
-                        height: 30,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primaryColor,
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            'Follow',
-                            style: textStyleW700(
-                                size.width * 0.030, AppColors.white),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      Obx(
+                        () => SizedBox(
+                          height: 30,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primaryColor,
+                            ),
+                            onPressed: _toggleFollow,
+                            child: Text(
+                              isFollowing.value ? 'Unfollow' : 'Follow',
+                              style: textStyleW700(
+                                  size.width * 0.030, AppColors.white),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    20.sbw,
-                    Row(
-                      children: [
-                        Column(
-                          children: [
-                            Text(
-                              '190',
-                              style: textStyleW700(
-                                  size.width * 0.045, AppColors.blackText),
-                            ),
-                            Text(
-                              'Followers',
-                              style: textStyleW500(
-                                  size.width * 0.035, AppColors.blackText),
-                            ),
-                          ],
-                        ),
-                        20.sbw,
-                        Column(
-                          children: [
-                            Text(
-                              '190',
-                              style: textStyleW700(
-                                  size.width * 0.045, AppColors.blackText),
-                            ),
-                            Text(
-                              'Following',
-                              style: textStyleW500(
-                                  size.width * 0.035, AppColors.blackText),
-                            ),
-                          ],
-                        ),
-                        20.sbw,
-                        Column(
-                          children: [
-                            Text(
-                              '190',
-                              style: textStyleW700(
-                                  size.width * 0.045, AppColors.blackText),
-                            ),
-                            Text(
-                              'Profile Visits',
-                              style: textStyleW500(
-                                  size.width * 0.035, AppColors.blackText),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
+                      20.sbw,
+                      Row(
+                        children: [
+                          Column(
+                            children: [
+                              Text(
+                                '190',
+                                style: textStyleW700(
+                                    size.width * 0.045, AppColors.blackText),
+                              ),
+                              Text(
+                                'Followers',
+                                style: textStyleW500(
+                                    size.width * 0.035, AppColors.blackText),
+                              ),
+                            ],
+                          ),
+                          20.sbw,
+                          Column(
+                            children: [
+                              Text(
+                                '190',
+                                style: textStyleW700(
+                                    size.width * 0.045, AppColors.blackText),
+                              ),
+                              Text(
+                                'Following',
+                                style: textStyleW500(
+                                    size.width * 0.035, AppColors.blackText),
+                              ),
+                            ],
+                          ),
+                          20.sbw,
+                          Column(
+                            children: [
+                              Text(
+                                '190',
+                                style: textStyleW700(
+                                    size.width * 0.045, AppColors.blackText),
+                              ),
+                              Text(
+                                'Profile Visits',
+                                style: textStyleW500(
+                                    size.width * 0.035, AppColors.blackText),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
                 20.sbh,
                 SingleChildScrollView(

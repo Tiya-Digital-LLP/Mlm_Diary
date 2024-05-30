@@ -6,25 +6,40 @@ import 'package:http/http.dart' as http;
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/login_entity.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
+import 'package:mlmdiary/utils/common_toast.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginController extends GetxController {
   Rx<TextEditingController> email = TextEditingController().obs;
+  Rx<TextEditingController> mobile = TextEditingController().obs;
+
   Rx<TextEditingController> password = TextEditingController().obs;
   RxBool emailError = false.obs;
+  RxBool mobileError = false.obs;
+
   RxBool passwordError = false.obs;
 
   RxBool isEmailTyping = false.obs;
   RxBool isPasswordTyping = false.obs;
 
-  emailValidation() {
+  void emailValidation() {
     String emailPattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
-    RegExp regex = RegExp(emailPattern);
-    if (email.value.text.isEmpty || !regex.hasMatch(email.value.text)) {
+    RegExp emailRegex = RegExp(emailPattern);
+
+    String mobilePattern = r'^[0-9]{10}$';
+    RegExp mobileRegex = RegExp(mobilePattern);
+
+    if (email.value.text.isEmpty || !emailRegex.hasMatch(email.value.text)) {
       emailError.value = true;
     } else {
       emailError.value = false;
+    }
+
+    if (mobile.value.text.isEmpty || !mobileRegex.hasMatch(mobile.value.text)) {
+      mobileError.value = true;
+    } else {
+      mobileError.value = false;
     }
   }
 
@@ -38,13 +53,21 @@ class LoginController extends GetxController {
 
   void loginValidation(BuildContext context) {
     if (email.value.text.isEmpty && password.value.text.isEmpty) {
-      showToast("Please Enter Email and \nPassword", context);
+      ToastUtils.showToast(
+        "Please Enter Email and \nPassword",
+      );
     } else if (email.value.text.isEmpty) {
-      showToast("Please Enter Email", context);
+      ToastUtils.showToast(
+        "Please Enter Email",
+      );
     } else if (password.value.text.isEmpty) {
-      showToast("Please Enter Password", context);
+      ToastUtils.showToast(
+        "Please Enter Password",
+      );
     } else if (password.value.text.length < 6) {
-      showToast("Password Must be 6 Character Long", context);
+      ToastUtils.showToast(
+        "Password Must be 6 Character Long",
+      );
     } else {
       login(context);
     }
@@ -78,7 +101,9 @@ class LoginController extends GetxController {
 
         // Show success toast
         // ignore: use_build_context_synchronously
-        showToast('Login successful!', context);
+        ToastUtils.showToast(
+          'Login successful!',
+        );
 
         // Store token
         await saveAccessToken(loginEntity.apiToken);
@@ -87,7 +112,7 @@ class LoginController extends GetxController {
         if (responseData.containsKey('redirect_to_company') &&
             responseData['redirect_to_company'] == true) {
           // Redirect to sign up 2
-          Get.offAllNamed(Routes.mainscreen);
+          Get.offAllNamed(Routes.signUp2);
         } else {
           // Redirect to main screen
           Get.offAllNamed(Routes.mainscreen);

@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mlmdiary/data/constants.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -16,8 +18,19 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    _navigateToNextScreen();
+  }
+
+  Future<void> _navigateToNextScreen() async {
+    final prefs = await SharedPreferences.getInstance();
+    final bool isLoggedIn = prefs.getBool(Constants.isLoggedIn) ?? false;
+
     Timer(const Duration(seconds: 3), () {
-      Get.offNamed(Routes.login);
+      if (isLoggedIn) {
+        Get.offNamed(Routes.mainscreen);
+      } else {
+        Get.offNamed(Routes.login);
+      }
     });
   }
 
