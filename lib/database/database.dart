@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
+import 'package:mlmdiary/database/controller/database_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
-import 'package:mlmdiary/utils/lists.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/customfilter/custom_filter.dart';
 import 'package:mlmdiary/widgets/custom_location.dart';
@@ -19,6 +20,14 @@ class DatabaseScreen extends StatefulWidget {
 class _DatabaseState extends State<DatabaseScreen> {
   final _loc = TextEditingController();
   final _search = TextEditingController();
+  final DatabaseController controller = Get.put(DatabaseController());
+
+  @override
+  void initState() {
+    super.initState();
+    controller.getMlmDatabase(1);
+  }
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -95,22 +104,52 @@ class _DatabaseState extends State<DatabaseScreen> {
                 ],
               ),
             ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: ListView.builder(
-                    itemCount: userList.length,
-                    itemBuilder: (context, index) {
-                      final user = userList[index];
-                      return UserCard(
-                          userImage: user.userImage,
-                          userName: user.userName,
-                          location: user.location,
-                          designation: user.designation,
-                          plan: user.plan);
-                    }),
-              ),
-            )
+            Obx(() {
+              if (controller.isLoading.value &&
+                  controller.mlmDatabaseList.isEmpty) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (controller.mlmDatabaseList.isEmpty) {
+                return const Center(
+                  child: Text(
+                    'Data not found',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                );
+              }
+              return Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: ListView.builder(
+                      controller: controller.scrollController,
+                      itemCount: controller.mlmDatabaseList.length +
+                          (controller.isLoading.value ? 1 : 0),
+                      padding: EdgeInsets.zero,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        if (index == controller.mlmDatabaseList.length) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+                        final user = controller.mlmDatabaseList[index];
+                        String location =
+                            '${user.city ?? ''}, ${user.state ?? ''}, ${user.country ?? ''},';
+                        return UserCard(
+                          userImage: user.imagePath ?? '',
+                          userName: user.name ?? '',
+                          location: location,
+                          designation: user.immlm ?? '',
+                          plan: user.plan ?? '',
+                        );
+                      }),
+                ),
+              );
+            })
           ],
         ),
       ),

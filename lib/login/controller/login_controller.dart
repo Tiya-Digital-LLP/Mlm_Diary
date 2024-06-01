@@ -6,7 +6,6 @@ import 'package:http/http.dart' as http;
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/login_entity.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
-import 'package:mlmdiary/utils/common_toast.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,6 +20,8 @@ class LoginController extends GetxController {
   RxBool passwordError = false.obs;
 
   RxBool isEmailTyping = false.obs;
+  RxBool isMobileTyping = false.obs;
+
   RxBool isPasswordTyping = false.obs;
 
   void emailValidation() {
@@ -36,7 +37,8 @@ class LoginController extends GetxController {
       emailError.value = false;
     }
 
-    if (mobile.value.text.isEmpty || !mobileRegex.hasMatch(mobile.value.text)) {
+    if (mobile.value.text.length != 10 ||
+        !mobileRegex.hasMatch(mobile.value.text)) {
       mobileError.value = true;
     } else {
       mobileError.value = false;
@@ -53,20 +55,24 @@ class LoginController extends GetxController {
 
   void loginValidation(BuildContext context) {
     if (email.value.text.isEmpty && password.value.text.isEmpty) {
-      ToastUtils.showToast(
+      showToasterrorborder(
         "Please Enter Email and \nPassword",
+        context,
       );
     } else if (email.value.text.isEmpty) {
-      ToastUtils.showToast(
+      showToasterrorborder(
         "Please Enter Email",
+        context,
       );
     } else if (password.value.text.isEmpty) {
-      ToastUtils.showToast(
+      showToasterrorborder(
         "Please Enter Password",
+        context,
       );
     } else if (password.value.text.length < 6) {
-      ToastUtils.showToast(
+      showToasterrorborder(
         "Password Must be 6 Character Long",
+        context,
       );
     } else {
       login(context);
@@ -101,9 +107,7 @@ class LoginController extends GetxController {
 
         // Show success toast
         // ignore: use_build_context_synchronously
-        ToastUtils.showToast(
-          'Login successful!',
-        );
+        showToastverifedborder('Login successful!', context);
 
         // Store token
         await saveAccessToken(loginEntity.apiToken);
@@ -119,12 +123,11 @@ class LoginController extends GetxController {
         }
       } else {
         // ignore: use_build_context_synchronously
-        showToast(loginEntity.message ?? "Login failed", context);
+        showToasterrorborder(loginEntity.message ?? "Login failed", context);
       }
     } else {
-      // Show error message if response status code is not 200
       // ignore: use_build_context_synchronously
-      showToast("Login failed: ${response.reasonPhrase}", context);
+      showToasterrorborder("Login failed: ${response.reasonPhrase}", context);
     }
   }
 

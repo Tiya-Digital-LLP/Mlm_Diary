@@ -24,6 +24,7 @@ import 'package:mlmdiary/widgets/border_text_field.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_border_container.dart';
 import 'package:mlmdiary/widgets/custom_button.dart';
+import 'package:mlmdiary/widgets/discription_text_field.dart';
 import 'package:mlmdiary/widgets/normal_button.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -100,8 +101,12 @@ class _AddClassifiedState extends State<AddClassified> {
                               controller.getSelectedCategoryTextController(),
                           readOnly: true,
                           onTap: () {
-                            showSelectCategory(context, size, controller,
-                                controller.categorylist);
+                            showSelectCategory(
+                              context,
+                              size,
+                              controller,
+                              controller.categorylist,
+                            );
                             controller.mlmCategoryValidation();
                           },
                           style: textStyleW500(
@@ -200,8 +205,8 @@ class _AddClassifiedState extends State<AddClassified> {
                       )),
                   10.sbh,
                   Obx(
-                    () => BorderTextField(
-                      maxLength: 1000,
+                    () => DiscriptionTextField(
+                      maxLength: 150000,
                       keyboard: TextInputType.multiline,
                       textInputType: const [],
                       hint: "Description",
@@ -232,119 +237,114 @@ class _AddClassifiedState extends State<AddClassified> {
                     ),
                   ),
                   10.sbh,
-                  Padding(
-                      padding: const EdgeInsets.fromLTRB(25.0, 5.0, 25.0, 5.0),
-                      child: Obx(
-                        () => TextFormField(
-                          controller: controller.location.value,
-                          readOnly: true,
-                          style: const TextStyle(
-                              fontSize: 15.0,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black,
-                              fontFamily: 'assets/fonst/Metropolis-Black.otf'),
-                          onTap: () async {
-                            var place = await PlacesAutocomplete.show(
-                              context: context,
-                              apiKey: googleApikey,
-                              mode: Mode.overlay,
-                              types: ['geocode', 'establishment'],
-                              strictbounds: false,
-                              onError: (err) {},
-                            );
+                  Obx(
+                    () => TextFormField(
+                      controller: controller.location.value,
+                      readOnly: true,
+                      style: const TextStyle(
+                          fontSize: 15.0,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black,
+                          fontFamily: 'assets/fonst/Metropolis-Black.otf'),
+                      onTap: () async {
+                        var place = await PlacesAutocomplete.show(
+                          context: context,
+                          apiKey: googleApikey,
+                          mode: Mode.fullscreen,
+                          hint: 'Search and Save Location.',
+                          cursorColor: AppColors.primaryColor,
+                          types: ['geocode', 'establishment'],
+                          strictbounds: false,
+                          onError: (err) {},
+                        );
 
-                            if (place != null) {
-                              setState(() {
-                                controller.location.value.text =
-                                    place.description.toString();
-                                _loc.text = controller.location.value.text;
-                                controller.validateAddress();
-                              });
-                              final plist = GoogleMapsPlaces(
-                                apiKey: googleApikey,
-                                apiHeaders:
-                                    await const GoogleApiHeaders().getHeaders(),
-                              );
-                              String placeid = place.placeId ?? "0";
-                              final detail =
-                                  await plist.getDetailsByPlaceId(placeid);
-                              for (var component
-                                  in detail.result.addressComponents) {
-                                for (var type in component.types) {
-                                  if (type == "administrative_area_level_1") {
-                                    controller.state.value.text =
-                                        component.longName;
-                                  } else if (type == "locality") {
-                                    controller.city.value.text =
-                                        component.longName;
-                                  } else if (type == "country") {
-                                    controller.country.value.text =
-                                        component.longName;
-                                  }
-                                }
+                        if (place != null) {
+                          setState(() {
+                            controller.location.value.text =
+                                place.description.toString();
+                            _loc.text = controller.location.value.text;
+                            controller.validateAddress();
+                          });
+                          final plist = GoogleMapsPlaces(
+                            apiKey: googleApikey,
+                            apiHeaders:
+                                await const GoogleApiHeaders().getHeaders(),
+                          );
+                          String placeid = place.placeId ?? "0";
+                          final detail =
+                              await plist.getDetailsByPlaceId(placeid);
+                          for (var component
+                              in detail.result.addressComponents) {
+                            for (var type in component.types) {
+                              if (type == "administrative_area_level_1") {
+                                controller.state.value.text =
+                                    component.longName;
+                              } else if (type == "locality") {
+                                controller.city.value.text = component.longName;
+                              } else if (type == "country") {
+                                controller.country.value.text =
+                                    component.longName;
                               }
+                            }
+                          }
 
-                              final geometry = detail.result.geometry!;
-                              setState(() {
-                                lat = geometry.location.lat;
-                                log = geometry.location.lng;
-                              });
-                            }
-                          },
-                          decoration: InputDecoration(
-                            hintText: "Location/ Address / City *",
-                            hintStyle: const TextStyle(
-                                    fontSize: 15.0,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.black,
-                                    fontFamily:
-                                        'assets/fonst/Metropolis-Black.otf')
-                                .copyWith(color: Colors.black45),
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    width: 1,
-                                    color: controller
-                                        .addressValidationColor.value),
-                                borderRadius: BorderRadius.circular(10.0)),
-                            border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    width: 1,
-                                    color: controller
-                                        .addressValidationColor.value),
-                                borderRadius: BorderRadius.circular(10.0)),
-                            focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    width: 1,
-                                    color: controller
-                                        .addressValidationColor.value),
-                                borderRadius: BorderRadius.circular(10.0)),
-                          ),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              setState(() {
-                                controller.validateAddress();
-                              });
-                            } else {}
-                            return null;
-                          },
-                          onFieldSubmitted: (value) {
-                            if (value.isEmpty) {
-                              Fluttertoast.showToast(
-                                  timeInSecForIosWeb: 2,
-                                  msg:
-                                      'Please Search and Save your Business Location');
-                              setState(() {
-                                controller.validateAddress();
-                              });
-                            } else if (value.isNotEmpty) {
-                              setState(() {
-                                controller.validateAddress();
-                              });
-                            }
-                          },
-                        ),
-                      )),
-                  20.sbh,
+                          final geometry = detail.result.geometry!;
+                          setState(() {
+                            lat = geometry.location.lat;
+                            log = geometry.location.lng;
+                          });
+                        }
+                      },
+                      decoration: InputDecoration(
+                        hintText: "Location/ Address / City *",
+                        hintStyle: const TextStyle(
+                                fontSize: 15.0,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black,
+                                fontFamily: 'assets/fonst/Metropolis-Black.otf')
+                            .copyWith(color: Colors.black45),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                width: 1,
+                                color: controller.addressValidationColor.value),
+                            borderRadius: BorderRadius.circular(10.0)),
+                        border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                width: 1,
+                                color: controller.addressValidationColor.value),
+                            borderRadius: BorderRadius.circular(10.0)),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                width: 1,
+                                color: controller.addressValidationColor.value),
+                            borderRadius: BorderRadius.circular(10.0)),
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          setState(() {
+                            controller.validateAddress();
+                          });
+                        } else {}
+                        return null;
+                      },
+                      onFieldSubmitted: (value) {
+                        if (value.isEmpty) {
+                          Fluttertoast.showToast(
+                              timeInSecForIosWeb: 2,
+                              msg:
+                                  'Please Search and Save your Business Location');
+                          setState(() {
+                            controller.validateAddress();
+                          });
+                        } else if (value.isNotEmpty) {
+                          setState(() {
+                            controller.validateAddress();
+                          });
+                        }
+                      },
+                    ),
+                  ),
+                  10.sbh,
                   ClipRRect(
                     borderRadius: BorderRadius.circular(13.05),
                     child: Stack(
@@ -353,8 +353,8 @@ class _AddClassifiedState extends State<AddClassified> {
                           child: file.value != null
                               ? Image.file(
                                   file.value!,
-                                  height: 100,
-                                  width: 100,
+                                  height: 200,
+                                  width: double.infinity,
                                   fit: BoxFit.cover,
                                 )
                               : SvgPicture.asset(Assets.svgUploadImage),
@@ -370,8 +370,8 @@ class _AddClassifiedState extends State<AddClassified> {
                         Visibility(
                           visible: file.value == null ? false : true,
                           child: Positioned(
-                              bottom: -5,
-                              left: 0,
+                              top: 10,
+                              left: 320,
                               right: 0,
                               child: Container(
                                 width: 40,
@@ -380,8 +380,11 @@ class _AddClassifiedState extends State<AddClassified> {
                                 child: Card(
                                     shape: const CircleBorder(),
                                     child: GestureDetector(
-                                      child: Icon(Icons.delete,
-                                          color: AppColors.redText),
+                                      child: Icon(
+                                        Icons.delete,
+                                        color: AppColors.redText,
+                                        size: 22,
+                                      ),
                                       onTap: () {
                                         setState(() {
                                           imagesList.remove(file.value);
@@ -417,33 +420,38 @@ class _AddClassifiedState extends State<AddClassified> {
   }
 
   Future<void> handleSaveButtonPressed() async {
-    if (file.value == null) {
-      showToast("Please Upload Photo", context);
+    if (controller.title.value.text.isEmpty) {
+      showToasterrorborder("Please Enter Your Classified Title", context);
     } else if (controller
         .getSelectedCategoryTextController()
         .value
         .text
         .isEmpty) {
-      showToast("Please Select Category", context);
+      showToasterrorborder("Please Select Category", context);
     } else if (controller
         .getSelectedSubCategoryTextController()
         .value
         .text
         .isEmpty) {
-      showToast("Please Select SubCategory", context);
+      showToasterrorborder("Please Select Sub Category", context);
     } else if (controller.companyName.value.text.isEmpty) {
-      showToast("Please Enter Company Name", context);
+      showToasterrorborder("Please Add Your Company Name", context);
+    } else if (controller.discription.value.text.isEmpty) {
+      showToasterrorborder(
+          "Please Enter Description Minimum 250 Characters", context);
     } else if (controller.location.value.text.isEmpty) {
-      showToasterrorborder("The address field is required.", context);
+      showToasterrorborder("Please Search and Save Location.", context);
+    } else if (file.value == null) {
+      showToasterrorborder("Please Upload Photo", context);
     } else if (controller.isCategorySelectedList.contains(true)) {
       // Perform address validation
       if (controller.addressValidationColor.value != AppColors.redText) {
         await controller.addClassifiedDetails(imageFile: file.value);
       } else {
-        showToast("Please enter a valid address.", context);
+        showToasterrorborder("Please enter a valid address.", context);
       }
     } else {
-      showToast("Please select at least one plan.", context);
+      //
     }
   }
 
@@ -614,7 +622,8 @@ class _AddClassifiedState extends State<AddClassified> {
   }
 }
 
-// Catagory
+//category
+
 void showSelectCategory(
   BuildContext context,
   Size size,
@@ -670,7 +679,18 @@ void showSelectCategory(
                         children: [
                           GestureDetector(
                             onTap: () {
-                              controller.toggleCategorySelected(index);
+                              if (!controller.isCategorySelectedList[index]) {
+                                controller.toggleCategorySelected(index);
+                              } else {
+                                Fluttertoast.showToast(
+                                  msg: "Please select only one category.",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  backgroundColor: Colors.red,
+                                  textColor: Colors.white,
+                                  fontSize: 16.0,
+                                );
+                              }
                             },
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
@@ -680,8 +700,21 @@ void showSelectCategory(
                                   Obx(
                                     () => GestureDetector(
                                       onTap: () {
-                                        controller
-                                            .toggleCategorySelected(index);
+                                        if (!controller
+                                            .isCategorySelectedList[index]) {
+                                          controller
+                                              .toggleCategorySelected(index);
+                                        } else {
+                                          Fluttertoast.showToast(
+                                            msg:
+                                                "Please select only one category.",
+                                            toastLength: Toast.LENGTH_SHORT,
+                                            gravity: ToastGravity.BOTTOM,
+                                            backgroundColor: Colors.red,
+                                            textColor: Colors.white,
+                                            fontSize: 16.0,
+                                          );
+                                        }
                                       },
                                       child: Image.asset(
                                         controller.isCategorySelectedList[index]
@@ -790,7 +823,18 @@ void showSelectSubCategory(
                       children: [
                         GestureDetector(
                           onTap: () {
-                            controller.toggleSubCategorySelected(index);
+                            if (!controller.isSubCategorySelectedList[index]) {
+                              controller.toggleSubCategorySelected(index);
+                            } else {
+                              Fluttertoast.showToast(
+                                msg: "Please select only one Sub category.",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                backgroundColor: Colors.red,
+                                textColor: Colors.white,
+                                fontSize: 16.0,
+                              );
+                            }
                           },
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
@@ -800,8 +844,21 @@ void showSelectSubCategory(
                                 Obx(
                                   () => GestureDetector(
                                     onTap: () {
-                                      controller
-                                          .toggleSubCategorySelected(index);
+                                      if (!controller
+                                          .isSubCategorySelectedList[index]) {
+                                        controller
+                                            .toggleSubCategorySelected(index);
+                                      } else {
+                                        Fluttertoast.showToast(
+                                          msg:
+                                              "Please select only one Sub category.",
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.BOTTOM,
+                                          backgroundColor: Colors.red,
+                                          textColor: Colors.white,
+                                          fontSize: 16.0,
+                                        );
+                                      }
                                     },
                                     child: Image.asset(
                                       (controller

@@ -21,7 +21,7 @@ class _ClassifiedScreenState extends State<ClassifiedScreen> {
   @override
   void initState() {
     super.initState();
-    controller.getClassified();
+    controller.getClassified(1);
   }
 
   @override
@@ -35,15 +35,15 @@ class _ClassifiedScreenState extends State<ClassifiedScreen> {
       body: Container(
         color: AppColors.background,
         child: Obx(() {
-          if (controller.isLoading.value) {
+          if (controller.isLoading.value && controller.classifiedList.isEmpty) {
             return const Center(child: CircularProgressIndicator());
           }
 
           if (controller.classifiedList.isEmpty) {
-            return Center(
+            return const Center(
               child: Text(
-                controller.isLoading.value ? 'Loading...' : 'Data not found',
-                style: const TextStyle(
+                'Data not found',
+                style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
@@ -53,11 +53,17 @@ class _ClassifiedScreenState extends State<ClassifiedScreen> {
           }
 
           return ListView.builder(
+            controller: controller.scrollController,
             padding: EdgeInsets.zero,
             physics: const AlwaysScrollableScrollPhysics(),
             shrinkWrap: true,
-            itemCount: controller.classifiedList.length,
+            itemCount: controller.classifiedList.length +
+                (controller.isLoading.value ? 1 : 0),
             itemBuilder: (context, index) {
+              if (index == controller.classifiedList.length) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
               final post = controller.classifiedList[index];
               return Padding(
                 padding:
@@ -70,9 +76,17 @@ class _ClassifiedScreenState extends State<ClassifiedScreen> {
                     );
                   },
                   child: ClassifiedCard(
+                    image: post.userData!.imagePath ?? '',
+                    dateTime: post.datecreated ?? '',
+                    classifiedId: post.id ?? 0,
                     userImage: post.imagePath ?? '',
-                    userName: post.title ?? '',
-                    postTitle: post.description ?? '',
+                    userName: post.userData?.name ?? '',
+                    postTitle: post.title ?? '',
+                    likedCount: post.totallike ?? 0,
+                    controller: controller,
+                    viewcounts: post.pgcnt ?? 0,
+                    bookmarkCount: post.totalbookmark ?? 0,
+                    isPopular: post.popular == 'Y',
                   ),
                 ),
               );
@@ -81,8 +95,12 @@ class _ClassifiedScreenState extends State<ClassifiedScreen> {
         }),
       ),
       floatingActionButton: InkWell(
-        onTap: () {
+        onTap: () async {
+          // controller.isLoading(true);
+          // bool success = await controller.classifiedRemainingCount();
+          // if (success) {
           Get.toNamed(Routes.addclassified);
+          // }
         },
         child: Ink(
           decoration: const BoxDecoration(

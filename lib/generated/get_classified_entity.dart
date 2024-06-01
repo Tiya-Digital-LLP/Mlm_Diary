@@ -27,14 +27,27 @@ class GetClassifiedData {
 	String? image = '';
 	String? description = '';
 	int? pgcnt = 0;
+	String? company = '';
 	String? premiumsdate = '';
 	String? premiumedate = '';
+	String? datemodified = '';
+	String? datecreated = '';
+	String? category = '';
+	String? creatby = '';
+	String? subcategory = '';
 	String? popular = '';
-	dynamic user;
-	@JSONField(name: "total_like")
-	int? totalLike = 0;
-	@JSONField(name: "total_comment")
-	int? totalComment = 0;
+	String? website = '';
+	String? city = '';
+	String? state = '';
+	String? country = '';
+	int? totallike = 0;
+	int? totalbookmark = 0;
+	@JSONField(name: "liked_by_user")
+	bool? likedByUser = false;
+	@JSONField(name: "bookmarked_by_user")
+	bool? bookmarkedByUser = false;
+	@JSONField(name: "user_data")
+	GetClassifiedDataUserData? userData;
 	@JSONField(name: "image_path")
 	String? imagePath = '';
 	@JSONField(name: "image_thum_path")
@@ -45,6 +58,30 @@ class GetClassifiedData {
 	factory GetClassifiedData.fromJson(Map<String, dynamic> json) => $GetClassifiedDataFromJson(json);
 
 	Map<String, dynamic> toJson() => $GetClassifiedDataToJson(this);
+
+	@override
+	String toString() {
+		return jsonEncode(this);
+	}
+}
+
+@JsonSerializable()
+class GetClassifiedDataUserData {
+	String? name = '';
+	String? userimage = '';
+	String? email = '';
+	String? mobile = '';
+	String? countrycode1 = '';
+	@JSONField(name: "image_path")
+	String? imagePath = '';
+	@JSONField(name: "image_thum_path")
+	String? imageThumPath = '';
+
+	GetClassifiedDataUserData();
+
+	factory GetClassifiedDataUserData.fromJson(Map<String, dynamic> json) => $GetClassifiedDataUserDataFromJson(json);
+
+	Map<String, dynamic> toJson() => $GetClassifiedDataUserDataToJson(this);
 
 	@override
 	String toString() {

@@ -48,82 +48,21 @@ ManageClassifiedData $ManageClassifiedDataFromJson(Map<String, dynamic> json) {
   if (title != null) {
     manageClassifiedData.title = title;
   }
+  final String? image = jsonConvert.convert<String>(json['image']);
+  if (image != null) {
+    manageClassifiedData.image = image;
+  }
   final String? description = jsonConvert.convert<String>(json['description']);
   if (description != null) {
     manageClassifiedData.description = description;
-  }
-  final String? creatby = jsonConvert.convert<String>(json['creatby']);
-  if (creatby != null) {
-    manageClassifiedData.creatby = creatby;
-  }
-  final String? datecreated = jsonConvert.convert<String>(json['datecreated']);
-  if (datecreated != null) {
-    manageClassifiedData.datecreated = datecreated;
-  }
-  final String? datemodified = jsonConvert.convert<String>(
-      json['datemodified']);
-  if (datemodified != null) {
-    manageClassifiedData.datemodified = datemodified;
-  }
-  final String? dateviewed = jsonConvert.convert<String>(json['dateviewed']);
-  if (dateviewed != null) {
-    manageClassifiedData.dateviewed = dateviewed;
-  }
-  final String? completee = jsonConvert.convert<String>(json['completee']);
-  if (completee != null) {
-    manageClassifiedData.completee = completee;
   }
   final int? pgcnt = jsonConvert.convert<int>(json['pgcnt']);
   if (pgcnt != null) {
     manageClassifiedData.pgcnt = pgcnt;
   }
-  final String? status = jsonConvert.convert<String>(json['status']);
-  if (status != null) {
-    manageClassifiedData.status = status;
-  }
-  final dynamic category = json['category'];
-  if (category != null) {
-    manageClassifiedData.category = category;
-  }
-  final String? ipp = jsonConvert.convert<String>(json['ipp']);
-  if (ipp != null) {
-    manageClassifiedData.ipp = ipp;
-  }
-  final dynamic tags = json['tags'];
-  if (tags != null) {
-    manageClassifiedData.tags = tags;
-  }
-  final int? facebook = jsonConvert.convert<int>(json['facebook']);
-  if (facebook != null) {
-    manageClassifiedData.facebook = facebook;
-  }
-  final int? twitter = jsonConvert.convert<int>(json['twitter']);
-  if (twitter != null) {
-    manageClassifiedData.twitter = twitter;
-  }
-  final int? googleplus = jsonConvert.convert<int>(json['googleplus']);
-  if (googleplus != null) {
-    manageClassifiedData.googleplus = googleplus;
-  }
-  final int? logit = jsonConvert.convert<int>(json['logit']);
-  if (logit != null) {
-    manageClassifiedData.logit = logit;
-  }
-  final int? updatee = jsonConvert.convert<int>(json['updatee']);
-  if (updatee != null) {
-    manageClassifiedData.updatee = updatee;
-  }
-  final String? popular = jsonConvert.convert<String>(json['popular']);
-  if (popular != null) {
-    manageClassifiedData.popular = popular;
-  }
-  final int? premium = jsonConvert.convert<int>(json['premium']);
-  if (premium != null) {
-    manageClassifiedData.premium = premium;
-  }
-  final dynamic premiumDate = json['premium_date'];
-  if (premiumDate != null) {
-    manageClassifiedData.premiumDate = premiumDate;
+  final String? company = jsonConvert.convert<String>(json['company']);
+  if (company != null) {
+    manageClassifiedData.company = company;
   }
   final dynamic premiumsdate = json['premiumsdate'];
   if (premiumsdate != null) {
@@ -133,25 +72,30 @@ ManageClassifiedData $ManageClassifiedDataFromJson(Map<String, dynamic> json) {
   if (premiumedate != null) {
     manageClassifiedData.premiumedate = premiumedate;
   }
+  final String? datemodified = jsonConvert.convert<String>(
+      json['datemodified']);
+  if (datemodified != null) {
+    manageClassifiedData.datemodified = datemodified;
+  }
+  final String? datecreated = jsonConvert.convert<String>(json['datecreated']);
+  if (datecreated != null) {
+    manageClassifiedData.datecreated = datecreated;
+  }
+  final String? category = jsonConvert.convert<String>(json['category']);
+  if (category != null) {
+    manageClassifiedData.category = category;
+  }
+  final String? creatby = jsonConvert.convert<String>(json['creatby']);
+  if (creatby != null) {
+    manageClassifiedData.creatby = creatby;
+  }
   final String? subcategory = jsonConvert.convert<String>(json['subcategory']);
   if (subcategory != null) {
     manageClassifiedData.subcategory = subcategory;
   }
-  final dynamic ctype = json['ctype'];
-  if (ctype != null) {
-    manageClassifiedData.ctype = ctype;
-  }
-  final String? location = jsonConvert.convert<String>(json['location']);
-  if (location != null) {
-    manageClassifiedData.location = location;
-  }
-  final String? image = jsonConvert.convert<String>(json['image']);
-  if (image != null) {
-    manageClassifiedData.image = image;
-  }
-  final String? company = jsonConvert.convert<String>(json['company']);
-  if (company != null) {
-    manageClassifiedData.company = company;
+  final String? popular = jsonConvert.convert<String>(json['popular']);
+  if (popular != null) {
+    manageClassifiedData.popular = popular;
   }
   final String? website = jsonConvert.convert<String>(json['website']);
   if (website != null) {
@@ -169,25 +113,32 @@ ManageClassifiedData $ManageClassifiedDataFromJson(Map<String, dynamic> json) {
   if (country != null) {
     manageClassifiedData.country = country;
   }
-  final dynamic urlcomponent = json['urlcomponent'];
+  final String? urlcomponent = jsonConvert.convert<String>(
+      json['urlcomponent']);
   if (urlcomponent != null) {
     manageClassifiedData.urlcomponent = urlcomponent;
-  }
-  final String? paidtype = jsonConvert.convert<String>(json['paidtype']);
-  if (paidtype != null) {
-    manageClassifiedData.paidtype = paidtype;
-  }
-  final String? classicheck = jsonConvert.convert<String>(json['classicheck']);
-  if (classicheck != null) {
-    manageClassifiedData.classicheck = classicheck;
   }
   final int? totallike = jsonConvert.convert<int>(json['totallike']);
   if (totallike != null) {
     manageClassifiedData.totallike = totallike;
   }
-  final int? totalcomment = jsonConvert.convert<int>(json['totalcomment']);
-  if (totalcomment != null) {
-    manageClassifiedData.totalcomment = totalcomment;
+  final int? totalbookmark = jsonConvert.convert<int>(json['totalbookmark']);
+  if (totalbookmark != null) {
+    manageClassifiedData.totalbookmark = totalbookmark;
+  }
+  final bool? likedByUser = jsonConvert.convert<bool>(json['liked_by_user']);
+  if (likedByUser != null) {
+    manageClassifiedData.likedByUser = likedByUser;
+  }
+  final bool? bookmarkedByUser = jsonConvert.convert<bool>(
+      json['bookmarked_by_user']);
+  if (bookmarkedByUser != null) {
+    manageClassifiedData.bookmarkedByUser = bookmarkedByUser;
+  }
+  final ManageClassifiedDataUserData? userData = jsonConvert.convert<
+      ManageClassifiedDataUserData>(json['user_data']);
+  if (userData != null) {
+    manageClassifiedData.userData = userData;
   }
   final String? imagePath = jsonConvert.convert<String>(json['image_path']);
   if (imagePath != null) {
@@ -205,41 +156,28 @@ Map<String, dynamic> $ManageClassifiedDataToJson(ManageClassifiedData entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
   data['id'] = entity.id;
   data['title'] = entity.title;
+  data['image'] = entity.image;
   data['description'] = entity.description;
-  data['creatby'] = entity.creatby;
-  data['datecreated'] = entity.datecreated;
-  data['datemodified'] = entity.datemodified;
-  data['dateviewed'] = entity.dateviewed;
-  data['completee'] = entity.completee;
   data['pgcnt'] = entity.pgcnt;
-  data['status'] = entity.status;
-  data['category'] = entity.category;
-  data['ipp'] = entity.ipp;
-  data['tags'] = entity.tags;
-  data['facebook'] = entity.facebook;
-  data['twitter'] = entity.twitter;
-  data['googleplus'] = entity.googleplus;
-  data['logit'] = entity.logit;
-  data['updatee'] = entity.updatee;
-  data['popular'] = entity.popular;
-  data['premium'] = entity.premium;
-  data['premium_date'] = entity.premiumDate;
+  data['company'] = entity.company;
   data['premiumsdate'] = entity.premiumsdate;
   data['premiumedate'] = entity.premiumedate;
+  data['datemodified'] = entity.datemodified;
+  data['datecreated'] = entity.datecreated;
+  data['category'] = entity.category;
+  data['creatby'] = entity.creatby;
   data['subcategory'] = entity.subcategory;
-  data['ctype'] = entity.ctype;
-  data['location'] = entity.location;
-  data['image'] = entity.image;
-  data['company'] = entity.company;
+  data['popular'] = entity.popular;
   data['website'] = entity.website;
   data['city'] = entity.city;
   data['state'] = entity.state;
   data['country'] = entity.country;
   data['urlcomponent'] = entity.urlcomponent;
-  data['paidtype'] = entity.paidtype;
-  data['classicheck'] = entity.classicheck;
   data['totallike'] = entity.totallike;
-  data['totalcomment'] = entity.totalcomment;
+  data['totalbookmark'] = entity.totalbookmark;
+  data['liked_by_user'] = entity.likedByUser;
+  data['bookmarked_by_user'] = entity.bookmarkedByUser;
+  data['user_data'] = entity.userData?.toJson();
   data['image_path'] = entity.imagePath;
   data['image_thum_path'] = entity.imageThumPath;
   return data;
@@ -249,82 +187,133 @@ extension ManageClassifiedDataExtension on ManageClassifiedData {
   ManageClassifiedData copyWith({
     int? id,
     String? title,
+    String? image,
     String? description,
-    String? creatby,
-    String? datecreated,
-    String? datemodified,
-    String? dateviewed,
-    String? completee,
     int? pgcnt,
-    String? status,
-    dynamic category,
-    String? ipp,
-    dynamic tags,
-    int? facebook,
-    int? twitter,
-    int? googleplus,
-    int? logit,
-    int? updatee,
-    String? popular,
-    int? premium,
-    dynamic premiumDate,
+    String? company,
     dynamic premiumsdate,
     dynamic premiumedate,
+    String? datemodified,
+    String? datecreated,
+    String? category,
+    String? creatby,
     String? subcategory,
-    dynamic ctype,
-    String? location,
-    String? image,
-    String? company,
+    String? popular,
     String? website,
     String? city,
     String? state,
     String? country,
-    dynamic urlcomponent,
-    String? paidtype,
-    String? classicheck,
+    String? urlcomponent,
     int? totallike,
-    int? totalcomment,
+    int? totalbookmark,
+    bool? likedByUser,
+    bool? bookmarkedByUser,
+    ManageClassifiedDataUserData? userData,
     String? imagePath,
     String? imageThumPath,
   }) {
     return ManageClassifiedData()
       ..id = id ?? this.id
       ..title = title ?? this.title
+      ..image = image ?? this.image
       ..description = description ?? this.description
-      ..creatby = creatby ?? this.creatby
-      ..datecreated = datecreated ?? this.datecreated
-      ..datemodified = datemodified ?? this.datemodified
-      ..dateviewed = dateviewed ?? this.dateviewed
-      ..completee = completee ?? this.completee
       ..pgcnt = pgcnt ?? this.pgcnt
-      ..status = status ?? this.status
-      ..category = category ?? this.category
-      ..ipp = ipp ?? this.ipp
-      ..tags = tags ?? this.tags
-      ..facebook = facebook ?? this.facebook
-      ..twitter = twitter ?? this.twitter
-      ..googleplus = googleplus ?? this.googleplus
-      ..logit = logit ?? this.logit
-      ..updatee = updatee ?? this.updatee
-      ..popular = popular ?? this.popular
-      ..premium = premium ?? this.premium
-      ..premiumDate = premiumDate ?? this.premiumDate
+      ..company = company ?? this.company
       ..premiumsdate = premiumsdate ?? this.premiumsdate
       ..premiumedate = premiumedate ?? this.premiumedate
+      ..datemodified = datemodified ?? this.datemodified
+      ..datecreated = datecreated ?? this.datecreated
+      ..category = category ?? this.category
+      ..creatby = creatby ?? this.creatby
       ..subcategory = subcategory ?? this.subcategory
-      ..ctype = ctype ?? this.ctype
-      ..location = location ?? this.location
-      ..image = image ?? this.image
-      ..company = company ?? this.company
+      ..popular = popular ?? this.popular
       ..website = website ?? this.website
       ..city = city ?? this.city
       ..state = state ?? this.state
       ..country = country ?? this.country
       ..urlcomponent = urlcomponent ?? this.urlcomponent
-      ..paidtype = paidtype ?? this.paidtype
-      ..classicheck = classicheck ?? this.classicheck
       ..totallike = totallike ?? this.totallike
-      ..totalcomment = totalcomment ?? this.totalcomment
+      ..totalbookmark = totalbookmark ?? this.totalbookmark
+      ..likedByUser = likedByUser ?? this.likedByUser
+      ..bookmarkedByUser = bookmarkedByUser ?? this.bookmarkedByUser
+      ..userData = userData ?? this.userData
+      ..imagePath = imagePath ?? this.imagePath
+      ..imageThumPath = imageThumPath ?? this.imageThumPath;
+  }
+}
+
+ManageClassifiedDataUserData $ManageClassifiedDataUserDataFromJson(
+    Map<String, dynamic> json) {
+  final ManageClassifiedDataUserData manageClassifiedDataUserData = ManageClassifiedDataUserData();
+  final int? id = jsonConvert.convert<int>(json['id']);
+  if (id != null) {
+    manageClassifiedDataUserData.id = id;
+  }
+  final String? name = jsonConvert.convert<String>(json['name']);
+  if (name != null) {
+    manageClassifiedDataUserData.name = name;
+  }
+  final String? userimage = jsonConvert.convert<String>(json['userimage']);
+  if (userimage != null) {
+    manageClassifiedDataUserData.userimage = userimage;
+  }
+  final String? email = jsonConvert.convert<String>(json['email']);
+  if (email != null) {
+    manageClassifiedDataUserData.email = email;
+  }
+  final String? mobile = jsonConvert.convert<String>(json['mobile']);
+  if (mobile != null) {
+    manageClassifiedDataUserData.mobile = mobile;
+  }
+  final String? countrycode1 = jsonConvert.convert<String>(
+      json['countrycode1']);
+  if (countrycode1 != null) {
+    manageClassifiedDataUserData.countrycode1 = countrycode1;
+  }
+  final String? imagePath = jsonConvert.convert<String>(json['image_path']);
+  if (imagePath != null) {
+    manageClassifiedDataUserData.imagePath = imagePath;
+  }
+  final String? imageThumPath = jsonConvert.convert<String>(
+      json['image_thum_path']);
+  if (imageThumPath != null) {
+    manageClassifiedDataUserData.imageThumPath = imageThumPath;
+  }
+  return manageClassifiedDataUserData;
+}
+
+Map<String, dynamic> $ManageClassifiedDataUserDataToJson(
+    ManageClassifiedDataUserData entity) {
+  final Map<String, dynamic> data = <String, dynamic>{};
+  data['id'] = entity.id;
+  data['name'] = entity.name;
+  data['userimage'] = entity.userimage;
+  data['email'] = entity.email;
+  data['mobile'] = entity.mobile;
+  data['countrycode1'] = entity.countrycode1;
+  data['image_path'] = entity.imagePath;
+  data['image_thum_path'] = entity.imageThumPath;
+  return data;
+}
+
+extension ManageClassifiedDataUserDataExtension on ManageClassifiedDataUserData {
+  ManageClassifiedDataUserData copyWith({
+    int? id,
+    String? name,
+    String? userimage,
+    String? email,
+    String? mobile,
+    String? countrycode1,
+    String? imagePath,
+    String? imageThumPath,
+  }) {
+    return ManageClassifiedDataUserData()
+      ..id = id ?? this.id
+      ..name = name ?? this.name
+      ..userimage = userimage ?? this.userimage
+      ..email = email ?? this.email
+      ..mobile = mobile ?? this.mobile
+      ..countrycode1 = countrycode1 ?? this.countrycode1
       ..imagePath = imagePath ?? this.imagePath
       ..imageThumPath = imageThumPath ?? this.imageThumPath;
   }

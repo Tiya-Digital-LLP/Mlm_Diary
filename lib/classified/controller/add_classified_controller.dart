@@ -9,10 +9,13 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:mlmdiary/data/constants.dart';
+import 'package:mlmdiary/generated/bookmark_user_entity.dart';
 import 'package:mlmdiary/generated/get_category_entity.dart';
 import 'package:mlmdiary/generated/get_classified_entity.dart';
 import 'package:mlmdiary/generated/get_company_entity.dart';
 import 'package:mlmdiary/generated/get_sub_category_entity.dart';
+import 'package:mlmdiary/generated/liked_user_entity.dart';
+import 'package:mlmdiary/generated/remaining_classified_count_entity.dart';
 import 'package:mlmdiary/utils/common_toast.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -39,12 +42,19 @@ class ClasifiedController extends GetxController {
   RxList<GetSubCategoryCategory> subcategoryList =
       RxList<GetSubCategoryCategory>();
   final RxList<bool> isSubCategorySelectedList = RxList<bool>([]);
+//like
+  var likedStatusMap = <int, bool>{};
+  var likeCountMap = <int, int>{};
 
-  var isLiked = false.obs;
-  var isBookMarked = false.obs;
+//bookmark
+  var bookmarkStatusMap = <int, bool>{};
+  var bookmarkCountMap = <int, int>{};
+
   var isLoading = false.obs;
 
-  var likeCount = 0.obs;
+  //scrollercontroller
+  final ScrollController scrollController = ScrollController();
+
 // FIELDS ERROR
 
   RxBool titleError = false.obs;
@@ -75,11 +85,22 @@ class ClasifiedController extends GetxController {
   // READ ONLY FIELDS
   RxBool titleReadOnly = false.obs;
 
+  int page = 1;
+  var isEndOfData = false.obs;
+
   @override
   void onInit() {
-    fetchCategoryList();
-    getClassified();
     super.onInit();
+    fetchCategoryList();
+    getClassified(1);
+    scrollController.addListener(() {
+      if (scrollController.position.pixels ==
+              scrollController.position.maxScrollExtent &&
+          !isEndOfData.value) {
+        int nextPage = (classifiedList.length ~/ 10) + 1;
+        getClassified(nextPage);
+      }
+    });
   }
 
   Future<void> fetchCategoryList() async {
@@ -137,24 +158,22 @@ class ClasifiedController extends GetxController {
   void toggleCategorySelected(int index) {
     isCategorySelectedList[index] = !isCategorySelectedList[index];
 
-    if (isCategorySelectedList[index]) {
-      selectedCountCategory++;
-    } else {
-      selectedCountCategory--;
-    }
+    selectedCountCategory.value = isCategorySelectedList[index] ? 1 : 0;
 
-    fetchSubCategoryList(categorylist[index].id!);
+    if (isCategorySelectedList[index]) {
+      fetchSubCategoryList(categorylist[index].id!);
+    }
   }
 
   TextEditingController getSelectedCategoryTextController() {
     List<String> selectedCategoryOptions = [];
+
     for (int i = 0; i < isCategorySelectedList.length; i++) {
       if (isCategorySelectedList[i]) {
-        selectedCategoryOptions.add(categorylist[i].id.toString());
+        selectedCategoryOptions.add(categorylist[i].name.toString());
       }
     }
 
-    // Create a TextEditingController with the selected options text
     return TextEditingController(text: selectedCategoryOptions.join(', '));
   }
 
@@ -218,7 +237,36 @@ class ClasifiedController extends GetxController {
     }
   }
 
-  Future<void> getClassified() async {
+  void toggleSubCategorySelected(int index) {
+    bool isCurrentlySelected = isSubCategorySelectedList[index];
+
+    // Unselect all sub-categories first
+    for (int i = 0; i < isSubCategorySelectedList.length; i++) {
+      isSubCategorySelectedList[i] = false;
+    }
+
+    isSubCategorySelectedList[index] = !isCurrentlySelected;
+
+    selectedCountSubCategory.value = isSubCategorySelectedList[index] ? 1 : 0;
+  }
+
+  TextEditingController getSelectedSubCategoryTextController() {
+    List<String> selectedSubCategoryOptions = [];
+    for (int i = 0; i < isSubCategorySelectedList.length; i++) {
+      if (isSubCategorySelectedList[i]) {
+        selectedSubCategoryOptions.add(subcategoryList[i].name ?? '');
+      }
+    }
+
+    return TextEditingController(text: selectedSubCategoryOptions.join(', '));
+  }
+
+  void mlmsubCategoryValidation() {
+    // ignore: unrelated_type_equality_checks
+    subCategoryError.value = selectedCountSubCategory == 0;
+  }
+
+  Future<void> getClassified(int page) async {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -242,6 +290,7 @@ class ClasifiedController extends GetxController {
 
         request.fields['api_token'] = apiToken ?? '';
         request.fields['device'] = device;
+        request.fields['page'] = page.toString();
 
         final streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);
@@ -253,8 +302,20 @@ class ClasifiedController extends GetxController {
           if (kDebugMode) {
             print('Success: $getClassifiedEntity');
           }
-          // Assuming your data list is within `data` object in the response
-          classifiedList.value = getClassifiedEntity.data ?? [];
+
+          if (getClassifiedEntity.data != null &&
+              getClassifiedEntity.data!.isNotEmpty) {
+            if (page == 1) {
+              classifiedList.value = getClassifiedEntity.data!;
+            } else {
+              classifiedList.addAll(getClassifiedEntity.data!);
+            }
+          } else {
+            if (page == 1) {
+              classifiedList.clear();
+            }
+            isEndOfData(true);
+          }
         } else {
           Fluttertoast.showToast(
             msg: "Error: ${response.body}",
@@ -280,30 +341,136 @@ class ClasifiedController extends GetxController {
     }
   }
 
-  void toggleSubCategorySelected(int index) {
-    isSubCategorySelectedList[index] = !isSubCategorySelectedList[index];
+  //like
+  Future<void> likedUser(int classifiedId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString('apiToken');
+    String device = Platform.isAndroid ? 'android' : 'ios';
 
-    if (isSubCategorySelectedList[index]) {
-      selectedCountSubCategory++;
-    } else {
-      selectedCountSubCategory--;
-    }
-  }
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri =
+            Uri.parse('${Constants.baseUrl}${Constants.likeduserclassified}');
+        var request = http.MultipartRequest('POST', uri);
 
-  TextEditingController getSelectedSubCategoryTextController() {
-    List<String> selectedSubCategoryOptions = [];
-    for (int i = 0; i < isSubCategorySelectedList.length; i++) {
-      if (isSubCategorySelectedList[i]) {
-        selectedSubCategoryOptions.add(subcategoryList[i].name ?? '');
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['classified_id'] = classifiedId.toString();
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var likedUserEntity = LikedUserEntity.fromJson(data);
+          var message = likedUserEntity.message;
+
+          // Update the liked status and like count based on the message
+          if (message == 'You have liked this classified') {
+            likedStatusMap[classifiedId] = true;
+            likeCountMap[classifiedId] = (likeCountMap[classifiedId] ?? 0) + 1;
+          } else if (message == 'You have unliked this classified') {
+            likedStatusMap[classifiedId] = false;
+            likeCountMap[classifiedId] = (likeCountMap[classifiedId] ?? 0) - 1;
+          }
+
+          Fluttertoast.showToast(
+            msg: message!,
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
+        } else {
+          Fluttertoast.showToast(
+            msg: "Error: ${response.body}",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
+        }
+      } else {
+        Fluttertoast.showToast(
+          msg: "No internet connection",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+        );
       }
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Error: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+      );
+    } finally {
+      isLoading(false);
     }
-
-    return TextEditingController(text: selectedSubCategoryOptions.join(', '));
   }
 
-  void mlmsubCategoryValidation() {
-    // ignore: unrelated_type_equality_checks
-    subCategoryError.value = selectedCountSubCategory == 0;
+  // Bookmark
+  Future<void> bookmarkUser(int classifiedId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString('apiToken');
+    String device = Platform.isAndroid ? 'android' : 'ios';
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri =
+            Uri.parse('${Constants.baseUrl}${Constants.bookmarkclassified}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['classified_id'] = classifiedId.toString();
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var bookmarkUserEntity = BookmarkUserEntity.fromJson(data);
+          var message = bookmarkUserEntity.message;
+
+          // Update the liked status and like count based on the message
+          if (message == 'You have bookmark this classified') {
+            bookmarkStatusMap[classifiedId] = true;
+            bookmarkCountMap[classifiedId] =
+                (bookmarkCountMap[classifiedId] ?? 0) + 1;
+          } else if (message == 'You have unbookmark this classified') {
+            bookmarkStatusMap[classifiedId] = false;
+            bookmarkCountMap[classifiedId] =
+                (bookmarkCountMap[classifiedId] ?? 0) - 1;
+          }
+
+          Fluttertoast.showToast(
+            msg: message!,
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
+        } else {
+          Fluttertoast.showToast(
+            msg: "Error: ${response.body}",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
+        }
+      } else {
+        Fluttertoast.showToast(
+          msg: "No internet connection",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+        );
+      }
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Error: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+      );
+    } finally {
+      isLoading(false);
+    }
   }
 
   void companyNameValidation() async {
@@ -390,6 +557,7 @@ class ClasifiedController extends GetxController {
           final Map<String, dynamic> jsonBody = jsonDecode(response.body);
           if (kDebugMode) {
             print("Response body: $jsonBody");
+            clearFormFields();
             Get.back();
           }
         } else {
@@ -409,6 +577,17 @@ class ClasifiedController extends GetxController {
         print("An error occurred while saving company details: $e");
       }
     }
+  }
+
+  void clearFormFields() {
+    companyName.value.clear();
+    title.value.clear();
+    discription.value.clear();
+    location.value.clear();
+    city.value.clear();
+    state.value.clear();
+    country.value.clear();
+    url.value.clear();
   }
 
   //getcompany
@@ -441,6 +620,67 @@ class ClasifiedController extends GetxController {
     }
   }
 
+  // classfied_remaining_count
+
+  Future<bool> classifiedRemainingCount() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString('apiToken');
+    String device = Platform.isAndroid ? 'android' : 'ios';
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri = Uri.parse(
+            '${Constants.baseUrl}${Constants.remainigclassifeidcount}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var remainingCompanyEntity =
+              RemainingClassifiedCountEntity.fromJson(data);
+          var message = remainingCompanyEntity.message;
+
+          Fluttertoast.showToast(
+            msg: message!,
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
+          return false;
+        } else {
+          Fluttertoast.showToast(
+            msg: "Error: ${response.body}",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
+          return false;
+        }
+      } else {
+        Fluttertoast.showToast(
+          msg: "No internet connection",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+        );
+        return false;
+      }
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Error: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+      );
+      return false;
+    } finally {
+      isLoading(false);
+    }
+  }
+
   void validateAddress() {
     if (location.value.text.isEmpty) {
       addressValidationColor.value = Colors.red;
@@ -460,19 +700,26 @@ class ClasifiedController extends GetxController {
     }
   }
 
-  void toggleLike() {
-    isLiked.value = !isLiked.value;
-    if (isLiked.value) {
-      likeCount.value++;
-    } else {
-      likeCount.value--;
-    }
+  Future<void> toggleLike(int classifiedId) async {
+    bool isLiked = likedStatusMap[classifiedId] ?? false;
+    isLiked = !isLiked;
+    likedStatusMap[classifiedId] = isLiked;
+    likeCountMap.update(
+        classifiedId, (value) => isLiked ? value + 1 : value - 1,
+        ifAbsent: () => isLiked ? 1 : 0);
+
+    await likedUser(classifiedId);
   }
 
-  void toggleBookMark() {
-    isBookMarked.value = !isBookMarked.value;
-    if (isBookMarked.value) {
-    } else {}
+  Future<void> toggleBookMark(int classifiedId) async {
+    bool isBookmark = likedStatusMap[classifiedId] ?? false;
+    isBookmark = !isBookmark;
+    likedStatusMap[classifiedId] = isBookmark;
+    likeCountMap.update(
+        classifiedId, (value) => isBookmark ? value + 1 : value - 1,
+        ifAbsent: () => isBookmark ? 1 : 0);
+
+    await bookmarkUser(classifiedId);
   }
 
   void discriptionValidation() {

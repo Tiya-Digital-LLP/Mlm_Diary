@@ -63,50 +63,6 @@ class CustomToast extends StatelessWidget {
   }
 }
 
-// verified without border
-void showToast(
-  String message,
-  BuildContext context,
-) {
-  toastification.show(
-    context: context,
-    alignment: Alignment.bottomCenter,
-    backgroundColor: AppColors.white,
-    type: ToastificationType.success,
-    style: ToastificationStyle.minimal,
-    showProgressBar: false,
-    autoCloseDuration: const Duration(seconds: 5),
-    icon: Image.asset(
-      Assets.imagesVerified,
-      height: 30,
-    ),
-    primaryColor: Colors.green,
-    title: Text(message),
-  );
-}
-
-// error without border
-void showToasterror(
-  String message,
-  BuildContext context,
-) {
-  toastification.show(
-    context: context,
-    alignment: Alignment.bottomCenter,
-    backgroundColor: AppColors.white,
-    type: ToastificationType.error,
-    style: ToastificationStyle.minimal,
-    showProgressBar: false,
-    autoCloseDuration: const Duration(seconds: 5),
-    icon: Icon(
-      Icons.error_outlined,
-      color: AppColors.redText,
-    ),
-    primaryColor: Colors.red,
-    title: Text(message),
-  );
-}
-
 // verified with border
 void showToastverifedborder(
   String message,
@@ -119,7 +75,7 @@ void showToastverifedborder(
     type: ToastificationType.success,
     style: ToastificationStyle.flatColored,
     showProgressBar: false,
-    autoCloseDuration: const Duration(seconds: 5),
+    autoCloseDuration: const Duration(seconds: 3),
     icon: Image.asset(
       Assets.imagesChecked,
       height: 30,
@@ -142,55 +98,10 @@ void showToasterrorborder(
     type: ToastificationType.error,
     style: ToastificationStyle.flatColored,
     showProgressBar: false,
-    autoCloseDuration: const Duration(seconds: 5),
+    autoCloseDuration: const Duration(seconds: 3),
     icon: Image.asset(
       Assets.imagesCancel,
       height: 35,
-    ),
-    primaryColor: Colors.red,
-    title: Text(message),
-  );
-}
-
-// verified with border
-void showToastverifedfillcolor(
-  String message,
-  BuildContext context,
-) {
-  toastification.show(
-    context: context,
-    alignment: Alignment.bottomCenter,
-    backgroundColor: AppColors.white,
-    type: ToastificationType.success,
-    style: ToastificationStyle.fillColored,
-    showProgressBar: false,
-    autoCloseDuration: const Duration(seconds: 5),
-    icon: Image.asset(
-      Assets.imagesVerified,
-      height: 30,
-    ),
-    closeOnClick: true,
-    primaryColor: Colors.green,
-    title: Text(message),
-  );
-}
-
-// error with border
-void showToasterrorfillcolor(
-  String message,
-  BuildContext context,
-) {
-  toastification.show(
-    context: context,
-    alignment: Alignment.bottomCenter,
-    backgroundColor: AppColors.white,
-    type: ToastificationType.error,
-    style: ToastificationStyle.fillColored,
-    showProgressBar: false,
-    autoCloseDuration: const Duration(seconds: 5),
-    icon: Icon(
-      Icons.error_outlined,
-      color: AppColors.blackText,
     ),
     primaryColor: Colors.red,
     title: Text(message),

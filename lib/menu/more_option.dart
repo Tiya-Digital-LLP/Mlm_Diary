@@ -38,7 +38,7 @@ const List<Choice> choices = <Choice>[
   Choice(title: 'Manage News', icon: Assets.svgClipboardText, id: '3'),
   Choice(title: 'MLM Database', icon: Assets.svgArchive, id: '4'),
   Choice(title: 'Manage Blog', icon: Assets.svgDocumentText, id: '5'),
-  Choice(title: 'Manage Companies', icon: Assets.svgBuilding4, id: '6'),
+  Choice(title: 'MLM Companies', icon: Assets.svgBuilding4, id: '6'),
   Choice(title: 'Favourite', icon: Assets.svgBookmark, id: '7'),
   Choice(title: 'Advertising', icon: Assets.svgPresentionChart, id: '8'),
   Choice(title: 'Following/ Followers', icon: Assets.svgProfile2user, id: '9'),
@@ -733,7 +733,7 @@ class _moreState extends State<MoreOptionScreen> {
                                   elevation: 3,
                                 ),
                                 onPressed: () {
-                                  Get.back();
+                                  Get.toNamed(Routes.login);
                                 },
                                 child: Text(
                                   'Logout',

@@ -57,6 +57,10 @@ GetClassifiedData $GetClassifiedDataFromJson(Map<String, dynamic> json) {
   if (pgcnt != null) {
     getClassifiedData.pgcnt = pgcnt;
   }
+  final String? company = jsonConvert.convert<String>(json['company']);
+  if (company != null) {
+    getClassifiedData.company = company;
+  }
   final String? premiumsdate = jsonConvert.convert<String>(
       json['premiumsdate']);
   if (premiumsdate != null) {
@@ -67,21 +71,68 @@ GetClassifiedData $GetClassifiedDataFromJson(Map<String, dynamic> json) {
   if (premiumedate != null) {
     getClassifiedData.premiumedate = premiumedate;
   }
+  final String? datemodified = jsonConvert.convert<String>(
+      json['datemodified']);
+  if (datemodified != null) {
+    getClassifiedData.datemodified = datemodified;
+  }
+  final String? datecreated = jsonConvert.convert<String>(json['datecreated']);
+  if (datecreated != null) {
+    getClassifiedData.datecreated = datecreated;
+  }
+  final String? category = jsonConvert.convert<String>(json['category']);
+  if (category != null) {
+    getClassifiedData.category = category;
+  }
+  final String? creatby = jsonConvert.convert<String>(json['creatby']);
+  if (creatby != null) {
+    getClassifiedData.creatby = creatby;
+  }
+  final String? subcategory = jsonConvert.convert<String>(json['subcategory']);
+  if (subcategory != null) {
+    getClassifiedData.subcategory = subcategory;
+  }
   final String? popular = jsonConvert.convert<String>(json['popular']);
   if (popular != null) {
     getClassifiedData.popular = popular;
   }
-  final dynamic user = json['user'];
-  if (user != null) {
-    getClassifiedData.user = user;
+  final String? website = jsonConvert.convert<String>(json['website']);
+  if (website != null) {
+    getClassifiedData.website = website;
   }
-  final int? totalLike = jsonConvert.convert<int>(json['total_like']);
-  if (totalLike != null) {
-    getClassifiedData.totalLike = totalLike;
+  final String? city = jsonConvert.convert<String>(json['city']);
+  if (city != null) {
+    getClassifiedData.city = city;
   }
-  final int? totalComment = jsonConvert.convert<int>(json['total_comment']);
-  if (totalComment != null) {
-    getClassifiedData.totalComment = totalComment;
+  final String? state = jsonConvert.convert<String>(json['state']);
+  if (state != null) {
+    getClassifiedData.state = state;
+  }
+  final String? country = jsonConvert.convert<String>(json['country']);
+  if (country != null) {
+    getClassifiedData.country = country;
+  }
+  final int? totallike = jsonConvert.convert<int>(json['totallike']);
+  if (totallike != null) {
+    getClassifiedData.totallike = totallike;
+  }
+  final int? totalbookmark = jsonConvert.convert<int>(json['totalbookmark']);
+  if (totalbookmark != null) {
+    getClassifiedData.totalbookmark = totalbookmark;
+  }
+  final bool? likedByUser = jsonConvert.convert<bool>(json['liked_by_user']);
+  if (likedByUser != null) {
+    getClassifiedData.likedByUser = likedByUser;
+  }
+  final bool? bookmarkedByUser = jsonConvert.convert<bool>(
+      json['bookmarked_by_user']);
+  if (bookmarkedByUser != null) {
+    getClassifiedData.bookmarkedByUser = bookmarkedByUser;
+  }
+  final GetClassifiedDataUserData? userData = jsonConvert.convert<
+      GetClassifiedDataUserData>(json['user_data']);
+  if (userData != null) {
+    getClassifiedData.userData = userData;
   }
   final String? imagePath = jsonConvert.convert<String>(json['image_path']);
   if (imagePath != null) {
@@ -102,12 +153,24 @@ Map<String, dynamic> $GetClassifiedDataToJson(GetClassifiedData entity) {
   data['image'] = entity.image;
   data['description'] = entity.description;
   data['pgcnt'] = entity.pgcnt;
+  data['company'] = entity.company;
   data['premiumsdate'] = entity.premiumsdate;
   data['premiumedate'] = entity.premiumedate;
+  data['datemodified'] = entity.datemodified;
+  data['datecreated'] = entity.datecreated;
+  data['category'] = entity.category;
+  data['creatby'] = entity.creatby;
+  data['subcategory'] = entity.subcategory;
   data['popular'] = entity.popular;
-  data['user'] = entity.user;
-  data['total_like'] = entity.totalLike;
-  data['total_comment'] = entity.totalComment;
+  data['website'] = entity.website;
+  data['city'] = entity.city;
+  data['state'] = entity.state;
+  data['country'] = entity.country;
+  data['totallike'] = entity.totallike;
+  data['totalbookmark'] = entity.totalbookmark;
+  data['liked_by_user'] = entity.likedByUser;
+  data['bookmarked_by_user'] = entity.bookmarkedByUser;
+  data['user_data'] = entity.userData?.toJson();
   data['image_path'] = entity.imagePath;
   data['image_thum_path'] = entity.imageThumPath;
   return data;
@@ -120,12 +183,24 @@ extension GetClassifiedDataExtension on GetClassifiedData {
     String? image,
     String? description,
     int? pgcnt,
+    String? company,
     String? premiumsdate,
     String? premiumedate,
+    String? datemodified,
+    String? datecreated,
+    String? category,
+    String? creatby,
+    String? subcategory,
     String? popular,
-    dynamic user,
-    int? totalLike,
-    int? totalComment,
+    String? website,
+    String? city,
+    String? state,
+    String? country,
+    int? totallike,
+    int? totalbookmark,
+    bool? likedByUser,
+    bool? bookmarkedByUser,
+    GetClassifiedDataUserData? userData,
     String? imagePath,
     String? imageThumPath,
   }) {
@@ -135,12 +210,94 @@ extension GetClassifiedDataExtension on GetClassifiedData {
       ..image = image ?? this.image
       ..description = description ?? this.description
       ..pgcnt = pgcnt ?? this.pgcnt
+      ..company = company ?? this.company
       ..premiumsdate = premiumsdate ?? this.premiumsdate
       ..premiumedate = premiumedate ?? this.premiumedate
+      ..datemodified = datemodified ?? this.datemodified
+      ..datecreated = datecreated ?? this.datecreated
+      ..category = category ?? this.category
+      ..creatby = creatby ?? this.creatby
+      ..subcategory = subcategory ?? this.subcategory
       ..popular = popular ?? this.popular
-      ..user = user ?? this.user
-      ..totalLike = totalLike ?? this.totalLike
-      ..totalComment = totalComment ?? this.totalComment
+      ..website = website ?? this.website
+      ..city = city ?? this.city
+      ..state = state ?? this.state
+      ..country = country ?? this.country
+      ..totallike = totallike ?? this.totallike
+      ..totalbookmark = totalbookmark ?? this.totalbookmark
+      ..likedByUser = likedByUser ?? this.likedByUser
+      ..bookmarkedByUser = bookmarkedByUser ?? this.bookmarkedByUser
+      ..userData = userData ?? this.userData
+      ..imagePath = imagePath ?? this.imagePath
+      ..imageThumPath = imageThumPath ?? this.imageThumPath;
+  }
+}
+
+GetClassifiedDataUserData $GetClassifiedDataUserDataFromJson(
+    Map<String, dynamic> json) {
+  final GetClassifiedDataUserData getClassifiedDataUserData = GetClassifiedDataUserData();
+  final String? name = jsonConvert.convert<String>(json['name']);
+  if (name != null) {
+    getClassifiedDataUserData.name = name;
+  }
+  final String? userimage = jsonConvert.convert<String>(json['userimage']);
+  if (userimage != null) {
+    getClassifiedDataUserData.userimage = userimage;
+  }
+  final String? email = jsonConvert.convert<String>(json['email']);
+  if (email != null) {
+    getClassifiedDataUserData.email = email;
+  }
+  final String? mobile = jsonConvert.convert<String>(json['mobile']);
+  if (mobile != null) {
+    getClassifiedDataUserData.mobile = mobile;
+  }
+  final String? countrycode1 = jsonConvert.convert<String>(
+      json['countrycode1']);
+  if (countrycode1 != null) {
+    getClassifiedDataUserData.countrycode1 = countrycode1;
+  }
+  final String? imagePath = jsonConvert.convert<String>(json['image_path']);
+  if (imagePath != null) {
+    getClassifiedDataUserData.imagePath = imagePath;
+  }
+  final String? imageThumPath = jsonConvert.convert<String>(
+      json['image_thum_path']);
+  if (imageThumPath != null) {
+    getClassifiedDataUserData.imageThumPath = imageThumPath;
+  }
+  return getClassifiedDataUserData;
+}
+
+Map<String, dynamic> $GetClassifiedDataUserDataToJson(
+    GetClassifiedDataUserData entity) {
+  final Map<String, dynamic> data = <String, dynamic>{};
+  data['name'] = entity.name;
+  data['userimage'] = entity.userimage;
+  data['email'] = entity.email;
+  data['mobile'] = entity.mobile;
+  data['countrycode1'] = entity.countrycode1;
+  data['image_path'] = entity.imagePath;
+  data['image_thum_path'] = entity.imageThumPath;
+  return data;
+}
+
+extension GetClassifiedDataUserDataExtension on GetClassifiedDataUserData {
+  GetClassifiedDataUserData copyWith({
+    String? name,
+    String? userimage,
+    String? email,
+    String? mobile,
+    String? countrycode1,
+    String? imagePath,
+    String? imageThumPath,
+  }) {
+    return GetClassifiedDataUserData()
+      ..name = name ?? this.name
+      ..userimage = userimage ?? this.userimage
+      ..email = email ?? this.email
+      ..mobile = mobile ?? this.mobile
+      ..countrycode1 = countrycode1 ?? this.countrycode1
       ..imagePath = imagePath ?? this.imagePath
       ..imageThumPath = imageThumPath ?? this.imageThumPath;
   }

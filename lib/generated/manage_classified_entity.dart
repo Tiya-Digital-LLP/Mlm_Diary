@@ -24,42 +24,31 @@ class ManageClassifiedEntity {
 class ManageClassifiedData {
 	int? id = 0;
 	String? title = '';
+	String? image = '';
 	String? description = '';
-	String? creatby = '';
-	String? datecreated = '';
-	String? datemodified = '';
-	String? dateviewed = '';
-	String? completee = '';
 	int? pgcnt = 0;
-	String? status = '';
-	dynamic category;
-	String? ipp = '';
-	dynamic tags;
-	int? facebook = 0;
-	int? twitter = 0;
-	int? googleplus = 0;
-	int? logit = 0;
-	int? updatee = 0;
-	String? popular = '';
-	int? premium = 0;
-	@JSONField(name: "premium_date")
-	dynamic premiumDate;
+	String? company = '';
 	dynamic premiumsdate;
 	dynamic premiumedate;
+	String? datemodified = '';
+	String? datecreated = '';
+	String? category = '';
+	String? creatby = '';
 	String? subcategory = '';
-	dynamic ctype;
-	String? location = '';
-	String? image = '';
-	String? company = '';
+	String? popular = '';
 	String? website = '';
 	String? city = '';
 	String? state = '';
 	String? country = '';
-	dynamic urlcomponent;
-	String? paidtype = '';
-	String? classicheck = '';
+	String? urlcomponent = '';
 	int? totallike = 0;
-	int? totalcomment = 0;
+	int? totalbookmark = 0;
+	@JSONField(name: "liked_by_user")
+	bool? likedByUser = false;
+	@JSONField(name: "bookmarked_by_user")
+	bool? bookmarkedByUser = false;
+	@JSONField(name: "user_data")
+	ManageClassifiedDataUserData? userData;
 	@JSONField(name: "image_path")
 	String? imagePath = '';
 	@JSONField(name: "image_thum_path")
@@ -70,6 +59,31 @@ class ManageClassifiedData {
 	factory ManageClassifiedData.fromJson(Map<String, dynamic> json) => $ManageClassifiedDataFromJson(json);
 
 	Map<String, dynamic> toJson() => $ManageClassifiedDataToJson(this);
+
+	@override
+	String toString() {
+		return jsonEncode(this);
+	}
+}
+
+@JsonSerializable()
+class ManageClassifiedDataUserData {
+	int? id = 0;
+	String? name = '';
+	String? userimage = '';
+	String? email = '';
+	String? mobile = '';
+	String? countrycode1 = '';
+	@JSONField(name: "image_path")
+	String? imagePath = '';
+	@JSONField(name: "image_thum_path")
+	String? imageThumPath = '';
+
+	ManageClassifiedDataUserData();
+
+	factory ManageClassifiedDataUserData.fromJson(Map<String, dynamic> json) => $ManageClassifiedDataUserDataFromJson(json);
+
+	Map<String, dynamic> toJson() => $ManageClassifiedDataUserDataToJson(this);
 
 	@override
 	String toString() {

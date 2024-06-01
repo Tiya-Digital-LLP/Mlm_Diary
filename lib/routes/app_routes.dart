@@ -23,6 +23,8 @@ abstract class Routes {
   static const notificatiosetting = '/notificatioSetting';
   static const mlmcompanies = '/mlmCompanies';
   static const mlmcompaniesdetails = '/mlmCompaniesDetails';
+  static const manageclasifieddetailscreen = '/mannageClassifiedDetailScreen';
+
   static const profilescreen = '/profileScreen';
   static const accountsettingscreen = '/accountSettingScreen';
   static const mlmclassified = '/mlmClassified';

@@ -24,6 +24,7 @@ import 'package:mlmdiary/menu/menuscreens/followers/followers.dart';
 import 'package:mlmdiary/home/message/message_detail_screen.dart';
 import 'package:mlmdiary/home/message/message_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/manageclassified/manage_classified.dart';
+import 'package:mlmdiary/menu/menuscreens/manageclassified/manage_classified_detail_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/manageclassified/manageclassified_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/mlmcompaines.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/mlmcompanies_details_screen.dart';
@@ -89,6 +90,12 @@ class AppPages {
       page: () => const ManageClassifiedPlusIcon(),
     ),
     GetPage(
+      name: Routes.manageclasifieddetailscreen,
+      page: () => ManageClassifiedDetailsScreen(
+        key: UniqueKey(),
+      ),
+    ),
+    GetPage(
       name: Routes.mlmclassifieddetail,
       page: () => ClassidiedDetailsScreen(
         key: UniqueKey(),
@@ -134,9 +141,7 @@ class AppPages {
     ),
     GetPage(
       name: Routes.mlmcompaniesdetails,
-      page: () => MlmCompaniesDetails(
-        post: Get.arguments,
-      ),
+      page: () => const MlmCompaniesDetails(),
     ),
     GetPage(
       name: Routes.profilescreen,

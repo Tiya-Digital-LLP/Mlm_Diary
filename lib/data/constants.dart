@@ -37,4 +37,14 @@ class Constants {
   static const String manageclassified = "/myclassifiedlist";
   static const String getcompany = "/getcompany";
   static const String getclassified = "/getclassified";
+  static const String likeduserclassified = "/addlikeclassified";
+  static const String bookmarkclassified = "/addfavoriteclassified";
+  static const String updateclassified = "/updateclassified";
+  static const String delteclassified = "/deleteclassified";
+  static const String getadmincompany = "/getmlmcompany";
+  static const String likemlmcompany = "/likemlmcompany";
+  static const String bookmarkmlmcompany = "/bookmark_mlmcompany";
+  static const String mlmdatabase = "/getdatabase";
+  static const String remainigclassifeidcount =
+      "/remaining_classified_count_check";
 }

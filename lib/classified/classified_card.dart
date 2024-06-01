@@ -8,47 +8,120 @@ import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/text_style.dart';
+import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 
-// ignore: must_be_immutable
-class ClassifiedCard extends StatelessWidget {
+class ClassifiedCard extends StatefulWidget {
   final String userImage;
   final String userName;
   final String postTitle;
+  final String dateTime;
+  final int likedCount;
+  final int classifiedId;
+  final ClasifiedController controller;
+  final int viewcounts;
+  final int bookmarkCount;
+  final bool isPopular;
+  final String image;
 
-  ClassifiedCard({
+  const ClassifiedCard({
     super.key,
     required this.userImage,
     required this.userName,
     required this.postTitle,
+    required this.dateTime,
+    required this.likedCount,
+    required this.classifiedId,
+    required this.controller,
+    required this.viewcounts,
+    required this.bookmarkCount,
+    required this.isPopular,
+    required this.image,
   });
-  final ClasifiedController controller = Get.put(ClasifiedController());
+
+  @override
+  State<ClassifiedCard> createState() => _ClassifiedCardState();
+}
+
+class _ClassifiedCardState extends State<ClassifiedCard> {
+  late RxBool isLiked;
+  late RxBool isBookmarked;
+
+  late RxInt likeCount;
+  late RxInt bookmarkCount;
+
+  late PostTimeFormatter postTimeFormatter;
+
+  @override
+  void initState() {
+    super.initState();
+    postTimeFormatter = PostTimeFormatter();
+    initializeLikes();
+    initializeBookmarks();
+  }
+
+  void initializeLikes() {
+    isLiked =
+        RxBool(widget.controller.likedStatusMap[widget.classifiedId] ?? false);
+    likeCount = RxInt(widget.controller.likeCountMap[widget.classifiedId] ??
+        widget.likedCount);
+  }
+
+  void toggleLike() async {
+    bool newLikedValue = !isLiked.value;
+    isLiked.value = newLikedValue;
+    likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
+
+    await widget.controller.toggleLike(widget.classifiedId);
+  }
+
+  void initializeBookmarks() {
+    isBookmarked = RxBool(
+        widget.controller.bookmarkStatusMap[widget.classifiedId] ?? false);
+    bookmarkCount = RxInt(
+        widget.controller.bookmarkCountMap[widget.classifiedId] ??
+            widget.bookmarkCount);
+  }
+
+  void toggleBookmark() async {
+    bool newBookmarkedValue = !isBookmarked.value;
+    isBookmarked.value = newBookmarkedValue;
+    bookmarkCount.value =
+        newBookmarkedValue ? bookmarkCount.value + 1 : bookmarkCount.value - 1;
+
+    await widget.controller.toggleBookMark(widget.classifiedId);
+  }
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    String decodedPostTitle = HtmlUnescape().convert(postTitle);
-    return Container(
-      padding: EdgeInsets.symmetric(
-          horizontal: size.width * 0.035, vertical: size.height * 0.01),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14),
-        color: AppColors.white,
-      ),
-      child: Obx(
-        () => Column(
+    String decodedPostTitle = HtmlUnescape().convert(widget.postTitle);
+
+    return Obx(() {
+      return Container(
+        padding: EdgeInsets.symmetric(
+            horizontal: size.width * 0.035, vertical: size.height * 0.01),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(14),
+          color: AppColors.white,
+          border: Border.all(
+            color: widget.isPopular ? Colors.yellow : Colors.transparent,
+            width: 3.0,
+          ),
+        ),
+        child: Column(
           children: [
             Row(
               children: [
-                CircleAvatar(
-                  backgroundColor: const Color(0XFFCCC9C9),
-                  radius: size.width * 0.07,
-                  child: ClipOval(
-                    child: Image.asset(
-                      Assets.imagesIcon,
-                      height: 100,
-                      width: 100,
-                      fit: BoxFit.cover,
-                    ),
+                ClipOval(
+                  child: CachedNetworkImage(
+                    imageUrl: widget.image,
+                    height: 60.0,
+                    width: 60.0,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) =>
+                        const CircularProgressIndicator(),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
                   ),
                 ),
                 const SizedBox(
@@ -60,22 +133,43 @@ class ClassifiedCard extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          'Aman Talaviya',
+                          widget.userName,
                           style: textStyleW700(
                               size.width * 0.043, AppColors.blackText),
-                        ),
-                        const SizedBox(
-                          width: 07,
                         ),
                       ],
                     ),
                     Text(
-                      "2 Min Ago",
+                      postTimeFormatter.formatPostTime(widget.dateTime),
                       style: textStyleW400(size.width * 0.035,
                           AppColors.blackText.withOpacity(0.5)),
                     ),
                   ],
-                )
+                ),
+                const Spacer(),
+                Column(
+                  children: [
+                    if (widget.isPopular != false)
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.yellow,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: Colors.yellow),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 5),
+                        margin: const EdgeInsets.only(top: 5, right: 5),
+                        child: const Text(
+                          'Premium',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ],
             ),
             SizedBox(
@@ -83,30 +177,27 @@ class ClassifiedCard extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Text(
-                userName,
-                style: textStyleW700(size.width * 0.040, AppColors.blackText),
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  widget.postTitle,
+                  style: textStyleW700(size.width * 0.040, AppColors.blackText),
+                ),
               ),
             ),
             Align(
               alignment: Alignment.topLeft,
               child: Html(
                 data: decodedPostTitle,
+                style: {
+                  "html": Style(
+                    maxLines: 2,
+                  ),
+                },
               ),
             ),
             SizedBox(
               height: size.height * 0.01,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(right: 15),
-              child: Text(
-                postTitle,
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.blackText,
-                  fontSize: size.width * 0.035,
-                ),
-              ),
             ),
             SizedBox(
               height: size.height * 0.012,
@@ -118,7 +209,7 @@ class ClassifiedCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(15),
               ),
               child: CachedNetworkImage(
-                imageUrl: userImage,
+                imageUrl: widget.userImage,
                 height: 97,
                 width: 105,
                 fit: BoxFit.fill,
@@ -141,18 +232,26 @@ class ClassifiedCard extends StatelessWidget {
                     SizedBox(
                       height: size.height * 0.028,
                       width: size.height * 0.028,
-                      child: SvgPicture.asset(Assets.svgLike),
+                      child: GestureDetector(
+                        onTap: toggleLike,
+                        child: Icon(
+                          isLiked.value
+                              ? Icons.thumb_up_off_alt_sharp
+                              : Icons.thumb_up_off_alt_outlined,
+                          color: isLiked.value ? AppColors.primaryColor : null,
+                        ),
+                      ),
                     ),
                     const SizedBox(
                       width: 7,
                     ),
-                    Text(
-                      "50k",
-                      style: TextStyle(
-                          fontFamily: "Metropolis",
-                          fontWeight: FontWeight.w600,
-                          fontSize: size.width * 0.045),
-                    ),
+                    likeCount.value == 0
+                        ? const SizedBox.shrink()
+                        : Text(
+                            'Like (${likeCount.value})',
+                            style: textStyleW600(
+                                size.width * 0.038, AppColors.blackText),
+                          ),
                     const SizedBox(
                       width: 15,
                     ),
@@ -165,11 +264,11 @@ class ClassifiedCard extends StatelessWidget {
                       width: 7,
                     ),
                     Text(
-                      "286",
+                      'Views (${widget.viewcounts})',
                       style: TextStyle(
                           fontFamily: "Metropolis",
                           fontWeight: FontWeight.w600,
-                          fontSize: size.width * 0.045),
+                          fontSize: size.width * 0.038),
                     ),
                   ],
                 ),
@@ -179,14 +278,17 @@ class ClassifiedCard extends StatelessWidget {
                       height: size.height * 0.028,
                       width: size.height * 0.028,
                       child: GestureDetector(
-                        onTap: () => controller.toggleBookMark(),
+                        onTap: () => toggleBookmark(),
                         child: Icon(
-                          controller.isBookMarked.value
+                          isBookmarked.value
                               ? Icons.bookmark
                               : Icons.bookmark_border,
                           size: size.height * 0.032,
                         ),
                       ),
+                    ),
+                    const SizedBox(
+                      width: 7,
                     ),
                     const SizedBox(
                       width: 10,
@@ -202,10 +304,10 @@ class ClassifiedCard extends StatelessWidget {
                   ],
                 ),
               ],
-            )
+            ),
           ],
         ),
-      ),
-    );
+      );
+    });
   }
 }

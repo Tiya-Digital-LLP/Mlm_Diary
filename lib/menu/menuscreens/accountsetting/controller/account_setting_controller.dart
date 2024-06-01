@@ -759,23 +759,23 @@ class AccountSeetingController extends GetxController {
         final responseData = json.decode(response.body);
         if (responseData['result'] == 1) {
           // ignore: use_build_context_synchronously
-          showToast("Password changed successfully!", context);
+          showToastverifedborder("Password changed successfully!", context);
         } else {
-          showToast(
+          showToasterrorborder(
               // ignore: use_build_context_synchronously
               responseData['message'] ?? "Password change failed",
               // ignore: use_build_context_synchronously
               context);
         }
       } else {
-        showToast(
+        showToasterrorborder(
             "Password change request failed: ${response.reasonPhrase}",
             // ignore: use_build_context_synchronously
             context);
       }
     } catch (e) {
       // ignore: use_build_context_synchronously
-      showToast("An error occurred: $e", context);
+      showToasterrorborder("An error occurred: $e", context);
       if (kDebugMode) {
         print('Error: $e');
       }

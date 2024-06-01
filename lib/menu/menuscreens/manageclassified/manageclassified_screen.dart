@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/manageclassified/controller/manage_classified_controller.dart';
@@ -25,10 +25,9 @@ class _MlmClassifiedState extends State<ManageClassified> {
     controller.fetchClassifieds();
   }
 
-  void deletePost(int index) {
-    setState(() {
-      controller.classifiedList.removeAt(index);
-    });
+  void deletePost(int index) async {
+    int classifiedId = controller.classifiedList[index].id ?? 0;
+    await controller.deleteClassified(classifiedId, index);
   }
 
   @override
@@ -42,7 +41,7 @@ class _MlmClassifiedState extends State<ManageClassified> {
       body: Container(
         color: AppColors.background,
         child: Obx(() {
-          if (controller.isLoading.value) {
+          if (controller.isLoading.value && controller.classifiedList.isEmpty) {
             return const Center(child: CircularProgressIndicator());
           }
 
@@ -71,15 +70,23 @@ class _MlmClassifiedState extends State<ManageClassified> {
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 child: GestureDetector(
                   onTap: () {
-                    // Get.toNamed(Routes.mlmclassifieddetail, arguments: post);
+                    Get.toNamed(
+                      Routes.manageclasifieddetailscreen,
+                      arguments: controller.classifiedList[index],
+                    );
                   },
                   child: ManageClassifiedCard(
                     onDelete: () => deletePost(index),
                     userImage: post.imagePath ?? '',
                     userName: post.creatby ?? '',
                     postTitle: post.title ?? '',
+                    dateTime: post.datecreated ?? '',
                     postCaption: post.description ?? '',
                     postTime: post.datecreated ?? '',
+                    controller: controller,
+                    viewcounts: post.pgcnt ?? 0,
+                    likedCount: post.totallike ?? 0,
+                    classifiedId: post.id ?? 0,
                   ),
                 ),
               );

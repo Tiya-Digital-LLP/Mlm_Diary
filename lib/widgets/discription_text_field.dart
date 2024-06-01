@@ -61,6 +61,8 @@ class DiscriptionTextField extends StatelessWidget {
               controller: controller,
               style: textStyleW500(size.width * 0.04, AppColors.blackText),
               cursorColor: AppColors.blackText,
+              minLines: 3,
+              maxLines: 6,
               decoration: InputDecoration(
                 counterText: "",
                 hintText: hint,

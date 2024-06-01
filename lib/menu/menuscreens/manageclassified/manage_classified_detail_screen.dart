@@ -3,26 +3,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
-import 'package:mlmdiary/generated/get_classified_entity.dart';
+import 'package:mlmdiary/generated/manage_classified_entity.dart';
+import 'package:mlmdiary/menu/menuscreens/manageclassified/controller/manage_classified_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 
-class ClassidiedDetailsScreen extends StatefulWidget {
-  const ClassidiedDetailsScreen({required Key key}) : super(key: key);
+class ManageClassifiedDetailsScreen extends StatefulWidget {
+  const ManageClassifiedDetailsScreen({required Key key}) : super(key: key);
 
   @override
-  State<ClassidiedDetailsScreen> createState() =>
+  State<ManageClassifiedDetailsScreen> createState() =>
       _ClassidiedDetailsScreenState();
 }
 
-class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
-  final ClasifiedController controller = Get.put(ClasifiedController());
-  final post = Get.arguments as GetClassifiedData;
+class _ClassidiedDetailsScreenState
+    extends State<ManageClassifiedDetailsScreen> {
+  final ManageClasifiedController controller =
+      Get.put(ManageClasifiedController());
+  final post = Get.arguments as ManageClassifiedData;
 
   PostTimeFormatter postTimeFormatter = PostTimeFormatter();
 
@@ -64,16 +66,16 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
                           horizontal: 16, vertical: 8),
                       child: Row(
                         children: [
-                          ClipOval(
-                            child: CachedNetworkImage(
-                              imageUrl: post.userData!.imagePath ?? '',
-                              height: 60.0,
-                              width: 60.0,
-                              fit: BoxFit.cover,
-                              placeholder: (context, url) =>
-                                  const CircularProgressIndicator(),
-                              errorWidget: (context, url, error) =>
-                                  const Icon(Icons.error),
+                          CircleAvatar(
+                            backgroundColor: const Color(0XFFCCC9C9),
+                            radius: size.width * 0.07,
+                            child: ClipOval(
+                              child: Image.asset(
+                                Assets.imagesIcon,
+                                height: 100,
+                                width: 100,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                           const SizedBox(
@@ -418,24 +420,24 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
                 ),
                 Row(
                   children: [
-                    SizedBox(
-                      height: size.height * 0.028,
-                      width: size.height * 0.028,
-                      child: GestureDetector(
-                        onTap: () => controller.toggleBookMark(post.id ?? 0),
-                        child: Icon(
-                          // Observe like status
-                          controller.bookmarkStatusMap[post.id ?? 0] ?? false
-                              ? Icons.bookmark
-                              : Icons.bookmark_border,
-                          color: controller.bookmarkStatusMap[post.id ?? 0] ??
-                                  false
-                              ? AppColors.primaryColor
-                              : null,
-                          size: size.height * 0.032,
-                        ),
-                      ),
-                    ),
+                    // SizedBox(
+                    //   height: size.height * 0.028,
+                    //   width: size.height * 0.028,
+                    //   child: GestureDetector(
+                    //     onTap: () => controller.toggleBookMark(post.id ?? 0),
+                    //     child: Icon(
+                    //       // Observe like status
+                    //       controller.bookmarkStatusMap[post.id ?? 0] ?? false
+                    //           ? Icons.bookmark
+                    //           : Icons.bookmark_border,
+                    //       color: controller.bookmarkStatusMap[post.id ?? 0] ??
+                    //               false
+                    //           ? AppColors.primaryColor
+                    //           : null,
+                    //       size: size.height * 0.032,
+                    //     ),
+                    //   ),
+                    // ),
                     const SizedBox(
                       width: 10,
                     ),

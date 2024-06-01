@@ -29,7 +29,7 @@ class ForgotPasswordController extends GetxController {
 
   void forgotValidation(BuildContext context) {
     if (email.value.text.isEmpty) {
-      showToast("Please Enter Email", context);
+      showToasterrorborder("Please Enter Email", context);
     } else {
       sendForgotPasswordRequest(context);
     }
@@ -57,11 +57,14 @@ class ForgotPasswordController extends GetxController {
             ForgotPasswordEntity.fromJson(responseData);
         if (forgotPasswordEntity.result == 1) {
           // ignore: use_build_context_synchronously
-          showToast("Password reset email sent successfully!", context);
+          showToastverifedborder(
+              "Password reset email sent successfully!",
+              // ignore: use_build_context_synchronously
+              context);
           if (forgotPasswordEntity.userId != null) {
             await saveUserId(forgotPasswordEntity.userId!); // Save userId
           } else {
-            showToast(
+            showToasterrorborder(
                 // ignore: use_build_context_synchronously
                 "User ID is null, cannot save to shared preferences",
                 // ignore: use_build_context_synchronously
@@ -76,20 +79,20 @@ class ForgotPasswordController extends GetxController {
             },
           );
         } else {
-          showToast(
+          showToasterrorborder(
               forgotPasswordEntity.message ?? "Forgot password request failed",
               // ignore: use_build_context_synchronously
               context);
         }
       } else {
-        showToast(
+        showToasterrorborder(
             "Forgot password request failed: ${response.reasonPhrase}",
             // ignore: use_build_context_synchronously
             context);
       }
     } catch (e) {
       // ignore: use_build_context_synchronously
-      showToast("An error occurred: $e", context);
+      showToasterrorborder("An error occurred: $e", context);
       if (kDebugMode) {
         print('Error: $e');
       }
@@ -129,26 +132,26 @@ class ForgotPasswordController extends GetxController {
         final responseData = json.decode(response.body);
         if (responseData['result'] == 1) {
           // ignore: use_build_context_synchronously
-          showToast("Password changed successfully!", context);
+          showToastverifedborder("Password changed successfully!", context);
           Get.offNamed(
             Routes.mainscreen,
           );
         } else {
-          showToast(
+          showToasterrorborder(
               // ignore: use_build_context_synchronously
               responseData['message'] ?? "Password change failed",
               // ignore: use_build_context_synchronously
               context);
         }
       } else {
-        showToast(
+        showToasterrorborder(
             "Password change request failed: ${response.reasonPhrase}",
             // ignore: use_build_context_synchronously
             context);
       }
     } catch (e) {
       // ignore: use_build_context_synchronously
-      showToast("An error occurred: $e", context);
+      showToasterrorborder("An error occurred: $e", context);
       if (kDebugMode) {
         print('Error: $e');
       }

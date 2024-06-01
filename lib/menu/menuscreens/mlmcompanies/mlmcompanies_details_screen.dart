@@ -1,17 +1,18 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/generated/get_admin_company_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
-import 'package:mlmdiary/modal_class/mlmcompany_class.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 
 class MlmCompaniesDetails extends StatefulWidget {
-  final MlmCompanyList post;
-  const MlmCompaniesDetails({super.key, required this.post});
+  const MlmCompaniesDetails({super.key});
 
   @override
   State<MlmCompaniesDetails> createState() => _MlmCompaniesDetailsState();
@@ -19,6 +20,15 @@ class MlmCompaniesDetails extends StatefulWidget {
 
 class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
   final CompanyController controller = Get.put(CompanyController());
+  final post = Get.arguments as GetAdminCompanyData;
+
+  @override
+  void initState() {
+    super.initState();
+    // ignore: unrelated_type_equality_checks
+    controller.likeCountMap == 0;
+  }
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -50,10 +60,17 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
                           child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Image.asset(
-                                  widget.post.userImage,
-                                  width: 100,
-                                  height: 100,
+                                ClipOval(
+                                  child: CachedNetworkImage(
+                                    imageUrl: post.image ?? '',
+                                    height: 60.0,
+                                    width: 60.0,
+                                    fit: BoxFit.cover,
+                                    placeholder: (context, url) =>
+                                        const CircularProgressIndicator(),
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(Icons.error),
+                                  ),
                                 ),
                               ]),
                         ),
@@ -67,7 +84,7 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
                           child: Align(
                             alignment: Alignment.topLeft,
                             child: Text(
-                              widget.post.postTitle,
+                              post.name ?? '',
                               style: TextStyle(
                                 fontWeight: FontWeight.w700,
                                 color: AppColors.blackText,
@@ -97,7 +114,7 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
                                 ],
                               ),
                               Text(
-                                widget.post.location,
+                                post.location ?? '',
                                 style: textStyleW400(
                                     size.width * 0.035, AppColors.blackText),
                               ),
@@ -222,7 +239,12 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
                                 children: [
                                   Row(
                                     children: [
-                                      SvgPicture.asset(Assets.svgLogosFacebook),
+                                      InkWell(
+                                          onTap: () {
+                                            post.fblink ?? '';
+                                          },
+                                          child: SvgPicture.asset(
+                                              Assets.svgLogosFacebook)),
                                       12.sbw,
                                       SvgPicture.asset(Assets.svgInstagram),
                                       12.sbw,
@@ -294,10 +316,14 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
                                     size.width * 0.035, AppColors.grey),
                               ),
                               5.sbh,
-                              Text(
-                                widget.post.postCaption,
-                                style: textStyleW400(
-                                    size.width * 0.035, AppColors.blackText),
+                              Align(
+                                alignment: Alignment.topLeft,
+                                child: Html(
+                                  data: post.description ?? '',
+                                  style: {
+                                    "html": Style(),
+                                  },
+                                ),
                               ),
                             ],
                           ),
@@ -318,101 +344,115 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
           color: AppColors.white,
         ),
         child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16,
-            ),
-            child: Obx(
-              () => Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
                 children: [
-                  Row(
-                    children: [
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      SizedBox(
-                        height: size.height * 0.028,
-                        width: size.height * 0.028,
-                        child: GestureDetector(
-                          onTap: () => controller.toggleLike(),
-                          child: Icon(
-                            controller.isLiked.value
-                                ? Icons.favorite
-                                : Icons.favorite_border,
-                            color: controller.isLiked.value
-                                ? AppColors.primaryColor
-                                : null,
-                            size: size.height * 0.030,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 7,
-                      ),
-                      controller.likeCount.value == 0
-                          ? const SizedBox.shrink()
-                          : Text(
-                              controller.likeCount.value.toString(),
-                              style: textStyleW600(
-                                  size.width * 0.040, AppColors.blackText),
-                            ),
-                      const SizedBox(
-                        width: 15,
-                      ),
-                      SizedBox(
-                        height: size.height * 0.028,
-                        width: size.height * 0.028,
-                        child: SvgPicture.asset(Assets.svgComment),
-                      ),
-                      const SizedBox(
-                        width: 7,
-                      ),
-                      Text(
-                        "24k",
-                        style: textStyleW600(
-                            size.width * 0.040, AppColors.blackText),
-                      ),
-                      const SizedBox(
-                        width: 15,
-                      ),
-                      SizedBox(
-                        height: size.height * 0.028,
-                        width: size.height * 0.028,
-                        child: SvgPicture.asset(Assets.svgView),
-                      ),
-                      const SizedBox(
-                        width: 7,
-                      ),
-                      Text(
-                        "286",
-                        style: textStyleW600(
-                            size.width * 0.040, AppColors.blackText),
-                      ),
-                    ],
+                  const SizedBox(
+                    width: 10,
                   ),
-                  Row(
-                    children: [
-                      SizedBox(
-                        height: size.height * 0.028,
-                        width: size.height * 0.028,
-                        child: SvgPicture.asset(Assets.svgSavePost),
+                  SizedBox(
+                    height: size.height * 0.028,
+                    width: size.height * 0.028,
+                    child: GestureDetector(
+                      onTap: () => controller.toggleLike(post.id ?? 0),
+                      child: Icon(
+                        // Observe like status
+                        controller.likedStatusMap[post.id ?? 0] ?? false
+                            ? Icons.thumb_up_off_alt_sharp
+                            : Icons.thumb_up_off_alt_outlined,
+                        color: controller.likedStatusMap[post.id ?? 0] ?? false
+                            ? AppColors.primaryColor
+                            : null,
+                        size: size.height * 0.032,
                       ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      SizedBox(
-                        height: size.height * 0.028,
-                        width: size.height * 0.028,
-                        child: SvgPicture.asset(Assets.svgSend),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                    ],
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 7,
+                  ),
+                  // ignore: unrelated_type_equality_checks
+                  controller.likeCountMap == 0
+                      ? const SizedBox.shrink()
+                      : Text(
+                          post.totallike.toString(),
+                          style: textStyleW600(
+                              size.width * 0.040, AppColors.blackText),
+                        ),
+                  const SizedBox(
+                    width: 15,
+                  ),
+                  SizedBox(
+                    height: size.height * 0.028,
+                    width: size.height * 0.028,
+                    child: SvgPicture.asset(Assets.svgComment),
+                  ),
+                  const SizedBox(
+                    width: 7,
+                  ),
+                  Text(
+                    "24k",
+                    style:
+                        textStyleW600(size.width * 0.040, AppColors.blackText),
+                  ),
+                  const SizedBox(
+                    width: 15,
+                  ),
+                  SizedBox(
+                    height: size.height * 0.028,
+                    width: size.height * 0.028,
+                    child: SvgPicture.asset(Assets.svgView),
+                  ),
+                  const SizedBox(
+                    width: 7,
+                  ),
+                  Text(
+                    "286",
+                    style:
+                        textStyleW600(size.width * 0.040, AppColors.blackText),
                   ),
                 ],
               ),
-            )),
+              Row(
+                children: [
+                  SizedBox(
+                    height: size.height * 0.028,
+                    width: size.height * 0.028,
+                    child: GestureDetector(
+                      onTap: () => controller.toggleBookMark(post.id ?? 0),
+                      child: Icon(
+                        // Observe like status
+                        controller.bookmarkStatusMap[post.id ?? 0] ?? false
+                            ? Icons.bookmark
+                            : Icons.bookmark_border,
+                        color:
+                            controller.bookmarkStatusMap[post.id ?? 0] ?? false
+                                ? AppColors.primaryColor
+                                : null,
+                        size: size.height * 0.032,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  SizedBox(
+                    height: size.height * 0.028,
+                    width: size.height * 0.028,
+                    child: SvgPicture.asset(Assets.svgSend),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -3,46 +3,72 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/menu/menuscreens/manageclassified/controller/manage_classified_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
+import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 
-class ManageClassifiedCard extends StatelessWidget {
-  final String userImage;
-  final String userName;
-  final String postTitle;
-  final String postCaption;
-  final String postTime;
-  final VoidCallback onDelete;
-
+class ManageClassifiedCard extends StatefulWidget {
   const ManageClassifiedCard({
     super.key,
     required this.userImage,
     required this.userName,
     required this.postTitle,
+    required this.dateTime,
+    required this.classifiedId,
     required this.postCaption,
     required this.postTime,
     required this.onDelete,
+    required this.controller,
+    required this.viewcounts,
+    required this.likedCount,
   });
+  final String userImage;
+  final String userName;
+  final String postTitle;
+  final String dateTime;
+  final int classifiedId;
 
-  String formatPostTime(String postTime) {
-    DateTime now = DateTime.now();
-    DateTime time = DateTime.parse(postTime);
-    Duration difference = now.difference(time);
-    if (difference.inDays == 0) {
-      if (difference.inHours == 0) {
-        if (difference.inMinutes == 0) {
-          return 'Just now';
-        }
-        return '${difference.inMinutes} min ago';
-      }
-      return '${difference.inHours} hour ago';
-    } else if (difference.inDays == 1) {
-      return 'Yesterday';
-    } else {
-      return '${time.day}-${time.month}-${time.year}';
-    }
+  final String postCaption;
+  final String postTime;
+  final VoidCallback onDelete;
+  final ManageClasifiedController controller;
+  final int viewcounts;
+  final int likedCount;
+
+  @override
+  State<ManageClassifiedCard> createState() => _ManageClassifiedCardState();
+}
+
+class _ManageClassifiedCardState extends State<ManageClassifiedCard> {
+  late PostTimeFormatter postTimeFormatter;
+
+  //liked
+  late RxBool isLiked;
+  late RxInt likeCount;
+
+  @override
+  void initState() {
+    super.initState();
+    postTimeFormatter = PostTimeFormatter();
+    initializeLikes();
+  }
+
+  void initializeLikes() {
+    isLiked =
+        RxBool(widget.controller.likedStatusMap[widget.classifiedId] ?? false);
+    likeCount = RxInt(widget.controller.likeCountMap[widget.classifiedId] ??
+        widget.likedCount);
+  }
+
+  void toggleLike() async {
+    bool newLikedValue = !isLiked.value;
+    isLiked.value = newLikedValue;
+    likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
+
+    await widget.controller.toggleLike(widget.classifiedId);
   }
 
   @override
@@ -62,7 +88,7 @@ class ManageClassifiedCard extends StatelessWidget {
               children: [
                 // Replace Image.asset with CachedNetworkImage
                 CachedNetworkImage(
-                  imageUrl: userImage,
+                  imageUrl: widget.userImage,
                   height: 97,
                   width: 105,
                   fit: BoxFit.fill,
@@ -76,12 +102,12 @@ class ManageClassifiedCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        postTitle,
+                        widget.postTitle,
                         style: textStyleW700(
                             size.width * 0.038, AppColors.blackText),
                       ),
                       Text(
-                        postCaption,
+                        widget.postCaption,
                         style: textStyleW400(size.width * 0.035,
                             AppColors.blackText.withOpacity(0.8)),
                       ),
@@ -104,18 +130,26 @@ class ManageClassifiedCard extends StatelessWidget {
                     SizedBox(
                       height: size.height * 0.028,
                       width: size.height * 0.028,
-                      child: SvgPicture.asset(Assets.svgLike),
+                      child: GestureDetector(
+                        onTap: toggleLike,
+                        child: Icon(
+                          isLiked.value
+                              ? Icons.thumb_up_off_alt_sharp
+                              : Icons.thumb_up_off_alt_outlined,
+                          color: isLiked.value ? AppColors.primaryColor : null,
+                        ),
+                      ),
                     ),
                     const SizedBox(
                       width: 7,
                     ),
-                    Text(
-                      "50k",
-                      style: TextStyle(
-                          fontFamily: "Metropolis",
-                          fontWeight: FontWeight.w600,
-                          fontSize: size.width * 0.045),
-                    ),
+                    likeCount.value == 0
+                        ? const SizedBox.shrink()
+                        : Text(
+                            'Like (${likeCount.value})',
+                            style: textStyleW600(
+                                size.width * 0.038, AppColors.blackText),
+                          ),
                     const SizedBox(
                       width: 15,
                     ),
@@ -128,11 +162,11 @@ class ManageClassifiedCard extends StatelessWidget {
                       width: 7,
                     ),
                     Text(
-                      "286",
+                      'Views (${widget.viewcounts})',
                       style: TextStyle(
                           fontFamily: "Metropolis",
                           fontWeight: FontWeight.w600,
-                          fontSize: size.width * 0.045),
+                          fontSize: size.width * 0.038),
                     ),
                   ],
                 ),
@@ -159,7 +193,7 @@ class ManageClassifiedCard extends StatelessWidget {
                     ),
                     10.sbw,
                     InkWell(
-                      onTap: onDelete,
+                      onTap: widget.onDelete,
                       child: Ink(
                         height: size.height * 0.030,
                         width: size.height * 0.030,
@@ -217,7 +251,7 @@ class ManageClassifiedCard extends StatelessWidget {
                 ),
                 20.sbw,
                 Text(
-                  formatPostTime(postTime),
+                  postTimeFormatter.formatPostTime(widget.dateTime),
                   style: textStyleW500(
                       size.width * 0.028, AppColors.blackText.withOpacity(0.5)),
                 ),
