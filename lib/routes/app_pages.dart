@@ -37,6 +37,7 @@ import 'package:mlmdiary/menu/menuscreens/premiumplan/premium_plan.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/edit_post.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/profile_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/managequationanswer.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/user_profile_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/referandearn/referand_earn.dart';
 import 'package:mlmdiary/menu/menuscreens/tutorialvideo/tutorial_video.dart';
 import 'package:mlmdiary/menu/menuscreens/video/video.dart';
@@ -148,6 +149,10 @@ class AppPages {
       page: () => const ProfileScreen(),
     ),
     GetPage(
+      name: Routes.userprofilescreen,
+      page: () => const UserProfileScreen(),
+    ),
+    GetPage(
       name: Routes.accountsettingscreen,
       page: () => const AccountSetting(),
     ),
@@ -184,7 +189,6 @@ class AppPages {
     GetPage(
       name: Routes.mlmnewsdetails,
       page: () => NewsDetailScreen(
-        post: Get.arguments,
         key: UniqueKey(),
       ),
     ),
@@ -203,7 +207,6 @@ class AppPages {
     GetPage(
       name: Routes.mlmblogdetails,
       page: () => BlogDetailScreen(
-        post: Get.arguments,
         key: UniqueKey(),
       ),
     ),

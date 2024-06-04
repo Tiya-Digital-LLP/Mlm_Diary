@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/database/controller/database_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/customfilter/custom_filter.dart';
@@ -139,12 +140,20 @@ class _DatabaseState extends State<DatabaseScreen> {
                         final user = controller.mlmDatabaseList[index];
                         String location =
                             '${user.city ?? ''}, ${user.state ?? ''}, ${user.country ?? ''},';
-                        return UserCard(
-                          userImage: user.imagePath ?? '',
-                          userName: user.name ?? '',
-                          location: location,
-                          designation: user.immlm ?? '',
-                          plan: user.plan ?? '',
+                        return GestureDetector(
+                          onTap: () {
+                            Get.toNamed(
+                              Routes.userprofilescreen,
+                              arguments: controller.mlmDatabaseList[index],
+                            );
+                          },
+                          child: UserCard(
+                            userImage: user.imagePath ?? '',
+                            userName: user.name ?? '',
+                            location: location,
+                            designation: user.immlm ?? '',
+                            plan: user.plan ?? '',
+                          ),
                         );
                       }),
                 ),

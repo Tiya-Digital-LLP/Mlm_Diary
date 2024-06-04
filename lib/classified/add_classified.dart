@@ -16,7 +16,6 @@ import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_category_entity.dart';
 import 'package:mlmdiary/generated/get_sub_category_entity.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
-import 'package:mlmdiary/utils/common_toast.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -83,7 +82,7 @@ class _AddClassifiedState extends State<AddClassified> {
                       isError: controller.titleError.value,
                       byDefault: !controller.isTitleTyping.value,
                       onChanged: (value) {
-                        controller.titleValidation();
+                        controller.titleValidation(context);
                         controller.isTitleTyping.value = true;
                       },
                       height: 60,
@@ -214,7 +213,7 @@ class _AddClassifiedState extends State<AddClassified> {
                       isError: controller.discriptionError.value,
                       byDefault: !controller.isDiscriptionTyping.value,
                       onChanged: (value) {
-                        controller.discriptionValidation();
+                        controller.discriptionValidation(context);
                         controller.isDiscriptionTyping.value = true;
                       },
                     ),
@@ -552,7 +551,11 @@ class _AddClassifiedState extends State<AddClassified> {
 
       Get.back();
     } else {
-      ToastUtils.showToast('Please select an image');
+      showToasterrorborder(
+        'Please select an image',
+        // ignore: use_build_context_synchronously
+        context,
+      );
       return; // Exit function if no image is selected
     }
   }

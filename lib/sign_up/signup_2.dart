@@ -17,7 +17,7 @@ import 'package:mlmdiary/generated/get_plan_list_entity.dart';
 import 'package:mlmdiary/sign_up/controller/signup2_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/common_header.dart';
-import 'package:mlmdiary/utils/common_toast.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/border_text_field.dart';
@@ -388,35 +388,24 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                   titleColor: AppColors.white,
                   onTap: () {
                     if (file.value == null) {
-                      ToastUtils.showToast("Please Upload Photo");
+                      showToasterrorborder("Please Upload Photo", context);
                     } else if (controller.companyName.value.text.isEmpty) {
-                      ToastUtils.showToast("Please Enter Company Name");
+                      showToasterrorborder(
+                          "Please Enter Company Name", context);
                     } else {
                       if (controller.selectedCountPlan > 0) {
                         // Retrieve city information from the location text field
                         if (controller.city.value.text.isEmpty) {
-                          Fluttertoast.showToast(
-                            msg: "Please select a valid location.",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.BOTTOM,
-                            backgroundColor: Colors.red,
-                            textColor: Colors.white,
-                            fontSize: 16.0,
-                          );
+                          showToasterrorborder(
+                              "Please select a valid location.", context);
                         } else {
                           controller.saveCompanyDetails(
                             imageFile: file.value,
                           );
                         }
                       } else {
-                        Fluttertoast.showToast(
-                          msg: "Please select at least one plan.",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white,
-                          fontSize: 16.0,
-                        );
+                        showToasterrorborder(
+                            "Please select at least one plan.", context);
                       }
                     }
                   },
@@ -534,13 +523,9 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                       if (controller.selectedCountPlan > 0) {
                         Get.back();
                       } else {
-                        Fluttertoast.showToast(
-                          msg: "Please select at least one field.",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white,
-                          fontSize: 16.0,
+                        showToasterrorborder(
+                          "Please select at least one field.",
+                          context,
                         );
                       }
                     },

@@ -141,8 +141,7 @@ class Signup2Controller extends GetxController {
   }) async {
     isLoading(true);
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? apiToken = prefs.getString('apiToken');
-
+    String? apiToken = prefs.getString(Constants.accessToken);
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
       // ignore: unrelated_type_equality_checks

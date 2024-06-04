@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/menu/menuscreens/accountsetting/controller/account_setting_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
-import 'package:mlmdiary/utils/common_toast.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/border_text_field.dart';
@@ -509,8 +509,9 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                     // Check if passwords match
                                     if (controller.password.value.text !=
                                         controller.confirmPassword.value.text) {
-                                      ToastUtils.showToast(
-                                          "Both Passwords Should be the Same.");
+                                      showToasterrorborder(
+                                          "Both Passwords Should be the Same.",
+                                          context);
                                     } else {
                                       // Call the method to send the change password request
                                       controller.sendChangePasswordRequest(

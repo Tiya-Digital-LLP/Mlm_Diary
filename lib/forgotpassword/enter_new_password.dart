@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/forgotpassword/controller/forgot_password_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
-import 'package:mlmdiary/utils/common_toast.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
@@ -116,7 +116,8 @@ class _EnterNewPasswordScreenState extends State<EnterNewPasswordScreen> {
                 // Check if passwords match
                 if (controller.password.value.text !=
                     controller.confirmPassword.value.text) {
-                  ToastUtils.showToast("Both Passwords Should be the Same.");
+                  showToasterrorborder(
+                      "Both Passwords Should be the Same.", context);
                 } else {
                   // Call the method to send the change password request
                   controller.sendChangePasswordRequest(

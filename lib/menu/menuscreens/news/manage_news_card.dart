@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -6,14 +7,16 @@ import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
+import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 
-class ManageNewsCard extends StatelessWidget {
+class ManageNewsCard extends StatefulWidget {
   final String userImage;
   final String userName;
   final String postTitle;
   final String postCaption;
   final String postImage;
   final VoidCallback onDelete;
+  final String dateTime;
   const ManageNewsCard({
     super.key,
     required this.userImage,
@@ -22,7 +25,21 @@ class ManageNewsCard extends StatelessWidget {
     required this.postCaption,
     required this.postImage,
     required this.onDelete,
+    required this.dateTime,
   });
+
+  @override
+  State<ManageNewsCard> createState() => _ManageNewsCardState();
+}
+
+class _ManageNewsCardState extends State<ManageNewsCard> {
+  late PostTimeFormatter postTimeFormatter;
+
+  @override
+  void initState() {
+    super.initState();
+    postTimeFormatter = PostTimeFormatter();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,11 +56,14 @@ class ManageNewsCard extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Image.asset(
-                  postImage,
+                CachedNetworkImage(
+                  imageUrl: widget.userImage,
                   height: 97,
                   width: 105,
                   fit: BoxFit.fill,
+                  placeholder: (context, url) =>
+                      const CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
                 ),
                 10.sbw,
                 Expanded(
@@ -51,12 +71,12 @@ class ManageNewsCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        postTitle,
+                        widget.postTitle,
                         style: textStyleW700(
                             size.width * 0.038, AppColors.blackText),
                       ),
                       Text(
-                        postCaption,
+                        widget.postCaption,
                         style: textStyleW400(size.width * 0.035,
                             AppColors.blackText.withOpacity(0.8)),
                       )
@@ -169,7 +189,7 @@ class ManageNewsCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '20 min ago',
+                  postTimeFormatter.formatPostTime(widget.dateTime),
                   style: textStyleW500(
                       size.width * 0.028, AppColors.blackText.withOpacity(0.5)),
                 ),
@@ -259,7 +279,7 @@ class ManageNewsCard extends StatelessWidget {
                                   elevation: 3,
                                 ),
                                 onPressed: () {
-                                  onDelete();
+                                  widget.onDelete();
                                   Get.back();
                                 },
                                 child: Text(

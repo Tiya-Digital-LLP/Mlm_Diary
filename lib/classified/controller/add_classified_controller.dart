@@ -16,11 +16,13 @@ import 'package:mlmdiary/generated/get_company_entity.dart';
 import 'package:mlmdiary/generated/get_sub_category_entity.dart';
 import 'package:mlmdiary/generated/liked_user_entity.dart';
 import 'package:mlmdiary/generated/remaining_classified_count_entity.dart';
-import 'package:mlmdiary/utils/common_toast.dart';
 import 'package:http/http.dart' as http;
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ClasifiedController extends GetxController {
+  RxList<TextEditingController> companyControllers =
+      <TextEditingController>[].obs;
   Rx<TextEditingController> title = TextEditingController().obs;
   Rx<TextEditingController> discription = TextEditingController().obs;
   Rx<TextEditingController> url = TextEditingController().obs;
@@ -32,6 +34,8 @@ class ClasifiedController extends GetxController {
   Rx<TextEditingController> pincode = TextEditingController().obs;
   Rx<TextEditingController> country = TextEditingController().obs;
   RxList<GetClassifiedData> classifiedList = <GetClassifiedData>[].obs;
+
+  final search = TextEditingController();
 
   RxList<String> companyNames = <String>[].obs;
 
@@ -80,8 +84,6 @@ class ClasifiedController extends GetxController {
   RxInt selectedCountPlan = 0.obs;
   RxInt selectedCountSubCategory = 0.obs;
 
-  // RxBool isEmailOtpTyping = false.obs;
-
   // READ ONLY FIELDS
   RxBool titleReadOnly = false.obs;
 
@@ -101,6 +103,17 @@ class ClasifiedController extends GetxController {
         getClassified(nextPage);
       }
     });
+  }
+
+  void resetSelections() {
+    // Reset category and subcategory selections
+    for (int i = 0; i < isCategorySelectedList.length; i++) {
+      isCategorySelectedList[i] = false;
+    }
+    for (int i = 0; i < isSubCategorySelectedList.length; i++) {
+      isSubCategorySelectedList[i] = false;
+    }
+    getClassified(1);
   }
 
   Future<void> fetchCategoryList() async {
@@ -166,15 +179,22 @@ class ClasifiedController extends GetxController {
   }
 
   TextEditingController getSelectedCategoryTextController() {
-    List<String> selectedCategoryOptions = [];
+    Map<int, String> idToNameMap = {};
+    List<int> selectedCategoryIds = [];
 
     for (int i = 0; i < isCategorySelectedList.length; i++) {
       if (isCategorySelectedList[i]) {
-        selectedCategoryOptions.add(categorylist[i].name.toString());
+        idToNameMap[categorylist[i].id!] = categorylist[i].name!;
+        selectedCategoryIds.add(categorylist[i].id!);
       }
     }
 
-    return TextEditingController(text: selectedCategoryOptions.join(', '));
+    if (kDebugMode) {
+      print('selected id: $selectedCategoryIds');
+    }
+
+    return TextEditingController(
+        text: selectedCategoryIds.map((id) => idToNameMap[id]).join(', '));
   }
 
   void mlmCategoryValidation() {
@@ -254,7 +274,7 @@ class ClasifiedController extends GetxController {
     List<String> selectedSubCategoryOptions = [];
     for (int i = 0; i < isSubCategorySelectedList.length; i++) {
       if (isSubCategorySelectedList[i]) {
-        selectedSubCategoryOptions.add(subcategoryList[i].name ?? '');
+        selectedSubCategoryOptions.add(subcategoryList[i].id.toString());
       }
     }
 
@@ -270,7 +290,7 @@ class ClasifiedController extends GetxController {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? apiToken = prefs.getString('apiToken');
+    String? apiToken = prefs.getString(Constants.accessToken);
     String device = '';
     if (Platform.isAndroid) {
       device = 'android';
@@ -291,6 +311,10 @@ class ClasifiedController extends GetxController {
         request.fields['api_token'] = apiToken ?? '';
         request.fields['device'] = device;
         request.fields['page'] = page.toString();
+        request.fields['search'] = search.value.text;
+        request.fields['category'] = getSelectedCategoryTextController().text;
+        request.fields['subcategory'] =
+            getSelectedSubCategoryTextController().text;
 
         final streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);
@@ -310,6 +334,7 @@ class ClasifiedController extends GetxController {
             } else {
               classifiedList.addAll(getClassifiedEntity.data!);
             }
+            isEndOfData(false);
           } else {
             if (page == 1) {
               classifiedList.clear();
@@ -344,7 +369,8 @@ class ClasifiedController extends GetxController {
   //like
   Future<void> likedUser(int classifiedId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? apiToken = prefs.getString('apiToken');
+    String? apiToken = prefs.getString(Constants.accessToken);
+
     String device = Platform.isAndroid ? 'android' : 'ios';
 
     try {
@@ -409,7 +435,8 @@ class ClasifiedController extends GetxController {
   // Bookmark
   Future<void> bookmarkUser(int classifiedId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? apiToken = prefs.getString('apiToken');
+    String? apiToken = prefs.getString(Constants.accessToken);
+
     String device = Platform.isAndroid ? 'android' : 'ios';
 
     try {
@@ -497,7 +524,7 @@ class ClasifiedController extends GetxController {
       print('Device Name: $device');
     }
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? apiToken = prefs.getString('apiToken');
+    String? apiToken = prefs.getString(Constants.accessToken);
 
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
@@ -624,7 +651,8 @@ class ClasifiedController extends GetxController {
 
   Future<bool> classifiedRemainingCount() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? apiToken = prefs.getString('apiToken');
+    String? apiToken = prefs.getString(Constants.accessToken);
+
     String device = Platform.isAndroid ? 'android' : 'ios';
 
     try {
@@ -689,11 +717,11 @@ class ClasifiedController extends GetxController {
     }
   }
 
-  void titleValidation() {
+  void titleValidation(context) {
     String enteredTitle = title.value.text;
     if (enteredTitle.isEmpty || hasSpecialCharactersOrNumbers(enteredTitle)) {
       // Show toast message for invalid title
-      ToastUtils.showToast("Please Enter Title");
+      showToasterrorborder("Please Enter Title", context);
       titleError.value = true;
     } else {
       titleError.value = false;
@@ -722,11 +750,11 @@ class ClasifiedController extends GetxController {
     await bookmarkUser(classifiedId);
   }
 
-  void discriptionValidation() {
+  void discriptionValidation(context) {
     String enteredDiscription = discription.value.text;
     if (enteredDiscription.isEmpty ||
         hasSpecialTextOrNumbers(enteredDiscription)) {
-      ToastUtils.showToast("Please Enter Discription");
+      showToasterrorborder("Please Enter Discription", context);
       discriptionError.value = true;
     } else {
       discriptionError.value = false;

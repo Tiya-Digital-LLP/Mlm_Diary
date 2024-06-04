@@ -13,7 +13,6 @@ import 'package:mlmdiary/generated/get_category_entity.dart';
 import 'package:mlmdiary/generated/get_sub_category_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/manageclassified/controller/manage_classified_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
-import 'package:mlmdiary/utils/common_toast.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -262,11 +261,25 @@ class _ManageClassifiedPlusIconState extends State<ManageClassifiedPlusIcon> {
 
                             if (place != null) {
                               setState(() {
-                                controller.location.value.text =
+                                var locationDescription =
                                     place.description.toString();
-                                _loc.text = controller.location.value.text;
+                                _loc.text = locationDescription;
+
+                                // Concatenate city, state, and country
+                                var city = controller.city.value.text;
+                                var state = controller.state.value.text;
+                                var country = controller.country.value.text;
+
+                                var locationWithCityStateCountry =
+                                    "$locationDescription, $city, $state, $country";
+
+                                // Update location controller value
+                                controller.location.value.text =
+                                    locationWithCityStateCountry;
+
                                 controller.validateAddress();
                               });
+
                               final plist = GoogleMapsPlaces(
                                 apiKey: googleApikey,
                                 apiHeaders:
@@ -563,7 +576,11 @@ class _ManageClassifiedPlusIconState extends State<ManageClassifiedPlusIcon> {
 
       Get.back();
     } else {
-      ToastUtils.showToast('Please select an image');
+      showToasterrorborder(
+        'Please select an image',
+        // ignore: use_build_context_synchronously
+        context,
+      );
       return; // Exit function if no image is selected
     }
   }

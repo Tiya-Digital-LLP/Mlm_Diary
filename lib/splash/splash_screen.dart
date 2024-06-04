@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -20,15 +22,15 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _navigateToNextScreen() async {
-    // final prefs = await SharedPreferences.getInstance();
-    // final bool isLoggedIn = prefs.getBool(Constants.isLoggedIn) ?? false;
+    final prefs = await SharedPreferences.getInstance();
+    final bool isLoggedIn = prefs.getBool(Constants.isLoggedIn) ?? false;
 
     Timer(const Duration(seconds: 3), () {
-      // if (isLoggedIn) {
-      //   Get.offNamed(Routes.mainscreen);
-      // } else {
-      Get.offNamed(Routes.login);
-      // }
+      if (isLoggedIn) {
+        Get.offNamed(Routes.mainscreen);
+      } else {
+        Get.offNamed(Routes.login);
+      }
     });
   }
 

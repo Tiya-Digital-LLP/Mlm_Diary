@@ -52,7 +52,7 @@ class CompanyController extends GetxController {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? apiToken = prefs.getString('apiToken');
+    String? apiToken = prefs.getString(Constants.accessToken);
     String device = '';
     if (Platform.isAndroid) {
       device = 'android';
@@ -126,7 +126,8 @@ class CompanyController extends GetxController {
   //like
   Future<void> likeCompany(int companyId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? apiToken = prefs.getString('apiToken');
+    String? apiToken = prefs.getString(Constants.accessToken);
+
     String device = Platform.isAndroid ? 'android' : 'ios';
 
     try {
@@ -201,7 +202,8 @@ class CompanyController extends GetxController {
   // Bookmark
   Future<void> bookmarkCompany(int companyId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? apiToken = prefs.getString('apiToken');
+    String? apiToken = prefs.getString(Constants.accessToken);
+
     String device = Platform.isAndroid ? 'android' : 'ios';
 
     try {

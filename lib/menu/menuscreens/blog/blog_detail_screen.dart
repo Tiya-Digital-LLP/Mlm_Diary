@@ -1,26 +1,35 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
-import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
-import 'package:mlmdiary/modal_class/news_class.dart';
+import 'package:mlmdiary/generated/my_blog_list_entity.dart';
+import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
+import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 
 class BlogDetailScreen extends StatefulWidget {
-  final NewsClassList post;
-
-  const BlogDetailScreen({required Key key, required this.post})
-      : super(key: key);
+  const BlogDetailScreen({
+    required Key key,
+  }) : super(key: key);
 
   @override
   State<BlogDetailScreen> createState() => _BlogDetailScreenState();
 }
 
 class _BlogDetailScreenState extends State<BlogDetailScreen> {
-  final ManageNewsController controller = Get.put(ManageNewsController());
+  final ManageBlogController controller = Get.put(ManageBlogController());
+  final post = Get.arguments as MyBlogListData;
+
+  PostTimeFormatter postTimeFormatter = PostTimeFormatter();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,11 +64,15 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                             backgroundColor: const Color(0XFFCCC9C9),
                             radius: size.width * 0.07,
                             child: ClipOval(
-                              child: Image.asset(
-                                widget.post.userImage,
-                                height: 100,
-                                width: 100,
-                                fit: BoxFit.cover,
+                              child: CachedNetworkImage(
+                                imageUrl: post.userData!.imagePath ?? '',
+                                height: 97,
+                                width: 105,
+                                fit: BoxFit.fill,
+                                placeholder: (context, url) =>
+                                    const CircularProgressIndicator(),
+                                errorWidget: (context, url, error) =>
+                                    const Icon(Icons.error),
                               ),
                             ),
                           ),
@@ -72,7 +85,7 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                               Row(
                                 children: [
                                   Text(
-                                    widget.post.userName,
+                                    post.title ?? '',
                                     style: textStyleW700(size.width * 0.043,
                                         AppColors.blackText),
                                   ),
@@ -104,9 +117,15 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                         ),
-                        child: Image.asset(
-                          widget.post.postImage,
+                        child: CachedNetworkImage(
+                          imageUrl: post.imagePath ?? '',
+                          height: 97,
+                          width: 105,
                           fit: BoxFit.fill,
+                          placeholder: (context, url) =>
+                              const CircularProgressIndicator(),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
                         ),
                       ),
                     ),
@@ -120,7 +139,7 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                       child: Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          widget.post.postTitle,
+                          post.description ?? '',
                           style: TextStyle(
                             fontWeight: FontWeight.w700,
                             color: AppColors.blackText,
@@ -139,7 +158,7 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                       child: Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          'LLDPE | Roto Molding | Flacks',
+                          '${post.category} | ${post.subcategory}',
                           style: TextStyle(
                             fontWeight: FontWeight.w400,
                             color: AppColors.blackText,
@@ -254,7 +273,7 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                                 ],
                               ),
                               Text(
-                                "+91 74223 23432",
+                                '${post.userData!.countrycode1} - ${post.userData!.mobile}',
                                 style: textStyleW400(
                                     size.width * 0.035, AppColors.blackText),
                               ),
@@ -281,7 +300,7 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                                 ],
                               ),
                               Text(
-                                "info@seacret.com",
+                                '${post.userData!.email}',
                                 style: textStyleW400(
                                     size.width * 0.035, AppColors.blackText),
                               ),
@@ -319,7 +338,7 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                             ],
                           ),
                           Text(
-                            "www.allcupcoatings.com",
+                            post.website ?? '',
                             style: textStyleW400(
                                 size.width * 0.035, AppColors.blackText),
                           ),
@@ -327,30 +346,6 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                       ),
                     ),
                     5.sbh,
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        color: AppColors.white,
-                        border: const Border(
-                            bottom: BorderSide(color: Colors.grey)),
-                      ),
-                    ),
-                    10.sbh,
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Hydrocodone and acetaminophen are the two active ingredients of the combination drug sold under the brand name Vicodin. Acetaminophen is a non-opioid analgesic and fever reducer, whereas hydrocodone is an opioid painkiller. Vicodin is frequently given to treat moderate to severe pain.',
-                            style: textStyleW400(
-                                size.width * 0.035, AppColors.blackText),
-                          ),
-                        ],
-                      ),
-                    ),
                     SizedBox(
                       height: size.height * 0.017,
                     ),

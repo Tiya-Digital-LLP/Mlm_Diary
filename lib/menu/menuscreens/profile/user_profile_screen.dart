@@ -2,8 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
-import 'package:mlmdiary/generated/get_user_profile_entity.dart';
-import 'package:mlmdiary/menu/menuscreens/profile/custom/about_me.dart';
+import 'package:mlmdiary/generated/get_mlm_database_entity.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/custom/about_user.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/custom/social_button.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/custom/user_profie_card.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
@@ -12,19 +12,21 @@ import 'package:mlmdiary/utils/lists.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
 
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({
+class UserProfileScreen extends StatefulWidget {
+  const UserProfileScreen({
     super.key,
   });
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State<UserProfileScreen> createState() => _UserProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen>
+class _UserProfileScreenState extends State<UserProfileScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final userProfile = Get.arguments as GetUserProfileUserProfile;
+
+  final GetMlmDatabaseData mlmDatabaseList =
+      Get.arguments as GetMlmDatabaseData;
 
   RxBool isFollowing = false.obs;
 
@@ -32,6 +34,10 @@ class _ProfileScreenState extends State<ProfileScreen>
     setState(() {
       postList.removeAt(index);
     });
+  }
+
+  void _toggleFollow() {
+    isFollowing.value = !isFollowing.value;
   }
 
   @override
@@ -60,7 +66,7 @@ class _ProfileScreenState extends State<ProfileScreen>
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'My Profile',
+              'User Profile',
               style: textStyleW700(size.width * 0.048, AppColors.blackText),
             ),
           ],
@@ -79,7 +85,8 @@ class _ProfileScreenState extends State<ProfileScreen>
                     ClipRRect(
                       borderRadius: BorderRadius.circular(60.0),
                       child: CachedNetworkImage(
-                        imageUrl: userProfile.userimage ?? Assets.imagesIcon,
+                        imageUrl:
+                            mlmDatabaseList.imagePath ?? Assets.imagesIcon,
                         fit: BoxFit.cover,
                         height: 100,
                         width: 100,
@@ -93,24 +100,24 @@ class _ProfileScreenState extends State<ProfileScreen>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          userProfile.name ?? 'N/A',
+                          mlmDatabaseList.name ?? 'N/A',
                           style: textStyleW700(
                               size.width * 0.045, AppColors.blackText),
                         ),
                         Text(
-                          '${userProfile.city ?? 'N/A'}${userProfile.state ?? 'N/A'}${userProfile.country ?? 'N/A'}',
+                          '${mlmDatabaseList.city ?? 'N/A'}${mlmDatabaseList.state ?? 'N/A'}${mlmDatabaseList.country ?? 'N/A'}',
                           style: textStyleW500(
                             size.width * 0.035,
                             AppColors.blackText,
                           ),
                         ),
                         Text(
-                          userProfile.company ?? '',
+                          mlmDatabaseList.company ?? '',
                           style: textStyleW500(
                               size.width * 0.035, AppColors.blackText),
                         ),
                         Text(
-                          userProfile.plan ?? '',
+                          mlmDatabaseList.plan ?? '',
                           style: textStyleW500(
                               size.width * 0.035, AppColors.blackText),
                         ),
@@ -123,17 +130,19 @@ class _ProfileScreenState extends State<ProfileScreen>
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      SizedBox(
-                        height: 30,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primaryColor,
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            'Edit',
-                            style: textStyleW700(
-                                size.width * 0.030, AppColors.white),
+                      Obx(
+                        () => SizedBox(
+                          height: 30,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primaryColor,
+                            ),
+                            onPressed: _toggleFollow,
+                            child: Text(
+                              isFollowing.value ? 'Unfollow' : 'Follow',
+                              style: textStyleW700(
+                                  size.width * 0.030, AppColors.white),
+                            ),
                           ),
                         ),
                       ),
@@ -251,7 +260,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                   padding: const EdgeInsets.only(top: 20, left: 16, right: 16),
                   child: Column(
                     children: [
-                      AboutMeSection(size: size),
+                      AboutUserSection(size: size),
                     ],
                   ),
                 ),

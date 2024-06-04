@@ -26,6 +26,8 @@ abstract class Routes {
   static const manageclasifieddetailscreen = '/mannageClassifiedDetailScreen';
 
   static const profilescreen = '/profileScreen';
+  static const userprofilescreen = '/userProfileScreen';
+
   static const accountsettingscreen = '/accountSettingScreen';
   static const mlmclassified = '/mlmClassified';
   static const mlmquationanswer = '/mlmQuationAnswer';

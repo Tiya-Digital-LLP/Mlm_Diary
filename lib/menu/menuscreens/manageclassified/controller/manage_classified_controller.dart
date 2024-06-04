@@ -18,6 +18,7 @@ import 'package:mlmdiary/generated/get_sub_category_entity.dart';
 import 'package:mlmdiary/generated/liked_user_entity.dart';
 import 'package:mlmdiary/generated/manage_classified_entity.dart';
 import 'package:mlmdiary/utils/common_toast.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ManageClasifiedController extends GetxController {
@@ -69,7 +70,6 @@ class ManageClasifiedController extends GetxController {
   RxBool titleError = false.obs;
   RxBool discriptionError = false.obs;
   RxBool urlError = false.obs;
-  RxBool locationError = false.obs;
   RxBool categoryError = false.obs;
   RxBool subCategoryError = false.obs;
   RxBool companyError = false.obs;
@@ -102,7 +102,7 @@ class ManageClasifiedController extends GetxController {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? apiToken = prefs.getString('apiToken');
+    String? apiToken = prefs.getString(Constants.accessToken);
     String device = '';
     if (Platform.isAndroid) {
       device = 'android';
@@ -146,9 +146,12 @@ class ManageClasifiedController extends GetxController {
             discription.value.text = classified.description ?? '';
             url.value.text = classified.website ?? '';
             userImage.value = classified.imagePath ?? '';
+            city.value.text = classified.city ?? '';
+            state.value.text = classified.state ?? '';
+            country.value.text = classified.country ?? '';
 
             // Update Category List
-            isCategorySelectedList.clear(); // Clear existing selections
+            isCategorySelectedList.clear();
             for (var category in categorylist) {
               bool isSelected = classified.category == (category.name ?? '');
               isCategorySelectedList.add(isSelected);
@@ -198,7 +201,7 @@ class ManageClasifiedController extends GetxController {
   }
 
   // Method to fetch data from API
-  Future<void> fetchClassifieds({int page = 1}) async {
+  Future<void> fetchClassifieds({int page = 1, context}) async {
     isLoading.value = true;
     String device = '';
     if (Platform.isAndroid) {
@@ -210,13 +213,13 @@ class ManageClasifiedController extends GetxController {
       print('Device Name: $device');
     }
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? apiToken = prefs.getString('apiToken');
+    String? apiToken = prefs.getString(Constants.accessToken);
     try {
       // Check internet connection
       var connectivityResult = await (Connectivity().checkConnectivity());
       // ignore: unrelated_type_equality_checks
       if (connectivityResult == ConnectivityResult.none) {
-        ToastUtils.showToast("No internet connection");
+        showToasterrorborder("No internet connection", context);
         isLoading.value = false;
         return;
       }
@@ -264,11 +267,11 @@ class ManageClasifiedController extends GetxController {
         }
       } else {
         // Handle error response
-        ToastUtils.showToast("Failed to fetch data");
+        showToasterrorborder("Failed to fetch data", context);
       }
     } catch (error) {
       // Handle network or parsing errors
-      ToastUtils.showToast("An error occurred: $error");
+      showToasterrorborder("An error occurred: $error", context);
     } finally {
       isLoading.value = false;
     }
@@ -306,7 +309,7 @@ class ManageClasifiedController extends GetxController {
               print("category list: $categorylist");
             }
           } else {
-            // Handle error when status is not 1
+            //
           }
         } else {
           if (kDebugMode) {
@@ -329,24 +332,22 @@ class ManageClasifiedController extends GetxController {
   void toggleCategorySelected(int index) {
     isCategorySelectedList[index] = !isCategorySelectedList[index];
 
-    if (isCategorySelectedList[index]) {
-      selectedCountCategory++;
-    } else {
-      selectedCountCategory--;
-    }
+    selectedCountCategory.value = isCategorySelectedList[index] ? 1 : 0;
 
-    fetchSubCategoryList(categorylist[index].id!);
+    if (isCategorySelectedList[index]) {
+      fetchSubCategoryList(categorylist[index].id!);
+    }
   }
 
   TextEditingController getSelectedCategoryTextController() {
     List<String> selectedCategoryOptions = [];
+
     for (int i = 0; i < isCategorySelectedList.length; i++) {
       if (isCategorySelectedList[i]) {
         selectedCategoryOptions.add(categorylist[i].id.toString());
       }
     }
 
-    // Create a TextEditingController with the selected options text
     return TextEditingController(text: selectedCategoryOptions.join(', '));
   }
 
@@ -411,20 +412,23 @@ class ManageClasifiedController extends GetxController {
   }
 
   void toggleSubCategorySelected(int index) {
-    isSubCategorySelectedList[index] = !isSubCategorySelectedList[index];
+    bool isCurrentlySelected = isSubCategorySelectedList[index];
 
-    if (isSubCategorySelectedList[index]) {
-      selectedCountSubCategory++;
-    } else {
-      selectedCountSubCategory--;
+    // Unselect all sub-categories first
+    for (int i = 0; i < isSubCategorySelectedList.length; i++) {
+      isSubCategorySelectedList[i] = false;
     }
+
+    isSubCategorySelectedList[index] = !isCurrentlySelected;
+
+    selectedCountSubCategory.value = isSubCategorySelectedList[index] ? 1 : 0;
   }
 
   TextEditingController getSelectedSubCategoryTextController() {
     List<String> selectedSubCategoryOptions = [];
     for (int i = 0; i < isSubCategorySelectedList.length; i++) {
       if (isSubCategorySelectedList[i]) {
-        selectedSubCategoryOptions.add(subcategoryList[i].name ?? '');
+        selectedSubCategoryOptions.add(subcategoryList[i].id.toString());
       }
     }
 
@@ -492,7 +496,7 @@ class ManageClasifiedController extends GetxController {
       print('Device Name: $device');
     }
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? apiToken = prefs.getString('apiToken');
+    String? apiToken = prefs.getString(Constants.accessToken);
     String? classifiedId = prefs.getString('lastClassifiedId');
 
     try {
@@ -595,7 +599,7 @@ class ManageClasifiedController extends GetxController {
   //like
   Future<void> likedUser(int classifiedId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? apiToken = prefs.getString('apiToken');
+    String? apiToken = prefs.getString(Constants.accessToken);
     String device = Platform.isAndroid ? 'android' : 'ios';
 
     try {
@@ -671,7 +675,7 @@ class ManageClasifiedController extends GetxController {
   // Delete-Classified
   Future<void> deleteClassified(int classifiedId, int index) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? apiToken = prefs.getString('apiToken');
+    String? apiToken = prefs.getString(Constants.accessToken);
     String device = Platform.isAndroid ? 'android' : 'ios';
 
     isLoading(true);
@@ -778,15 +782,6 @@ class ManageClasifiedController extends GetxController {
       urlError.value = true;
     } else {
       urlError.value = false;
-    }
-  }
-
-  void locationValidation() {
-    String enteredLocation = location.value.text;
-    if (enteredLocation.isEmpty || hasSpecialTextOrNumbers(enteredLocation)) {
-      locationError.value = true;
-    } else {
-      locationError.value = false;
     }
   }
 

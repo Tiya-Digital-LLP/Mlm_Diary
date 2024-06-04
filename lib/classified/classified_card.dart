@@ -5,8 +5,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
+import 'package:mlmdiary/classified/custom_commment.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 
@@ -51,6 +53,14 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
 
   late PostTimeFormatter postTimeFormatter;
 
+  bool showCommentBox = false;
+
+  void toggleCommentBox() {
+    setState(() {
+      showCommentBox = !showCommentBox;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -89,6 +99,15 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
         newBookmarkedValue ? bookmarkCount.value + 1 : bookmarkCount.value - 1;
 
     await widget.controller.toggleBookMark(widget.classifiedId);
+  }
+
+  void showCommentDialog(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return const CommentDialog();
+      },
+    );
   }
 
   @override
@@ -248,13 +267,20 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
                     likeCount.value == 0
                         ? const SizedBox.shrink()
                         : Text(
-                            'Like (${likeCount.value})',
+                            '${likeCount.value}',
                             style: textStyleW600(
                                 size.width * 0.038, AppColors.blackText),
                           ),
-                    const SizedBox(
-                      width: 15,
+                    15.sbw,
+                    GestureDetector(
+                      onTap: () => showCommentDialog(context),
+                      child: SizedBox(
+                        height: size.height * 0.028,
+                        width: size.height * 0.028,
+                        child: SvgPicture.asset(Assets.svgComment),
+                      ),
                     ),
+                    15.sbw,
                     SizedBox(
                       height: size.height * 0.028,
                       width: size.height * 0.028,
@@ -264,7 +290,7 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
                       width: 7,
                     ),
                     Text(
-                      'Views (${widget.viewcounts})',
+                      '${widget.viewcounts}',
                       style: TextStyle(
                           fontFamily: "Metropolis",
                           fontWeight: FontWeight.w600,

@@ -61,6 +61,7 @@ class AccountSeetingController extends GetxController {
 // FIELDS ERROR
   RxBool mlmTypeError = false.obs;
   RxBool planTypeError = false.obs;
+
   RxBool mobileError = false.obs;
   RxBool passwordError = false.obs;
   RxBool confirmPasswordError = false.obs;
@@ -309,7 +310,7 @@ class AccountSeetingController extends GetxController {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? apiToken = prefs.getString('apiToken');
+    String? apiToken = prefs.getString(Constants.accessToken);
 
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
@@ -330,7 +331,7 @@ class AccountSeetingController extends GetxController {
         request.fields['state'] = state.value.text;
         request.fields['country'] = country.value.text;
         request.fields['pincode'] = '360022';
-        request.fields['address'] = 'Ahemdabad';
+        request.fields['address'] = location.value.text;
         request.fields['api_token'] = apiToken ?? '';
         request.fields['aboutyou'] = aboutyou.value.text;
         request.fields['aboutcompany'] = aboutcompany.value.text;

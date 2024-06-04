@@ -47,4 +47,11 @@ class Constants {
   static const String mlmdatabase = "/getdatabase";
   static const String remainigclassifeidcount =
       "/remaining_classified_count_check";
+  static const String news = "/addnews";
+  static const String mynews = "/mynewslist";
+  static const String deletenews = "/deletenews";
+  static const String updatenews = "/updatenews";
+  static const String addblog = "/addblog";
+  static const String myblog = "/mybloglist";
+  static const String deleteblog = "/deleteblog";
 }

@@ -1,28 +1,29 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
+
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/state_manager.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/get_category_entity.dart';
 import 'package:mlmdiary/generated/get_sub_category_entity.dart';
-import 'package:mlmdiary/generated/my_news_entity.dart';
-
+import 'package:mlmdiary/generated/my_blog_list_entity.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ManageNewsController extends GetxController {
+class ManageBlogController extends GetxController {
   Rx<TextEditingController> title = TextEditingController().obs;
   Rx<TextEditingController> discription = TextEditingController().obs;
   Rx<TextEditingController> url = TextEditingController().obs;
   var isLiked = false.obs;
   var isBookMarked = false.obs;
+
+  var likeCount = 0.obs;
 
   //category
   RxList<GetCategoryCategory> categorylist = RxList<GetCategoryCategory>();
@@ -32,9 +33,10 @@ class ManageNewsController extends GetxController {
       RxList<GetSubCategoryCategory>();
   final RxList<bool> isSubCategorySelectedList = RxList<bool>([]);
 
-  RxList<MyNewsData> myNewsList = <MyNewsData>[].obs;
+  RxList<MyBlogListData> myBlogList = <MyBlogListData>[].obs;
 
-  var likeCount = 0.obs;
+  RxString userImage = ''.obs;
+
 // FIELDS ERROR
 
   RxBool titleError = false.obs;
@@ -52,9 +54,6 @@ class ManageNewsController extends GetxController {
 
   RxInt selectedCountSubCategory = 0.obs;
 
-  //image
-  RxString userImage = ''.obs;
-
   var isLoading = false.obs;
 
   // READ ONLY FIELDS
@@ -64,11 +63,11 @@ class ManageNewsController extends GetxController {
   void onInit() {
     super.onInit();
     fetchCategoryList();
-    fetchMyNews();
+    fetchMyBlog();
   }
 
   // Method to fetch data from API
-  Future<void> fetchMyNews({int page = 1, context}) async {
+  Future<void> fetchMyBlog({int page = 1, context}) async {
     isLoading.value = true;
     String device = '';
     if (Platform.isAndroid) {
@@ -100,7 +99,7 @@ class ManageNewsController extends GetxController {
       };
 
       // Build URL
-      Uri uri = Uri.parse(Constants.baseUrl + Constants.mynews)
+      Uri uri = Uri.parse(Constants.baseUrl + Constants.myblog)
           .replace(queryParameters: queryParams);
 
       // Make HTTP GET request
@@ -109,20 +108,21 @@ class ManageNewsController extends GetxController {
       if (response.statusCode == 200) {
         // Parse JSON data
         final Map<String, dynamic> responseData = json.decode(response.body);
-        final MyNewsEntity myNewsEntity = MyNewsEntity.fromJson(responseData);
+        final MyBlogListEntity myBlogEntity =
+            MyBlogListEntity.fromJson(responseData);
 
         if (kDebugMode) {
-          print('manage News data: $responseData');
+          print('manage Blog data: $responseData');
         }
 
         // Store ID using SharedPreferences
-        final List<MyNewsData> mynewsData = myNewsEntity.data ?? [];
-        if (mynewsData.isNotEmpty) {
-          final MyNewsData firstNews = mynewsData[0];
-          final String newsId = firstNews.id.toString();
-          await prefs.setString('lastnewsid', newsId);
+        final List<MyBlogListData> myBlogData = myBlogEntity.data ?? [];
+        if (myBlogData.isNotEmpty) {
+          final MyBlogListData firstNews = myBlogData[0];
+          final String blogId = firstNews.articleId.toString();
+          await prefs.setString('lastBlogid', blogId);
           if (kDebugMode) {
-            print('Last news ID stored: $newsId');
+            print('Last Blog ID stored: $blogId');
           }
 
           // Map data to controllers
@@ -149,9 +149,9 @@ class ManageNewsController extends GetxController {
 
         // Update state with fetched data
         if (page == 1) {
-          myNewsList.assignAll(myNewsEntity.data ?? []);
+          myBlogList.assignAll(myBlogEntity.data ?? []);
         } else {
-          myNewsList.addAll(myNewsEntity.data ?? []);
+          myBlogList.addAll(myBlogEntity.data ?? []);
         }
       } else {
         // Handle error response
@@ -272,93 +272,7 @@ class ManageNewsController extends GetxController {
     }
   }
 
-  // Delete-News
-  Future<void> deleteNews(int newsId, int index) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? apiToken = prefs.getString(Constants.accessToken);
-    String device = Platform.isAndroid ? 'android' : 'ios';
-
-    isLoading(true);
-    try {
-      var connectivityResult = await Connectivity().checkConnectivity();
-      // ignore: unrelated_type_equality_checks
-      if (connectivityResult != ConnectivityResult.none) {
-        var uri = Uri.parse('${Constants.baseUrl}${Constants.deletenews}');
-        var request = http.MultipartRequest('POST', uri);
-
-        request.fields['api_token'] = apiToken ?? '';
-        request.fields['device'] = device;
-        request.fields['news_id'] = newsId.toString();
-
-        if (kDebugMode) {
-          print('news id from delete news: $newsId');
-          print('news token from delete news: $apiToken');
-        }
-
-        final streamedResponse = await request.send();
-        final response = await http.Response.fromStream(streamedResponse);
-
-        if (response.statusCode == 200) {
-          var data = jsonDecode(response.body);
-          var status = data['status'];
-          var message = data['message'];
-
-          if (status == 1) {
-            Fluttertoast.showToast(
-              msg: message,
-              toastLength: Toast.LENGTH_LONG,
-              gravity: ToastGravity.BOTTOM,
-            );
-            myNewsList.removeAt(index);
-          } else {
-            Fluttertoast.showToast(
-              msg: "Failed to delete News: $message",
-              toastLength: Toast.LENGTH_LONG,
-              gravity: ToastGravity.BOTTOM,
-            );
-            if (kDebugMode) {
-              print('Failed to delete News: $message');
-            }
-          }
-
-          if (kDebugMode) {
-            print('data from delete News: $data');
-          }
-        } else {
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
-          if (kDebugMode) {
-            print('Error: ${response.body}');
-          }
-        }
-      } else {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-        );
-        if (kDebugMode) {
-          print('No internet connection');
-        }
-      }
-    } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
-      if (kDebugMode) {
-        print('Error: $e');
-      }
-    } finally {
-      isLoading(false);
-    }
-  }
-
-// Category
+  // Category
   void toggleCategorySelected(int index) {
     isCategorySelectedList[index] = !isCategorySelectedList[index];
 
@@ -416,97 +330,85 @@ class ManageNewsController extends GetxController {
     subCategoryError.value = selectedCountSubCategory == 0;
   }
 
-  //updateclassified
-
-  Future<void> updateNews({
-    required File? imageFile,
-  }) async {
-    isLoading(true);
-    String device = '';
-    if (Platform.isAndroid) {
-      device = 'android';
-    } else if (Platform.isIOS) {
-      device = 'ios';
-    }
-    if (kDebugMode) {
-      print('Device Name: $device');
-    }
+  Future<void> deleteBlog(int blogId, int index) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
-    String? newsId = prefs.getString('lastnewsid');
+    String device = Platform.isAndroid ? 'android' : 'ios';
 
+    isLoading(true);
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
       // ignore: unrelated_type_equality_checks
       if (connectivityResult != ConnectivityResult.none) {
-        var request = http.MultipartRequest(
-          'POST',
-          Uri.parse('${Constants.baseUrl}${Constants.updatenews}'),
-        );
+        var uri = Uri.parse('${Constants.baseUrl}${Constants.deleteblog}');
+        var request = http.MultipartRequest('POST', uri);
 
-        request.fields['device'] = device;
-        request.fields['title'] = title.value.text;
-        request.fields['description'] = discription.value.text;
-        request.fields['category'] = getSelectedCategoryTextController().text;
-        request.fields['subcategory'] =
-            getSelectedSubCategoryTextController().text;
-        request.fields['website'] = url.value.text;
         request.fields['api_token'] = apiToken ?? '';
-        request.fields['news_id'] = newsId.toString();
+        request.fields['device'] = device;
+        request.fields['blog_id'] = blogId.toString();
 
         if (kDebugMode) {
-          print('news id ; $newsId');
+          print('blog id from delete blog: $blogId');
+          print('blog token from delete blog: $apiToken');
         }
 
-        if (imageFile != null) {
-          request.files.add(
-            http.MultipartFile(
-              'photo',
-              imageFile.readAsBytes().asStream(),
-              imageFile.lengthSync(),
-              filename: 'image.jpg',
-              contentType: MediaType('image', 'jpg'),
-            ),
-          );
-        } else {
-          request.files.add(
-            http.MultipartFile.fromString(
-              'photo',
-              'dummy_image.jpg',
-              filename: 'dummy_image.jpg',
-              contentType: MediaType('image', 'jpg'),
-            ),
-          );
-        }
-
-        var streamedResponse = await request.send();
-        var response = await http.Response.fromStream(streamedResponse);
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
 
         if (response.statusCode == 200) {
-          final Map<String, dynamic> jsonBody = jsonDecode(response.body);
-          if (kDebugMode) {
-            print("Response body: $jsonBody");
+          var data = jsonDecode(response.body);
+          var status = data['status'];
+          var message = data['message'];
+
+          if (status == 1) {
+            Fluttertoast.showToast(
+              msg: message,
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.BOTTOM,
+            );
+            myBlogList.removeAt(index);
+          } else {
+            Fluttertoast.showToast(
+              msg: "Failed to delete blog: $message",
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.BOTTOM,
+            );
+            if (kDebugMode) {
+              print('Failed to delete blog: $message');
+            }
           }
-          // Check if all fields in the response are true (you may need to adjust this condition based on the actual response structure)
-          if (jsonBody['success'] == true) {
-            // All fields are true, navigate back
-            Get.back();
+
+          if (kDebugMode) {
+            print('data from delete blog: $data');
           }
         } else {
+          Fluttertoast.showToast(
+            msg: "Error: ${response.body}",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
           if (kDebugMode) {
-            print(
-                "HTTP error: Failed to Update company details. Status code: ${response.statusCode}");
-            print("Response body: ${response.body}");
+            print('Error: ${response.body}');
           }
         }
       } else {
+        Fluttertoast.showToast(
+          msg: "No internet connection",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+        );
         if (kDebugMode) {
-          print("No internet connection available.");
+          print('No internet connection');
         }
       }
     } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Error: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+      );
       if (kDebugMode) {
-        print("An error occurred while saving company details: $e");
+        print('Error: $e');
       }
     } finally {
       isLoading(false);
