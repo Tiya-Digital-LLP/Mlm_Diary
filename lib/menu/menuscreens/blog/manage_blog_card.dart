@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
@@ -17,27 +18,79 @@ class ManageBlogCard extends StatefulWidget {
   final String postImage;
   final VoidCallback onDelete;
   final String dateTime;
-  const ManageBlogCard(
-      {super.key,
-      required this.userImage,
-      required this.userName,
-      required this.postTitle,
-      required this.postCaption,
-      required this.postImage,
-      required this.onDelete,
-      required this.dateTime});
+  final int likedCount;
+  final int viewcounts;
+  final int blogId;
+
+  final int bookmarkCount;
+
+  final ManageBlogController controller;
+
+  const ManageBlogCard({
+    super.key,
+    required this.userImage,
+    required this.userName,
+    required this.postTitle,
+    required this.postCaption,
+    required this.postImage,
+    required this.onDelete,
+    required this.dateTime,
+    required this.likedCount,
+    required this.controller,
+    required this.viewcounts,
+    required this.bookmarkCount,
+    required this.blogId,
+  });
 
   @override
   State<ManageBlogCard> createState() => _ManageBlogCardState();
 }
 
 class _ManageBlogCardState extends State<ManageBlogCard> {
+  late RxBool isLiked;
+  late RxBool isBookmarked;
+
+  late RxInt likeCount;
+  late RxInt bookmarkCount;
+
   late PostTimeFormatter postTimeFormatter;
 
   @override
   void initState() {
     super.initState();
     postTimeFormatter = PostTimeFormatter();
+    initializeLikes();
+    initializeBookmarks();
+  }
+
+  void initializeLikes() {
+    isLiked = RxBool(widget.controller.likedStatusMap[widget.blogId] ?? false);
+    likeCount = RxInt(
+        widget.controller.likeCountMap[widget.blogId] ?? widget.likedCount);
+  }
+
+  void toggleLike() async {
+    bool newLikedValue = !isLiked.value;
+    isLiked.value = newLikedValue;
+    likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
+
+    await widget.controller.toggleLike(widget.blogId, context);
+  }
+
+  void initializeBookmarks() {
+    isBookmarked =
+        RxBool(widget.controller.bookmarkStatusMap[widget.blogId] ?? false);
+    bookmarkCount = RxInt(widget.controller.bookmarkCountMap[widget.blogId] ??
+        widget.bookmarkCount);
+  }
+
+  void toggleBookmark() async {
+    bool newBookmarkedValue = !isBookmarked.value;
+    isBookmarked.value = newBookmarkedValue;
+    bookmarkCount.value =
+        newBookmarkedValue ? bookmarkCount.value + 1 : bookmarkCount.value - 1;
+
+    await widget.controller.toggleBookMark(widget.blogId);
   }
 
   @override
@@ -98,18 +151,23 @@ class _ManageBlogCardState extends State<ManageBlogCard> {
                     SizedBox(
                       height: size.height * 0.028,
                       width: size.height * 0.028,
-                      child: SvgPicture.asset(Assets.svgLike),
+                      child: GestureDetector(
+                        onTap: toggleLike,
+                        child: Icon(
+                          isLiked.value
+                              ? Icons.thumb_up_off_alt_sharp
+                              : Icons.thumb_up_off_alt_outlined,
+                          color: isLiked.value ? AppColors.primaryColor : null,
+                        ),
+                      ),
                     ),
-                    const SizedBox(
-                      width: 7,
-                    ),
+                    7.sbw,
                     Text(
-                      "50k",
-                      style: TextStyle(
-                          fontFamily: "Metropolis",
-                          fontWeight: FontWeight.w600,
-                          fontSize: size.width * 0.045),
+                      'Like (${likeCount.value})',
+                      style: textStyleW600(
+                          size.width * 0.038, AppColors.blackText),
                     ),
+                    15.sbw,
                     const SizedBox(
                       width: 15,
                     ),
@@ -122,11 +180,11 @@ class _ManageBlogCardState extends State<ManageBlogCard> {
                       width: 7,
                     ),
                     Text(
-                      "286",
+                      'Views (${widget.viewcounts})',
                       style: TextStyle(
                           fontFamily: "Metropolis",
                           fontWeight: FontWeight.w600,
-                          fontSize: size.width * 0.045),
+                          fontSize: size.width * 0.038),
                     ),
                   ],
                 ),

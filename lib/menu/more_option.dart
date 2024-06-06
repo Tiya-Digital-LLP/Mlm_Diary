@@ -68,7 +68,7 @@ class _moreState extends State<MoreOptionScreen> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    final userProfile = controller.userProfile.value.userProfile;
+
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0,
@@ -86,8 +86,27 @@ class _moreState extends State<MoreOptionScreen> {
         ),
       ),
       backgroundColor: AppColors.background,
-      body: SingleChildScrollView(
-        child: Padding(
+      body: Obx(() {
+        final userProfile = controller.userProfile.value.userProfile;
+
+        if (controller.isLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (userProfile == null) {
+          return Center(
+            child: Text(
+              controller.isLoading.value ? 'Loading...' : 'Data not found',
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+          );
+        }
+        return SingleChildScrollView(
+            child: Padding(
           padding: const EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
           child: Column(
             children: [
@@ -116,7 +135,7 @@ class _moreState extends State<MoreOptionScreen> {
                           radius: 30,
                           child: CachedNetworkImage(
                             imageUrl:
-                                userProfile!.userimage ?? Assets.imagesIcon,
+                                userProfile.userimage ?? Assets.imagesIcon,
                             fit: BoxFit.cover,
                             width: 60,
                             height: 60,
@@ -535,8 +554,8 @@ class _moreState extends State<MoreOptionScreen> {
               ),
             ],
           ),
-        ),
-      ),
+        ));
+      }),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
             color: AppColors.white,

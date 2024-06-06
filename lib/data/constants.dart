@@ -51,7 +51,16 @@ class Constants {
   static const String mynews = "/mynewslist";
   static const String deletenews = "/deletenews";
   static const String updatenews = "/updatenews";
+  static const String likednews = "/addlikenews";
   static const String addblog = "/addblog";
   static const String myblog = "/mybloglist";
   static const String deleteblog = "/deleteblog";
+  static const String likedblog = "/addlikeblog";
+  static const String blogBookmark = "/addfavoriteblog";
+  static const String updateblog = "/updateblog";
+
+  static const String addpost = "/adduserpost";
+  static const String editpost = "/updateuserpost";
+  static const String mypost = "/mypostlist";
+  static const String deletepost = "/deleteuserpost";
 }

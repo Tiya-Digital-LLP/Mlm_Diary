@@ -6,12 +6,15 @@
 import 'package:flutter/material.dart' show debugPrint;
 import 'package:mlmdiary/generated/add_blog_entity.dart';
 import 'package:mlmdiary/generated/add_news_entity.dart';
+import 'package:mlmdiary/generated/add_post_entity.dart';
+import 'package:mlmdiary/generated/blog_bookmark_entity.dart';
 import 'package:mlmdiary/generated/bookmark_company_entity.dart';
 import 'package:mlmdiary/generated/bookmark_user_entity.dart';
 import 'package:mlmdiary/generated/change_email_entity.dart';
 import 'package:mlmdiary/generated/change_password_entity.dart';
 import 'package:mlmdiary/generated/delete_classified_entity.dart';
 import 'package:mlmdiary/generated/delete_news_entity.dart';
+import 'package:mlmdiary/generated/delete_user_post_entity.dart';
 import 'package:mlmdiary/generated/domestic_phoneotp_entity.dart';
 import 'package:mlmdiary/generated/email_otp_entity.dart';
 import 'package:mlmdiary/generated/email_verify_entity.dart';
@@ -29,21 +32,26 @@ import 'package:mlmdiary/generated/get_sub_category_entity.dart';
 import 'package:mlmdiary/generated/get_user_profile_entity.dart';
 import 'package:mlmdiary/generated/get_user_type_entity.dart';
 import 'package:mlmdiary/generated/get_video_list_entity.dart';
+import 'package:mlmdiary/generated/l_iked_blog_entity.dart';
+import 'package:mlmdiary/generated/liked_news_entity.dart';
 import 'package:mlmdiary/generated/liked_user_entity.dart';
 import 'package:mlmdiary/generated/login_entity.dart';
 import 'package:mlmdiary/generated/manage_classified_entity.dart';
 import 'package:mlmdiary/generated/mlm_like_company_entity.dart';
 import 'package:mlmdiary/generated/my_blog_list_entity.dart';
 import 'package:mlmdiary/generated/my_news_entity.dart';
+import 'package:mlmdiary/generated/my_post_list_entity.dart';
 import 'package:mlmdiary/generated/remaining_classified_count_entity.dart';
 import 'package:mlmdiary/generated/resent_otp_register_entity.dart';
 import 'package:mlmdiary/generated/save_classified_entity.dart';
 import 'package:mlmdiary/generated/save_company_entity.dart';
 import 'package:mlmdiary/generated/termsand_condition_entity.dart';
+import 'package:mlmdiary/generated/update_blog_entity.dart';
 import 'package:mlmdiary/generated/update_classified_entity.dart';
 import 'package:mlmdiary/generated/update_news_entity.dart';
 import 'package:mlmdiary/generated/update_phone_no_entity.dart';
 import 'package:mlmdiary/generated/update_phone_verify_otp_entity.dart';
+import 'package:mlmdiary/generated/update_post_entity.dart';
 import 'package:mlmdiary/generated/update_social_media_entity.dart';
 import 'package:mlmdiary/generated/update_user_profile_entity.dart';
 import 'package:mlmdiary/generated/user_register_entity_entity.dart';
@@ -196,6 +204,18 @@ class JsonConvert {
       return data.map<AddNewsData>((Map<String, dynamic> e) =>
           AddNewsData.fromJson(e)).toList() as M;
     }
+    if (<AddPostEntity>[] is M) {
+      return data.map<AddPostEntity>((Map<String, dynamic> e) =>
+          AddPostEntity.fromJson(e)).toList() as M;
+    }
+    if (<AddPostUserpost>[] is M) {
+      return data.map<AddPostUserpost>((Map<String, dynamic> e) =>
+          AddPostUserpost.fromJson(e)).toList() as M;
+    }
+    if (<BlogBookmarkEntity>[] is M) {
+      return data.map<BlogBookmarkEntity>((Map<String, dynamic> e) =>
+          BlogBookmarkEntity.fromJson(e)).toList() as M;
+    }
     if (<BookmarkCompanyEntity>[] is M) {
       return data.map<BookmarkCompanyEntity>((Map<String, dynamic> e) =>
           BookmarkCompanyEntity.fromJson(e)).toList() as M;
@@ -219,6 +239,10 @@ class JsonConvert {
     if (<DeleteNewsEntity>[] is M) {
       return data.map<DeleteNewsEntity>((Map<String, dynamic> e) =>
           DeleteNewsEntity.fromJson(e)).toList() as M;
+    }
+    if (<DeleteUserPostEntity>[] is M) {
+      return data.map<DeleteUserPostEntity>((Map<String, dynamic> e) =>
+          DeleteUserPostEntity.fromJson(e)).toList() as M;
     }
     if (<DomesticPhoneotpEntity>[] is M) {
       return data.map<DomesticPhoneotpEntity>((Map<String, dynamic> e) =>
@@ -332,6 +356,14 @@ class JsonConvert {
       return data.map<GetVideoListVideos>((Map<String, dynamic> e) =>
           GetVideoListVideos.fromJson(e)).toList() as M;
     }
+    if (<LIkedBlogEntity>[] is M) {
+      return data.map<LIkedBlogEntity>((Map<String, dynamic> e) =>
+          LIkedBlogEntity.fromJson(e)).toList() as M;
+    }
+    if (<LikedNewsEntity>[] is M) {
+      return data.map<LikedNewsEntity>((Map<String, dynamic> e) =>
+          LikedNewsEntity.fromJson(e)).toList() as M;
+    }
     if (<LikedUserEntity>[] is M) {
       return data.map<LikedUserEntity>((Map<String, dynamic> e) =>
           LikedUserEntity.fromJson(e)).toList() as M;
@@ -380,6 +412,18 @@ class JsonConvert {
       return data.map<MyNewsDataUserData>((Map<String, dynamic> e) =>
           MyNewsDataUserData.fromJson(e)).toList() as M;
     }
+    if (<MyPostListEntity>[] is M) {
+      return data.map<MyPostListEntity>((Map<String, dynamic> e) =>
+          MyPostListEntity.fromJson(e)).toList() as M;
+    }
+    if (<MyPostListData>[] is M) {
+      return data.map<MyPostListData>((Map<String, dynamic> e) =>
+          MyPostListData.fromJson(e)).toList() as M;
+    }
+    if (<MyPostListDataUserData>[] is M) {
+      return data.map<MyPostListDataUserData>((Map<String, dynamic> e) =>
+          MyPostListDataUserData.fromJson(e)).toList() as M;
+    }
     if (<RemainingClassifiedCountEntity>[] is M) {
       return data.map<RemainingClassifiedCountEntity>((
           Map<String, dynamic> e) => RemainingClassifiedCountEntity.fromJson(e))
@@ -409,6 +453,14 @@ class JsonConvert {
       return data.map<TermsandConditionEntity>((Map<String, dynamic> e) =>
           TermsandConditionEntity.fromJson(e)).toList() as M;
     }
+    if (<UpdateBlogEntity>[] is M) {
+      return data.map<UpdateBlogEntity>((Map<String, dynamic> e) =>
+          UpdateBlogEntity.fromJson(e)).toList() as M;
+    }
+    if (<UpdateBlogData>[] is M) {
+      return data.map<UpdateBlogData>((Map<String, dynamic> e) =>
+          UpdateBlogData.fromJson(e)).toList() as M;
+    }
     if (<UpdateClassifiedEntity>[] is M) {
       return data.map<UpdateClassifiedEntity>((Map<String, dynamic> e) =>
           UpdateClassifiedEntity.fromJson(e)).toList() as M;
@@ -432,6 +484,14 @@ class JsonConvert {
     if (<UpdatePhoneVerifyOtpEntity>[] is M) {
       return data.map<UpdatePhoneVerifyOtpEntity>((Map<String, dynamic> e) =>
           UpdatePhoneVerifyOtpEntity.fromJson(e)).toList() as M;
+    }
+    if (<UpdatePostEntity>[] is M) {
+      return data.map<UpdatePostEntity>((Map<String, dynamic> e) =>
+          UpdatePostEntity.fromJson(e)).toList() as M;
+    }
+    if (<UpdatePostUserpost>[] is M) {
+      return data.map<UpdatePostUserpost>((Map<String, dynamic> e) =>
+          UpdatePostUserpost.fromJson(e)).toList() as M;
     }
     if (<UpdateSocialMediaEntity>[] is M) {
       return data.map<UpdateSocialMediaEntity>((Map<String, dynamic> e) =>
@@ -482,12 +542,16 @@ class JsonConvertClassCollection {
     (AddBlogData).toString(): AddBlogData.fromJson,
     (AddNewsEntity).toString(): AddNewsEntity.fromJson,
     (AddNewsData).toString(): AddNewsData.fromJson,
+    (AddPostEntity).toString(): AddPostEntity.fromJson,
+    (AddPostUserpost).toString(): AddPostUserpost.fromJson,
+    (BlogBookmarkEntity).toString(): BlogBookmarkEntity.fromJson,
     (BookmarkCompanyEntity).toString(): BookmarkCompanyEntity.fromJson,
     (BookmarkUserEntity).toString(): BookmarkUserEntity.fromJson,
     (ChangeEmailEntity).toString(): ChangeEmailEntity.fromJson,
     (ChangePasswordEntity).toString(): ChangePasswordEntity.fromJson,
     (DeleteClassifiedEntity).toString(): DeleteClassifiedEntity.fromJson,
     (DeleteNewsEntity).toString(): DeleteNewsEntity.fromJson,
+    (DeleteUserPostEntity).toString(): DeleteUserPostEntity.fromJson,
     (DomesticPhoneotpEntity).toString(): DomesticPhoneotpEntity.fromJson,
     (EmailOtpEntity).toString(): EmailOtpEntity.fromJson,
     (EmailVerifyEntity).toString(): EmailVerifyEntity.fromJson,
@@ -516,6 +580,8 @@ class JsonConvertClassCollection {
     (GetUserTypeUsertype).toString(): GetUserTypeUsertype.fromJson,
     (GetVideoListEntity).toString(): GetVideoListEntity.fromJson,
     (GetVideoListVideos).toString(): GetVideoListVideos.fromJson,
+    (LIkedBlogEntity).toString(): LIkedBlogEntity.fromJson,
+    (LikedNewsEntity).toString(): LikedNewsEntity.fromJson,
     (LikedUserEntity).toString(): LikedUserEntity.fromJson,
     (LoginEntity).toString(): LoginEntity.fromJson,
     (ManageClassifiedEntity).toString(): ManageClassifiedEntity.fromJson,
@@ -529,6 +595,9 @@ class JsonConvertClassCollection {
     (MyNewsEntity).toString(): MyNewsEntity.fromJson,
     (MyNewsData).toString(): MyNewsData.fromJson,
     (MyNewsDataUserData).toString(): MyNewsDataUserData.fromJson,
+    (MyPostListEntity).toString(): MyPostListEntity.fromJson,
+    (MyPostListData).toString(): MyPostListData.fromJson,
+    (MyPostListDataUserData).toString(): MyPostListDataUserData.fromJson,
     (RemainingClassifiedCountEntity).toString(): RemainingClassifiedCountEntity
         .fromJson,
     (ResentOtpRegisterEntity).toString(): ResentOtpRegisterEntity.fromJson,
@@ -537,6 +606,8 @@ class JsonConvertClassCollection {
     (SaveCompanyEntity).toString(): SaveCompanyEntity.fromJson,
     (SaveCompanyUserData).toString(): SaveCompanyUserData.fromJson,
     (TermsandConditionEntity).toString(): TermsandConditionEntity.fromJson,
+    (UpdateBlogEntity).toString(): UpdateBlogEntity.fromJson,
+    (UpdateBlogData).toString(): UpdateBlogData.fromJson,
     (UpdateClassifiedEntity).toString(): UpdateClassifiedEntity.fromJson,
     (UpdateClassifiedData).toString(): UpdateClassifiedData.fromJson,
     (UpdateNewsEntity).toString(): UpdateNewsEntity.fromJson,
@@ -544,6 +615,8 @@ class JsonConvertClassCollection {
     (UpdatePhoneNoEntity).toString(): UpdatePhoneNoEntity.fromJson,
     (UpdatePhoneVerifyOtpEntity).toString(): UpdatePhoneVerifyOtpEntity
         .fromJson,
+    (UpdatePostEntity).toString(): UpdatePostEntity.fromJson,
+    (UpdatePostUserpost).toString(): UpdatePostUserpost.fromJson,
     (UpdateSocialMediaEntity).toString(): UpdateSocialMediaEntity.fromJson,
     (UpdateSocialMediaUserProfile).toString(): UpdateSocialMediaUserProfile
         .fromJson,

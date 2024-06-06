@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
@@ -11,6 +12,7 @@ import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ClassidiedDetailsScreen extends StatefulWidget {
   const ClassidiedDetailsScreen({required Key key}) : super(key: key);
@@ -330,10 +332,19 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
                             ],
                           ),
                           3.sbh,
-                          Text(
-                            post.website ?? '',
-                            style: textStyleW400(
-                                size.width * 0.032, AppColors.blackText),
+                          Text.rich(
+                            TextSpan(
+                              text: post.website ?? '',
+                              style: const TextStyle(
+                                color: Colors.blue,
+                                decorationColor: Colors.blue,
+                                decoration: TextDecoration.underline,
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  _launchURL(post.website ?? '');
+                                },
+                            ),
                           ),
                         ],
                       ),
@@ -453,5 +464,15 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
             ),
           )),
     );
+  }
+}
+
+void _launchURL(String url) async {
+  // ignore: deprecated_member_use
+  if (await canLaunch(url)) {
+    // ignore: deprecated_member_use
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
   }
 }

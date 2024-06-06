@@ -18,8 +18,8 @@ class MlmBlog extends StatefulWidget {
 class _MlmBlogState extends State<MlmBlog> {
   final ManageBlogController controller = Get.put(ManageBlogController());
   void deletePost(int index) async {
-    int newsId = controller.myBlogList[index].articleId ?? 0;
-    await controller.deleteBlog(newsId, index);
+    int blogId = controller.myBlogList[index].articleId ?? 0;
+    await controller.deleteBlog(blogId, index);
   }
 
   @override
@@ -80,6 +80,11 @@ class _MlmBlogState extends State<MlmBlog> {
                       postCaption: post.description ?? '',
                       postImage: post.image ?? '',
                       dateTime: post.createdDate ?? '',
+                      viewcounts: post.pgcnt ?? 0,
+                      controller: controller,
+                      bookmarkCount: post.totalbookmark ?? 0,
+                      likedCount: post.totallike ?? 0,
+                      blogId: post.articleId ?? 0,
                     ),
                   ),
                 );

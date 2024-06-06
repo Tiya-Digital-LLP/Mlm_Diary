@@ -260,7 +260,9 @@ class _ManageBlogPlusIconState extends State<ManageBlogPlusIcon> {
                   ),
                   10.sbh,
                   NormalButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      handleSaveButtonPressed();
+                    },
                     text: 'Submit',
                   ),
                   20.sbh,
@@ -295,6 +297,38 @@ class _ManageBlogPlusIconState extends State<ManageBlogPlusIcon> {
         ),
       ),
     );
+  }
+
+  Future<void> handleSaveButtonPressed() async {
+    if (controller.title.value.text.isEmpty) {
+      showToasterrorborder("Please Enter Your Blog Title", context);
+    } else if (controller
+        .getSelectedCategoryTextController()
+        .value
+        .text
+        .isEmpty) {
+      showToasterrorborder("Please Select Category", context);
+    } else if (controller
+        .getSelectedSubCategoryTextController()
+        .value
+        .text
+        .isEmpty) {
+      showToasterrorborder("Please Select Sub Category", context);
+    } else if (controller.discription.value.text.isEmpty) {
+      showToasterrorborder(
+          "Please Enter Description Minimum 250 Characters", context);
+    } else if (file.value == null && controller.userImage.value.isEmpty) {
+      showToasterrorborder("Please Upload Photo", context);
+    } else {
+      try {
+        await controller.fetchMyBlog();
+        await controller.updateBlog(imageFile: file.value);
+      } catch (e) {
+        if (kDebugMode) {
+          print("Error submitting news: $e");
+        }
+      }
+    }
   }
 
   Widget bottomsheet() {

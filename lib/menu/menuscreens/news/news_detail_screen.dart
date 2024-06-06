@@ -370,14 +370,17 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                         height: size.height * 0.028,
                         width: size.height * 0.028,
                         child: GestureDetector(
-                          onTap: () => controller.toggleLike(),
+                          onTap: () =>
+                              controller.toggleLike(post.id ?? 0, context),
                           child: Icon(
-                            controller.isLiked.value
-                                ? Icons.favorite
-                                : Icons.favorite_border,
-                            color: controller.isLiked.value
-                                ? AppColors.primaryColor
-                                : null,
+                            // Observe like status
+                            controller.likedStatusMap[post.id ?? 0] ?? false
+                                ? Icons.thumb_up_off_alt_sharp
+                                : Icons.thumb_up_off_alt_outlined,
+                            color:
+                                controller.likedStatusMap[post.id ?? 0] ?? false
+                                    ? AppColors.primaryColor
+                                    : null,
                             size: size.height * 0.032,
                           ),
                         ),
@@ -385,13 +388,11 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                       const SizedBox(
                         width: 7,
                       ),
-                      controller.likeCount.value == 0
-                          ? const SizedBox.shrink()
-                          : Text(
-                              controller.likeCount.value.toString(),
-                              style: textStyleW600(
-                                  size.width * 0.040, AppColors.blackText),
-                            ),
+                      Text(
+                        post.totallike.toString(),
+                        style: textStyleW600(
+                            size.width * 0.040, AppColors.blackText),
+                      ),
                       const SizedBox(
                         width: 15,
                       ),
@@ -407,7 +408,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                         width: 7,
                       ),
                       Text(
-                        "286",
+                        post.pgcnt.toString(),
                         style: textStyleW600(
                             size.width * 0.040, AppColors.blackText),
                       ),

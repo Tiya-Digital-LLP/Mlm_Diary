@@ -12,6 +12,7 @@ import 'package:http_parser/http_parser.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/get_category_entity.dart';
 import 'package:mlmdiary/generated/get_sub_category_entity.dart';
+import 'package:mlmdiary/generated/liked_news_entity.dart';
 import 'package:mlmdiary/generated/my_news_entity.dart';
 
 import 'package:mlmdiary/utils/custom_toast.dart';
@@ -33,6 +34,10 @@ class ManageNewsController extends GetxController {
   final RxList<bool> isSubCategorySelectedList = RxList<bool>([]);
 
   RxList<MyNewsData> myNewsList = <MyNewsData>[].obs;
+
+  //like
+  var likedStatusMap = <int, bool>{};
+  var likeCountMap = <int, int>{};
 
   var likeCount = 0.obs;
 // FIELDS ERROR
@@ -131,20 +136,9 @@ class ManageNewsController extends GetxController {
           url.value.text = firstNews.website ?? '';
           userImage.value = firstNews.imagePath ?? '';
 
-          // Update Category List
-          isCategorySelectedList.clear();
-          for (var category in categorylist) {
-            bool isSelected = firstNews.category == (category.id.toString());
-            isCategorySelectedList.add(isSelected);
-          }
-
-          // Update SubCategory List
-          isSubCategorySelectedList.clear();
-          for (var subcategory in subcategoryList) {
-            bool isSelected =
-                firstNews.subcategory == (subcategory.id.toString());
-            isSubCategorySelectedList.add(isSelected);
-          }
+          // Update Category and SubCategory Lists
+          updateCategorySelection(firstNews.category);
+          updateSubCategorySelection(firstNews.subcategory);
         }
 
         // Update state with fetched data
@@ -162,6 +156,24 @@ class ManageNewsController extends GetxController {
       showToasterrorborder("An error occurred: $error", context);
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  // Method to update Category selection
+  void updateCategorySelection(String? selectedCategoryId) {
+    isCategorySelectedList.clear();
+    for (var category in categorylist) {
+      bool isSelected = selectedCategoryId == category.id.toString();
+      isCategorySelectedList.add(isSelected);
+    }
+  }
+
+// Method to update SubCategory selection
+  void updateSubCategorySelection(String? selectedSubCategoryId) {
+    isSubCategorySelectedList.clear();
+    for (var subcategory in subcategoryList) {
+      bool isSelected = selectedSubCategoryId == subcategory.id.toString();
+      isSubCategorySelectedList.add(isSelected);
     }
   }
 
@@ -513,6 +525,55 @@ class ManageNewsController extends GetxController {
     }
   }
 
+  //liked Blog
+  Future<void> likedNewsUser(int newsId, context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+
+    String device = Platform.isAndroid ? 'android' : 'ios';
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri = Uri.parse('${Constants.baseUrl}${Constants.likednews}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['news_id'] = newsId.toString();
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var likedBlogEntity = LikedNewsEntity.fromJson(data);
+          var message = likedBlogEntity.message;
+
+          // Update the liked status and like count based on the message
+          if (message == 'You have liked this News') {
+            likedStatusMap[newsId] = true;
+            likeCountMap[newsId] = (likeCountMap[newsId] ?? 0) + 1;
+          } else if (message == 'You have unliked this News') {
+            likedStatusMap[newsId] = false;
+            likeCountMap[newsId] = (likeCountMap[newsId] ?? 0) - 1;
+          }
+
+          showToastverifedborder(message!, context);
+        } else {
+          showToasterrorborder("Error: ${response.body}", context);
+        }
+      } else {
+        showToasterrorborder("No internet connection", context);
+      }
+    } catch (e) {
+      showToasterrorborder("Error: $e", context);
+    } finally {
+      isLoading(false);
+    }
+  }
+
   void titleValidation(context) {
     String enteredTitle = title.value.text;
     if (enteredTitle.isEmpty || hasSpecialCharactersOrNumbers(enteredTitle)) {
@@ -524,13 +585,14 @@ class ManageNewsController extends GetxController {
     }
   }
 
-  void toggleLike() {
-    isLiked.value = !isLiked.value;
-    if (isLiked.value) {
-      likeCount.value++;
-    } else {
-      likeCount.value--;
-    }
+  Future<void> toggleLike(int blogId, context) async {
+    bool isLiked = likedStatusMap[blogId] ?? false;
+    isLiked = !isLiked;
+    likedStatusMap[blogId] = isLiked;
+    likeCountMap.update(blogId, (value) => isLiked ? value + 1 : value - 1,
+        ifAbsent: () => isLiked ? 1 : 0);
+
+    await likedNewsUser(blogId, context);
   }
 
   void toggleBookMark() {

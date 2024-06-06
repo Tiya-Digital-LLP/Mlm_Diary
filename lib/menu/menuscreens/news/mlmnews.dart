@@ -81,6 +81,10 @@ class _MlmnewsState extends State<MlmNews> {
                       postCaption: post.description ?? '',
                       postImage: post.photo ?? '',
                       dateTime: post.createdate ?? '',
+                      viewcounts: post.pgcnt ?? 0,
+                      newsId: post.id ?? 0,
+                      likedCount: post.totallike ?? 0,
+                      controller: controller,
                     ),
                   ),
                 );

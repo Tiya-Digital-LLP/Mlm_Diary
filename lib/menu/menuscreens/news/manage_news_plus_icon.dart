@@ -305,7 +305,7 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
 
   Future<void> handleSaveButtonPressed() async {
     if (controller.title.value.text.isEmpty) {
-      showToasterrorborder("Please Enter Your Classified Title", context);
+      showToasterrorborder("Please Enter Your News Title", context);
     } else if (controller
         .getSelectedCategoryTextController()
         .value

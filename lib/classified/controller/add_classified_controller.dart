@@ -740,10 +740,10 @@ class ClasifiedController extends GetxController {
   }
 
   Future<void> toggleBookMark(int classifiedId) async {
-    bool isBookmark = likedStatusMap[classifiedId] ?? false;
+    bool isBookmark = bookmarkStatusMap[classifiedId] ?? false;
     isBookmark = !isBookmark;
-    likedStatusMap[classifiedId] = isBookmark;
-    likeCountMap.update(
+    bookmarkStatusMap[classifiedId] = isBookmark;
+    bookmarkCountMap.update(
         classifiedId, (value) => isBookmark ? value + 1 : value - 1,
         ifAbsent: () => isBookmark ? 1 : 0);
 

@@ -7,26 +7,26 @@ import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mlmdiary/generated/assets.dart';
-import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
+import 'package:mlmdiary/home/addpost/controller/add_post_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
-import 'package:path_provider/path_provider.dart';
 import 'dart:io' as io;
 
+import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
 
-class EditPost extends StatefulWidget {
-  const EditPost({super.key});
+class AddPost extends StatefulWidget {
+  const AddPost({super.key});
 
   @override
-  State<EditPost> createState() => _AddPostState();
+  State<AddPost> createState() => _AddPostState();
 }
 
-class _AddPostState extends State<EditPost> {
-  final EditPostController controller = Get.put(EditPostController());
+class _AddPostState extends State<AddPost> {
+  final AddPostController controller = Get.put(AddPostController());
   Rx<io.File?> file = Rx<io.File?>(null);
   static List<io.File> imagesList = <io.File>[];
   final ImagePicker _picker = ImagePicker();
@@ -36,6 +36,10 @@ class _AddPostState extends State<EditPost> {
   static List<io.File> videoList = <io.File>[];
 
   Rx<io.File?> videoFile = Rx<io.File?>(null);
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +67,7 @@ class _AddPostState extends State<EditPost> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Edit Post',
+                'Add Post',
                 style: textStyleW700(size.width * 0.048, AppColors.blackText),
               ),
             ],
@@ -71,83 +75,37 @@ class _AddPostState extends State<EditPost> {
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              TextField(
-                maxLines: 10,
-                controller: controller.comments.value,
-              ),
-              30.sbh,
-              ClipRRect(
-                borderRadius: BorderRadius.circular(13.05),
-                child: Stack(
-                  children: [
-                    file.value != null
-                        ? Image.file(
-                            file.value!,
-                            height: 200,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                          )
-                        : const SizedBox(),
-                    Visibility(
-                      visible: file.value == null ? false : true,
-                      child: Positioned(
-                        top: 10,
-                        left: 320,
-                        right: 0,
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          margin: const EdgeInsets.all(2.0),
-                          child: GestureDetector(
-                            child: Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color: AppColors.white,
-                                shape: BoxShape.circle,
-                              ),
-                              child: Center(
-                                child: Icon(
-                                  Icons.delete,
-                                  color: AppColors.redText,
-                                ),
-                              ),
-                            ),
-                            onTap: () {
-                              setState(() {
-                                imagesList.remove(file.value);
-                                file.value = null;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                TextField(
+                  maxLines: 10,
+                  controller: controller.comments.value,
                 ),
-              ),
-              30.sbh,
-              videoFile.value != null
-                  ? Stack(
-                      children: [
-                        AspectRatio(
-                          aspectRatio: _videoPlayerController.value.aspectRatio,
-                          child: VideoPlayer(_videoPlayerController),
-                        ),
-                        Visibility(
-                          visible: videoFile.value != null,
-                          child: Positioned(
-                            top: 10,
-                            right: 10,
+                30.sbh,
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(13.05),
+                  child: Stack(
+                    children: [
+                      file.value != null
+                          ? Image.file(
+                              file.value!,
+                              height: 200,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            )
+                          : const SizedBox(),
+                      Visibility(
+                        visible: file.value == null ? false : true,
+                        child: Positioned(
+                          top: 10,
+                          left: 320,
+                          right: 0,
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            margin: const EdgeInsets.all(2.0),
                             child: GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  videoList.remove(videoFile.value);
-                                  videoFile.value = null;
-                                });
-                              },
                               child: Container(
                                 width: 40,
                                 height: 40,
@@ -162,13 +120,62 @@ class _AddPostState extends State<EditPost> {
                                   ),
                                 ),
                               ),
+                              onTap: () {
+                                setState(() {
+                                  imagesList.remove(file.value);
+                                  file.value = null;
+                                });
+                              },
                             ),
                           ),
                         ),
-                      ],
-                    )
-                  : const SizedBox(),
-            ],
+                      )
+                    ],
+                  ),
+                ),
+                30.sbh,
+                videoFile.value != null
+                    ? Stack(
+                        children: [
+                          AspectRatio(
+                            aspectRatio:
+                                _videoPlayerController.value.aspectRatio,
+                            child: VideoPlayer(_videoPlayerController),
+                          ),
+                          Visibility(
+                            visible: videoFile.value != null,
+                            child: Positioned(
+                              top: 10,
+                              right: 10,
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    videoList.remove(videoFile.value);
+                                    videoFile.value = null;
+                                  });
+                                },
+                                child: Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.white,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.delete,
+                                      color: AppColors.redText,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : const SizedBox(),
+              ],
+            ),
           ),
         ),
         bottomNavigationBar: Container(
@@ -226,7 +233,7 @@ class _AddPostState extends State<EditPost> {
                           backgroundColor: AppColors.primaryColor,
                         ),
                         onPressed: () {
-                          controller.editPost(
+                          controller.addPost(
                             imageFile: file.value,
                             videoFile: videoFile.value,
                           );

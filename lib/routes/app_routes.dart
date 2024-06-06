@@ -38,6 +38,7 @@ abstract class Routes {
   static const newsplusicon = '/newsPlusIcon';
   static const addnews = '/addNews';
   static const addpost = '/addPost';
+  static const editpost = '/editPost';
 
   static const mlmblog = '/mlmBlog';
   static const mlmblogdetails = '/mlmBlogDetails';

@@ -8,6 +8,7 @@ import 'package:mlmdiary/forgotpassword/enter_otp_screen.dart';
 import 'package:mlmdiary/forgotpassword/forgot_password.dart';
 import 'package:mlmdiary/home/addblog/add_blog.dart';
 import 'package:mlmdiary/home/addnews/add_news.dart';
+import 'package:mlmdiary/home/addpost/add_post.dart';
 import 'package:mlmdiary/home/notification/notification.dart';
 import 'package:mlmdiary/home/notification/notification_setting_screen.dart';
 import 'package:mlmdiary/home/searchbar_screen.dart';
@@ -237,6 +238,10 @@ class AppPages {
     GetPage(
       name: Routes.addpost,
       page: () => const AddPost(),
+    ),
+    GetPage(
+      name: Routes.editpost,
+      page: () => const EditPost(),
     ),
     GetPage(
       name: Routes.search,

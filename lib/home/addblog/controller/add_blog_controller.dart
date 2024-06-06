@@ -5,12 +5,14 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/get_category_entity.dart';
 import 'package:mlmdiary/generated/get_sub_category_entity.dart';
+import 'package:mlmdiary/generated/l_iked_blog_entity.dart';
 
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -46,6 +48,14 @@ class AddBlogController extends GetxController {
   RxList<GetSubCategoryCategory> subcategoryList =
       RxList<GetSubCategoryCategory>();
   final RxList<bool> isSubCategorySelectedList = RxList<bool>([]);
+
+  //like
+  var likedStatusMap = <int, bool>{};
+  var likeCountMap = <int, int>{};
+
+//bookmark
+  var bookmarkStatusMap = <int, bool>{};
+  var bookmarkCountMap = <int, int>{};
 
   // READ ONLY FIELDS
   RxBool titleReadOnly = false.obs;
@@ -311,6 +321,72 @@ class AddBlogController extends GetxController {
     subCategoryError.value = selectedCountSubCategory == 0;
   }
 
+  //liked Blog
+  Future<void> likedBlogUser(int blogId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+
+    String device = Platform.isAndroid ? 'android' : 'ios';
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri =
+            Uri.parse('${Constants.baseUrl}${Constants.likeduserclassified}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['classified_id'] = blogId.toString();
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var likedBlogEntity = LIkedBlogEntity.fromJson(data);
+          var message = likedBlogEntity.message;
+
+          // Update the liked status and like count based on the message
+          if (message == 'You have liked this Blog') {
+            likedStatusMap[blogId] = true;
+            likeCountMap[blogId] = (likeCountMap[blogId] ?? 0) + 1;
+          } else if (message == 'You have unliked this Blog') {
+            likedStatusMap[blogId] = false;
+            likeCountMap[blogId] = (likeCountMap[blogId] ?? 0) - 1;
+          }
+
+          Fluttertoast.showToast(
+            msg: message!,
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
+        } else {
+          Fluttertoast.showToast(
+            msg: "Error: ${response.body}",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
+        }
+      } else {
+        Fluttertoast.showToast(
+          msg: "No internet connection",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+        );
+      }
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Error: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+      );
+    } finally {
+      isLoading(false);
+    }
+  }
+
   void titleValidation(context) {
     String enteredTitle = title.value.text;
     if (enteredTitle.isEmpty || hasSpecialCharactersOrNumbers(enteredTitle)) {
@@ -322,13 +398,15 @@ class AddBlogController extends GetxController {
     }
   }
 
-  void toggleLike() {
-    isLiked.value = !isLiked.value;
-    if (isLiked.value) {
-      likeCount.value++;
-    } else {
-      likeCount.value--;
-    }
+  Future<void> toggleLike(int classifiedId) async {
+    bool isLiked = likedStatusMap[classifiedId] ?? false;
+    isLiked = !isLiked;
+    likedStatusMap[classifiedId] = isLiked;
+    likeCountMap.update(
+        classifiedId, (value) => isLiked ? value + 1 : value - 1,
+        ifAbsent: () => isLiked ? 1 : 0);
+
+    await likedBlogUser(classifiedId);
   }
 
   void toggleBookMark() {

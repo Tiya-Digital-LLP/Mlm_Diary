@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
@@ -17,6 +18,11 @@ class ManageNewsCard extends StatefulWidget {
   final String postImage;
   final VoidCallback onDelete;
   final String dateTime;
+  final int viewcounts;
+  final int likedCount;
+  final int newsId;
+  final ManageNewsController controller;
+
   const ManageNewsCard({
     super.key,
     required this.userImage,
@@ -26,6 +32,10 @@ class ManageNewsCard extends StatefulWidget {
     required this.postImage,
     required this.onDelete,
     required this.dateTime,
+    required this.viewcounts,
+    required this.likedCount,
+    required this.newsId,
+    required this.controller,
   });
 
   @override
@@ -34,11 +44,28 @@ class ManageNewsCard extends StatefulWidget {
 
 class _ManageNewsCardState extends State<ManageNewsCard> {
   late PostTimeFormatter postTimeFormatter;
+  late RxBool isLiked;
+  late RxInt likeCount;
 
   @override
   void initState() {
     super.initState();
     postTimeFormatter = PostTimeFormatter();
+    initializeLikes();
+  }
+
+  void initializeLikes() {
+    isLiked = RxBool(widget.controller.likedStatusMap[widget.newsId] ?? false);
+    likeCount = RxInt(
+        widget.controller.likeCountMap[widget.newsId] ?? widget.likedCount);
+  }
+
+  void toggleLike() async {
+    bool newLikedValue = !isLiked.value;
+    isLiked.value = newLikedValue;
+    likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
+
+    await widget.controller.toggleLike(widget.newsId, context);
   }
 
   @override
@@ -56,7 +83,7 @@ class _ManageNewsCardState extends State<ManageNewsCard> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CachedNetworkImage(
+                CachedNetworkImage( 
                   imageUrl: widget.userImage,
                   height: 97,
                   width: 105,
@@ -99,17 +126,21 @@ class _ManageNewsCardState extends State<ManageNewsCard> {
                     SizedBox(
                       height: size.height * 0.028,
                       width: size.height * 0.028,
-                      child: SvgPicture.asset(Assets.svgLike),
+                      child: GestureDetector(
+                        onTap: toggleLike,
+                        child: Icon(
+                          isLiked.value
+                              ? Icons.thumb_up_off_alt_sharp
+                              : Icons.thumb_up_off_alt_outlined,
+                          color: isLiked.value ? AppColors.primaryColor : null,
+                        ),
+                      ),
                     ),
-                    const SizedBox(
-                      width: 7,
-                    ),
+                    7.sbw,
                     Text(
-                      "50k",
-                      style: TextStyle(
-                          fontFamily: "Metropolis",
-                          fontWeight: FontWeight.w600,
-                          fontSize: size.width * 0.045),
+                      'Like (${likeCount.value})',
+                      style: textStyleW600(
+                          size.width * 0.038, AppColors.blackText),
                     ),
                     const SizedBox(
                       width: 15,
@@ -123,11 +154,11 @@ class _ManageNewsCardState extends State<ManageNewsCard> {
                       width: 7,
                     ),
                     Text(
-                      "286",
+                      'Views (${widget.viewcounts})',
                       style: TextStyle(
                           fontFamily: "Metropolis",
                           fontWeight: FontWeight.w600,
-                          fontSize: size.width * 0.045),
+                          fontSize: size.width * 0.038),
                     ),
                   ],
                 ),

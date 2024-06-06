@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -6,23 +7,38 @@ import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
+import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 
-class UserProfileCard extends StatelessWidget {
+class MyProfileCard extends StatefulWidget {
   final String userImage;
   final String userName;
-  final String postImage;
   final String postCaption;
-
+  final String postImage;
   final VoidCallback onDelete;
+  final String dateTime;
 
-  const UserProfileCard({
+  const MyProfileCard({
     super.key,
     required this.userImage,
     required this.userName,
+    required this.postCaption,
     required this.postImage,
     required this.onDelete,
-    required this.postCaption,
+    required this.dateTime,
   });
+
+  @override
+  State<MyProfileCard> createState() => _MyProfileCardState();
+}
+
+class _MyProfileCardState extends State<MyProfileCard> {
+  late PostTimeFormatter postTimeFormatter;
+
+  @override
+  void initState() {
+    super.initState();
+    postTimeFormatter = PostTimeFormatter();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +53,7 @@ class UserProfileCard extends StatelessWidget {
       child: Stack(
         children: [
           Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
@@ -44,11 +61,15 @@ class UserProfileCard extends StatelessWidget {
                     backgroundColor: const Color(0XFFCCC9C9),
                     radius: size.width * 0.07,
                     child: ClipOval(
-                      child: Image.asset(
-                        userImage,
-                        height: 100,
-                        width: 100,
-                        fit: BoxFit.cover,
+                      child: CachedNetworkImage(
+                        imageUrl: widget.userImage,
+                        height: 97,
+                        width: 105,
+                        fit: BoxFit.fill,
+                        placeholder: (context, url) =>
+                            const CircularProgressIndicator(),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
                       ),
                     ),
                   ),
@@ -61,7 +82,7 @@ class UserProfileCard extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            userName,
+                            widget.userName,
                             style: textStyleW700(
                                 size.width * 0.043, AppColors.blackText),
                           ),
@@ -76,7 +97,7 @@ class UserProfileCard extends StatelessWidget {
                         ],
                       ),
                       Text(
-                        "2 Min Ago",
+                        postTimeFormatter.formatPostTime(widget.dateTime),
                         style: textStyleW400(size.width * 0.035,
                             AppColors.blackText.withOpacity(0.5)),
                       ),
@@ -87,15 +108,31 @@ class UserProfileCard extends StatelessWidget {
               SizedBox(
                 height: size.height * 0.01,
               ),
+              Text(
+                widget.postCaption,
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.blackText,
+                  fontSize: size.width * 0.045,
+                ),
+              ),
+              SizedBox(
+                height: size.height * 0.012,
+              ),
               Container(
                 height: size.height * 0.28,
                 width: size.width,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
                 ),
-                child: Image.asset(
-                  postImage,
+                child: CachedNetworkImage(
+                  imageUrl: widget.postImage,
+                  height: 97,
+                  width: 105,
                   fit: BoxFit.fill,
+                  placeholder: (context, url) =>
+                      const CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
                 ),
               ),
               SizedBox(
@@ -290,7 +327,7 @@ class UserProfileCard extends StatelessWidget {
                                   elevation: 3,
                                 ),
                                 onPressed: () {
-                                  onDelete();
+                                  widget.onDelete();
                                   Get.back();
                                 },
                                 child: Text(

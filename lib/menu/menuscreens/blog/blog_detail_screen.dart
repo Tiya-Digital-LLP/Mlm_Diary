@@ -363,96 +363,86 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
           color: AppColors.white,
         ),
         child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16,
-            ),
-            child: Obx(
-              () => Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
                 children: [
-                  Row(
-                    children: [
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      SizedBox(
-                        height: size.height * 0.028,
-                        width: size.height * 0.028,
-                        child: GestureDetector(
-                          onTap: () => controller.toggleLike(),
-                          child: Icon(
-                            controller.isLiked.value
-                                ? Icons.favorite
-                                : Icons.favorite_border,
-                            color: controller.isLiked.value
-                                ? AppColors.primaryColor
-                                : null,
-                            size: size.height * 0.032,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 7,
-                      ),
-                      controller.likeCount.value == 0
-                          ? const SizedBox.shrink()
-                          : Text(
-                              controller.likeCount.value.toString(),
-                              style: textStyleW600(
-                                  size.width * 0.040, AppColors.blackText),
-                            ),
-                      const SizedBox(
-                        width: 15,
-                      ),
-                      const SizedBox(
-                        width: 15,
-                      ),
-                      SizedBox(
-                        height: size.height * 0.028,
-                        width: size.height * 0.028,
-                        child: SvgPicture.asset(Assets.svgView),
-                      ),
-                      const SizedBox(
-                        width: 7,
-                      ),
-                      Text(
-                        "286",
-                        style: textStyleW600(
-                            size.width * 0.040, AppColors.blackText),
-                      ),
-                    ],
+                  const SizedBox(
+                    width: 10,
                   ),
-                  Row(
-                    children: [
-                      SizedBox(
-                        height: size.height * 0.028,
-                        width: size.height * 0.028,
-                        child: GestureDetector(
-                          onTap: () => controller.toggleBookMark(),
-                          child: Icon(
-                            controller.isBookMarked.value
-                                ? Icons.bookmark
-                                : Icons.bookmark_border,
-                            size: size.height * 0.032,
-                          ),
+                  SizedBox(
+                    height: size.height * 0.028,
+                    width: size.height * 0.028,
+                    child: GestureDetector(
+                      onTap: () =>
+                          controller.toggleLike(post.articleId ?? 0, context),
+                      child: Icon(
+                        // Observe like status
+                        controller.likedStatusMap[post.articleId ?? 0] ?? false
+                            ? Icons.thumb_up_off_alt_sharp
+                            : Icons.thumb_up_off_alt_outlined,
+                        color: controller.likedStatusMap[post.articleId ?? 0] ??
+                                false
+                            ? AppColors.primaryColor
+                            : null,
+                        size: size.height * 0.032,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 7,
+                  ),
+                  // ignore: unrelated_type_equality_checks
+                  controller.likeCountMap == 0
+                      ? const SizedBox.shrink()
+                      : Text(
+                          post.totallike.toString(),
+                          style: textStyleW600(
+                              size.width * 0.040, AppColors.blackText),
                         ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      SizedBox(
-                        height: size.height * 0.028,
-                        width: size.height * 0.028,
-                        child: SvgPicture.asset(Assets.svgSend),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                    ],
+                  const SizedBox(
+                    width: 15,
+                  ),
+                  const SizedBox(
+                    width: 15,
+                  ),
+                  SizedBox(
+                    height: size.height * 0.028,
+                    width: size.height * 0.028,
+                    child: SvgPicture.asset(Assets.svgView),
+                  ),
+                  const SizedBox(
+                    width: 7,
+                  ),
+                  Text(
+                    post.pgcnt.toString(),
+                    style:
+                        textStyleW600(size.width * 0.040, AppColors.blackText),
                   ),
                 ],
               ),
-            )),
+              Row(
+                children: [
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  SizedBox(
+                    height: size.height * 0.028,
+                    width: size.height * 0.028,
+                    child: SvgPicture.asset(Assets.svgSend),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
