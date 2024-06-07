@@ -109,7 +109,7 @@ class _ManageBlogCardState extends State<ManageBlogCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CachedNetworkImage(
-                  imageUrl: widget.userImage,
+                  imageUrl: widget.postImage,
                   height: 97,
                   width: 105,
                   fit: BoxFit.fill,
@@ -192,7 +192,9 @@ class _ManageBlogCardState extends State<ManageBlogCard> {
                   children: [
                     InkWell(
                       onTap: () {
-                        Get.toNamed(Routes.blogplusicon);
+                        Get.toNamed(
+                          Routes.blogplusicon,
+                        );
                       },
                       child: Ink(
                         height: size.height * 0.030,

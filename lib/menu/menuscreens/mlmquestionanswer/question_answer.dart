@@ -3,7 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
-import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/manage_quation_answer_card.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/question_card.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
@@ -11,14 +11,14 @@ import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/customfilter/custom_filter.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
 
-class ManageQuationAnswer extends StatefulWidget {
-  const ManageQuationAnswer({super.key});
+class QuationAnswer extends StatefulWidget {
+  const QuationAnswer({super.key});
 
   @override
-  State<ManageQuationAnswer> createState() => _ManageQuationAnswerState();
+  State<QuationAnswer> createState() => _QuationAnswerState();
 }
 
-class _ManageQuationAnswerState extends State<ManageQuationAnswer> {
+class _QuationAnswerState extends State<QuationAnswer> {
   final _search = TextEditingController();
   final QuestionAnswerController controller =
       Get.put(QuestionAnswerController());
@@ -26,7 +26,7 @@ class _ManageQuationAnswerState extends State<ManageQuationAnswer> {
   @override
   void initState() {
     super.initState();
-    controller.fetchMyQuestion();
+    controller.getQuestion(1);
   }
 
   @override
@@ -37,12 +37,12 @@ class _ManageQuationAnswerState extends State<ManageQuationAnswer> {
       backgroundColor: AppColors.background,
       appBar: CustomAppBar(
         size: MediaQuery.of(context).size,
-        titleText: 'Manage Question Answer',
+        titleText: 'Question Answer',
       ),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 20, left: 8, right: 8),
+            padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
                 Expanded(
@@ -89,17 +89,15 @@ class _ManageQuationAnswerState extends State<ManageQuationAnswer> {
           Expanded(
             child: Obx(() {
               if (controller.isLoading.value &&
-                  controller.myquestionList.isEmpty) {
+                  controller.questionList.isEmpty) {
                 return const Center(child: CircularProgressIndicator());
               }
 
-              if (controller.myquestionList.isEmpty) {
-                return Center(
+              if (controller.questionList.isEmpty) {
+                return const Center(
                   child: Text(
-                    controller.isLoading.value
-                        ? 'Loading...'
-                        : 'Data not found',
-                    style: const TextStyle(
+                    'Data not found',
+                    style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
@@ -107,24 +105,30 @@ class _ManageQuationAnswerState extends State<ManageQuationAnswer> {
                   ),
                 );
               }
+
               return ListView.builder(
                 padding: EdgeInsets.zero,
+                controller: controller.scrollController,
                 physics: const AlwaysScrollableScrollPhysics(),
                 shrinkWrap: true,
-                itemCount: controller.myquestionList.length,
+                itemCount: controller.questionList.length +
+                    (controller.isLoading.value ? 1 : 0),
                 itemBuilder: (context, index) {
-                  final post = controller.myquestionList[index];
+                  if (index == controller.questionList.length) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  final post = controller.questionList[index];
                   return Padding(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     child: GestureDetector(
                       onTap: () {
                         Get.toNamed(
-                          Routes.question,
-                          arguments: controller.myquestionList[index],
+                          Routes.userquestion,
+                          arguments: controller.questionList[index],
                         );
                       },
-                      child: ManageQuestionCard(
+                      child: QuestionCard(
                         userImage: post.userData!.imagePath ?? '',
                         userName: post.userData!.name ?? '',
                         postCaption: post.title ?? '',

@@ -74,4 +74,13 @@ class Constants {
   static const String postlike = "/addlikepost";
   static const String deletepost = "/deleteuserpost";
   static const String bookmarkpost = "/addfavoritepost";
+  static const String likelistpost = "/post/likelist";
+
+  static const String addquestionanswer = "/addquestion";
+  static const String myqusetionanswer = "/myquestion";
+  static const String getquestion = "/getquestion";
+  static const String getanswer = "/getanswers";
+  static const String addanswer = "/addanswer";
+  static const String likelistquestion = "/question/likelist";
+  static const String countviewquestion = "/countview_question";
 }

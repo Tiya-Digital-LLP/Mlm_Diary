@@ -40,6 +40,7 @@ class GetClassifiedData {
 	String? city = '';
 	String? state = '';
 	String? country = '';
+	String? urlcomponent = '';
 	int? totallike = 0;
 	int? totalbookmark = 0;
 	@JSONField(name: "liked_by_user")
@@ -48,6 +49,8 @@ class GetClassifiedData {
 	bool? bookmarkedByUser = false;
 	@JSONField(name: "user_data")
 	GetClassifiedDataUserData? userData;
+	@JSONField(name: "full_url")
+	String? fullUrl = '';
 	@JSONField(name: "image_path")
 	String? imagePath = '';
 	@JSONField(name: "image_thum_path")

@@ -1,20 +1,46 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/question_like_list_content.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
+import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 
-class ManageQuationCard extends StatelessWidget {
+class ManageQuestionCard extends StatefulWidget {
   final String userImage;
   final String userName;
   final String postCaption;
-  const ManageQuationCard({
+  final int viewcounts;
+  final String dateTime;
+  final int questionId;
+  final QuestionAnswerController controller;
+
+  const ManageQuestionCard({
     super.key,
     required this.userImage,
     required this.userName,
     required this.postCaption,
+    required this.viewcounts,
+    required this.dateTime,
+    required this.questionId,
+    required this.controller,
   });
+
+  @override
+  State<ManageQuestionCard> createState() => _ManageQuestionCardState();
+}
+
+class _ManageQuestionCardState extends State<ManageQuestionCard> {
+  late PostTimeFormatter postTimeFormatter;
+
+  @override
+  void initState() {
+    super.initState();
+    postTimeFormatter = PostTimeFormatter();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,36 +57,46 @@ class ManageQuationCard extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Image.asset(
-                  width: 41,
-                  height: 41,
-                  userImage,
-                  fit: BoxFit.fill,
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(30.0),
+                  child: CircleAvatar(
+                    radius: 25,
+                    child: CachedNetworkImage(
+                      imageUrl: widget.userImage,
+                      height: 60,
+                      width: 60,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) =>
+                          const CircularProgressIndicator(),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                    ),
+                  ),
                 ),
                 10.sbw,
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Text(
+                        widget.userName,
+                        style: textStyleW700(
+                            size.width * 0.038, AppColors.blackText),
+                      ),
                       Row(
                         children: [
                           Text(
-                            userName,
-                            style: textStyleW700(
-                                size.width * 0.038, AppColors.blackText),
+                            postTimeFormatter.formatPostTime(widget.dateTime),
+                            style: textStyleW400(size.width * 0.028,
+                                AppColors.blackText.withOpacity(0.8)),
                           ),
                           8.sbw,
                           Text(
                             'asked a question',
-                            style: textStyleW400(size.width * 0.032,
+                            style: textStyleW400(size.width * 0.028,
                                 AppColors.blackText.withOpacity(0.8)),
                           )
                         ],
-                      ),
-                      Text(
-                        '2 minutes',
-                        style: textStyleW400(size.width * 0.028,
-                            AppColors.blackText.withOpacity(0.8)),
                       )
                     ],
                   ),
@@ -72,10 +108,13 @@ class ManageQuationCard extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               children: [
-                Text(
-                  postCaption,
-                  style: textStyleW400(
-                      size.width * 0.035, AppColors.blackText.withOpacity(0.8)),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    widget.postCaption,
+                    style: textStyleW400(size.width * 0.035,
+                        AppColors.blackText.withOpacity(0.8)),
+                  ),
                 )
               ],
             ),
@@ -136,7 +175,7 @@ class ManageQuationCard extends StatelessWidget {
                       width: 7,
                     ),
                     Text(
-                      "286",
+                      '${widget.viewcounts}',
                       style: TextStyle(
                           fontFamily: "Metropolis",
                           fontWeight: FontWeight.w600,
@@ -171,5 +210,19 @@ class ManageQuationCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void showLikeList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        fetchLikeList();
+        return const QuestionLikeListContent();
+      },
+    );
+  }
+
+  void fetchLikeList() async {
+    await widget.controller.fetchLikeListQuestion(widget.questionId);
   }
 }

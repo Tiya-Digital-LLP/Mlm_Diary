@@ -12,6 +12,7 @@ import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ClassifiedCard extends StatefulWidget {
   final String userImage;
@@ -25,6 +26,7 @@ class ClassifiedCard extends StatefulWidget {
   final int bookmarkCount;
   final bool isPopular;
   final String image;
+  final String url;
 
   const ClassifiedCard({
     super.key,
@@ -39,6 +41,7 @@ class ClassifiedCard extends StatefulWidget {
     required this.bookmarkCount,
     required this.isPopular,
     required this.image,
+    required this.url,
   });
 
   @override
@@ -230,8 +233,6 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
               ),
               child: CachedNetworkImage(
                 imageUrl: widget.userImage,
-                height: 97,
-                width: 105,
                 fit: BoxFit.fill,
                 placeholder: (context, url) =>
                     const CircularProgressIndicator(),
@@ -320,10 +321,19 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
                       ),
                     ),
                     10.sbw,
-                    SizedBox(
-                      height: size.height * 0.028,
-                      width: size.height * 0.028,
-                      child: SvgPicture.asset(Assets.svgSend),
+                    InkWell(
+                      onTap: () {
+                        Share.share(widget.url);
+                      },
+                      child: SizedBox(
+                        height: size.height * 0.028,
+                        width: size.height * 0.028,
+                        child: SvgPicture.asset(
+                          Assets.svgSend,
+                          // ignore: deprecated_member_use
+                          color: AppColors.blackText,
+                        ),
+                      ),
                     ),
                   ],
                 ),

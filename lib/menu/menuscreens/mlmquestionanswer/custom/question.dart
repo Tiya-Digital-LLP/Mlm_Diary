@@ -1,31 +1,44 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
-import 'package:mlmdiary/modal_class/manage_quation_class.dart';
+import 'package:mlmdiary/generated/my_question_entity.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
+import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 
 class Question extends StatefulWidget {
-  final ManageQuation post;
-  const Question({super.key, required this.post});
+  const Question({super.key});
 
   @override
   State<Question> createState() => _QuestionState();
 }
 
 class _QuestionState extends State<Question> {
-  TextEditingController replyController = TextEditingController();
-  RxString replyText = ''.obs;
-  RxBool showReply = false.obs;
+  final QuestionAnswerController controller =
+      Get.put(QuestionAnswerController());
+  final post = Get.arguments as MyQuestionQuestions;
+
   List<String> replies = [];
+  PostTimeFormatter postTimeFormatter = PostTimeFormatter();
 
   @override
-  void dispose() {
-    replyController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.getAnswers(1, post.id ?? 0);
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.getQuestion(1);
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.countViewQuestion(post.id ?? 0);
+    });
   }
 
   @override
@@ -47,40 +60,51 @@ class _QuestionState extends State<Question> {
               Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Image.asset(
-                          width: 41,
-                          height: 41,
-                          widget.post.userImage,
-                          fit: BoxFit.fill,
+                        CircleAvatar(
+                          backgroundColor: const Color(0XFFCCC9C9),
+                          radius: size.width * 0.07,
+                          child: ClipOval(
+                            child: CachedNetworkImage(
+                              imageUrl: post.userData!.imagePath ?? '',
+                              height: 97,
+                              width: 105,
+                              fit: BoxFit.fill,
+                              placeholder: (context, url) =>
+                                  const CircularProgressIndicator(),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error),
+                            ),
+                          ),
                         ),
                         10.sbw,
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              Text(
+                                post.userData!.name ?? '',
+                                style: textStyleW700(
+                                    size.width * 0.036, AppColors.blackText),
+                              ),
                               Row(
                                 children: [
                                   Text(
-                                    widget.post.userName,
-                                    style: textStyleW700(size.width * 0.036,
-                                        AppColors.blackText),
+                                    postTimeFormatter
+                                        .formatPostTime(post.creatdate ?? ''),
+                                    style: textStyleW400(size.width * 0.028,
+                                        AppColors.blackText.withOpacity(0.8)),
                                   ),
                                   8.sbw,
                                   Text(
                                     'asked a question',
-                                    style: textStyleW400(size.width * 0.032,
+                                    style: textStyleW400(size.width * 0.028,
                                         AppColors.blackText.withOpacity(0.8)),
                                   )
                                 ],
-                              ),
-                              Text(
-                                '2 minutes',
-                                style: textStyleW400(size.width * 0.028,
-                                    AppColors.blackText.withOpacity(0.8)),
                               )
                             ],
                           ),
@@ -88,14 +112,18 @@ class _QuestionState extends State<Question> {
                       ],
                     ),
                   ),
+                  10.sbh,
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: 22),
                     child: Column(
                       children: [
-                        Text(
-                          widget.post.postCaption,
-                          style: textStyleW400(size.width * 0.035,
-                              AppColors.blackText.withOpacity(0.8)),
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            post.title ?? '',
+                            style: textStyleW400(size.width * 0.035,
+                                AppColors.blackText.withOpacity(0.8)),
+                          ),
                         )
                       ],
                     ),
@@ -163,7 +191,7 @@ class _QuestionState extends State<Question> {
                               width: 7,
                             ),
                             Text(
-                              "286",
+                              post.pgcnt.toString(),
                               style: TextStyle(
                                   fontFamily: "Metropolis",
                                   fontWeight: FontWeight.w600,
@@ -212,7 +240,7 @@ class _QuestionState extends State<Question> {
                   Column(
                     children: [
                       Text(
-                        'Answers (12)',
+                        'Answer (${post.totalquestionAnswer.toString()})',
                         style: textStyleW700(
                             size.width * 0.038, AppColors.blackText),
                       ),
@@ -220,87 +248,122 @@ class _QuestionState extends State<Question> {
                   )
                 ],
               ),
-              // Inside the Column widget where you display replies
-              Column(
-                children: replies.map((reply) {
-                  return Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Display user image, name, and time here
-                        Image.asset(
-                          width: 41,
-                          height: 41,
-                          widget.post.userImage,
-                          fit: BoxFit.fill,
-                        ),
-                        10.sbw,
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'John Doe',
-                                    style: textStyleW700(size.width * 0.036,
-                                        AppColors.blackText),
-                                  ),
-                                  8.sbw,
-                                  Text(
-                                    '2 minutes',
-                                    style: textStyleW400(size.width * 0.032,
-                                        AppColors.blackText.withOpacity(0.8)),
-                                  ),
-                                ],
+              Obx(() {
+                if (controller.isLoading.value &&
+                    controller.answerList.isEmpty) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (controller.answerList.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      'No answers found',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                  );
+                }
+
+                return ListView.builder(
+                  padding: EdgeInsets.zero,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: controller.answerList.length,
+                  itemBuilder: (context, index) {
+                    final answer = controller.answerList[index];
+                    return Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CircleAvatar(
+                            backgroundColor: const Color(0XFFCCC9C9),
+                            radius: size.width * 0.07,
+                            child: ClipOval(
+                              child: CachedNetworkImage(
+                                imageUrl: answer.userData!.imagePath ?? '',
+                                height: 97,
+                                width: 105,
+                                fit: BoxFit.fill,
+                                placeholder: (context, url) =>
+                                    const CircularProgressIndicator(),
+                                errorWidget: (context, url, error) =>
+                                    const Icon(Icons.error),
                               ),
-                              Text(
-                                reply,
-                                style: textStyleW400(size.width * 0.035,
-                                    AppColors.blackText.withOpacity(0.8)),
-                              ),
-                              Row(
-                                children: [
-                                  SizedBox(
-                                    height: size.height * 0.018,
-                                    width: size.height * 0.018,
-                                    child: SvgPicture.asset(Assets.svgLike),
-                                  ),
-                                  const SizedBox(
-                                    width: 7,
-                                  ),
-                                  Text(
-                                    "50k",
-                                    style: TextStyle(
-                                        fontFamily: "Metropolis",
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: size.width * 0.035),
-                                  ),
-                                  18.sbw,
-                                  TextButton(
-                                    onPressed: () {},
-                                    child: Text(
-                                      'Reply',
+                            ),
+                          ),
+                          10.sbw,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      answer.userData!.name ?? '',
+                                      style: textStyleW700(size.width * 0.036,
+                                          AppColors.blackText),
+                                    ),
+                                    8.sbw,
+                                    Text(
+                                      postTimeFormatter.formatPostTime(
+                                          answer.createdate ?? ''),
+                                      style: textStyleW400(size.width * 0.032,
+                                          AppColors.blackText.withOpacity(0.8)),
+                                    ),
+                                  ],
+                                ),
+                                Html(
+                                  data: answer.ansTitle ?? '',
+                                  style: {
+                                    "html": Style(),
+                                  },
+                                ),
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                      height: size.height * 0.018,
+                                      width: size.height * 0.018,
+                                      child: SvgPicture.asset(Assets.svgLike),
+                                    ),
+                                    const SizedBox(
+                                      width: 7,
+                                    ),
+                                    Text(
+                                      "50k",
                                       style: TextStyle(
                                           fontFamily: "Metropolis",
                                           fontWeight: FontWeight.w600,
-                                          fontSize: size.width * 0.035,
-                                          color: AppColors.blackText
-                                              .withOpacity(0.7)),
+                                          fontSize: size.width * 0.035),
                                     ),
-                                  ),
-                                ],
-                              )
-                            ],
+                                    18.sbw,
+                                    TextButton(
+                                      onPressed: () {},
+                                      child: Text(
+                                        'Reply',
+                                        style: TextStyle(
+                                            fontFamily: "Metropolis",
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: size.width * 0.035,
+                                            color: AppColors.blackText
+                                                .withOpacity(0.7)),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  );
-                }).toList(),
-              )
+                        ],
+                      ),
+                    );
+                  },
+                );
+              }),
             ],
           ),
         ),
@@ -332,7 +395,7 @@ class _QuestionState extends State<Question> {
                                     const EdgeInsets.symmetric(horizontal: 16),
                                 child: TextField(
                                   maxLines: 5,
-                                  controller: replyController,
+                                  controller: controller.answer.value,
                                   decoration: const InputDecoration(
                                     hintText: 'Write your answer here',
                                     border: InputBorder.none,
@@ -354,17 +417,13 @@ class _QuestionState extends State<Question> {
                                 ),
                                 child: GestureDetector(
                                   onTap: () {
-                                    // Check if the reply text is not empty
-                                    if (replyController.text.isNotEmpty) {
-                                      // Update the reply text and toggle the visibility
-                                      setState(() {
-                                        replies.add(replyController.text);
-                                        replyText.value = replyController.text;
-                                        showReply.value = !showReply.value;
-                                      });
-
-                                      // Clear the text field
-                                      replyController.clear();
+                                    final String answerText =
+                                        controller.answer.value.text;
+                                    if (answerText.isNotEmpty) {
+                                      controller.answerValidation(context);
+                                      if (!controller.answerError.value) {
+                                        controller.addAnswers(post.id ?? 0);
+                                      }
                                     }
                                   },
                                   child: const Icon(

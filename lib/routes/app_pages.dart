@@ -31,7 +31,10 @@ import 'package:mlmdiary/menu/menuscreens/manageclassified/manage_classified_det
 import 'package:mlmdiary/menu/menuscreens/manageclassified/manageclassified_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/mlmcompaines.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/mlmcompanies_details_screen.dart';
-import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/question.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/add_question_answer.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/user_question.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/question.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/question_answer.dart';
 import 'package:mlmdiary/menu/menuscreens/news/manage_news_plus_icon.dart';
 import 'package:mlmdiary/menu/menuscreens/news/manage_news.dart';
 import 'package:mlmdiary/menu/menuscreens/news/mlm_news.dart';
@@ -166,14 +169,16 @@ class AppPages {
       page: () => const ManageClassified(),
     ),
     GetPage(
-      name: Routes.mlmquationanswer,
+      name: Routes.managequationanswer,
       page: () => const ManageQuationAnswer(),
     ),
     GetPage(
+      name: Routes.quationanswer,
+      page: () => const QuationAnswer(),
+    ),
+    GetPage(
       name: Routes.question,
-      page: () => Question(
-        post: Get.arguments,
-      ),
+      page: () => const Question(),
     ),
     GetPage(
       name: Routes.favourite,
@@ -270,6 +275,14 @@ class AppPages {
     GetPage(
       name: Routes.search,
       page: () => const SearchBarApp(),
+    ),
+    GetPage(
+      name: Routes.addquestionanswer,
+      page: () => const AddQuestionAnswer(),
+    ),
+    GetPage(
+      name: Routes.userquestion,
+      page: () => const UserQuestion(),
     ),
   ];
 }

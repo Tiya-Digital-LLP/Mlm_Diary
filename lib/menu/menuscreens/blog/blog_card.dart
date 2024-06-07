@@ -315,7 +315,6 @@ class _BlogCardState extends State<BlogCard> {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        // Fetch like list after bottom sheet is shown
         fetchLikeList();
         return const BlogLikedListContent();
       },

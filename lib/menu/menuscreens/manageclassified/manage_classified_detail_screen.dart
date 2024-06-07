@@ -420,31 +420,38 @@ class _ClassidiedDetailsScreenState
                 ),
                 Row(
                   children: [
-                    // SizedBox(
-                    //   height: size.height * 0.028,
-                    //   width: size.height * 0.028,
-                    //   child: GestureDetector(
-                    //     onTap: () => controller.toggleBookMark(post.id ?? 0),
-                    //     child: Icon(
-                    //       // Observe like status
-                    //       controller.bookmarkStatusMap[post.id ?? 0] ?? false
-                    //           ? Icons.bookmark
-                    //           : Icons.bookmark_border,
-                    //       color: controller.bookmarkStatusMap[post.id ?? 0] ??
-                    //               false
-                    //           ? AppColors.primaryColor
-                    //           : null,
-                    //       size: size.height * 0.032,
-                    //     ),
-                    //   ),
-                    // ),
-                    const SizedBox(
-                      width: 10,
-                    ),
                     SizedBox(
                       height: size.height * 0.028,
                       width: size.height * 0.028,
-                      child: SvgPicture.asset(Assets.svgSend),
+                      child: GestureDetector(
+                        onTap: () => controller.toggleBookMark(post.id ?? 0),
+                        child: Icon(
+                          // Observe like status
+                          controller.bookmarkStatusMap[post.id ?? 0] ?? false
+                              ? Icons.bookmark
+                              : Icons.bookmark_border,
+                          color: controller.bookmarkStatusMap[post.id ?? 0] ??
+                                  false
+                              ? AppColors.primaryColor
+                              : null,
+                          size: size.height * 0.032,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    InkWell(
+                      onTap: () {},
+                      child: SizedBox(
+                        height: size.height * 0.028,
+                        width: size.height * 0.028,
+                        child: SvgPicture.asset(
+                          Assets.svgSend,
+                          // ignore: deprecated_member_use
+                          color: AppColors.blackText,
+                        ),
+                      ),
                     ),
                     const SizedBox(
                       width: 10,

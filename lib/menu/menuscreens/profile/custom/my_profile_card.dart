@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/custom/post_like_list_content.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
@@ -212,10 +213,15 @@ class _MyProfileCardState extends State<MyProfileCard> {
                       ),
                       likeCount.value == 0
                           ? const SizedBox.shrink()
-                          : Text(
-                              '${likeCount.value}',
-                              style: textStyleW600(
-                                  size.width * 0.038, AppColors.blackText),
+                          : InkWell(
+                              onTap: () {
+                                showLikeList(context);
+                              },
+                              child: Text(
+                                '${likeCount.value}',
+                                style: textStyleW600(
+                                    size.width * 0.038, AppColors.blackText),
+                              ),
                             ),
                       const SizedBox(
                         width: 15,
@@ -311,6 +317,20 @@ class _MyProfileCardState extends State<MyProfileCard> {
         ],
       ),
     );
+  }
+
+  void showLikeList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        fetchLikeList();
+        return const PostLikeListContent();
+      },
+    );
+  }
+
+  void fetchLikeList() async {
+    await widget.controller.fetchLikeListPost(widget.postId);
   }
 
   void _showLogoutDialog(BuildContext context) {

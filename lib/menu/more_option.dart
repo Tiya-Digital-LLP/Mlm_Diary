@@ -618,7 +618,7 @@ class _moreState extends State<MoreOptionScreen> {
                     8.sbw,
                     GestureDetector(
                       onTap: () {
-                        Get.toNamed(Routes.mlmquationanswer);
+                        Get.toNamed(Routes.quationanswer);
                       },
                       child: Container(
                         padding: const EdgeInsets.all(8.0),
@@ -821,7 +821,7 @@ class _moreState extends State<MoreOptionScreen> {
                         Get.toNamed(Routes.followers);
                         break;
                       case '10':
-                        Get.toNamed(Routes.mlmquationanswer);
+                        Get.toNamed(Routes.managequationanswer);
                         break;
                       case '11':
                         Get.toNamed(Routes.video);

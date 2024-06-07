@@ -78,7 +78,7 @@ class _ManageBlogState extends State<ManageBlog> {
                       userName: post.userData!.name ?? '',
                       postTitle: post.title ?? '',
                       postCaption: post.description ?? '',
-                      postImage: post.image ?? '',
+                      postImage: post.imagePath ?? '',
                       dateTime: post.createdDate ?? '',
                       viewcounts: post.pgcnt ?? 0,
                       controller: controller,

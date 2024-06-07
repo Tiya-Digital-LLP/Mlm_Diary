@@ -1,8 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
-import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -107,9 +105,7 @@ class _UserCardState extends State<UserCard> {
             bottom: 0,
             right: 0,
             child: InkWell(
-              onTap: () {
-                Get.toNamed(Routes.userprofilescreen);
-              },
+              onTap: () {},
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [

@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:mlmdiary/data/constants.dart';
+import 'package:mlmdiary/generated/bookmark_user_entity.dart';
 import 'package:mlmdiary/generated/get_category_entity.dart';
 import 'package:mlmdiary/generated/get_classified_entity.dart';
 import 'package:mlmdiary/generated/get_company_entity.dart';
@@ -762,10 +763,83 @@ class ManageClasifiedController extends GetxController {
     }
   }
 
-  void toggleBookMark() {
-    isBookMarked.value = !isBookMarked.value;
-    if (isBookMarked.value) {
-    } else {}
+  // Bookmark
+  Future<void> bookmarkUser(int classifiedId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+
+    String device = Platform.isAndroid ? 'android' : 'ios';
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri =
+            Uri.parse('${Constants.baseUrl}${Constants.bookmarkclassified}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['classified_id'] = classifiedId.toString();
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var bookmarkUserEntity = BookmarkUserEntity.fromJson(data);
+          var message = bookmarkUserEntity.message;
+
+          // Update the liked status and like count based on the message
+          if (message == 'You have bookmark this classified') {
+            bookmarkStatusMap[classifiedId] = true;
+            bookmarkCountMap[classifiedId] =
+                (bookmarkCountMap[classifiedId] ?? 0) + 1;
+          } else if (message == 'You have unbookmark this classified') {
+            bookmarkStatusMap[classifiedId] = false;
+            bookmarkCountMap[classifiedId] =
+                (bookmarkCountMap[classifiedId] ?? 0) - 1;
+          }
+
+          Fluttertoast.showToast(
+            msg: message!,
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
+        } else {
+          Fluttertoast.showToast(
+            msg: "Error: ${response.body}",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
+        }
+      } else {
+        Fluttertoast.showToast(
+          msg: "No internet connection",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+        );
+      }
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Error: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+      );
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<void> toggleBookMark(int classifiedId) async {
+    bool isBookmark = bookmarkStatusMap[classifiedId] ?? false;
+    isBookmark = !isBookmark;
+    bookmarkStatusMap[classifiedId] = isBookmark;
+    bookmarkCountMap.update(
+        classifiedId, (value) => isBookmark ? value + 1 : value - 1,
+        ifAbsent: () => isBookmark ? 1 : 0);
+
+    await bookmarkUser(classifiedId);
   }
 
   void discriptionValidation() {

@@ -112,6 +112,11 @@ GetClassifiedData $GetClassifiedDataFromJson(Map<String, dynamic> json) {
   if (country != null) {
     getClassifiedData.country = country;
   }
+  final String? urlcomponent = jsonConvert.convert<String>(
+      json['urlcomponent']);
+  if (urlcomponent != null) {
+    getClassifiedData.urlcomponent = urlcomponent;
+  }
   final int? totallike = jsonConvert.convert<int>(json['totallike']);
   if (totallike != null) {
     getClassifiedData.totallike = totallike;
@@ -133,6 +138,10 @@ GetClassifiedData $GetClassifiedDataFromJson(Map<String, dynamic> json) {
       GetClassifiedDataUserData>(json['user_data']);
   if (userData != null) {
     getClassifiedData.userData = userData;
+  }
+  final String? fullUrl = jsonConvert.convert<String>(json['full_url']);
+  if (fullUrl != null) {
+    getClassifiedData.fullUrl = fullUrl;
   }
   final String? imagePath = jsonConvert.convert<String>(json['image_path']);
   if (imagePath != null) {
@@ -166,11 +175,13 @@ Map<String, dynamic> $GetClassifiedDataToJson(GetClassifiedData entity) {
   data['city'] = entity.city;
   data['state'] = entity.state;
   data['country'] = entity.country;
+  data['urlcomponent'] = entity.urlcomponent;
   data['totallike'] = entity.totallike;
   data['totalbookmark'] = entity.totalbookmark;
   data['liked_by_user'] = entity.likedByUser;
   data['bookmarked_by_user'] = entity.bookmarkedByUser;
   data['user_data'] = entity.userData?.toJson();
+  data['full_url'] = entity.fullUrl;
   data['image_path'] = entity.imagePath;
   data['image_thum_path'] = entity.imageThumPath;
   return data;
@@ -196,11 +207,13 @@ extension GetClassifiedDataExtension on GetClassifiedData {
     String? city,
     String? state,
     String? country,
+    String? urlcomponent,
     int? totallike,
     int? totalbookmark,
     bool? likedByUser,
     bool? bookmarkedByUser,
     GetClassifiedDataUserData? userData,
+    String? fullUrl,
     String? imagePath,
     String? imageThumPath,
   }) {
@@ -223,11 +236,13 @@ extension GetClassifiedDataExtension on GetClassifiedData {
       ..city = city ?? this.city
       ..state = state ?? this.state
       ..country = country ?? this.country
+      ..urlcomponent = urlcomponent ?? this.urlcomponent
       ..totallike = totallike ?? this.totallike
       ..totalbookmark = totalbookmark ?? this.totalbookmark
       ..likedByUser = likedByUser ?? this.likedByUser
       ..bookmarkedByUser = bookmarkedByUser ?? this.bookmarkedByUser
       ..userData = userData ?? this.userData
+      ..fullUrl = fullUrl ?? this.fullUrl
       ..imagePath = imagePath ?? this.imagePath
       ..imageThumPath = imageThumPath ?? this.imageThumPath;
   }

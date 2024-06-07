@@ -12,6 +12,7 @@ import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ClassidiedDetailsScreen extends StatefulWidget {
@@ -450,10 +451,19 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
                     const SizedBox(
                       width: 10,
                     ),
-                    SizedBox(
-                      height: size.height * 0.028,
-                      width: size.height * 0.028,
-                      child: SvgPicture.asset(Assets.svgSend),
+                    InkWell(
+                      onTap: () {
+                        Share.share(post.fullUrl ?? '');
+                      },
+                      child: SizedBox(
+                        height: size.height * 0.028,
+                        width: size.height * 0.028,
+                        child: SvgPicture.asset(
+                          Assets.svgSend,
+                          // ignore: deprecated_member_use
+                          color: AppColors.blackText,
+                        ),
+                      ),
                     ),
                     const SizedBox(
                       width: 10,

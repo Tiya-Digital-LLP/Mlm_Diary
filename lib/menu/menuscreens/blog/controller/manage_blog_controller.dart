@@ -189,8 +189,8 @@ class ManageBlogController extends GetxController {
     }
   }
 
-  // Method to fetch data from API
-  Future<void> fetchMyBlog({int page = 1, context, int? articleId}) async {
+  Future<void> fetchMyBlog(
+      {int page = 1, BuildContext? context, int? articleId}) async {
     isLoading.value = true;
     String device = '';
     if (Platform.isAndroid) {
@@ -198,47 +198,45 @@ class ManageBlogController extends GetxController {
     } else if (Platform.isIOS) {
       device = 'ios';
     }
+
     if (kDebugMode) {
       print('Device Name: $device');
     }
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
 
     try {
-      // Check internet connection
       var connectivityResult = await (Connectivity().checkConnectivity());
       // ignore: unrelated_type_equality_checks
       if (connectivityResult == ConnectivityResult.none) {
-        showToasterrorborder("No internet connection", context);
+        if (context != null) {
+          // ignore: use_build_context_synchronously
+          showToasterrorborder("No internet connection", context);
+        }
         isLoading.value = false;
         return;
       }
 
-      // Prepare query parameters
       Map<String, String> queryParams = {
         'api_token': apiToken ?? '',
         'device': device,
         'page': page.toString(),
       };
 
-      // Build URL
       Uri uri = Uri.parse(Constants.baseUrl + Constants.myblog)
           .replace(queryParameters: queryParams);
-
-      // Make HTTP GET request
       final response = await http.post(uri);
 
       if (response.statusCode == 200) {
-        // Parse JSON data
         final Map<String, dynamic> responseData = json.decode(response.body);
         final MyBlogListEntity myBlogEntity =
             MyBlogListEntity.fromJson(responseData);
 
         if (kDebugMode) {
-          print('manage Blog data: $responseData');
+          print('Manage Blog data: $responseData');
         }
 
-        // Store ID using SharedPreferences
         final List<MyBlogListData> myBlogData = myBlogEntity.data ?? [];
         if (myBlogData.isNotEmpty) {
           final MyBlogListData firstNews = myBlogData[0];
@@ -248,81 +246,71 @@ class ManageBlogController extends GetxController {
             print('Last Blog ID stored: $blogId');
           }
 
-          // Map data to controllers
-          title.value.text = firstNews.title ?? '';
-          discription.value.text = firstNews.description ?? '';
-          url.value.text = firstNews.website ?? '';
-          userImage.value = firstNews.imagePath ?? '';
-
-          // Update Category List
-          isCategorySelectedList.clear();
-          for (var category in categorylist) {
-            bool isSelected = firstNews.category == (category.id.toString());
-            isCategorySelectedList.add(isSelected);
+          if (page == 1) {
+            myBlogList.assignAll(myBlogEntity.data ?? []);
+          } else {
+            myBlogList.addAll(myBlogEntity.data ?? []);
           }
 
-          // Update SubCategory List
-          isSubCategorySelectedList.clear();
-          for (var subcategory in subcategoryList) {
-            bool isSelected =
-                firstNews.subcategory == (subcategory.id.toString());
-            isSubCategorySelectedList.add(isSelected);
-          }
-        }
-
-        // Update state with fetched data
-        if (page == 1) {
-          myBlogList.assignAll(myBlogEntity.data ?? []);
-        } else {
-          myBlogList.addAll(myBlogEntity.data ?? []);
-        }
-
-        // Update UI based on articleId
-        if (articleId != null) {
-          // Find the fetched blog data with the matching articleId
-          MyBlogListData? selectedBlog;
-          for (var blog in myBlogEntity.data ?? []) {
-            if (blog.articleId == articleId) {
-              selectedBlog = blog;
-              break;
+          if (articleId != null) {
+            MyBlogListData? selectedBlog;
+            for (var blog in myBlogEntity.data ?? []) {
+              if (blog.articleId == articleId) {
+                selectedBlog = blog;
+                break;
+              }
             }
-          }
 
-          if (selectedBlog != null) {
-            // Update UI with selected blog data
-            title.value.text = selectedBlog.title ?? '';
-            discription.value.text = selectedBlog.description ?? '';
-            url.value.text = selectedBlog.website ?? '';
-            userImage.value = selectedBlog.imagePath ?? '';
-
-            // Update Category List
-            isCategorySelectedList.clear();
-            for (var category in categorylist) {
-              bool isSelected =
-                  selectedBlog.category == (category.id.toString());
-              isCategorySelectedList.add(isSelected);
-            }
-            // Update SubCategory List
-            isSubCategorySelectedList.clear();
-            for (var subcategory in subcategoryList) {
-              bool isSelected =
-                  selectedBlog.subcategory == (subcategory.id.toString());
-              isSubCategorySelectedList.add(isSelected);
+            if (selectedBlog != null) {
+              updateUIWithBlogData(selectedBlog);
+            } else {
+              if (context != null) {
+                showToasterrorborder(
+                    // ignore: use_build_context_synchronously
+                    "Blog with ID $articleId not found",
+                    // ignore: use_build_context_synchronously
+                    context);
+              }
             }
           } else {
-            // Show a message indicating that the blog with the specified ID was not found
-            showToasterrorborder("Blog with ID $articleId not found", context);
+            updateUIWithBlogData(firstNews);
           }
+        } else {
+          // ignore: use_build_context_synchronously
+          if (context != null) showToasterrorborder("No data found", context);
         }
       } else {
-        // Handle error response
-        showToasterrorborder("Failed to fetch data", context);
+        if (context != null) {
+          // ignore: use_build_context_synchronously
+          showToasterrorborder("Failed to fetch data", context);
+        }
       }
     } catch (error) {
-      // Handle network or parsing errors
-      showToasterrorborder("An error occurred: $error", context);
+      if (context != null) {
+        // ignore: use_build_context_synchronously
+        showToasterrorborder("An error occurred: $error", context);
+      }
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  void updateUIWithBlogData(MyBlogListData blogData) {
+    title.value.text = blogData.title ?? '';
+    discription.value.text = blogData.description ?? '';
+    url.value.text = blogData.website ?? '';
+    userImage.value = blogData.imagePath ?? '';
+
+    isCategorySelectedList.clear();
+    for (var category in categorylist) {
+      bool isSelected = blogData.category == (category.id.toString());
+      isCategorySelectedList.add(isSelected);
+    }
+
+    isSubCategorySelectedList.clear();
+    for (var subcategory in subcategoryList) {
+      bool isSelected = blogData.subcategory == (subcategory.id.toString());
+      isSubCategorySelectedList.add(isSelected);
     }
   }
 

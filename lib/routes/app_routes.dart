@@ -30,8 +30,7 @@ abstract class Routes {
 
   static const accountsettingscreen = '/accountSettingScreen';
   static const mlmclassified = '/mlmClassified';
-  static const mlmquationanswer = '/mlmQuationAnswer';
-  static const question = '/question';
+
   static const favourite = '/favourite';
   static const managenews = '/manageNews';
   static const mlmnews = '/mlmNews';
@@ -59,4 +58,10 @@ abstract class Routes {
   static const premiumplan = '/PremiumPlan';
   static const referearn = '/referEarn';
   static const search = '/search';
+
+  static const addquestionanswer = '/addQuestionAnswer';
+  static const managequationanswer = '/manageQuationAnswer';
+  static const quationanswer = '/quationAnswer';
+  static const question = '/question';
+  static const userquestion = '/userQuestion';
 }
