@@ -265,12 +265,17 @@ class _ProfileScreenState extends State<ProfileScreen>
                             child: GestureDetector(
                               onTap: () {},
                               child: MyProfileCard(
-                                  onDelete: () => deletePost(index),
-                                  userImage: post.userData!.imagePath ?? '',
-                                  userName: post.userData!.name ?? '',
-                                  postCaption: post.comments ?? '',
-                                  postImage: post.attachmentPath ?? '',
-                                  dateTime: post.createdate ?? ''),
+                                onDelete: () => deletePost(index),
+                                userImage: post.userData!.imagePath ?? '',
+                                userName: post.userData!.name ?? '',
+                                postCaption: post.comments ?? '',
+                                postImage: post.attachmentPath ?? '',
+                                dateTime: post.createdate ?? '',
+                                likedCount: post.totallike ?? 0,
+                                postId: post.id ?? 0,
+                                controller: controller,
+                                bookmarkCount: post.totalbookmark ?? 0,
+                              ),
                             ),
                           );
                         });

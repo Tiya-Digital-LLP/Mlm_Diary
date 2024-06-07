@@ -674,72 +674,48 @@ void showSelectCategory(
               20.sbh,
               Flexible(
                 child: ListView.builder(
-                    shrinkWrap: true,
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    itemCount: categorylist.length,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              if (!controller.isCategorySelectedList[index]) {
-                                controller.toggleCategorySelected(index);
-                              } else {
-                                Fluttertoast.showToast(
-                                  msg: "Please select only one category.",
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.BOTTOM,
-                                  backgroundColor: Colors.red,
-                                  textColor: Colors.white,
-                                  fontSize: 16.0,
-                                );
-                              }
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 16),
-                              child: Row(
-                                children: [
-                                  Obx(
-                                    () => GestureDetector(
-                                      onTap: () {
-                                        if (!controller
-                                            .isCategorySelectedList[index]) {
-                                          controller
-                                              .toggleCategorySelected(index);
-                                        } else {
-                                          Fluttertoast.showToast(
-                                            msg:
-                                                "Please select only one category.",
-                                            toastLength: Toast.LENGTH_SHORT,
-                                            gravity: ToastGravity.BOTTOM,
-                                            backgroundColor: Colors.red,
-                                            textColor: Colors.white,
-                                            fontSize: 16.0,
-                                          );
-                                        }
-                                      },
-                                      child: Image.asset(
-                                        controller.isCategorySelectedList[index]
-                                            ? Assets.imagesTrueCircle
-                                            : Assets.imagesCircle,
-                                      ),
+                  shrinkWrap: true,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  itemCount: categorylist.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            controller.toggleCategorySelected(index);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 16),
+                            child: Row(
+                              children: [
+                                Obx(
+                                  () => GestureDetector(
+                                    onTap: () {
+                                      controller.toggleCategorySelected(index);
+                                    },
+                                    child: Image.asset(
+                                      controller.isCategorySelectedList[index]
+                                          ? Assets.imagesTrueCircle
+                                          : Assets.imagesCircle,
                                     ),
                                   ),
-                                  15.sbw,
-                                  Text(
-                                    categorylist[index].name ?? '',
-                                    style: textStyleW500(size.width * 0.041,
-                                        AppColors.blackText),
-                                  ),
-                                ],
-                              ),
+                                ),
+                                15.sbw,
+                                Text(
+                                  categorylist[index].name ?? '',
+                                  style: textStyleW500(
+                                      size.width * 0.041, AppColors.blackText),
+                                ),
+                              ],
                             ),
                           ),
-                          20.sbh,
-                        ],
-                      );
-                    }),
+                        ),
+                        20.sbh,
+                      ],
+                    );
+                  },
+                ),
               ),
               Center(
                 child: CustomButton(
@@ -751,7 +727,7 @@ void showSelectCategory(
                       Get.back();
                     } else {
                       Fluttertoast.showToast(
-                        msg: "Please select at least one field.",
+                        msg: "Please select at least one category.",
                         toastLength: Toast.LENGTH_SHORT,
                         gravity: ToastGravity.BOTTOM,
                         backgroundColor: Colors.red,
@@ -770,7 +746,7 @@ void showSelectCategory(
   );
 }
 
-// SubCatagory
+// SubCategory
 void showSelectSubCategory(
   BuildContext context,
   Size size,
@@ -864,8 +840,8 @@ void showSelectSubCategory(
                                       }
                                     },
                                     child: Image.asset(
-                                      (controller
-                                              .isSubCategorySelectedList[index])
+                                      controller
+                                              .isSubCategorySelectedList[index]
                                           ? Assets.imagesTrueCircle
                                           : Assets.imagesCircle,
                                     ),
@@ -894,7 +870,7 @@ void showSelectSubCategory(
                   titleColor: AppColors.white,
                   onTap: () {
                     if (controller.selectedCountSubCategory > 0) {
-                      Navigator.pop(context);
+                      Get.back();
                     } else {
                       Fluttertoast.showToast(
                         msg: "Please select at least one field.",

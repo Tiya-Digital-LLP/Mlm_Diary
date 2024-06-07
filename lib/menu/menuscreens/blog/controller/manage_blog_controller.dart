@@ -11,6 +11,8 @@ import 'package:get/get.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/blog_bookmark_entity.dart';
+import 'package:mlmdiary/generated/blog_like_list_entity.dart';
+import 'package:mlmdiary/generated/get_blog_list_entity.dart';
 import 'package:mlmdiary/generated/get_category_entity.dart';
 import 'package:mlmdiary/generated/get_sub_category_entity.dart';
 import 'package:mlmdiary/generated/l_iked_blog_entity.dart';
@@ -36,6 +38,9 @@ class ManageBlogController extends GetxController {
   final RxList<bool> isSubCategorySelectedList = RxList<bool>([]);
 
   RxList<MyBlogListData> myBlogList = <MyBlogListData>[].obs;
+  RxList<GetBlogListData> blogList = RxList<GetBlogListData>();
+
+  RxList<BlogLikeListData> blogLikeList = RxList<BlogLikeListData>();
 
   //like
   var likedStatusMap = <int, bool>{};
@@ -71,11 +76,117 @@ class ManageBlogController extends GetxController {
   // READ ONLY FIELDS
   RxBool titleReadOnly = false.obs;
 
+  //scrollercontroller
+  final ScrollController scrollController = ScrollController();
+
+  int page = 1;
+  var isEndOfData = false.obs;
+  final search = TextEditingController();
+
   @override
   void onInit() {
     super.onInit();
     fetchCategoryList();
     fetchMyBlog();
+    getBlog(1);
+    scrollController.addListener(() {
+      if (scrollController.position.pixels ==
+              scrollController.position.maxScrollExtent &&
+          !isEndOfData.value) {
+        int nextPage = (blogList.length ~/ 10) + 1;
+        getBlog(nextPage);
+      }
+    });
+  }
+
+  void resetSelections() {
+    // Reset category and subcategory selections
+    for (int i = 0; i < isCategorySelectedList.length; i++) {
+      isCategorySelectedList[i] = false;
+    }
+    for (int i = 0; i < isSubCategorySelectedList.length; i++) {
+      isSubCategorySelectedList[i] = false;
+    }
+    getBlog(1);
+  }
+
+  Future<void> getBlog(int page) async {
+    isLoading(true);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = '';
+    if (Platform.isAndroid) {
+      device = 'android';
+    } else if (Platform.isIOS) {
+      device = 'ios';
+    }
+    if (kDebugMode) {
+      print('Device Name: $device');
+    }
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri = Uri.parse('${Constants.baseUrl}${Constants.getblog}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['page'] = page.toString();
+        request.fields['search'] = search.value.text;
+        request.fields['category'] = getSelectedCategoryTextController().text;
+        request.fields['subcategory'] =
+            getSelectedSubCategoryTextController().text;
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var getBlogEntity = GetBlogListEntity.fromJson(data);
+
+          if (kDebugMode) {
+            print('Success: $getBlogEntity');
+          }
+
+          if (getBlogEntity.data != null && getBlogEntity.data!.isNotEmpty) {
+            if (page == 1) {
+              blogList.value = getBlogEntity.data!;
+            } else {
+              blogList.addAll(getBlogEntity.data!);
+            }
+            isEndOfData(false);
+          } else {
+            if (page == 1) {
+              blogList.clear();
+            }
+            isEndOfData(true);
+          }
+        } else {
+          Fluttertoast.showToast(
+            msg: "Error: ${response.body}",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
+        }
+      } else {
+        Fluttertoast.showToast(
+          msg: "No internet connection",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+        );
+      }
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Error: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+      );
+    } finally {
+      isLoading(false);
+    }
   }
 
   // Method to fetch data from API
@@ -515,7 +626,7 @@ class ManageBlogController extends GetxController {
   }
 
   // Bookmark
-  Future<void> blogBookmark(int classifiedId) async {
+  Future<void> blogBookmark(int blogId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
 
@@ -530,7 +641,7 @@ class ManageBlogController extends GetxController {
 
         request.fields['api_token'] = apiToken ?? '';
         request.fields['device'] = device;
-        request.fields['classified_id'] = classifiedId.toString();
+        request.fields['blog_id'] = blogId.toString();
 
         final streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);
@@ -542,13 +653,11 @@ class ManageBlogController extends GetxController {
 
           // Update the liked status and like count based on the message
           if (message == 'You have bookmark this Blog') {
-            bookmarkStatusMap[classifiedId] = true;
-            bookmarkCountMap[classifiedId] =
-                (bookmarkCountMap[classifiedId] ?? 0) + 1;
+            bookmarkStatusMap[blogId] = true;
+            bookmarkCountMap[blogId] = (bookmarkCountMap[blogId] ?? 0) + 1;
           } else if (message == 'You have unbookmark this Blog') {
-            bookmarkStatusMap[classifiedId] = false;
-            bookmarkCountMap[classifiedId] =
-                (bookmarkCountMap[classifiedId] ?? 0) - 1;
+            bookmarkStatusMap[blogId] = false;
+            bookmarkCountMap[blogId] = (bookmarkCountMap[blogId] ?? 0) - 1;
           }
 
           Fluttertoast.showToast(
@@ -674,6 +783,94 @@ class ManageBlogController extends GetxController {
       }
     } finally {
       isLoading(false);
+    }
+  }
+
+  // like_list_blog
+  Future<void> fetchLikeListBlog(int blogId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = Platform.isAndroid ? 'android' : 'ios';
+
+    isLoading(true);
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // Log connectivity result
+      if (kDebugMode) {
+        print('Connectivity result: $connectivityResult');
+      }
+
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri = Uri.parse('${Constants.baseUrl}${Constants.likelistblog}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['blog_id'] = blogId.toString();
+
+        // Log request details
+        if (kDebugMode) {
+          print('Request URL: $uri');
+          print('Request fields: ${request.fields}');
+        }
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        // Log response status code
+        if (kDebugMode) {
+          print('Response status code: ${response.statusCode}');
+        }
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var status = data['status'];
+
+          // Log response body
+          if (kDebugMode) {
+            print('Response body: ${response.body}');
+          }
+
+          if (status == 1) {
+            var classifiedLikeListEntity = BlogLikeListEntity.fromJson(data);
+            blogLikeList.value = classifiedLikeListEntity.data ?? [];
+
+            // Log parsed data
+            if (kDebugMode) {
+              print('Parsed entity: $classifiedLikeListEntity');
+            }
+          } else {
+            var message = data['message'];
+
+            // Log failure message
+            if (kDebugMode) {
+              print('Failed to fetch likelist Blog: $message');
+            }
+          }
+        } else {
+          // Log error response
+          if (kDebugMode) {
+            print('Error: ${response.body}');
+          }
+        }
+      } else {
+        // Log no internet connection
+        if (kDebugMode) {
+          print('No internet connection');
+        }
+      }
+    } catch (e) {
+      // Log exception
+      if (kDebugMode) {
+        print('Error: $e');
+      }
+    } finally {
+      isLoading(false);
+      // Log end of method execution
+      if (kDebugMode) {
+        print('Finished fetchLikeListBlog method');
+      }
     }
   }
 

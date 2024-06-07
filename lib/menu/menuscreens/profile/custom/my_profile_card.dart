@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
@@ -16,6 +17,10 @@ class MyProfileCard extends StatefulWidget {
   final String postImage;
   final VoidCallback onDelete;
   final String dateTime;
+  final int likedCount;
+  final int postId;
+  final EditPostController controller;
+  final int bookmarkCount;
 
   const MyProfileCard({
     super.key,
@@ -25,6 +30,10 @@ class MyProfileCard extends StatefulWidget {
     required this.postImage,
     required this.onDelete,
     required this.dateTime,
+    required this.likedCount,
+    required this.postId,
+    required this.controller,
+    required this.bookmarkCount,
   });
 
   @override
@@ -34,10 +43,48 @@ class MyProfileCard extends StatefulWidget {
 class _MyProfileCardState extends State<MyProfileCard> {
   late PostTimeFormatter postTimeFormatter;
 
+  late RxBool isLiked;
+  late RxBool isBookmarked;
+
+  late RxInt likeCount;
+  late RxInt bookmarkCount;
+
   @override
   void initState() {
     super.initState();
     postTimeFormatter = PostTimeFormatter();
+    initializeLikes();
+    initializeBookmarks();
+  }
+
+  void initializeLikes() {
+    isLiked = RxBool(widget.controller.likedStatusMap[widget.postId] ?? false);
+    likeCount = RxInt(
+        widget.controller.likeCountMap[widget.postId] ?? widget.likedCount);
+  }
+
+  void toggleLike() async {
+    bool newLikedValue = !isLiked.value;
+    isLiked.value = newLikedValue;
+    likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
+
+    await widget.controller.toggleLike(widget.postId);
+  }
+
+  void initializeBookmarks() {
+    isBookmarked =
+        RxBool(widget.controller.bookmarkStatusMap[widget.postId] ?? false);
+    bookmarkCount = RxInt(widget.controller.bookmarkCountMap[widget.postId] ??
+        widget.bookmarkCount);
+  }
+
+  void toggleBookmark() async {
+    bool newBookmarkedValue = !isBookmarked.value;
+    isBookmarked.value = newBookmarkedValue;
+    bookmarkCount.value =
+        newBookmarkedValue ? bookmarkCount.value + 1 : bookmarkCount.value - 1;
+
+    await widget.controller.toggleBookMark(widget.postId);
   }
 
   @override
@@ -149,18 +196,27 @@ class _MyProfileCardState extends State<MyProfileCard> {
                       SizedBox(
                         height: size.height * 0.028,
                         width: size.height * 0.028,
-                        child: SvgPicture.asset(Assets.svgLike),
+                        child: GestureDetector(
+                          onTap: toggleLike,
+                          child: Icon(
+                            isLiked.value
+                                ? Icons.thumb_up_off_alt_sharp
+                                : Icons.thumb_up_off_alt_outlined,
+                            color:
+                                isLiked.value ? AppColors.primaryColor : null,
+                          ),
+                        ),
                       ),
                       const SizedBox(
                         width: 7,
                       ),
-                      Text(
-                        "50k",
-                        style: TextStyle(
-                            fontFamily: "Metropolis",
-                            fontWeight: FontWeight.w600,
-                            fontSize: size.width * 0.045),
-                      ),
+                      likeCount.value == 0
+                          ? const SizedBox.shrink()
+                          : Text(
+                              '${likeCount.value}',
+                              style: textStyleW600(
+                                  size.width * 0.038, AppColors.blackText),
+                            ),
                       const SizedBox(
                         width: 15,
                       ),
@@ -186,7 +242,15 @@ class _MyProfileCardState extends State<MyProfileCard> {
                       SizedBox(
                         height: size.height * 0.028,
                         width: size.height * 0.028,
-                        child: SvgPicture.asset(Assets.svgSavePost),
+                        child: GestureDetector(
+                          onTap: () => toggleBookmark(),
+                          child: Icon(
+                            isBookmarked.value
+                                ? Icons.bookmark
+                                : Icons.bookmark_border,
+                            size: size.height * 0.032,
+                          ),
+                        ),
                       ),
                       const SizedBox(
                         width: 10,

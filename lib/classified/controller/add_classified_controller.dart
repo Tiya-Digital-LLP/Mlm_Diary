@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/bookmark_user_entity.dart';
+import 'package:mlmdiary/generated/classified_like_list_entity.dart';
 import 'package:mlmdiary/generated/get_category_entity.dart';
 import 'package:mlmdiary/generated/get_classified_entity.dart';
 import 'package:mlmdiary/generated/get_company_entity.dart';
@@ -90,6 +91,9 @@ class ClasifiedController extends GetxController {
   int page = 1;
   var isEndOfData = false.obs;
 
+  RxList<ClassifiedLikeListData> classifiedLikeList =
+      RxList<ClassifiedLikeListData>();
+
   @override
   void onInit() {
     super.onInit();
@@ -169,32 +173,31 @@ class ClasifiedController extends GetxController {
   }
 
   void toggleCategorySelected(int index) {
-    isCategorySelectedList[index] = !isCategorySelectedList[index];
-
-    selectedCountCategory.value = isCategorySelectedList[index] ? 1 : 0;
-
-    if (isCategorySelectedList[index]) {
-      fetchSubCategoryList(categorylist[index].id!);
+    // Deselect all categories first
+    for (int i = 0; i < isCategorySelectedList.length; i++) {
+      isCategorySelectedList[i] = false;
     }
+
+    // Select the current category
+    isCategorySelectedList[index] = true;
+
+    // Update the selected count
+    selectedCountCategory.value = 1;
+
+    // Fetch subcategory list for the selected category
+    fetchSubCategoryList(categorylist[index].id!);
   }
 
   TextEditingController getSelectedCategoryTextController() {
-    Map<int, String> idToNameMap = {};
-    List<int> selectedCategoryIds = [];
+    List<String> selectedCategoryOptions = [];
 
     for (int i = 0; i < isCategorySelectedList.length; i++) {
       if (isCategorySelectedList[i]) {
-        idToNameMap[categorylist[i].id!] = categorylist[i].name!;
-        selectedCategoryIds.add(categorylist[i].id!);
+        selectedCategoryOptions.add(categorylist[i].id.toString());
       }
     }
 
-    if (kDebugMode) {
-      print('selected id: $selectedCategoryIds');
-    }
-
-    return TextEditingController(
-        text: selectedCategoryIds.map((id) => idToNameMap[id]).join(', '));
+    return TextEditingController(text: selectedCategoryOptions.join(', '));
   }
 
   void mlmCategoryValidation() {
@@ -265,8 +268,10 @@ class ClasifiedController extends GetxController {
       isSubCategorySelectedList[i] = false;
     }
 
+    // Toggle the selected state of the current sub-category
     isSubCategorySelectedList[index] = !isCurrentlySelected;
 
+    // Update the selected count
     selectedCountSubCategory.value = isSubCategorySelectedList[index] ? 1 : 0;
   }
 
@@ -706,6 +711,96 @@ class ClasifiedController extends GetxController {
       return false;
     } finally {
       isLoading(false);
+    }
+  }
+
+// like_list_classified
+  Future<void> fetchLikeListClassified(int classifiedId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = Platform.isAndroid ? 'android' : 'ios';
+
+    isLoading(true);
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // Log connectivity result
+      if (kDebugMode) {
+        print('Connectivity result: $connectivityResult');
+      }
+
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri =
+            Uri.parse('${Constants.baseUrl}${Constants.likelistclassified}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['classified_id'] = classifiedId.toString();
+
+        // Log request details
+        if (kDebugMode) {
+          print('Request URL: $uri');
+          print('Request fields: ${request.fields}');
+        }
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        // Log response status code
+        if (kDebugMode) {
+          print('Response status code: ${response.statusCode}');
+        }
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var status = data['status'];
+
+          // Log response body
+          if (kDebugMode) {
+            print('Response body: ${response.body}');
+          }
+
+          if (status == 1) {
+            var classifiedLikeListEntity =
+                ClassifiedLikeListEntity.fromJson(data);
+            classifiedLikeList.value = classifiedLikeListEntity.data ?? [];
+
+            // Log parsed data
+            if (kDebugMode) {
+              print('Parsed entity: $classifiedLikeListEntity');
+            }
+          } else {
+            var message = data['message'];
+
+            // Log failure message
+            if (kDebugMode) {
+              print('Failed to fetch likelist classified: $message');
+            }
+          }
+        } else {
+          // Log error response
+          if (kDebugMode) {
+            print('Error: ${response.body}');
+          }
+        }
+      } else {
+        // Log no internet connection
+        if (kDebugMode) {
+          print('No internet connection');
+        }
+      }
+    } catch (e) {
+      // Log exception
+      if (kDebugMode) {
+        print('Error: $e');
+      }
+    } finally {
+      isLoading(false);
+      // Log end of method execution
+      if (kDebugMode) {
+        print('Finished fetchLikeListClassified method');
+      }
     }
   }
 

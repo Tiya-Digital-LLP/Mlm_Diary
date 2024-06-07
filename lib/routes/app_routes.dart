@@ -33,15 +33,22 @@ abstract class Routes {
   static const mlmquationanswer = '/mlmQuationAnswer';
   static const question = '/question';
   static const favourite = '/favourite';
+  static const managenews = '/manageNews';
   static const mlmnews = '/mlmNews';
-  static const mlmnewsdetails = '/mlmNewsDetails';
+  static const newsdetails = '/NewsDetails';
+
+  static const mynewsdetails = '/myNewsDetails';
   static const newsplusicon = '/newsPlusIcon';
   static const addnews = '/addNews';
   static const addpost = '/addPost';
   static const editpost = '/editPost';
 
+  static const manageblog = '/manageBlog';
   static const mlmblog = '/mlmBlog';
-  static const mlmblogdetails = '/mlmBlogDetails';
+
+  static const myblogdetails = '/myBlogDetails';
+  static const blogdetails = '/BlogDetails';
+
   static const blogplusicon = '/blogPlusIcon';
   static const addblog = '/addBlog';
 

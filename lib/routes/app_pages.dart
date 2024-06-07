@@ -17,8 +17,10 @@ import 'package:mlmdiary/menu/menuscreens/aboutus/about_us.dart';
 import 'package:mlmdiary/menu/menuscreens/accountsetting/account_setting_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/advertising/advertising.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/blog_detail_screen.dart';
+import 'package:mlmdiary/menu/menuscreens/blog/my_blog_detail_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/manage_blog_plus_icon.dart';
-import 'package:mlmdiary/menu/menuscreens/blog/mlmblog.dart';
+import 'package:mlmdiary/menu/menuscreens/blog/manage_blog.dart';
+import 'package:mlmdiary/menu/menuscreens/blog/mlm_blog.dart';
 import 'package:mlmdiary/menu/menuscreens/contactus/contact_us.dart';
 import 'package:mlmdiary/menu/menuscreens/favourite/favourite.dart';
 import 'package:mlmdiary/menu/menuscreens/followers/followers.dart';
@@ -31,8 +33,10 @@ import 'package:mlmdiary/menu/menuscreens/mlmcompanies/mlmcompaines.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/mlmcompanies_details_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/question.dart';
 import 'package:mlmdiary/menu/menuscreens/news/manage_news_plus_icon.dart';
-import 'package:mlmdiary/menu/menuscreens/news/mlmnews.dart';
-import 'package:mlmdiary/menu/menuscreens/news/news_detail_screen.dart';
+import 'package:mlmdiary/menu/menuscreens/news/manage_news.dart';
+import 'package:mlmdiary/menu/menuscreens/news/mlm_news.dart';
+import 'package:mlmdiary/menu/menuscreens/news/my_news_detail_screen.dart';
+import 'package:mlmdiary/menu/menuscreens/news/news_details_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/plan&companyintrest/planandcompanyintrest.dart';
 import 'package:mlmdiary/menu/menuscreens/premiumplan/premium_plan.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/edit_post.dart';
@@ -176,6 +180,10 @@ class AppPages {
       page: () => const Favourite(),
     ),
     GetPage(
+      name: Routes.managenews,
+      page: () => const ManageNews(),
+    ),
+    GetPage(
       name: Routes.mlmnews,
       page: () => const MlmNews(),
     ),
@@ -188,10 +196,20 @@ class AppPages {
       page: () => const AddNews(),
     ),
     GetPage(
-      name: Routes.mlmnewsdetails,
+      name: Routes.mynewsdetails,
+      page: () => MyNewsDetailScreen(
+        key: UniqueKey(),
+      ),
+    ),
+    GetPage(
+      name: Routes.newsdetails,
       page: () => NewsDetailScreen(
         key: UniqueKey(),
       ),
+    ),
+    GetPage(
+      name: Routes.manageblog,
+      page: () => const ManageBlog(),
     ),
     GetPage(
       name: Routes.mlmblog,
@@ -206,7 +224,13 @@ class AppPages {
       page: () => const AddBlog(),
     ),
     GetPage(
-      name: Routes.mlmblogdetails,
+      name: Routes.myblogdetails,
+      page: () => MyBlogDetailScreen(
+        key: UniqueKey(),
+      ),
+    ),
+    GetPage(
+      name: Routes.blogdetails,
       page: () => BlogDetailScreen(
         key: UniqueKey(),
       ),

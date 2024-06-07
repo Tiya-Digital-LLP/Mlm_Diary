@@ -4,48 +4,46 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:html_unescape/html_unescape.dart';
-import 'package:mlmdiary/classified/classified_like_list_content.dart';
-import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/classified/custom_commment.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/news/news_like_list_content.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 
-class ClassifiedCard extends StatefulWidget {
+class NewsCard extends StatefulWidget {
   final String userImage;
   final String userName;
   final String postTitle;
   final String dateTime;
   final int likedCount;
-  final int classifiedId;
-  final ClasifiedController controller;
+  final int newsId;
+  final ManageNewsController controller;
   final int viewcounts;
   final int bookmarkCount;
-  final bool isPopular;
   final String image;
 
-  const ClassifiedCard({
+  const NewsCard({
     super.key,
     required this.userImage,
     required this.userName,
     required this.postTitle,
     required this.dateTime,
     required this.likedCount,
-    required this.classifiedId,
+    required this.newsId,
     required this.controller,
     required this.viewcounts,
     required this.bookmarkCount,
-    required this.isPopular,
     required this.image,
   });
 
   @override
-  State<ClassifiedCard> createState() => _ClassifiedCardState();
+  State<NewsCard> createState() => _NewsCardState();
 }
 
-class _ClassifiedCardState extends State<ClassifiedCard> {
+class _NewsCardState extends State<NewsCard> {
   late RxBool isLiked;
   late RxBool isBookmarked;
 
@@ -71,10 +69,9 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
   }
 
   void initializeLikes() {
-    isLiked =
-        RxBool(widget.controller.likedStatusMap[widget.classifiedId] ?? false);
-    likeCount = RxInt(widget.controller.likeCountMap[widget.classifiedId] ??
-        widget.likedCount);
+    isLiked = RxBool(widget.controller.likedStatusMap[widget.newsId] ?? false);
+    likeCount = RxInt(
+        widget.controller.likeCountMap[widget.newsId] ?? widget.likedCount);
   }
 
   void toggleLike() async {
@@ -82,15 +79,14 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
     isLiked.value = newLikedValue;
     likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
 
-    await widget.controller.toggleLike(widget.classifiedId);
+    await widget.controller.toggleLike(widget.newsId, context);
   }
 
   void initializeBookmarks() {
-    isBookmarked = RxBool(
-        widget.controller.bookmarkStatusMap[widget.classifiedId] ?? false);
-    bookmarkCount = RxInt(
-        widget.controller.bookmarkCountMap[widget.classifiedId] ??
-            widget.bookmarkCount);
+    isBookmarked =
+        RxBool(widget.controller.bookmarkStatusMap[widget.newsId] ?? false);
+    bookmarkCount = RxInt(widget.controller.bookmarkCountMap[widget.newsId] ??
+        widget.bookmarkCount);
   }
 
   void toggleBookmark() async {
@@ -99,7 +95,7 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
     bookmarkCount.value =
         newBookmarkedValue ? bookmarkCount.value + 1 : bookmarkCount.value - 1;
 
-    await widget.controller.toggleBookMark(widget.classifiedId);
+    await widget.controller.toggleBookMark(widget.newsId);
   }
 
   void showCommentDialog(BuildContext context) {
@@ -123,10 +119,6 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
           color: AppColors.white,
-          border: Border.all(
-            color: widget.isPopular ? Colors.yellow : Colors.transparent,
-            width: 3.0,
-          ),
         ),
         child: Column(
           children: [
@@ -164,30 +156,6 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
                       style: textStyleW400(size.width * 0.035,
                           AppColors.blackText.withOpacity(0.5)),
                     ),
-                  ],
-                ),
-                const Spacer(),
-                Column(
-                  children: [
-                    if (widget.isPopular != false)
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.yellow,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.yellow),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 5),
-                        margin: const EdgeInsets.only(top: 5, right: 5),
-                        child: const Text(
-                          'Premium',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
                   ],
                 ),
               ],
@@ -319,11 +287,19 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
                         ),
                       ),
                     ),
-                    10.sbw,
+                    const SizedBox(
+                      width: 7,
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
                     SizedBox(
                       height: size.height * 0.028,
                       width: size.height * 0.028,
                       child: SvgPicture.asset(Assets.svgSend),
+                    ),
+                    const SizedBox(
+                      width: 10,
                     ),
                   ],
                 ),
@@ -341,12 +317,12 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
       builder: (BuildContext context) {
         // Fetch like list after bottom sheet is shown
         fetchLikeList();
-        return const ClassifiedLikedListContent();
+        return const NewsLikeListContent();
       },
     );
   }
 
   void fetchLikeList() async {
-    await widget.controller.fetchLikeListClassified(widget.classifiedId);
+    await widget.controller.fetchLikeListNews(widget.newsId);
   }
 }

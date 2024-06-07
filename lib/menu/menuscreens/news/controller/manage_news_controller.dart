@@ -10,10 +10,13 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:mlmdiary/data/constants.dart';
+import 'package:mlmdiary/generated/bookmark_news_entity.dart';
 import 'package:mlmdiary/generated/get_category_entity.dart';
+import 'package:mlmdiary/generated/get_news_list_entity.dart';
 import 'package:mlmdiary/generated/get_sub_category_entity.dart';
 import 'package:mlmdiary/generated/liked_news_entity.dart';
 import 'package:mlmdiary/generated/my_news_entity.dart';
+import 'package:mlmdiary/generated/news_like_list_entity.dart';
 
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -34,10 +37,20 @@ class ManageNewsController extends GetxController {
   final RxList<bool> isSubCategorySelectedList = RxList<bool>([]);
 
   RxList<MyNewsData> myNewsList = <MyNewsData>[].obs;
+  RxList<GetNewsListData> newsList = <GetNewsListData>[].obs;
+
+  RxList<NewsLikeListData> newsLikeList = RxList<NewsLikeListData>();
+
+  int page = 1;
+  var isEndOfData = false.obs;
 
   //like
   var likedStatusMap = <int, bool>{};
   var likeCountMap = <int, int>{};
+
+  //bookmark
+  var bookmarkStatusMap = <int, bool>{};
+  var bookmarkCountMap = <int, int>{};
 
   var likeCount = 0.obs;
 // FIELDS ERROR
@@ -57,6 +70,8 @@ class ManageNewsController extends GetxController {
 
   RxInt selectedCountSubCategory = 0.obs;
 
+  final search = TextEditingController();
+
   //image
   RxString userImage = ''.obs;
 
@@ -65,11 +80,34 @@ class ManageNewsController extends GetxController {
   // READ ONLY FIELDS
   RxBool titleReadOnly = false.obs;
 
+  //scrollercontroller
+  final ScrollController scrollController = ScrollController();
+
   @override
   void onInit() {
     super.onInit();
     fetchCategoryList();
     fetchMyNews();
+    getNews(1);
+    scrollController.addListener(() {
+      if (scrollController.position.pixels ==
+              scrollController.position.maxScrollExtent &&
+          !isEndOfData.value) {
+        int nextPage = (newsList.length ~/ 10) + 1;
+        getNews(nextPage);
+      }
+    });
+  }
+
+  void resetSelections() {
+    // Reset category and subcategory selections
+    for (int i = 0; i < isCategorySelectedList.length; i++) {
+      isCategorySelectedList[i] = false;
+    }
+    for (int i = 0; i < isSubCategorySelectedList.length; i++) {
+      isSubCategorySelectedList[i] = false;
+    }
+    getNews(1);
   }
 
   // Method to fetch data from API
@@ -525,7 +563,7 @@ class ManageNewsController extends GetxController {
     }
   }
 
-  //liked Blog
+  //liked News
   Future<void> likedNewsUser(int newsId, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
@@ -574,6 +612,94 @@ class ManageNewsController extends GetxController {
     }
   }
 
+  // like_list_classified
+  Future<void> fetchLikeListNews(int classifiedId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = Platform.isAndroid ? 'android' : 'ios';
+
+    isLoading(true);
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // Log connectivity result
+      if (kDebugMode) {
+        print('Connectivity result: $connectivityResult');
+      }
+
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri = Uri.parse('${Constants.baseUrl}${Constants.likelistnews}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['news_id'] = classifiedId.toString();
+
+        // Log request details
+        if (kDebugMode) {
+          print('Request URL: $uri');
+          print('Request fields: ${request.fields}');
+        }
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        // Log response status code
+        if (kDebugMode) {
+          print('Response status code: ${response.statusCode}');
+        }
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var status = data['status'];
+
+          // Log response body
+          if (kDebugMode) {
+            print('Response body: ${response.body}');
+          }
+
+          if (status == 1) {
+            var classifiedLikeListEntity = NewsLikeListEntity.fromJson(data);
+            newsLikeList.value = classifiedLikeListEntity.data ?? [];
+
+            // Log parsed data
+            if (kDebugMode) {
+              print('Parsed entity: $classifiedLikeListEntity');
+            }
+          } else {
+            var message = data['message'];
+
+            // Log failure message
+            if (kDebugMode) {
+              print('Failed to fetch likelist classified: $message');
+            }
+          }
+        } else {
+          // Log error response
+          if (kDebugMode) {
+            print('Error: ${response.body}');
+          }
+        }
+      } else {
+        // Log no internet connection
+        if (kDebugMode) {
+          print('No internet connection');
+        }
+      }
+    } catch (e) {
+      // Log exception
+      if (kDebugMode) {
+        print('Error: $e');
+      }
+    } finally {
+      isLoading(false);
+      // Log end of method execution
+      if (kDebugMode) {
+        print('Finished fetchLikeListClassified method');
+      }
+    }
+  }
+
   void titleValidation(context) {
     String enteredTitle = title.value.text;
     if (enteredTitle.isEmpty || hasSpecialCharactersOrNumbers(enteredTitle)) {
@@ -585,20 +711,169 @@ class ManageNewsController extends GetxController {
     }
   }
 
-  Future<void> toggleLike(int blogId, context) async {
-    bool isLiked = likedStatusMap[blogId] ?? false;
+  Future<void> toggleLike(int newsId, context) async {
+    bool isLiked = likedStatusMap[newsId] ?? false;
     isLiked = !isLiked;
-    likedStatusMap[blogId] = isLiked;
-    likeCountMap.update(blogId, (value) => isLiked ? value + 1 : value - 1,
+    likedStatusMap[newsId] = isLiked;
+    likeCountMap.update(newsId, (value) => isLiked ? value + 1 : value - 1,
         ifAbsent: () => isLiked ? 1 : 0);
 
-    await likedNewsUser(blogId, context);
+    await likedNewsUser(newsId, context);
   }
 
-  void toggleBookMark() {
-    isBookMarked.value = !isBookMarked.value;
-    if (isBookMarked.value) {
-    } else {}
+  Future<void> getNews(int page, {int? newsId}) async {
+    isLoading(true);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = '';
+    if (Platform.isAndroid) {
+      device = 'android';
+    } else if (Platform.isIOS) {
+      device = 'ios';
+    }
+    if (kDebugMode) {
+      print('Device Name: $device');
+    }
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri = Uri.parse('${Constants.baseUrl}${Constants.getnews}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['page'] = page.toString();
+        request.fields['search'] = search.value.text;
+        request.fields['category'] = getSelectedCategoryTextController().text;
+        request.fields['subcategory'] =
+            getSelectedSubCategoryTextController().text;
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var getNewsEntity = GetNewsListEntity.fromJson(data);
+
+          if (kDebugMode) {
+            print('Success: $getNewsEntity');
+          }
+
+          if (getNewsEntity.data != null && getNewsEntity.data!.isNotEmpty) {
+            if (page == 1) {
+              newsList.value = getNewsEntity.data!;
+            } else {
+              newsList.addAll(getNewsEntity.data!);
+            }
+            isEndOfData(false);
+          } else {
+            if (page == 1) {
+              newsList.clear();
+            }
+            isEndOfData(true);
+          }
+        } else {
+          Fluttertoast.showToast(
+            msg: "Error: ${response.body}",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
+        }
+      } else {
+        Fluttertoast.showToast(
+          msg: "No internet connection",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+        );
+      }
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Error: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+      );
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  // Bookmark
+  Future<void> bookmarkUser(int newsId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+
+    String device = Platform.isAndroid ? 'android' : 'ios';
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri = Uri.parse('${Constants.baseUrl}${Constants.bookmarknews}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['news_id'] = newsId.toString();
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var bookmarkNewsEntity = BookmarkNewsEntity.fromJson(data);
+          var message = bookmarkNewsEntity.message;
+
+          // Update the liked status and like count based on the message
+          if (message == 'You have bookmark this News') {
+            bookmarkStatusMap[newsId] = true;
+            bookmarkCountMap[newsId] = (bookmarkCountMap[newsId] ?? 0) + 1;
+          } else if (message == 'You have unbookmark this News') {
+            bookmarkStatusMap[newsId] = false;
+            bookmarkCountMap[newsId] = (bookmarkCountMap[newsId] ?? 0) - 1;
+          }
+
+          Fluttertoast.showToast(
+            msg: message!,
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
+        } else {
+          Fluttertoast.showToast(
+            msg: "Error: ${response.body}",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
+        }
+      } else {
+        Fluttertoast.showToast(
+          msg: "No internet connection",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+        );
+      }
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Error: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+      );
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<void> toggleBookMark(int newsId) async {
+    bool isBookmark = bookmarkStatusMap[newsId] ?? false;
+    isBookmark = !isBookmark;
+    bookmarkStatusMap[newsId] = isBookmark;
+    bookmarkCountMap.update(
+        newsId, (value) => isBookmark ? value + 1 : value - 1,
+        ifAbsent: () => isBookmark ? 1 : 0);
+
+    await bookmarkUser(newsId);
   }
 
   void discriptionValidation(context) {

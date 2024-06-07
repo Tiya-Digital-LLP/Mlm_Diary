@@ -566,9 +566,7 @@ class _moreState extends State<MoreOptionScreen> {
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16,
-            ),
+            padding: const EdgeInsets.all(16),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -587,7 +585,7 @@ class _moreState extends State<MoreOptionScreen> {
                           ),
                         ),
                         child: Text(
-                          'News',
+                          'MLM News',
                           style: textStyleW700(
                             size.width * 0.028,
                             AppColors.primaryColor,
@@ -598,7 +596,7 @@ class _moreState extends State<MoreOptionScreen> {
                     8.sbw,
                     GestureDetector(
                       onTap: () {
-                        Get.toNamed(Routes.mlmcompanies);
+                        Get.toNamed(Routes.mlmblog);
                       },
                       child: Container(
                         padding: const EdgeInsets.all(8.0),
@@ -609,7 +607,7 @@ class _moreState extends State<MoreOptionScreen> {
                           ),
                         ),
                         child: Text(
-                          'MLM Companies',
+                          'MLM Blog',
                           style: textStyleW700(
                             size.width * 0.028,
                             AppColors.primaryColor,
@@ -805,10 +803,10 @@ class _moreState extends State<MoreOptionScreen> {
                         Get.toNamed(Routes.mlmclassified);
                         break;
                       case '3':
-                        Get.toNamed(Routes.mlmnews);
+                        Get.toNamed(Routes.managenews);
                         break;
                       case '5':
-                        Get.toNamed(Routes.mlmblog);
+                        Get.toNamed(Routes.manageblog);
                         break;
                       case '6':
                         Get.toNamed(Routes.mlmcompanies);

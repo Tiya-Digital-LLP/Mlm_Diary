@@ -137,7 +137,7 @@ List postList = [
       postImage: Assets.imagesPostImage),
 ];
 
-List classifiedList = [
+List newsListclassifiedList = [
   ClassifiedList(
       userImage: Assets.imagesIcon,
       userName: "Aman Talaviya",

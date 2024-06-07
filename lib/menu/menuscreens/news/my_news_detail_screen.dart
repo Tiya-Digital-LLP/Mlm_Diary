@@ -1,38 +1,27 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
-import 'package:mlmdiary/generated/get_blog_list_entity.dart';
-import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
+import 'package:mlmdiary/generated/my_news_entity.dart';
+import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
-import 'package:mlmdiary/widgets/custom_dateandtime.dart';
-import 'package:url_launcher/url_launcher.dart';
 
-class BlogDetailScreen extends StatefulWidget {
-  const BlogDetailScreen({
+class MyNewsDetailScreen extends StatefulWidget {
+  const MyNewsDetailScreen({
     required Key key,
   }) : super(key: key);
 
   @override
-  State<BlogDetailScreen> createState() => _BlogDetailScreenState();
+  State<MyNewsDetailScreen> createState() => _NewsDetailScreenState();
 }
 
-class _BlogDetailScreenState extends State<BlogDetailScreen> {
-  final ManageBlogController controller = Get.put(ManageBlogController());
-  final post = Get.arguments as GetBlogListData;
-
-  PostTimeFormatter postTimeFormatter = PostTimeFormatter();
-
-  @override
-  void initState() {
-    super.initState();
-  }
+class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
+  final ManageNewsController controller = Get.put(ManageNewsController());
+  final post = Get.arguments as MyNewsData;
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +31,7 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
       backgroundColor: AppColors.background,
       appBar: CustomAppBar(
         size: MediaQuery.of(context).size,
-        titleText: 'MLM Blog',
+        titleText: 'MLM News',
         onTap: () {},
       ),
       body: SingleChildScrollView(
@@ -88,7 +77,7 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                               Row(
                                 children: [
                                   Text(
-                                    post.userData!.name ?? '',
+                                    post.title ?? '',
                                     style: textStyleW700(size.width * 0.043,
                                         AppColors.blackText),
                                   ),
@@ -98,8 +87,7 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                                 ],
                               ),
                               Text(
-                                postTimeFormatter
-                                    .formatPostTime(post.createdDate ?? ''),
+                                "2 Min Ago",
                                 style: textStyleW400(size.width * 0.035,
                                     AppColors.blackText.withOpacity(0.5)),
                               ),
@@ -142,11 +130,13 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                       ),
                       child: Align(
                         alignment: Alignment.topLeft,
-                        child: Html(
-                          data: post.description ?? '',
-                          style: {
-                            "html": Style(),
-                          },
+                        child: Text(
+                          post.description ?? '',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.blackText,
+                            fontSize: size.width * 0.040,
+                          ),
                         ),
                       ),
                     ),
@@ -200,6 +190,43 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                           ),
                           Text(
                             "Vicodin",
+                            style: textStyleW400(
+                                size.width * 0.035, AppColors.blackText),
+                          ),
+                        ],
+                      ),
+                    ),
+                    5.sbh,
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(14),
+                        color: AppColors.white,
+                        border: const Border(
+                            bottom: BorderSide(color: Colors.grey)),
+                      ),
+                    ),
+                    5.sbh,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                'Location',
+                                style: textStyleW400(
+                                    size.width * 0.035, AppColors.grey),
+                              ),
+                              const SizedBox(
+                                width: 07,
+                              ),
+                            ],
+                          ),
+                          Text(
+                            "Scottsdale, AZ, USA",
                             style: textStyleW400(
                                 size.width * 0.035, AppColors.blackText),
                           ),
@@ -297,26 +324,19 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                                 style: textStyleW400(
                                     size.width * 0.035, AppColors.grey),
                               ),
+                              const SizedBox(
+                                width: 07,
+                              ),
                             ],
                           ),
-                          Text.rich(
-                            TextSpan(
-                              text: post.website ?? '',
-                              style: const TextStyle(
-                                color: Colors.blue,
-                                decorationColor: Colors.blue,
-                                decoration: TextDecoration.underline,
-                              ),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  _launchURL(post.website ?? '');
-                                },
-                            ),
+                          Text(
+                            post.website ?? '',
+                            style: textStyleW400(
+                                size.width * 0.035, AppColors.blackText),
                           ),
                         ],
                       ),
                     ),
-                    5.sbh,
                     SizedBox(
                       height: size.height * 0.017,
                     ),
@@ -328,124 +348,107 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
         ),
       ),
       bottomNavigationBar: Container(
-        padding: const EdgeInsets.all(16.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
-          color: AppColors.white,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
+          padding: const EdgeInsets.all(16.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            color: AppColors.white,
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  SizedBox(
-                    height: size.height * 0.028,
-                    width: size.height * 0.028,
-                    child: GestureDetector(
-                      onTap: () =>
-                          controller.toggleLike(post.articleId ?? 0, context),
-                      child: Icon(
-                        // Observe like status
-                        controller.likedStatusMap[post.articleId ?? 0] ?? false
-                            ? Icons.thumb_up_off_alt_sharp
-                            : Icons.thumb_up_off_alt_outlined,
-                        color: controller.likedStatusMap[post.articleId ?? 0] ??
-                                false
-                            ? AppColors.primaryColor
-                            : null,
-                        size: size.height * 0.032,
-                      ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    const SizedBox(
+                      width: 10,
                     ),
-                  ),
-                  const SizedBox(
-                    width: 7,
-                  ),
-                  // ignore: unrelated_type_equality_checks
-                  controller.likeCountMap == 0
-                      ? const SizedBox.shrink()
-                      : Text(
-                          post.totallike.toString(),
-                          style: textStyleW600(
-                              size.width * 0.040, AppColors.blackText),
+                    SizedBox(
+                      height: size.height * 0.028,
+                      width: size.height * 0.028,
+                      child: GestureDetector(
+                        onTap: () =>
+                            controller.toggleLike(post.id ?? 0, context),
+                        child: Icon(
+                          // Observe like status
+                          controller.likedStatusMap[post.id ?? 0] ?? false
+                              ? Icons.thumb_up_off_alt_sharp
+                              : Icons.thumb_up_off_alt_outlined,
+                          color:
+                              controller.likedStatusMap[post.id ?? 0] ?? false
+                                  ? AppColors.primaryColor
+                                  : null,
+                          size: size.height * 0.032,
                         ),
-                  const SizedBox(
-                    width: 15,
-                  ),
-                  const SizedBox(
-                    width: 15,
-                  ),
-                  SizedBox(
-                    height: size.height * 0.028,
-                    width: size.height * 0.028,
-                    child: SvgPicture.asset(Assets.svgView),
-                  ),
-                  const SizedBox(
-                    width: 7,
-                  ),
-                  Text(
-                    post.pgcnt.toString(),
-                    style:
-                        textStyleW600(size.width * 0.040, AppColors.blackText),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  SizedBox(
-                    height: size.height * 0.028,
-                    width: size.height * 0.028,
-                    child: GestureDetector(
-                      onTap: () =>
-                          controller.toggleBookMark(post.articleId ?? 0),
-                      child: Icon(
-                        // Observe like status
-                        controller.bookmarkStatusMap[post.articleId ?? 0] ??
-                                false
-                            ? Icons.bookmark
-                            : Icons.bookmark_border,
-                        color:
-                            controller.bookmarkStatusMap[post.articleId ?? 0] ??
-                                    false
-                                ? AppColors.primaryColor
-                                : null,
-                        size: size.height * 0.032,
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  SizedBox(
-                    height: size.height * 0.028,
-                    width: size.height * 0.028,
-                    child: SvgPicture.asset(Assets.svgSend),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
+                    const SizedBox(
+                      width: 7,
+                    ),
+                    Text(
+                      post.totallike.toString(),
+                      style: textStyleW600(
+                          size.width * 0.040, AppColors.blackText),
+                    ),
+                    const SizedBox(
+                      width: 15,
+                    ),
+                    const SizedBox(
+                      width: 15,
+                    ),
+                    SizedBox(
+                      height: size.height * 0.028,
+                      width: size.height * 0.028,
+                      child: SvgPicture.asset(Assets.svgView),
+                    ),
+                    const SizedBox(
+                      width: 7,
+                    ),
+                    Text(
+                      post.pgcnt.toString(),
+                      style: textStyleW600(
+                          size.width * 0.040, AppColors.blackText),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    SizedBox(
+                      height: size.height * 0.028,
+                      width: size.height * 0.028,
+                      child: GestureDetector(
+                        onTap: () => controller.toggleBookMark(post.id ?? 0),
+                        child: Icon(
+                          // Observe like status
+                          controller.bookmarkStatusMap[post.id ?? 0] ?? false
+                              ? Icons.bookmark
+                              : Icons.bookmark_border,
+                          color: controller.bookmarkStatusMap[post.id ?? 0] ??
+                                  false
+                              ? AppColors.primaryColor
+                              : null,
+                          size: size.height * 0.032,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    SizedBox(
+                      height: size.height * 0.028,
+                      width: size.height * 0.028,
+                      child: SvgPicture.asset(Assets.svgSend),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          )),
     );
-  }
-}
-
-void _launchURL(String url) async {
-  // ignore: deprecated_member_use
-  if (await canLaunch(url)) {
-    // ignore: deprecated_member_use
-    await launch(url);
-  } else {
-    throw 'Could not launch $url';
   }
 }

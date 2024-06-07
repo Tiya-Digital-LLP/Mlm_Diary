@@ -8,10 +8,13 @@ import 'package:mlmdiary/generated/add_blog_entity.dart';
 import 'package:mlmdiary/generated/add_news_entity.dart';
 import 'package:mlmdiary/generated/add_post_entity.dart';
 import 'package:mlmdiary/generated/blog_bookmark_entity.dart';
+import 'package:mlmdiary/generated/blog_like_list_entity.dart';
 import 'package:mlmdiary/generated/bookmark_company_entity.dart';
+import 'package:mlmdiary/generated/bookmark_news_entity.dart';
 import 'package:mlmdiary/generated/bookmark_user_entity.dart';
 import 'package:mlmdiary/generated/change_email_entity.dart';
 import 'package:mlmdiary/generated/change_password_entity.dart';
+import 'package:mlmdiary/generated/classified_like_list_entity.dart';
 import 'package:mlmdiary/generated/delete_classified_entity.dart';
 import 'package:mlmdiary/generated/delete_news_entity.dart';
 import 'package:mlmdiary/generated/delete_user_post_entity.dart';
@@ -23,10 +26,12 @@ import 'package:mlmdiary/generated/foreignphone_otp_entity.dart';
 import 'package:mlmdiary/generated/forgot_password_entity.dart';
 import 'package:mlmdiary/generated/get_admin_company_entity.dart';
 import 'package:mlmdiary/generated/get_banner_entity.dart';
+import 'package:mlmdiary/generated/get_blog_list_entity.dart';
 import 'package:mlmdiary/generated/get_category_entity.dart';
 import 'package:mlmdiary/generated/get_classified_entity.dart';
 import 'package:mlmdiary/generated/get_company_entity.dart';
 import 'package:mlmdiary/generated/get_mlm_database_entity.dart';
+import 'package:mlmdiary/generated/get_news_list_entity.dart';
 import 'package:mlmdiary/generated/get_plan_list_entity.dart';
 import 'package:mlmdiary/generated/get_sub_category_entity.dart';
 import 'package:mlmdiary/generated/get_user_profile_entity.dart';
@@ -41,6 +46,9 @@ import 'package:mlmdiary/generated/mlm_like_company_entity.dart';
 import 'package:mlmdiary/generated/my_blog_list_entity.dart';
 import 'package:mlmdiary/generated/my_news_entity.dart';
 import 'package:mlmdiary/generated/my_post_list_entity.dart';
+import 'package:mlmdiary/generated/news_like_list_entity.dart';
+import 'package:mlmdiary/generated/post_bookmark_entity.dart';
+import 'package:mlmdiary/generated/post_like_entity.dart';
 import 'package:mlmdiary/generated/remaining_classified_count_entity.dart';
 import 'package:mlmdiary/generated/resent_otp_register_entity.dart';
 import 'package:mlmdiary/generated/save_classified_entity.dart';
@@ -216,9 +224,25 @@ class JsonConvert {
       return data.map<BlogBookmarkEntity>((Map<String, dynamic> e) =>
           BlogBookmarkEntity.fromJson(e)).toList() as M;
     }
+    if (<BlogLikeListEntity>[] is M) {
+      return data.map<BlogLikeListEntity>((Map<String, dynamic> e) =>
+          BlogLikeListEntity.fromJson(e)).toList() as M;
+    }
+    if (<BlogLikeListData>[] is M) {
+      return data.map<BlogLikeListData>((Map<String, dynamic> e) =>
+          BlogLikeListData.fromJson(e)).toList() as M;
+    }
+    if (<BlogLikeListDataUserData>[] is M) {
+      return data.map<BlogLikeListDataUserData>((Map<String, dynamic> e) =>
+          BlogLikeListDataUserData.fromJson(e)).toList() as M;
+    }
     if (<BookmarkCompanyEntity>[] is M) {
       return data.map<BookmarkCompanyEntity>((Map<String, dynamic> e) =>
           BookmarkCompanyEntity.fromJson(e)).toList() as M;
+    }
+    if (<BookmarkNewsEntity>[] is M) {
+      return data.map<BookmarkNewsEntity>((Map<String, dynamic> e) =>
+          BookmarkNewsEntity.fromJson(e)).toList() as M;
     }
     if (<BookmarkUserEntity>[] is M) {
       return data.map<BookmarkUserEntity>((Map<String, dynamic> e) =>
@@ -231,6 +255,19 @@ class JsonConvert {
     if (<ChangePasswordEntity>[] is M) {
       return data.map<ChangePasswordEntity>((Map<String, dynamic> e) =>
           ChangePasswordEntity.fromJson(e)).toList() as M;
+    }
+    if (<ClassifiedLikeListEntity>[] is M) {
+      return data.map<ClassifiedLikeListEntity>((Map<String, dynamic> e) =>
+          ClassifiedLikeListEntity.fromJson(e)).toList() as M;
+    }
+    if (<ClassifiedLikeListData>[] is M) {
+      return data.map<ClassifiedLikeListData>((Map<String, dynamic> e) =>
+          ClassifiedLikeListData.fromJson(e)).toList() as M;
+    }
+    if (<ClassifiedLikeListDataUserData>[] is M) {
+      return data.map<ClassifiedLikeListDataUserData>((
+          Map<String, dynamic> e) => ClassifiedLikeListDataUserData.fromJson(e))
+          .toList() as M;
     }
     if (<DeleteClassifiedEntity>[] is M) {
       return data.map<DeleteClassifiedEntity>((Map<String, dynamic> e) =>
@@ -284,6 +321,18 @@ class JsonConvert {
       return data.map<GetBannerData>((Map<String, dynamic> e) =>
           GetBannerData.fromJson(e)).toList() as M;
     }
+    if (<GetBlogListEntity>[] is M) {
+      return data.map<GetBlogListEntity>((Map<String, dynamic> e) =>
+          GetBlogListEntity.fromJson(e)).toList() as M;
+    }
+    if (<GetBlogListData>[] is M) {
+      return data.map<GetBlogListData>((Map<String, dynamic> e) =>
+          GetBlogListData.fromJson(e)).toList() as M;
+    }
+    if (<GetBlogListDataUserData>[] is M) {
+      return data.map<GetBlogListDataUserData>((Map<String, dynamic> e) =>
+          GetBlogListDataUserData.fromJson(e)).toList() as M;
+    }
     if (<GetCategoryEntity>[] is M) {
       return data.map<GetCategoryEntity>((Map<String, dynamic> e) =>
           GetCategoryEntity.fromJson(e)).toList() as M;
@@ -315,6 +364,18 @@ class JsonConvert {
     if (<GetMlmDatabaseData>[] is M) {
       return data.map<GetMlmDatabaseData>((Map<String, dynamic> e) =>
           GetMlmDatabaseData.fromJson(e)).toList() as M;
+    }
+    if (<GetNewsListEntity>[] is M) {
+      return data.map<GetNewsListEntity>((Map<String, dynamic> e) =>
+          GetNewsListEntity.fromJson(e)).toList() as M;
+    }
+    if (<GetNewsListData>[] is M) {
+      return data.map<GetNewsListData>((Map<String, dynamic> e) =>
+          GetNewsListData.fromJson(e)).toList() as M;
+    }
+    if (<GetNewsListDataUserData>[] is M) {
+      return data.map<GetNewsListDataUserData>((Map<String, dynamic> e) =>
+          GetNewsListDataUserData.fromJson(e)).toList() as M;
     }
     if (<GetPlanListEntity>[] is M) {
       return data.map<GetPlanListEntity>((Map<String, dynamic> e) =>
@@ -423,6 +484,26 @@ class JsonConvert {
     if (<MyPostListDataUserData>[] is M) {
       return data.map<MyPostListDataUserData>((Map<String, dynamic> e) =>
           MyPostListDataUserData.fromJson(e)).toList() as M;
+    }
+    if (<NewsLikeListEntity>[] is M) {
+      return data.map<NewsLikeListEntity>((Map<String, dynamic> e) =>
+          NewsLikeListEntity.fromJson(e)).toList() as M;
+    }
+    if (<NewsLikeListData>[] is M) {
+      return data.map<NewsLikeListData>((Map<String, dynamic> e) =>
+          NewsLikeListData.fromJson(e)).toList() as M;
+    }
+    if (<NewsLikeListDataUserData>[] is M) {
+      return data.map<NewsLikeListDataUserData>((Map<String, dynamic> e) =>
+          NewsLikeListDataUserData.fromJson(e)).toList() as M;
+    }
+    if (<PostBookmarkEntity>[] is M) {
+      return data.map<PostBookmarkEntity>((Map<String, dynamic> e) =>
+          PostBookmarkEntity.fromJson(e)).toList() as M;
+    }
+    if (<PostLikeEntity>[] is M) {
+      return data.map<PostLikeEntity>((Map<String, dynamic> e) =>
+          PostLikeEntity.fromJson(e)).toList() as M;
     }
     if (<RemainingClassifiedCountEntity>[] is M) {
       return data.map<RemainingClassifiedCountEntity>((
@@ -545,10 +626,18 @@ class JsonConvertClassCollection {
     (AddPostEntity).toString(): AddPostEntity.fromJson,
     (AddPostUserpost).toString(): AddPostUserpost.fromJson,
     (BlogBookmarkEntity).toString(): BlogBookmarkEntity.fromJson,
+    (BlogLikeListEntity).toString(): BlogLikeListEntity.fromJson,
+    (BlogLikeListData).toString(): BlogLikeListData.fromJson,
+    (BlogLikeListDataUserData).toString(): BlogLikeListDataUserData.fromJson,
     (BookmarkCompanyEntity).toString(): BookmarkCompanyEntity.fromJson,
+    (BookmarkNewsEntity).toString(): BookmarkNewsEntity.fromJson,
     (BookmarkUserEntity).toString(): BookmarkUserEntity.fromJson,
     (ChangeEmailEntity).toString(): ChangeEmailEntity.fromJson,
     (ChangePasswordEntity).toString(): ChangePasswordEntity.fromJson,
+    (ClassifiedLikeListEntity).toString(): ClassifiedLikeListEntity.fromJson,
+    (ClassifiedLikeListData).toString(): ClassifiedLikeListData.fromJson,
+    (ClassifiedLikeListDataUserData).toString(): ClassifiedLikeListDataUserData
+        .fromJson,
     (DeleteClassifiedEntity).toString(): DeleteClassifiedEntity.fromJson,
     (DeleteNewsEntity).toString(): DeleteNewsEntity.fromJson,
     (DeleteUserPostEntity).toString(): DeleteUserPostEntity.fromJson,
@@ -562,6 +651,9 @@ class JsonConvertClassCollection {
     (GetAdminCompanyData).toString(): GetAdminCompanyData.fromJson,
     (GetBannerEntity).toString(): GetBannerEntity.fromJson,
     (GetBannerData).toString(): GetBannerData.fromJson,
+    (GetBlogListEntity).toString(): GetBlogListEntity.fromJson,
+    (GetBlogListData).toString(): GetBlogListData.fromJson,
+    (GetBlogListDataUserData).toString(): GetBlogListDataUserData.fromJson,
     (GetCategoryEntity).toString(): GetCategoryEntity.fromJson,
     (GetCategoryCategory).toString(): GetCategoryCategory.fromJson,
     (GetClassifiedEntity).toString(): GetClassifiedEntity.fromJson,
@@ -570,6 +662,9 @@ class JsonConvertClassCollection {
     (GetCompanyEntity).toString(): GetCompanyEntity.fromJson,
     (GetMlmDatabaseEntity).toString(): GetMlmDatabaseEntity.fromJson,
     (GetMlmDatabaseData).toString(): GetMlmDatabaseData.fromJson,
+    (GetNewsListEntity).toString(): GetNewsListEntity.fromJson,
+    (GetNewsListData).toString(): GetNewsListData.fromJson,
+    (GetNewsListDataUserData).toString(): GetNewsListDataUserData.fromJson,
     (GetPlanListEntity).toString(): GetPlanListEntity.fromJson,
     (GetPlanListPlan).toString(): GetPlanListPlan.fromJson,
     (GetSubCategoryEntity).toString(): GetSubCategoryEntity.fromJson,
@@ -598,6 +693,11 @@ class JsonConvertClassCollection {
     (MyPostListEntity).toString(): MyPostListEntity.fromJson,
     (MyPostListData).toString(): MyPostListData.fromJson,
     (MyPostListDataUserData).toString(): MyPostListDataUserData.fromJson,
+    (NewsLikeListEntity).toString(): NewsLikeListEntity.fromJson,
+    (NewsLikeListData).toString(): NewsLikeListData.fromJson,
+    (NewsLikeListDataUserData).toString(): NewsLikeListDataUserData.fromJson,
+    (PostBookmarkEntity).toString(): PostBookmarkEntity.fromJson,
+    (PostLikeEntity).toString(): PostLikeEntity.fromJson,
     (RemainingClassifiedCountEntity).toString(): RemainingClassifiedCountEntity
         .fromJson,
     (ResentOtpRegisterEntity).toString(): ResentOtpRegisterEntity.fromJson,

@@ -41,6 +41,8 @@ class Constants {
   static const String bookmarkclassified = "/addfavoriteclassified";
   static const String updateclassified = "/updateclassified";
   static const String delteclassified = "/deleteclassified";
+  static const String likelistclassified = "/classified/likelist";
+
   static const String getadmincompany = "/getmlmcompany";
   static const String likemlmcompany = "/likemlmcompany";
   static const String bookmarkmlmcompany = "/bookmark_mlmcompany";
@@ -49,18 +51,27 @@ class Constants {
       "/remaining_classified_count_check";
   static const String news = "/addnews";
   static const String mynews = "/mynewslist";
+  static const String getnews = "/getnews";
+  static const String likelistnews = "/news/likelist";
+
   static const String deletenews = "/deletenews";
   static const String updatenews = "/updatenews";
   static const String likednews = "/addlikenews";
+  static const String bookmarknews = "/addfavoritenews";
+
   static const String addblog = "/addblog";
   static const String myblog = "/mybloglist";
   static const String deleteblog = "/deleteblog";
   static const String likedblog = "/addlikeblog";
   static const String blogBookmark = "/addfavoriteblog";
   static const String updateblog = "/updateblog";
+  static const String getblog = "/getblog";
+  static const String likelistblog = "/blog/likelist";
 
   static const String addpost = "/adduserpost";
   static const String editpost = "/updateuserpost";
   static const String mypost = "/mypostlist";
+  static const String postlike = "/addlikepost";
   static const String deletepost = "/deleteuserpost";
+  static const String bookmarkpost = "/addfavoritepost";
 }

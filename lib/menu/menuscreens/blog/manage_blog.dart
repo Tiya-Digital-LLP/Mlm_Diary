@@ -2,31 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
-import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
-import 'package:mlmdiary/menu/menuscreens/news/manage_news_card.dart';
+import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/blog/manage_blog_card.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 
-class MlmNews extends StatefulWidget {
-  const MlmNews({super.key});
+class ManageBlog extends StatefulWidget {
+  const ManageBlog({super.key});
 
   @override
-  State<MlmNews> createState() => _MlmnewsState();
+  State<ManageBlog> createState() => _ManageBlogState();
 }
 
-class _MlmnewsState extends State<MlmNews> {
-  final ManageNewsController controller = Get.put(ManageNewsController());
+class _ManageBlogState extends State<ManageBlog> {
+  final ManageBlogController controller = Get.put(ManageBlogController());
+  void deletePost(int index) async {
+    int blogId = controller.myBlogList[index].articleId ?? 0;
+    await controller.deleteBlog(blogId, index);
+  }
 
   @override
   void initState() {
     super.initState();
-    controller.fetchMyNews();
-  }
-
-  void deletePost(int index) async {
-    int newsId = controller.myNewsList[index].id ?? 0;
-    await controller.deleteNews(newsId, index);
+    controller.fetchMyBlog();
   }
 
   @override
@@ -35,16 +34,16 @@ class _MlmnewsState extends State<MlmNews> {
       backgroundColor: AppColors.background,
       appBar: CustomAppBar(
         size: MediaQuery.of(context).size,
-        titleText: 'Manage News',
+        titleText: 'Manage Blog',
       ),
       body: Container(
         color: AppColors.background,
         child: Obx(() {
-          if (controller.isLoading.value && controller.myNewsList.isEmpty) {
+          if (controller.isLoading.value && controller.myBlogList.isEmpty) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (controller.myNewsList.isEmpty) {
+          if (controller.myBlogList.isEmpty) {
             return Center(
               child: Text(
                 controller.isLoading.value ? 'Loading...' : 'Data not found',
@@ -60,31 +59,32 @@ class _MlmnewsState extends State<MlmNews> {
               padding: EdgeInsets.zero,
               physics: const AlwaysScrollableScrollPhysics(),
               shrinkWrap: true,
-              itemCount: controller.myNewsList.length,
+              itemCount: controller.myBlogList.length,
               itemBuilder: (context, index) {
-                final post = controller.myNewsList[index];
+                final post = controller.myBlogList[index];
                 return Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   child: GestureDetector(
                     onTap: () {
                       Get.toNamed(
-                        Routes.mlmnewsdetails,
-                        arguments: controller.myNewsList[index],
+                        Routes.myblogdetails,
+                        arguments: controller.myBlogList[index],
                       );
                     },
-                    child: ManageNewsCard(
+                    child: ManageBlogCard(
                       onDelete: () => deletePost(index),
                       userImage: post.userData!.imagePath ?? '',
                       userName: post.userData!.name ?? '',
                       postTitle: post.title ?? '',
                       postCaption: post.description ?? '',
-                      postImage: post.photo ?? '',
-                      dateTime: post.createdate ?? '',
+                      postImage: post.image ?? '',
+                      dateTime: post.createdDate ?? '',
                       viewcounts: post.pgcnt ?? 0,
-                      newsId: post.id ?? 0,
-                      likedCount: post.totallike ?? 0,
                       controller: controller,
+                      bookmarkCount: post.totalbookmark ?? 0,
+                      likedCount: post.totallike ?? 0,
+                      blogId: post.articleId ?? 0,
                     ),
                   ),
                 );
@@ -93,7 +93,7 @@ class _MlmnewsState extends State<MlmNews> {
       ),
       floatingActionButton: InkWell(
         onTap: () {
-          Get.toNamed(Routes.addnews);
+          Get.toNamed(Routes.addblog);
         },
         child: Ink(
           decoration: const BoxDecoration(

@@ -128,6 +128,9 @@ class ManageClasifiedController extends GetxController {
 
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
+          if (kDebugMode) {
+            print("API Response Data: $data");
+          }
           var getClassifiedEntity = GetClassifiedEntity.fromJson(data);
 
           // Extract the ID from the fetchClassifieds response
