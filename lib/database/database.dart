@@ -27,6 +27,11 @@ class _DatabaseState extends State<DatabaseScreen> {
   void initState() {
     super.initState();
     controller.getMlmDatabase(1);
+    _refreshData();
+  }
+
+  Future<void> _refreshData() async {
+    await controller.getMlmDatabase(1);
   }
 
   @override
@@ -38,128 +43,133 @@ class _DatabaseState extends State<DatabaseScreen> {
         titleText: 'MLM Database',
         onTap: () {},
       ),
-      body: Container(
-        height: double.infinity,
-        width: double.infinity,
-        decoration: BoxDecoration(color: AppColors.background),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: CustomLocationInput(
-                      controller: _loc,
-                      prefixIcon: Icons.location_on_outlined,
-                      suffixIcon: Icons.clear,
-                      onClear: () {},
-                      onTap: () async {},
-                      onChanged: (value) {},
-                      hintText: 'Location',
+      body: RefreshIndicator(
+        backgroundColor: AppColors.primaryColor,
+        color: AppColors.white,
+        onRefresh: _refreshData,
+        child: Container(
+          height: double.infinity,
+          width: double.infinity,
+          decoration: BoxDecoration(color: AppColors.background),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: CustomLocationInput(
+                        controller: _loc,
+                        prefixIcon: Icons.location_on_outlined,
+                        suffixIcon: Icons.clear,
+                        onClear: () {},
+                        onTap: () async {},
+                        onChanged: (value) {},
+                        hintText: 'Location',
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    width: size.width * 0.02,
-                  ),
-                  Expanded(
-                    child: CustomSearchInput(
-                      controller: _search,
-                      onSubmitted: (value) {
-                        WidgetsBinding.instance.focusManager.primaryFocus
-                            ?.unfocus();
-
-                        setState(() {});
-                      },
-                      onChanged: (value) {
-                        if (value.isEmpty) {
-                          WidgetsBinding.instance.focusManager.primaryFocus;
-
-                          setState(() {});
-                        }
-                      },
+                    SizedBox(
+                      width: size.width * 0.02,
                     ),
-                  ),
-                  SizedBox(
-                    width: size.width * 0.02,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return const BottomSheetContent();
+                    Expanded(
+                      child: CustomSearchInput(
+                        controller: _search,
+                        onSubmitted: (value) {
+                          WidgetsBinding.instance.focusManager.primaryFocus
+                              ?.unfocus();
+
+                          _refreshData();
                         },
-                      );
-                    },
-                    child: Container(
-                      alignment: Alignment.center,
-                      height: size.height * 0.048,
-                      width: size.height * 0.048,
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                          color: AppColors.white, shape: BoxShape.circle),
-                      child: SvgPicture.asset(Assets.svgFilter),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Obx(() {
-              if (controller.isLoading.value &&
-                  controller.mlmDatabaseList.isEmpty) {
-                return const Center(child: CircularProgressIndicator());
-              }
+                        onChanged: (value) {
+                          if (value.isEmpty) {
+                            WidgetsBinding.instance.focusManager.primaryFocus;
 
-              if (controller.mlmDatabaseList.isEmpty) {
-                return const Center(
-                  child: Text(
-                    'Data not found',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                            _refreshData();
+                          }
+                        },
+                      ),
                     ),
+                    SizedBox(
+                      width: size.width * 0.02,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return const BottomSheetContent();
+                          },
+                        );
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        height: size.height * 0.048,
+                        width: size.height * 0.048,
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                            color: AppColors.white, shape: BoxShape.circle),
+                        child: SvgPicture.asset(Assets.svgFilter),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Obx(() {
+                if (controller.isLoading.value &&
+                    controller.mlmDatabaseList.isEmpty) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (controller.mlmDatabaseList.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      'Data not found',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                  );
+                }
+                return Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: ListView.builder(
+                        controller: controller.scrollController,
+                        itemCount: controller.mlmDatabaseList.length +
+                            (controller.isLoading.value ? 1 : 0),
+                        padding: EdgeInsets.zero,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          if (index == controller.mlmDatabaseList.length) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          }
+                          final user = controller.mlmDatabaseList[index];
+                          String location =
+                              '${user.city ?? ''}, ${user.state ?? ''}, ${user.country ?? ''}';
+                          return GestureDetector(
+                            onTap: () {
+                              Get.toNamed(
+                                Routes.userprofilescreen,
+                                arguments: controller.mlmDatabaseList[index],
+                              );
+                            },
+                            child: UserCard(
+                              userImage: user.imagePath ?? '',
+                              userName: user.name ?? '',
+                              location: location,
+                              designation: user.immlm ?? '',
+                              plan: user.plan ?? '',
+                            ),
+                          );
+                        }),
                   ),
                 );
-              }
-              return Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: ListView.builder(
-                      controller: controller.scrollController,
-                      itemCount: controller.mlmDatabaseList.length +
-                          (controller.isLoading.value ? 1 : 0),
-                      padding: EdgeInsets.zero,
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        if (index == controller.mlmDatabaseList.length) {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        }
-                        final user = controller.mlmDatabaseList[index];
-                        String location =
-                            '${user.city ?? ''}, ${user.state ?? ''}, ${user.country ?? ''},';
-                        return GestureDetector(
-                          onTap: () {
-                            Get.toNamed(
-                              Routes.userprofilescreen,
-                              arguments: controller.mlmDatabaseList[index],
-                            );
-                          },
-                          child: UserCard(
-                            userImage: user.imagePath ?? '',
-                            userName: user.name ?? '',
-                            location: location,
-                            designation: user.immlm ?? '',
-                            plan: user.plan ?? '',
-                          ),
-                        );
-                      }),
-                ),
-              );
-            })
-          ],
+              })
+            ],
+          ),
         ),
       ),
     );

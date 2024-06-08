@@ -29,7 +29,6 @@ class _ClassifiedScreenState extends State<ClassifiedScreen> {
 
   Future<void> _refreshData() async {
     await controller.getClassified(1);
-    setState(() {});
   }
 
   @override
@@ -43,6 +42,8 @@ class _ClassifiedScreenState extends State<ClassifiedScreen> {
         onTap: () {},
       ),
       body: RefreshIndicator(
+        backgroundColor: AppColors.primaryColor,
+        color: AppColors.white,
         onRefresh: _refreshData,
         child: Container(
           color: AppColors.background,

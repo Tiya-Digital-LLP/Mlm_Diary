@@ -49,6 +49,8 @@ dependencies:
   html_unescape: ^2.0.0
   comment_box: ^0.0.18
   video_player: ^2.8.6
+  text_link: ^1.0.0
+  html: ^0.15.4
   
 
 

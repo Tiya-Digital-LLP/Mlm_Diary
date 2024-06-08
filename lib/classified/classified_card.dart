@@ -85,7 +85,7 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
     isLiked.value = newLikedValue;
     likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
 
-    await widget.controller.toggleLike(widget.classifiedId);
+    await widget.controller.toggleLike(widget.classifiedId, context);
   }
 
   void initializeBookmarks() {

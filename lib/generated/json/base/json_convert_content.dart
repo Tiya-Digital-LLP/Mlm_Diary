@@ -6,16 +6,21 @@
 import 'package:flutter/material.dart' show debugPrint;
 import 'package:mlmdiary/generated/add_answer_entity.dart';
 import 'package:mlmdiary/generated/add_blog_entity.dart';
+import 'package:mlmdiary/generated/add_faviourite_question_entity.dart';
 import 'package:mlmdiary/generated/add_news_entity.dart';
 import 'package:mlmdiary/generated/add_post_entity.dart';
+import 'package:mlmdiary/generated/answer_liked_entity.dart';
 import 'package:mlmdiary/generated/blog_bookmark_entity.dart';
+import 'package:mlmdiary/generated/blog_count_view_entity.dart';
 import 'package:mlmdiary/generated/blog_like_list_entity.dart';
 import 'package:mlmdiary/generated/bookmark_company_entity.dart';
 import 'package:mlmdiary/generated/bookmark_news_entity.dart';
 import 'package:mlmdiary/generated/bookmark_user_entity.dart';
 import 'package:mlmdiary/generated/change_email_entity.dart';
 import 'package:mlmdiary/generated/change_password_entity.dart';
+import 'package:mlmdiary/generated/classified_count_view_entity.dart';
 import 'package:mlmdiary/generated/classified_like_list_entity.dart';
+import 'package:mlmdiary/generated/company_count_view_entity.dart';
 import 'package:mlmdiary/generated/count_view_question_entity.dart';
 import 'package:mlmdiary/generated/delete_classified_entity.dart';
 import 'package:mlmdiary/generated/delete_news_entity.dart';
@@ -51,10 +56,13 @@ import 'package:mlmdiary/generated/my_blog_list_entity.dart';
 import 'package:mlmdiary/generated/my_news_entity.dart';
 import 'package:mlmdiary/generated/my_post_list_entity.dart';
 import 'package:mlmdiary/generated/my_question_entity.dart';
+import 'package:mlmdiary/generated/news_count_view_entity.dart';
 import 'package:mlmdiary/generated/news_like_list_entity.dart';
 import 'package:mlmdiary/generated/post_bookmark_entity.dart';
+import 'package:mlmdiary/generated/post_count_view_entity.dart';
 import 'package:mlmdiary/generated/post_like_entity.dart';
 import 'package:mlmdiary/generated/post_like_list_entity.dart';
+import 'package:mlmdiary/generated/question_like_entity.dart';
 import 'package:mlmdiary/generated/question_like_list_entity.dart';
 import 'package:mlmdiary/generated/remaining_classified_count_entity.dart';
 import 'package:mlmdiary/generated/resent_otp_register_entity.dart';
@@ -69,6 +77,7 @@ import 'package:mlmdiary/generated/update_phone_verify_otp_entity.dart';
 import 'package:mlmdiary/generated/update_post_entity.dart';
 import 'package:mlmdiary/generated/update_social_media_entity.dart';
 import 'package:mlmdiary/generated/update_user_profile_entity.dart';
+import 'package:mlmdiary/generated/user_profile_count_view_entity.dart';
 import 'package:mlmdiary/generated/user_register_entity_entity.dart';
 import 'package:mlmdiary/generated/verify_phone_otp_entity.dart';
 
@@ -219,6 +228,10 @@ class JsonConvert {
       return data.map<AddBlogData>((Map<String, dynamic> e) =>
           AddBlogData.fromJson(e)).toList() as M;
     }
+    if (<AddFaviouriteQuestionEntity>[] is M) {
+      return data.map<AddFaviouriteQuestionEntity>((Map<String, dynamic> e) =>
+          AddFaviouriteQuestionEntity.fromJson(e)).toList() as M;
+    }
     if (<AddNewsEntity>[] is M) {
       return data.map<AddNewsEntity>((Map<String, dynamic> e) =>
           AddNewsEntity.fromJson(e)).toList() as M;
@@ -235,9 +248,17 @@ class JsonConvert {
       return data.map<AddPostUserpost>((Map<String, dynamic> e) =>
           AddPostUserpost.fromJson(e)).toList() as M;
     }
+    if (<AnswerLikedEntity>[] is M) {
+      return data.map<AnswerLikedEntity>((Map<String, dynamic> e) =>
+          AnswerLikedEntity.fromJson(e)).toList() as M;
+    }
     if (<BlogBookmarkEntity>[] is M) {
       return data.map<BlogBookmarkEntity>((Map<String, dynamic> e) =>
           BlogBookmarkEntity.fromJson(e)).toList() as M;
+    }
+    if (<BlogCountViewEntity>[] is M) {
+      return data.map<BlogCountViewEntity>((Map<String, dynamic> e) =>
+          BlogCountViewEntity.fromJson(e)).toList() as M;
     }
     if (<BlogLikeListEntity>[] is M) {
       return data.map<BlogLikeListEntity>((Map<String, dynamic> e) =>
@@ -271,6 +292,10 @@ class JsonConvert {
       return data.map<ChangePasswordEntity>((Map<String, dynamic> e) =>
           ChangePasswordEntity.fromJson(e)).toList() as M;
     }
+    if (<ClassifiedCountViewEntity>[] is M) {
+      return data.map<ClassifiedCountViewEntity>((Map<String, dynamic> e) =>
+          ClassifiedCountViewEntity.fromJson(e)).toList() as M;
+    }
     if (<ClassifiedLikeListEntity>[] is M) {
       return data.map<ClassifiedLikeListEntity>((Map<String, dynamic> e) =>
           ClassifiedLikeListEntity.fromJson(e)).toList() as M;
@@ -283,6 +308,10 @@ class JsonConvert {
       return data.map<ClassifiedLikeListDataUserData>((
           Map<String, dynamic> e) => ClassifiedLikeListDataUserData.fromJson(e))
           .toList() as M;
+    }
+    if (<CompanyCountViewEntity>[] is M) {
+      return data.map<CompanyCountViewEntity>((Map<String, dynamic> e) =>
+          CompanyCountViewEntity.fromJson(e)).toList() as M;
     }
     if (<CountViewQuestionEntity>[] is M) {
       return data.map<CountViewQuestionEntity>((Map<String, dynamic> e) =>
@@ -541,6 +570,10 @@ class JsonConvert {
       return data.map<MyQuestionQuestionsUserData>((Map<String, dynamic> e) =>
           MyQuestionQuestionsUserData.fromJson(e)).toList() as M;
     }
+    if (<NewsCountViewEntity>[] is M) {
+      return data.map<NewsCountViewEntity>((Map<String, dynamic> e) =>
+          NewsCountViewEntity.fromJson(e)).toList() as M;
+    }
     if (<NewsLikeListEntity>[] is M) {
       return data.map<NewsLikeListEntity>((Map<String, dynamic> e) =>
           NewsLikeListEntity.fromJson(e)).toList() as M;
@@ -557,6 +590,10 @@ class JsonConvert {
       return data.map<PostBookmarkEntity>((Map<String, dynamic> e) =>
           PostBookmarkEntity.fromJson(e)).toList() as M;
     }
+    if (<PostCountViewEntity>[] is M) {
+      return data.map<PostCountViewEntity>((Map<String, dynamic> e) =>
+          PostCountViewEntity.fromJson(e)).toList() as M;
+    }
     if (<PostLikeEntity>[] is M) {
       return data.map<PostLikeEntity>((Map<String, dynamic> e) =>
           PostLikeEntity.fromJson(e)).toList() as M;
@@ -572,6 +609,10 @@ class JsonConvert {
     if (<PostLikeListDataUserData>[] is M) {
       return data.map<PostLikeListDataUserData>((Map<String, dynamic> e) =>
           PostLikeListDataUserData.fromJson(e)).toList() as M;
+    }
+    if (<QuestionLikeEntity>[] is M) {
+      return data.map<QuestionLikeEntity>((Map<String, dynamic> e) =>
+          QuestionLikeEntity.fromJson(e)).toList() as M;
     }
     if (<QuestionLikeListEntity>[] is M) {
       return data.map<QuestionLikeListEntity>((Map<String, dynamic> e) =>
@@ -670,6 +711,10 @@ class JsonConvert {
       return data.map<UpdateUserProfileUserProfile>((Map<String, dynamic> e) =>
           UpdateUserProfileUserProfile.fromJson(e)).toList() as M;
     }
+    if (<UserProfileCountViewEntity>[] is M) {
+      return data.map<UserProfileCountViewEntity>((Map<String, dynamic> e) =>
+          UserProfileCountViewEntity.fromJson(e)).toList() as M;
+    }
     if (<UserRegisterEntityEntity>[] is M) {
       return data.map<UserRegisterEntityEntity>((Map<String, dynamic> e) =>
           UserRegisterEntityEntity.fromJson(e)).toList() as M;
@@ -703,11 +748,15 @@ class JsonConvertClassCollection {
     (AddAnswerAnswer).toString(): AddAnswerAnswer.fromJson,
     (AddBlogEntity).toString(): AddBlogEntity.fromJson,
     (AddBlogData).toString(): AddBlogData.fromJson,
+    (AddFaviouriteQuestionEntity).toString(): AddFaviouriteQuestionEntity
+        .fromJson,
     (AddNewsEntity).toString(): AddNewsEntity.fromJson,
     (AddNewsData).toString(): AddNewsData.fromJson,
     (AddPostEntity).toString(): AddPostEntity.fromJson,
     (AddPostUserpost).toString(): AddPostUserpost.fromJson,
+    (AnswerLikedEntity).toString(): AnswerLikedEntity.fromJson,
     (BlogBookmarkEntity).toString(): BlogBookmarkEntity.fromJson,
+    (BlogCountViewEntity).toString(): BlogCountViewEntity.fromJson,
     (BlogLikeListEntity).toString(): BlogLikeListEntity.fromJson,
     (BlogLikeListData).toString(): BlogLikeListData.fromJson,
     (BlogLikeListDataUserData).toString(): BlogLikeListDataUserData.fromJson,
@@ -716,10 +765,12 @@ class JsonConvertClassCollection {
     (BookmarkUserEntity).toString(): BookmarkUserEntity.fromJson,
     (ChangeEmailEntity).toString(): ChangeEmailEntity.fromJson,
     (ChangePasswordEntity).toString(): ChangePasswordEntity.fromJson,
+    (ClassifiedCountViewEntity).toString(): ClassifiedCountViewEntity.fromJson,
     (ClassifiedLikeListEntity).toString(): ClassifiedLikeListEntity.fromJson,
     (ClassifiedLikeListData).toString(): ClassifiedLikeListData.fromJson,
     (ClassifiedLikeListDataUserData).toString(): ClassifiedLikeListDataUserData
         .fromJson,
+    (CompanyCountViewEntity).toString(): CompanyCountViewEntity.fromJson,
     (CountViewQuestionEntity).toString(): CountViewQuestionEntity.fromJson,
     (DeleteClassifiedEntity).toString(): DeleteClassifiedEntity.fromJson,
     (DeleteNewsEntity).toString(): DeleteNewsEntity.fromJson,
@@ -787,14 +838,17 @@ class JsonConvertClassCollection {
     (MyQuestionQuestions).toString(): MyQuestionQuestions.fromJson,
     (MyQuestionQuestionsUserData).toString(): MyQuestionQuestionsUserData
         .fromJson,
+    (NewsCountViewEntity).toString(): NewsCountViewEntity.fromJson,
     (NewsLikeListEntity).toString(): NewsLikeListEntity.fromJson,
     (NewsLikeListData).toString(): NewsLikeListData.fromJson,
     (NewsLikeListDataUserData).toString(): NewsLikeListDataUserData.fromJson,
     (PostBookmarkEntity).toString(): PostBookmarkEntity.fromJson,
+    (PostCountViewEntity).toString(): PostCountViewEntity.fromJson,
     (PostLikeEntity).toString(): PostLikeEntity.fromJson,
     (PostLikeListEntity).toString(): PostLikeListEntity.fromJson,
     (PostLikeListData).toString(): PostLikeListData.fromJson,
     (PostLikeListDataUserData).toString(): PostLikeListDataUserData.fromJson,
+    (QuestionLikeEntity).toString(): QuestionLikeEntity.fromJson,
     (QuestionLikeListEntity).toString(): QuestionLikeListEntity.fromJson,
     (QuestionLikeListData).toString(): QuestionLikeListData.fromJson,
     (QuestionLikeListDataUserData).toString(): QuestionLikeListDataUserData
@@ -823,6 +877,8 @@ class JsonConvertClassCollection {
         .fromJson,
     (UpdateUserProfileEntity).toString(): UpdateUserProfileEntity.fromJson,
     (UpdateUserProfileUserProfile).toString(): UpdateUserProfileUserProfile
+        .fromJson,
+    (UserProfileCountViewEntity).toString(): UserProfileCountViewEntity
         .fromJson,
     (UserRegisterEntityEntity).toString(): UserRegisterEntityEntity.fromJson,
     (VerifyPhoneOtpEntity).toString(): VerifyPhoneOtpEntity.fromJson,

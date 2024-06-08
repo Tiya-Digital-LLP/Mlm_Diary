@@ -11,8 +11,10 @@ import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/bookmark_company_entity.dart';
+import 'package:mlmdiary/generated/company_count_view_entity.dart';
 import 'package:mlmdiary/generated/get_admin_company_entity.dart';
 import 'package:mlmdiary/generated/mlm_like_company_entity.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CompanyController extends GetxController {
@@ -183,6 +185,61 @@ class CompanyController extends GetxController {
         toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.BOTTOM,
       );
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<void> countViewCompany(int companyId, context) async {
+    isLoading(true);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = '';
+    if (Platform.isAndroid) {
+      device = 'android';
+    } else if (Platform.isIOS) {
+      device = 'ios';
+    }
+    if (kDebugMode) {
+      print('Device Name: $device');
+    }
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri =
+            Uri.parse('${Constants.baseUrl}${Constants.countviewcompany}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['company_id'] = companyId.toString();
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var countViewCompanyEntity = CompanyCountViewEntity.fromJson(data);
+
+          if (kDebugMode) {
+            print('Success: $countViewCompanyEntity');
+          }
+          Fluttertoast.showToast(
+            msg: "Success: $countViewCompanyEntity",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
+        } else {
+          //
+        }
+      } else {
+        showToasterrorborder("No internet connection", context);
+      }
+    } catch (e) {
+      //
     } finally {
       isLoading(false);
     }

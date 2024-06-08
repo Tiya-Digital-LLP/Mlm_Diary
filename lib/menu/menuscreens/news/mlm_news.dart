@@ -24,7 +24,11 @@ class _MlmNewsScreenState extends State<MlmNews> {
   @override
   void initState() {
     super.initState();
-    controller.getNews(1);
+    _refreshData();
+  }
+
+  Future<void> _refreshData() async {
+    await controller.getNews(1);
   }
 
   @override
@@ -37,116 +41,122 @@ class _MlmNewsScreenState extends State<MlmNews> {
         titleText: 'MLM News',
         onTap: () {},
       ),
-      body: Container(
-        color: AppColors.background,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: CustomSearchInput(
-                      controller: controller.search,
-                      onSubmitted: (value) {
-                        WidgetsBinding.instance.focusManager.primaryFocus
-                            ?.unfocus();
-                        setState(() {});
-                      },
-                      onChanged: (value) {
-                        if (value.isNotEmpty) {
-                          controller.getNews(1);
-                        } else {
-                          controller.getNews(1);
-                        }
-                        setState(() {});
-                      },
-                    ),
-                  ),
-                  5.sbw,
-                  GestureDetector(
-                    onTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return const NewsBottomsheetContent();
+      body: RefreshIndicator(
+        backgroundColor: AppColors.primaryColor,
+        color: AppColors.white,
+        onRefresh: _refreshData,
+        child: Container(
+          color: AppColors.background,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: CustomSearchInput(
+                        controller: controller.search,
+                        onSubmitted: (value) {
+                          WidgetsBinding.instance.focusManager.primaryFocus
+                              ?.unfocus();
+                          setState(() {});
                         },
-                      );
-                    },
-                    child: Container(
-                      alignment: Alignment.center,
-                      height: size.height * 0.048,
-                      width: size.height * 0.048,
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                          color: AppColors.white, shape: BoxShape.circle),
-                      child: SvgPicture.asset(Assets.svgFilter),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: Obx(() {
-                if (controller.isLoading.value && controller.newsList.isEmpty) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                if (controller.newsList.isEmpty) {
-                  return const Center(
-                    child: Text(
-                      'Data not found',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                        onChanged: (value) {
+                          if (value.isNotEmpty) {
+                            controller.getNews(1);
+                          } else {
+                            controller.getNews(1);
+                          }
+                          setState(() {});
+                        },
                       ),
                     ),
-                  );
-                }
+                    5.sbw,
+                    GestureDetector(
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return const NewsBottomsheetContent();
+                          },
+                        );
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        height: size.height * 0.048,
+                        width: size.height * 0.048,
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                            color: AppColors.white, shape: BoxShape.circle),
+                        child: SvgPicture.asset(Assets.svgFilter),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Obx(() {
+                  if (controller.isLoading.value &&
+                      controller.newsList.isEmpty) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
-                return ListView.builder(
-                  controller: controller.scrollController,
-                  padding: EdgeInsets.zero,
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: controller.newsList.length +
-                      (controller.isLoading.value ? 1 : 0),
-                  itemBuilder: (context, index) {
-                    if (index == controller.newsList.length) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-
-                    final post = controller.newsList[index];
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 8),
-                      child: GestureDetector(
-                        onTap: () {
-                          Get.toNamed(
-                            Routes.newsdetails,
-                            arguments: controller.newsList[index],
-                          );
-                        },
-                        child: NewsCard(
-                          image: post.imagePath ?? '',
-                          dateTime: post.createdate ?? '',
-                          newsId: post.id ?? 0,
-                          userImage: post.imagePath ?? '',
-                          userName: post.userData?.name ?? '',
-                          postTitle: post.title ?? '',
-                          likedCount: post.totallike ?? 0,
-                          controller: controller,
-                          viewcounts: post.pgcnt ?? 0,
-                          bookmarkCount: post.totalbookmark ?? 0,
+                  if (controller.newsList.isEmpty) {
+                    return const Center(
+                      child: Text(
+                        'Data not found',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
                         ),
                       ),
                     );
-                  },
-                );
-              }),
-            ),
-          ],
+                  }
+
+                  return ListView.builder(
+                    controller: controller.scrollController,
+                    padding: EdgeInsets.zero,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: controller.newsList.length +
+                        (controller.isLoading.value ? 1 : 0),
+                    itemBuilder: (context, index) {
+                      if (index == controller.newsList.length) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+
+                      final post = controller.newsList[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
+                        child: GestureDetector(
+                          onTap: () {
+                            Get.toNamed(
+                              Routes.newsdetails,
+                              arguments: controller.newsList[index],
+                            );
+                          },
+                          child: NewsCard(
+                            image: post.imagePath ?? '',
+                            dateTime: post.createdate ?? '',
+                            newsId: post.id ?? 0,
+                            userImage: post.imagePath ?? '',
+                            userName: post.userData?.name ?? '',
+                            postTitle: post.title ?? '',
+                            likedCount: post.totallike ?? 0,
+                            controller: controller,
+                            viewcounts: post.pgcnt ?? 0,
+                            bookmarkCount: post.totalbookmark ?? 0,
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                }),
+              ),
+            ],
+          ),
         ),
       ),
       floatingActionButton: InkWell(

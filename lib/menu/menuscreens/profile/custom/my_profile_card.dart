@@ -69,7 +69,7 @@ class _MyProfileCardState extends State<MyProfileCard> {
     isLiked.value = newLikedValue;
     likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
 
-    await widget.controller.toggleLike(widget.postId);
+    await widget.controller.toggleLike(widget.postId, context);
   }
 
   void initializeBookmarks() {
@@ -85,7 +85,7 @@ class _MyProfileCardState extends State<MyProfileCard> {
     bookmarkCount.value =
         newBookmarkedValue ? bookmarkCount.value + 1 : bookmarkCount.value - 1;
 
-    await widget.controller.toggleBookMark(widget.postId);
+    await widget.controller.toggleBookMark(widget.postId, context);
   }
 
   @override

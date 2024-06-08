@@ -323,20 +323,45 @@ class _UserQuestionState extends State<UserQuestion> {
                                 ),
                                 Row(
                                   children: [
-                                    SizedBox(
-                                      height: size.height * 0.018,
-                                      width: size.height * 0.018,
-                                      child: SvgPicture.asset(Assets.svgLike),
-                                    ),
-                                    const SizedBox(
-                                      width: 7,
-                                    ),
-                                    Text(
-                                      "50k",
-                                      style: TextStyle(
-                                          fontFamily: "Metropolis",
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: size.width * 0.035),
+                                    GestureDetector(
+                                      onTap: () async {
+                                        await controller.toggleanswerLike(
+                                            answer.id ?? 0, context);
+                                        setState(() {});
+                                      },
+                                      child: Row(
+                                        children: [
+                                          SizedBox(
+                                            height: size.height * 0.018,
+                                            width: size.height * 0.018,
+                                            child: Icon(
+                                              controller.answerlikedStatusMap[
+                                                          answer.id ?? 0] ??
+                                                      false
+                                                  ? Icons.thumb_up_off_alt_sharp
+                                                  : Icons
+                                                      .thumb_up_off_alt_outlined,
+                                              color:
+                                                  controller.answerlikedStatusMap[
+                                                              answer.id ?? 0] ??
+                                                          false
+                                                      ? AppColors.primaryColor
+                                                      : null,
+                                            ),
+                                          ),
+                                          15.sbw,
+                                          Text(
+                                            controller.answerlikeCountMap[
+                                                        answer.id ?? 0]
+                                                    ?.toString() ??
+                                                '0',
+                                            style: TextStyle(
+                                                fontFamily: "Metropolis",
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: size.width * 0.035),
+                                          )
+                                        ],
+                                      ),
                                     ),
                                     18.sbw,
                                     TextButton(

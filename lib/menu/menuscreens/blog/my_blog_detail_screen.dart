@@ -10,6 +10,9 @@ import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
+// ignore: library_prefixes
+import 'package:html/parser.dart' as htmlParser;
+import 'package:text_link/text_link.dart';
 
 class MyBlogDetailScreen extends StatefulWidget {
   const MyBlogDetailScreen({
@@ -138,14 +141,7 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen> {
                       ),
                       child: Align(
                         alignment: Alignment.topLeft,
-                        child: Text(
-                          post.description ?? '',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.blackText,
-                            fontSize: size.width * 0.040,
-                          ),
-                        ),
+                        child: _buildHtmlContent(post.description ?? '', size),
                       ),
                     ),
                     SizedBox(
@@ -443,6 +439,23 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildHtmlContent(String htmlContent, Size size) {
+    final parsedHtml = htmlParser.parse(htmlContent);
+    final text = parsedHtml.body?.text ?? '';
+
+    return LinkText(
+      text: text,
+      style: textStyleW400(
+        size.width * 0.035,
+        AppColors.blackText.withOpacity(0.5),
+      ),
+      linkStyle: const TextStyle(
+        color: Colors.blue,
+        decoration: TextDecoration.underline,
       ),
     );
   }

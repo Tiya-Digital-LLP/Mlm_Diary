@@ -23,11 +23,16 @@ class _MlmClassifiedState extends State<ManageClassified> {
   void initState() {
     super.initState();
     controller.fetchClassifieds();
+    _refreshData();
   }
 
   void deletePost(int index) async {
     int classifiedId = controller.classifiedList[index].id ?? 0;
     await controller.deleteClassified(classifiedId, index);
+  }
+
+  Future<void> _refreshData() async {
+    await controller.getClassified();
   }
 
   @override
@@ -38,61 +43,67 @@ class _MlmClassifiedState extends State<ManageClassified> {
         size: MediaQuery.of(context).size,
         titleText: 'Manage Classified',
       ),
-      body: Container(
-        color: AppColors.background,
-        child: Obx(() {
-          if (controller.isLoading.value && controller.classifiedList.isEmpty) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: RefreshIndicator(
+        backgroundColor: AppColors.primaryColor,
+        color: AppColors.white,
+        onRefresh: _refreshData,
+        child: Container(
+          color: AppColors.background,
+          child: Obx(() {
+            if (controller.isLoading.value &&
+                controller.classifiedList.isEmpty) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          if (controller.classifiedList.isEmpty) {
-            return Center(
-              child: Text(
-                controller.isLoading.value ? 'Loading...' : 'Data not found',
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-            );
-          }
-
-          return ListView.builder(
-            padding: EdgeInsets.zero,
-            physics: const AlwaysScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: controller.classifiedList.length,
-            itemBuilder: (context, index) {
-              final post = controller.classifiedList[index];
-              return Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                child: GestureDetector(
-                  onTap: () {
-                    Get.toNamed(
-                      Routes.manageclasifieddetailscreen,
-                      arguments: controller.classifiedList[index],
-                    );
-                  },
-                  child: ManageClassifiedCard(
-                    onDelete: () => deletePost(index),
-                    userImage: post.imagePath ?? '',
-                    userName: post.creatby ?? '',
-                    postTitle: post.title ?? '',
-                    dateTime: post.datecreated ?? '',
-                    postCaption: post.description ?? '',
-                    postTime: post.datecreated ?? '',
-                    controller: controller,
-                    viewcounts: post.pgcnt ?? 0,
-                    likedCount: post.totallike ?? 0,
-                    classifiedId: post.id ?? 0,
+            if (controller.classifiedList.isEmpty) {
+              return Center(
+                child: Text(
+                  controller.isLoading.value ? 'Loading...' : 'Data not found',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
                   ),
                 ),
               );
-            },
-          );
-        }),
+            }
+
+            return ListView.builder(
+              padding: EdgeInsets.zero,
+              physics: const AlwaysScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: controller.classifiedList.length,
+              itemBuilder: (context, index) {
+                final post = controller.classifiedList[index];
+                return Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  child: GestureDetector(
+                    onTap: () {
+                      Get.toNamed(
+                        Routes.manageclasifieddetailscreen,
+                        arguments: controller.classifiedList[index],
+                      );
+                    },
+                    child: ManageClassifiedCard(
+                      onDelete: () => deletePost(index),
+                      userImage: post.imagePath ?? '',
+                      userName: post.creatby ?? '',
+                      postTitle: post.title ?? '',
+                      dateTime: post.datecreated ?? '',
+                      postCaption: post.description ?? '',
+                      postTime: post.datecreated ?? '',
+                      controller: controller,
+                      viewcounts: post.pgcnt ?? 0,
+                      likedCount: post.totallike ?? 0,
+                      classifiedId: post.id ?? 0,
+                    ),
+                  ),
+                );
+              },
+            );
+          }),
+        ),
       ),
       floatingActionButton: InkWell(
         onTap: () {

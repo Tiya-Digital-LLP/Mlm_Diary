@@ -26,7 +26,11 @@ class _QuationAnswerState extends State<QuationAnswer> {
   @override
   void initState() {
     super.initState();
-    controller.getQuestion(1);
+    _refreshData();
+  }
+
+  Future<void> _refreshData() async {
+    await controller.getQuestion(1);
   }
 
   @override
@@ -39,111 +43,118 @@ class _QuationAnswerState extends State<QuationAnswer> {
         size: MediaQuery.of(context).size,
         titleText: 'Question Answer',
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: CustomSearchInput(
-                    controller: _search,
-                    onSubmitted: (value) {
-                      WidgetsBinding.instance.focusManager.primaryFocus
-                          ?.unfocus();
-
-                      setState(() {});
-                    },
-                    onChanged: (value) {
-                      if (value.isEmpty) {
-                        WidgetsBinding.instance.focusManager.primaryFocus;
+      body: RefreshIndicator(
+        backgroundColor: AppColors.primaryColor,
+        color: AppColors.white,
+        onRefresh: _refreshData,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: CustomSearchInput(
+                      controller: _search,
+                      onSubmitted: (value) {
+                        WidgetsBinding.instance.focusManager.primaryFocus
+                            ?.unfocus();
 
                         setState(() {});
-                      }
-                    },
-                  ),
-                ),
-                5.sbw,
-                GestureDetector(
-                  onTap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return const BottomSheetContent();
                       },
-                    );
-                  },
-                  child: Container(
-                    alignment: Alignment.center,
-                    height: size.height * 0.048,
-                    width: size.height * 0.048,
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                        color: AppColors.white, shape: BoxShape.circle),
-                    child: SvgPicture.asset(Assets.svgFilter),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: Obx(() {
-              if (controller.isLoading.value &&
-                  controller.questionList.isEmpty) {
-                return const Center(child: CircularProgressIndicator());
-              }
+                      onChanged: (value) {
+                        if (value.isEmpty) {
+                          WidgetsBinding.instance.focusManager.primaryFocus;
 
-              if (controller.questionList.isEmpty) {
-                return const Center(
-                  child: Text(
-                    'Data not found',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                          setState(() {});
+                        }
+                      },
                     ),
                   ),
-                );
-              }
+                  5.sbw,
+                  GestureDetector(
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return const BottomSheetContent();
+                        },
+                      );
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: size.height * 0.048,
+                      width: size.height * 0.048,
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                          color: AppColors.white, shape: BoxShape.circle),
+                      child: SvgPicture.asset(Assets.svgFilter),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Obx(() {
+                if (controller.isLoading.value &&
+                    controller.questionList.isEmpty) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-              return ListView.builder(
-                padding: EdgeInsets.zero,
-                controller: controller.scrollController,
-                physics: const AlwaysScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: controller.questionList.length +
-                    (controller.isLoading.value ? 1 : 0),
-                itemBuilder: (context, index) {
-                  if (index == controller.questionList.length) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  final post = controller.questionList[index];
-                  return Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    child: GestureDetector(
-                      onTap: () {
-                        Get.toNamed(
-                          Routes.userquestion,
-                          arguments: controller.questionList[index],
-                        );
-                      },
-                      child: QuestionCard(
-                        userImage: post.userData!.imagePath ?? '',
-                        userName: post.userData!.name ?? '',
-                        postCaption: post.title ?? '',
-                        viewcounts: post.pgcnt ?? 0,
-                        dateTime: post.creatdate ?? '',
-                        controller: controller,
-                        questionId: post.id ?? 0,
+                if (controller.questionList.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      'Data not found',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
                       ),
                     ),
                   );
-                },
-              );
-            }),
-          ),
-        ],
+                }
+
+                return ListView.builder(
+                  padding: EdgeInsets.zero,
+                  controller: controller.scrollController,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: controller.questionList.length +
+                      (controller.isLoading.value ? 1 : 0),
+                  itemBuilder: (context, index) {
+                    if (index == controller.questionList.length) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    final post = controller.questionList[index];
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
+                      child: GestureDetector(
+                        onTap: () {
+                          Get.toNamed(
+                            Routes.userquestion,
+                            arguments: controller.questionList[index],
+                          );
+                        },
+                        child: QuestionCard(
+                          userImage: post.userData!.imagePath ?? '',
+                          userName: post.userData!.name ?? '',
+                          postCaption: post.title ?? '',
+                          viewcounts: post.pgcnt ?? 0,
+                          dateTime: post.creatdate ?? '',
+                          controller: controller,
+                          questionId: post.id ?? 0,
+                          bookmarkCount: post.totalbookmark ?? 0,
+                          likedCount: post.totallike ?? 0,
+                        ),
+                      ),
+                    );
+                  },
+                );
+              }),
+            ),
+          ],
+        ),
       ),
       floatingActionButton: InkWell(
         onTap: () async {

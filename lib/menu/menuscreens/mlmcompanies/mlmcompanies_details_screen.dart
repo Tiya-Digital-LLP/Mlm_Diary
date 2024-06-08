@@ -27,6 +27,9 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
     super.initState();
     // ignore: unrelated_type_equality_checks
     controller.likeCountMap == 0;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.countViewCompany(post.id ?? 0, context);
+    });
   }
 
   @override

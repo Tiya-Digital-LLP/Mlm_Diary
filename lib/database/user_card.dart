@@ -11,13 +11,14 @@ class UserCard extends StatefulWidget {
   final String location;
   final String designation;
   final String plan;
-  const UserCard(
-      {super.key,
-      required this.userImage,
-      required this.userName,
-      required this.location,
-      required this.designation,
-      required this.plan});
+  const UserCard({
+    super.key,
+    required this.userImage,
+    required this.userName,
+    required this.location,
+    required this.designation,
+    required this.plan,
+  });
 
   @override
   State<UserCard> createState() => _UserCardState();
@@ -94,7 +95,6 @@ class _UserCardState extends State<UserCard> {
                       widget.plan,
                       style: textStyleW400(
                           size.width * 0.035, AppColors.blackText),
-                      maxLines: 1,
                     ),
                   ],
                 ),

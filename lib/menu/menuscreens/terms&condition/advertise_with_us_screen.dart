@@ -139,7 +139,7 @@ class _AdwithusState extends State<AddwertiseWithUs>
                               null) {
                             return Html(
                               data: _termsController.termsAndConditions.value
-                                  .toString(), // Assuming content is the HTML content
+                                  .toString(),
                               style: {
                                 "body": Style(
                                   fontSize: FontSize(16.0),

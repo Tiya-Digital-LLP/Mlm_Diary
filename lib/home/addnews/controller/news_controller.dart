@@ -61,9 +61,7 @@ class NewsController extends GetxController {
     fetchCategoryList();
   }
 
-  Future<void> addNews({
-    required File? imageFile,
-  }) async {
+  Future<void> addNews({required File? imageFile, context}) async {
     isLoading(true);
     String device = '';
     if (Platform.isAndroid) {
@@ -139,7 +137,7 @@ class NewsController extends GetxController {
         }
       } else {
         if (kDebugMode) {
-          print("No internet connection available.");
+          showToasterrorborder("No internet connection available.", context);
         }
       }
     } catch (e) {

@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/bookmark_user_entity.dart';
+import 'package:mlmdiary/generated/classified_count_view_entity.dart';
 import 'package:mlmdiary/generated/classified_like_list_entity.dart';
 import 'package:mlmdiary/generated/get_category_entity.dart';
 import 'package:mlmdiary/generated/get_classified_entity.dart';
@@ -347,32 +348,26 @@ class ClasifiedController extends GetxController {
             isEndOfData(true);
           }
         } else {
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+          if (kDebugMode) {
+            print("Response body: ${response.body}");
+          }
         }
       } else {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-        );
+        if (kDebugMode) {
+          print("No internet connection available.");
+        }
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
+      if (kDebugMode) {
+        print('Error: $e');
+      }
     } finally {
       isLoading(false);
     }
   }
 
   //like
-  Future<void> likedUser(int classifiedId) async {
+  Future<void> likedUser(int classifiedId, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
 
@@ -407,11 +402,7 @@ class ClasifiedController extends GetxController {
             likeCountMap[classifiedId] = (likeCountMap[classifiedId] ?? 0) - 1;
           }
 
-          Fluttertoast.showToast(
-            msg: message!,
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+          showToastverifedborder(message!, context);
         } else {
           Fluttertoast.showToast(
             msg: "Error: ${response.body}",
@@ -812,6 +803,62 @@ class ClasifiedController extends GetxController {
     }
   }
 
+  Future<void> countViewClassified(int classifiedId, context) async {
+    isLoading(true);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = '';
+    if (Platform.isAndroid) {
+      device = 'android';
+    } else if (Platform.isIOS) {
+      device = 'ios';
+    }
+    if (kDebugMode) {
+      print('Device Name: $device');
+    }
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri =
+            Uri.parse('${Constants.baseUrl}${Constants.countviewclassified}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['classified_id'] = classifiedId.toString();
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var countViewClassifiedEntity =
+              ClassifiedCountViewEntity.fromJson(data);
+
+          if (kDebugMode) {
+            print('Success: $countViewClassifiedEntity');
+          }
+          Fluttertoast.showToast(
+            msg: "Success: $countViewClassifiedEntity",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
+        } else {
+          //
+        }
+      } else {
+        showToasterrorborder("No internet connection", context);
+      }
+    } catch (e) {
+      //
+    } finally {
+      isLoading(false);
+    }
+  }
+
   void titleValidation(context) {
     String enteredTitle = title.value.text;
     if (enteredTitle.isEmpty || hasSpecialCharactersOrNumbers(enteredTitle)) {
@@ -823,7 +870,7 @@ class ClasifiedController extends GetxController {
     }
   }
 
-  Future<void> toggleLike(int classifiedId) async {
+  Future<void> toggleLike(int classifiedId, context) async {
     bool isLiked = likedStatusMap[classifiedId] ?? false;
     isLiked = !isLiked;
     likedStatusMap[classifiedId] = isLiked;
@@ -831,7 +878,7 @@ class ClasifiedController extends GetxController {
         classifiedId, (value) => isLiked ? value + 1 : value - 1,
         ifAbsent: () => isLiked ? 1 : 0);
 
-    await likedUser(classifiedId);
+    await likedUser(classifiedId, context);
   }
 
   Future<void> toggleBookMark(int classifiedId) async {

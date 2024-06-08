@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
@@ -12,7 +11,10 @@ import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
+import 'package:text_link/text_link.dart';
 import 'package:url_launcher/url_launcher.dart';
+// ignore: library_prefixes
+import 'package:html/parser.dart' as htmlParser;
 
 class BlogDetailScreen extends StatefulWidget {
   const BlogDetailScreen({
@@ -32,6 +34,9 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.countViewBlog(post.articleId ?? 0, context);
+    });
   }
 
   @override
@@ -142,12 +147,7 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                       ),
                       child: Align(
                         alignment: Alignment.topLeft,
-                        child: Html(
-                          data: post.description ?? '',
-                          style: {
-                            "html": Style(),
-                          },
-                        ),
+                        child: _buildHtmlContent(post.description ?? '', size),
                       ),
                     ),
                     SizedBox(
@@ -435,6 +435,23 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildHtmlContent(String htmlContent, Size size) {
+    final parsedHtml = htmlParser.parse(htmlContent);
+    final text = parsedHtml.body?.text ?? '';
+
+    return LinkText(
+      text: text,
+      style: textStyleW400(
+        size.width * 0.035,
+        AppColors.blackText.withOpacity(0.5),
+      ),
+      linkStyle: const TextStyle(
+        color: Colors.blue,
+        decoration: TextDecoration.underline,
       ),
     );
   }

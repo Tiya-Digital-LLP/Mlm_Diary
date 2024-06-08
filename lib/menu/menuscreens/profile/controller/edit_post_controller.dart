@@ -12,6 +12,7 @@ import 'package:mlmdiary/generated/my_post_list_entity.dart';
 import 'package:mlmdiary/generated/post_bookmark_entity.dart';
 import 'package:mlmdiary/generated/post_like_entity.dart';
 import 'package:mlmdiary/generated/post_like_list_entity.dart';
+import 'package:mlmdiary/generated/user_profile_count_view_entity.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -315,8 +316,64 @@ class EditPostController extends GetxController {
     }
   }
 
+  Future<void> countViewUserProfile(int userId, context) async {
+    isLoading(true);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = '';
+    if (Platform.isAndroid) {
+      device = 'android';
+    } else if (Platform.isIOS) {
+      device = 'ios';
+    }
+    if (kDebugMode) {
+      print('Device Name: $device');
+    }
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri =
+            Uri.parse('${Constants.baseUrl}${Constants.countviewuserprofile}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['user_id'] = userId.toString();
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var countViewUserProfileEntity =
+              UserProfileCountViewEntity.fromJson(data);
+
+          if (kDebugMode) {
+            print('Success: $countViewUserProfileEntity');
+          }
+          Fluttertoast.showToast(
+            msg: "Success: $countViewUserProfileEntity",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
+        } else {
+          //
+        }
+      } else {
+        showToasterrorborder("No internet connection", context);
+      }
+    } catch (e) {
+      //
+    } finally {
+      isLoading(false);
+    }
+  }
+
   //like
-  Future<void> likedPost(int postId) async {
+  Future<void> likedPost(int postId, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
 
@@ -350,48 +407,38 @@ class EditPostController extends GetxController {
             likeCountMap[postId] = (likeCountMap[postId] ?? 0) - 1;
           }
 
-          Fluttertoast.showToast(
-            msg: message!,
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+          showToastverifedborder(message!, context);
         } else {
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+          if (kDebugMode) {
+            print("Response body: ${response.body}");
+          }
         }
       } else {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-        );
+        if (kDebugMode) {
+          showToasterrorborder("No internet connection available.", context);
+        }
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
+      if (kDebugMode) {
+        print('Error: $e');
+      }
     } finally {
       isLoading(false);
     }
   }
 
-  Future<void> toggleLike(int postId) async {
+  Future<void> toggleLike(int postId, context) async {
     bool isLiked = likedStatusMap[postId] ?? false;
     isLiked = !isLiked;
     likedStatusMap[postId] = isLiked;
     likeCountMap.update(postId, (value) => isLiked ? value + 1 : value - 1,
         ifAbsent: () => isLiked ? 1 : 0);
 
-    await likedPost(postId);
+    await likedPost(postId, context);
   }
 
   // Bookmark
-  Future<void> bookmarkPost(int postId) async {
+  Future<void> bookmarkPost(int postId, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
 
@@ -425,37 +472,27 @@ class EditPostController extends GetxController {
             bookmarkCountMap[postId] = (bookmarkCountMap[postId] ?? 0) - 1;
           }
 
-          Fluttertoast.showToast(
-            msg: message!,
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+          showToastverifedborder(message!, context);
         } else {
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+          if (kDebugMode) {
+            print("Response body: ${response.body}");
+          }
         }
       } else {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-        );
+        if (kDebugMode) {
+          showToasterrorborder("No internet connection available.", context);
+        }
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
+      if (kDebugMode) {
+        print('Error: $e');
+      }
     } finally {
       isLoading(false);
     }
   }
 
-  Future<void> toggleBookMark(int postId) async {
+  Future<void> toggleBookMark(int postId, context) async {
     bool isBookmark = bookmarkStatusMap[postId] ?? false;
     isBookmark = !isBookmark;
     bookmarkStatusMap[postId] = isBookmark;
@@ -463,7 +500,7 @@ class EditPostController extends GetxController {
         postId, (value) => isBookmark ? value + 1 : value - 1,
         ifAbsent: () => isBookmark ? 1 : 0);
 
-    await bookmarkPost(postId);
+    await bookmarkPost(postId, context);
   }
 
   // like_list_blog

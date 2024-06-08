@@ -537,7 +537,7 @@ packages:
     source: hosted
     version: "2.0.3"
   html:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: html
       sha256: "3a7812d5bcd2894edf53dfaf8cd640876cf6cef50a8f238745c8b8120ea74d3a"
@@ -1077,6 +1077,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.0"
+  text_link:
+    dependency: "direct main"
+    description:
+      name: text_link
+      sha256: "8f981124a97838bd5e5c432a5f44011aa72332a26dd252c712c4221b93c9989d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   toastification:
     dependency: "direct main"
     description:

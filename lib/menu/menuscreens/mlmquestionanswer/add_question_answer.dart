@@ -91,6 +91,7 @@ class _AddClassifiedState extends State<AddQuestionAnswer> {
                       },
                     ),
                   ),
+                  10.sbh,
                   Obx(
                     () => BorderContainer(
                       isError: controller.categoryError.value,

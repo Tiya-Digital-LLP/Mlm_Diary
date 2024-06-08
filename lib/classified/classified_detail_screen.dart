@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
@@ -13,7 +12,10 @@ import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:text_link/text_link.dart';
 import 'package:url_launcher/url_launcher.dart';
+// ignore: library_prefixes
+import 'package:html/parser.dart' as htmlParser;
 
 class ClassidiedDetailsScreen extends StatefulWidget {
   const ClassidiedDetailsScreen({required Key key}) : super(key: key);
@@ -36,6 +38,9 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
     controller.likeCountMap == 0;
     // ignore: unrelated_type_equality_checks
     controller.bookmarkCountMap == 0;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.countViewClassified(post.id ?? 0, context);
+    });
   }
 
   @override
@@ -144,12 +149,7 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
                       ),
                       child: Align(
                         alignment: Alignment.topLeft,
-                        child: Html(
-                          data: post.description ?? '',
-                          style: {
-                            "html": Style(),
-                          },
-                        ),
+                        child: _buildHtmlContent(post.description ?? '', size),
                       ),
                     ),
                     SizedBox(
@@ -382,7 +382,8 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
                       height: size.height * 0.028,
                       width: size.height * 0.028,
                       child: GestureDetector(
-                        onTap: () => controller.toggleLike(post.id ?? 0),
+                        onTap: () =>
+                            controller.toggleLike(post.id ?? 0, context),
                         child: Icon(
                           // Observe like status
                           controller.likedStatusMap[post.id ?? 0] ?? false
@@ -473,6 +474,23 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
               ],
             ),
           )),
+    );
+  }
+
+  Widget _buildHtmlContent(String htmlContent, Size size) {
+    final parsedHtml = htmlParser.parse(htmlContent);
+    final text = parsedHtml.body?.text ?? '';
+
+    return LinkText(
+      text: text,
+      style: textStyleW400(
+        size.width * 0.035,
+        AppColors.blackText.withOpacity(0.5),
+      ),
+      linkStyle: const TextStyle(
+        color: Colors.blue,
+        decoration: TextDecoration.underline,
+      ),
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_mlm_database_entity.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/custom/about_user.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/custom/social_button.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/custom/user_profie_card.dart';
@@ -24,6 +25,7 @@ class UserProfileScreen extends StatefulWidget {
 class _UserProfileScreenState extends State<UserProfileScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final EditPostController controller = Get.put(EditPostController());
 
   final GetMlmDatabaseData mlmDatabaseList =
       Get.arguments as GetMlmDatabaseData;
@@ -44,6 +46,9 @@ class _UserProfileScreenState extends State<UserProfileScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.countViewUserProfile(mlmDatabaseList.id ?? 0, context);
+    });
   }
 
   @override
@@ -96,32 +101,34 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                       ),
                     ),
                     30.sbw,
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          mlmDatabaseList.name ?? 'N/A',
-                          style: textStyleW700(
-                              size.width * 0.045, AppColors.blackText),
-                        ),
-                        Text(
-                          '${mlmDatabaseList.city ?? 'N/A'}${mlmDatabaseList.state ?? 'N/A'}${mlmDatabaseList.country ?? 'N/A'}',
-                          style: textStyleW500(
-                            size.width * 0.035,
-                            AppColors.blackText,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            mlmDatabaseList.name ?? 'N/A',
+                            style: textStyleW700(
+                                size.width * 0.045, AppColors.blackText),
                           ),
-                        ),
-                        Text(
-                          mlmDatabaseList.company ?? '',
-                          style: textStyleW500(
-                              size.width * 0.035, AppColors.blackText),
-                        ),
-                        Text(
-                          mlmDatabaseList.plan ?? '',
-                          style: textStyleW500(
-                              size.width * 0.035, AppColors.blackText),
-                        ),
-                      ],
+                          Text(
+                            '${mlmDatabaseList.city ?? 'N/A'}, ${mlmDatabaseList.state ?? 'N/A'}, ${mlmDatabaseList.country ?? 'N/A'}',
+                            style: textStyleW500(
+                              size.width * 0.035,
+                              AppColors.blackText,
+                            ),
+                          ),
+                          Text(
+                            mlmDatabaseList.company ?? 'N/A',
+                            style: textStyleW500(
+                                size.width * 0.035, AppColors.blackText),
+                          ),
+                          Text(
+                            mlmDatabaseList.plan ?? 'N/A',
+                            style: textStyleW500(
+                                size.width * 0.035, AppColors.blackText),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -182,7 +189,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                           Column(
                             children: [
                               Text(
-                                '190',
+                                mlmDatabaseList.views.toString(),
                                 style: textStyleW700(
                                     size.width * 0.045, AppColors.blackText),
                               ),

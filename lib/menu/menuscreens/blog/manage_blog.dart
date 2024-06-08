@@ -25,7 +25,11 @@ class _ManageBlogState extends State<ManageBlog> {
   @override
   void initState() {
     super.initState();
-    controller.fetchMyBlog();
+    _refreshData();
+  }
+
+  Future<void> _refreshData() async {
+    await controller.fetchMyBlog();
   }
 
   @override
@@ -36,60 +40,65 @@ class _ManageBlogState extends State<ManageBlog> {
         size: MediaQuery.of(context).size,
         titleText: 'Manage Blog',
       ),
-      body: Container(
-        color: AppColors.background,
-        child: Obx(() {
-          if (controller.isLoading.value && controller.myBlogList.isEmpty) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: RefreshIndicator(
+        backgroundColor: AppColors.primaryColor,
+        color: AppColors.white,
+        onRefresh: _refreshData,
+        child: Container(
+          color: AppColors.background,
+          child: Obx(() {
+            if (controller.isLoading.value && controller.myBlogList.isEmpty) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          if (controller.myBlogList.isEmpty) {
-            return Center(
-              child: Text(
-                controller.isLoading.value ? 'Loading...' : 'Data not found',
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-            );
-          }
-          return ListView.builder(
-              padding: EdgeInsets.zero,
-              physics: const AlwaysScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: controller.myBlogList.length,
-              itemBuilder: (context, index) {
-                final post = controller.myBlogList[index];
-                return Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  child: GestureDetector(
-                    onTap: () {
-                      Get.toNamed(
-                        Routes.myblogdetails,
-                        arguments: controller.myBlogList[index],
-                      );
-                    },
-                    child: ManageBlogCard(
-                      onDelete: () => deletePost(index),
-                      userImage: post.userData!.imagePath ?? '',
-                      userName: post.userData!.name ?? '',
-                      postTitle: post.title ?? '',
-                      postCaption: post.description ?? '',
-                      postImage: post.imagePath ?? '',
-                      dateTime: post.createdDate ?? '',
-                      viewcounts: post.pgcnt ?? 0,
-                      controller: controller,
-                      bookmarkCount: post.totalbookmark ?? 0,
-                      likedCount: post.totallike ?? 0,
-                      blogId: post.articleId ?? 0,
-                    ),
+            if (controller.myBlogList.isEmpty) {
+              return Center(
+                child: Text(
+                  controller.isLoading.value ? 'Loading...' : 'Data not found',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
                   ),
-                );
-              });
-        }),
+                ),
+              );
+            }
+            return ListView.builder(
+                padding: EdgeInsets.zero,
+                physics: const AlwaysScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: controller.myBlogList.length,
+                itemBuilder: (context, index) {
+                  final post = controller.myBlogList[index];
+                  return Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    child: GestureDetector(
+                      onTap: () {
+                        Get.toNamed(
+                          Routes.myblogdetails,
+                          arguments: controller.myBlogList[index],
+                        );
+                      },
+                      child: ManageBlogCard(
+                        onDelete: () => deletePost(index),
+                        userImage: post.userData!.imagePath ?? '',
+                        userName: post.userData!.name ?? '',
+                        postTitle: post.title ?? '',
+                        postCaption: post.description ?? '',
+                        postImage: post.imagePath ?? '',
+                        dateTime: post.createdDate ?? '',
+                        viewcounts: post.pgcnt ?? 0,
+                        controller: controller,
+                        bookmarkCount: post.totalbookmark ?? 0,
+                        likedCount: post.totallike ?? 0,
+                        blogId: post.articleId ?? 0,
+                      ),
+                    ),
+                  );
+                });
+          }),
+        ),
       ),
       floatingActionButton: InkWell(
         onTap: () {

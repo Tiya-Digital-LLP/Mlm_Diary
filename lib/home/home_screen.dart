@@ -288,6 +288,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     PopupMenuItem(
                       value: 3,
+                      onTap: () {
+                        Get.toNamed(Routes.addquestionanswer);
+                      },
                       child: Row(
                         children: [
                           SvgPicture.asset(Assets.svgMessageQuestion),

@@ -99,19 +99,19 @@ class _ProfileScreenState extends State<ProfileScreen>
                               size.width * 0.045, AppColors.blackText),
                         ),
                         Text(
-                          '${userProfile.city ?? 'N/A'}${userProfile.state ?? 'N/A'}${userProfile.country ?? 'N/A'}',
+                          '${userProfile.city ?? 'N/A'}, ${userProfile.state ?? 'N/A'}, ${userProfile.country ?? 'N/A'}',
                           style: textStyleW500(
                             size.width * 0.035,
                             AppColors.blackText,
                           ),
                         ),
                         Text(
-                          userProfile.company ?? '',
+                          userProfile.company ?? 'N/A',
                           style: textStyleW500(
                               size.width * 0.035, AppColors.blackText),
                         ),
                         Text(
-                          userProfile.plan ?? '',
+                          userProfile.plan ?? 'N/A',
                           style: textStyleW500(
                               size.width * 0.035, AppColors.blackText),
                         ),
@@ -176,7 +176,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                           Column(
                             children: [
                               Text(
-                                '190',
+                                userProfile.views.toString(),
                                 style: textStyleW700(
                                     size.width * 0.045, AppColors.blackText),
                               ),

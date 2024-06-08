@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/blog_bookmark_entity.dart';
+import 'package:mlmdiary/generated/blog_count_view_entity.dart';
 import 'package:mlmdiary/generated/blog_like_list_entity.dart';
 import 'package:mlmdiary/generated/get_blog_list_entity.dart';
 import 'package:mlmdiary/generated/get_category_entity.dart';
@@ -769,6 +770,60 @@ class ManageBlogController extends GetxController {
       if (kDebugMode) {
         print("An error occurred while saving Blog details: $e");
       }
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<void> countViewBlog(int blogId, context) async {
+    isLoading(true);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = '';
+    if (Platform.isAndroid) {
+      device = 'android';
+    } else if (Platform.isIOS) {
+      device = 'ios';
+    }
+    if (kDebugMode) {
+      print('Device Name: $device');
+    }
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri = Uri.parse('${Constants.baseUrl}${Constants.countviewblog}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['blog_id'] = blogId.toString();
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var countViewBlogEntity = BlogCountViewEntity.fromJson(data);
+
+          if (kDebugMode) {
+            print('Success: $countViewBlogEntity');
+          }
+          Fluttertoast.showToast(
+            msg: "Success: $countViewBlogEntity",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
+        } else {
+          //
+        }
+      } else {
+        showToasterrorborder("No internet connection", context);
+      }
+    } catch (e) {
+      //
     } finally {
       isLoading(false);
     }

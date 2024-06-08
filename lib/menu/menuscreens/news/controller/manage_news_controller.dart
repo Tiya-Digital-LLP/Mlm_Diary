@@ -16,6 +16,7 @@ import 'package:mlmdiary/generated/get_news_list_entity.dart';
 import 'package:mlmdiary/generated/get_sub_category_entity.dart';
 import 'package:mlmdiary/generated/liked_news_entity.dart';
 import 'package:mlmdiary/generated/my_news_entity.dart';
+import 'package:mlmdiary/generated/news_count_view_entity.dart';
 import 'package:mlmdiary/generated/news_like_list_entity.dart';
 
 import 'package:mlmdiary/utils/custom_toast.dart';
@@ -108,6 +109,60 @@ class ManageNewsController extends GetxController {
       isSubCategorySelectedList[i] = false;
     }
     getNews(1);
+  }
+
+  Future<void> countViewNews(int newsId, context) async {
+    isLoading(true);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = '';
+    if (Platform.isAndroid) {
+      device = 'android';
+    } else if (Platform.isIOS) {
+      device = 'ios';
+    }
+    if (kDebugMode) {
+      print('Device Name: $device');
+    }
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri = Uri.parse('${Constants.baseUrl}${Constants.countviewnews}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['news_id'] = newsId.toString();
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var countViewNewsEntity = NewsCountViewEntity.fromJson(data);
+
+          if (kDebugMode) {
+            print('Success: $countViewNewsEntity');
+          }
+          Fluttertoast.showToast(
+            msg: "Success: $countViewNewsEntity",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
+        } else {
+          //
+        }
+      } else {
+        showToasterrorborder("No internet connection", context);
+      }
+    } catch (e) {
+      //
+    } finally {
+      isLoading(false);
+    }
   }
 
   // Method to fetch data from API

@@ -8,12 +8,15 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/add_answer_entity.dart';
+import 'package:mlmdiary/generated/add_faviourite_question_entity.dart';
+import 'package:mlmdiary/generated/answer_liked_entity.dart';
 import 'package:mlmdiary/generated/count_view_question_entity.dart';
 import 'package:mlmdiary/generated/get_answers_entity.dart';
 import 'package:mlmdiary/generated/get_category_entity.dart';
 import 'package:mlmdiary/generated/get_question_list_entity.dart';
 import 'package:mlmdiary/generated/get_sub_category_entity.dart';
 import 'package:mlmdiary/generated/my_question_entity.dart';
+import 'package:mlmdiary/generated/question_like_entity.dart';
 import 'package:mlmdiary/generated/question_like_list_entity.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:http/http.dart' as http;
@@ -53,6 +56,18 @@ class QuestionAnswerController extends GetxController {
   //count
   RxInt selectedCountCategory = 0.obs;
   RxInt selectedCountSubCategory = 0.obs;
+
+  //like
+  var likedStatusMap = <int, bool>{};
+  var likeCountMap = <int, int>{};
+
+  //answer-like
+  var answerlikedStatusMap = <int, bool>{};
+  var answerlikeCountMap = <int, int>{};
+
+//bookmark
+  var bookmarkStatusMap = <int, bool>{};
+  var bookmarkCountMap = <int, int>{};
 
   var isLoading = false.obs;
 
@@ -691,6 +706,8 @@ class QuestionAnswerController extends GetxController {
       if (kDebugMode) {
         print("An error occurred while saving company details: $e");
       }
+    } finally {
+      clearFormFields();
     }
   }
 
@@ -700,7 +717,7 @@ class QuestionAnswerController extends GetxController {
     subcategoryList.clear();
   }
 
-  // like_list_blog
+  // like_list_question
   Future<void> fetchLikeListQuestion(int questionId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
@@ -787,6 +804,193 @@ class QuestionAnswerController extends GetxController {
         print('Finished fetchLikeListBlog method');
       }
     }
+  }
+
+  //liked Question
+  Future<void> likedQuestion(int questionId, context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+
+    String device = Platform.isAndroid ? 'android' : 'ios';
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri = Uri.parse('${Constants.baseUrl}${Constants.likedquestion}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['question_id'] = questionId.toString();
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var likedBlogEntity = QuestionLikeEntity.fromJson(data);
+          var message = likedBlogEntity.message;
+
+          // Update the liked status and like count based on the message
+          if (message == 'You have liked this Question') {
+            likedStatusMap[questionId] = true;
+            likeCountMap[questionId] = (likeCountMap[questionId] ?? 0) + 1;
+          } else if (message == 'You have unliked this Question') {
+            likedStatusMap[questionId] = false;
+            likeCountMap[questionId] = (likeCountMap[questionId] ?? 0) - 1;
+          }
+
+          showToastverifedborder(message!, context);
+        } else {
+          showToasterrorborder("Error: ${response.body}", context);
+        }
+      } else {
+        showToasterrorborder("No internet connection", context);
+      }
+    } catch (e) {
+      showToasterrorborder("Error: $e", context);
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  //liked Question
+  Future<void> likedAnswers(int answerId, context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+
+    String device = Platform.isAndroid ? 'android' : 'ios';
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri = Uri.parse('${Constants.baseUrl}${Constants.likedanswer}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['answer_id'] = answerId.toString();
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var likeAnswerdEntity = AnswerLikedEntity.fromJson(data);
+          var message = likeAnswerdEntity.message;
+
+          // Update the liked status and like count based on the message
+          if (message == 'You have liked this Answer') {
+            answerlikedStatusMap[answerId] = true;
+            answerlikeCountMap[answerId] = (likeCountMap[answerId] ?? 0) + 1;
+          } else if (message == 'You have unliked this Answer') {
+            answerlikedStatusMap[answerId] = false;
+            answerlikeCountMap[answerId] = (likeCountMap[answerId] ?? 0) - 1;
+          }
+
+          showToastverifedborder(message!, context);
+        } else {
+          showToasterrorborder("Error: ${response.body}", context);
+        }
+      } else {
+        showToasterrorborder("No internet connection", context);
+      }
+    } catch (e) {
+      showToasterrorborder("Error: $e", context);
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<void> toggleanswerLike(int answerId, context) async {
+    bool isLiked = answerlikedStatusMap[answerId] ?? false;
+    isLiked = !isLiked;
+    answerlikedStatusMap[answerId] = isLiked;
+    answerlikeCountMap.update(
+        answerId, (value) => isLiked ? value + 1 : value - 1,
+        ifAbsent: () => isLiked ? 1 : 0);
+
+    await likedAnswers(answerId, context);
+  }
+
+  // Bookmark
+  Future<void> questionBookmark(int questionId, context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+
+    String device = Platform.isAndroid ? 'android' : 'ios';
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri =
+            Uri.parse('${Constants.baseUrl}${Constants.questionBookmark}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['question_id'] = questionId.toString();
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var bookmarkQuestionEntity =
+              AddFaviouriteQuestionEntity.fromJson(data);
+          var message = bookmarkQuestionEntity.message;
+
+          // Update the liked status and like count based on the message
+          if (message == 'You have bookmark this Question') {
+            bookmarkStatusMap[questionId] = true;
+            bookmarkCountMap[questionId] =
+                (bookmarkCountMap[questionId] ?? 0) + 1;
+          } else if (message == 'You have unbookmark this Question') {
+            bookmarkStatusMap[questionId] = false;
+            bookmarkCountMap[questionId] =
+                (bookmarkCountMap[questionId] ?? 0) - 1;
+          }
+
+          showToastverifedborder(message!, context);
+        } else {
+          if (kDebugMode) {
+            print('Error: ${response.body}');
+          }
+        }
+      } else {
+        showToastverifedborder('No internet connection', context);
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error: $e');
+      }
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<void> toggleLike(int questionId, context) async {
+    bool isLiked = likedStatusMap[questionId] ?? false;
+    isLiked = !isLiked;
+    likedStatusMap[questionId] = isLiked;
+    likeCountMap.update(questionId, (value) => isLiked ? value + 1 : value - 1,
+        ifAbsent: () => isLiked ? 1 : 0);
+
+    await likedQuestion(questionId, context);
+  }
+
+  Future<void> toggleBookMark(int questionId, context) async {
+    bool isBookmark = bookmarkStatusMap[questionId] ?? false;
+    isBookmark = !isBookmark;
+    bookmarkStatusMap[questionId] = isBookmark;
+    bookmarkCountMap.update(
+        questionId, (value) => isBookmark ? value + 1 : value - 1,
+        ifAbsent: () => isBookmark ? 1 : 0);
+
+    await questionBookmark(questionId, context);
   }
 
   void titleValidation(context) {

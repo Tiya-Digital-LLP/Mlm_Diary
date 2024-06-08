@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/question_like_list_content.dart';
@@ -17,6 +18,8 @@ class ManageQuestionCard extends StatefulWidget {
   final String dateTime;
   final int questionId;
   final QuestionAnswerController controller;
+  final int bookmarkCount;
+  final int likedCount;
 
   const ManageQuestionCard({
     super.key,
@@ -27,6 +30,8 @@ class ManageQuestionCard extends StatefulWidget {
     required this.dateTime,
     required this.questionId,
     required this.controller,
+    required this.bookmarkCount,
+    required this.likedCount,
   });
 
   @override
@@ -35,11 +40,50 @@ class ManageQuestionCard extends StatefulWidget {
 
 class _ManageQuestionCardState extends State<ManageQuestionCard> {
   late PostTimeFormatter postTimeFormatter;
+  late RxBool isLiked;
+  late RxBool isBookmarked;
+
+  late RxInt likeCount;
+  late RxInt bookmarkCount;
 
   @override
   void initState() {
     super.initState();
     postTimeFormatter = PostTimeFormatter();
+    initializeBookmarks();
+    initializeLikes();
+  }
+
+  void initializeLikes() {
+    isLiked =
+        RxBool(widget.controller.likedStatusMap[widget.questionId] ?? false);
+    likeCount = RxInt(
+        widget.controller.likeCountMap[widget.questionId] ?? widget.likedCount);
+  }
+
+  void toggleLike() async {
+    bool newLikedValue = !isLiked.value;
+    isLiked.value = newLikedValue;
+    likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
+
+    await widget.controller.toggleLike(widget.questionId, context);
+  }
+
+  void initializeBookmarks() {
+    isBookmarked =
+        RxBool(widget.controller.bookmarkStatusMap[widget.questionId] ?? false);
+    bookmarkCount = RxInt(
+        widget.controller.bookmarkCountMap[widget.questionId] ??
+            widget.bookmarkCount);
+  }
+
+  void toggleBookmark() async {
+    bool newBookmarkedValue = !isBookmarked.value;
+    isBookmarked.value = newBookmarkedValue;
+    bookmarkCount.value =
+        newBookmarkedValue ? bookmarkCount.value + 1 : bookmarkCount.value - 1;
+
+    await widget.controller.toggleBookMark(widget.questionId, context);
   }
 
   @override
@@ -133,18 +177,31 @@ class _ManageQuestionCardState extends State<ManageQuestionCard> {
                     SizedBox(
                       height: size.height * 0.028,
                       width: size.height * 0.028,
-                      child: SvgPicture.asset(Assets.svgLike),
+                      child: GestureDetector(
+                        onTap: toggleLike,
+                        child: Icon(
+                          isLiked.value
+                              ? Icons.thumb_up_off_alt_sharp
+                              : Icons.thumb_up_off_alt_outlined,
+                          color: isLiked.value ? AppColors.primaryColor : null,
+                        ),
+                      ),
                     ),
                     const SizedBox(
                       width: 7,
                     ),
-                    Text(
-                      "50k",
-                      style: TextStyle(
-                          fontFamily: "Metropolis",
-                          fontWeight: FontWeight.w600,
-                          fontSize: size.width * 0.045),
-                    ),
+                    likeCount.value == 0
+                        ? const SizedBox.shrink()
+                        : InkWell(
+                            onTap: () {
+                              showLikeList(context);
+                            },
+                            child: Text(
+                              '${likeCount.value}',
+                              style: textStyleW600(
+                                  size.width * 0.038, AppColors.blackText),
+                            ),
+                          ),
                     const SizedBox(
                       width: 15,
                     ),
@@ -188,7 +245,15 @@ class _ManageQuestionCardState extends State<ManageQuestionCard> {
                     SizedBox(
                       height: size.height * 0.028,
                       width: size.height * 0.028,
-                      child: SvgPicture.asset(Assets.svgSavePost),
+                      child: GestureDetector(
+                        onTap: () => toggleBookmark(),
+                        child: Icon(
+                          isBookmarked.value
+                              ? Icons.bookmark
+                              : Icons.bookmark_border,
+                          size: size.height * 0.032,
+                        ),
+                      ),
                     ),
                     const SizedBox(
                       width: 10,
@@ -206,7 +271,7 @@ class _ManageQuestionCardState extends State<ManageQuestionCard> {
               ],
             ),
           ),
-          20.sbh,
+          10.sbh,
         ],
       ),
     );

@@ -42,18 +42,23 @@ class Constants {
   static const String updateclassified = "/updateclassified";
   static const String delteclassified = "/deleteclassified";
   static const String likelistclassified = "/classified/likelist";
+  static const String countviewclassified = "/countview_classified";
 
   static const String getadmincompany = "/getmlmcompany";
+  static const String countviewcompany = "/countview_company";
+
   static const String likemlmcompany = "/likemlmcompany";
   static const String bookmarkmlmcompany = "/bookmark_mlmcompany";
   static const String mlmdatabase = "/getdatabase";
+  static const String countviewuserprofile = "/countview_database";
+
   static const String remainigclassifeidcount =
       "/remaining_classified_count_check";
   static const String news = "/addnews";
   static const String mynews = "/mynewslist";
   static const String getnews = "/getnews";
   static const String likelistnews = "/news/likelist";
-
+  static const String countviewnews = "/countview_news";
   static const String deletenews = "/deletenews";
   static const String updatenews = "/updatenews";
   static const String likednews = "/addlikenews";
@@ -67,6 +72,7 @@ class Constants {
   static const String updateblog = "/updateblog";
   static const String getblog = "/getblog";
   static const String likelistblog = "/blog/likelist";
+  static const String countviewblog = "/countview_blog";
 
   static const String addpost = "/adduserpost";
   static const String editpost = "/updateuserpost";
@@ -83,4 +89,7 @@ class Constants {
   static const String addanswer = "/addanswer";
   static const String likelistquestion = "/question/likelist";
   static const String countviewquestion = "/countview_question";
+  static const String questionBookmark = "/addfavoritequestion";
+  static const String likedquestion = "/addlikequestion";
+  static const String likedanswer = "/addlikeanswer";
 }
