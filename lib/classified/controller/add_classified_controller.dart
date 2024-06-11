@@ -17,7 +17,6 @@ import 'package:mlmdiary/generated/get_classified_entity.dart';
 import 'package:mlmdiary/generated/get_company_entity.dart';
 import 'package:mlmdiary/generated/get_sub_category_entity.dart';
 import 'package:mlmdiary/generated/liked_user_entity.dart';
-import 'package:mlmdiary/generated/remaining_classified_count_entity.dart';
 import 'package:http/http.dart' as http;
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -645,7 +644,7 @@ class ClasifiedController extends GetxController {
 
   // classfied_remaining_count
 
-  Future<bool> classifiedRemainingCount() async {
+  Future<Map<String, dynamic>?> classifiedRemainingCount() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
 
@@ -667,23 +666,13 @@ class ClasifiedController extends GetxController {
 
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
-          var remainingCompanyEntity =
-              RemainingClassifiedCountEntity.fromJson(data);
-          var message = remainingCompanyEntity.message;
-
-          Fluttertoast.showToast(
-            msg: message!,
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
-          return false;
+          return data;
         } else {
           Fluttertoast.showToast(
             msg: "Error: ${response.body}",
             toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.BOTTOM,
           );
-          return false;
         }
       } else {
         Fluttertoast.showToast(
@@ -691,7 +680,6 @@ class ClasifiedController extends GetxController {
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.BOTTOM,
         );
-        return false;
       }
     } catch (e) {
       Fluttertoast.showToast(
@@ -699,10 +687,10 @@ class ClasifiedController extends GetxController {
         toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.BOTTOM,
       );
-      return false;
     } finally {
       isLoading(false);
     }
+    return null;
   }
 
 // like_list_classified

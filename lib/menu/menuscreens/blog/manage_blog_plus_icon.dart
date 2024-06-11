@@ -43,8 +43,6 @@ class _ManageBlogPlusIconState extends State<ManageBlogPlusIcon> {
   void initState() {
     super.initState();
     controller.fetchMyBlog();
-    int? articleId = Get.arguments['articleId'];
-    controller.fetchMyBlog(articleId: articleId, context: context);
   }
 
   @override

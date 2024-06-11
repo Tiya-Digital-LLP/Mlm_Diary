@@ -17,10 +17,6 @@ class ManageBlog extends StatefulWidget {
 
 class _ManageBlogState extends State<ManageBlog> {
   final ManageBlogController controller = Get.put(ManageBlogController());
-  void deletePost(int index) async {
-    int blogId = controller.myBlogList[index].articleId ?? 0;
-    await controller.deleteBlog(blogId, index);
-  }
 
   @override
   void initState() {
@@ -30,6 +26,11 @@ class _ManageBlogState extends State<ManageBlog> {
 
   Future<void> _refreshData() async {
     await controller.fetchMyBlog();
+  }
+
+  void deletePost(int index) async {
+    int blogId = controller.myBlogList[index].articleId ?? 0;
+    await controller.deleteBlog(blogId, index);
   }
 
   @override
@@ -63,40 +64,42 @@ class _ManageBlogState extends State<ManageBlog> {
                 ),
               );
             }
+
             return ListView.builder(
-                padding: EdgeInsets.zero,
-                physics: const AlwaysScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: controller.myBlogList.length,
-                itemBuilder: (context, index) {
-                  final post = controller.myBlogList[index];
-                  return Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    child: GestureDetector(
-                      onTap: () {
-                        Get.toNamed(
-                          Routes.myblogdetails,
-                          arguments: controller.myBlogList[index],
-                        );
-                      },
-                      child: ManageBlogCard(
-                        onDelete: () => deletePost(index),
-                        userImage: post.userData!.imagePath ?? '',
-                        userName: post.userData!.name ?? '',
-                        postTitle: post.title ?? '',
-                        postCaption: post.description ?? '',
-                        postImage: post.imagePath ?? '',
-                        dateTime: post.createdDate ?? '',
-                        viewcounts: post.pgcnt ?? 0,
-                        controller: controller,
-                        bookmarkCount: post.totalbookmark ?? 0,
-                        likedCount: post.totallike ?? 0,
-                        blogId: post.articleId ?? 0,
-                      ),
+              padding: EdgeInsets.zero,
+              physics: const AlwaysScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: controller.myBlogList.length,
+              itemBuilder: (context, index) {
+                final post = controller.myBlogList[index];
+                return Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  child: GestureDetector(
+                    onTap: () {
+                      Get.toNamed(
+                        Routes.myblogdetails,
+                        arguments: controller.myBlogList[index],
+                      );
+                    },
+                    child: ManageBlogCard(
+                      onDelete: () => deletePost(index),
+                      userImage: post.userData?.imagePath ?? '',
+                      userName: post.userData?.name ?? '',
+                      postTitle: post.title ?? '',
+                      postCaption: post.description ?? '',
+                      postImage: post.imagePath ?? '',
+                      dateTime: post.createdDate ?? '',
+                      viewcounts: post.pgcnt ?? 0,
+                      controller: controller,
+                      bookmarkCount: post.totalbookmark ?? 0,
+                      likedCount: post.totallike ?? 0,
+                      blogId: post.articleId ?? 0,
                     ),
-                  );
-                });
+                  ),
+                );
+              },
+            );
           }),
         ),
       ),

@@ -9,6 +9,7 @@ import 'package:mlmdiary/generated/add_blog_entity.dart';
 import 'package:mlmdiary/generated/add_faviourite_question_entity.dart';
 import 'package:mlmdiary/generated/add_news_entity.dart';
 import 'package:mlmdiary/generated/add_post_entity.dart';
+import 'package:mlmdiary/generated/all_bookmark_entity.dart';
 import 'package:mlmdiary/generated/answer_liked_entity.dart';
 import 'package:mlmdiary/generated/blog_bookmark_entity.dart';
 import 'package:mlmdiary/generated/blog_count_view_entity.dart';
@@ -247,6 +248,18 @@ class JsonConvert {
     if (<AddPostUserpost>[] is M) {
       return data.map<AddPostUserpost>((Map<String, dynamic> e) =>
           AddPostUserpost.fromJson(e)).toList() as M;
+    }
+    if (<AllBookmarkEntity>[] is M) {
+      return data.map<AllBookmarkEntity>((Map<String, dynamic> e) =>
+          AllBookmarkEntity.fromJson(e)).toList() as M;
+    }
+    if (<AllBookmarkData>[] is M) {
+      return data.map<AllBookmarkData>((Map<String, dynamic> e) =>
+          AllBookmarkData.fromJson(e)).toList() as M;
+    }
+    if (<AllBookmarkDataUserData>[] is M) {
+      return data.map<AllBookmarkDataUserData>((Map<String, dynamic> e) =>
+          AllBookmarkDataUserData.fromJson(e)).toList() as M;
     }
     if (<AnswerLikedEntity>[] is M) {
       return data.map<AnswerLikedEntity>((Map<String, dynamic> e) =>
@@ -754,6 +767,9 @@ class JsonConvertClassCollection {
     (AddNewsData).toString(): AddNewsData.fromJson,
     (AddPostEntity).toString(): AddPostEntity.fromJson,
     (AddPostUserpost).toString(): AddPostUserpost.fromJson,
+    (AllBookmarkEntity).toString(): AllBookmarkEntity.fromJson,
+    (AllBookmarkData).toString(): AllBookmarkData.fromJson,
+    (AllBookmarkDataUserData).toString(): AllBookmarkDataUserData.fromJson,
     (AnswerLikedEntity).toString(): AnswerLikedEntity.fromJson,
     (BlogBookmarkEntity).toString(): BlogBookmarkEntity.fromJson,
     (BlogCountViewEntity).toString(): BlogCountViewEntity.fromJson,

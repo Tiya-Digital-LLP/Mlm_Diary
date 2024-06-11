@@ -87,17 +87,22 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(60.0),
-                      child: CachedNetworkImage(
-                        imageUrl:
-                            mlmDatabaseList.imagePath ?? Assets.imagesIcon,
-                        fit: BoxFit.cover,
-                        height: 100,
-                        width: 100,
-                        placeholder: (context, url) => Container(),
-                        errorWidget: (context, url, error) =>
-                            const Icon(Icons.error),
+                    InkWell(
+                      onTap: () {
+                        _showFullScreenDialog(context);
+                      },
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(60.0),
+                        child: CachedNetworkImage(
+                          imageUrl:
+                              mlmDatabaseList.imagePath ?? Assets.imagesIcon,
+                          fit: BoxFit.cover,
+                          height: 100,
+                          width: 100,
+                          placeholder: (context, url) => Container(),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
+                        ),
                       ),
                     ),
                     30.sbw,
@@ -276,6 +281,42 @@ class _UserProfileScreenState extends State<UserProfileScreen>
           ),
         ],
       ),
+    );
+  }
+
+  void _showFullScreenDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          insetPadding: EdgeInsets.zero,
+          child: Stack(
+            children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: InteractiveViewer(
+                  child: Image.network(
+                    '${mlmDatabaseList.imagePath.toString()}?${DateTime.now().millisecondsSinceEpoch}',
+                    fit: BoxFit.contain,
+                    width: MediaQuery.of(context).size.width,
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 20,
+                right: 20,
+                child: IconButton(
+                  icon: const Icon(Icons.cancel, color: Colors.black),
+                  onPressed: () {
+                    Get.back();
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

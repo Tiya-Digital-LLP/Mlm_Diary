@@ -190,8 +190,11 @@ class ManageBlogController extends GetxController {
     }
   }
 
-  Future<void> fetchMyBlog(
-      {int page = 1, BuildContext? context, int? articleId}) async {
+  Future<void> fetchMyBlog({
+    int page = 1,
+    BuildContext? context,
+    int? articleId,
+  }) async {
     isLoading.value = true;
     String device = '';
     if (Platform.isAndroid) {
@@ -239,6 +242,8 @@ class ManageBlogController extends GetxController {
         }
 
         final List<MyBlogListData> myBlogData = myBlogEntity.data ?? [];
+
+        myBlogList.assignAll(myBlogData);
         if (myBlogData.isNotEmpty) {
           final MyBlogListData firstNews = myBlogData[0];
           final String blogId = firstNews.articleId.toString();

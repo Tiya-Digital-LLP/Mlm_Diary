@@ -1,15 +1,20 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
+// ignore: library_prefixes
+import 'package:html/parser.dart' as htmlParser;
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_admin_company_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
+import 'package:text_link/text_link.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MlmCompaniesDetails extends StatefulWidget {
   const MlmCompaniesDetails({super.key});
@@ -69,8 +74,8 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
                                     height: 60.0,
                                     width: 60.0,
                                     fit: BoxFit.cover,
-                                    placeholder: (context, url) =>
-                                        const CircularProgressIndicator(),
+                                    placeholder: (context, url) => const Center(
+                                        child: CircularProgressIndicator()),
                                     errorWidget: (context, url, error) =>
                                         const Icon(Icons.error),
                                   ),
@@ -87,7 +92,7 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
                           child: Align(
                             alignment: Alignment.topLeft,
                             child: Text(
-                              post.name ?? '',
+                              post.name ?? 'N/A',
                               style: TextStyle(
                                 fontWeight: FontWeight.w700,
                                 color: AppColors.blackText,
@@ -117,7 +122,7 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
                                 ],
                               ),
                               Text(
-                                post.location ?? '',
+                                post.location ?? 'N/A',
                                 style: textStyleW400(
                                     size.width * 0.035, AppColors.blackText),
                               ),
@@ -137,31 +142,34 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        'Phone',
-                                        style: textStyleW400(
-                                            size.width * 0.035, AppColors.grey),
-                                      ),
-                                      const SizedBox(
-                                        width: 07,
-                                      ),
-                                    ],
-                                  ),
-                                  Text(
-                                    "+91 74223 23432",
-                                    style: textStyleW400(size.width * 0.035,
-                                        AppColors.blackText),
-                                  ),
-                                ],
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text(
+                                          'Phone',
+                                          style: textStyleW400(
+                                              size.width * 0.035,
+                                              AppColors.grey),
+                                        ),
+                                        const SizedBox(
+                                          width: 07,
+                                        ),
+                                      ],
+                                    ),
+                                    Text(
+                                      post.phone ?? '',
+                                      style: textStyleW400(size.width * 0.035,
+                                          AppColors.blackText),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                             Padding(
@@ -184,7 +192,7 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
                                     ],
                                   ),
                                   Text(
-                                    "info@seacret.com",
+                                    post.email ?? '',
                                     style: textStyleW400(size.width * 0.035,
                                         AppColors.blackText),
                                   ),
@@ -206,31 +214,33 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        'Website',
-                                        style: textStyleW400(
-                                            size.width * 0.035, AppColors.grey),
-                                      ),
-                                      const SizedBox(
-                                        width: 07,
-                                      ),
-                                    ],
-                                  ),
-                                  Text(
-                                    "www.allcupcoatings.com",
-                                    style: textStyleW400(size.width * 0.035,
-                                        AppColors.blackText),
-                                  ),
-                                ],
+                            Expanded(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text(
+                                          'Website',
+                                          style: textStyleW400(
+                                              size.width * 0.035,
+                                              AppColors.grey),
+                                        ),
+                                        const SizedBox(
+                                          width: 07,
+                                        ),
+                                      ],
+                                    ),
+                                    Text(
+                                      post.website ?? '',
+                                      style: textStyleW400(size.width * 0.035,
+                                          AppColors.blackText),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                             Padding(
@@ -244,17 +254,67 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
                                     children: [
                                       InkWell(
                                           onTap: () {
-                                            post.fblink ?? '';
+                                            if (post.fblink != null) {
+                                              _launchURL(
+                                                  post.fblink.toString());
+                                              if (kDebugMode) {
+                                                print('URL: ${post.fblink}');
+                                              }
+                                            } else {
+                                              showToasterrorborder(
+                                                  "No Any Url Fond", context);
+                                            }
                                           },
                                           child: SvgPicture.asset(
                                               Assets.svgLogosFacebook)),
                                       12.sbw,
-                                      SvgPicture.asset(Assets.svgInstagram),
+                                      InkWell(
+                                          onTap: () {
+                                            if (post.inlink != null) {
+                                              _launchURL(
+                                                  post.inlink.toString());
+                                              if (kDebugMode) {
+                                                print('URL: ${post.inlink}');
+                                              }
+                                            } else {
+                                              showToasterrorborder(
+                                                  "No Any Url Fond", context);
+                                            }
+                                          },
+                                          child: SvgPicture.asset(
+                                              Assets.svgInstagram)),
                                       12.sbw,
-                                      SvgPicture.asset(
-                                          Assets.svgLogosLinkedinIcon),
+                                      InkWell(
+                                        onTap: () {
+                                          if (post.liklink != null) {
+                                            _launchURL(post.liklink.toString());
+                                            if (kDebugMode) {
+                                              print('URL: ${post.liklink}');
+                                            }
+                                          } else {
+                                            showToasterrorborder(
+                                                "No Any Url Fond", context);
+                                          }
+                                        },
+                                        child: SvgPicture.asset(
+                                            Assets.svgLogosLinkedinIcon),
+                                      ),
                                       12.sbw,
-                                      SvgPicture.asset(Assets.svgYoutube),
+                                      InkWell(
+                                          onTap: () {
+                                            if (post.youlink != null) {
+                                              _launchURL(
+                                                  post.youlink.toString());
+                                              if (kDebugMode) {
+                                                print('URL: ${post.youlink}');
+                                              }
+                                            } else {
+                                              showToasterrorborder(
+                                                  "No Any Url Fond", context);
+                                            }
+                                          },
+                                          child: SvgPicture.asset(
+                                              Assets.svgYoutube)),
                                     ],
                                   ),
                                 ],
@@ -321,12 +381,8 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
                               5.sbh,
                               Align(
                                 alignment: Alignment.topLeft,
-                                child: Html(
-                                  data: post.description ?? '',
-                                  style: {
-                                    "html": Style(),
-                                  },
-                                ),
+                                child: _buildHtmlContent(
+                                    post.description ?? '', size),
                               ),
                             ],
                           ),
@@ -458,5 +514,32 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
         ),
       ),
     );
+  }
+
+  Widget _buildHtmlContent(String htmlContent, Size size) {
+    final parsedHtml = htmlParser.parse(htmlContent);
+    final text = parsedHtml.body?.text ?? '';
+
+    return LinkText(
+      text: text,
+      style: textStyleW400(
+        size.width * 0.035,
+        AppColors.blackText.withOpacity(0.8),
+      ),
+      linkStyle: const TextStyle(
+        color: Colors.blue,
+        decoration: TextDecoration.underline,
+      ),
+    );
+  }
+
+  void _launchURL(String url) async {
+    // ignore: deprecated_member_use
+    if (await canLaunch(url)) {
+      // ignore: deprecated_member_use
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }

@@ -92,4 +92,6 @@ class Constants {
   static const String questionBookmark = "/addfavoritequestion";
   static const String likedquestion = "/addlikequestion";
   static const String likedanswer = "/addlikeanswer";
+
+  static const String allbookmark = "/getallbookmarked";
 }

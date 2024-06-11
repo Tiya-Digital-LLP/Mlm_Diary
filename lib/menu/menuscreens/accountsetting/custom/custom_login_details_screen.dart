@@ -38,7 +38,9 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
   void initState() {
     initCountry();
     fetchUserId();
-
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.fetchUserProfile();
+    });
     super.initState();
   }
 
@@ -60,6 +62,7 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final userProfile = controller.userProfile.value.userProfile;
 
     return Column(
       children: [
@@ -115,7 +118,7 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                           ),
                           3.sbw,
                           Text(
-                            '+91',
+                            userProfile!.countrycode1 ?? 'N/A',
                             style: textStyleW400(
                               size.width * 0.032,
                               AppColors.blackText,
@@ -123,7 +126,7 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                           ),
                           3.sbw,
                           Text(
-                            '9274529956',
+                            userProfile.mobile ?? 'N/A',
                             style: textStyleW400(
                               size.width * 0.032,
                               AppColors.blackText,
@@ -323,7 +326,7 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          'amantalaviya29@gmail.com',
+                          userProfile.email ?? '',
                           style: textStyleW700(
                             size.width * 0.032,
                             AppColors.blackText,
@@ -439,16 +442,18 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                               onTap: () {
                                 isChangingPassword.toggle();
                               },
-                              child: Obx(() => Text(
-                                    isChangingPassword.value
-                                        ? 'Cancel'
-                                        : 'Change',
-                                    style: textStyleW700(
-                                        size.width * 0.032,
-                                        isChangingPassword.value
-                                            ? AppColors.redText
-                                            : AppColors.primaryColor),
-                                  )),
+                              child: Obx(
+                                () => Text(
+                                  isChangingPassword.value
+                                      ? 'Cancel'
+                                      : 'Change',
+                                  style: textStyleW700(
+                                      size.width * 0.032,
+                                      isChangingPassword.value
+                                          ? AppColors.redText
+                                          : AppColors.primaryColor),
+                                ),
+                              ),
                             ),
                           ],
                         ),

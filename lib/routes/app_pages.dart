@@ -23,6 +23,7 @@ import 'package:mlmdiary/menu/menuscreens/blog/manage_blog.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/mlm_blog.dart';
 import 'package:mlmdiary/menu/menuscreens/contactus/contact_us.dart';
 import 'package:mlmdiary/menu/menuscreens/favourite/favourite.dart';
+import 'package:mlmdiary/menu/menuscreens/favourite/favouritr_detail_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/followers/followers.dart';
 import 'package:mlmdiary/home/message/message_detail_screen.dart';
 import 'package:mlmdiary/home/message/message_screen.dart';
@@ -283,6 +284,12 @@ class AppPages {
     GetPage(
       name: Routes.userquestion,
       page: () => const UserQuestion(),
+    ),
+    GetPage(
+      name: Routes.favouritrdetailsscreen,
+      page: () => FavouritrDetailScreen(
+        key: UniqueKey(),
+      ),
     ),
   ];
 }

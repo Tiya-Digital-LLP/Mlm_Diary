@@ -1,42 +1,41 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-// ignore: library_prefixes
-import 'package:html/parser.dart' as htmlParser;
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:mlmdiary/generated/all_bookmark_entity.dart';
 import 'package:mlmdiary/generated/assets.dart';
-import 'package:mlmdiary/generated/get_news_list_entity.dart';
-import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 import 'package:text_link/text_link.dart';
+import 'package:url_launcher/url_launcher.dart';
+// ignore: library_prefixes
+import 'package:html/parser.dart' as htmlParser;
 
-class NewsDetailScreen extends StatefulWidget {
-  const NewsDetailScreen({
+class FavouritrDetailScreen extends StatefulWidget {
+  const FavouritrDetailScreen({
     required Key key,
   }) : super(key: key);
 
   @override
-  State<NewsDetailScreen> createState() => _MyNewsDetailScreenState();
+  State<FavouritrDetailScreen> createState() => _FavouritrDetailScreenState();
 }
 
-class _MyNewsDetailScreenState extends State<NewsDetailScreen> {
-  final ManageNewsController controller = Get.put(ManageNewsController());
-  final post = Get.arguments as GetNewsListData;
+class _FavouritrDetailScreenState extends State<FavouritrDetailScreen> {
+  final ManageBlogController controller = Get.put(ManageBlogController());
+  final post = Get.arguments as AllBookmarkData;
+
   PostTimeFormatter postTimeFormatter = PostTimeFormatter();
 
   @override
   void initState() {
     super.initState();
-    // ignore: unrelated_type_equality_checks
-    controller.likeCountMap == 0;
-    // ignore: unrelated_type_equality_checks
-    controller.bookmarkCountMap == 0;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.countViewNews(post.id ?? 0, context);
+      controller.countViewBlog(post.id ?? 0, context);
     });
   }
 
@@ -48,7 +47,7 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen> {
       backgroundColor: AppColors.background,
       appBar: CustomAppBar(
         size: MediaQuery.of(context).size,
-        titleText: 'MLM News',
+        titleText: 'MLM Blog',
         onTap: () {},
       ),
       body: SingleChildScrollView(
@@ -74,12 +73,12 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen> {
                             radius: size.width * 0.07,
                             child: ClipOval(
                               child: CachedNetworkImage(
-                                imageUrl: post.imagePath ?? '',
+                                imageUrl: post.userData!.imagePath ?? '',
                                 height: 97,
                                 width: 105,
                                 fit: BoxFit.fill,
-                                placeholder: (context, url) => const Center(
-                                    child: CircularProgressIndicator()),
+                                placeholder: (context, url) =>
+                                    const CircularProgressIndicator(),
                                 errorWidget: (context, url, error) =>
                                     const Icon(Icons.error),
                               ),
@@ -133,7 +132,7 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen> {
                           width: 105,
                           fit: BoxFit.fill,
                           placeholder: (context, url) =>
-                              const Center(child: CircularProgressIndicator()),
+                              const CircularProgressIndicator(),
                           errorWidget: (context, url, error) =>
                               const Icon(Icons.error),
                         ),
@@ -144,7 +143,7 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen> {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
+                        horizontal: 16,
                       ),
                       child: Align(
                         alignment: Alignment.topLeft,
@@ -298,19 +297,26 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen> {
                                 style: textStyleW400(
                                     size.width * 0.035, AppColors.grey),
                               ),
-                              const SizedBox(
-                                width: 07,
-                              ),
                             ],
                           ),
-                          Text(
-                            post.website ?? '',
-                            style: textStyleW400(
-                                size.width * 0.035, AppColors.blackText),
+                          Text.rich(
+                            TextSpan(
+                              text: post.urlcomponent ?? '',
+                              style: const TextStyle(
+                                color: Colors.blue,
+                                decorationColor: Colors.blue,
+                                decoration: TextDecoration.underline,
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  _launchURL(post.urlcomponent ?? '');
+                                },
+                            ),
                           ),
                         ],
                       ),
                     ),
+                    5.sbh,
                     SizedBox(
                       height: size.height * 0.017,
                     ),
@@ -322,107 +328,109 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen> {
         ),
       ),
       bottomNavigationBar: Container(
-          padding: const EdgeInsets.all(16.0),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
-            color: AppColors.white,
+        padding: const EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(14),
+          color: AppColors.white,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
           ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    SizedBox(
-                      height: size.height * 0.028,
-                      width: size.height * 0.028,
-                      child: GestureDetector(
-                        onTap: () =>
-                            controller.toggleLike(post.id ?? 0, context),
-                        child: Icon(
-                          // Observe like status
-                          controller.likedStatusMap[post.id ?? 0] ?? false
-                              ? Icons.thumb_up_off_alt_sharp
-                              : Icons.thumb_up_off_alt_outlined,
-                          color:
-                              controller.likedStatusMap[post.id ?? 0] ?? false
-                                  ? AppColors.primaryColor
-                                  : null,
-                          size: size.height * 0.032,
-                        ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  SizedBox(
+                    height: size.height * 0.028,
+                    width: size.height * 0.028,
+                    child: GestureDetector(
+                      onTap: () => controller.toggleLike(post.id ?? 0, context),
+                      child: Icon(
+                        // Observe like status
+                        controller.likedStatusMap[post.id ?? 0] ?? false
+                            ? Icons.thumb_up_off_alt_sharp
+                            : Icons.thumb_up_off_alt_outlined,
+                        color: controller.likedStatusMap[post.id ?? 0] ?? false
+                            ? AppColors.primaryColor
+                            : null,
+                        size: size.height * 0.032,
                       ),
                     ),
-                    const SizedBox(
-                      width: 7,
-                    ),
-                    Text(
-                      post.totallike.toString(),
-                      style: textStyleW600(
-                          size.width * 0.040, AppColors.blackText),
-                    ),
-                    const SizedBox(
-                      width: 15,
-                    ),
-                    const SizedBox(
-                      width: 15,
-                    ),
-                    SizedBox(
-                      height: size.height * 0.028,
-                      width: size.height * 0.028,
-                      child: SvgPicture.asset(Assets.svgView),
-                    ),
-                    const SizedBox(
-                      width: 7,
-                    ),
-                    Text(
-                      post.pgcnt.toString(),
-                      style: textStyleW600(
-                          size.width * 0.040, AppColors.blackText),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    SizedBox(
-                      height: size.height * 0.028,
-                      width: size.height * 0.028,
-                      child: GestureDetector(
-                        onTap: () => controller.toggleBookMark(post.id ?? 0),
-                        child: Icon(
-                          // Observe like status
-                          controller.bookmarkStatusMap[post.id ?? 0] ?? false
-                              ? Icons.bookmark
-                              : Icons.bookmark_border,
-                          color: controller.bookmarkStatusMap[post.id ?? 0] ??
-                                  false
-                              ? AppColors.primaryColor
-                              : null,
-                          size: size.height * 0.032,
+                  ),
+                  const SizedBox(
+                    width: 7,
+                  ),
+                  // ignore: unrelated_type_equality_checks
+                  controller.likeCountMap == 0
+                      ? const SizedBox.shrink()
+                      : Text(
+                          post.totallike.toString(),
+                          style: textStyleW600(
+                              size.width * 0.040, AppColors.blackText),
                         ),
+                  const SizedBox(
+                    width: 15,
+                  ),
+                  const SizedBox(
+                    width: 15,
+                  ),
+                  SizedBox(
+                    height: size.height * 0.028,
+                    width: size.height * 0.028,
+                    child: SvgPicture.asset(Assets.svgView),
+                  ),
+                  const SizedBox(
+                    width: 7,
+                  ),
+                  Text(
+                    post.pgcnt.toString(),
+                    style:
+                        textStyleW600(size.width * 0.040, AppColors.blackText),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  SizedBox(
+                    height: size.height * 0.028,
+                    width: size.height * 0.028,
+                    child: GestureDetector(
+                      onTap: () => controller.toggleBookMark(post.id ?? 0),
+                      child: Icon(
+                        // Observe like status
+                        controller.bookmarkStatusMap[post.id ?? 0] ?? false
+                            ? Icons.bookmark
+                            : Icons.bookmark_border,
+                        color:
+                            controller.bookmarkStatusMap[post.id ?? 0] ?? false
+                                ? AppColors.primaryColor
+                                : null,
+                        size: size.height * 0.032,
                       ),
                     ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    SizedBox(
-                      height: size.height * 0.028,
-                      width: size.height * 0.028,
-                      child: SvgPicture.asset(Assets.svgSend),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          )),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  SizedBox(
+                    height: size.height * 0.028,
+                    width: size.height * 0.028,
+                    child: SvgPicture.asset(Assets.svgSend),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -441,5 +449,15 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen> {
         decoration: TextDecoration.underline,
       ),
     );
+  }
+}
+
+void _launchURL(String url) async {
+  // ignore: deprecated_member_use
+  if (await canLaunch(url)) {
+    // ignore: deprecated_member_use
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
   }
 }

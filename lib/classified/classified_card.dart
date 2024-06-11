@@ -1,9 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:html_unescape/html_unescape.dart';
 import 'package:mlmdiary/classified/classified_like_list_content.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/classified/custom_commment.dart';
@@ -13,6 +10,7 @@ import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:html_unescape/html_unescape.dart';
 
 class ClassifiedCard extends StatefulWidget {
   final String userImage;
@@ -59,12 +57,6 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
 
   bool showCommentBox = false;
 
-  void toggleCommentBox() {
-    setState(() {
-      showCommentBox = !showCommentBox;
-    });
-  }
-
   @override
   void initState() {
     super.initState();
@@ -80,14 +72,6 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
         widget.likedCount);
   }
 
-  void toggleLike() async {
-    bool newLikedValue = !isLiked.value;
-    isLiked.value = newLikedValue;
-    likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
-
-    await widget.controller.toggleLike(widget.classifiedId, context);
-  }
-
   void initializeBookmarks() {
     isBookmarked = RxBool(
         widget.controller.bookmarkStatusMap[widget.classifiedId] ?? false);
@@ -96,12 +80,18 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
             widget.bookmarkCount);
   }
 
+  void toggleLike() async {
+    bool newLikedValue = !isLiked.value;
+    isLiked.value = newLikedValue;
+    likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
+    await widget.controller.toggleLike(widget.classifiedId, context);
+  }
+
   void toggleBookmark() async {
     bool newBookmarkedValue = !isBookmarked.value;
     isBookmarked.value = newBookmarkedValue;
     bookmarkCount.value =
         newBookmarkedValue ? bookmarkCount.value + 1 : bookmarkCount.value - 1;
-
     await widget.controller.toggleBookMark(widget.classifiedId);
   }
 
@@ -136,31 +126,21 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
             Row(
               children: [
                 ClipOval(
-                  child: CachedNetworkImage(
-                    imageUrl: widget.image,
+                  child: Image.network(
+                    widget.image,
                     height: 60.0,
                     width: 60.0,
                     fit: BoxFit.cover,
-                    placeholder: (context, url) =>
-                        const CircularProgressIndicator(),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
                   ),
                 ),
-                const SizedBox(
-                  width: 10,
-                ),
+                const SizedBox(width: 10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Text(
-                          widget.userName,
-                          style: textStyleW700(
-                              size.width * 0.043, AppColors.blackText),
-                        ),
-                      ],
+                    Text(
+                      widget.userName,
+                      style: textStyleW700(
+                          size.width * 0.043, AppColors.blackText),
                     ),
                     Text(
                       postTimeFormatter.formatPostTime(widget.dateTime),
@@ -170,34 +150,28 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
                   ],
                 ),
                 const Spacer(),
-                Column(
-                  children: [
-                    if (widget.isPopular != false)
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.yellow,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.yellow),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 5),
-                        margin: const EdgeInsets.only(top: 5, right: 5),
-                        child: const Text(
-                          'Premium',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
+                if (widget.isPopular != false)
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.yellow,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.yellow),
+                    ),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    margin: const EdgeInsets.only(top: 5, right: 5),
+                    child: const Text(
+                      'Premium',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
                       ),
-                  ],
-                ),
+                    ),
+                  ),
               ],
             ),
-            SizedBox(
-              height: size.height * 0.01,
-            ),
+            SizedBox(height: size.height * 0.01),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Align(
@@ -210,46 +184,31 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
             ),
             Align(
               alignment: Alignment.topLeft,
-              child: Html(
-                data: decodedPostTitle,
-                style: {
-                  "html": Style(
-                    maxLines: 2,
-                  ),
-                },
+              child: Text(
+                decodedPostTitle,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
-            SizedBox(
-              height: size.height * 0.01,
-            ),
-            SizedBox(
-              height: size.height * 0.012,
-            ),
+            SizedBox(height: size.height * 0.01),
+            SizedBox(height: size.height * 0.012),
             Container(
               height: size.height * 0.28,
               width: size.width,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
               ),
-              child: CachedNetworkImage(
-                imageUrl: widget.userImage,
+              child: Image.network(
+                widget.userImage,
                 fit: BoxFit.fill,
-                placeholder: (context, url) =>
-                    const CircularProgressIndicator(),
-                errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
             ),
-            SizedBox(
-              height: size.height * 0.017,
-            ),
+            SizedBox(height: size.height * 0.017),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
                   children: [
-                    const SizedBox(
-                      width: 10,
-                    ),
                     SizedBox(
                       height: size.height * 0.028,
                       width: size.height * 0.028,
@@ -263,9 +222,7 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      width: 7,
-                    ),
+                    const SizedBox(width: 7),
                     likeCount.value == 0
                         ? const SizedBox.shrink()
                         : InkWell(
@@ -293,15 +250,14 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
                       width: size.height * 0.028,
                       child: SvgPicture.asset(Assets.svgView),
                     ),
-                    const SizedBox(
-                      width: 7,
-                    ),
+                    const SizedBox(width: 7),
                     Text(
                       '${widget.viewcounts}',
                       style: TextStyle(
-                          fontFamily: "Metropolis",
-                          fontWeight: FontWeight.w600,
-                          fontSize: size.width * 0.038),
+                        fontFamily: "Metropolis",
+                        fontWeight: FontWeight.w600,
+                        fontSize: size.width * 0.038,
+                      ),
                     ),
                   ],
                 ),
@@ -349,7 +305,6 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        // Fetch like list after bottom sheet is shown
         fetchLikeList();
         return const ClassifiedLikedListContent();
       },
