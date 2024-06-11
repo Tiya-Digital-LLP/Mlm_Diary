@@ -126,7 +126,7 @@ class CompanyController extends GetxController {
   }
 
   //like
-  Future<void> likeCompany(int companyId) async {
+  Future<void> likeCompany(int companyId, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
 
@@ -160,31 +160,17 @@ class CompanyController extends GetxController {
             likeCountMap[companyId] = (likeCountMap[companyId] ?? 0) - 1;
           }
 
-          Fluttertoast.showToast(
-            msg: message!,
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+          showToastverifedborder(message!, context);
         } else {
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+          //
         }
       } else {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
+      if (kDebugMode) {
+        print('$e');
+      }
     } finally {
       isLoading(false);
     }
@@ -245,7 +231,7 @@ class CompanyController extends GetxController {
     }
   }
 
-  Future<void> toggleLike(int classifiedId) async {
+  Future<void> toggleLike(int classifiedId, context) async {
     bool isLiked = likedStatusMap[classifiedId] ?? false;
     isLiked = !isLiked;
     likedStatusMap[classifiedId] = isLiked;
@@ -253,7 +239,7 @@ class CompanyController extends GetxController {
         classifiedId, (value) => isLiked ? value + 1 : value - 1,
         ifAbsent: () => isLiked ? 1 : 0);
 
-    await likeCompany(classifiedId);
+    await likeCompany(classifiedId, context);
   }
 
   // Bookmark

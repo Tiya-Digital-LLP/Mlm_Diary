@@ -1,7 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/favourite/controller/favourite_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/favourite/custom/favouritr_card.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -16,6 +21,13 @@ class Favourite extends StatefulWidget {
 
 class _FavouriteState extends State<Favourite> {
   final FavouriteController controller = Get.put(FavouriteController());
+  final ManageBlogController manageBlogController =
+      Get.put(ManageBlogController());
+  final ManageNewsController manageNewsController =
+      Get.put(ManageNewsController());
+  final ClasifiedController clasifiedController =
+      Get.put(ClasifiedController());
+  final CompanyController companyController = Get.put(CompanyController());
 
   @override
   void initState() {
@@ -24,7 +36,13 @@ class _FavouriteState extends State<Favourite> {
   }
 
   Future<void> _refreshData() async {
-    await controller.fetchBookmark();
+    try {
+      await controller.fetchBookmark(1, context);
+    } catch (error) {
+      if (kDebugMode) {
+        print('Error fetching bookmark data: $error');
+      }
+    }
   }
 
   @override
@@ -81,10 +99,15 @@ class _FavouriteState extends State<Favourite> {
             }
             return ListView.builder(
                 padding: EdgeInsets.zero,
+                controller: controller.scrollController,
                 physics: const AlwaysScrollableScrollPhysics(),
                 shrinkWrap: true,
-                itemCount: controller.favouriteList.length,
+                itemCount: controller.favouriteList.length +
+                    (controller.isLoading.value ? 1 : 0),
                 itemBuilder: (context, index) {
+                  if (index == controller.favouriteList.length) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
                   final post = controller.favouriteList[index];
                   return Padding(
                     padding:
@@ -97,17 +120,21 @@ class _FavouriteState extends State<Favourite> {
                         );
                       },
                       child: FavouritrCard(
-                        userImage: post.userData!.imagePath ?? '',
-                        userName: post.userData!.name ?? '',
+                        userImage: post.userData?.imagePath ?? '',
+                        userName: post.userData?.name ?? '',
                         postTitle: post.title ?? '',
                         postCaption: post.description ?? '',
-                        postImage: post.imagePath ?? '',
+                        postImage: post.imageUrl ?? '',
                         dateTime: post.bookmarkDate ?? '',
                         viewcounts: post.pgcnt ?? 0,
                         controller: controller,
                         bookmarkId: post.id ?? 0,
                         url: post.urlcomponent ?? '',
                         type: post.type ?? '',
+                        manageBlogController: manageBlogController,
+                        manageNewsController: manageNewsController,
+                        clasifiedController: clasifiedController,
+                        companyController: companyController,
                       ),
                     ),
                   );

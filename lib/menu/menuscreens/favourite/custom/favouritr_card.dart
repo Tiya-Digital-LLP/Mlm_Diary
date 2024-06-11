@@ -2,8 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/favourite/controller/favourite_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -21,6 +25,10 @@ class FavouritrCard extends StatefulWidget {
   final int bookmarkId;
   final String url;
   final String type;
+  final ManageBlogController manageBlogController;
+  final ManageNewsController manageNewsController;
+  final ClasifiedController clasifiedController;
+  final CompanyController companyController;
 
   final FavouriteController controller;
 
@@ -37,6 +45,10 @@ class FavouritrCard extends StatefulWidget {
     required this.bookmarkId,
     required this.url,
     required this.type,
+    required this.manageBlogController,
+    required this.manageNewsController,
+    required this.clasifiedController,
+    required this.companyController,
   });
 
   @override
@@ -45,13 +57,70 @@ class FavouritrCard extends StatefulWidget {
 
 class _FavouritrCardState extends State<FavouritrCard> {
   late PostTimeFormatter postTimeFormatter;
+  late bool isLiked;
+  late int likeCount;
 
-  get htmlParser => null;
+  late bool isBookmarked;
 
   @override
   void initState() {
     super.initState();
     postTimeFormatter = PostTimeFormatter();
+    isLiked = widget.controller.isItemLiked(
+      widget.type,
+      widget.bookmarkId,
+      widget.manageBlogController,
+      widget.manageNewsController,
+      widget.clasifiedController,
+      widget.companyController,
+    );
+    likeCount = widget.controller.getItemLikes(
+      widget.type,
+      widget.bookmarkId,
+      widget.manageBlogController,
+      widget.manageNewsController,
+      widget.clasifiedController,
+      widget.companyController,
+    );
+
+    isBookmarked = widget.controller.isItemBookmark(
+      widget.type,
+      widget.bookmarkId,
+      widget.manageBlogController,
+      widget.manageNewsController,
+      widget.clasifiedController,
+      widget.companyController,
+    );
+  }
+
+  void toggleLike() {
+    setState(() {
+      isLiked = !isLiked;
+      widget.controller.toggleLike(
+        widget.type,
+        widget.bookmarkId,
+        context,
+        widget.manageBlogController,
+        widget.manageNewsController,
+        widget.clasifiedController,
+        widget.companyController,
+      );
+    });
+  }
+
+  void togleBookmark() {
+    setState(() {
+      isBookmarked = !isBookmarked;
+      widget.controller.toggleBookmark(
+        widget.type,
+        widget.bookmarkId,
+        context,
+        widget.manageBlogController,
+        widget.manageNewsController,
+        widget.clasifiedController,
+        widget.companyController,
+      );
+    });
   }
 
   @override
@@ -180,27 +249,22 @@ class _FavouritrCardState extends State<FavouritrCard> {
                     const SizedBox(
                       width: 10,
                     ),
-                    SizedBox(
-                      height: size.height * 0.028,
-                      width: size.height * 0.028,
-                      child: GestureDetector(
-                        onTap: () {},
-                        child: Icon(
-                          Icons.thumb_up_off_alt_outlined,
-                          color: AppColors.primaryColor,
-                        ),
+                    GestureDetector(
+                      onTap: toggleLike,
+                      child: Icon(
+                        isLiked ? Icons.thumb_up : Icons.thumb_up_off_alt,
+                        color: isLiked
+                            ? AppColors.primaryColor
+                            : AppColors.blackText,
                       ),
                     ),
                     const SizedBox(
                       width: 7,
                     ),
-                    InkWell(
-                      onTap: () {},
-                      child: Text(
-                        '10',
-                        style: textStyleW600(
-                            size.width * 0.038, AppColors.blackText),
-                      ),
+                    Text(
+                      '$likeCount',
+                      style: textStyleW600(
+                          size.width * 0.038, AppColors.blackText),
                     ),
                     15.sbw,
                     GestureDetector(
@@ -234,9 +298,12 @@ class _FavouritrCardState extends State<FavouritrCard> {
                       height: size.height * 0.028,
                       width: size.height * 0.028,
                       child: GestureDetector(
+                        onTap: togleBookmark,
                         child: Icon(
-                          Icons.bookmark_border,
-                          size: size.height * 0.032,
+                          isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                          color: isBookmarked
+                              ? AppColors.primaryColor
+                              : AppColors.blackText,
                         ),
                       ),
                     ),

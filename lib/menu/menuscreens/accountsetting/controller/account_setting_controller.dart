@@ -135,7 +135,6 @@ class AccountSeetingController extends GetxController {
         // Update controllers with fetched data
         name.value.text = userProfileEntity.userProfile?.name ?? '';
         companyname.value.text = userProfileEntity.userProfile?.company ?? '';
-        location.value.text = userProfileEntity.userProfile?.address ?? '';
         city.value.text = userProfileEntity.userProfile?.city ?? '';
         state.value.text = userProfileEntity.userProfile?.state ?? '';
         country.value.text = userProfileEntity.userProfile?.country ?? '';
@@ -143,6 +142,13 @@ class AccountSeetingController extends GetxController {
         aboutcompany.value.text =
             userProfileEntity.userProfile?.aboutcompany ?? '';
         userImage.value = userProfileEntity.userProfile?.userimage ?? '';
+
+        // Combine city, state, and country to form location
+        location.value.text = _formatLocation(
+          city.value.text,
+          state.value.text,
+          country.value.text,
+        );
 
         // Update isTypeSelectedList based on user's selected MLM types
         isTypeSelectedList.clear(); // Clear existing selections
@@ -176,6 +182,12 @@ class AccountSeetingController extends GetxController {
     } finally {
       isLoading(false);
     }
+  }
+
+  String _formatLocation(String city, String state, String country) {
+    final parts =
+        [city, state, country].where((part) => part.isNotEmpty).toList();
+    return parts.join(', ');
   }
 
   void mlmCategoryValidation() {
@@ -366,7 +378,7 @@ class AccountSeetingController extends GetxController {
         if (response.statusCode == 200) {
           final Map<String, dynamic> jsonBody = jsonDecode(response.body);
           if (kDebugMode) {
-            print("Response body: $jsonBody");
+            print("Response body from update Profile: $jsonBody");
           }
           // Parse response and update UI as needed
         } else {

@@ -127,7 +127,7 @@ class _FavouritrDetailScreenState extends State<FavouritrDetailScreen> {
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: CachedNetworkImage(
-                          imageUrl: post.imagePath ?? '',
+                          imageUrl: post.imageUrl ?? '',
                           height: 97,
                           width: 105,
                           fit: BoxFit.fill,

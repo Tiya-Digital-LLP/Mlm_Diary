@@ -57,6 +57,10 @@ AllBookmarkData $AllBookmarkDataFromJson(Map<String, dynamic> json) {
   if (urlcomponent != null) {
     allBookmarkData.urlcomponent = urlcomponent;
   }
+  final String? company = jsonConvert.convert<String>(json['company']);
+  if (company != null) {
+    allBookmarkData.company = company;
+  }
   final String? category = jsonConvert.convert<String>(json['category']);
   if (category != null) {
     allBookmarkData.category = category;
@@ -69,6 +73,10 @@ AllBookmarkData $AllBookmarkDataFromJson(Map<String, dynamic> json) {
   if (description != null) {
     allBookmarkData.description = description;
   }
+  final String? website = jsonConvert.convert<String>(json['website']);
+  if (website != null) {
+    allBookmarkData.website = website;
+  }
   final String? createdate = jsonConvert.convert<String>(json['createdate']);
   if (createdate != null) {
     allBookmarkData.createdate = createdate;
@@ -77,11 +85,15 @@ AllBookmarkData $AllBookmarkDataFromJson(Map<String, dynamic> json) {
   if (pgcnt != null) {
     allBookmarkData.pgcnt = pgcnt;
   }
+  final String? location = jsonConvert.convert<String>(json['location']);
+  if (location != null) {
+    allBookmarkData.location = location;
+  }
   final String? image = jsonConvert.convert<String>(json['image']);
   if (image != null) {
     allBookmarkData.image = image;
   }
-  final int? userId = jsonConvert.convert<int>(json['user_id']);
+  final String? userId = jsonConvert.convert<String>(json['user_id']);
   if (userId != null) {
     allBookmarkData.userId = userId;
   }
@@ -93,7 +105,7 @@ AllBookmarkData $AllBookmarkDataFromJson(Map<String, dynamic> json) {
   if (immlm != null) {
     allBookmarkData.immlm = immlm;
   }
-  final dynamic plan = json['plan'];
+  final String? plan = jsonConvert.convert<String>(json['plan']);
   if (plan != null) {
     allBookmarkData.plan = plan;
   }
@@ -106,10 +118,6 @@ AllBookmarkData $AllBookmarkDataFromJson(Map<String, dynamic> json) {
   if (totallike != null) {
     allBookmarkData.totallike = totallike;
   }
-  final int? totalbookmark = jsonConvert.convert<int>(json['totalbookmark']);
-  if (totalbookmark != null) {
-    allBookmarkData.totalbookmark = totalbookmark;
-  }
   final int? totalcomment = jsonConvert.convert<int>(json['totalcomment']);
   if (totalcomment != null) {
     allBookmarkData.totalcomment = totalcomment;
@@ -118,14 +126,14 @@ AllBookmarkData $AllBookmarkDataFromJson(Map<String, dynamic> json) {
   if (likedByUser != null) {
     allBookmarkData.likedByUser = likedByUser;
   }
+  final String? imageUrl = jsonConvert.convert<String>(json['image_url']);
+  if (imageUrl != null) {
+    allBookmarkData.imageUrl = imageUrl;
+  }
   final AllBookmarkDataUserData? userData = jsonConvert.convert<
       AllBookmarkDataUserData>(json['user_data']);
   if (userData != null) {
     allBookmarkData.userData = userData;
-  }
-  final String? imagePath = jsonConvert.convert<String>(json['image_path']);
-  if (imagePath != null) {
-    allBookmarkData.imagePath = imagePath;
   }
   return allBookmarkData;
 }
@@ -135,11 +143,14 @@ Map<String, dynamic> $AllBookmarkDataToJson(AllBookmarkData entity) {
   data['id'] = entity.id;
   data['title'] = entity.title;
   data['urlcomponent'] = entity.urlcomponent;
+  data['company'] = entity.company;
   data['category'] = entity.category;
   data['subcategory'] = entity.subcategory;
   data['description'] = entity.description;
+  data['website'] = entity.website;
   data['createdate'] = entity.createdate;
   data['pgcnt'] = entity.pgcnt;
+  data['location'] = entity.location;
   data['image'] = entity.image;
   data['user_id'] = entity.userId;
   data['type'] = entity.type;
@@ -147,11 +158,10 @@ Map<String, dynamic> $AllBookmarkDataToJson(AllBookmarkData entity) {
   data['plan'] = entity.plan;
   data['bookmark_date'] = entity.bookmarkDate;
   data['totallike'] = entity.totallike;
-  data['totalbookmark'] = entity.totalbookmark;
   data['totalcomment'] = entity.totalcomment;
   data['liked_by_user'] = entity.likedByUser;
+  data['image_url'] = entity.imageUrl;
   data['user_data'] = entity.userData?.toJson();
-  data['image_path'] = entity.imagePath;
   return data;
 }
 
@@ -160,33 +170,38 @@ extension AllBookmarkDataExtension on AllBookmarkData {
     int? id,
     String? title,
     String? urlcomponent,
+    String? company,
     String? category,
     String? subcategory,
     String? description,
+    String? website,
     String? createdate,
     int? pgcnt,
+    String? location,
     String? image,
-    int? userId,
+    String? userId,
     String? type,
     dynamic immlm,
-    dynamic plan,
+    String? plan,
     String? bookmarkDate,
     int? totallike,
-    int? totalbookmark,
     int? totalcomment,
     bool? likedByUser,
+    String? imageUrl,
     AllBookmarkDataUserData? userData,
-    String? imagePath,
   }) {
     return AllBookmarkData()
       ..id = id ?? this.id
       ..title = title ?? this.title
       ..urlcomponent = urlcomponent ?? this.urlcomponent
+      ..company = company ?? this.company
       ..category = category ?? this.category
       ..subcategory = subcategory ?? this.subcategory
       ..description = description ?? this.description
+      ..website = website ?? this.website
       ..createdate = createdate ?? this.createdate
       ..pgcnt = pgcnt ?? this.pgcnt
+      ..location = location ?? this.location
       ..image = image ?? this.image
       ..userId = userId ?? this.userId
       ..type = type ?? this.type
@@ -194,11 +209,10 @@ extension AllBookmarkDataExtension on AllBookmarkData {
       ..plan = plan ?? this.plan
       ..bookmarkDate = bookmarkDate ?? this.bookmarkDate
       ..totallike = totallike ?? this.totallike
-      ..totalbookmark = totalbookmark ?? this.totalbookmark
       ..totalcomment = totalcomment ?? this.totalcomment
       ..likedByUser = likedByUser ?? this.likedByUser
-      ..userData = userData ?? this.userData
-      ..imagePath = imagePath ?? this.imagePath;
+      ..imageUrl = imageUrl ?? this.imageUrl
+      ..userData = userData ?? this.userData;
   }
 }
 

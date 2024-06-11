@@ -418,7 +418,7 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
                     height: size.height * 0.028,
                     width: size.height * 0.028,
                     child: GestureDetector(
-                      onTap: () => controller.toggleLike(post.id ?? 0),
+                      onTap: () => controller.toggleLike(post.id ?? 0, context),
                       child: Icon(
                         // Observe like status
                         controller.likedStatusMap[post.id ?? 0] ?? false

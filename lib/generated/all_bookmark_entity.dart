@@ -26,28 +26,30 @@ class AllBookmarkData {
 	int? id = 0;
 	String? title = '';
 	String? urlcomponent = '';
+	String? company = '';
 	String? category = '';
 	String? subcategory = '';
 	String? description = '';
+	String? website = '';
 	String? createdate = '';
 	int? pgcnt = 0;
+	String? location = '';
 	String? image = '';
 	@JSONField(name: "user_id")
-	int? userId = 0;
+	String? userId = '';
 	String? type = '';
 	dynamic immlm;
-	dynamic plan;
+	String? plan = '';
 	@JSONField(name: "bookmark_date")
 	String? bookmarkDate = '';
 	int? totallike = 0;
-	int? totalbookmark = 0;
 	int? totalcomment = 0;
 	@JSONField(name: "liked_by_user")
 	bool? likedByUser = false;
+	@JSONField(name: "image_url")
+	String? imageUrl = '';
 	@JSONField(name: "user_data")
 	AllBookmarkDataUserData? userData;
-	@JSONField(name: "image_path")
-	String? imagePath = '';
 
 	AllBookmarkData();
 

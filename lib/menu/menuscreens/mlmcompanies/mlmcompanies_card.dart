@@ -63,7 +63,7 @@ class _MlmcompaniesCardState extends State<MlmCompaniesCard> {
     isLiked.value = newLikedValue;
     likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
 
-    await widget.controller.toggleLike(widget.companyId);
+    await widget.controller.toggleLike(widget.companyId, context);
   }
 
   void initializeBookmarks() {
