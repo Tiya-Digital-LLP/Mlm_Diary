@@ -317,9 +317,10 @@ class ClasifiedController extends GetxController {
         request.fields['device'] = device;
         request.fields['page'] = page.toString();
         request.fields['search'] = search.value.text;
-        request.fields['category'] = getSelectedCategoryTextController().text;
+        request.fields['category'] =
+            getSelectedCategoryTextController().text.toString();
         request.fields['subcategory'] =
-            getSelectedSubCategoryTextController().text;
+            getSelectedSubCategoryTextController().text.toString();
 
         final streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);

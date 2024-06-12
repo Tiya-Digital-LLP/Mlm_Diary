@@ -125,13 +125,12 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
           children: [
             Row(
               children: [
-                ClipOval(
-                  child: Image.network(
-                    widget.image,
-                    height: 60.0,
-                    width: 60.0,
-                    fit: BoxFit.cover,
-                  ),
+                CircleAvatar(
+                  backgroundImage: widget.image.isNotEmpty &&
+                          Uri.tryParse(widget.image)?.hasAbsolutePath == true
+                      ? NetworkImage(widget.image)
+                      : null,
+                  child: widget.image.isEmpty ? const Icon(Icons.person) : null,
                 ),
                 const SizedBox(width: 10),
                 Column(
@@ -190,19 +189,22 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            SizedBox(height: size.height * 0.01),
-            SizedBox(height: size.height * 0.012),
-            Container(
-              height: size.height * 0.28,
-              width: size.width,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
+            if (widget.userImage.isNotEmpty &&
+                Uri.tryParse(widget.userImage)?.hasAbsolutePath == true)
+              Container(
+                height: size.height * 0.28,
+                width: size.width,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Image.network(
+                  widget.userImage,
+                  fit: BoxFit.fill,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const SizedBox();
+                  },
+                ),
               ),
-              child: Image.network(
-                widget.userImage,
-                fit: BoxFit.fill,
-              ),
-            ),
             SizedBox(height: size.height * 0.017),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

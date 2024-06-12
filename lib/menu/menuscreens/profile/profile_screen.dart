@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
@@ -12,6 +13,7 @@ import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({
@@ -202,8 +204,15 @@ class _ProfileScreenState extends State<ProfileScreen>
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      const SocialButton(
-                          icon: Assets.svgCalling, label: 'Call'),
+                      InkWell(
+                        onTap: () {
+                          makePhoneCall(
+                            userProfile.mobile.toString(),
+                          );
+                        },
+                        child: const SocialButton(
+                            icon: Assets.svgCalling, label: 'Call'),
+                      ),
                       10.sbw,
                       const SocialButton(
                           icon: Assets.svgChat, label: 'Message'),
@@ -336,5 +345,26 @@ class _ProfileScreenState extends State<ProfileScreen>
         );
       },
     );
+  }
+
+  Future<void> makePhoneCall(String phoneNumber) async {
+    phoneNumber = '+91${phoneNumber.replaceAll(RegExp(r'[^0-9]'), '')}';
+    if (kDebugMode) {
+      print('Making phone call to $phoneNumber');
+    }
+    final String url = 'tel:$phoneNumber';
+    try {
+      // ignore: deprecated_member_use
+      if (await canLaunch(url)) {
+        // ignore: deprecated_member_use
+        await launch(url);
+      } else {
+        throw 'Could not launch $url';
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error launching phone call: $e');
+      }
+    }
   }
 }

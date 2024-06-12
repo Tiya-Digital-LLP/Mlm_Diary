@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:mlmdiary/classified/classified_card.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/classified/custom_filter_screen.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
-import 'package:mlmdiary/classified/classified_card.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
@@ -133,7 +133,7 @@ class _ClassifiedScreenState extends State<ClassifiedScreen> {
                             );
                           },
                           child: ClassifiedCard(
-                            image: post.userData!.imagePath ?? '',
+                            image: post.userData?.imagePath ?? '',
                             dateTime: post.datecreated ?? '',
                             classifiedId: post.id ?? 0,
                             userImage: post.imagePath ?? '',
@@ -171,7 +171,7 @@ class _ClassifiedScreenState extends State<ClassifiedScreen> {
                     actions: <Widget>[
                       TextButton(
                         onPressed: () {
-                          Navigator.of(context).pop();
+                          Get.back();
                         },
                         child: const Text('OK'),
                       ),

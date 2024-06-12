@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -12,6 +13,7 @@ import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:text_link/text_link.dart';
 // ignore: library_prefixes
 import 'package:html/parser.dart' as htmlParser;
+import 'package:url_launcher/url_launcher.dart';
 
 class MyNewsDetailScreen extends StatefulWidget {
   const MyNewsDetailScreen({
@@ -241,31 +243,33 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    'Phone',
-                                    style: textStyleW400(
-                                        size.width * 0.035, AppColors.grey),
-                                  ),
-                                  const SizedBox(
-                                    width: 07,
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                '${post.userData!.countrycode1} - ${post.userData!.mobile}',
-                                style: textStyleW400(
-                                    size.width * 0.035, AppColors.blackText),
-                              ),
-                            ],
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Phone',
+                                      style: textStyleW400(
+                                          size.width * 0.035, AppColors.grey),
+                                    ),
+                                    const SizedBox(
+                                      width: 07,
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  '${post.userData!.countrycode1} - ${post.userData!.mobile}',
+                                  style: textStyleW400(
+                                      size.width * 0.035, AppColors.blackText),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         Padding(
@@ -325,10 +329,19 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
                               ),
                             ],
                           ),
-                          Text(
-                            post.website ?? '',
-                            style: textStyleW400(
-                                size.width * 0.035, AppColors.blackText),
+                          Text.rich(
+                            TextSpan(
+                              text: post.website ?? '',
+                              style: const TextStyle(
+                                color: Colors.blue,
+                                decorationColor: Colors.blue,
+                                decoration: TextDecoration.underline,
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  _launchURL(post.website ?? '');
+                                },
+                            ),
                           ),
                         ],
                       ),
@@ -463,5 +476,15 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
         decoration: TextDecoration.underline,
       ),
     );
+  }
+}
+
+void _launchURL(String url) async {
+  // ignore: deprecated_member_use
+  if (await canLaunch(url)) {
+    // ignore: deprecated_member_use
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
   }
 }

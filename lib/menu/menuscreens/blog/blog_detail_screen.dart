@@ -218,31 +218,33 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    'Phone',
-                                    style: textStyleW400(
-                                        size.width * 0.035, AppColors.grey),
-                                  ),
-                                  const SizedBox(
-                                    width: 07,
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                '${post.userData!.countrycode1} - ${post.userData!.mobile}',
-                                style: textStyleW400(
-                                    size.width * 0.035, AppColors.blackText),
-                              ),
-                            ],
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Phone',
+                                      style: textStyleW400(
+                                          size.width * 0.035, AppColors.grey),
+                                    ),
+                                    const SizedBox(
+                                      width: 07,
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  '${post.userData!.countrycode1} - ${post.userData!.mobile}',
+                                  style: textStyleW400(
+                                      size.width * 0.035, AppColors.blackText),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         Padding(

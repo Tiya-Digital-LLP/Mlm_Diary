@@ -4,7 +4,10 @@ import 'package:get/get.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/favourite/controller/favourite_controller.dart';
-import 'package:mlmdiary/menu/menuscreens/favourite/custom/favouritr_card.dart';
+import 'package:mlmdiary/menu/menuscreens/favourite/custom/blog_faviourite_card.dart';
+import 'package:mlmdiary/menu/menuscreens/favourite/custom/classified_faviourite_card.dart';
+import 'package:mlmdiary/menu/menuscreens/favourite/custom/company_favourite_card.dart';
+import 'package:mlmdiary/menu/menuscreens/favourite/custom/news_faviourite_card.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
@@ -109,17 +112,10 @@ class _FavouriteState extends State<Favourite> {
                     return const Center(child: CircularProgressIndicator());
                   }
                   final post = controller.favouriteList[index];
-                  return Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    child: GestureDetector(
-                      onTap: () {
-                        Get.toNamed(
-                          Routes.favouritrdetailsscreen,
-                          arguments: controller.favouriteList[index],
-                        );
-                      },
-                      child: FavouritrCard(
+                  Widget cardWidget;
+                  switch (post.type) {
+                    case 'classified':
+                      cardWidget = ClassifiedFavouriteCard(
                         userImage: post.userData?.imagePath ?? '',
                         userName: post.userData?.name ?? '',
                         postTitle: post.title ?? '',
@@ -135,7 +131,82 @@ class _FavouriteState extends State<Favourite> {
                         manageNewsController: manageNewsController,
                         clasifiedController: clasifiedController,
                         companyController: companyController,
-                      ),
+                      );
+                      break;
+
+                    case 'company':
+                      cardWidget = CompanieFaviouriteCard(
+                        userImage: post.userData?.imagePath ?? '',
+                        userName: post.userData?.name ?? '',
+                        postTitle: post.title ?? '',
+                        postCaption: post.description ?? '',
+                        postImage: post.imageUrl ?? '',
+                        dateTime: post.bookmarkDate ?? '',
+                        viewcounts: post.pgcnt ?? 0,
+                        controller: controller,
+                        bookmarkId: post.id ?? 0,
+                        url: post.urlcomponent ?? '',
+                        type: post.type ?? '',
+                        manageBlogController: manageBlogController,
+                        manageNewsController: manageNewsController,
+                        clasifiedController: clasifiedController,
+                        companyController: companyController,
+                      );
+                      break;
+
+                    case 'blog':
+                      cardWidget = BlogFaviouriteCard(
+                        userImage: post.userData?.imagePath ?? '',
+                        userName: post.userData?.name ?? '',
+                        postTitle: post.title ?? '',
+                        postCaption: post.description ?? '',
+                        postImage: post.imageUrl ?? '',
+                        dateTime: post.bookmarkDate ?? '',
+                        viewcounts: post.pgcnt ?? 0,
+                        controller: controller,
+                        bookmarkId: post.id ?? 0,
+                        url: post.urlcomponent ?? '',
+                        type: post.type ?? '',
+                        manageBlogController: manageBlogController,
+                        manageNewsController: manageNewsController,
+                        clasifiedController: clasifiedController,
+                        companyController: companyController,
+                      );
+                      break;
+                    case 'news':
+                      cardWidget = NewsFaviouriteCard(
+                        userImage: post.userData?.imagePath ?? '',
+                        userName: post.userData?.name ?? '',
+                        postTitle: post.title ?? '',
+                        postCaption: post.description ?? '',
+                        postImage: post.imageUrl ?? '',
+                        dateTime: post.bookmarkDate ?? '',
+                        viewcounts: post.pgcnt ?? 0,
+                        controller: controller,
+                        bookmarkId: post.id ?? 0,
+                        url: post.urlcomponent ?? '',
+                        type: post.type ?? '',
+                        manageBlogController: manageBlogController,
+                        manageNewsController: manageNewsController,
+                        clasifiedController: clasifiedController,
+                        companyController: companyController,
+                      );
+                      break;
+
+                    default:
+                      cardWidget = const SizedBox();
+                  }
+                  return Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    child: GestureDetector(
+                      onTap: () {
+                        Get.toNamed(
+                          Routes.favouritrdetailsscreen,
+                          arguments: controller.favouriteList[index],
+                        );
+                      },
+                      child: cardWidget,
                     ),
                   );
                 });
