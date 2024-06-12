@@ -81,10 +81,18 @@ class GetMlmDatabaseData {
 	String? proceedstatus = '';
 	String? device = '';
 	String? platform = '';
-	String? proceeddate = '';
+	dynamic proceeddate;
 	@JSONField(name: "is_approved")
 	int? isApproved = 0;
 	String? countrycode1 = '';
+	@JSONField(name: "followers_count")
+	int? followersCount = 0;
+	@JSONField(name: "following_count")
+	int? followingCount = 0;
+	@JSONField(name: "fav_status")
+	bool? favStatus = false;
+	@JSONField(name: "follow_status")
+	bool? followStatus = false;
 	@JSONField(name: "image_path")
 	String? imagePath = '';
 	@JSONField(name: "image_thum_path")

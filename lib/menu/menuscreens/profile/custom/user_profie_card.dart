@@ -7,22 +7,29 @@ import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 
-class UserProfileCard extends StatelessWidget {
+class UserProfileCard extends StatefulWidget {
   final String userImage;
   final String userName;
   final String postImage;
   final String postCaption;
 
   final VoidCallback onDelete;
-
   const UserProfileCard({
     super.key,
     required this.userImage,
     required this.userName,
     required this.postImage,
-    required this.onDelete,
     required this.postCaption,
+    required this.onDelete,
   });
+
+  @override
+  State<UserProfileCard> createState() => _UserProfileCardState();
+}
+
+class _UserProfileCardState extends State<UserProfileCard> {
+  late RxBool isBookmarked;
+  late RxInt bookmarkCount;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +52,7 @@ class UserProfileCard extends StatelessWidget {
                     radius: size.width * 0.07,
                     child: ClipOval(
                       child: Image.asset(
-                        userImage,
+                        widget.userImage,
                         height: 100,
                         width: 100,
                         fit: BoxFit.cover,
@@ -61,7 +68,7 @@ class UserProfileCard extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            userName,
+                            widget.userName,
                             style: textStyleW700(
                                 size.width * 0.043, AppColors.blackText),
                           ),
@@ -94,7 +101,7 @@ class UserProfileCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: Image.asset(
-                  postImage,
+                  widget.postImage,
                   fit: BoxFit.fill,
                 ),
               ),
@@ -290,7 +297,7 @@ class UserProfileCard extends StatelessWidget {
                                   elevation: 3,
                                 ),
                                 onPressed: () {
-                                  onDelete();
+                                  widget.onDelete();
                                   Get.back();
                                 },
                                 child: Text(

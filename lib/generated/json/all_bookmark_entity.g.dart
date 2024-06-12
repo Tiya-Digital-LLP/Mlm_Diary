@@ -109,6 +109,18 @@ AllBookmarkData $AllBookmarkDataFromJson(Map<String, dynamic> json) {
   if (plan != null) {
     allBookmarkData.plan = plan;
   }
+  final String? city = jsonConvert.convert<String>(json['city']);
+  if (city != null) {
+    allBookmarkData.city = city;
+  }
+  final String? state = jsonConvert.convert<String>(json['state']);
+  if (state != null) {
+    allBookmarkData.state = state;
+  }
+  final String? country = jsonConvert.convert<String>(json['country']);
+  if (country != null) {
+    allBookmarkData.country = country;
+  }
   final String? bookmarkDate = jsonConvert.convert<String>(
       json['bookmark_date']);
   if (bookmarkDate != null) {
@@ -156,6 +168,9 @@ Map<String, dynamic> $AllBookmarkDataToJson(AllBookmarkData entity) {
   data['type'] = entity.type;
   data['immlm'] = entity.immlm;
   data['plan'] = entity.plan;
+  data['city'] = entity.city;
+  data['state'] = entity.state;
+  data['country'] = entity.country;
   data['bookmark_date'] = entity.bookmarkDate;
   data['totallike'] = entity.totallike;
   data['totalcomment'] = entity.totalcomment;
@@ -183,6 +198,9 @@ extension AllBookmarkDataExtension on AllBookmarkData {
     String? type,
     dynamic immlm,
     String? plan,
+    String? city,
+    String? state,
+    String? country,
     String? bookmarkDate,
     int? totallike,
     int? totalcomment,
@@ -207,6 +225,9 @@ extension AllBookmarkDataExtension on AllBookmarkData {
       ..type = type ?? this.type
       ..immlm = immlm ?? this.immlm
       ..plan = plan ?? this.plan
+      ..city = city ?? this.city
+      ..state = state ?? this.state
+      ..country = country ?? this.country
       ..bookmarkDate = bookmarkDate ?? this.bookmarkDate
       ..totallike = totallike ?? this.totallike
       ..totalcomment = totalcomment ?? this.totalcomment

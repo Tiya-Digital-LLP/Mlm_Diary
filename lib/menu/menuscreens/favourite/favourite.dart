@@ -7,9 +7,13 @@ import 'package:mlmdiary/menu/menuscreens/favourite/controller/favourite_control
 import 'package:mlmdiary/menu/menuscreens/favourite/custom/blog_faviourite_card.dart';
 import 'package:mlmdiary/menu/menuscreens/favourite/custom/classified_faviourite_card.dart';
 import 'package:mlmdiary/menu/menuscreens/favourite/custom/company_favourite_card.dart';
+import 'package:mlmdiary/menu/menuscreens/favourite/custom/database_favourite_card.dart';
 import 'package:mlmdiary/menu/menuscreens/favourite/custom/news_faviourite_card.dart';
+import 'package:mlmdiary/menu/menuscreens/favourite/custom/video_faviouritr_card.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/video/controller/video_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -30,6 +34,9 @@ class _FavouriteState extends State<Favourite> {
       Get.put(ManageNewsController());
   final ClasifiedController clasifiedController =
       Get.put(ClasifiedController());
+  final VideoController videoController = Get.put(VideoController());
+  final EditPostController editPostController = Get.put(EditPostController());
+
   final CompanyController companyController = Get.put(CompanyController());
 
   @override
@@ -40,7 +47,9 @@ class _FavouriteState extends State<Favourite> {
 
   Future<void> _refreshData() async {
     try {
-      await controller.fetchBookmark(1, context);
+      controller.isEndOfData.value = false;
+      controller.favouriteList.clear();
+      await controller.fetchBookmark(1);
     } catch (error) {
       if (kDebugMode) {
         print('Error fetching bookmark data: $error');
@@ -131,9 +140,9 @@ class _FavouriteState extends State<Favourite> {
                         manageNewsController: manageNewsController,
                         clasifiedController: clasifiedController,
                         companyController: companyController,
+                        editpostController: editPostController,
                       );
                       break;
-
                     case 'company':
                       cardWidget = CompanieFaviouriteCard(
                         userImage: post.userData?.imagePath ?? '',
@@ -151,6 +160,7 @@ class _FavouriteState extends State<Favourite> {
                         manageNewsController: manageNewsController,
                         clasifiedController: clasifiedController,
                         companyController: companyController,
+                        editpostController: editPostController,
                       );
                       break;
 
@@ -171,6 +181,7 @@ class _FavouriteState extends State<Favourite> {
                         manageNewsController: manageNewsController,
                         clasifiedController: clasifiedController,
                         companyController: companyController,
+                        editpostController: editPostController,
                       );
                       break;
                     case 'news':
@@ -190,6 +201,43 @@ class _FavouriteState extends State<Favourite> {
                         manageNewsController: manageNewsController,
                         clasifiedController: clasifiedController,
                         companyController: companyController,
+                        editpostController: editPostController,
+                      );
+                      break;
+
+                    case 'video':
+                      cardWidget = VideoFavouriteCard(
+                        userImage: post.userData?.imagePath ?? '',
+                        userName: post.userData?.name ?? '',
+                        postTitle: post.title ?? '',
+                        postCaption: post.description ?? '',
+                        postVideo: post.image ?? '',
+                        dateTime: post.bookmarkDate ?? '',
+                        viewcounts: post.pgcnt ?? 0,
+                        controller: controller,
+                        bookmarkId: post.id ?? 0,
+                        url: post.urlcomponent ?? '',
+                        type: post.type ?? '',
+                      );
+                      break;
+                    case 'database':
+                      cardWidget = DatabaseFavouriteCard(
+                        userImage: post.userData?.imagePath ?? '',
+                        userName: post.title ?? '',
+                        postTitle: post.title ?? '',
+                        postLocation: post.city ?? '',
+                        immlm: post.immlm ?? '',
+                        plan: post.plan ?? '',
+                        postImage: post.imageUrl ?? '',
+                        dateTime: post.bookmarkDate ?? '',
+                        controller: controller,
+                        bookmarkId: post.id ?? 0,
+                        type: post.type ?? '',
+                        manageBlogController: manageBlogController,
+                        manageNewsController: manageNewsController,
+                        clasifiedController: clasifiedController,
+                        companyController: companyController,
+                        editpostController: editPostController,
                       );
                       break;
 
@@ -197,8 +245,11 @@ class _FavouriteState extends State<Favourite> {
                       cardWidget = const SizedBox();
                   }
                   return Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding: const EdgeInsets.only(
+                      bottom: 12,
+                      left: 16,
+                      right: 16,
+                    ),
                     child: GestureDetector(
                       onTap: () {
                         Get.toNamed(

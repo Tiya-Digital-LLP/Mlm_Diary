@@ -40,6 +40,9 @@ class AllBookmarkData {
 	String? type = '';
 	dynamic immlm;
 	String? plan = '';
+	String? city = '';
+	String? state = '';
+	String? country = '';
 	@JSONField(name: "bookmark_date")
 	String? bookmarkDate = '';
 	int? totallike = 0;

@@ -34,6 +34,8 @@ class GetVideoListVideos {
 	String? createdate = '';
 	int? pgcnt = 0;
 	dynamic datemodified;
+	@JSONField(name: "is_bookmark")
+	bool? isBookmark = false;
 
 	GetVideoListVideos();
 

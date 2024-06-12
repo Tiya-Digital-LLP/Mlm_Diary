@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:mlmdiary/database/controller/database_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_mlm_database_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
@@ -26,11 +28,13 @@ class _UserProfileScreenState extends State<UserProfileScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final EditPostController controller = Get.put(EditPostController());
+  final DatabaseController databaseController = Get.put(DatabaseController());
 
   final GetMlmDatabaseData mlmDatabaseList =
       Get.arguments as GetMlmDatabaseData;
 
   RxBool isFollowing = false.obs;
+  RxBool isBookmarked = false.obs;
 
   void deletePost(int index) {
     setState(() {
@@ -38,8 +42,53 @@ class _UserProfileScreenState extends State<UserProfileScreen>
     });
   }
 
-  void _toggleFollow() {
-    isFollowing.value = !isFollowing.value;
+  void _toggleFollow() async {
+    final userId = mlmDatabaseList.id ?? 0;
+
+    try {
+      bool followStatus = await _fetchFollowStatus(userId);
+
+      isFollowing.value = followStatus;
+
+      await controller.toggleProfileFollow(userId);
+
+      isFollowing.toggle(); // Toggle the boolean value
+    } catch (e) {
+      // Handle API errors
+      Fluttertoast.showToast(
+        msg: "Error: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+      );
+    }
+  }
+
+  Future<bool> _fetchFollowStatus(int userId) async {
+    return false;
+  }
+
+  void _toggleBookmark() async {
+    final userId = mlmDatabaseList.id ?? 0;
+
+    try {
+      bool bookmarkStatus = await _fetchBookmarkStatus(userId);
+
+      isBookmarked.value = bookmarkStatus;
+
+      await controller.toggleProfileBookMark(userId);
+
+      isBookmarked.toggle(); // Toggle the boolean value
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Error: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+      );
+    }
+  }
+
+  Future<bool> _fetchBookmarkStatus(int userId) async {
+    return false;
   }
 
   @override
@@ -48,6 +97,8 @@ class _UserProfileScreenState extends State<UserProfileScreen>
     _tabController = TabController(length: 2, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.countViewUserProfile(mlmDatabaseList.id ?? 0, context);
+      isBookmarked.value =
+          controller.bookmarkProfileStatusMap[mlmDatabaseList.id] ?? false;
     });
   }
 
@@ -67,15 +118,25 @@ class _UserProfileScreenState extends State<UserProfileScreen>
               alignment: Alignment.topLeft, child: CustomBackButton()),
         ),
         elevation: 0,
-        title: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'User Profile',
-              style: textStyleW700(size.width * 0.048, AppColors.blackText),
-            ),
-          ],
+        title: Text(
+          'User Profile',
+          style: textStyleW700(size.width * 0.048, AppColors.blackText),
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Obx(() => IconButton(
+                  icon: Icon(
+                    isBookmarked.value ? Icons.bookmark : Icons.bookmark_border,
+                    color: isBookmarked.value
+                        ? AppColors.primaryColor
+                        : Colors.black,
+                    size: 28,
+                  ),
+                  onPressed: _toggleBookmark,
+                )),
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -164,7 +225,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                           Column(
                             children: [
                               Text(
-                                '190',
+                                mlmDatabaseList.followersCount.toString(),
                                 style: textStyleW700(
                                     size.width * 0.045, AppColors.blackText),
                               ),
@@ -179,7 +240,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                           Column(
                             children: [
                               Text(
-                                '190',
+                                mlmDatabaseList.followingCount.toString(),
                                 style: textStyleW700(
                                     size.width * 0.045, AppColors.blackText),
                               ),

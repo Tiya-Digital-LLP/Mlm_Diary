@@ -272,7 +272,7 @@ GetMlmDatabaseData $GetMlmDatabaseDataFromJson(Map<String, dynamic> json) {
   if (platform != null) {
     getMlmDatabaseData.platform = platform;
   }
-  final String? proceeddate = jsonConvert.convert<String>(json['proceeddate']);
+  final dynamic proceeddate = json['proceeddate'];
   if (proceeddate != null) {
     getMlmDatabaseData.proceeddate = proceeddate;
   }
@@ -284,6 +284,22 @@ GetMlmDatabaseData $GetMlmDatabaseDataFromJson(Map<String, dynamic> json) {
       json['countrycode1']);
   if (countrycode1 != null) {
     getMlmDatabaseData.countrycode1 = countrycode1;
+  }
+  final int? followersCount = jsonConvert.convert<int>(json['followers_count']);
+  if (followersCount != null) {
+    getMlmDatabaseData.followersCount = followersCount;
+  }
+  final int? followingCount = jsonConvert.convert<int>(json['following_count']);
+  if (followingCount != null) {
+    getMlmDatabaseData.followingCount = followingCount;
+  }
+  final bool? favStatus = jsonConvert.convert<bool>(json['fav_status']);
+  if (favStatus != null) {
+    getMlmDatabaseData.favStatus = favStatus;
+  }
+  final bool? followStatus = jsonConvert.convert<bool>(json['follow_status']);
+  if (followStatus != null) {
+    getMlmDatabaseData.followStatus = followStatus;
   }
   final String? imagePath = jsonConvert.convert<String>(json['image_path']);
   if (imagePath != null) {
@@ -358,6 +374,10 @@ Map<String, dynamic> $GetMlmDatabaseDataToJson(GetMlmDatabaseData entity) {
   data['proceeddate'] = entity.proceeddate;
   data['is_approved'] = entity.isApproved;
   data['countrycode1'] = entity.countrycode1;
+  data['followers_count'] = entity.followersCount;
+  data['following_count'] = entity.followingCount;
+  data['fav_status'] = entity.favStatus;
+  data['follow_status'] = entity.followStatus;
   data['image_path'] = entity.imagePath;
   data['image_thum_path'] = entity.imageThumPath;
   return data;
@@ -421,9 +441,13 @@ extension GetMlmDatabaseDataExtension on GetMlmDatabaseData {
     String? proceedstatus,
     String? device,
     String? platform,
-    String? proceeddate,
+    dynamic proceeddate,
     int? isApproved,
     String? countrycode1,
+    int? followersCount,
+    int? followingCount,
+    bool? favStatus,
+    bool? followStatus,
     String? imagePath,
     String? imageThumPath,
   }) {
@@ -487,6 +511,10 @@ extension GetMlmDatabaseDataExtension on GetMlmDatabaseData {
       ..proceeddate = proceeddate ?? this.proceeddate
       ..isApproved = isApproved ?? this.isApproved
       ..countrycode1 = countrycode1 ?? this.countrycode1
+      ..followersCount = followersCount ?? this.followersCount
+      ..followingCount = followingCount ?? this.followingCount
+      ..favStatus = favStatus ?? this.favStatus
+      ..followStatus = followStatus ?? this.followStatus
       ..imagePath = imagePath ?? this.imagePath
       ..imageThumPath = imageThumPath ?? this.imageThumPath;
   }

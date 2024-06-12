@@ -17,12 +17,14 @@ import 'package:mlmdiary/generated/blog_like_list_entity.dart';
 import 'package:mlmdiary/generated/bookmark_company_entity.dart';
 import 'package:mlmdiary/generated/bookmark_news_entity.dart';
 import 'package:mlmdiary/generated/bookmark_user_entity.dart';
+import 'package:mlmdiary/generated/bookmark_video_entity.dart';
 import 'package:mlmdiary/generated/change_email_entity.dart';
 import 'package:mlmdiary/generated/change_password_entity.dart';
 import 'package:mlmdiary/generated/classified_count_view_entity.dart';
 import 'package:mlmdiary/generated/classified_like_list_entity.dart';
 import 'package:mlmdiary/generated/company_count_view_entity.dart';
 import 'package:mlmdiary/generated/count_view_question_entity.dart';
+import 'package:mlmdiary/generated/database_detail_entity.dart';
 import 'package:mlmdiary/generated/delete_classified_entity.dart';
 import 'package:mlmdiary/generated/delete_news_entity.dart';
 import 'package:mlmdiary/generated/delete_user_post_entity.dart';
@@ -30,6 +32,7 @@ import 'package:mlmdiary/generated/domestic_phoneotp_entity.dart';
 import 'package:mlmdiary/generated/email_otp_entity.dart';
 import 'package:mlmdiary/generated/email_verify_entity.dart';
 import 'package:mlmdiary/generated/email_verify_otp_entity.dart';
+import 'package:mlmdiary/generated/follow_user_entity.dart';
 import 'package:mlmdiary/generated/foreignphone_otp_entity.dart';
 import 'package:mlmdiary/generated/forgot_password_entity.dart';
 import 'package:mlmdiary/generated/get_admin_company_entity.dart';
@@ -63,6 +66,7 @@ import 'package:mlmdiary/generated/post_bookmark_entity.dart';
 import 'package:mlmdiary/generated/post_count_view_entity.dart';
 import 'package:mlmdiary/generated/post_like_entity.dart';
 import 'package:mlmdiary/generated/post_like_list_entity.dart';
+import 'package:mlmdiary/generated/profile_bookmark_entity.dart';
 import 'package:mlmdiary/generated/question_like_entity.dart';
 import 'package:mlmdiary/generated/question_like_list_entity.dart';
 import 'package:mlmdiary/generated/remaining_classified_count_entity.dart';
@@ -297,6 +301,10 @@ class JsonConvert {
       return data.map<BookmarkUserEntity>((Map<String, dynamic> e) =>
           BookmarkUserEntity.fromJson(e)).toList() as M;
     }
+    if (<BookmarkVideoEntity>[] is M) {
+      return data.map<BookmarkVideoEntity>((Map<String, dynamic> e) =>
+          BookmarkVideoEntity.fromJson(e)).toList() as M;
+    }
     if (<ChangeEmailEntity>[] is M) {
       return data.map<ChangeEmailEntity>((Map<String, dynamic> e) =>
           ChangeEmailEntity.fromJson(e)).toList() as M;
@@ -330,6 +338,14 @@ class JsonConvert {
       return data.map<CountViewQuestionEntity>((Map<String, dynamic> e) =>
           CountViewQuestionEntity.fromJson(e)).toList() as M;
     }
+    if (<DatabaseDetailEntity>[] is M) {
+      return data.map<DatabaseDetailEntity>((Map<String, dynamic> e) =>
+          DatabaseDetailEntity.fromJson(e)).toList() as M;
+    }
+    if (<DatabaseDetailData>[] is M) {
+      return data.map<DatabaseDetailData>((Map<String, dynamic> e) =>
+          DatabaseDetailData.fromJson(e)).toList() as M;
+    }
     if (<DeleteClassifiedEntity>[] is M) {
       return data.map<DeleteClassifiedEntity>((Map<String, dynamic> e) =>
           DeleteClassifiedEntity.fromJson(e)).toList() as M;
@@ -357,6 +373,10 @@ class JsonConvert {
     if (<EmailVerifyOtpEntity>[] is M) {
       return data.map<EmailVerifyOtpEntity>((Map<String, dynamic> e) =>
           EmailVerifyOtpEntity.fromJson(e)).toList() as M;
+    }
+    if (<FollowUserEntity>[] is M) {
+      return data.map<FollowUserEntity>((Map<String, dynamic> e) =>
+          FollowUserEntity.fromJson(e)).toList() as M;
     }
     if (<ForeignphoneOtpEntity>[] is M) {
       return data.map<ForeignphoneOtpEntity>((Map<String, dynamic> e) =>
@@ -623,6 +643,10 @@ class JsonConvert {
       return data.map<PostLikeListDataUserData>((Map<String, dynamic> e) =>
           PostLikeListDataUserData.fromJson(e)).toList() as M;
     }
+    if (<ProfileBookmarkEntity>[] is M) {
+      return data.map<ProfileBookmarkEntity>((Map<String, dynamic> e) =>
+          ProfileBookmarkEntity.fromJson(e)).toList() as M;
+    }
     if (<QuestionLikeEntity>[] is M) {
       return data.map<QuestionLikeEntity>((Map<String, dynamic> e) =>
           QuestionLikeEntity.fromJson(e)).toList() as M;
@@ -779,6 +803,7 @@ class JsonConvertClassCollection {
     (BookmarkCompanyEntity).toString(): BookmarkCompanyEntity.fromJson,
     (BookmarkNewsEntity).toString(): BookmarkNewsEntity.fromJson,
     (BookmarkUserEntity).toString(): BookmarkUserEntity.fromJson,
+    (BookmarkVideoEntity).toString(): BookmarkVideoEntity.fromJson,
     (ChangeEmailEntity).toString(): ChangeEmailEntity.fromJson,
     (ChangePasswordEntity).toString(): ChangePasswordEntity.fromJson,
     (ClassifiedCountViewEntity).toString(): ClassifiedCountViewEntity.fromJson,
@@ -788,6 +813,8 @@ class JsonConvertClassCollection {
         .fromJson,
     (CompanyCountViewEntity).toString(): CompanyCountViewEntity.fromJson,
     (CountViewQuestionEntity).toString(): CountViewQuestionEntity.fromJson,
+    (DatabaseDetailEntity).toString(): DatabaseDetailEntity.fromJson,
+    (DatabaseDetailData).toString(): DatabaseDetailData.fromJson,
     (DeleteClassifiedEntity).toString(): DeleteClassifiedEntity.fromJson,
     (DeleteNewsEntity).toString(): DeleteNewsEntity.fromJson,
     (DeleteUserPostEntity).toString(): DeleteUserPostEntity.fromJson,
@@ -795,6 +822,7 @@ class JsonConvertClassCollection {
     (EmailOtpEntity).toString(): EmailOtpEntity.fromJson,
     (EmailVerifyEntity).toString(): EmailVerifyEntity.fromJson,
     (EmailVerifyOtpEntity).toString(): EmailVerifyOtpEntity.fromJson,
+    (FollowUserEntity).toString(): FollowUserEntity.fromJson,
     (ForeignphoneOtpEntity).toString(): ForeignphoneOtpEntity.fromJson,
     (ForgotPasswordEntity).toString(): ForgotPasswordEntity.fromJson,
     (GetAdminCompanyEntity).toString(): GetAdminCompanyEntity.fromJson,
@@ -864,6 +892,7 @@ class JsonConvertClassCollection {
     (PostLikeListEntity).toString(): PostLikeListEntity.fromJson,
     (PostLikeListData).toString(): PostLikeListData.fromJson,
     (PostLikeListDataUserData).toString(): PostLikeListDataUserData.fromJson,
+    (ProfileBookmarkEntity).toString(): ProfileBookmarkEntity.fromJson,
     (QuestionLikeEntity).toString(): QuestionLikeEntity.fromJson,
     (QuestionLikeListEntity).toString(): QuestionLikeListEntity.fromJson,
     (QuestionLikeListData).toString(): QuestionLikeListData.fromJson,

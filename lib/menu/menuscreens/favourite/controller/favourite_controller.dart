@@ -11,7 +11,7 @@ import 'package:mlmdiary/generated/all_bookmark_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
-import 'package:mlmdiary/utils/custom_toast.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FavouriteController extends GetxController {
@@ -20,17 +20,16 @@ class FavouriteController extends GetxController {
   final ScrollController scrollController = ScrollController();
   var isEndOfData = false.obs;
 
-  get context => null;
-
   @override
   void onInit() {
     super.onInit();
     scrollController.addListener(() {
       if (scrollController.position.pixels ==
               scrollController.position.maxScrollExtent &&
-          !isEndOfData.value) {
+          !isEndOfData.value &&
+          !isLoading.value) {
         int nextPage = (favouriteList.length ~/ 10) + 1;
-        fetchBookmark(nextPage, context);
+        fetchBookmark(nextPage);
       }
     });
   }
@@ -104,6 +103,7 @@ class FavouriteController extends GetxController {
     ManageNewsController manageNewsController,
     ClasifiedController classifiedController,
     CompanyController companyController,
+    EditPostController editPostController,
   ) {
     if (type == 'blog') {
       return manageBlogController.bookmarkStatusMap[bookmarkId] ?? false;
@@ -113,6 +113,8 @@ class FavouriteController extends GetxController {
       return classifiedController.bookmarkStatusMap[bookmarkId] ?? false;
     } else if (type == 'company') {
       return companyController.bookmarkStatusMap[bookmarkId] ?? false;
+    } else if (type == 'database') {
+      return editPostController.bookmarkProfileStatusMap[bookmarkId] ?? false;
     }
     return false;
   }
@@ -124,6 +126,7 @@ class FavouriteController extends GetxController {
     ManageNewsController manageNewsController,
     ClasifiedController classifiedController,
     CompanyController companyController,
+    EditPostController editPostController,
   ) {
     if (type == 'blog') {
       return manageBlogController.bookmarkCountMap[bookmarkId] ?? 0;
@@ -133,6 +136,8 @@ class FavouriteController extends GetxController {
       return classifiedController.bookmarkCountMap[bookmarkId] ?? 0;
     } else if (type == 'company') {
       return companyController.bookmarkCountMap[bookmarkId] ?? 0;
+    } else if (type == 'database') {
+      return editPostController.bookmarkProfileCountMap[bookmarkId] ?? 0;
     }
     return 0;
   }
@@ -145,6 +150,7 @@ class FavouriteController extends GetxController {
     ManageNewsController manageNewsController,
     ClasifiedController classifiedController,
     CompanyController companyController,
+    EditPostController editPostController,
   ) {
     if (type == 'blog') {
       manageBlogController.toggleBookMark(
@@ -162,10 +168,12 @@ class FavouriteController extends GetxController {
       companyController.toggleBookMark(
         bookmarkId,
       );
+    } else if (type == 'database') {
+      editPostController.toggleProfileBookMark(bookmarkId);
     }
   }
 
-  Future<void> fetchBookmark(int page, context) async {
+  Future<void> fetchBookmark(int page) async {
     isLoading.value = true;
     String device = Platform.isAndroid
         ? 'android'
@@ -201,9 +209,9 @@ class FavouriteController extends GetxController {
       var connectivityResult = await (Connectivity().checkConnectivity());
       // ignore: unrelated_type_equality_checks
       if (connectivityResult == ConnectivityResult.none) {
-        if (context != null) {
-          // ignore: use_build_context_synchronously
-          showToasterrorborder("No internet connection", context);
+        // Handle no internet connection case
+        if (kDebugMode) {
+          print("No internet connection");
         }
         isLoading.value = false;
         return;
@@ -242,20 +250,28 @@ class FavouriteController extends GetxController {
           } else {
             favouriteList.addAll(allBookmarkEntity.data ?? []);
           }
+
+          // Check if we received fewer items than expected to identify the end of data
+          if (myBlogData.length < 10) {
+            isEndOfData.value = true;
+          }
         } else {
-          // ignore: use_build_context_synchronously
-          if (context != null) showToasterrorborder("No data found", context);
+          // Handle no data found case
+          if (kDebugMode) {
+            print("No data found");
+          }
+          isEndOfData.value = true;
         }
       } else {
-        if (context != null) {
-          // ignore: use_build_context_synchronously
-          showToasterrorborder("Failed to fetch data", context);
+        // Handle failed to fetch data case
+        if (kDebugMode) {
+          print("Failed to fetch data");
         }
       }
     } catch (error) {
-      if (context != null) {
-        // ignore: use_build_context_synchronously
-        showToasterrorborder("An error occurred: $error", context);
+      // Handle general error case
+      if (kDebugMode) {
+        print("An error occurred: $error");
       }
     } finally {
       isLoading.value = false;

@@ -77,10 +77,14 @@ class Constants {
   static const String addpost = "/adduserpost";
   static const String editpost = "/updateuserpost";
   static const String mypost = "/mypostlist";
+  static const String userpost = "/databasedetail";
+
   static const String postlike = "/addlikepost";
   static const String deletepost = "/deleteuserpost";
   static const String bookmarkpost = "/addfavoritepost";
   static const String likelistpost = "/post/likelist";
+  static const String profileBookmark = "/bookmark_database";
+  static const String profileFollow = "/follow";
 
   static const String addquestionanswer = "/addquestion";
   static const String myqusetionanswer = "/myquestion";
@@ -94,4 +98,6 @@ class Constants {
   static const String likedanswer = "/addlikeanswer";
 
   static const String allbookmark = "/getallbookmarked";
+
+  static const String videoBookmark = "/bookmark_video";
 }

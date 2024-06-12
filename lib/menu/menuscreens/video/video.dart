@@ -1,9 +1,11 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/menu/menuscreens/video/controller/video_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
@@ -83,13 +85,48 @@ class _YourWidgetState extends State<Video> {
                         child: Column(
                           children: [
                             YoutubeViewer(videoId),
-                            Text(
-                              decodedTitle,
-                              style: const TextStyle(
-                                fontSize: 13.0,
-                                fontWeight: FontWeight.w500,
-                                fontFamily: 'assets/fonst/Metropolis-Black.otf',
-                              ).copyWith(fontSize: 15),
+                            10.sbh,
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    decodedTitle,
+                                    style: const TextStyle(
+                                      fontSize: 13.0,
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily:
+                                          'assets/fonst/Metropolis-Black.otf',
+                                    ).copyWith(fontSize: 15),
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    // Check if videoItem.id is not null before calling togglevideoBookMark
+                                    if (videoItem.id != null) {
+                                      controller
+                                          .togglevideoBookMark(videoItem.id!);
+                                      setState(() {
+                                        videoItem.isBookmark =
+                                            !videoItem.isBookmark!;
+                                      });
+                                    } else {
+                                      // Handle the case where videoItem.id is null
+                                      if (kDebugMode) {
+                                        print('Video ID is null');
+                                      }
+                                    }
+                                  },
+                                  child: Icon(
+                                    videoItem.isBookmark ?? false
+                                        ? Icons.bookmark
+                                        : Icons.bookmark_border,
+                                    size: 28,
+                                    color: videoItem.isBookmark ?? false
+                                        ? Colors.red
+                                        : Colors.grey,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),

@@ -8,10 +8,13 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:mlmdiary/data/constants.dart';
+import 'package:mlmdiary/generated/database_detail_entity.dart';
+import 'package:mlmdiary/generated/follow_user_entity.dart';
 import 'package:mlmdiary/generated/my_post_list_entity.dart';
 import 'package:mlmdiary/generated/post_bookmark_entity.dart';
 import 'package:mlmdiary/generated/post_like_entity.dart';
 import 'package:mlmdiary/generated/post_like_list_entity.dart';
+import 'package:mlmdiary/generated/profile_bookmark_entity.dart';
 import 'package:mlmdiary/generated/user_profile_count_view_entity.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,6 +24,7 @@ class EditPostController extends GetxController {
   var isLoading = false.obs;
   RxList<MyPostListData> myPostList = <MyPostListData>[].obs;
   RxList<PostLikeListData> postLikeList = RxList<PostLikeListData>();
+  RxList<DatabaseDetailData> postList = <DatabaseDetailData>[].obs;
 
   //like
   var likedStatusMap = <int, bool>{};
@@ -29,6 +33,14 @@ class EditPostController extends GetxController {
   //bookmark
   var bookmarkStatusMap = <int, bool>{};
   var bookmarkCountMap = <int, int>{};
+
+  //bookmarkProfile
+  var bookmarkProfileStatusMap = <int, bool>{};
+  var bookmarkProfileCountMap = <int, int>{};
+
+  //bookmarkProfile
+  var followProfileStatusMap = <int, bool>{};
+  var followProfileCountMap = <int, int>{};
 
   @override
   void onInit() {
@@ -110,6 +122,57 @@ class EditPostController extends GetxController {
       }
     } catch (error) {
       // Handle network or parsing errors
+      showToasterrorborder("An error occurred: $error", context);
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> fetchUserPost(int userId, context) async {
+    isLoading.value = true;
+    String device =
+        Platform.isAndroid ? 'android' : (Platform.isIOS ? 'ios' : '');
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+
+    try {
+      var connectivityResult = await (Connectivity().checkConnectivity());
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult == ConnectivityResult.none) {
+        showToasterrorborder("No internet connection", context);
+        isLoading.value = false;
+        return;
+      }
+
+      Map<String, String> queryParams = {
+        'api_token': apiToken ?? '',
+        'device': device,
+        'user_id': userId.toString(),
+      };
+
+      Uri uri = Uri.parse(Constants.baseUrl + Constants.userpost)
+          .replace(queryParameters: queryParams);
+
+      final response = await http.get(uri);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        final DatabaseDetailEntity postEntity =
+            DatabaseDetailEntity.fromJson(responseData);
+
+        final DatabaseDetailData? firstPost = postEntity.data;
+        if (firstPost != null) {
+          final String postId = firstPost.id.toString();
+          await prefs.setString('lastPostid', postId);
+
+          // Add the fetched post to the list
+          postList.add(firstPost);
+        }
+      } else {
+        showToasterrorborder("Failed to fetch data", context);
+      }
+    } catch (error) {
       showToasterrorborder("An error occurred: $error", context);
     } finally {
       isLoading.value = false;
@@ -589,5 +652,161 @@ class EditPostController extends GetxController {
         print('Finished fetchLikeListPost method');
       }
     }
+  }
+
+  // Bookmark
+  Future<void> profileBookmark(int databaseId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+
+    String device = Platform.isAndroid ? 'android' : 'ios';
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri = Uri.parse('${Constants.baseUrl}${Constants.profileBookmark}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['databse_id'] = databaseId.toString();
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var bookmarkProfileEntity = ProfileBookmarkEntity.fromJson(data);
+          var message = bookmarkProfileEntity.message;
+
+          // Update the liked status and like count based on the message
+          if (message == 'You have bookmark this Profile') {
+            bookmarkProfileStatusMap[databaseId] = true;
+            bookmarkProfileCountMap[databaseId] =
+                (bookmarkCountMap[databaseId] ?? 0) + 1;
+          } else if (message == 'You have unbookmark this Profile') {
+            bookmarkProfileStatusMap[databaseId] = false;
+            bookmarkProfileCountMap[databaseId] =
+                (bookmarkCountMap[databaseId] ?? 0) - 1;
+          }
+
+          Fluttertoast.showToast(
+            msg: message!,
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
+        } else {
+          Fluttertoast.showToast(
+            msg: "Error: ${response.body}",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
+        }
+      } else {
+        Fluttertoast.showToast(
+          msg: "No internet connection",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+        );
+      }
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Error: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+      );
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<void> toggleProfileBookMark(int databaseId) async {
+    bool isBookmark = bookmarkProfileStatusMap[databaseId] ?? false;
+    isBookmark = !isBookmark;
+    bookmarkProfileStatusMap[databaseId] = isBookmark;
+    bookmarkProfileCountMap.update(
+        databaseId, (value) => isBookmark ? value + 1 : value - 1,
+        ifAbsent: () => isBookmark ? 1 : 0);
+
+    await profileBookmark(databaseId);
+  }
+
+  // Follow-Unfollow
+  Future<void> profileFollow(int userId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+
+    String device = Platform.isAndroid ? 'android' : 'ios';
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri = Uri.parse('${Constants.baseUrl}${Constants.profileFollow}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['user_id'] = userId.toString();
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var followProfileEntity = FollowUserEntity.fromJson(data);
+          var message = followProfileEntity.message;
+
+          // Update the liked status and like count based on the message
+          if (message == 'You have Follow this Profile') {
+            bookmarkProfileStatusMap[userId] = true;
+            bookmarkProfileCountMap[userId] =
+                (bookmarkCountMap[userId] ?? 0) + 1;
+          } else if (message == 'You have UnFollow this Profile') {
+            bookmarkProfileStatusMap[userId] = false;
+            bookmarkProfileCountMap[userId] =
+                (bookmarkCountMap[userId] ?? 0) - 1;
+          }
+
+          Fluttertoast.showToast(
+            msg: message!,
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
+        } else {
+          Fluttertoast.showToast(
+            msg: "Error: ${response.body}",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
+        }
+      } else {
+        Fluttertoast.showToast(
+          msg: "No internet connection",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+        );
+      }
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Error: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+      );
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<void> toggleProfileFollow(int userId) async {
+    bool isFollow = followProfileStatusMap[userId] ?? false;
+    isFollow = !isFollow;
+    followProfileStatusMap[userId] = isFollow;
+    followProfileCountMap.update(
+        userId, (value) => isFollow ? value + 1 : value - 1,
+        ifAbsent: () => isFollow ? 1 : 0);
+
+    await profileFollow(userId);
   }
 }

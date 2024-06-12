@@ -47,7 +47,7 @@ class _FavouritrDetailScreenState extends State<FavouritrDetailScreen> {
       backgroundColor: AppColors.background,
       appBar: CustomAppBar(
         size: MediaQuery.of(context).size,
-        titleText: 'MLM Blog',
+        titleText: 'MLM ${post.type!}',
         onTap: () {},
       ),
       body: SingleChildScrollView(

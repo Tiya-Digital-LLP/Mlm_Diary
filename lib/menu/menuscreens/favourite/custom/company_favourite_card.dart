@@ -8,6 +8,7 @@ import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller
 import 'package:mlmdiary/menu/menuscreens/favourite/controller/favourite_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -28,6 +29,8 @@ class CompanieFaviouriteCard extends StatefulWidget {
   final ManageNewsController manageNewsController;
   final ClasifiedController clasifiedController;
   final CompanyController companyController;
+  final EditPostController editpostController;
+
   final String userImage;
 
   final FavouriteController controller;
@@ -49,6 +52,7 @@ class CompanieFaviouriteCard extends StatefulWidget {
     required this.clasifiedController,
     required this.companyController,
     required this.userImage,
+    required this.editpostController,
   });
 
   @override
@@ -90,6 +94,7 @@ class _CompanieFaviouriteCardState extends State<CompanieFaviouriteCard> {
       widget.manageNewsController,
       widget.clasifiedController,
       widget.companyController,
+      widget.editpostController,
     );
   }
 
@@ -119,6 +124,7 @@ class _CompanieFaviouriteCardState extends State<CompanieFaviouriteCard> {
         widget.manageNewsController,
         widget.clasifiedController,
         widget.companyController,
+        widget.editpostController,
       );
     });
   }

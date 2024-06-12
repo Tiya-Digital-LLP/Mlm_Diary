@@ -89,6 +89,10 @@ GetVideoListVideos $GetVideoListVideosFromJson(Map<String, dynamic> json) {
   if (datemodified != null) {
     getVideoListVideos.datemodified = datemodified;
   }
+  final bool? isBookmark = jsonConvert.convert<bool>(json['is_bookmark']);
+  if (isBookmark != null) {
+    getVideoListVideos.isBookmark = isBookmark;
+  }
   return getVideoListVideos;
 }
 
@@ -105,6 +109,7 @@ Map<String, dynamic> $GetVideoListVideosToJson(GetVideoListVideos entity) {
   data['createdate'] = entity.createdate;
   data['pgcnt'] = entity.pgcnt;
   data['datemodified'] = entity.datemodified;
+  data['is_bookmark'] = entity.isBookmark;
   return data;
 }
 
@@ -121,6 +126,7 @@ extension GetVideoListVideosExtension on GetVideoListVideos {
     String? createdate,
     int? pgcnt,
     dynamic datemodified,
+    bool? isBookmark,
   }) {
     return GetVideoListVideos()
       ..id = id ?? this.id
@@ -133,6 +139,7 @@ extension GetVideoListVideosExtension on GetVideoListVideos {
       ..description = description ?? this.description
       ..createdate = createdate ?? this.createdate
       ..pgcnt = pgcnt ?? this.pgcnt
-      ..datemodified = datemodified ?? this.datemodified;
+      ..datemodified = datemodified ?? this.datemodified
+      ..isBookmark = isBookmark ?? this.isBookmark;
   }
 }
