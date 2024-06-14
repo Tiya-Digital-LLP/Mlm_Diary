@@ -10,6 +10,7 @@ import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
+import 'package:mlmdiary/widgets/remimaining_count_controller./remaining_count.dart';
 
 class ClassifiedScreen extends StatefulWidget {
   const ClassifiedScreen({super.key});
@@ -159,31 +160,11 @@ class _ClassifiedScreenState extends State<ClassifiedScreen> {
       ),
       floatingActionButton: InkWell(
         onTap: () async {
-          var result = await controller.classifiedRemainingCount();
-          if (result != null) {
-            if (result['status'] == 0) {
-              showDialog(
-                // ignore: use_build_context_synchronously
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: const Text('Alert'),
-                    content: Text(result['message']),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () {
-                          Get.back();
-                        },
-                        child: const Text('OK'),
-                      ),
-                    ],
-                  );
-                },
-              );
-            } else if (result['status'] == 1) {
-              Get.toNamed(Routes.addclassified);
-            }
-          }
+          var controller = CustomFloatingActionButtonController(context);
+
+          String selectedType = 'classified';
+
+          await controller.handleTap(selectedType);
         },
         child: Ink(
           decoration: const BoxDecoration(

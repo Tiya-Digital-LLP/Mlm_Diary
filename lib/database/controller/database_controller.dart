@@ -6,8 +6,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/get_mlm_database_entity.dart';
+import 'package:mlmdiary/menu/menuscreens/accountsetting/controller/account_setting_controller.dart';
+import 'package:mlmdiary/sign_up/controller/signup_controller.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -24,6 +27,11 @@ class DatabaseController extends GetxController {
       <DatabaseDetailData>[].obs;
 
   final search = TextEditingController();
+  final AccountSeetingController accountSeetingController =
+      Get.put(AccountSeetingController());
+  final ClasifiedController clasifiedController =
+      Get.put(ClasifiedController());
+  final SignupController signupController = Get.put(SignupController());
 
   @override
   void onInit() {
@@ -66,6 +74,14 @@ class DatabaseController extends GetxController {
         request.fields['device'] = device;
         request.fields['page'] = page.toString();
         request.fields['search'] = search.value.text;
+        request.fields['plan'] = accountSeetingController
+            .getSelectedPlanOptionsTextController()
+            .value
+            .text;
+        request.fields['company'] = clasifiedController.companyName.value.text;
+        request.fields['location'] = clasifiedController.location.value.text;
+        request.fields['user_type'] =
+            signupController.getSelectedOptionsTextController().value.text;
 
         final streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);
@@ -114,6 +130,20 @@ class DatabaseController extends GetxController {
     } finally {
       isLoading(false);
     }
+  }
+
+  void clearFields() {
+    for (int i = 0; i < signupController.isTypeSelectedList.length; i++) {
+      signupController.isTypeSelectedList[i] = false;
+    }
+    for (int i = 0;
+        i < accountSeetingController.isPlanSelectedList.length;
+        i++) {
+      accountSeetingController.isPlanSelectedList[i] = false;
+    }
+    clasifiedController.companyName.value.clear();
+    clasifiedController.location.value.clear();
+    getMlmDatabase(1);
   }
 
   Future<void> fetchUserPost(int userId, context) async {

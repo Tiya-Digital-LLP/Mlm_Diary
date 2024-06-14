@@ -7,6 +7,7 @@ import 'package:mlmdiary/menu/menuscreens/manageclassified/manageclassified_card
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
+import 'package:mlmdiary/widgets/remimaining_count_controller./remaining_count.dart';
 
 class ManageClassified extends StatefulWidget {
   const ManageClassified({super.key});
@@ -106,8 +107,12 @@ class _MlmClassifiedState extends State<ManageClassified> {
         ),
       ),
       floatingActionButton: InkWell(
-        onTap: () {
-          Get.toNamed(Routes.addclassified);
+        onTap: () async {
+          var controller = CustomFloatingActionButtonController(context);
+
+          String selectedType = 'classified';
+
+          await controller.handleTap(selectedType);
         },
         child: Ink(
           decoration: const BoxDecoration(

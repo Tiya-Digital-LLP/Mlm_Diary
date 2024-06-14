@@ -797,7 +797,7 @@ class SignupController extends GetxController {
     List<String> selectedTypeOptions = [];
     for (int i = 0; i < isTypeSelectedList.length; i++) {
       if (isTypeSelectedList[i]) {
-        selectedTypeOptions.add(userTypes[i].name ?? '');
+        selectedTypeOptions.add(userTypes[i].id.toString());
       }
     }
 

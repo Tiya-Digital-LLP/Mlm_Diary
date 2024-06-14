@@ -151,21 +151,23 @@ class _moreState extends State<MoreOptionScreen> {
                           return const CircularProgressIndicator();
                         }
 
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              userProfile.name ?? 'N/A',
-                              style: textStyleW700(
-                                  size.width * 0.040, AppColors.blackText),
-                            ),
-                            Text(
-                              userProfile.company ?? 'N/A',
-                              style: textStyleW400(
-                                  size.width * 0.032, AppColors.blackText),
-                            ),
-                          ],
+                        return Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                userProfile.name ?? 'N/A',
+                                style: textStyleW700(
+                                    size.width * 0.040, AppColors.blackText),
+                              ),
+                              Text(
+                                userProfile.company ?? 'N/A',
+                                style: textStyleW400(
+                                    size.width * 0.032, AppColors.blackText),
+                              ),
+                            ],
+                          ),
                         );
                       }),
                     ],

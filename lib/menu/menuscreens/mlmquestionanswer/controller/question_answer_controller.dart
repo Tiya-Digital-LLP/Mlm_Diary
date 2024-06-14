@@ -43,6 +43,8 @@ class QuestionAnswerController extends GetxController {
   RxList<QuestionLikeListData> questionLikeList =
       RxList<QuestionLikeListData>();
 
+  final search = TextEditingController();
+
   //error
   RxBool titleError = false.obs;
   RxBool answerError = false.obs;
@@ -117,6 +119,7 @@ class QuestionAnswerController extends GetxController {
         request.fields['api_token'] = apiToken ?? '';
         request.fields['device'] = device;
         request.fields['page'] = page.toString();
+        request.fields['search'] = search.value.text;
 
         final streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);

@@ -33,12 +33,11 @@ class _FavouriteState extends State<Favourite> {
   final ManageBlogController manageBlogController =
       Get.put(ManageBlogController());
   final ManageNewsController manageNewsController =
-      Get.put(ManageNewsController());
+      Get.put(ManageNewsController());  
   final ClasifiedController clasifiedController =
       Get.put(ClasifiedController());
   final VideoController videoController = Get.put(VideoController());
   final EditPostController editPostController = Get.put(EditPostController());
-
   final CompanyController companyController = Get.put(CompanyController());
   final QuestionAnswerController questionAnswerController =
       Get.put(QuestionAnswerController());
@@ -93,207 +92,221 @@ class _FavouriteState extends State<Favourite> {
         backgroundColor: AppColors.primaryColor,
         color: AppColors.white,
         onRefresh: _refreshData,
-        child: Container(
-          color: AppColors.background,
-          child: Obx(() {
-            if (controller.isLoading.value &&
-                controller.favouriteList.isEmpty) {
-              return const Center(child: CircularProgressIndicator());
-            }
+        child: CustomScrollView(
+          controller: controller.scrollController,
+          slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 10, bottom: 10),
+                child: horiztallist(),
+              ),
+            ),
+            Obx(() {
+              if (controller.isLoading.value &&
+                  controller.favouriteList.isEmpty) {
+                return const SliverFillRemaining(
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              }
 
-            if (controller.favouriteList.isEmpty) {
-              return Center(
-                child: Text(
-                  controller.isLoading.value ? 'Loading...' : 'Data not found',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+              if (controller.favouriteList.isEmpty) {
+                return SliverFillRemaining(
+                  child: Center(
+                    child: Text(
+                      controller.isLoading.value
+                          ? 'Loading...'
+                          : 'Data not found',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
                   ),
+                );
+              }
+
+              return SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    if (index == controller.favouriteList.length) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    final post = controller.favouriteList[index];
+                    Widget cardWidget;
+                    switch (post.type) {
+                      case 'classified':
+                        cardWidget = ClassifiedFavouriteCard(
+                          userImage: post.userData?.imagePath ?? '',
+                          userName: post.userData?.name ?? '',
+                          postTitle: post.title ?? '',
+                          postCaption: post.description ?? '',
+                          postImage: post.imageUrl ?? '',
+                          dateTime: post.bookmarkDate ?? '',
+                          viewcounts: post.pgcnt ?? 0,
+                          controller: controller,
+                          bookmarkId: post.id ?? 0,
+                          url: post.urlcomponent ?? '',
+                          type: post.type ?? '',
+                          manageBlogController: manageBlogController,
+                          manageNewsController: manageNewsController,
+                          clasifiedController: clasifiedController,
+                          companyController: companyController,
+                          editpostController: editPostController,
+                          questionAnswerController: questionAnswerController,
+                          likedbyuser: post.likedByUser ?? false,
+                        );
+                        break;
+                      case 'company':
+                        cardWidget = CompanieFaviouriteCard(
+                          userImage: post.userData?.imagePath ?? '',
+                          userName: post.userData?.name ?? '',
+                          postTitle: post.title ?? '',
+                          postCaption: post.description ?? '',
+                          postImage: post.imageUrl ?? '',
+                          dateTime: post.bookmarkDate ?? '',
+                          viewcounts: post.pgcnt ?? 0,
+                          controller: controller,
+                          bookmarkId: post.id ?? 0,
+                          url: post.urlcomponent ?? '',
+                          type: post.type ?? '',
+                          manageBlogController: manageBlogController,
+                          manageNewsController: manageNewsController,
+                          clasifiedController: clasifiedController,
+                          companyController: companyController,
+                          editpostController: editPostController,
+                          questionAnswerController: questionAnswerController,
+                          likedbyuser: post.likedByUser ?? false,
+                        );
+                        break;
+
+                      case 'blog':
+                        cardWidget = BlogFaviouriteCard(
+                          userImage: post.userData?.imagePath ?? '',
+                          userName: post.userData?.name ?? '',
+                          postTitle: post.title ?? '',
+                          postCaption: post.description ?? '',
+                          postImage: post.imageUrl ?? '',
+                          dateTime: post.bookmarkDate ?? '',
+                          viewcounts: post.pgcnt ?? 0,
+                          controller: controller,
+                          bookmarkId: post.id ?? 0,
+                          url: post.urlcomponent ?? '',
+                          type: post.type ?? '',
+                          manageBlogController: manageBlogController,
+                          manageNewsController: manageNewsController,
+                          clasifiedController: clasifiedController,
+                          companyController: companyController,
+                          editpostController: editPostController,
+                          questionAnswerController: questionAnswerController,
+                          likedbyuser: post.likedByUser ?? false,
+                        );
+                        break;
+                      case 'news':
+                        cardWidget = NewsFaviouriteCard(
+                          userImage: post.userData?.imagePath ?? '',
+                          userName: post.userData?.name ?? '',
+                          postTitle: post.title ?? '',
+                          postCaption: post.description ?? '',
+                          postImage: post.imageUrl ?? '',
+                          dateTime: post.bookmarkDate ?? '',
+                          viewcounts: post.pgcnt ?? 0,
+                          controller: controller,
+                          bookmarkId: post.id ?? 0,
+                          url: post.urlcomponent ?? '',
+                          type: post.type ?? '',
+                          manageBlogController: manageBlogController,
+                          manageNewsController: manageNewsController,
+                          clasifiedController: clasifiedController,
+                          companyController: companyController,
+                          editpostController: editPostController,
+                          questionAnswerController: questionAnswerController,
+                          likedbyuser: post.likedByUser ?? false,
+                        );
+                        break;
+
+                      case 'video':
+                        cardWidget = VideoFavouriteCard(
+                          userImage: post.userData?.imagePath ?? '',
+                          userName: post.userData?.name ?? '',
+                          postTitle: post.title ?? '',
+                          postCaption: post.description ?? '',
+                          postVideo: post.image ?? '',
+                          dateTime: post.bookmarkDate ?? '',
+                          viewcounts: post.pgcnt ?? 0,
+                          controller: controller,
+                          bookmarkId: post.id ?? 0,
+                          url: post.urlcomponent ?? '',
+                          type: post.type ?? '',
+                        );
+                        break;
+                      case 'database':
+                        cardWidget = DatabaseFavouriteCard(
+                          userImage: post.userData?.imagePath ?? '',
+                          userName: post.title ?? '',
+                          postTitle: post.title ?? '',
+                          postLocation: post.city ?? '',
+                          immlm: post.immlm ?? '',
+                          plan: post.plan ?? '',
+                          postImage: post.imageUrl ?? '',
+                          dateTime: post.bookmarkDate ?? '',
+                          controller: controller,
+                          bookmarkId: post.id ?? 0,
+                          type: post.type ?? '',
+                          manageBlogController: manageBlogController,
+                          manageNewsController: manageNewsController,
+                          clasifiedController: clasifiedController,
+                          companyController: companyController,
+                          editpostController: editPostController,
+                          questionAnswerController: questionAnswerController,
+                        );
+                        break;
+                      case 'question':
+                        cardWidget = QuestionFavouriteCard(
+                          userImage: post.userData?.imagePath ?? '',
+                          userName: post.userData?.name ?? '',
+                          postTitle: post.title ?? '',
+                          postCaption: post.description ?? '',
+                          postImage: post.imageUrl ?? '',
+                          dateTime: post.bookmarkDate ?? '',
+                          viewcounts: post.pgcnt ?? 0,
+                          controller: controller,
+                          bookmarkId: post.id ?? 0,
+                          url: post.urlcomponent ?? '',
+                          type: post.type ?? '',
+                          manageBlogController: manageBlogController,
+                          manageNewsController: manageNewsController,
+                          clasifiedController: clasifiedController,
+                          companyController: companyController,
+                          editpostController: editPostController,
+                          questionAnswerController: questionAnswerController,
+                          likedbyuser: post.likedByUser ?? false,
+                        );
+                        break;
+
+                      default:
+                        cardWidget = const SizedBox();
+                    }
+                    return Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: 12,
+                        left: 16,
+                        right: 16,
+                      ),
+                      child: GestureDetector(
+                        onTap: () {
+                          _navigateToDetails(post);
+                        },
+                        child: cardWidget,
+                      ),
+                    );
+                  },
+                  childCount: controller.favouriteList.length +
+                      (controller.isLoading.value ? 1 : 0),
                 ),
               );
-            }
-            return ListView.builder(
-                padding: EdgeInsets.zero,
-                controller: controller.scrollController,
-                physics: const AlwaysScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: controller.favouriteList.length +
-                    (controller.isLoading.value ? 1 : 0),
-                itemBuilder: (context, index) {
-                  if (index == controller.favouriteList.length) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  final post = controller.favouriteList[index];
-                  Widget cardWidget;
-                  switch (post.type) {
-                    case 'classified':
-                      cardWidget = ClassifiedFavouriteCard(
-                        userImage: post.userData?.imagePath ?? '',
-                        userName: post.userData?.name ?? '',
-                        postTitle: post.title ?? '',
-                        postCaption: post.description ?? '',
-                        postImage: post.imageUrl ?? '',
-                        dateTime: post.bookmarkDate ?? '',
-                        viewcounts: post.pgcnt ?? 0,
-                        controller: controller,
-                        bookmarkId: post.id ?? 0,
-                        url: post.urlcomponent ?? '',
-                        type: post.type ?? '',
-                        manageBlogController: manageBlogController,
-                        manageNewsController: manageNewsController,
-                        clasifiedController: clasifiedController,
-                        companyController: companyController,
-                        editpostController: editPostController,
-                        questionAnswerController: questionAnswerController,
-                        likedbyuser: post.likedByUser ?? false,
-                      );
-                      break;
-                    case 'company':
-                      cardWidget = CompanieFaviouriteCard(
-                        userImage: post.userData?.imagePath ?? '',
-                        userName: post.userData?.name ?? '',
-                        postTitle: post.title ?? '',
-                        postCaption: post.description ?? '',
-                        postImage: post.imageUrl ?? '',
-                        dateTime: post.bookmarkDate ?? '',
-                        viewcounts: post.pgcnt ?? 0,
-                        controller: controller,
-                        bookmarkId: post.id ?? 0,
-                        url: post.urlcomponent ?? '',
-                        type: post.type ?? '',
-                        manageBlogController: manageBlogController,
-                        manageNewsController: manageNewsController,
-                        clasifiedController: clasifiedController,
-                        companyController: companyController,
-                        editpostController: editPostController,
-                        questionAnswerController: questionAnswerController,
-                        likedbyuser: post.likedByUser ?? false,
-                      );
-                      break;
-
-                    case 'blog':
-                      cardWidget = BlogFaviouriteCard(
-                        userImage: post.userData?.imagePath ?? '',
-                        userName: post.userData?.name ?? '',
-                        postTitle: post.title ?? '',
-                        postCaption: post.description ?? '',
-                        postImage: post.imageUrl ?? '',
-                        dateTime: post.bookmarkDate ?? '',
-                        viewcounts: post.pgcnt ?? 0,
-                        controller: controller,
-                        bookmarkId: post.id ?? 0,
-                        url: post.urlcomponent ?? '',
-                        type: post.type ?? '',
-                        manageBlogController: manageBlogController,
-                        manageNewsController: manageNewsController,
-                        clasifiedController: clasifiedController,
-                        companyController: companyController,
-                        editpostController: editPostController,
-                        questionAnswerController: questionAnswerController,
-                        likedbyuser: post.likedByUser ?? false,
-                      );
-                      break;
-                    case 'news':
-                      cardWidget = NewsFaviouriteCard(
-                        userImage: post.userData?.imagePath ?? '',
-                        userName: post.userData?.name ?? '',
-                        postTitle: post.title ?? '',
-                        postCaption: post.description ?? '',
-                        postImage: post.imageUrl ?? '',
-                        dateTime: post.bookmarkDate ?? '',
-                        viewcounts: post.pgcnt ?? 0,
-                        controller: controller,
-                        bookmarkId: post.id ?? 0,
-                        url: post.urlcomponent ?? '',
-                        type: post.type ?? '',
-                        manageBlogController: manageBlogController,
-                        manageNewsController: manageNewsController,
-                        clasifiedController: clasifiedController,
-                        companyController: companyController,
-                        editpostController: editPostController,
-                        questionAnswerController: questionAnswerController,
-                        likedbyuser: post.likedByUser ?? false,
-                      );
-                      break;
-
-                    case 'video':
-                      cardWidget = VideoFavouriteCard(
-                        userImage: post.userData?.imagePath ?? '',
-                        userName: post.userData?.name ?? '',
-                        postTitle: post.title ?? '',
-                        postCaption: post.description ?? '',
-                        postVideo: post.image ?? '',
-                        dateTime: post.bookmarkDate ?? '',
-                        viewcounts: post.pgcnt ?? 0,
-                        controller: controller,
-                        bookmarkId: post.id ?? 0,
-                        url: post.urlcomponent ?? '',
-                        type: post.type ?? '',
-                      );
-                      break;
-                    case 'database':
-                      cardWidget = DatabaseFavouriteCard(
-                        userImage: post.userData?.imagePath ?? '',
-                        userName: post.title ?? '',
-                        postTitle: post.title ?? '',
-                        postLocation: post.city ?? '',
-                        immlm: post.immlm ?? '',
-                        plan: post.plan ?? '',
-                        postImage: post.imageUrl ?? '',
-                        dateTime: post.bookmarkDate ?? '',
-                        controller: controller,
-                        bookmarkId: post.id ?? 0,
-                        type: post.type ?? '',
-                        manageBlogController: manageBlogController,
-                        manageNewsController: manageNewsController,
-                        clasifiedController: clasifiedController,
-                        companyController: companyController,
-                        editpostController: editPostController,
-                        questionAnswerController: questionAnswerController,
-                      );
-                      break;
-                    case 'question':
-                      cardWidget = QuestionFavouriteCard(
-                        userImage: post.userData?.imagePath ?? '',
-                        userName: post.userData?.name ?? '',
-                        postTitle: post.title ?? '',
-                        postCaption: post.description ?? '',
-                        postImage: post.imageUrl ?? '',
-                        dateTime: post.bookmarkDate ?? '',
-                        viewcounts: post.pgcnt ?? 0,
-                        controller: controller,
-                        bookmarkId: post.id ?? 0,
-                        url: post.urlcomponent ?? '',
-                        type: post.type ?? '',
-                        manageBlogController: manageBlogController,
-                        manageNewsController: manageNewsController,
-                        clasifiedController: clasifiedController,
-                        companyController: companyController,
-                        editpostController: editPostController,
-                        questionAnswerController: questionAnswerController,
-                        likedbyuser: post.likedByUser ?? false,
-                      );
-                      break;
-
-                    default:
-                      cardWidget = const SizedBox();
-                  }
-                  return Padding(
-                    padding: const EdgeInsets.only(
-                      bottom: 12,
-                      left: 16,
-                      right: 16,
-                    ),
-                    child: GestureDetector(
-                      onTap: () {
-                        _navigateToDetails(post);
-                      },
-                      child: cardWidget,
-                    ),
-                  );
-                });
-          }),
+            }),
+          ],
         ),
       ),
     );
@@ -326,5 +339,72 @@ class _FavouriteState extends State<Favourite> {
         Get.toNamed(Routes.favouritrdetailsscreen, arguments: post);
         break;
     }
+  }
+
+  Widget horiztallist() {
+    return SizedBox(
+      height: 50,
+      child: Obx(() {
+        if (controller.isLoading.value && controller.favouriteList.isEmpty) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (controller.favouriteList.isEmpty) {
+          return const Center(
+            child: Text(
+              'Data not found',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+          );
+        }
+
+        return ListView.builder(
+            shrinkWrap: false,
+            scrollDirection: Axis.horizontal,
+            itemCount: controller.types.length,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                child: Wrap(
+                  spacing: 6.0,
+                  runSpacing: 6.0,
+                  children: [
+                    ChoiceChip(
+                      label: Text(
+                        controller.types[index],
+                      ),
+                      selected: controller.selectedType.value ==
+                          controller.types[index],
+                      selectedColor: AppColors.blackText,
+                      onSelected: (bool selected) {
+                        controller.selectedType.value =
+                            selected ? controller.types[index] : 'All';
+                        controller.fetchBookmark(1);
+                      },
+                      backgroundColor: AppColors.grey.withOpacity(0.3),
+                      side: BorderSide.none,
+                      labelStyle: TextStyle(
+                              fontSize: 12.0,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.blackText,
+                              fontFamily: 'assets/fonst/Metropolis-Black.otf')
+                          .copyWith(
+                              color: controller.selectedType.value ==
+                                      controller.types[index]
+                                  ? Colors.white
+                                  : Colors.black),
+                      showCheckmark: false,
+                      // checkmarkColor: AppColors.backgroundColor,
+                    ),
+                  ],
+                ),
+              );
+            });
+      }),
+    );
   }
 }

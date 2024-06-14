@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
+import 'package:flutter_google_places_hoc081098/google_maps_webservice_places.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:google_api_headers/google_api_headers.dart';
 import 'package:mlmdiary/database/controller/database_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/customfilter/custom_filter.dart';
-import 'package:mlmdiary/widgets/custom_location.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
 import 'package:mlmdiary/database/user_card.dart';
 
@@ -21,11 +24,12 @@ class DatabaseScreen extends StatefulWidget {
 class _DatabaseState extends State<DatabaseScreen> {
   final _loc = TextEditingController();
   final DatabaseController controller = Get.put(DatabaseController());
-
+  String googleApikey = "AIzaSyB3s5ixJVnWzsXoUZaP9ISDp_80GXWJXuU";
+  late double lat = 0.0;
+  late double log = 0.0;
   @override
   void initState() {
     super.initState();
-    controller.getMlmDatabase(1);
     _refreshData();
   }
 
@@ -57,14 +61,117 @@ class _DatabaseState extends State<DatabaseScreen> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: CustomLocationInput(
-                        controller: _loc,
-                        prefixIcon: Icons.location_on_outlined,
-                        suffixIcon: Icons.clear,
-                        onClear: () {},
-                        onTap: () async {},
-                        onChanged: (value) {},
-                        hintText: 'Location',
+                      child: Obx(
+                        () => Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12.0),
+                            color: AppColors.white,
+                          ),
+                          height: 40,
+                          child: TextFormField(
+                            controller:
+                                controller.clasifiedController.location.value,
+                            readOnly: true,
+                            style: TextStyle(
+                              color: AppColors.blackText,
+                              fontSize: 14,
+                            ),
+                            textAlign: TextAlign.start,
+                            onTap: () async {
+                              var place = await PlacesAutocomplete.show(
+                                context: context,
+                                apiKey: googleApikey,
+                                mode: Mode.fullscreen,
+                                hint: 'Search and Save Location.',
+                                cursorColor: AppColors.primaryColor,
+                                types: ['geocode', 'establishment'],
+                                strictbounds: false,
+                                onError: (err) {},
+                              );
+
+                              if (place != null) {
+                                setState(() {
+                                  controller.clasifiedController.location.value
+                                      .text = place.description.toString();
+                                  _loc.text = controller
+                                      .clasifiedController.location.value.text;
+                                  _refreshData();
+                                });
+                                final plist = GoogleMapsPlaces(
+                                  apiKey: googleApikey,
+                                  apiHeaders: await const GoogleApiHeaders()
+                                      .getHeaders(),
+                                );
+                                String placeid = place.placeId ?? "0";
+                                final detail =
+                                    await plist.getDetailsByPlaceId(placeid);
+                                for (var component
+                                    in detail.result.addressComponents) {
+                                  for (var type in component.types) {
+                                    if (type == "administrative_area_level_1") {
+                                      controller.clasifiedController.state.value
+                                          .text = component.longName;
+                                    } else if (type == "locality") {
+                                      controller.clasifiedController.city.value
+                                          .text = component.longName;
+                                    } else if (type == "country") {
+                                      controller.clasifiedController.country
+                                          .value.text = component.longName;
+                                    }
+                                  }
+                                }
+
+                                final geometry = detail.result.geometry!;
+                                setState(() {
+                                  lat = geometry.location.lat;
+                                  log = geometry.location.lng;
+                                });
+                              }
+                            },
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              alignLabelWithHint: true,
+                              prefixIcon: const Icon(Icons.search),
+                              suffixIcon: InkWell(
+                                  onTap: () {
+                                    controller.clearFields();
+                                  },
+                                  child: const Icon(Icons.clear_sharp)),
+                              hintText: "Location",
+                              hintStyle: TextStyle(
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.blackText,
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                setState(() {
+                                  controller.clasifiedController
+                                      .validateAddress();
+                                });
+                              } else {}
+                              return null;
+                            },
+                            onFieldSubmitted: (value) {
+                              if (value.isEmpty) {
+                                Fluttertoast.showToast(
+                                    timeInSecForIosWeb: 2,
+                                    msg:
+                                        'Please Search and Save your Business Location');
+                                setState(() {
+                                  controller.clasifiedController
+                                      .validateAddress();
+                                });
+                              } else if (value.isNotEmpty) {
+                                setState(() {
+                                  controller.clasifiedController
+                                      .validateAddress();
+                                });
+                              }
+                            },
+                          ),
+                        ),
                       ),
                     ),
                     SizedBox(

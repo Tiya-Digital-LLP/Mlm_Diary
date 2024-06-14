@@ -97,32 +97,34 @@ class _ProfileScreenState extends State<ProfileScreen>
                       ),
                     ),
                     30.sbw,
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          userProfile.name ?? 'N/A',
-                          style: textStyleW700(
-                              size.width * 0.045, AppColors.blackText),
-                        ),
-                        Text(
-                          '${userProfile.city ?? 'N/A'}, ${userProfile.state ?? 'N/A'}, ${userProfile.country ?? 'N/A'}',
-                          style: textStyleW500(
-                            size.width * 0.035,
-                            AppColors.blackText,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            userProfile.name ?? 'N/A',
+                            style: textStyleW700(
+                                size.width * 0.045, AppColors.blackText),
                           ),
-                        ),
-                        Text(
-                          userProfile.company ?? 'N/A',
-                          style: textStyleW500(
-                              size.width * 0.035, AppColors.blackText),
-                        ),
-                        Text(
-                          userProfile.plan ?? 'N/A',
-                          style: textStyleW500(
-                              size.width * 0.035, AppColors.blackText),
-                        ),
-                      ],
+                          Text(
+                            '${userProfile.city ?? 'N/A'}, ${userProfile.state ?? 'N/A'}, ${userProfile.country ?? 'N/A'}',
+                            style: textStyleW500(
+                              size.width * 0.035,
+                              AppColors.blackText,
+                            ),
+                          ),
+                          Text(
+                            userProfile.company ?? 'N/A',
+                            style: textStyleW500(
+                                size.width * 0.035, AppColors.blackText),
+                          ),
+                          Text(
+                            userProfile.plan ?? 'N/A',
+                            style: textStyleW500(
+                                size.width * 0.035, AppColors.blackText),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),

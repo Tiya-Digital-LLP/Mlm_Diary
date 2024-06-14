@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
@@ -20,6 +19,16 @@ class FavouriteController extends GetxController {
   RxList<AllBookmarkData> favouriteList = RxList<AllBookmarkData>();
   final ScrollController scrollController = ScrollController();
   var isEndOfData = false.obs;
+  final type = TextEditingController();
+  var selectedType = 'All'.obs;
+  final List<String> types = [
+    'All',
+    'blog',
+    'news',
+    'classified',
+    'company',
+    'question'
+  ];
 
   @override
   void onInit() {
@@ -200,26 +209,16 @@ class FavouriteController extends GetxController {
             ? 'ios'
             : '';
 
-    if (kDebugMode) {
-      print('Device Name: $device');
-    }
-
     SharedPreferences? prefs;
     try {
       prefs = await SharedPreferences.getInstance();
     } catch (error) {
-      if (kDebugMode) {
-        print('Error fetching SharedPreferences: $error');
-      }
       isLoading.value = false;
       return;
     }
 
     String? apiToken = prefs.getString(Constants.accessToken);
     if (apiToken == null) {
-      if (kDebugMode) {
-        print('API token is null');
-      }
       isLoading.value = false;
       return;
     }
@@ -228,10 +227,6 @@ class FavouriteController extends GetxController {
       var connectivityResult = await (Connectivity().checkConnectivity());
       // ignore: unrelated_type_equality_checks
       if (connectivityResult == ConnectivityResult.none) {
-        // Handle no internet connection case
-        if (kDebugMode) {
-          print("No internet connection");
-        }
         isLoading.value = false;
         return;
       }
@@ -240,6 +235,7 @@ class FavouriteController extends GetxController {
         'api_token': apiToken,
         'device': device,
         'page': page.toString(),
+        'type': selectedType.value == 'All' ? '' : selectedType.value,
       };
 
       Uri uri = Uri.parse(Constants.baseUrl + Constants.allbookmark)
@@ -251,47 +247,23 @@ class FavouriteController extends GetxController {
         final AllBookmarkEntity allBookmarkEntity =
             AllBookmarkEntity.fromJson(responseData);
 
-        if (kDebugMode) {
-          print('Manage bookmark data: $responseData');
-        }
-
         final List<AllBookmarkData> myBlogData = allBookmarkEntity.data ?? [];
         if (myBlogData.isNotEmpty) {
-          final AllBookmarkData bookmark = myBlogData[0];
-          final String bookmarkId = bookmark.id.toString();
-          await prefs.setString('lastBlogid', bookmarkId);
-          if (kDebugMode) {
-            print('Last bookmark ID stored: $bookmarkId');
-          }
-
           if (page == 1) {
             favouriteList.assignAll(allBookmarkEntity.data ?? []);
           } else {
             favouriteList.addAll(allBookmarkEntity.data ?? []);
           }
 
-          // Check if we received fewer items than expected to identify the end of data
           if (myBlogData.length < 10) {
             isEndOfData.value = true;
           }
         } else {
-          // Handle no data found case
-          if (kDebugMode) {
-            print("No data found");
-          }
           isEndOfData.value = true;
-        }
-      } else {
-        // Handle failed to fetch data case
-        if (kDebugMode) {
-          print("Failed to fetch data");
         }
       }
     } catch (error) {
       // Handle general error case
-      if (kDebugMode) {
-        print("An error occurred: $error");
-      }
     } finally {
       isLoading.value = false;
     }

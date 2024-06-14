@@ -7,6 +7,7 @@ import 'package:mlmdiary/menu/menuscreens/news/manage_news_card.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
+import 'package:mlmdiary/widgets/remimaining_count_controller./remaining_count.dart';
 
 class ManageNews extends StatefulWidget {
   const ManageNews({super.key});
@@ -93,6 +94,7 @@ class _MlmnewsState extends State<ManageNews> {
                         newsId: post.id ?? 0,
                         likedCount: post.totallike ?? 0,
                         controller: controller,
+                        newsstatus: post.status ?? 0,
                       ),
                     ),
                   );
@@ -101,8 +103,12 @@ class _MlmnewsState extends State<ManageNews> {
         ),
       ),
       floatingActionButton: InkWell(
-        onTap: () {
-          Get.toNamed(Routes.addnews);
+        onTap: () async {
+          var controller = CustomFloatingActionButtonController(context);
+
+          String selectedType = 'news';
+
+          await controller.handleTap(selectedType);
         },
         child: Ink(
           decoration: const BoxDecoration(

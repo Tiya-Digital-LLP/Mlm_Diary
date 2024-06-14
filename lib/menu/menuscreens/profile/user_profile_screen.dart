@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/database/controller/database_controller.dart';
@@ -126,12 +127,11 @@ class _UserProfileScreenState extends State<UserProfileScreen>
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Obx(() => IconButton(
-                  icon: Icon(
-                    isBookmarked.value ? Icons.bookmark : Icons.bookmark_border,
-                    color: isBookmarked.value
-                        ? AppColors.primaryColor
-                        : Colors.black,
-                    size: 28,
+                  icon: SvgPicture.asset(
+                    isBookmarked.value
+                        ? Assets.svgCheckBookmark
+                        : Assets.svgSavePost,
+                    height: size.height * 0.028,
                   ),
                   onPressed: _toggleBookmark,
                 )),

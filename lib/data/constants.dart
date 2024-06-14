@@ -52,8 +52,7 @@ class Constants {
   static const String mlmdatabase = "/getdatabase";
   static const String countviewuserprofile = "/countview_database";
 
-  static const String remainigclassifeidcount =
-      "/remaining_classified_count_check";
+  static const String remainigcount = "/remaining_count_check";
   static const String news = "/addnews";
   static const String mynews = "/mynewslist";
   static const String getnews = "/getnews";

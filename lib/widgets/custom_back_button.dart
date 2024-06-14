@@ -12,12 +12,17 @@ class CustomBackButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Align(
       alignment: Alignment.topLeft,
-      child: InkWell(
-        onTap: onTap ??
-            () {
-              Get.back();
-            },
-        child: SvgPicture.asset(Assets.svgBack),
+      child: Material(
+        shape: const CircleBorder(),
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap ??
+              () {
+                Get.back();
+              },
+          customBorder: const CircleBorder(),
+          child: Ink(child: SvgPicture.asset(Assets.svgBack)),
+        ),
       ),
     );
   }

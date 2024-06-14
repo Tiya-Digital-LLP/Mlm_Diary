@@ -10,6 +10,7 @@ import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
+import 'package:mlmdiary/widgets/remimaining_count_controller./remaining_count.dart';
 
 class MlmNews extends StatefulWidget {
   const MlmNews({super.key});
@@ -161,11 +162,11 @@ class _MlmNewsScreenState extends State<MlmNews> {
       ),
       floatingActionButton: InkWell(
         onTap: () async {
-          // controller.isLoading(true);
-          // bool success = await controller.classifiedRemainingCount();
-          // if (success) {
-          Get.toNamed(Routes.addnews);
-          // }
+          var controller = CustomFloatingActionButtonController(context);
+
+          String selectedType = 'news';
+
+          await controller.handleTap(selectedType);
         },
         child: Ink(
           decoration: const BoxDecoration(

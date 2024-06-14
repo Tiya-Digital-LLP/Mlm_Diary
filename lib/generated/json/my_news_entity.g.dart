@@ -74,6 +74,10 @@ MyNewsData $MyNewsDataFromJson(Map<String, dynamic> json) {
   if (creatby != null) {
     myNewsData.creatby = creatby;
   }
+  final int? status = jsonConvert.convert<int>(json['status']);
+  if (status != null) {
+    myNewsData.status = status;
+  }
   final String? subcategory = jsonConvert.convert<String>(json['subcategory']);
   if (subcategory != null) {
     myNewsData.subcategory = subcategory;
@@ -130,6 +134,7 @@ Map<String, dynamic> $MyNewsDataToJson(MyNewsData entity) {
   data['createdate'] = entity.createdate;
   data['category'] = entity.category;
   data['creatby'] = entity.creatby;
+  data['status'] = entity.status;
   data['subcategory'] = entity.subcategory;
   data['website'] = entity.website;
   data['urlcomponent'] = entity.urlcomponent;
@@ -153,6 +158,7 @@ extension MyNewsDataExtension on MyNewsData {
     String? createdate,
     String? category,
     String? creatby,
+    int? status,
     String? subcategory,
     String? website,
     String? urlcomponent,
@@ -173,6 +179,7 @@ extension MyNewsDataExtension on MyNewsData {
       ..createdate = createdate ?? this.createdate
       ..category = category ?? this.category
       ..creatby = creatby ?? this.creatby
+      ..status = status ?? this.status
       ..subcategory = subcategory ?? this.subcategory
       ..website = website ?? this.website
       ..urlcomponent = urlcomponent ?? this.urlcomponent

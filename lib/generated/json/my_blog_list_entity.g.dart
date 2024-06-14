@@ -80,6 +80,10 @@ MyBlogListData $MyBlogListDataFromJson(Map<String, dynamic> json) {
   if (subcategory != null) {
     myBlogListData.subcategory = subcategory;
   }
+  final int? status = jsonConvert.convert<int>(json['status']);
+  if (status != null) {
+    myBlogListData.status = status;
+  }
   final String? website = jsonConvert.convert<String>(json['website']);
   if (website != null) {
     myBlogListData.website = website;
@@ -133,6 +137,7 @@ Map<String, dynamic> $MyBlogListDataToJson(MyBlogListData entity) {
   data['category'] = entity.category;
   data['user_id'] = entity.userId;
   data['subcategory'] = entity.subcategory;
+  data['status'] = entity.status;
   data['website'] = entity.website;
   data['urlcomponent'] = entity.urlcomponent;
   data['totallike'] = entity.totallike;
@@ -156,6 +161,7 @@ extension MyBlogListDataExtension on MyBlogListData {
     String? category,
     int? userId,
     String? subcategory,
+    int? status,
     String? website,
     String? urlcomponent,
     int? totallike,
@@ -176,6 +182,7 @@ extension MyBlogListDataExtension on MyBlogListData {
       ..category = category ?? this.category
       ..userId = userId ?? this.userId
       ..subcategory = subcategory ?? this.subcategory
+      ..status = status ?? this.status
       ..website = website ?? this.website
       ..urlcomponent = urlcomponent ?? this.urlcomponent
       ..totallike = totallike ?? this.totallike

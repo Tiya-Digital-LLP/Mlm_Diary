@@ -35,6 +35,7 @@ class MyBlogListData {
 	@JSONField(name: "user_id")
 	int? userId = 0;
 	String? subcategory = '';
+	int? status = 0;
 	String? website = '';
 	String? urlcomponent = '';
 	int? totallike = 0;

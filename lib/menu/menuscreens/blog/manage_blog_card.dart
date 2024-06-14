@@ -9,6 +9,7 @@ import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
+import 'package:mlmdiary/widgets/logout_dialog/custom_logout_dialog.dart';
 
 class ManageBlogCard extends StatefulWidget {
   final String userImage;
@@ -21,6 +22,7 @@ class ManageBlogCard extends StatefulWidget {
   final int likedCount;
   final int viewcounts;
   final int blogId;
+  final int blogstatus;
 
   final int bookmarkCount;
 
@@ -40,6 +42,7 @@ class ManageBlogCard extends StatefulWidget {
     required this.viewcounts,
     required this.bookmarkCount,
     required this.blogId,
+    required this.blogstatus,
   });
 
   @override
@@ -91,6 +94,32 @@ class _ManageBlogCardState extends State<ManageBlogCard> {
         newBookmarkedValue ? bookmarkCount.value + 1 : bookmarkCount.value - 1;
 
     await widget.controller.toggleBookMark(widget.blogId);
+  }
+
+  String getStatusText(int status) {
+    switch (status) {
+      case 0:
+        return 'Pending';
+      case 1:
+        return 'Approved';
+      case 2:
+        return 'Rejected';
+      default:
+        return 'Unknown';
+    }
+  }
+
+  Color getStatusColor(int status) {
+    switch (status) {
+      case 0:
+        return Colors.orange.withOpacity(0.5);
+      case 1:
+        return Colors.green.withOpacity(0.5);
+      case 2:
+        return Colors.red.withOpacity(0.5);
+      default:
+        return Colors.grey.withOpacity(0.5);
+    }
   }
 
   @override
@@ -190,22 +219,26 @@ class _ManageBlogCardState extends State<ManageBlogCard> {
                 ),
                 Row(
                   children: [
-                    InkWell(
-                      onTap: () {
-                        Get.toNamed(
-                          Routes.blogplusicon,
-                        );
-                      },
-                      child: Ink(
-                        height: size.height * 0.030,
-                        width: size.height * 0.030,
-                        child: SvgPicture.asset(Assets.svgPostEdit),
+                    Material(
+                      child: InkWell(
+                        onTap: () {
+                          Get.toNamed(
+                            Routes.blogplusicon,
+                          );
+                        },
+                        child: Ink(
+                          height: size.height * 0.030,
+                          width: size.height * 0.030,
+                          child: SvgPicture.asset(Assets.svgPostEdit),
+                        ),
                       ),
                     ),
                     10.sbw,
                     InkWell(
                       onTap: () {
-                        _showLogoutDialog(context);
+                        LogoutDialog.show(context, () {
+                          widget.onDelete();
+                        });
                       },
                       child: Ink(
                         height: size.height * 0.030,
@@ -237,11 +270,11 @@ class _ManageBlogCardState extends State<ManageBlogCard> {
                   height: 30,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(40),
-                    color: AppColors.greenBorder.withOpacity(0.5),
+                    color: getStatusColor(widget.blogstatus),
                   ),
                   child: Center(
                     child: Text(
-                      'Approved',
+                      getStatusText(widget.blogstatus),
                       style: textStyleW500(
                           size.width * 0.035, AppColors.blackText),
                     ),
@@ -257,104 +290,6 @@ class _ManageBlogCardState extends State<ManageBlogCard> {
           ),
         ],
       ),
-    );
-  }
-
-  void _showLogoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        final Size size = MediaQuery.of(context).size;
-
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-          contentPadding: EdgeInsets.zero,
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: double.infinity,
-                height: 100,
-                decoration: const BoxDecoration(
-                  // color: AppColors.primaryColor,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(12),
-                    topRight: Radius.circular(12),
-                  ),
-                ),
-                child: Center(
-                    child: Icon(
-                  Icons.cancel_outlined,
-                  size: 80,
-                  color: AppColors.redText,
-                )),
-              ),
-              16.sbh,
-              Column(
-                children: [
-                  Text(
-                    'Are you sure?',
-                    style: textStyleW700(
-                      size.width * 0.040,
-                      AppColors.blackText,
-                    ),
-                  ),
-                  5.sbh,
-                  Text(
-                    'Do you want to delete',
-                    style: textStyleW400(
-                      size.width * 0.035,
-                      AppColors.blackText,
-                    ),
-                  ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                            child: TextButton(
-                                style: ElevatedButton.styleFrom(),
-                                onPressed: () {
-                                  Get.back();
-                                },
-                                child: Text(
-                                  'Cancel',
-                                  style: textStyleW700(
-                                      size.width * 0.035, AppColors.blackText),
-                                ))),
-                        5.sbw,
-                        Expanded(
-                            child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.redText,
-                                  shadowColor: AppColors.redText,
-                                  elevation: 3,
-                                ),
-                                onPressed: () {
-                                  widget.onDelete();
-                                  Get.back();
-                                },
-                                child: Text(
-                                  'Delete',
-                                  style: textStyleW700(
-                                      size.width * 0.035, AppColors.white),
-                                ))),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }

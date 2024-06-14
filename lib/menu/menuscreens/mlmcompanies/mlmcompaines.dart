@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/mlmcompanies_card.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
-import 'package:mlmdiary/widgets/customfilter/custom_filter.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
 
 class MlmCompanies extends StatefulWidget {
@@ -19,7 +16,6 @@ class MlmCompanies extends StatefulWidget {
 }
 
 class _MlmCompaniesState extends State<MlmCompanies> {
-  final _search = TextEditingController();
   final CompanyController controller = Get.put(CompanyController());
 
   @override
@@ -34,8 +30,6 @@ class _MlmCompaniesState extends State<MlmCompanies> {
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
-
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: CustomAppBar(
@@ -54,36 +48,15 @@ class _MlmCompaniesState extends State<MlmCompanies> {
                 children: [
                   Expanded(
                     child: CustomSearchInput(
-                      controller: _search,
+                      controller: controller.search,
                       onSubmitted: (value) {
                         WidgetsBinding.instance.focusManager.primaryFocus
                             ?.unfocus();
+                        _refreshData();
                       },
                       onChanged: (value) {
-                        if (value.isEmpty) {
-                          WidgetsBinding.instance.focusManager.primaryFocus;
-                        }
+                        _refreshData();
                       },
-                    ),
-                  ),
-                  5.sbw,
-                  GestureDetector(
-                    onTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return const BottomSheetContent();
-                        },
-                      );
-                    },
-                    child: Container(
-                      alignment: Alignment.center,
-                      height: size.height * 0.048,
-                      width: size.height * 0.048,
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                          color: AppColors.white, shape: BoxShape.circle),
-                      child: SvgPicture.asset(Assets.svgFilter),
                     ),
                   ),
                 ],

@@ -94,6 +94,12 @@ class ClasifiedController extends GetxController {
   RxList<ClassifiedLikeListData> classifiedLikeList =
       RxList<ClassifiedLikeListData>();
 
+  final List<String> types = [
+    'blog',
+    'news',
+    'classified',
+  ];
+
   @override
   void onInit() {
     super.onInit();
@@ -643,9 +649,7 @@ class ClasifiedController extends GetxController {
     }
   }
 
-  // classfied_remaining_count
-
-  Future<Map<String, dynamic>?> classifiedRemainingCount() async {
+  Future<Map<String, dynamic>?> classifiedRemainingCount(String type) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
 
@@ -653,45 +657,62 @@ class ClasifiedController extends GetxController {
 
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
+      if (kDebugMode) {
+        print('Connectivity result: $connectivityResult');
+      }
+
       // ignore: unrelated_type_equality_checks
       if (connectivityResult != ConnectivityResult.none) {
-        var uri = Uri.parse(
-            '${Constants.baseUrl}${Constants.remainigclassifeidcount}');
-        var request = http.MultipartRequest('POST', uri);
+        var uri = Uri.parse('${Constants.baseUrl}${Constants.remainigcount}');
+        if (kDebugMode) {
+          print('Request URI: $uri');
+        }
 
+        var request = http.MultipartRequest('POST', uri);
         request.fields['api_token'] = apiToken ?? '';
         request.fields['device'] = device;
+        request.fields['type'] = type;
+
+        if (kDebugMode) {
+          print('Request fields: ${request.fields}');
+        }
 
         final streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);
 
+        if (kDebugMode) {
+          print('Response status code: ${response.statusCode}');
+        }
+        if (kDebugMode) {
+          print('Response body: ${response.body}');
+        }
+
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
+          if (kDebugMode) {
+            print('Decoded data: $data');
+          }
           return data;
         } else {
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+          if (kDebugMode) {
+            print('Error: ${response.body}');
+          }
+          return null;
         }
       } else {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-        );
+        if (kDebugMode) {
+          print('No internet connection');
+        }
+        return null;
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
+      if (kDebugMode) {
+        print('Error: $e');
+      }
+      return null;
     } finally {
-      isLoading(false);
+      isLoading(false); // Assuming this method handles loading state
     }
-    return null;
   }
 
 // like_list_classified

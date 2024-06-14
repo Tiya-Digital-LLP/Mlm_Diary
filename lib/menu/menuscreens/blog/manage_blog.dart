@@ -7,6 +7,7 @@ import 'package:mlmdiary/menu/menuscreens/blog/manage_blog_card.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
+import 'package:mlmdiary/widgets/remimaining_count_controller./remaining_count.dart';
 
 class ManageBlog extends StatefulWidget {
   const ManageBlog({super.key});
@@ -95,6 +96,7 @@ class _ManageBlogState extends State<ManageBlog> {
                       bookmarkCount: post.totalbookmark ?? 0,
                       likedCount: post.totallike ?? 0,
                       blogId: post.articleId ?? 0,
+                      blogstatus: post.status ?? 0,
                     ),
                   ),
                 );
@@ -103,19 +105,26 @@ class _ManageBlogState extends State<ManageBlog> {
           }),
         ),
       ),
-      floatingActionButton: InkWell(
-        onTap: () {
-          Get.toNamed(Routes.addblog);
-        },
-        child: Ink(
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.transparent,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: SvgPicture.asset(
-              Assets.svgPlusIcon,
+      floatingActionButton: Material(
+        shape: const CircleBorder(),
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () async {
+            var controller = CustomFloatingActionButtonController(context);
+            String selectedType = 'blog';
+            await controller.handleTap(selectedType);
+          },
+          customBorder: const CircleBorder(),
+          child: Ink(
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.transparent,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: SvgPicture.asset(
+                Assets.svgPlusIcon,
+              ),
             ),
           ),
         ),

@@ -9,6 +9,7 @@ import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
+import 'package:mlmdiary/widgets/logout_dialog/custom_logout_dialog.dart';
 
 class ManageClassifiedCard extends StatefulWidget {
   const ManageClassifiedCard({
@@ -193,7 +194,11 @@ class _ManageClassifiedCardState extends State<ManageClassifiedCard> {
                     ),
                     10.sbw,
                     InkWell(
-                      onTap: widget.onDelete,
+                      onTap: () {
+                        LogoutDialog.show(context, () {
+                          widget.onDelete();
+                        });
+                      },
                       child: Ink(
                         height: size.height * 0.030,
                         width: size.height * 0.030,
@@ -218,23 +223,7 @@ class _ManageClassifiedCardState extends State<ManageClassifiedCard> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
-                  width: 100,
-                  height: 30,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(40),
-                    color: AppColors.greenBorder.withOpacity(0.5),
-                  ),
-                  child: Center(
-                    child: Text(
-                      'Approved',
-                      style: textStyleW500(
-                          size.width * 0.035, AppColors.blackText),
-                    ),
-                  ),
-                ),
                 Container(
                   width: 120,
                   height: 30,

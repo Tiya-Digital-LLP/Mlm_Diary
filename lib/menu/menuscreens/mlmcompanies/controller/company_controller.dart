@@ -36,6 +36,8 @@ class CompanyController extends GetxController {
   var bookmarkStatusMap = <int, bool>{};
   var bookmarkCountMap = <int, int>{};
 
+  final search = TextEditingController();
+
   @override
   void onInit() {
     super.onInit();
@@ -75,6 +77,7 @@ class CompanyController extends GetxController {
         request.fields['api_token'] = apiToken ?? '';
         request.fields['device'] = device;
         request.fields['page'] = page.toString();
+        request.fields['search'] = search.value.text;
 
         final streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);

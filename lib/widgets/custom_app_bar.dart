@@ -31,6 +31,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             onTap: () {
               Get.back();
             },
+            customBorder: const CircleBorder(),
             child: SvgPicture.asset(Assets.svgBack),
           ),
         ),

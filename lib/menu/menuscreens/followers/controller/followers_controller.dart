@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -19,6 +20,8 @@ class FollowersController extends GetxController {
 
   var followers = <GetFollowersData>[].obs;
   var following = <GetFollowingData>[].obs;
+
+  final search = TextEditingController();
 
 //loading
   var isLoading = false.obs;
@@ -129,6 +132,7 @@ class FollowersController extends GetxController {
         request.fields['api_token'] = apiToken ?? '';
         request.fields['device'] = device;
         request.fields['user_id'] = userId.toString();
+        request.fields['search'] = search.value.text;
 
         if (kDebugMode) {
           print('Sending request to: ${uri.toString()}');
@@ -215,6 +219,7 @@ class FollowersController extends GetxController {
         request.fields['api_token'] = apiToken ?? '';
         request.fields['device'] = device;
         request.fields['user_id'] = userId.toString();
+        request.fields['search'] = search.value.text;
 
         if (kDebugMode) {
           print('Sending request to: ${uri.toString()}');

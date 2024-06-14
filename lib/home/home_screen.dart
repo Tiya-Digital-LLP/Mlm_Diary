@@ -14,6 +14,7 @@ import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/lists.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
+import 'package:mlmdiary/widgets/remimaining_count_controller./remaining_count.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -275,8 +276,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     PopupMenuItem(
                       value: 2,
-                      onTap: () {
-                        Get.toNamed(Routes.addclassified);
+                      onTap: () async {
+                        var controller =
+                            CustomFloatingActionButtonController(context);
+
+                        String selectedType = 'classified';
+
+                        await controller.handleTap(selectedType);
                       },
                       child: Row(
                         children: [
@@ -301,8 +307,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     PopupMenuItem(
                       value: 4,
-                      onTap: () {
-                        Get.toNamed(Routes.addblog);
+                      onTap: () async {
+                        var controller =
+                            CustomFloatingActionButtonController(context);
+
+                        String selectedType = 'blog';
+
+                        await controller.handleTap(selectedType);
                       },
                       child: Row(
                         children: [
@@ -314,8 +325,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     PopupMenuItem(
                       value: 5,
-                      onTap: () {
-                        Get.toNamed(Routes.addnews);
+                      onTap: () async {
+                        var controller =
+                            CustomFloatingActionButtonController(context);
+
+                        String selectedType = 'news';
+
+                        await controller.handleTap(selectedType);
                       },
                       child: Row(
                         children: [

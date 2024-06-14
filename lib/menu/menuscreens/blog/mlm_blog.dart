@@ -10,6 +10,7 @@ import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
+import 'package:mlmdiary/widgets/remimaining_count_controller./remaining_count.dart';
 
 class MlmBlog extends StatefulWidget {
   const MlmBlog({super.key});
@@ -159,8 +160,12 @@ class _MlmBlogState extends State<MlmBlog> {
         ),
       ),
       floatingActionButton: InkWell(
-        onTap: () {
-          Get.toNamed(Routes.addblog);
+        onTap: () async {
+          var controller = CustomFloatingActionButtonController(context);
+
+          String selectedType = 'blog';
+
+          await controller.handleTap(selectedType);
         },
         child: Ink(
           decoration: const BoxDecoration(

@@ -31,6 +31,7 @@ class MyNewsData {
 	String? createdate = '';
 	String? category = '';
 	String? creatby = '';
+	int? status = 0;
 	String? subcategory = '';
 	String? website = '';
 	String? urlcomponent = '';
