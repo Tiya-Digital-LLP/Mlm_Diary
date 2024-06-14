@@ -49,7 +49,6 @@ class _ManageClassifiedPlusIconState extends State<ManageClassifiedPlusIcon> {
   @override
   void initState() {
     super.initState();
-    controller.getClassified();
   }
 
   @override
@@ -474,7 +473,6 @@ class _ManageClassifiedPlusIconState extends State<ManageClassifiedPlusIcon> {
     } else if (controller.isCategorySelectedList.contains(true)) {
       // Perform address validation
       if (controller.addressValidationColor.value != AppColors.redText) {
-        await controller.getClassified();
         await controller.updateClassified(imageFile: file.value);
       } else {
         showToasterrorborder("Please enter a valid address.", context);

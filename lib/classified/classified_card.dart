@@ -25,6 +25,7 @@ class ClassifiedCard extends StatefulWidget {
   final bool isPopular;
   final String image;
   final String url;
+  final bool likedbyuser;
 
   const ClassifiedCard({
     super.key,
@@ -40,6 +41,7 @@ class ClassifiedCard extends StatefulWidget {
     required this.isPopular,
     required this.image,
     required this.url,
+    required this.likedbyuser,
   });
 
   @override
@@ -214,7 +216,7 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
                     SizedBox(
                       height: size.height * 0.028,
                       width: size.height * 0.028,
-                      child: GestureDetector(
+                      child: InkWell(
                         onTap: toggleLike,
                         child: Icon(
                           isLiked.value

@@ -85,6 +85,8 @@ class Constants {
   static const String likelistpost = "/post/likelist";
   static const String profileBookmark = "/bookmark_database";
   static const String profileFollow = "/follow";
+  static const String getFollowers = "/getfollowers";
+  static const String getFollowing = "/getfollowing";
 
   static const String addquestionanswer = "/addquestion";
   static const String myqusetionanswer = "/myquestion";

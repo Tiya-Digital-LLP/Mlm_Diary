@@ -9,8 +9,10 @@ import 'package:mlmdiary/menu/menuscreens/favourite/custom/classified_faviourite
 import 'package:mlmdiary/menu/menuscreens/favourite/custom/company_favourite_card.dart';
 import 'package:mlmdiary/menu/menuscreens/favourite/custom/database_favourite_card.dart';
 import 'package:mlmdiary/menu/menuscreens/favourite/custom/news_faviourite_card.dart';
+import 'package:mlmdiary/menu/menuscreens/favourite/custom/question_favourite_card.dart';
 import 'package:mlmdiary/menu/menuscreens/favourite/custom/video_faviouritr_card.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/video/controller/video_controller.dart';
@@ -38,6 +40,8 @@ class _FavouriteState extends State<Favourite> {
   final EditPostController editPostController = Get.put(EditPostController());
 
   final CompanyController companyController = Get.put(CompanyController());
+  final QuestionAnswerController questionAnswerController =
+      Get.put(QuestionAnswerController());
 
   @override
   void initState() {
@@ -141,6 +145,8 @@ class _FavouriteState extends State<Favourite> {
                         clasifiedController: clasifiedController,
                         companyController: companyController,
                         editpostController: editPostController,
+                        questionAnswerController: questionAnswerController,
+                        likedbyuser: post.likedByUser ?? false,
                       );
                       break;
                     case 'company':
@@ -161,6 +167,8 @@ class _FavouriteState extends State<Favourite> {
                         clasifiedController: clasifiedController,
                         companyController: companyController,
                         editpostController: editPostController,
+                        questionAnswerController: questionAnswerController,
+                        likedbyuser: post.likedByUser ?? false,
                       );
                       break;
 
@@ -182,6 +190,8 @@ class _FavouriteState extends State<Favourite> {
                         clasifiedController: clasifiedController,
                         companyController: companyController,
                         editpostController: editPostController,
+                        questionAnswerController: questionAnswerController,
+                        likedbyuser: post.likedByUser ?? false,
                       );
                       break;
                     case 'news':
@@ -202,6 +212,8 @@ class _FavouriteState extends State<Favourite> {
                         clasifiedController: clasifiedController,
                         companyController: companyController,
                         editpostController: editPostController,
+                        questionAnswerController: questionAnswerController,
+                        likedbyuser: post.likedByUser ?? false,
                       );
                       break;
 
@@ -238,6 +250,29 @@ class _FavouriteState extends State<Favourite> {
                         clasifiedController: clasifiedController,
                         companyController: companyController,
                         editpostController: editPostController,
+                        questionAnswerController: questionAnswerController,
+                      );
+                      break;
+                    case 'question':
+                      cardWidget = QuestionFavouriteCard(
+                        userImage: post.userData?.imagePath ?? '',
+                        userName: post.userData?.name ?? '',
+                        postTitle: post.title ?? '',
+                        postCaption: post.description ?? '',
+                        postImage: post.imageUrl ?? '',
+                        dateTime: post.bookmarkDate ?? '',
+                        viewcounts: post.pgcnt ?? 0,
+                        controller: controller,
+                        bookmarkId: post.id ?? 0,
+                        url: post.urlcomponent ?? '',
+                        type: post.type ?? '',
+                        manageBlogController: manageBlogController,
+                        manageNewsController: manageNewsController,
+                        clasifiedController: clasifiedController,
+                        companyController: companyController,
+                        editpostController: editPostController,
+                        questionAnswerController: questionAnswerController,
+                        likedbyuser: post.likedByUser ?? false,
                       );
                       break;
 
@@ -252,10 +287,7 @@ class _FavouriteState extends State<Favourite> {
                     ),
                     child: GestureDetector(
                       onTap: () {
-                        Get.toNamed(
-                          Routes.favouritrdetailsscreen,
-                          arguments: controller.favouriteList[index],
-                        );
+                        _navigateToDetails(post);
                       },
                       child: cardWidget,
                     ),
@@ -265,5 +297,34 @@ class _FavouriteState extends State<Favourite> {
         ),
       ),
     );
+  }
+
+  void _navigateToDetails(post) {
+    switch (post.type) {
+      case 'classified':
+        Get.toNamed(Routes.mlmclassifieddetail, arguments: post);
+        break;
+      case 'company':
+        Get.toNamed(Routes.favouritrdetailsscreen, arguments: post);
+        break;
+      case 'blog':
+        Get.toNamed(Routes.favouritrdetailsscreen, arguments: post);
+        break;
+      case 'news':
+        Get.toNamed(Routes.favouritrdetailsscreen, arguments: post);
+        break;
+      case 'video':
+        Get.toNamed(Routes.favouritrdetailsscreen, arguments: post);
+        break;
+      case 'database':
+        Get.toNamed(Routes.favouritrdetailsscreen, arguments: post);
+        break;
+      case 'question':
+        Get.toNamed(Routes.favouritrdetailsscreen, arguments: post);
+        break;
+      default:
+        Get.toNamed(Routes.favouritrdetailsscreen, arguments: post);
+        break;
+    }
   }
 }

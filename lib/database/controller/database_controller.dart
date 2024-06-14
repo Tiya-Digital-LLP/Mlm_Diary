@@ -8,8 +8,11 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/get_mlm_database_entity.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+
+import '../../generated/database_detail_entity.dart';
 
 class DatabaseController extends GetxController {
   int page = 1;
@@ -17,6 +20,10 @@ class DatabaseController extends GetxController {
   final ScrollController scrollController = ScrollController();
   var isLoading = false.obs;
   RxList<GetMlmDatabaseData> mlmDatabaseList = <GetMlmDatabaseData>[].obs;
+  RxList<DatabaseDetailData> mlmDetailsDatabaseList =
+      <DatabaseDetailData>[].obs;
+
+  final search = TextEditingController();
 
   @override
   void onInit() {
@@ -58,6 +65,7 @@ class DatabaseController extends GetxController {
         request.fields['api_token'] = apiToken ?? '';
         request.fields['device'] = device;
         request.fields['page'] = page.toString();
+        request.fields['search'] = search.value.text;
 
         final streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);
@@ -105,6 +113,61 @@ class DatabaseController extends GetxController {
       );
     } finally {
       isLoading(false);
+    }
+  }
+
+  Future<void> fetchUserPost(int userId, context) async {
+    isLoading.value = true;
+    String device =
+        Platform.isAndroid ? 'android' : (Platform.isIOS ? 'ios' : '');
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult == ConnectivityResult.none) {
+        showToasterrorborder("No internet connection", context);
+        isLoading.value = false;
+        return;
+      }
+
+      Map<String, String> queryParams = {
+        'api_token': apiToken ?? '',
+        'device': device,
+        'user_id': userId.toString(),
+      };
+
+      Uri uri = Uri.parse(Constants.baseUrl + Constants.userpost)
+          .replace(queryParameters: queryParams);
+
+      final response = await http.post(uri);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        final DatabaseDetailEntity postEntity =
+            DatabaseDetailEntity.fromJson(responseData);
+
+        final DatabaseDetailData? firstPost = postEntity.data;
+        if (firstPost != null) {
+          final String postId = firstPost.id.toString();
+          await prefs.setString('lastPostid', postId);
+
+          // Add the fetched post to the list
+          mlmDetailsDatabaseList.add(firstPost);
+        } else {
+          showToasterrorborder("No data found", context);
+        }
+      } else {
+        showToasterrorborder(
+            "Failed to fetch data. Status code: ${response.statusCode}",
+            context);
+      }
+    } catch (error) {
+      showToasterrorborder("An error occurred: $error", context);
+    } finally {
+      isLoading.value = false;
     }
   }
 }

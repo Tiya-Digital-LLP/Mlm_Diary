@@ -4,6 +4,7 @@ import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/favourite/controller/favourite_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
@@ -25,6 +26,8 @@ class DatabaseFavouriteCard extends StatefulWidget {
   final ManageBlogController manageBlogController;
   final ManageNewsController manageNewsController;
   final ClasifiedController clasifiedController;
+  final QuestionAnswerController questionAnswerController;
+
   final EditPostController editpostController;
 
   final CompanyController companyController;
@@ -49,6 +52,7 @@ class DatabaseFavouriteCard extends StatefulWidget {
     required this.immlm,
     required this.plan,
     required this.editpostController,
+    required this.questionAnswerController,
   });
 
   @override
@@ -70,6 +74,7 @@ class _FavouritrCardState extends State<DatabaseFavouriteCard> {
       widget.clasifiedController,
       widget.companyController,
       widget.editpostController,
+      widget.questionAnswerController,
     );
   }
 
@@ -85,6 +90,7 @@ class _FavouritrCardState extends State<DatabaseFavouriteCard> {
         widget.clasifiedController,
         widget.companyController,
         widget.editpostController,
+        widget.questionAnswerController,
       );
     });
   }
@@ -179,10 +185,10 @@ class _FavouritrCardState extends State<DatabaseFavouriteCard> {
                   child: GestureDetector(
                     onTap: togleBookmark,
                     child: Icon(
-                      isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                      isBookmarked ? Icons.bookmark_border : Icons.bookmark,
                       color: isBookmarked
-                          ? AppColors.primaryColor
-                          : AppColors.blackText,
+                          ? AppColors.blackText
+                          : AppColors.primaryColor,
                     ),
                   ),
                 ),

@@ -20,7 +20,6 @@ class DatabaseScreen extends StatefulWidget {
 
 class _DatabaseState extends State<DatabaseScreen> {
   final _loc = TextEditingController();
-  final _search = TextEditingController();
   final DatabaseController controller = Get.put(DatabaseController());
 
   @override
@@ -73,7 +72,7 @@ class _DatabaseState extends State<DatabaseScreen> {
                     ),
                     Expanded(
                       child: CustomSearchInput(
-                        controller: _search,
+                        controller: controller.search,
                         onSubmitted: (value) {
                           WidgetsBinding.instance.focusManager.primaryFocus
                               ?.unfocus();
@@ -81,9 +80,10 @@ class _DatabaseState extends State<DatabaseScreen> {
                           _refreshData();
                         },
                         onChanged: (value) {
-                          if (value.isEmpty) {
-                            WidgetsBinding.instance.focusManager.primaryFocus;
-
+                          WidgetsBinding.instance.focusManager.primaryFocus;
+                          if (value.isNotEmpty) {
+                            _refreshData();
+                          } else {
                             _refreshData();
                           }
                         },

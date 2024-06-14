@@ -762,13 +762,14 @@ class EditPostController extends GetxController {
           if (message == 'You have Follow this Profile') {
             bookmarkProfileStatusMap[userId] = true;
             bookmarkProfileCountMap[userId] =
-                (bookmarkCountMap[userId] ?? 0) + 1;
+                (bookmarkProfileCountMap[userId] ?? 0) + 1;
           } else if (message == 'You have UnFollow this Profile') {
             bookmarkProfileStatusMap[userId] = false;
             bookmarkProfileCountMap[userId] =
-                (bookmarkCountMap[userId] ?? 0) - 1;
+                (bookmarkProfileCountMap[userId] ?? 0) - 1;
           }
-
+          // Save user_id to SharedPreferences
+          await prefs.setInt('user_id', userId);
           Fluttertoast.showToast(
             msg: message!,
             toastLength: Toast.LENGTH_LONG,

@@ -145,6 +145,7 @@ class _ClassifiedScreenState extends State<ClassifiedScreen> {
                             bookmarkCount: post.totalbookmark ?? 0,
                             isPopular: post.popular == 'Y',
                             url: post.fullUrl ?? '',
+                            likedbyuser: post.likedByUser ?? false,
                           ),
                         ),
                       );

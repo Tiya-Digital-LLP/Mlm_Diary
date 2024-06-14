@@ -42,6 +42,8 @@ import 'package:mlmdiary/generated/get_blog_list_entity.dart';
 import 'package:mlmdiary/generated/get_category_entity.dart';
 import 'package:mlmdiary/generated/get_classified_entity.dart';
 import 'package:mlmdiary/generated/get_company_entity.dart';
+import 'package:mlmdiary/generated/get_followers_entity.dart';
+import 'package:mlmdiary/generated/get_following_entity.dart';
 import 'package:mlmdiary/generated/get_mlm_database_entity.dart';
 import 'package:mlmdiary/generated/get_news_list_entity.dart';
 import 'package:mlmdiary/generated/get_plan_list_entity.dart';
@@ -450,6 +452,22 @@ class JsonConvert {
       return data.map<GetCompanyEntity>((Map<String, dynamic> e) =>
           GetCompanyEntity.fromJson(e)).toList() as M;
     }
+    if (<GetFollowersEntity>[] is M) {
+      return data.map<GetFollowersEntity>((Map<String, dynamic> e) =>
+          GetFollowersEntity.fromJson(e)).toList() as M;
+    }
+    if (<GetFollowersData>[] is M) {
+      return data.map<GetFollowersData>((Map<String, dynamic> e) =>
+          GetFollowersData.fromJson(e)).toList() as M;
+    }
+    if (<GetFollowingEntity>[] is M) {
+      return data.map<GetFollowingEntity>((Map<String, dynamic> e) =>
+          GetFollowingEntity.fromJson(e)).toList() as M;
+    }
+    if (<GetFollowingData>[] is M) {
+      return data.map<GetFollowingData>((Map<String, dynamic> e) =>
+          GetFollowingData.fromJson(e)).toList() as M;
+    }
     if (<GetMlmDatabaseEntity>[] is M) {
       return data.map<GetMlmDatabaseEntity>((Map<String, dynamic> e) =>
           GetMlmDatabaseEntity.fromJson(e)).toList() as M;
@@ -841,6 +859,10 @@ class JsonConvertClassCollection {
     (GetClassifiedData).toString(): GetClassifiedData.fromJson,
     (GetClassifiedDataUserData).toString(): GetClassifiedDataUserData.fromJson,
     (GetCompanyEntity).toString(): GetCompanyEntity.fromJson,
+    (GetFollowersEntity).toString(): GetFollowersEntity.fromJson,
+    (GetFollowersData).toString(): GetFollowersData.fromJson,
+    (GetFollowingEntity).toString(): GetFollowingEntity.fromJson,
+    (GetFollowingData).toString(): GetFollowingData.fromJson,
     (GetMlmDatabaseEntity).toString(): GetMlmDatabaseEntity.fromJson,
     (GetMlmDatabaseData).toString(): GetMlmDatabaseData.fromJson,
     (GetNewsListEntity).toString(): GetNewsListEntity.fromJson,

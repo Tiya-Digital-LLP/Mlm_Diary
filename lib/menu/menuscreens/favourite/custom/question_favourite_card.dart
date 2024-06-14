@@ -16,7 +16,7 @@ import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 import 'package:share_plus/share_plus.dart';
 
-class ClassifiedFavouriteCard extends StatefulWidget {
+class QuestionFavouriteCard extends StatefulWidget {
   final String userImage;
   final String userName;
   final String postTitle;
@@ -38,7 +38,7 @@ class ClassifiedFavouriteCard extends StatefulWidget {
 
   final FavouriteController controller;
 
-  const ClassifiedFavouriteCard({
+  const QuestionFavouriteCard({
     super.key,
     required this.userImage,
     required this.userName,
@@ -61,10 +61,10 @@ class ClassifiedFavouriteCard extends StatefulWidget {
   });
 
   @override
-  State<ClassifiedFavouriteCard> createState() => _FavouritrCardState();
+  State<QuestionFavouriteCard> createState() => _FavouritrCardState();
 }
 
-class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
+class _FavouritrCardState extends State<QuestionFavouriteCard> {
   late PostTimeFormatter postTimeFormatter;
   late bool isLiked;
   late int likeCount;
@@ -75,6 +75,7 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
   void initState() {
     super.initState();
     postTimeFormatter = PostTimeFormatter();
+    isLiked = widget.likedbyuser;
     isLiked = widget.controller.isItemLiked(
       widget.type,
       widget.bookmarkId,
@@ -180,9 +181,9 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
                       ),
                       Text(
                         postTimeFormatter.formatPostTime(widget.dateTime),
-                        style: textStyleW400(size.width * 0.035,
+                        style: textStyleW400(size.width * 0.028,
                             AppColors.blackText.withOpacity(0.8)),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -209,57 +210,22 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
                 ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: CachedNetworkImage(
-                      imageUrl: widget.postImage,
-                      height: 105,
-                      width: 105,
-                      fit: BoxFit.fill,
-                      placeholder: (context, url) =>
-                          const CircularProgressIndicator(),
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.error),
-                    ),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Html(
+                data: widget.postTitle,
+                style: {
+                  "html": Style(
+                    maxLines: 2,
+                    fontFamily: fontFamily,
+                    fontWeight: FontWeight.w700,
+                    fontSize: FontSize.medium,
+                    color: AppColors.blackText,
                   ),
-                  10.sbw,
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.postTitle,
-                          style: TextStyle(
-                            fontFamily: fontFamily,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.blackText,
-                          ),
-                          maxLines: 2,
-                          textAlign: TextAlign.left,
-                        ),
-                        Html(
-                          data: widget.postCaption,
-                          style: {
-                            "html": Style(
-                              maxLines: 2,
-                              fontFamily: fontFamily,
-                              fontWeight: FontWeight.w700,
-                              fontSize: FontSize.medium,
-                              color: AppColors.blackText,
-                            ),
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                },
               ),
             ),
+            10.sbh,
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(

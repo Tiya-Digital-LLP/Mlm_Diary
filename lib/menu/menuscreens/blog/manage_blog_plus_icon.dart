@@ -321,7 +321,6 @@ class _ManageBlogPlusIconState extends State<ManageBlogPlusIcon> {
       showToasterrorborder("Please Upload Photo", context);
     } else {
       try {
-        await controller.fetchMyBlog();
         await controller.updateBlog(imageFile: file.value);
       } catch (e) {
         if (kDebugMode) {
@@ -554,18 +553,7 @@ void showSelectCategory(
                         children: [
                           GestureDetector(
                             onTap: () {
-                              if (!controller.isCategorySelectedList[index]) {
-                                controller.toggleCategorySelected(index);
-                              } else {
-                                Fluttertoast.showToast(
-                                  msg: "Please select only one category.",
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.BOTTOM,
-                                  backgroundColor: Colors.red,
-                                  textColor: Colors.white,
-                                  fontSize: 16.0,
-                                );
-                              }
+                              controller.toggleCategorySelected(index);
                             },
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
@@ -575,21 +563,8 @@ void showSelectCategory(
                                   Obx(
                                     () => GestureDetector(
                                       onTap: () {
-                                        if (!controller
-                                            .isCategorySelectedList[index]) {
-                                          controller
-                                              .toggleCategorySelected(index);
-                                        } else {
-                                          Fluttertoast.showToast(
-                                            msg:
-                                                "Please select only one category.",
-                                            toastLength: Toast.LENGTH_SHORT,
-                                            gravity: ToastGravity.BOTTOM,
-                                            backgroundColor: Colors.red,
-                                            textColor: Colors.white,
-                                            fontSize: 16.0,
-                                          );
-                                        }
+                                        controller
+                                            .toggleCategorySelected(index);
                                       },
                                       child: Image.asset(
                                         controller.isCategorySelectedList[index]

@@ -83,7 +83,7 @@ class _MlmnewsState extends State<ManageNews> {
                       },
                       child: ManageNewsCard(
                         onDelete: () => deletePost(index),
-                        userImage: post.userData!.imagePath ?? '',
+                        userImage: post.imagePath ?? '',
                         userName: post.userData!.name ?? '',
                         postTitle: post.title ?? '',
                         postCaption: post.description ?? '',

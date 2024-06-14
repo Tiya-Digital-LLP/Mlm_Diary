@@ -10,6 +10,7 @@ import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/all_bookmark_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -41,6 +42,7 @@ class FavouriteController extends GetxController {
     ManageNewsController manageNewsController,
     ClasifiedController classifiedController,
     CompanyController companyController,
+    QuestionAnswerController questionAnswerController,
   ) {
     if (type == 'blog') {
       return manageBlogController.likedStatusMap[bookmarkId] ?? false;
@@ -50,6 +52,8 @@ class FavouriteController extends GetxController {
       return classifiedController.likedStatusMap[bookmarkId] ?? false;
     } else if (type == 'company') {
       return companyController.likedStatusMap[bookmarkId] ?? false;
+    } else if (type == 'question') {
+      return questionAnswerController.likedStatusMap[bookmarkId] ?? false;
     }
     return false;
   }
@@ -61,6 +65,7 @@ class FavouriteController extends GetxController {
     ManageNewsController manageNewsController,
     ClasifiedController classifiedController,
     CompanyController companyController,
+    QuestionAnswerController questionAnswerController,
   ) {
     if (type == 'blog') {
       return manageBlogController.likeCountMap[bookmarkId] ?? 0;
@@ -70,6 +75,8 @@ class FavouriteController extends GetxController {
       return classifiedController.likeCountMap[bookmarkId] ?? 0;
     } else if (type == 'company') {
       return companyController.likeCountMap[bookmarkId] ?? 0;
+    } else if (type == 'question') {
+      return questionAnswerController.likeCountMap[bookmarkId] ?? 0;
     }
     return 0;
   }
@@ -82,6 +89,7 @@ class FavouriteController extends GetxController {
     ManageNewsController manageNewsController,
     ClasifiedController classifiedController,
     CompanyController companyController,
+    QuestionAnswerController questionAnswerController,
   ) {
     if (type == 'blog') {
       manageBlogController.toggleLike(bookmarkId, context);
@@ -91,6 +99,8 @@ class FavouriteController extends GetxController {
       classifiedController.toggleLike(bookmarkId, context);
     } else if (type == 'company') {
       companyController.toggleLike(bookmarkId, context);
+    } else if (type == 'question') {
+      questionAnswerController.toggleLike(bookmarkId, context);
     }
   }
 
@@ -104,6 +114,7 @@ class FavouriteController extends GetxController {
     ClasifiedController classifiedController,
     CompanyController companyController,
     EditPostController editPostController,
+    QuestionAnswerController questionAnswerController,
   ) {
     if (type == 'blog') {
       return manageBlogController.bookmarkStatusMap[bookmarkId] ?? false;
@@ -115,6 +126,8 @@ class FavouriteController extends GetxController {
       return companyController.bookmarkStatusMap[bookmarkId] ?? false;
     } else if (type == 'database') {
       return editPostController.bookmarkProfileStatusMap[bookmarkId] ?? false;
+    } else if (type == 'question') {
+      return questionAnswerController.bookmarkStatusMap[bookmarkId] ?? false;
     }
     return false;
   }
@@ -127,6 +140,7 @@ class FavouriteController extends GetxController {
     ClasifiedController classifiedController,
     CompanyController companyController,
     EditPostController editPostController,
+    QuestionAnswerController questionAnswerController,
   ) {
     if (type == 'blog') {
       return manageBlogController.bookmarkCountMap[bookmarkId] ?? 0;
@@ -138,6 +152,8 @@ class FavouriteController extends GetxController {
       return companyController.bookmarkCountMap[bookmarkId] ?? 0;
     } else if (type == 'database') {
       return editPostController.bookmarkProfileCountMap[bookmarkId] ?? 0;
+    } else if (type == 'question') {
+      return questionAnswerController.bookmarkCountMap[bookmarkId] ?? 0;
     }
     return 0;
   }
@@ -151,6 +167,7 @@ class FavouriteController extends GetxController {
     ClasifiedController classifiedController,
     CompanyController companyController,
     EditPostController editPostController,
+    QuestionAnswerController questionAnswerController,
   ) {
     if (type == 'blog') {
       manageBlogController.toggleBookMark(
@@ -170,6 +187,8 @@ class FavouriteController extends GetxController {
       );
     } else if (type == 'database') {
       editPostController.toggleProfileBookMark(bookmarkId);
+    } else if (type == 'question') {
+      questionAnswerController.toggleBookMark(bookmarkId, context);
     }
   }
 

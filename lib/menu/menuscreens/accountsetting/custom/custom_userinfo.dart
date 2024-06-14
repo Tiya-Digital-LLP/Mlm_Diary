@@ -49,7 +49,6 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
   @override
   void initState() {
     super.initState();
-    controller.fetchUserProfile();
   }
 
   @override
@@ -496,7 +495,6 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
       } else {
         // Perform address validation
         if (controller.addressValidationColor.value != AppColors.redText) {
-          await controller.fetchUserProfile();
           await controller.updateUserProfile(imageFile: file.value);
         } else {
           showToasterrorborder("Please enter a valid address.", context);

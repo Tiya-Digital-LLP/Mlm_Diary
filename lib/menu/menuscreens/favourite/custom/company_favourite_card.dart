@@ -7,6 +7,7 @@ import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/favourite/controller/favourite_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
@@ -30,6 +31,8 @@ class CompanieFaviouriteCard extends StatefulWidget {
   final ClasifiedController clasifiedController;
   final CompanyController companyController;
   final EditPostController editpostController;
+  final QuestionAnswerController questionAnswerController;
+  final bool likedbyuser;
 
   final String userImage;
 
@@ -53,6 +56,8 @@ class CompanieFaviouriteCard extends StatefulWidget {
     required this.companyController,
     required this.userImage,
     required this.editpostController,
+    required this.questionAnswerController,
+    required this.likedbyuser,
   });
 
   @override
@@ -77,6 +82,7 @@ class _CompanieFaviouriteCardState extends State<CompanieFaviouriteCard> {
       widget.manageNewsController,
       widget.clasifiedController,
       widget.companyController,
+      widget.questionAnswerController,
     );
     likeCount = widget.controller.getItemLikes(
       widget.type,
@@ -85,6 +91,7 @@ class _CompanieFaviouriteCardState extends State<CompanieFaviouriteCard> {
       widget.manageNewsController,
       widget.clasifiedController,
       widget.companyController,
+      widget.questionAnswerController,
     );
 
     isBookmarked = widget.controller.isItemBookmark(
@@ -95,6 +102,7 @@ class _CompanieFaviouriteCardState extends State<CompanieFaviouriteCard> {
       widget.clasifiedController,
       widget.companyController,
       widget.editpostController,
+      widget.questionAnswerController,
     );
   }
 
@@ -109,6 +117,7 @@ class _CompanieFaviouriteCardState extends State<CompanieFaviouriteCard> {
         widget.manageNewsController,
         widget.clasifiedController,
         widget.companyController,
+        widget.questionAnswerController,
       );
     });
   }
@@ -125,6 +134,7 @@ class _CompanieFaviouriteCardState extends State<CompanieFaviouriteCard> {
         widget.clasifiedController,
         widget.companyController,
         widget.editpostController,
+        widget.questionAnswerController,
       );
     });
   }
@@ -233,8 +243,10 @@ class _CompanieFaviouriteCardState extends State<CompanieFaviouriteCard> {
                       GestureDetector(
                         onTap: toggleLike,
                         child: Icon(
-                          isLiked ? Icons.thumb_up : Icons.thumb_up_off_alt,
-                          color: isLiked
+                          widget.likedbyuser
+                              ? Icons.thumb_up
+                              : Icons.thumb_up_off_alt,
+                          color: widget.likedbyuser
                               ? AppColors.primaryColor
                               : AppColors.blackText,
                         ),
@@ -292,11 +304,11 @@ class _CompanieFaviouriteCardState extends State<CompanieFaviouriteCard> {
                           onTap: togleBookmark,
                           child: Icon(
                             isBookmarked
-                                ? Icons.bookmark
-                                : Icons.bookmark_border,
+                                ? Icons.bookmark_border
+                                : Icons.bookmark,
                             color: isBookmarked
-                                ? AppColors.primaryColor
-                                : AppColors.blackText,
+                                ? AppColors.blackText
+                                : AppColors.primaryColor,
                           ),
                         ),
                       ),

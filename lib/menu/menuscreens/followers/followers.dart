@@ -1,5 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/menu/menuscreens/followers/controller/followers_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -16,11 +19,14 @@ class Folowers extends StatefulWidget {
 class _FolowersState extends State<Folowers> with TickerProviderStateMixin {
   late TabController _tabController;
   final _search = TextEditingController();
+  final FollowersController controller = Get.put(FollowersController());
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    controller.getFollowers();
+    controller.getFollowing();
   }
 
   @override
@@ -60,16 +66,16 @@ class _FolowersState extends State<Folowers> with TickerProviderStateMixin {
                 height: 45,
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(
-                    25.0,
-                  ),
+                  borderRadius: BorderRadius.circular(25.0),
                 ),
                 child: TabBar(
                   indicatorSize: TabBarIndicatorSize.tab,
                   controller: _tabController,
+                  dividerColor: Colors.transparent,
                   indicator: BoxDecoration(
-                      borderRadius: BorderRadius.circular(42.26),
-                      color: AppColors.primaryColor),
+                    borderRadius: BorderRadius.circular(42.26),
+                    color: AppColors.primaryColor,
+                  ),
                   labelColor: Colors.white,
                   unselectedLabelColor: Colors.black,
                   tabs: const [
@@ -99,46 +105,93 @@ class _FolowersState extends State<Folowers> with TickerProviderStateMixin {
                             onChanged: (value) {
                               if (value.isEmpty) {
                                 WidgetsBinding
-                                    .instance.focusManager.primaryFocus;
+                                    .instance.focusManager.primaryFocus
+                                    ?.unfocus();
                                 setState(() {});
                               }
                             },
                           ),
                         ),
                         20.sbh,
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: Row(
-                              children: [
-                                Image.asset(
-                                  Assets.imagesIcon,
-                                  height: 50,
-                                ),
-                                20.sbw,
-                                Expanded(
-                                    child: Text(
-                                  'Aman Talaviya',
-                                  style: textStyleW700(
-                                      size.width * 0.030, AppColors.blackText),
-                                )),
-                                Expanded(
-                                  child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: AppColors.primaryColor,
-                                      ),
-                                      onPressed: () {},
-                                      child: Text(
-                                        'Following',
-                                        style: textStyleW700(size.width * 0.030,
-                                            AppColors.white),
-                                      )),
-                                )
-                              ],
-                            ),
-                          ),
-                        )
+                        Obx(() {
+                          if (controller.isLoading.value) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          }
+                          return controller.followers.isEmpty
+                              ? const Center(child: Text('No followers found'))
+                              : SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.45,
+                                  child: ListView.builder(
+                                    itemCount: controller.followers.length,
+                                    itemBuilder: (context, index) {
+                                      final follower =
+                                          controller.followers[index];
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 16),
+                                        child: SizedBox(
+                                          width: double.infinity,
+                                          child: Row(
+                                            children: [
+                                              ClipOval(
+                                                child: CachedNetworkImage(
+                                                  imageUrl: follower.imageUrl ??
+                                                      Assets.imagesIcon,
+                                                  fit: BoxFit.cover,
+                                                  height: 50,
+                                                  width: 50,
+                                                  placeholder: (context, url) =>
+                                                      Container(),
+                                                  errorWidget: (context, url,
+                                                          error) =>
+                                                      const Icon(Icons.error),
+                                                ),
+                                              ),
+                                              20.sbw,
+                                              Expanded(
+                                                child: Text(
+                                                  follower.name ?? 'Unknown',
+                                                  style: textStyleW700(
+                                                      size.width * 0.030,
+                                                      AppColors.blackText),
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: ElevatedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    backgroundColor: follower
+                                                                .isFollowing ??
+                                                            false
+                                                        ? AppColors.primaryColor
+                                                        : Colors.grey,
+                                                  ),
+                                                  onPressed: () {
+                                                    controller
+                                                        .toggleProfileFollow(
+                                                            follower.id ?? 0);
+                                                  },
+                                                  child: Text(
+                                                    follower.isFollowing ??
+                                                            false
+                                                        ? 'Following'
+                                                        : 'Follow',
+                                                    style: textStyleW700(
+                                                        size.width * 0.030,
+                                                        AppColors.white),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                );
+                        }),
                       ],
                     ),
                     Column(
@@ -156,46 +209,93 @@ class _FolowersState extends State<Folowers> with TickerProviderStateMixin {
                             onChanged: (value) {
                               if (value.isEmpty) {
                                 WidgetsBinding
-                                    .instance.focusManager.primaryFocus;
+                                    .instance.focusManager.primaryFocus
+                                    ?.unfocus();
                                 setState(() {});
                               }
                             },
                           ),
                         ),
                         20.sbh,
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: Row(
-                              children: [
-                                Image.asset(
-                                  Assets.imagesIcon,
-                                  height: 50,
-                                ),
-                                20.sbw,
-                                Expanded(
-                                    child: Text(
-                                  'Aman Talaviya',
-                                  style: textStyleW700(
-                                      size.width * 0.030, AppColors.blackText),
-                                )),
-                                Expanded(
-                                  child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: AppColors.primaryColor,
-                                      ),
-                                      onPressed: () {},
-                                      child: Text(
-                                        'Following',
-                                        style: textStyleW700(size.width * 0.030,
-                                            AppColors.white),
-                                      )),
-                                )
-                              ],
-                            ),
-                          ),
-                        )
+                        Obx(() {
+                          if (controller.isLoading.value) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          }
+                          return controller.following.isEmpty
+                              ? const Center(child: Text('No followers found'))
+                              : SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.45,
+                                  child: ListView.builder(
+                                    itemCount: controller.following.length,
+                                    itemBuilder: (context, index) {
+                                      final following =
+                                          controller.following[index];
+                                      return Padding(
+                                        padding: const EdgeInsets.all(8),
+                                        child: SizedBox(
+                                          width: double.infinity,
+                                          child: Row(
+                                            children: [
+                                              ClipOval(
+                                                child: CachedNetworkImage(
+                                                  imageUrl:
+                                                      following.imageUrl ??
+                                                          Assets.imagesIcon,
+                                                  fit: BoxFit.cover,
+                                                  height: 50,
+                                                  width: 50,
+                                                  placeholder: (context, url) =>
+                                                      Container(),
+                                                  errorWidget: (context, url,
+                                                          error) =>
+                                                      const Icon(Icons.error),
+                                                ),
+                                              ),
+                                              20.sbw,
+                                              Expanded(
+                                                child: Text(
+                                                  following.name ?? 'Unknown',
+                                                  style: textStyleW700(
+                                                      size.width * 0.030,
+                                                      AppColors.blackText),
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: ElevatedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    backgroundColor: following
+                                                                .isFollowing ??
+                                                            false
+                                                        ? AppColors.primaryColor
+                                                        : Colors.grey,
+                                                  ),
+                                                  onPressed: () {
+                                                    controller
+                                                        .toggleProfileFollow(
+                                                            following.id ?? 0);
+                                                  },
+                                                  child: Text(
+                                                    following.isFollowing ??
+                                                            false
+                                                        ? 'Following'
+                                                        : 'Follow',
+                                                    style: textStyleW700(
+                                                        size.width * 0.030,
+                                                        AppColors.white),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                );
+                        }),
                       ],
                     ),
                   ],
