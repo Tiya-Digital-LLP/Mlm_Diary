@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:mlmdiary/classified/custom_commment.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/manage_classified_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/manageclassified/controller/manage_classified_controller.dart';
@@ -399,6 +400,30 @@ class _ClassidiedDetailsScreenState
                           ),
                     const SizedBox(
                       width: 15,
+                    ),
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () => showFullScreenDialog(
+                            context,
+                            post.id!,
+                          ),
+                          child: SizedBox(
+                            height: size.height * 0.028,
+                            width: size.height * 0.028,
+                            child: SvgPicture.asset(Assets.svgComment),
+                          ),
+                        ),
+                        5.sbw,
+                        // Text(
+                        //   '${post.totalcomment}',
+                        //   style: TextStyle(
+                        //     fontFamily: "Metropolis",
+                        //     fontWeight: FontWeight.w600,
+                        //     fontSize: size.width * 0.038,
+                        //   ),
+                        // ),
+                      ],
                     ),
                     const SizedBox(
                       width: 15,

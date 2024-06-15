@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_blog_list_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/blog/custom_blog_comment.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -379,6 +380,30 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                         ),
                   const SizedBox(
                     width: 15,
+                  ),
+                  Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () => showFullScreenDialogBlog(
+                          context,
+                          post.articleId!,
+                        ),
+                        child: SizedBox(
+                          height: size.height * 0.028,
+                          width: size.height * 0.028,
+                          child: SvgPicture.asset(Assets.svgComment),
+                        ),
+                      ),
+                      5.sbw,
+                      Text(
+                        '${post.totalcomment}',
+                        style: TextStyle(
+                          fontFamily: "Metropolis",
+                          fontWeight: FontWeight.w600,
+                          fontSize: size.width * 0.038,
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     width: 15,

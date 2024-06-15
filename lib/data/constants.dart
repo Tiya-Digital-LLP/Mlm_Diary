@@ -43,6 +43,8 @@ class Constants {
   static const String delteclassified = "/deleteclassified";
   static const String likelistclassified = "/classified/likelist";
   static const String countviewclassified = "/countview_classified";
+  static const String getcommentclassified = "/getclassified_comment";
+  static const String addcommentreply = "/add_classified_comment";
 
   static const String getadmincompany = "/getmlmcompany";
   static const String countviewcompany = "/countview_company";
@@ -60,6 +62,9 @@ class Constants {
   static const String countviewnews = "/countview_news";
   static const String deletenews = "/deletenews";
   static const String updatenews = "/updatenews";
+  static const String getcommentnews = "/getnews_comment";
+  static const String addcommentnewsreply = "/add_news_comment";
+
   static const String likednews = "/addlikenews";
   static const String bookmarknews = "/addfavoritenews";
 
@@ -72,6 +77,8 @@ class Constants {
   static const String getblog = "/getblog";
   static const String likelistblog = "/blog/likelist";
   static const String countviewblog = "/countview_blog";
+  static const String getcommentblog = "/getblog_comment";
+  static const String addcommentblogreply = "/add_blog_comment";
 
   static const String addpost = "/adduserpost";
   static const String editpost = "/updateuserpost";

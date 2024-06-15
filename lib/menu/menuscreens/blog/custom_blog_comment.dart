@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
+import 'package:mlmdiary/generated/get_blog_comment_entity.dart';
+import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -10,20 +11,19 @@ import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 import 'package:text_link/text_link.dart';
 // ignore: library_prefixes
 import 'package:html/parser.dart' as htmlParser;
-import 'package:mlmdiary/generated/get_comment_classified_entity.dart';
 
-class CommentDialog extends StatefulWidget {
-  final int classifiedId;
+class CommentDialogBlog extends StatefulWidget {
+  final int blogId;
 
-  const CommentDialog({super.key, required this.classifiedId});
+  const CommentDialogBlog({super.key, required this.blogId});
 
   @override
-  State<CommentDialog> createState() => _CommentDialogState();
+  State<CommentDialogBlog> createState() => _CommentDialogState();
 }
 
-class _CommentDialogState extends State<CommentDialog> {
+class _CommentDialogState extends State<CommentDialogBlog> {
   final PostTimeFormatter postTimeFormatter = PostTimeFormatter();
-  final ClasifiedController controller = Get.put(ClasifiedController());
+  final ManageBlogController controller = Get.put(ManageBlogController());
   late ScrollController _scrollController;
 
   @override
@@ -36,7 +36,7 @@ class _CommentDialogState extends State<CommentDialog> {
   }
 
   Future<void> _refreshData() async {
-    controller.getCommentClassified(1, widget.classifiedId);
+    controller.getCommentBlog(1, widget.blogId);
   }
 
   @override
@@ -50,7 +50,7 @@ class _CommentDialogState extends State<CommentDialog> {
             _scrollController.position.maxScrollExtent &&
         !controller.isEndOfData.value) {
       int nextPage = (controller.getCommentList.length ~/ 10) + 1;
-      controller.getCommentClassified(nextPage, widget.classifiedId);
+      controller.getCommentBlog(nextPage, widget.blogId);
     }
   }
 
@@ -76,6 +76,8 @@ class _CommentDialogState extends State<CommentDialog> {
         ),
       ),
       body: RefreshIndicator(
+        backgroundColor: AppColors.primaryColor,
+        color: AppColors.white,
         onRefresh: _refreshData,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -251,8 +253,8 @@ class _CommentDialogState extends State<CommentDialog> {
                                 return;
                               }
 
-                              await controller.addReplyComment(
-                                widget.classifiedId,
+                              await controller.addReplyBlogComment(
+                                widget.blogId,
                                 0,
                               );
                               controller.commment.value.clear();
@@ -342,8 +344,8 @@ class _CommentDialogState extends State<CommentDialog> {
                               return;
                             }
 
-                            await controller.addReplyComment(
-                              widget.classifiedId,
+                            await controller.addReplyBlogComment(
+                              widget.blogId,
                               commentId,
                             );
                             controller.commment.value.clear();
@@ -379,7 +381,7 @@ class _CommentDialogState extends State<CommentDialog> {
   }
 
   Widget _buildReply(
-    GetCommentClassifiedDataCommentsReplays reply,
+    GetBlogCommentDataCommentsReplays reply,
     Size size,
   ) {
     return Padding(
@@ -441,7 +443,7 @@ class _CommentDialogState extends State<CommentDialog> {
   }
 }
 
-void showFullScreenDialog(BuildContext context, int classifiedId) {
+void showFullScreenDialogBlog(BuildContext context, int blogId) {
   showGeneralDialog(
     context: context,
     barrierDismissible: true,
@@ -450,7 +452,7 @@ void showFullScreenDialog(BuildContext context, int classifiedId) {
     transitionDuration: const Duration(milliseconds: 200),
     pageBuilder: (BuildContext buildContext, Animation animation,
         Animation secondaryAnimation) {
-      return CommentDialog(classifiedId: classifiedId);
+      return CommentDialogBlog(blogId: blogId);
     },
   );
 }

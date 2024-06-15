@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
+import 'package:mlmdiary/generated/get_comment_news_entity.dart';
+import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -10,20 +11,19 @@ import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 import 'package:text_link/text_link.dart';
 // ignore: library_prefixes
 import 'package:html/parser.dart' as htmlParser;
-import 'package:mlmdiary/generated/get_comment_classified_entity.dart';
 
-class CommentDialog extends StatefulWidget {
-  final int classifiedId;
+class CommentDialogNews extends StatefulWidget {
+  final int newsId;
 
-  const CommentDialog({super.key, required this.classifiedId});
+  const CommentDialogNews({super.key, required this.newsId});
 
   @override
-  State<CommentDialog> createState() => _CommentDialogState();
+  State<CommentDialogNews> createState() => _CommentDialogState();
 }
 
-class _CommentDialogState extends State<CommentDialog> {
+class _CommentDialogState extends State<CommentDialogNews> {
   final PostTimeFormatter postTimeFormatter = PostTimeFormatter();
-  final ClasifiedController controller = Get.put(ClasifiedController());
+  final ManageNewsController controller = Get.put(ManageNewsController());
   late ScrollController _scrollController;
 
   @override
@@ -36,7 +36,7 @@ class _CommentDialogState extends State<CommentDialog> {
   }
 
   Future<void> _refreshData() async {
-    controller.getCommentClassified(1, widget.classifiedId);
+    controller.getCommentNews(1, widget.newsId);
   }
 
   @override
@@ -50,7 +50,7 @@ class _CommentDialogState extends State<CommentDialog> {
             _scrollController.position.maxScrollExtent &&
         !controller.isEndOfData.value) {
       int nextPage = (controller.getCommentList.length ~/ 10) + 1;
-      controller.getCommentClassified(nextPage, widget.classifiedId);
+      controller.getCommentNews(nextPage, widget.newsId);
     }
   }
 
@@ -77,6 +77,8 @@ class _CommentDialogState extends State<CommentDialog> {
       ),
       body: RefreshIndicator(
         onRefresh: _refreshData,
+        backgroundColor: AppColors.primaryColor,
+        color: AppColors.white,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Obx(
@@ -251,8 +253,8 @@ class _CommentDialogState extends State<CommentDialog> {
                                 return;
                               }
 
-                              await controller.addReplyComment(
-                                widget.classifiedId,
+                              await controller.addReplyNewsComment(
+                                widget.newsId,
                                 0,
                               );
                               controller.commment.value.clear();
@@ -342,8 +344,8 @@ class _CommentDialogState extends State<CommentDialog> {
                               return;
                             }
 
-                            await controller.addReplyComment(
-                              widget.classifiedId,
+                            await controller.addReplyNewsComment(
+                              widget.newsId,
                               commentId,
                             );
                             controller.commment.value.clear();
@@ -379,7 +381,7 @@ class _CommentDialogState extends State<CommentDialog> {
   }
 
   Widget _buildReply(
-    GetCommentClassifiedDataCommentsReplays reply,
+    GetCommentNewsDataCommentsReplays reply,
     Size size,
   ) {
     return Padding(
@@ -441,7 +443,7 @@ class _CommentDialogState extends State<CommentDialog> {
   }
 }
 
-void showFullScreenDialog(BuildContext context, int classifiedId) {
+void showFullScreenDialogNews(BuildContext context, int newsId) {
   showGeneralDialog(
     context: context,
     barrierDismissible: true,
@@ -450,7 +452,7 @@ void showFullScreenDialog(BuildContext context, int classifiedId) {
     transitionDuration: const Duration(milliseconds: 200),
     pageBuilder: (BuildContext buildContext, Animation animation,
         Animation secondaryAnimation) {
-      return CommentDialog(classifiedId: classifiedId);
+      return CommentDialogNews(newsId: newsId);
     },
   );
 }

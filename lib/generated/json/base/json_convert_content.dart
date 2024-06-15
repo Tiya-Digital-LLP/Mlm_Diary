@@ -6,6 +6,9 @@
 import 'package:flutter/material.dart' show debugPrint;
 import 'package:mlmdiary/generated/add_answer_entity.dart';
 import 'package:mlmdiary/generated/add_blog_entity.dart';
+import 'package:mlmdiary/generated/add_comment_blog_entity.dart';
+import 'package:mlmdiary/generated/add_comment_entity.dart';
+import 'package:mlmdiary/generated/add_comment_news_entity.dart';
 import 'package:mlmdiary/generated/add_faviourite_question_entity.dart';
 import 'package:mlmdiary/generated/add_news_entity.dart';
 import 'package:mlmdiary/generated/add_post_entity.dart';
@@ -38,9 +41,12 @@ import 'package:mlmdiary/generated/forgot_password_entity.dart';
 import 'package:mlmdiary/generated/get_admin_company_entity.dart';
 import 'package:mlmdiary/generated/get_answers_entity.dart';
 import 'package:mlmdiary/generated/get_banner_entity.dart';
+import 'package:mlmdiary/generated/get_blog_comment_entity.dart';
 import 'package:mlmdiary/generated/get_blog_list_entity.dart';
 import 'package:mlmdiary/generated/get_category_entity.dart';
 import 'package:mlmdiary/generated/get_classified_entity.dart';
+import 'package:mlmdiary/generated/get_comment_classified_entity.dart';
+import 'package:mlmdiary/generated/get_comment_news_entity.dart';
 import 'package:mlmdiary/generated/get_company_entity.dart';
 import 'package:mlmdiary/generated/get_followers_entity.dart';
 import 'package:mlmdiary/generated/get_following_entity.dart';
@@ -235,6 +241,30 @@ class JsonConvert {
       return data.map<AddBlogData>((Map<String, dynamic> e) =>
           AddBlogData.fromJson(e)).toList() as M;
     }
+    if (<AddCommentBlogEntity>[] is M) {
+      return data.map<AddCommentBlogEntity>((Map<String, dynamic> e) =>
+          AddCommentBlogEntity.fromJson(e)).toList() as M;
+    }
+    if (<AddCommentBlogData>[] is M) {
+      return data.map<AddCommentBlogData>((Map<String, dynamic> e) =>
+          AddCommentBlogData.fromJson(e)).toList() as M;
+    }
+    if (<AddCommentEntity>[] is M) {
+      return data.map<AddCommentEntity>((Map<String, dynamic> e) =>
+          AddCommentEntity.fromJson(e)).toList() as M;
+    }
+    if (<AddCommentData>[] is M) {
+      return data.map<AddCommentData>((Map<String, dynamic> e) =>
+          AddCommentData.fromJson(e)).toList() as M;
+    }
+    if (<AddCommentNewsEntity>[] is M) {
+      return data.map<AddCommentNewsEntity>((Map<String, dynamic> e) =>
+          AddCommentNewsEntity.fromJson(e)).toList() as M;
+    }
+    if (<AddCommentNewsData>[] is M) {
+      return data.map<AddCommentNewsData>((Map<String, dynamic> e) =>
+          AddCommentNewsData.fromJson(e)).toList() as M;
+    }
     if (<AddFaviouriteQuestionEntity>[] is M) {
       return data.map<AddFaviouriteQuestionEntity>((Map<String, dynamic> e) =>
           AddFaviouriteQuestionEntity.fromJson(e)).toList() as M;
@@ -416,6 +446,19 @@ class JsonConvert {
       return data.map<GetBannerData>((Map<String, dynamic> e) =>
           GetBannerData.fromJson(e)).toList() as M;
     }
+    if (<GetBlogCommentEntity>[] is M) {
+      return data.map<GetBlogCommentEntity>((Map<String, dynamic> e) =>
+          GetBlogCommentEntity.fromJson(e)).toList() as M;
+    }
+    if (<GetBlogCommentData>[] is M) {
+      return data.map<GetBlogCommentData>((Map<String, dynamic> e) =>
+          GetBlogCommentData.fromJson(e)).toList() as M;
+    }
+    if (<GetBlogCommentDataCommentsReplays>[] is M) {
+      return data.map<GetBlogCommentDataCommentsReplays>((
+          Map<String, dynamic> e) =>
+          GetBlogCommentDataCommentsReplays.fromJson(e)).toList() as M;
+    }
     if (<GetBlogListEntity>[] is M) {
       return data.map<GetBlogListEntity>((Map<String, dynamic> e) =>
           GetBlogListEntity.fromJson(e)).toList() as M;
@@ -447,6 +490,32 @@ class JsonConvert {
     if (<GetClassifiedDataUserData>[] is M) {
       return data.map<GetClassifiedDataUserData>((Map<String, dynamic> e) =>
           GetClassifiedDataUserData.fromJson(e)).toList() as M;
+    }
+    if (<GetCommentClassifiedEntity>[] is M) {
+      return data.map<GetCommentClassifiedEntity>((Map<String, dynamic> e) =>
+          GetCommentClassifiedEntity.fromJson(e)).toList() as M;
+    }
+    if (<GetCommentClassifiedData>[] is M) {
+      return data.map<GetCommentClassifiedData>((Map<String, dynamic> e) =>
+          GetCommentClassifiedData.fromJson(e)).toList() as M;
+    }
+    if (<GetCommentClassifiedDataCommentsReplays>[] is M) {
+      return data.map<GetCommentClassifiedDataCommentsReplays>((
+          Map<String, dynamic> e) =>
+          GetCommentClassifiedDataCommentsReplays.fromJson(e)).toList() as M;
+    }
+    if (<GetCommentNewsEntity>[] is M) {
+      return data.map<GetCommentNewsEntity>((Map<String, dynamic> e) =>
+          GetCommentNewsEntity.fromJson(e)).toList() as M;
+    }
+    if (<GetCommentNewsData>[] is M) {
+      return data.map<GetCommentNewsData>((Map<String, dynamic> e) =>
+          GetCommentNewsData.fromJson(e)).toList() as M;
+    }
+    if (<GetCommentNewsDataCommentsReplays>[] is M) {
+      return data.map<GetCommentNewsDataCommentsReplays>((
+          Map<String, dynamic> e) =>
+          GetCommentNewsDataCommentsReplays.fromJson(e)).toList() as M;
     }
     if (<GetCompanyEntity>[] is M) {
       return data.map<GetCompanyEntity>((Map<String, dynamic> e) =>
@@ -803,6 +872,12 @@ class JsonConvertClassCollection {
     (AddAnswerAnswer).toString(): AddAnswerAnswer.fromJson,
     (AddBlogEntity).toString(): AddBlogEntity.fromJson,
     (AddBlogData).toString(): AddBlogData.fromJson,
+    (AddCommentBlogEntity).toString(): AddCommentBlogEntity.fromJson,
+    (AddCommentBlogData).toString(): AddCommentBlogData.fromJson,
+    (AddCommentEntity).toString(): AddCommentEntity.fromJson,
+    (AddCommentData).toString(): AddCommentData.fromJson,
+    (AddCommentNewsEntity).toString(): AddCommentNewsEntity.fromJson,
+    (AddCommentNewsData).toString(): AddCommentNewsData.fromJson,
     (AddFaviouriteQuestionEntity).toString(): AddFaviouriteQuestionEntity
         .fromJson,
     (AddNewsEntity).toString(): AddNewsEntity.fromJson,
@@ -850,6 +925,10 @@ class JsonConvertClassCollection {
     (GetAnswersAnswersUserData).toString(): GetAnswersAnswersUserData.fromJson,
     (GetBannerEntity).toString(): GetBannerEntity.fromJson,
     (GetBannerData).toString(): GetBannerData.fromJson,
+    (GetBlogCommentEntity).toString(): GetBlogCommentEntity.fromJson,
+    (GetBlogCommentData).toString(): GetBlogCommentData.fromJson,
+    (GetBlogCommentDataCommentsReplays)
+        .toString(): GetBlogCommentDataCommentsReplays.fromJson,
     (GetBlogListEntity).toString(): GetBlogListEntity.fromJson,
     (GetBlogListData).toString(): GetBlogListData.fromJson,
     (GetBlogListDataUserData).toString(): GetBlogListDataUserData.fromJson,
@@ -858,6 +937,15 @@ class JsonConvertClassCollection {
     (GetClassifiedEntity).toString(): GetClassifiedEntity.fromJson,
     (GetClassifiedData).toString(): GetClassifiedData.fromJson,
     (GetClassifiedDataUserData).toString(): GetClassifiedDataUserData.fromJson,
+    (GetCommentClassifiedEntity).toString(): GetCommentClassifiedEntity
+        .fromJson,
+    (GetCommentClassifiedData).toString(): GetCommentClassifiedData.fromJson,
+    (GetCommentClassifiedDataCommentsReplays)
+        .toString(): GetCommentClassifiedDataCommentsReplays.fromJson,
+    (GetCommentNewsEntity).toString(): GetCommentNewsEntity.fromJson,
+    (GetCommentNewsData).toString(): GetCommentNewsData.fromJson,
+    (GetCommentNewsDataCommentsReplays)
+        .toString(): GetCommentNewsDataCommentsReplays.fromJson,
     (GetCompanyEntity).toString(): GetCompanyEntity.fromJson,
     (GetFollowersEntity).toString(): GetFollowersEntity.fromJson,
     (GetFollowersData).toString(): GetFollowersData.fromJson,

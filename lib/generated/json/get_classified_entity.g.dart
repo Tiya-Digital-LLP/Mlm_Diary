@@ -125,6 +125,10 @@ GetClassifiedData $GetClassifiedDataFromJson(Map<String, dynamic> json) {
   if (totalbookmark != null) {
     getClassifiedData.totalbookmark = totalbookmark;
   }
+  final int? totalcomment = jsonConvert.convert<int>(json['totalcomment']);
+  if (totalcomment != null) {
+    getClassifiedData.totalcomment = totalcomment;
+  }
   final bool? likedByUser = jsonConvert.convert<bool>(json['liked_by_user']);
   if (likedByUser != null) {
     getClassifiedData.likedByUser = likedByUser;
@@ -178,6 +182,7 @@ Map<String, dynamic> $GetClassifiedDataToJson(GetClassifiedData entity) {
   data['urlcomponent'] = entity.urlcomponent;
   data['totallike'] = entity.totallike;
   data['totalbookmark'] = entity.totalbookmark;
+  data['totalcomment'] = entity.totalcomment;
   data['liked_by_user'] = entity.likedByUser;
   data['bookmarked_by_user'] = entity.bookmarkedByUser;
   data['user_data'] = entity.userData?.toJson();
@@ -210,6 +215,7 @@ extension GetClassifiedDataExtension on GetClassifiedData {
     String? urlcomponent,
     int? totallike,
     int? totalbookmark,
+    int? totalcomment,
     bool? likedByUser,
     bool? bookmarkedByUser,
     GetClassifiedDataUserData? userData,
@@ -239,6 +245,7 @@ extension GetClassifiedDataExtension on GetClassifiedData {
       ..urlcomponent = urlcomponent ?? this.urlcomponent
       ..totallike = totallike ?? this.totallike
       ..totalbookmark = totalbookmark ?? this.totalbookmark
+      ..totalcomment = totalcomment ?? this.totalcomment
       ..likedByUser = likedByUser ?? this.likedByUser
       ..bookmarkedByUser = bookmarkedByUser ?? this.bookmarkedByUser
       ..userData = userData ?? this.userData

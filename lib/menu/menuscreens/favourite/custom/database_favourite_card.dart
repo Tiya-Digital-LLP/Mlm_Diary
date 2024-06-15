@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
+import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/favourite/controller/favourite_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
@@ -184,11 +186,11 @@ class _FavouritrCardState extends State<DatabaseFavouriteCard> {
                   width: size.height * 0.028,
                   child: GestureDetector(
                     onTap: togleBookmark,
-                    child: Icon(
-                      isBookmarked ? Icons.bookmark_border : Icons.bookmark,
-                      color: isBookmarked
-                          ? AppColors.blackText
-                          : AppColors.primaryColor,
+                    child: SvgPicture.asset(
+                      isBookmarked
+                          ? Assets.svgCheckBookmark
+                          : Assets.svgSavePost,
+                      height: size.height * 0.032,
                     ),
                   ),
                 ),

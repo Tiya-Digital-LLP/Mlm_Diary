@@ -329,13 +329,11 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
                         width: size.height * 0.028,
                         child: GestureDetector(
                           onTap: togleBookmark,
-                          child: Icon(
+                          child: SvgPicture.asset(
                             isBookmarked
-                                ? Icons.bookmark_border
-                                : Icons.bookmark,
-                            color: isBookmarked
-                                ? AppColors.blackText
-                                : AppColors.primaryColor,
+                                ? Assets.svgCheckBookmark
+                                : Assets.svgSavePost,
+                            height: size.height * 0.032,
                           ),
                         ),
                       ),

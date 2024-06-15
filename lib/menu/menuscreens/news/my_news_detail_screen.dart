@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/my_news_entity.dart';
+import 'package:mlmdiary/menu/menuscreens/blog/custom_blog_comment.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
@@ -403,6 +404,30 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
                     ),
                     const SizedBox(
                       width: 15,
+                    ),
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () => showFullScreenDialogBlog(
+                            context,
+                            post.id!,
+                          ),
+                          child: SizedBox(
+                            height: size.height * 0.028,
+                            width: size.height * 0.028,
+                            child: SvgPicture.asset(Assets.svgComment),
+                          ),
+                        ),
+                        5.sbw,
+                        Text(
+                          '${post.totalcomment}',
+                          style: TextStyle(
+                            fontFamily: "Metropolis",
+                            fontWeight: FontWeight.w600,
+                            fontSize: size.width * 0.038,
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(
                       width: 15,

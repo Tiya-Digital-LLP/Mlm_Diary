@@ -26,6 +26,7 @@ class ClassifiedCard extends StatefulWidget {
   final String image;
   final String url;
   final bool likedbyuser;
+  final int commentcount;
 
   const ClassifiedCard({
     super.key,
@@ -42,6 +43,7 @@ class ClassifiedCard extends StatefulWidget {
     required this.image,
     required this.url,
     required this.likedbyuser,
+    required this.commentcount,
   });
 
   @override
@@ -95,15 +97,6 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
     bookmarkCount.value =
         newBookmarkedValue ? bookmarkCount.value + 1 : bookmarkCount.value - 1;
     await widget.controller.toggleBookMark(widget.classifiedId);
-  }
-
-  void showCommentDialog(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return const CommentDialog();
-      },
-    );
   }
 
   @override
@@ -240,13 +233,29 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
                             ),
                           ),
                     15.sbw,
-                    GestureDetector(
-                      onTap: () => showCommentDialog(context),
-                      child: SizedBox(
-                        height: size.height * 0.028,
-                        width: size.height * 0.028,
-                        child: SvgPicture.asset(Assets.svgComment),
-                      ),
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () => showFullScreenDialog(
+                            context,
+                            widget.classifiedId,
+                          ),
+                          child: SizedBox(
+                            height: size.height * 0.028,
+                            width: size.height * 0.028,
+                            child: SvgPicture.asset(Assets.svgComment),
+                          ),
+                        ),
+                        5.sbw,
+                        Text(
+                          '${widget.commentcount}',
+                          style: TextStyle(
+                            fontFamily: "Metropolis",
+                            fontWeight: FontWeight.w600,
+                            fontSize: size.width * 0.038,
+                          ),
+                        ),
+                      ],
                     ),
                     15.sbw,
                     SizedBox(

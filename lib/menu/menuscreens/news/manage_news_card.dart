@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/news/custom_news_comment.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
@@ -23,6 +24,7 @@ class ManageNewsCard extends StatefulWidget {
   final int likedCount;
   final int newsId;
   final int newsstatus;
+  final int commentcount;
 
   final ManageNewsController controller;
 
@@ -40,6 +42,7 @@ class ManageNewsCard extends StatefulWidget {
     required this.newsId,
     required this.controller,
     required this.newsstatus,
+    required this.commentcount,
   });
 
   @override
@@ -168,9 +171,36 @@ class _ManageNewsCardState extends State<ManageNewsCard> {
                     ),
                     7.sbw,
                     Text(
-                      'Like (${likeCount.value})',
+                      '${likeCount.value}',
                       style: textStyleW600(
                           size.width * 0.038, AppColors.blackText),
+                    ),
+                    const SizedBox(
+                      width: 15,
+                    ),
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () => showFullScreenDialogNews(
+                            context,
+                            widget.newsId,
+                          ),
+                          child: SizedBox(
+                            height: size.height * 0.028,
+                            width: size.height * 0.028,
+                            child: SvgPicture.asset(Assets.svgComment),
+                          ),
+                        ),
+                        5.sbw,
+                        Text(
+                          '${widget.commentcount}',
+                          style: TextStyle(
+                            fontFamily: "Metropolis",
+                            fontWeight: FontWeight.w600,
+                            fontSize: size.width * 0.038,
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(
                       width: 15,
@@ -184,7 +214,7 @@ class _ManageNewsCardState extends State<ManageNewsCard> {
                       width: 7,
                     ),
                     Text(
-                      'Views (${widget.viewcounts})',
+                      '${widget.viewcounts}',
                       style: TextStyle(
                           fontFamily: "Metropolis",
                           fontWeight: FontWeight.w600,

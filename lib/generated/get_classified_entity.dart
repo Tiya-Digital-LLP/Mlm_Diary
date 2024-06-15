@@ -43,6 +43,7 @@ class GetClassifiedData {
 	String? urlcomponent = '';
 	int? totallike = 0;
 	int? totalbookmark = 0;
+	int? totalcomment = 0;
 	@JSONField(name: "liked_by_user")
 	bool? likedByUser = false;
 	@JSONField(name: "bookmarked_by_user")

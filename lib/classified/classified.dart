@@ -147,6 +147,7 @@ class _ClassifiedScreenState extends State<ClassifiedScreen> {
                             isPopular: post.popular == 'Y',
                             url: post.fullUrl ?? '',
                             likedbyuser: post.likedByUser ?? false,
+                            commentcount: post.totalcomment ?? 0,
                           ),
                         ),
                       );

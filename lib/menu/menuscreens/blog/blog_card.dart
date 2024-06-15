@@ -4,10 +4,10 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:html_unescape/html_unescape.dart';
-import 'package:mlmdiary/classified/custom_commment.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/blog_liked_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/blog/custom_blog_comment.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -24,6 +24,7 @@ class BlogCard extends StatefulWidget {
   final int viewcounts;
   final int bookmarkCount;
   final String image;
+  final int commentcount;
 
   const BlogCard({
     super.key,
@@ -37,6 +38,7 @@ class BlogCard extends StatefulWidget {
     required this.viewcounts,
     required this.bookmarkCount,
     required this.image,
+    required this.commentcount,
   });
 
   @override
@@ -96,15 +98,6 @@ class _BlogCardState extends State<BlogCard> {
         newBookmarkedValue ? bookmarkCount.value + 1 : bookmarkCount.value - 1;
 
     await widget.controller.toggleBookMark(widget.blogId);
-  }
-
-  void showCommentDialog(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return const CommentDialog();
-      },
-    );
   }
 
   @override
@@ -246,13 +239,29 @@ class _BlogCardState extends State<BlogCard> {
                             ),
                           ),
                     15.sbw,
-                    GestureDetector(
-                      onTap: () => showCommentDialog(context),
-                      child: SizedBox(
-                        height: size.height * 0.028,
-                        width: size.height * 0.028,
-                        child: SvgPicture.asset(Assets.svgComment),
-                      ),
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () => showFullScreenDialogBlog(
+                            context,
+                            widget.blogId,
+                          ),
+                          child: SizedBox(
+                            height: size.height * 0.028,
+                            width: size.height * 0.028,
+                            child: SvgPicture.asset(Assets.svgComment),
+                          ),
+                        ),
+                        5.sbw,
+                        Text(
+                          '${widget.commentcount}',
+                          style: TextStyle(
+                            fontFamily: "Metropolis",
+                            fontWeight: FontWeight.w600,
+                            fontSize: size.width * 0.038,
+                          ),
+                        ),
+                      ],
                     ),
                     15.sbw,
                     SizedBox(

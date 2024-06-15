@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/blog/custom_blog_comment.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
@@ -23,27 +24,29 @@ class ManageBlogCard extends StatefulWidget {
   final int viewcounts;
   final int blogId;
   final int blogstatus;
+  final int commentcount;
 
   final int bookmarkCount;
 
   final ManageBlogController controller;
 
-  const ManageBlogCard({
-    super.key,
-    required this.userImage,
-    required this.userName,
-    required this.postTitle,
-    required this.postCaption,
-    required this.postImage,
-    required this.onDelete,
-    required this.dateTime,
-    required this.likedCount,
-    required this.controller,
-    required this.viewcounts,
-    required this.bookmarkCount,
-    required this.blogId,
-    required this.blogstatus,
-  });
+  const ManageBlogCard(
+      {super.key,
+      required this.userImage,
+      required this.userName,
+      required this.postTitle,
+      required this.postCaption,
+      required this.postImage,
+      required this.onDelete,
+      required this.dateTime,
+      required this.likedCount,
+      required this.controller,
+      required this.viewcounts,
+      required this.bookmarkCount,
+      required this.blogId,
+      required this.blogstatus,
+      required this.commentcount,
+      s});
 
   @override
   State<ManageBlogCard> createState() => _ManageBlogCardState();
@@ -192,11 +195,35 @@ class _ManageBlogCardState extends State<ManageBlogCard> {
                     ),
                     7.sbw,
                     Text(
-                      'Like (${likeCount.value})',
+                      '${likeCount.value}',
                       style: textStyleW600(
                           size.width * 0.038, AppColors.blackText),
                     ),
                     15.sbw,
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () => showFullScreenDialogBlog(
+                            context,
+                            widget.blogId,
+                          ),
+                          child: SizedBox(
+                            height: size.height * 0.028,
+                            width: size.height * 0.028,
+                            child: SvgPicture.asset(Assets.svgComment),
+                          ),
+                        ),
+                        5.sbw,
+                        Text(
+                          '${widget.commentcount}',
+                          style: TextStyle(
+                            fontFamily: "Metropolis",
+                            fontWeight: FontWeight.w600,
+                            fontSize: size.width * 0.038,
+                          ),
+                        ),
+                      ],
+                    ),
                     const SizedBox(
                       width: 15,
                     ),
@@ -209,7 +236,7 @@ class _ManageBlogCardState extends State<ManageBlogCard> {
                       width: 7,
                     ),
                     Text(
-                      'Views (${widget.viewcounts})',
+                      '${widget.viewcounts}',
                       style: TextStyle(
                           fontFamily: "Metropolis",
                           fontWeight: FontWeight.w600,

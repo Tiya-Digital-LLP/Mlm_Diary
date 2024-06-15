@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
+import 'package:mlmdiary/classified/custom_commment.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_classified_entity.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
@@ -398,6 +399,7 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
                         ),
                       ),
                     ),
+
                     const SizedBox(
                       width: 7,
                     ),
@@ -411,6 +413,30 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
                           ),
                     const SizedBox(
                       width: 15,
+                    ),
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () => showFullScreenDialog(
+                            context,
+                            post.id!,
+                          ),
+                          child: SizedBox(
+                            height: size.height * 0.028,
+                            width: size.height * 0.028,
+                            child: SvgPicture.asset(Assets.svgComment),
+                          ),
+                        ),
+                        5.sbw,
+                        Text(
+                          '${post.totalcomment}',
+                          style: TextStyle(
+                            fontFamily: "Metropolis",
+                            fontWeight: FontWeight.w600,
+                            fontSize: size.width * 0.038,
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(
                       width: 15,
