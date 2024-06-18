@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/custom/custom_post_comment.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/custom/post_like_list_content.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
@@ -23,6 +24,7 @@ class MyProfileCard extends StatefulWidget {
   final int postId;
   final EditPostController controller;
   final int bookmarkCount;
+  final int commentcount;
 
   const MyProfileCard({
     super.key,
@@ -36,6 +38,7 @@ class MyProfileCard extends StatefulWidget {
     required this.postId,
     required this.controller,
     required this.bookmarkCount,
+    required this.commentcount,
   });
 
   @override
@@ -125,32 +128,34 @@ class _MyProfileCardState extends State<MyProfileCard> {
                   const SizedBox(
                     width: 10,
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            widget.userName,
-                            style: textStyleW700(
-                                size.width * 0.043, AppColors.blackText),
-                          ),
-                          const SizedBox(
-                            width: 7,
-                          ),
-                          Text(
-                            "Added Classified",
-                            style: textStyleW400(size.width * 0.037,
-                                AppColors.blackText.withOpacity(0.5)),
-                          ),
-                        ],
-                      ),
-                      Text(
-                        postTimeFormatter.formatPostTime(widget.dateTime),
-                        style: textStyleW400(size.width * 0.035,
-                            AppColors.blackText.withOpacity(0.5)),
-                      ),
-                    ],
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              widget.userName,
+                              style: textStyleW700(
+                                  size.width * 0.043, AppColors.blackText),
+                            ),
+                            const SizedBox(
+                              width: 7,
+                            ),
+                            Text(
+                              "Added Classified",
+                              style: textStyleW400(size.width * 0.037,
+                                  AppColors.blackText.withOpacity(0.5)),
+                            ),
+                          ],
+                        ),
+                        Text(
+                          postTimeFormatter.formatPostTime(widget.dateTime),
+                          style: textStyleW400(size.width * 0.035,
+                              AppColors.blackText.withOpacity(0.5)),
+                        ),
+                      ],
+                    ),
                   )
                 ],
               ),
@@ -224,6 +229,33 @@ class _MyProfileCardState extends State<MyProfileCard> {
                                     size.width * 0.038, AppColors.blackText),
                               ),
                             ),
+                      const SizedBox(
+                        width: 15,
+                      ),
+                      Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () => showFullScreenDialogPost(
+                              context,
+                              widget.postId,
+                            ),
+                            child: SizedBox(
+                              height: size.height * 0.028,
+                              width: size.height * 0.028,
+                              child: SvgPicture.asset(Assets.svgComment),
+                            ),
+                          ),
+                          5.sbw,
+                          Text(
+                            '${widget.commentcount}',
+                            style: TextStyle(
+                              fontFamily: "Metropolis",
+                              fontWeight: FontWeight.w600,
+                              fontSize: size.width * 0.038,
+                            ),
+                          ),
+                        ],
+                      ),
                       const SizedBox(
                         width: 15,
                       ),

@@ -27,7 +27,8 @@ class FavouriteController extends GetxController {
     'news',
     'classified',
     'company',
-    'question'
+    'question',
+    'video'
   ];
 
   @override

@@ -5,11 +5,12 @@ import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/news_bottomsheet_content.dart';
 import 'package:mlmdiary/menu/menuscreens/news/news_card.dart';
+import 'package:mlmdiary/menu/menuscreens/tutorialvideo/controller/tutorial_video_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
-import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
+import 'package:mlmdiary/widgets/custon_test_app_bar.dart';
 import 'package:mlmdiary/widgets/remimaining_count_controller./remaining_count.dart';
 
 class MlmNews extends StatefulWidget {
@@ -21,11 +22,14 @@ class MlmNews extends StatefulWidget {
 
 class _MlmNewsScreenState extends State<MlmNews> {
   final ManageNewsController controller = Get.put(ManageNewsController());
-
+  final TutorialVideoController videoController =
+      Get.put(TutorialVideoController());
+  static const String position = 'news';
   @override
   void initState() {
     super.initState();
     _refreshData();
+    videoController.fetchVideo(position);
   }
 
   Future<void> _refreshData() async {
@@ -37,10 +41,11 @@ class _MlmNewsScreenState extends State<MlmNews> {
     final Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-      appBar: CustomAppBar(
+      appBar: CustonTestAppBar(
         size: MediaQuery.of(context).size,
         titleText: 'MLM News',
         onTap: () {},
+        position: position,
       ),
       body: RefreshIndicator(
         backgroundColor: AppColors.primaryColor,

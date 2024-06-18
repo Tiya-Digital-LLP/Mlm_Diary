@@ -53,6 +53,8 @@ class Constants {
   static const String bookmarkmlmcompany = "/bookmark_mlmcompany";
   static const String mlmdatabase = "/getdatabase";
   static const String countviewuserprofile = "/countview_database";
+  static const String getcommentCompany = "/getcompany_comment";
+  static const String addcommentcompanyreply = "/add_company_comment";
 
   static const String remainigcount = "/remaining_count_check";
   static const String news = "/addnews";
@@ -78,6 +80,8 @@ class Constants {
   static const String likelistblog = "/blog/likelist";
   static const String countviewblog = "/countview_blog";
   static const String getcommentblog = "/getblog_comment";
+  static const String getcommentpost = "/getuserpost_comment";
+
   static const String addcommentblogreply = "/add_blog_comment";
 
   static const String addpost = "/adduserpost";
@@ -93,6 +97,7 @@ class Constants {
   static const String profileFollow = "/follow";
   static const String getFollowers = "/getfollowers";
   static const String getFollowing = "/getfollowing";
+  static const String addcommentpostreply = "/add_post_comment";
 
   static const String addquestionanswer = "/addquestion";
   static const String myqusetionanswer = "/myquestion";
@@ -108,4 +113,5 @@ class Constants {
   static const String allbookmark = "/getallbookmarked";
 
   static const String videoBookmark = "/bookmark_video";
+  static const String tutorialVideo = "/gettutorial_video";
 }

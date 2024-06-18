@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -376,7 +378,19 @@ class _HomeScreenState extends State<HomeScreen> {
                     print('Banner Web Link: ${banner.weblink}');
                   }
                   if (banner.weblink != null && banner.weblink!.isNotEmpty) {
-                    launchURL(banner.weblink!);
+                    if (Platform.isAndroid) {
+                      // Android-specific behavior
+                      if (kDebugMode) {
+                        print('Android specific behavior');
+                      }
+                      launchURL(banner.weblink!);
+                    } else if (Platform.isIOS) {
+                      // iOS-specific behavior
+                      if (kDebugMode) {
+                        print('iOS specific behavior');
+                      }
+                      launchURL(banner.weblink!);
+                    }
                   } else {
                     if (kDebugMode) {
                       print('Banner Web Link is either null or empty');

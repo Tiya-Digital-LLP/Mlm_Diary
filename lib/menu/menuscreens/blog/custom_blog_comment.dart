@@ -59,7 +59,7 @@ class _CommentDialogState extends State<CommentDialogBlog> {
     final Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.white,
       appBar: AppBar(
         scrolledUnderElevation: 0,
         backgroundColor: AppColors.white,

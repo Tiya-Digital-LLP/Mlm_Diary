@@ -4,10 +4,11 @@ import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/question_card.dart';
+import 'package:mlmdiary/menu/menuscreens/tutorialvideo/controller/tutorial_video_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
-import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
+import 'package:mlmdiary/widgets/custon_test_app_bar.dart';
 
 class QuationAnswer extends StatefulWidget {
   const QuationAnswer({super.key});
@@ -19,11 +20,15 @@ class QuationAnswer extends StatefulWidget {
 class _QuationAnswerState extends State<QuationAnswer> {
   final QuestionAnswerController controller =
       Get.put(QuestionAnswerController());
+  final TutorialVideoController videoController =
+      Get.put(TutorialVideoController());
+  static const String position = 'questionanswer';
 
   @override
   void initState() {
     super.initState();
     _refreshData();
+    videoController.fetchVideo(position);
   }
 
   Future<void> _refreshData() async {
@@ -34,9 +39,10 @@ class _QuationAnswerState extends State<QuationAnswer> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: CustomAppBar(
+      appBar: CustonTestAppBar(
         size: MediaQuery.of(context).size,
         titleText: 'Question Answer',
+        position: position,
       ),
       body: RefreshIndicator(
         backgroundColor: AppColors.primaryColor,

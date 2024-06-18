@@ -383,6 +383,7 @@ class _ContactUsState extends State<ContactUs> {
               onChanged: (value) {
                 _selectedItem.value = value.toString();
               },
+              underline: const SizedBox.shrink(),
             ),
           )),
     );

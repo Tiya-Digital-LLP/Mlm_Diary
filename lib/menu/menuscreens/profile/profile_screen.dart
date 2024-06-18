@@ -291,6 +291,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                 postId: post.id ?? 0,
                                 controller: controller,
                                 bookmarkCount: post.totalbookmark ?? 0,
+                                commentcount: post.totalcomment ?? 0,
                               ),
                             ),
                           );

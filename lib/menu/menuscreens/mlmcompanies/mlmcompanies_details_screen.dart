@@ -234,10 +234,16 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
                                         ),
                                       ],
                                     ),
-                                    Text(
-                                      post.website ?? '',
-                                      style: textStyleW400(size.width * 0.035,
-                                          AppColors.blackText),
+                                    LinkText(
+                                      text: post.website ?? '',
+                                      style: textStyleW400(
+                                        size.width * 0.035,
+                                        AppColors.blackText.withOpacity(0.5),
+                                      ),
+                                      linkStyle: const TextStyle(
+                                        color: Colors.blue,
+                                        decoration: TextDecoration.underline,
+                                      ),
                                     ),
                                   ],
                                 ),

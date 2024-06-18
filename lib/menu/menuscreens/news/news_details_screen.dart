@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 // ignore: library_prefixes
 import 'package:html/parser.dart' as htmlParser;
@@ -15,7 +14,6 @@ import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 import 'package:text_link/text_link.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class NewsDetailScreen extends StatefulWidget {
   const NewsDetailScreen({
@@ -306,18 +304,15 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen> {
                               ),
                             ],
                           ),
-                          Text.rich(
-                            TextSpan(
-                              text: post.website ?? '',
-                              style: const TextStyle(
-                                color: Colors.blue,
-                                decorationColor: Colors.blue,
-                                decoration: TextDecoration.underline,
-                              ),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  _launchURL(post.website ?? '');
-                                },
+                          LinkText(
+                            text: post.website ?? '',
+                            style: textStyleW400(
+                              size.width * 0.035,
+                              AppColors.blackText.withOpacity(0.5),
+                            ),
+                            linkStyle: const TextStyle(
+                              color: Colors.blue,
+                              decoration: TextDecoration.underline,
                             ),
                           ),
                         ],
@@ -477,15 +472,5 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen> {
         decoration: TextDecoration.underline,
       ),
     );
-  }
-}
-
-void _launchURL(String url) async {
-  // ignore: deprecated_member_use
-  if (await canLaunch(url)) {
-    // ignore: deprecated_member_use
-    await launch(url);
-  } else {
-    throw 'Could not launch $url';
   }
 }

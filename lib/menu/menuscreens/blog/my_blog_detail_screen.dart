@@ -336,10 +336,16 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen> {
                               ),
                             ],
                           ),
-                          Text(
-                            post.website ?? '',
+                          LinkText(
+                            text: post.website ?? '',
                             style: textStyleW400(
-                                size.width * 0.035, AppColors.blackText),
+                              size.width * 0.035,
+                              AppColors.blackText.withOpacity(0.5),
+                            ),
+                            linkStyle: const TextStyle(
+                              color: Colors.blue,
+                              decoration: TextDecoration.underline,
+                            ),
                           ),
                         ],
                       ),

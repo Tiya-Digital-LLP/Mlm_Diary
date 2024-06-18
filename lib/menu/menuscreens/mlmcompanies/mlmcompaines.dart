@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/mlmcompanies_card.dart';
+import 'package:mlmdiary/menu/menuscreens/tutorialvideo/controller/tutorial_video_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
-import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
+import 'package:mlmdiary/widgets/custon_test_app_bar.dart';
 
 class MlmCompanies extends StatefulWidget {
   const MlmCompanies({super.key});
@@ -17,11 +18,14 @@ class MlmCompanies extends StatefulWidget {
 
 class _MlmCompaniesState extends State<MlmCompanies> {
   final CompanyController controller = Get.put(CompanyController());
-
+  final TutorialVideoController videoController =
+      Get.put(TutorialVideoController());
+  static const String position = 'company';
   @override
   void initState() {
     super.initState();
     _refreshData();
+    videoController.fetchVideo(position);
   }
 
   Future<void> _refreshData() async {
@@ -32,9 +36,10 @@ class _MlmCompaniesState extends State<MlmCompanies> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: CustomAppBar(
+      appBar: CustonTestAppBar(
         size: MediaQuery.of(context).size,
         titleText: 'MLM Companies',
+        position: position,
       ),
       body: RefreshIndicator(
         backgroundColor: AppColors.primaryColor,
@@ -110,10 +115,11 @@ class _MlmCompaniesState extends State<MlmCompanies> {
                             controller: controller,
                             viewcounts: post.pgcnt ?? 0,
                             likedCount: post.totallike ?? 0,
-                            bookmarkCount: post.totalbookmark ?? 0,
                             postTitle: post.sname ?? '',
                             postCaption: post.description ?? '',
                             location: post.location ?? '',
+                            shareurl: post.fullUrl ?? '',
+                            commentcount: post.totalcomment ?? 0,
                           ),
                         ),
                       );

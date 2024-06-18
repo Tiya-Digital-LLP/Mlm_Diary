@@ -7,12 +7,13 @@ import 'package:get/get.dart';
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:mlmdiary/database/controller/database_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/menu/menuscreens/tutorialvideo/controller/tutorial_video_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
-import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/customfilter/custom_filter.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
 import 'package:mlmdiary/database/user_card.dart';
+import 'package:mlmdiary/widgets/custon_test_app_bar.dart';
 
 class DatabaseScreen extends StatefulWidget {
   const DatabaseScreen({super.key});
@@ -27,10 +28,15 @@ class _DatabaseState extends State<DatabaseScreen> {
   String googleApikey = "AIzaSyB3s5ixJVnWzsXoUZaP9ISDp_80GXWJXuU";
   late double lat = 0.0;
   late double log = 0.0;
+  final TutorialVideoController videoController =
+      Get.put(TutorialVideoController());
+  static const String position = 'database';
+
   @override
   void initState() {
     super.initState();
     _refreshData();
+    videoController.fetchVideo(position);
   }
 
   Future<void> _refreshData() async {
@@ -41,10 +47,11 @@ class _DatabaseState extends State<DatabaseScreen> {
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: CustomAppBar(
+      appBar: CustonTestAppBar(
         size: MediaQuery.of(context).size,
         titleText: 'MLM Database',
         onTap: () {},
+        position: position,
       ),
       body: RefreshIndicator(
         backgroundColor: AppColors.primaryColor,

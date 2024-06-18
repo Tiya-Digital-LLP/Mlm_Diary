@@ -496,6 +496,7 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
         // Perform address validation
         if (controller.addressValidationColor.value != AppColors.redText) {
           await controller.updateUserProfile(imageFile: file.value);
+          Get.back();
         } else {
           showToasterrorborder("Please enter a valid address.", context);
         }

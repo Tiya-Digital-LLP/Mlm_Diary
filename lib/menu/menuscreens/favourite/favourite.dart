@@ -33,7 +33,7 @@ class _FavouriteState extends State<Favourite> {
   final ManageBlogController manageBlogController =
       Get.put(ManageBlogController());
   final ManageNewsController manageNewsController =
-      Get.put(ManageNewsController());  
+      Get.put(ManageNewsController());
   final ClasifiedController clasifiedController =
       Get.put(ClasifiedController());
   final VideoController videoController = Get.put(VideoController());
@@ -315,7 +315,7 @@ class _FavouriteState extends State<Favourite> {
   void _navigateToDetails(post) {
     switch (post.type) {
       case 'classified':
-        Get.toNamed(Routes.mlmclassifieddetail, arguments: post);
+        Get.toNamed(Routes.favouritrdetailsscreen, arguments: post);
         break;
       case 'company':
         Get.toNamed(Routes.favouritrdetailsscreen, arguments: post);
@@ -376,7 +376,7 @@ class _FavouriteState extends State<Favourite> {
                     ChoiceChip(
                       label: Text(
                         controller.types[index],
-                      ),
+                      ),  
                       selected: controller.selectedType.value ==
                           controller.types[index],
                       selectedColor: AppColors.blackText,

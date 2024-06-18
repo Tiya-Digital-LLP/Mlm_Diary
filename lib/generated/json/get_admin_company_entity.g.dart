@@ -154,9 +154,9 @@ GetAdminCompanyData $GetAdminCompanyDataFromJson(Map<String, dynamic> json) {
   if (totallike != null) {
     getAdminCompanyData.totallike = totallike;
   }
-  final int? totalbookmark = jsonConvert.convert<int>(json['totalbookmark']);
-  if (totalbookmark != null) {
-    getAdminCompanyData.totalbookmark = totalbookmark;
+  final int? totalcomment = jsonConvert.convert<int>(json['totalcomment']);
+  if (totalcomment != null) {
+    getAdminCompanyData.totalcomment = totalcomment;
   }
   final bool? likedByUser = jsonConvert.convert<bool>(json['liked_by_user']);
   if (likedByUser != null) {
@@ -166,6 +166,10 @@ GetAdminCompanyData $GetAdminCompanyDataFromJson(Map<String, dynamic> json) {
       json['bookmarked_by_user']);
   if (bookmarkedByUser != null) {
     getAdminCompanyData.bookmarkedByUser = bookmarkedByUser;
+  }
+  final String? fullUrl = jsonConvert.convert<String>(json['full_url']);
+  if (fullUrl != null) {
+    getAdminCompanyData.fullUrl = fullUrl;
   }
   return getAdminCompanyData;
 }
@@ -200,9 +204,10 @@ Map<String, dynamic> $GetAdminCompanyDataToJson(GetAdminCompanyData entity) {
   data['meta_title'] = entity.metaTitle;
   data['meta_des'] = entity.metaDes;
   data['totallike'] = entity.totallike;
-  data['totalbookmark'] = entity.totalbookmark;
+  data['totalcomment'] = entity.totalcomment;
   data['liked_by_user'] = entity.likedByUser;
   data['bookmarked_by_user'] = entity.bookmarkedByUser;
+  data['full_url'] = entity.fullUrl;
   return data;
 }
 
@@ -236,9 +241,10 @@ extension GetAdminCompanyDataExtension on GetAdminCompanyData {
     String? metaTitle,
     String? metaDes,
     int? totallike,
-    int? totalbookmark,
+    int? totalcomment,
     bool? likedByUser,
     bool? bookmarkedByUser,
+    String? fullUrl,
   }) {
     return GetAdminCompanyData()
       ..id = id ?? this.id
@@ -269,8 +275,9 @@ extension GetAdminCompanyDataExtension on GetAdminCompanyData {
       ..metaTitle = metaTitle ?? this.metaTitle
       ..metaDes = metaDes ?? this.metaDes
       ..totallike = totallike ?? this.totallike
-      ..totalbookmark = totalbookmark ?? this.totalbookmark
+      ..totalcomment = totalcomment ?? this.totalcomment
       ..likedByUser = likedByUser ?? this.likedByUser
-      ..bookmarkedByUser = bookmarkedByUser ?? this.bookmarkedByUser;
+      ..bookmarkedByUser = bookmarkedByUser ?? this.bookmarkedByUser
+      ..fullUrl = fullUrl ?? this.fullUrl;
   }
 }

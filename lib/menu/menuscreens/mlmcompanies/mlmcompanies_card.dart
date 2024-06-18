@@ -6,9 +6,11 @@ import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmcompanies/custom_company_comment.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
+import 'package:share_plus/share_plus.dart';
 
 class MlmCompaniesCard extends StatefulWidget {
   final String userImage;
@@ -18,7 +20,8 @@ class MlmCompaniesCard extends StatefulWidget {
   final int companyId;
   final int viewcounts;
   final int likedCount;
-  final int bookmarkCount;
+  final String shareurl;
+  final int commentcount;
 
   final CompanyController controller;
   const MlmCompaniesCard({
@@ -31,7 +34,8 @@ class MlmCompaniesCard extends StatefulWidget {
     required this.viewcounts,
     required this.likedCount,
     required this.controller,
-    required this.bookmarkCount,
+    required this.shareurl,
+    required this.commentcount,
   });
 
   @override
@@ -69,17 +73,11 @@ class _MlmcompaniesCardState extends State<MlmCompaniesCard> {
   void initializeBookmarks() {
     isBookmarked =
         RxBool(widget.controller.bookmarkStatusMap[widget.companyId] ?? false);
-    bookmarkCount = RxInt(
-        widget.controller.bookmarkCountMap[widget.companyId] ??
-            widget.bookmarkCount);
   }
 
   void toggleBookmark() async {
     bool newBookmarkedValue = !isBookmarked.value;
     isBookmarked.value = newBookmarkedValue;
-    bookmarkCount.value =
-        newBookmarkedValue ? bookmarkCount.value + 1 : bookmarkCount.value - 1;
-
     await widget.controller.toggleBookMark(widget.companyId);
   }
 
@@ -199,20 +197,29 @@ class _MlmcompaniesCardState extends State<MlmCompaniesCard> {
                   const SizedBox(
                     width: 15,
                   ),
-                  SizedBox(
-                    height: size.height * 0.028,
-                    width: size.height * 0.028,
-                    child: SvgPicture.asset(Assets.svgComment),
-                  ),
-                  const SizedBox(
-                    width: 7,
-                  ),
-                  Text(
-                    "24k",
-                    style: TextStyle(
-                        fontFamily: "Metropolis",
-                        fontWeight: FontWeight.w600,
-                        fontSize: size.width * 0.043),
+                  Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () => showFullScreenDialogCompany(
+                          context,
+                          widget.companyId,
+                        ),
+                        child: SizedBox(
+                          height: size.height * 0.028,
+                          width: size.height * 0.028,
+                          child: SvgPicture.asset(Assets.svgComment),
+                        ),
+                      ),
+                      5.sbw,
+                      Text(
+                        '${widget.commentcount}',
+                        style: TextStyle(
+                          fontFamily: "Metropolis",
+                          fontWeight: FontWeight.w600,
+                          fontSize: size.width * 0.038,
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     width: 15,
@@ -252,10 +259,19 @@ class _MlmcompaniesCardState extends State<MlmCompaniesCard> {
                   const SizedBox(
                     width: 10,
                   ),
-                  SizedBox(
-                    height: size.height * 0.028,
-                    width: size.height * 0.028,
-                    child: SvgPicture.asset(Assets.svgSend),
+                  InkWell(
+                    onTap: () {
+                      Share.share(widget.shareurl);
+                    },
+                    child: SizedBox(
+                      height: size.height * 0.028,
+                      width: size.height * 0.028,
+                      child: SvgPicture.asset(
+                        Assets.svgSend,
+                        // ignore: deprecated_member_use
+                        color: AppColors.blackText,
+                      ),
+                    ),
                   ),
                   const SizedBox(
                     width: 10,

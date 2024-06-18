@@ -97,6 +97,7 @@ class _NotificationState extends State<NotificationScreen>
                           ),
                           color: AppColors.primaryColor,
                         ),
+                        dividerColor: Colors.transparent,
                         indicatorSize: TabBarIndicatorSize.tab,
                         labelColor: Colors.white,
                         unselectedLabelColor: Colors.black,

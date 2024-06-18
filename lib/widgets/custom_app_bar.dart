@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:mlmdiary/generated/assets.dart'; // Assuming you're using GetX
+import 'package:mlmdiary/generated/assets.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Size size;

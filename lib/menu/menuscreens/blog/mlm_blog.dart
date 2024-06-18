@@ -5,11 +5,12 @@ import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/blog_bottomsheet_content.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/blog_card.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/tutorialvideo/controller/tutorial_video_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
-import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
+import 'package:mlmdiary/widgets/custon_test_app_bar.dart';
 import 'package:mlmdiary/widgets/remimaining_count_controller./remaining_count.dart';
 
 class MlmBlog extends StatefulWidget {
@@ -21,11 +22,14 @@ class MlmBlog extends StatefulWidget {
 
 class _MlmBlogState extends State<MlmBlog> {
   final ManageBlogController controller = Get.put(ManageBlogController());
-
+  final TutorialVideoController videoController =
+      Get.put(TutorialVideoController());
+  static const String position = 'blog';
   @override
   void initState() {
     super.initState();
     _refreshData();
+    videoController.fetchVideo(position);
   }
 
   Future<void> _refreshData() async {
@@ -38,9 +42,11 @@ class _MlmBlogState extends State<MlmBlog> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: CustomAppBar(
+      appBar: CustonTestAppBar(
         size: MediaQuery.of(context).size,
         titleText: 'MLM Blog',
+        onTap: () {},
+        position: position,
       ),
       body: RefreshIndicator(
         backgroundColor: AppColors.primaryColor,

@@ -5,11 +5,12 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/terms&condition/controller/terms_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/tutorialvideo/controller/tutorial_video_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
-import 'package:mlmdiary/widgets/custom_app_bar.dart';
+import 'package:mlmdiary/widgets/custon_test_app_bar.dart';
 import 'package:mlmdiary/widgets/normal_button.dart';
 
 class AddwertiseWithUs extends StatefulWidget {
@@ -59,22 +60,26 @@ class _AdwithusState extends State<AddwertiseWithUs>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final TermsController _termsController = Get.put(TermsController());
-
+  final TutorialVideoController videoController =
+      Get.put(TutorialVideoController());
+  static const String position = 'advertisewithus';
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
     _termsController.fetchTermsAndConditions();
+    videoController.fetchVideo(position);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: CustomAppBar(
+      appBar: CustonTestAppBar(
         size: MediaQuery.of(context).size,
-        titleText: 'Advertise With Us',
+        titleText: 'MLM Classified',
         onTap: () {},
+        position: position,
       ),
       body: SingleChildScrollView(
         child: Column(

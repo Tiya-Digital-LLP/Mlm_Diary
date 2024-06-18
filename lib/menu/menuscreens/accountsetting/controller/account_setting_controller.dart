@@ -397,6 +397,8 @@ class AccountSeetingController extends GetxController {
       if (kDebugMode) {
         print("An error occurred while saving company details: $e");
       }
+    } finally {
+      isLoading(false);
     }
   }
 

@@ -10,9 +10,11 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
 import 'package:mlmdiary/data/constants.dart';
+import 'package:mlmdiary/generated/add_company_comment_entity.dart';
 import 'package:mlmdiary/generated/bookmark_company_entity.dart';
 import 'package:mlmdiary/generated/company_count_view_entity.dart';
 import 'package:mlmdiary/generated/get_admin_company_entity.dart';
+import 'package:mlmdiary/generated/get_company_comment_entity.dart';
 import 'package:mlmdiary/generated/mlm_like_company_entity.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -37,6 +39,10 @@ class CompanyController extends GetxController {
   var bookmarkCountMap = <int, int>{};
 
   final search = TextEditingController();
+
+  // Company comment
+  RxList<GetCompanyCommentData> getCommentList = <GetCompanyCommentData>[].obs;
+  Rx<TextEditingController> commment = TextEditingController().obs;
 
   @override
   void onInit() {
@@ -322,6 +328,147 @@ class CompanyController extends GetxController {
         ifAbsent: () => isBookmark ? 1 : 0);
 
     await bookmarkCompany(companyId);
+  }
+
+  // comment for Post
+  Future<void> getCommentCompany(int page, int companyId) async {
+    isLoading(true);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = '';
+    if (Platform.isAndroid) {
+      device = 'android';
+    } else if (Platform.isIOS) {
+      device = 'ios';
+    }
+    if (kDebugMode) {
+      print('Device Name: $device');
+    }
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri =
+            Uri.parse('${Constants.baseUrl}${Constants.getcommentCompany}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['page'] = page.toString();
+        request.fields['company_id'] = companyId.toString();
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var getCompanyCommentEntity = GetCompanyCommentEntity.fromJson(data);
+
+          if (kDebugMode) {
+            print('Success: $getCompanyCommentEntity');
+          }
+
+          if (getCompanyCommentEntity.data != null &&
+              getCompanyCommentEntity.data!.isNotEmpty) {
+            if (page == 1) {
+              getCommentList.value = getCompanyCommentEntity.data!;
+            } else {
+              getCommentList.addAll(getCompanyCommentEntity.data!);
+            }
+            isEndOfData(false);
+          } else {
+            if (page == 1) {
+              getCommentList.clear();
+            }
+            isEndOfData(true);
+          }
+        } else {
+          Fluttertoast.showToast(
+            msg: "Error: ${response.body}",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
+        }
+      } else {
+        Fluttertoast.showToast(
+          msg: "No internet connection",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+        );
+      }
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Error: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+      );
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<void> addReplyCompanyComment(int companyId, int commentId) async {
+    isLoading(true);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = '';
+    if (Platform.isAndroid) {
+      device = 'android';
+    } else if (Platform.isIOS) {
+      device = 'ios';
+    }
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri = Uri.parse(
+            '${Constants.baseUrl}${Constants.addcommentcompanyreply}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['company_id'] = companyId.toString();
+        request.fields['comment_id'] = commentId.toString();
+        request.fields['comment'] = commment.value.text;
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var addCompanyCommentEntity = AddCompanyCommentEntity.fromJson(data);
+          getCommentCompany(1, companyId);
+
+          if (kDebugMode) {
+            print('Success: $addCompanyCommentEntity');
+          }
+        } else {
+          Fluttertoast.showToast(
+            msg: "Error: ${response.body}",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
+        }
+      } else {
+        Fluttertoast.showToast(
+          msg: "No internet connection",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+        );
+      }
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Error: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+      );
+    } finally {
+      isLoading(false);
+    }
   }
 
   final RxInt timerValue = 30.obs;

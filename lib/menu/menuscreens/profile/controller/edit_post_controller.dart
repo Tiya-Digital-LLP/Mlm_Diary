@@ -8,8 +8,10 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:mlmdiary/data/constants.dart';
+import 'package:mlmdiary/generated/add_post_comment_entity.dart';
 import 'package:mlmdiary/generated/database_detail_entity.dart';
 import 'package:mlmdiary/generated/follow_user_entity.dart';
+import 'package:mlmdiary/generated/get_user_post_comment_entity.dart';
 import 'package:mlmdiary/generated/my_post_list_entity.dart';
 import 'package:mlmdiary/generated/post_bookmark_entity.dart';
 import 'package:mlmdiary/generated/post_like_entity.dart';
@@ -25,6 +27,12 @@ class EditPostController extends GetxController {
   RxList<MyPostListData> myPostList = <MyPostListData>[].obs;
   RxList<PostLikeListData> postLikeList = RxList<PostLikeListData>();
   RxList<DatabaseDetailData> postList = <DatabaseDetailData>[].obs;
+  // Post comment
+  RxList<GetUserPostCommentData> getCommentList =
+      <GetUserPostCommentData>[].obs;
+  Rx<TextEditingController> commment = TextEditingController().obs;
+  var isEndOfData = false.obs;
+  RxString userImage = ''.obs;
 
   //like
   var likedStatusMap = <int, bool>{};
@@ -108,6 +116,7 @@ class EditPostController extends GetxController {
           }
 
           comments.value.text = firstPost.comments ?? '';
+          userImage.value = firstPost.attachmentPath ?? '';
         }
 
         // Update state with fetched data
@@ -809,5 +818,146 @@ class EditPostController extends GetxController {
         ifAbsent: () => isFollow ? 1 : 0);
 
     await profileFollow(userId);
+  }
+
+  // comment for Post
+  Future<void> getCommentPost(int page, int postId) async {
+    isLoading(true);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = '';
+    if (Platform.isAndroid) {
+      device = 'android';
+    } else if (Platform.isIOS) {
+      device = 'ios';
+    }
+    if (kDebugMode) {
+      print('Device Name: $device');
+    }
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri = Uri.parse('${Constants.baseUrl}${Constants.getcommentpost}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['page'] = page.toString();
+        request.fields['post_id'] = postId.toString();
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var getUserPostCommentEntity =
+              GetUserPostCommentEntity.fromJson(data);
+
+          if (kDebugMode) {
+            print('Success: $getUserPostCommentEntity');
+          }
+
+          if (getUserPostCommentEntity.data != null &&
+              getUserPostCommentEntity.data!.isNotEmpty) {
+            if (page == 1) {
+              getCommentList.value = getUserPostCommentEntity.data!;
+            } else {
+              getCommentList.addAll(getUserPostCommentEntity.data!);
+            }
+            isEndOfData(false);
+          } else {
+            if (page == 1) {
+              getCommentList.clear();
+            }
+            isEndOfData(true);
+          }
+        } else {
+          Fluttertoast.showToast(
+            msg: "Error: ${response.body}",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
+        }
+      } else {
+        Fluttertoast.showToast(
+          msg: "No internet connection",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+        );
+      }
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Error: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+      );
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<void> addReplyPostComment(int postId, int commentId) async {
+    isLoading(true);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = '';
+    if (Platform.isAndroid) {
+      device = 'android';
+    } else if (Platform.isIOS) {
+      device = 'ios';
+    }
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri =
+            Uri.parse('${Constants.baseUrl}${Constants.addcommentpostreply}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['post_id'] = postId.toString();
+        request.fields['comment_id'] = commentId.toString();
+        request.fields['comment'] = commment.value.text;
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var addPostCommentEntity = AddPostCommentEntity.fromJson(data);
+          getCommentPost(1, postId);
+
+          if (kDebugMode) {
+            print('Success: $addPostCommentEntity');
+          }
+        } else {
+          Fluttertoast.showToast(
+            msg: "Error: ${response.body}",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
+        }
+      } else {
+        Fluttertoast.showToast(
+          msg: "No internet connection",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+        );
+      }
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Error: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+      );
+    } finally {
+      isLoading(false);
+    }
   }
 }
