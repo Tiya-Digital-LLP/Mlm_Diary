@@ -2,6 +2,7 @@ class Constants {
   ///Local storage constants
   static String accessToken = 'access_token';
   static String isLoggedIn = 'is_logged_in';
+  static String userId = 'user_id';
 
   ///API Constants
   ///Base URLs
@@ -45,6 +46,8 @@ class Constants {
   static const String countviewclassified = "/countview_classified";
   static const String getcommentclassified = "/getclassified_comment";
   static const String addcommentreply = "/add_classified_comment";
+  static const String deletecommment = "/deletecomment";
+  static const String editcommment = "/editComment";
 
   static const String getadmincompany = "/getmlmcompany";
   static const String countviewcompany = "/countview_company";
@@ -109,6 +112,7 @@ class Constants {
   static const String questionBookmark = "/addfavoritequestion";
   static const String likedquestion = "/addlikequestion";
   static const String likedanswer = "/addlikeanswer";
+  static const String addcommentanswerreply = "/add_answer_comment";
 
   static const String allbookmark = "/getallbookmarked";
 

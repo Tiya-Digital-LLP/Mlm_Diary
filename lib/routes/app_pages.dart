@@ -251,7 +251,7 @@ class AppPages {
     ),
     GetPage(
       name: Routes.tutorialvideo,
-      page: () => TutorialVideo(position: Get.arguments['position']),
+      page: () => const TutorialVideo(),
     ),
     GetPage(
       name: Routes.planandcompanyinterest,

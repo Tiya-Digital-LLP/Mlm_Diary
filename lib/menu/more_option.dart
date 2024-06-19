@@ -135,7 +135,7 @@ class _moreState extends State<MoreOptionScreen> {
                           radius: 30,
                           child: CachedNetworkImage(
                             imageUrl:
-                                userProfile.userimage ?? Assets.imagesIcon,
+                                userProfile.imagePath ?? Assets.imagesIcon,
                             fit: BoxFit.cover,
                             width: 60,
                             height: 60,

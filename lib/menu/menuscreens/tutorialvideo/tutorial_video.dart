@@ -1,32 +1,37 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/menu/menuscreens/tutorialvideo/controller/tutorial_video_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
-import 'package:mlmdiary/utils/extension_classes.dart';
-import 'package:mlmdiary/utils/text_style.dart';
-import 'package:mlmdiary/widgets/custom_back_button.dart';
+import 'package:mlmdiary/widgets/custon_test_app_bar.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class TutorialVideo extends StatefulWidget {
-  final String? position;
-
-  const TutorialVideo({super.key, this.position});
+  const TutorialVideo({super.key});
 
   @override
   State<TutorialVideo> createState() => _TutorialVideoState();
 }
 
 class _TutorialVideoState extends State<TutorialVideo> {
-  final ScrollController scrollercontroller = ScrollController();
   final TutorialVideoController controller = Get.put(TutorialVideoController());
+  String position = '';
 
   @override
   void initState() {
     super.initState();
-    // Fetch all videos if no specific position is provided
-    controller.fetchVideo(widget.position!);
+    final args = Get.arguments;
+    if (kDebugMode) {
+      print('Arguments: $args');
+    }
+    if (args != null && args['position'] != null) {
+      position = args['position'];
+      controller.fetchVideo(position);
+    } else {
+      controller.fetchVideo('');
+    }
   }
 
   @override
@@ -35,27 +40,11 @@ class _TutorialVideoState extends State<TutorialVideo> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(
-        scrolledUnderElevation: 0,
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        leading: Padding(
-          padding: EdgeInsets.all(size.height * 0.012),
-          child: const Align(
-            alignment: Alignment.topLeft,
-            child: CustomBackButton(),
-          ),
-        ),
-        elevation: 0,
-        title: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'MLM Videos',
-              style: textStyleW700(size.width * 0.048, AppColors.blackText),
-            ),
-          ],
-        ),
+      appBar: CustonTestAppBar(
+        size: size,
+        titleText: 'MLM Videos',
+        videoController: controller,
+        position: position,
       ),
       body: Obx(
         () => Stack(
@@ -65,13 +54,10 @@ class _TutorialVideoState extends State<TutorialVideo> {
             if (!controller.isLoading.value)
               ListView.builder(
                 shrinkWrap: true,
-                controller: scrollercontroller,
-                physics: const AlwaysScrollableScrollPhysics(),
                 itemCount: controller.videoList.length,
                 itemBuilder: (context, index) {
                   final videoItem = controller.videoList[index];
                   final videoId = extractVideoId(videoItem.video ?? '');
-                  // Decode the title with error handling
                   final decodedTitle = decodeTitle(videoItem.title);
                   return Padding(
                     padding: const EdgeInsets.only(top: 10),
@@ -87,18 +73,18 @@ class _TutorialVideoState extends State<TutorialVideo> {
                         child: Column(
                           children: [
                             YoutubeViewer(videoId),
-                            10.sbh,
+                            const SizedBox(height: 10),
                             Row(
                               children: [
                                 Expanded(
                                   child: Text(
                                     decodedTitle,
                                     style: const TextStyle(
-                                      fontSize: 13.0,
+                                      fontSize: 15.0,
                                       fontWeight: FontWeight.w500,
                                       fontFamily:
-                                          'assets/fonst/Metropolis-Black.otf',
-                                    ).copyWith(fontSize: 15),
+                                          'assets/fonts/Metropolis-Black.otf',
+                                    ),
                                   ),
                                 ),
                               ],
@@ -116,7 +102,6 @@ class _TutorialVideoState extends State<TutorialVideo> {
     );
   }
 
-// Helper method to decode titles safely
   String decodeTitle(String? title) {
     if (title == null) return '';
     try {

@@ -86,7 +86,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(60.0),
                         child: CachedNetworkImage(
-                          imageUrl: userProfile.userimage ?? Assets.imagesIcon,
+                          imageUrl: userProfile.imagePath ?? Assets.imagesIcon,
                           fit: BoxFit.cover,
                           height: 100,
                           width: 100,

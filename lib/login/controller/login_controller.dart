@@ -109,8 +109,8 @@ class LoginController extends GetxController {
         // ignore: use_build_context_synchronously
         showToastverifedborder('Login successful!', context);
 
-        // Store token
-        await saveAccessToken(loginEntity.apiToken);
+        // Store token and user id
+        await saveAccessToken(loginEntity.apiToken, loginEntity.userId);
 
         // Check for redirection
         if (responseData.containsKey('redirect_to_company') &&
@@ -131,9 +131,10 @@ class LoginController extends GetxController {
     }
   }
 
-  Future<void> saveAccessToken(String? token) async {
+  Future<void> saveAccessToken(String? token, int? userId) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(Constants.accessToken, token ?? '');
+    await prefs.setInt(Constants.userId, userId ?? 0);
     await prefs.setBool(Constants.isLoggedIn, true);
   }
 }

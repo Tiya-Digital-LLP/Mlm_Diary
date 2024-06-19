@@ -60,18 +60,29 @@ GetAnswersAnswers $GetAnswersAnswersFromJson(Map<String, dynamic> json) {
   if (userId != null) {
     getAnswersAnswers.userId = userId;
   }
+  final String? name = jsonConvert.convert<String>(json['name']);
+  if (name != null) {
+    getAnswersAnswers.name = name;
+  }
+  final String? userimage = jsonConvert.convert<String>(json['userimage']);
+  if (userimage != null) {
+    getAnswersAnswers.userimage = userimage;
+  }
   final int? totallike = jsonConvert.convert<int>(json['totallike']);
   if (totallike != null) {
     getAnswersAnswers.totallike = totallike;
   }
-  final int? userliked = jsonConvert.convert<int>(json['userliked']);
-  if (userliked != null) {
-    getAnswersAnswers.userliked = userliked;
+  final bool? likedByUser = jsonConvert.convert<bool>(json['liked_by_user']);
+  if (likedByUser != null) {
+    getAnswersAnswers.likedByUser = likedByUser;
   }
-  final GetAnswersAnswersUserData? userData = jsonConvert.convert<
-      GetAnswersAnswersUserData>(json['user_data']);
-  if (userData != null) {
-    getAnswersAnswers.userData = userData;
+  final List<GetAnswersAnswersComments>? comments = (json['comments'] as List<
+      dynamic>?)?.map(
+          (e) =>
+      jsonConvert.convert<GetAnswersAnswersComments>(
+          e) as GetAnswersAnswersComments).toList();
+  if (comments != null) {
+    getAnswersAnswers.comments = comments;
   }
   return getAnswersAnswers;
 }
@@ -82,9 +93,11 @@ Map<String, dynamic> $GetAnswersAnswersToJson(GetAnswersAnswers entity) {
   data['ans_title'] = entity.ansTitle;
   data['createdate'] = entity.createdate;
   data['user_id'] = entity.userId;
+  data['name'] = entity.name;
+  data['userimage'] = entity.userimage;
   data['totallike'] = entity.totallike;
-  data['userliked'] = entity.userliked;
-  data['user_data'] = entity.userData?.toJson();
+  data['liked_by_user'] = entity.likedByUser;
+  data['comments'] = entity.comments?.map((v) => v.toJson()).toList();
   return data;
 }
 
@@ -94,72 +107,236 @@ extension GetAnswersAnswersExtension on GetAnswersAnswers {
     String? ansTitle,
     String? createdate,
     int? userId,
+    String? name,
+    String? userimage,
     int? totallike,
-    int? userliked,
-    GetAnswersAnswersUserData? userData,
+    bool? likedByUser,
+    List<GetAnswersAnswersComments>? comments,
   }) {
     return GetAnswersAnswers()
       ..id = id ?? this.id
       ..ansTitle = ansTitle ?? this.ansTitle
       ..createdate = createdate ?? this.createdate
       ..userId = userId ?? this.userId
+      ..name = name ?? this.name
+      ..userimage = userimage ?? this.userimage
       ..totallike = totallike ?? this.totallike
-      ..userliked = userliked ?? this.userliked
-      ..userData = userData ?? this.userData;
+      ..likedByUser = likedByUser ?? this.likedByUser
+      ..comments = comments ?? this.comments;
   }
 }
 
-GetAnswersAnswersUserData $GetAnswersAnswersUserDataFromJson(
+GetAnswersAnswersComments $GetAnswersAnswersCommentsFromJson(
     Map<String, dynamic> json) {
-  final GetAnswersAnswersUserData getAnswersAnswersUserData = GetAnswersAnswersUserData();
+  final GetAnswersAnswersComments getAnswersAnswersComments = GetAnswersAnswersComments();
+  final int? id = jsonConvert.convert<int>(json['id']);
+  if (id != null) {
+    getAnswersAnswersComments.id = id;
+  }
+  final String? comment = jsonConvert.convert<String>(json['comment']);
+  if (comment != null) {
+    getAnswersAnswersComments.comment = comment;
+  }
+  final String? createdate = jsonConvert.convert<String>(json['createdate']);
+  if (createdate != null) {
+    getAnswersAnswersComments.createdate = createdate;
+  }
+  final int? userid = jsonConvert.convert<int>(json['userid']);
+  if (userid != null) {
+    getAnswersAnswersComments.userid = userid;
+  }
   final String? name = jsonConvert.convert<String>(json['name']);
   if (name != null) {
-    getAnswersAnswersUserData.name = name;
+    getAnswersAnswersComments.name = name;
   }
   final String? userimage = jsonConvert.convert<String>(json['userimage']);
   if (userimage != null) {
-    getAnswersAnswersUserData.userimage = userimage;
+    getAnswersAnswersComments.userimage = userimage;
   }
-  final int? id = jsonConvert.convert<int>(json['id']);
-  if (id != null) {
-    getAnswersAnswersUserData.id = id;
+  final List<
+      GetAnswersAnswersCommentsReplies>? replies = (json['replies'] as List<
+      dynamic>?)?.map(
+          (e) =>
+      jsonConvert.convert<GetAnswersAnswersCommentsReplies>(
+          e) as GetAnswersAnswersCommentsReplies).toList();
+  if (replies != null) {
+    getAnswersAnswersComments.replies = replies;
   }
-  final String? imagePath = jsonConvert.convert<String>(json['image_path']);
-  if (imagePath != null) {
-    getAnswersAnswersUserData.imagePath = imagePath;
-  }
-  final String? imageThumPath = jsonConvert.convert<String>(
-      json['image_thum_path']);
-  if (imageThumPath != null) {
-    getAnswersAnswersUserData.imageThumPath = imageThumPath;
-  }
-  return getAnswersAnswersUserData;
+  return getAnswersAnswersComments;
 }
 
-Map<String, dynamic> $GetAnswersAnswersUserDataToJson(
-    GetAnswersAnswersUserData entity) {
+Map<String, dynamic> $GetAnswersAnswersCommentsToJson(
+    GetAnswersAnswersComments entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
+  data['id'] = entity.id;
+  data['comment'] = entity.comment;
+  data['createdate'] = entity.createdate;
+  data['userid'] = entity.userid;
   data['name'] = entity.name;
   data['userimage'] = entity.userimage;
-  data['id'] = entity.id;
-  data['image_path'] = entity.imagePath;
-  data['image_thum_path'] = entity.imageThumPath;
+  data['replies'] = entity.replies?.map((v) => v.toJson()).toList();
   return data;
 }
 
-extension GetAnswersAnswersUserDataExtension on GetAnswersAnswersUserData {
-  GetAnswersAnswersUserData copyWith({
+extension GetAnswersAnswersCommentsExtension on GetAnswersAnswersComments {
+  GetAnswersAnswersComments copyWith({
+    int? id,
+    String? comment,
+    String? createdate,
+    int? userid,
     String? name,
     String? userimage,
-    int? id,
-    String? imagePath,
-    String? imageThumPath,
+    List<GetAnswersAnswersCommentsReplies>? replies,
   }) {
-    return GetAnswersAnswersUserData()
+    return GetAnswersAnswersComments()
+      ..id = id ?? this.id
+      ..comment = comment ?? this.comment
+      ..createdate = createdate ?? this.createdate
+      ..userid = userid ?? this.userid
       ..name = name ?? this.name
       ..userimage = userimage ?? this.userimage
+      ..replies = replies ?? this.replies;
+  }
+}
+
+GetAnswersAnswersCommentsReplies $GetAnswersAnswersCommentsRepliesFromJson(
+    Map<String, dynamic> json) {
+  final GetAnswersAnswersCommentsReplies getAnswersAnswersCommentsReplies = GetAnswersAnswersCommentsReplies();
+  final int? id = jsonConvert.convert<int>(json['id']);
+  if (id != null) {
+    getAnswersAnswersCommentsReplies.id = id;
+  }
+  final String? comment = jsonConvert.convert<String>(json['comment']);
+  if (comment != null) {
+    getAnswersAnswersCommentsReplies.comment = comment;
+  }
+  final String? createdate = jsonConvert.convert<String>(json['createdate']);
+  if (createdate != null) {
+    getAnswersAnswersCommentsReplies.createdate = createdate;
+  }
+  final int? userid = jsonConvert.convert<int>(json['userid']);
+  if (userid != null) {
+    getAnswersAnswersCommentsReplies.userid = userid;
+  }
+  final String? name = jsonConvert.convert<String>(json['name']);
+  if (name != null) {
+    getAnswersAnswersCommentsReplies.name = name;
+  }
+  final String? userimage = jsonConvert.convert<String>(json['userimage']);
+  if (userimage != null) {
+    getAnswersAnswersCommentsReplies.userimage = userimage;
+  }
+  final List<
+      GetAnswersAnswersCommentsRepliesReplies>? replies = (json['replies'] as List<
+      dynamic>?)?.map(
+          (e) =>
+      jsonConvert.convert<GetAnswersAnswersCommentsRepliesReplies>(
+          e) as GetAnswersAnswersCommentsRepliesReplies).toList();
+  if (replies != null) {
+    getAnswersAnswersCommentsReplies.replies = replies;
+  }
+  return getAnswersAnswersCommentsReplies;
+}
+
+Map<String, dynamic> $GetAnswersAnswersCommentsRepliesToJson(
+    GetAnswersAnswersCommentsReplies entity) {
+  final Map<String, dynamic> data = <String, dynamic>{};
+  data['id'] = entity.id;
+  data['comment'] = entity.comment;
+  data['createdate'] = entity.createdate;
+  data['userid'] = entity.userid;
+  data['name'] = entity.name;
+  data['userimage'] = entity.userimage;
+  data['replies'] = entity.replies?.map((v) => v.toJson()).toList();
+  return data;
+}
+
+extension GetAnswersAnswersCommentsRepliesExtension on GetAnswersAnswersCommentsReplies {
+  GetAnswersAnswersCommentsReplies copyWith({
+    int? id,
+    String? comment,
+    String? createdate,
+    int? userid,
+    String? name,
+    String? userimage,
+    List<GetAnswersAnswersCommentsRepliesReplies>? replies,
+  }) {
+    return GetAnswersAnswersCommentsReplies()
       ..id = id ?? this.id
-      ..imagePath = imagePath ?? this.imagePath
-      ..imageThumPath = imageThumPath ?? this.imageThumPath;
+      ..comment = comment ?? this.comment
+      ..createdate = createdate ?? this.createdate
+      ..userid = userid ?? this.userid
+      ..name = name ?? this.name
+      ..userimage = userimage ?? this.userimage
+      ..replies = replies ?? this.replies;
+  }
+}
+
+GetAnswersAnswersCommentsRepliesReplies $GetAnswersAnswersCommentsRepliesRepliesFromJson(
+    Map<String, dynamic> json) {
+  final GetAnswersAnswersCommentsRepliesReplies getAnswersAnswersCommentsRepliesReplies = GetAnswersAnswersCommentsRepliesReplies();
+  final int? id = jsonConvert.convert<int>(json['id']);
+  if (id != null) {
+    getAnswersAnswersCommentsRepliesReplies.id = id;
+  }
+  final String? comment = jsonConvert.convert<String>(json['comment']);
+  if (comment != null) {
+    getAnswersAnswersCommentsRepliesReplies.comment = comment;
+  }
+  final String? createdate = jsonConvert.convert<String>(json['createdate']);
+  if (createdate != null) {
+    getAnswersAnswersCommentsRepliesReplies.createdate = createdate;
+  }
+  final int? userid = jsonConvert.convert<int>(json['userid']);
+  if (userid != null) {
+    getAnswersAnswersCommentsRepliesReplies.userid = userid;
+  }
+  final String? name = jsonConvert.convert<String>(json['name']);
+  if (name != null) {
+    getAnswersAnswersCommentsRepliesReplies.name = name;
+  }
+  final String? userimage = jsonConvert.convert<String>(json['userimage']);
+  if (userimage != null) {
+    getAnswersAnswersCommentsRepliesReplies.userimage = userimage;
+  }
+  final List<dynamic>? replies = (json['replies'] as List<dynamic>?)?.map(
+          (e) => e).toList();
+  if (replies != null) {
+    getAnswersAnswersCommentsRepliesReplies.replies = replies;
+  }
+  return getAnswersAnswersCommentsRepliesReplies;
+}
+
+Map<String, dynamic> $GetAnswersAnswersCommentsRepliesRepliesToJson(
+    GetAnswersAnswersCommentsRepliesReplies entity) {
+  final Map<String, dynamic> data = <String, dynamic>{};
+  data['id'] = entity.id;
+  data['comment'] = entity.comment;
+  data['createdate'] = entity.createdate;
+  data['userid'] = entity.userid;
+  data['name'] = entity.name;
+  data['userimage'] = entity.userimage;
+  data['replies'] = entity.replies;
+  return data;
+}
+
+extension GetAnswersAnswersCommentsRepliesRepliesExtension on GetAnswersAnswersCommentsRepliesReplies {
+  GetAnswersAnswersCommentsRepliesReplies copyWith({
+    int? id,
+    String? comment,
+    String? createdate,
+    int? userid,
+    String? name,
+    String? userimage,
+    List<dynamic>? replies,
+  }) {
+    return GetAnswersAnswersCommentsRepliesReplies()
+      ..id = id ?? this.id
+      ..comment = comment ?? this.comment
+      ..createdate = createdate ?? this.createdate
+      ..userid = userid ?? this.userid
+      ..name = name ?? this.name
+      ..userimage = userimage ?? this.userimage
+      ..replies = replies ?? this.replies;
   }
 }

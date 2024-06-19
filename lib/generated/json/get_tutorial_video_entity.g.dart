@@ -12,8 +12,11 @@ GetTutorialVideoEntity $GetTutorialVideoEntityFromJson(
   if (message != null) {
     getTutorialVideoEntity.message = message;
   }
-  final GetTutorialVideoData? data = jsonConvert.convert<GetTutorialVideoData>(
-      json['data']);
+  final List<GetTutorialVideoData>? data = (json['data'] as List<dynamic>?)
+      ?.map(
+          (e) =>
+      jsonConvert.convert<GetTutorialVideoData>(e) as GetTutorialVideoData)
+      .toList();
   if (data != null) {
     getTutorialVideoEntity.data = data;
   }
@@ -25,7 +28,7 @@ Map<String, dynamic> $GetTutorialVideoEntityToJson(
   final Map<String, dynamic> data = <String, dynamic>{};
   data['success'] = entity.success;
   data['message'] = entity.message;
-  data['data'] = entity.data?.toJson();
+  data['data'] = entity.data?.map((v) => v.toJson()).toList();
   return data;
 }
 
@@ -33,7 +36,7 @@ extension GetTutorialVideoEntityExtension on GetTutorialVideoEntity {
   GetTutorialVideoEntity copyWith({
     int? success,
     String? message,
-    GetTutorialVideoData? data,
+    List<GetTutorialVideoData>? data,
   }) {
     return GetTutorialVideoEntity()
       ..success = success ?? this.success

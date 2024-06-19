@@ -68,7 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         byDefault: !controller.isEmailTyping.value,
                         onChanged: () {
                           controller.isEmailTyping.value = true;
-                          controller.isMobileTyping.value = true;
+                          controller.isEmailTyping.value = true;
                           controller.emailValidation();
                         },
                       ),

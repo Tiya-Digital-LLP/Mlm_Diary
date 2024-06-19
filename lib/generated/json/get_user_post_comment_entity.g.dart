@@ -53,7 +53,7 @@ GetUserPostCommentData $GetUserPostCommentDataFromJson(
   if (createdate != null) {
     getUserPostCommentData.createdate = createdate;
   }
-  final String? userid = jsonConvert.convert<String>(json['userid']);
+  final int? userid = jsonConvert.convert<int>(json['userid']);
   if (userid != null) {
     getUserPostCommentData.userid = userid;
   }
@@ -96,7 +96,7 @@ extension GetUserPostCommentDataExtension on GetUserPostCommentData {
     int? id,
     String? comment,
     String? createdate,
-    String? userid,
+    int? userid,
     String? name,
     String? userimage,
     List<GetUserPostCommentDataCommentsReplays>? commentsReplays,
@@ -127,7 +127,7 @@ GetUserPostCommentDataCommentsReplays $GetUserPostCommentDataCommentsReplaysFrom
   if (createdate != null) {
     getUserPostCommentDataCommentsReplays.createdate = createdate;
   }
-  final String? userid = jsonConvert.convert<String>(json['userid']);
+  final int? userid = jsonConvert.convert<int>(json['userid']);
   if (userid != null) {
     getUserPostCommentDataCommentsReplays.userid = userid;
   }
@@ -138,6 +138,16 @@ GetUserPostCommentDataCommentsReplays $GetUserPostCommentDataCommentsReplaysFrom
   final String? userimage = jsonConvert.convert<String>(json['userimage']);
   if (userimage != null) {
     getUserPostCommentDataCommentsReplays.userimage = userimage;
+  }
+  final List<
+      GetUserPostCommentDataCommentsReplaysCommentsReplays>? commentsReplays = (json['comments_replays'] as List<
+      dynamic>?)?.map(
+          (e) =>
+      jsonConvert.convert<
+          GetUserPostCommentDataCommentsReplaysCommentsReplays>(
+          e) as GetUserPostCommentDataCommentsReplaysCommentsReplays).toList();
+  if (commentsReplays != null) {
+    getUserPostCommentDataCommentsReplays.commentsReplays = commentsReplays;
   }
   return getUserPostCommentDataCommentsReplays;
 }
@@ -151,6 +161,8 @@ Map<String, dynamic> $GetUserPostCommentDataCommentsReplaysToJson(
   data['userid'] = entity.userid;
   data['name'] = entity.name;
   data['userimage'] = entity.userimage;
+  data['comments_replays'] =
+      entity.commentsReplays?.map((v) => v.toJson()).toList();
   return data;
 }
 
@@ -159,9 +171,10 @@ extension GetUserPostCommentDataCommentsReplaysExtension on GetUserPostCommentDa
     int? id,
     String? comment,
     String? createdate,
-    String? userid,
+    int? userid,
     String? name,
     String? userimage,
+    List<GetUserPostCommentDataCommentsReplaysCommentsReplays>? commentsReplays,
   }) {
     return GetUserPostCommentDataCommentsReplays()
       ..id = id ?? this.id
@@ -169,6 +182,80 @@ extension GetUserPostCommentDataCommentsReplaysExtension on GetUserPostCommentDa
       ..createdate = createdate ?? this.createdate
       ..userid = userid ?? this.userid
       ..name = name ?? this.name
-      ..userimage = userimage ?? this.userimage;
+      ..userimage = userimage ?? this.userimage
+      ..commentsReplays = commentsReplays ?? this.commentsReplays;
+  }
+}
+
+GetUserPostCommentDataCommentsReplaysCommentsReplays $GetUserPostCommentDataCommentsReplaysCommentsReplaysFromJson(
+    Map<String, dynamic> json) {
+  final GetUserPostCommentDataCommentsReplaysCommentsReplays getUserPostCommentDataCommentsReplaysCommentsReplays = GetUserPostCommentDataCommentsReplaysCommentsReplays();
+  final int? id = jsonConvert.convert<int>(json['id']);
+  if (id != null) {
+    getUserPostCommentDataCommentsReplaysCommentsReplays.id = id;
+  }
+  final String? comment = jsonConvert.convert<String>(json['comment']);
+  if (comment != null) {
+    getUserPostCommentDataCommentsReplaysCommentsReplays.comment = comment;
+  }
+  final String? createdate = jsonConvert.convert<String>(json['createdate']);
+  if (createdate != null) {
+    getUserPostCommentDataCommentsReplaysCommentsReplays.createdate =
+        createdate;
+  }
+  final int? userid = jsonConvert.convert<int>(json['userid']);
+  if (userid != null) {
+    getUserPostCommentDataCommentsReplaysCommentsReplays.userid = userid;
+  }
+  final String? name = jsonConvert.convert<String>(json['name']);
+  if (name != null) {
+    getUserPostCommentDataCommentsReplaysCommentsReplays.name = name;
+  }
+  final String? userimage = jsonConvert.convert<String>(json['userimage']);
+  if (userimage != null) {
+    getUserPostCommentDataCommentsReplaysCommentsReplays.userimage = userimage;
+  }
+  final List<dynamic>? commentsReplays = (json['comments_replays'] as List<
+      dynamic>?)?.map(
+          (e) => e).toList();
+  if (commentsReplays != null) {
+    getUserPostCommentDataCommentsReplaysCommentsReplays.commentsReplays =
+        commentsReplays;
+  }
+  return getUserPostCommentDataCommentsReplaysCommentsReplays;
+}
+
+Map<String,
+    dynamic> $GetUserPostCommentDataCommentsReplaysCommentsReplaysToJson(
+    GetUserPostCommentDataCommentsReplaysCommentsReplays entity) {
+  final Map<String, dynamic> data = <String, dynamic>{};
+  data['id'] = entity.id;
+  data['comment'] = entity.comment;
+  data['createdate'] = entity.createdate;
+  data['userid'] = entity.userid;
+  data['name'] = entity.name;
+  data['userimage'] = entity.userimage;
+  data['comments_replays'] = entity.commentsReplays;
+  return data;
+}
+
+extension GetUserPostCommentDataCommentsReplaysCommentsReplaysExtension on GetUserPostCommentDataCommentsReplaysCommentsReplays {
+  GetUserPostCommentDataCommentsReplaysCommentsReplays copyWith({
+    int? id,
+    String? comment,
+    String? createdate,
+    int? userid,
+    String? name,
+    String? userimage,
+    List<dynamic>? commentsReplays,
+  }) {
+    return GetUserPostCommentDataCommentsReplaysCommentsReplays()
+      ..id = id ?? this.id
+      ..comment = comment ?? this.comment
+      ..createdate = createdate ?? this.createdate
+      ..userid = userid ?? this.userid
+      ..name = name ?? this.name
+      ..userimage = userimage ?? this.userimage
+      ..commentsReplays = commentsReplays ?? this.commentsReplays;
   }
 }

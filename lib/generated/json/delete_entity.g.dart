@@ -1,33 +1,33 @@
 import 'package:mlmdiary/generated/json/base/json_convert_content.dart';
-import 'package:mlmdiary/generated/login_entity.dart';
+import 'package:mlmdiary/generated/delete_entity.dart';
 
-LoginEntity $LoginEntityFromJson(Map<String, dynamic> json) {
-  final LoginEntity loginEntity = LoginEntity();
+DeleteEntity $DeleteEntityFromJson(Map<String, dynamic> json) {
+  final DeleteEntity deleteEntity = DeleteEntity();
   final int? result = jsonConvert.convert<int>(json['result']);
   if (result != null) {
-    loginEntity.result = result;
+    deleteEntity.result = result;
   }
   final String? message = jsonConvert.convert<String>(json['message']);
   if (message != null) {
-    loginEntity.message = message;
+    deleteEntity.message = message;
   }
   final String? apiToken = jsonConvert.convert<String>(json['api_token']);
   if (apiToken != null) {
-    loginEntity.apiToken = apiToken;
+    deleteEntity.apiToken = apiToken;
   }
   final bool? redirectToCompany = jsonConvert.convert<bool>(
       json['redirect_to_company']);
   if (redirectToCompany != null) {
-    loginEntity.redirectToCompany = redirectToCompany;
+    deleteEntity.redirectToCompany = redirectToCompany;
   }
   final int? userId = jsonConvert.convert<int>(json['user_id']);
   if (userId != null) {
-    loginEntity.userId = userId;
+    deleteEntity.userId = userId;
   }
-  return loginEntity;
+  return deleteEntity;
 }
 
-Map<String, dynamic> $LoginEntityToJson(LoginEntity entity) {
+Map<String, dynamic> $DeleteEntityToJson(DeleteEntity entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
   data['result'] = entity.result;
   data['message'] = entity.message;
@@ -37,15 +37,15 @@ Map<String, dynamic> $LoginEntityToJson(LoginEntity entity) {
   return data;
 }
 
-extension LoginEntityExtension on LoginEntity {
-  LoginEntity copyWith({
+extension DeleteEntityExtension on DeleteEntity {
+  DeleteEntity copyWith({
     int? result,
     String? message,
     String? apiToken,
     bool? redirectToCompany,
     int? userId,
   }) {
-    return LoginEntity()
+    return DeleteEntity()
       ..result = result ?? this.result
       ..message = message ?? this.message
       ..apiToken = apiToken ?? this.apiToken

@@ -1,10 +1,10 @@
 import 'package:mlmdiary/generated/json/base/json_field.dart';
-import 'package:mlmdiary/generated/json/login_entity.g.dart';
+import 'package:mlmdiary/generated/json/delete_entity.g.dart';
 import 'dart:convert';
-export 'package:mlmdiary/generated/json/login_entity.g.dart';
+export 'package:mlmdiary/generated/json/delete_entity.g.dart';
 
 @JsonSerializable()
-class LoginEntity {
+class DeleteEntity {
 	int? result = 0;
 	String? message = '';
 	@JSONField(name: "api_token")
@@ -14,11 +14,11 @@ class LoginEntity {
 	@JSONField(name: "user_id")
 	int? userId = 0;
 
-	LoginEntity();
+	DeleteEntity();
 
-	factory LoginEntity.fromJson(Map<String, dynamic> json) => $LoginEntityFromJson(json);
+	factory DeleteEntity.fromJson(Map<String, dynamic> json) => $DeleteEntityFromJson(json);
 
-	Map<String, dynamic> toJson() => $LoginEntityToJson(this);
+	Map<String, dynamic> toJson() => $DeleteEntityToJson(this);
 
 	@override
 	String toString() {

@@ -141,7 +141,7 @@ class AccountSeetingController extends GetxController {
         aboutyou.value.text = userProfileEntity.userProfile?.aboutyou ?? '';
         aboutcompany.value.text =
             userProfileEntity.userProfile?.aboutcompany ?? '';
-        userImage.value = userProfileEntity.userProfile?.userimage ?? '';
+        userImage.value = userProfileEntity.userProfile!.imagePath ?? '';
 
         // Combine city, state, and country to form location
         location.value.text = _formatLocation(

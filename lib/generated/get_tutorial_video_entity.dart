@@ -7,7 +7,7 @@ export 'package:mlmdiary/generated/json/get_tutorial_video_entity.g.dart';
 class GetTutorialVideoEntity {
 	int? success = 0;
 	String? message = '';
-	GetTutorialVideoData? data;
+	List<GetTutorialVideoData>? data = [];
 
 	GetTutorialVideoEntity();
 

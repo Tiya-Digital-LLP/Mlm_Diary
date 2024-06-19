@@ -56,8 +56,10 @@ class CustonTestAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         InkWell(
           onTap: () async {
-            // Determine action based on position
-            if (position == 'classified') {
+            if (position.isEmpty) {
+              await videoController?.fetchVideo('');
+              Get.toNamed(Routes.tutorialvideo, arguments: {'position': ''});
+            } else if (position == 'classified') {
               await videoController?.fetchVideo('classified');
               Get.toNamed(Routes.tutorialvideo,
                   arguments: {'position': 'classified'});

@@ -51,12 +51,37 @@ class GetCommentClassifiedDataCommentsReplays {
 	int? userid = 0;
 	String? name = '';
 	String? userimage = '';
+	@JSONField(name: "comments_replays")
+	List<GetCommentClassifiedDataCommentsReplaysCommentsReplays>? commentsReplays = [];
 
 	GetCommentClassifiedDataCommentsReplays();
 
 	factory GetCommentClassifiedDataCommentsReplays.fromJson(Map<String, dynamic> json) => $GetCommentClassifiedDataCommentsReplaysFromJson(json);
 
 	Map<String, dynamic> toJson() => $GetCommentClassifiedDataCommentsReplaysToJson(this);
+
+	@override
+	String toString() {
+		return jsonEncode(this);
+	}
+}
+
+@JsonSerializable()
+class GetCommentClassifiedDataCommentsReplaysCommentsReplays {
+	int? id = 0;
+	String? comment = '';
+	String? createdate = '';
+	int? userid = 0;
+	String? name = '';
+	String? userimage = '';
+	@JSONField(name: "comments_replays")
+	List<dynamic>? commentsReplays = [];
+
+	GetCommentClassifiedDataCommentsReplaysCommentsReplays();
+
+	factory GetCommentClassifiedDataCommentsReplaysCommentsReplays.fromJson(Map<String, dynamic> json) => $GetCommentClassifiedDataCommentsReplaysCommentsReplaysFromJson(json);
+
+	Map<String, dynamic> toJson() => $GetCommentClassifiedDataCommentsReplaysCommentsReplaysToJson(this);
 
 	@override
 	String toString() {

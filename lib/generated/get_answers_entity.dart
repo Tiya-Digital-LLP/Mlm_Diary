@@ -29,10 +29,12 @@ class GetAnswersAnswers {
 	String? createdate = '';
 	@JSONField(name: "user_id")
 	int? userId = 0;
+	String? name = '';
+	String? userimage = '';
 	int? totallike = 0;
-	int? userliked = 0;
-	@JSONField(name: "user_data")
-	GetAnswersAnswersUserData? userData;
+	@JSONField(name: "liked_by_user")
+	bool? likedByUser = false;
+	List<GetAnswersAnswersComments>? comments = [];
 
 	GetAnswersAnswers();
 
@@ -47,20 +49,64 @@ class GetAnswersAnswers {
 }
 
 @JsonSerializable()
-class GetAnswersAnswersUserData {
+class GetAnswersAnswersComments {
+	int? id = 0;
+	String? comment = '';
+	String? createdate = '';
+	int? userid = 0;
 	String? name = '';
 	String? userimage = '';
+	List<GetAnswersAnswersCommentsReplies>? replies = [];
+
+	GetAnswersAnswersComments();
+
+	factory GetAnswersAnswersComments.fromJson(Map<String, dynamic> json) => $GetAnswersAnswersCommentsFromJson(json);
+
+	Map<String, dynamic> toJson() => $GetAnswersAnswersCommentsToJson(this);
+
+	@override
+	String toString() {
+		return jsonEncode(this);
+	}
+}
+
+@JsonSerializable()
+class GetAnswersAnswersCommentsReplies {
 	int? id = 0;
-	@JSONField(name: "image_path")
-	String? imagePath = '';
-	@JSONField(name: "image_thum_path")
-	String? imageThumPath = '';
+	String? comment = '';
+	String? createdate = '';
+	int? userid = 0;
+	String? name = '';
+	String? userimage = '';
+	List<GetAnswersAnswersCommentsRepliesReplies>? replies = [];
 
-	GetAnswersAnswersUserData();
+	GetAnswersAnswersCommentsReplies();
 
-	factory GetAnswersAnswersUserData.fromJson(Map<String, dynamic> json) => $GetAnswersAnswersUserDataFromJson(json);
+	factory GetAnswersAnswersCommentsReplies.fromJson(Map<String, dynamic> json) => $GetAnswersAnswersCommentsRepliesFromJson(json);
 
-	Map<String, dynamic> toJson() => $GetAnswersAnswersUserDataToJson(this);
+	Map<String, dynamic> toJson() => $GetAnswersAnswersCommentsRepliesToJson(this);
+
+	@override
+	String toString() {
+		return jsonEncode(this);
+	}
+}
+
+@JsonSerializable()
+class GetAnswersAnswersCommentsRepliesReplies {
+	int? id = 0;
+	String? comment = '';
+	String? createdate = '';
+	int? userid = 0;
+	String? name = '';
+	String? userimage = '';
+	List<dynamic>? replies = [];
+
+	GetAnswersAnswersCommentsRepliesReplies();
+
+	factory GetAnswersAnswersCommentsRepliesReplies.fromJson(Map<String, dynamic> json) => $GetAnswersAnswersCommentsRepliesRepliesFromJson(json);
+
+	Map<String, dynamic> toJson() => $GetAnswersAnswersCommentsRepliesRepliesToJson(this);
 
 	@override
 	String toString() {

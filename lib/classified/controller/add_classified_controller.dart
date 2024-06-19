@@ -13,6 +13,7 @@ import 'package:mlmdiary/generated/add_comment_entity.dart';
 import 'package:mlmdiary/generated/bookmark_user_entity.dart';
 import 'package:mlmdiary/generated/classified_count_view_entity.dart';
 import 'package:mlmdiary/generated/classified_like_list_entity.dart';
+import 'package:mlmdiary/generated/edit_comment_entity.dart';
 import 'package:mlmdiary/generated/get_category_entity.dart';
 import 'package:mlmdiary/generated/get_classified_entity.dart';
 import 'package:mlmdiary/generated/get_comment_classified_entity.dart';
@@ -985,10 +986,118 @@ class ClasifiedController extends GetxController {
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
           var addCommentEntity = AddCommentEntity.fromJson(data);
-          getCommentClassified(1, classifiedId); // Refresh comments
+          getCommentClassified(1, classifiedId);
 
           if (kDebugMode) {
             print('Success: $addCommentEntity');
+          }
+        } else {
+          Fluttertoast.showToast(
+            msg: "Error: ${response.body}",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
+        }
+      } else {
+        Fluttertoast.showToast(
+          msg: "No internet connection",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+        );
+      }
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Error: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+      );
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<void> deleteComment(int classifiedId, int commentId) async {
+    isLoading(true);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = Platform.isAndroid ? 'android' : 'ios';
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri = Uri.parse('${Constants.baseUrl}${Constants.deletecommment}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['type'] = 'classified';
+        request.fields['comment_id'] = commentId.toString();
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          jsonDecode(response.body);
+          // Handle success response as needed
+          await getCommentClassified(1, classifiedId);
+        } else {
+          Fluttertoast.showToast(
+            msg: "Error: ${response.body}",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
+        }
+      } else {
+        Fluttertoast.showToast(
+          msg: "No internet connection",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+        );
+      }
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Error: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+      );
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<void> editComment(
+      int classifiedId, int commentId, String newComment, String type) async {
+    isLoading(true);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = Platform.isAndroid ? 'android' : 'ios';
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri = Uri.parse('${Constants.baseUrl}${Constants.editcommment}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['comment_id'] = commentId.toString();
+        request.fields['type'] = type;
+        request.fields['comment'] = commment.value.text;
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var editCommentEntity = EditCommentEntity.fromJson(data);
+          await getCommentClassified(1, classifiedId);
+
+          if (kDebugMode) {
+            print('Success: $editCommentEntity');
           }
         } else {
           Fluttertoast.showToast(
