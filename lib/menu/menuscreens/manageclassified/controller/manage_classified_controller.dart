@@ -12,6 +12,8 @@ import 'package:get/state_manager.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/bookmark_user_entity.dart';
+import 'package:mlmdiary/generated/boost_on_top_classified_entity.dart';
+import 'package:mlmdiary/generated/boost_on_top_classified_premium_entity.dart';
 import 'package:mlmdiary/generated/classified_count_view_entity.dart';
 import 'package:mlmdiary/generated/get_category_entity.dart';
 import 'package:mlmdiary/generated/get_classified_entity.dart';
@@ -35,6 +37,8 @@ class ManageClasifiedController extends GetxController {
   Rx<TextEditingController> state = TextEditingController().obs;
   Rx<TextEditingController> pincode = TextEditingController().obs;
   Rx<TextEditingController> country = TextEditingController().obs;
+  Rx<TextEditingController> lat = TextEditingController().obs;
+  Rx<TextEditingController> lng = TextEditingController().obs;
 
   // API data
   RxList<ManageClassifiedData> classifiedList = <ManageClassifiedData>[].obs;
@@ -205,6 +209,12 @@ class ManageClasifiedController extends GetxController {
     }
   }
 
+  String _formatLocation(String city, String state, String country) {
+    final parts =
+        [city, state, country].where((part) => part.isNotEmpty).toList();
+    return parts.join(', ');
+  }
+
   // Method to fetch data from API
   Future<void> fetchClassifieds({int page = 1, context}) async {
     isLoading.value = true;
@@ -252,6 +262,14 @@ class ManageClasifiedController extends GetxController {
         if (kDebugMode) {
           print('manage classified data: $responseData');
         }
+        // Update controllers with fetched data
+
+        // Combine city, state, and country to form location
+        location.value.text = _formatLocation(
+          city.value.text,
+          state.value.text,
+          country.value.text,
+        );
 
         // Store ID using SharedPreferences
         final List<ManageClassifiedData> classifiedData =
@@ -524,6 +542,8 @@ class ManageClasifiedController extends GetxController {
         request.fields['city'] = city.value.text;
         request.fields['state'] = state.value.text;
         request.fields['pincode'] = '382350';
+        request.fields['lat'] = lat.value.text;
+        request.fields['lng'] = lng.value.text;
         request.fields['country'] = country.value.text;
         request.fields['company'] = companyName.value.text;
         request.fields['website'] = url.value.text;
@@ -897,6 +917,156 @@ class ManageClasifiedController extends GetxController {
         ifAbsent: () => isBookmark ? 1 : 0);
 
     await bookmarkUser(classifiedId);
+  }
+
+  Future<void> boostOnTopClassified(int classifiedId, context) async {
+    isLoading(true);
+    if (kDebugMode) {
+      print('Loading indicator set: true');
+    }
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = '';
+    if (Platform.isAndroid) {
+      device = 'android';
+    } else if (Platform.isIOS) {
+      device = 'ios';
+    }
+    if (kDebugMode) {
+      print('Device Name: $device');
+    }
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      if (kDebugMode) {
+        print('Connectivity checked');
+      }
+
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri =
+            Uri.parse('${Constants.baseUrl}${Constants.boostontopclassified}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['classified_id'] = classifiedId.toString();
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var boostOnTopClassifiedEntity =
+              BoostOnTopClassifiedEntity.fromJson(data);
+
+          if (kDebugMode) {
+            print('Success: $boostOnTopClassifiedEntity');
+          }
+
+          showToastverifedborder(
+            "Success: Your Post On Top",
+            context,
+          );
+        } else {
+          if (kDebugMode) {
+            print('HTTP Error: ${response.statusCode}');
+          }
+        }
+      } else {
+        showToasterrorborder("No internet connection", context);
+        if (kDebugMode) {
+          print('No internet connection');
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error: $e');
+      }
+      // Handle exceptions
+    } finally {
+      isLoading(false);
+      if (kDebugMode) {
+        print('Loading indicator set: false');
+      }
+    }
+  }
+
+  Future<bool> boostOnTopClassifiedPremium(
+      int classifiedId, BuildContext context) async {
+    isLoading(true);
+    if (kDebugMode) {
+      print('Loading indicator set: true');
+    }
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = '';
+    if (Platform.isAndroid) {
+      device = 'android';
+    } else if (Platform.isIOS) {
+      device = 'ios';
+    }
+    if (kDebugMode) {
+      print('Device Name: $device');
+    }
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      if (kDebugMode) {
+        print('Connectivity checked');
+      }
+
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri = Uri.parse(
+            '${Constants.baseUrl}${Constants.boostontopclassifiedpremium}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['classified_id'] = classifiedId.toString();
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var boostOnTopClassifiedPremiumEntity =
+              BoostOnTopClassifiedPremiumEntity.fromJson(data);
+
+          if (kDebugMode) {
+            print('Success: $boostOnTopClassifiedPremiumEntity');
+          }
+
+          return true; // Indicate success
+        } else {
+          if (kDebugMode) {
+            print('HTTP Error: ${response.statusCode}');
+          }
+          return false; // Indicate failure
+        }
+      } else {
+        // ignore: use_build_context_synchronously
+        showToasterrorborder("No internet connection", context);
+        if (kDebugMode) {
+          print('No internet connection');
+        }
+        return false; // Indicate failure
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error: $e');
+      }
+      // Handle exceptions
+      return false; // Indicate failure
+    } finally {
+      isLoading(false);
+      if (kDebugMode) {
+        print('Loading indicator set: false');
+      }
+    }
   }
 
   void discriptionValidation() {

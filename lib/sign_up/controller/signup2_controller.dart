@@ -10,6 +10,7 @@ import 'package:http_parser/http_parser.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/get_plan_list_entity.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Signup2Controller extends GetxController {
@@ -46,6 +47,7 @@ class Signup2Controller extends GetxController {
   // fetch planlist
 
   Future<void> fetchPlanList() async {
+    isLoading.value = true;
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
       // ignore: unrelated_type_equality_checks
@@ -90,10 +92,17 @@ class Signup2Controller extends GetxController {
       if (kDebugMode) {
         print("An error occurred: $e");
       }
+    } finally {
+      isLoading.value = false;
     }
   }
 
-  void togglePlanSelected(int index) {
+  void togglePlanSelected(int index, BuildContext context) {
+    if (!isPlanSelectedList[index] && selectedCountPlan.value >= 3) {
+      showToasterrorborder("You can select up to 3 plans only.", context);
+      return;
+    }
+
     isPlanSelectedList[index] = !isPlanSelectedList[index];
 
     if (isPlanSelectedList[index]) {

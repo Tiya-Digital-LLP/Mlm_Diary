@@ -244,7 +244,7 @@ class _AddClassifiedState extends State<AddClassified> {
                           fontSize: 15.0,
                           fontWeight: FontWeight.w400,
                           color: Colors.black,
-                          fontFamily: 'assets/fonst/Metropolis-Black.otf'),
+                          fontFamily: 'assets/fonts/Metropolis-Black.otf'),
                       onTap: () async {
                         var place = await PlacesAutocomplete.show(
                           context: context,
@@ -289,8 +289,10 @@ class _AddClassifiedState extends State<AddClassified> {
 
                           final geometry = detail.result.geometry!;
                           setState(() {
-                            lat = geometry.location.lat;
-                            log = geometry.location.lng;
+                            controller.lat.value.text =
+                                geometry.location.lat.toString();
+                            controller.lng.value.text =
+                                geometry.location.lng.toString();
                           });
                         }
                       },
@@ -300,7 +302,7 @@ class _AddClassifiedState extends State<AddClassified> {
                                 fontSize: 15.0,
                                 fontWeight: FontWeight.w400,
                                 color: Colors.black,
-                                fontFamily: 'assets/fonst/Metropolis-Black.otf')
+                                fontFamily: 'assets/fonts/Metropolis-Black.otf')
                             .copyWith(color: Colors.black45),
                         enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(

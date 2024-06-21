@@ -139,6 +139,16 @@ GetCompanyCommentDataCommentsReplays $GetCompanyCommentDataCommentsReplaysFromJs
   if (userimage != null) {
     getCompanyCommentDataCommentsReplays.userimage = userimage;
   }
+  final List<
+      GetCompanyCommentDataCommentsReplaysCommentsReplays>? commentsReplays = (json['comments_replays'] as List<
+      dynamic>?)?.map(
+          (e) =>
+      jsonConvert.convert<
+          GetCompanyCommentDataCommentsReplaysCommentsReplays>(
+          e) as GetCompanyCommentDataCommentsReplaysCommentsReplays).toList();
+  if (commentsReplays != null) {
+    getCompanyCommentDataCommentsReplays.commentsReplays = commentsReplays;
+  }
   return getCompanyCommentDataCommentsReplays;
 }
 
@@ -151,6 +161,8 @@ Map<String, dynamic> $GetCompanyCommentDataCommentsReplaysToJson(
   data['userid'] = entity.userid;
   data['name'] = entity.name;
   data['userimage'] = entity.userimage;
+  data['comments_replays'] =
+      entity.commentsReplays?.map((v) => v.toJson()).toList();
   return data;
 }
 
@@ -162,6 +174,7 @@ extension GetCompanyCommentDataCommentsReplaysExtension on GetCompanyCommentData
     int? userid,
     String? name,
     String? userimage,
+    List<GetCompanyCommentDataCommentsReplaysCommentsReplays>? commentsReplays,
   }) {
     return GetCompanyCommentDataCommentsReplays()
       ..id = id ?? this.id
@@ -169,6 +182,78 @@ extension GetCompanyCommentDataCommentsReplaysExtension on GetCompanyCommentData
       ..createdate = createdate ?? this.createdate
       ..userid = userid ?? this.userid
       ..name = name ?? this.name
-      ..userimage = userimage ?? this.userimage;
+      ..userimage = userimage ?? this.userimage
+      ..commentsReplays = commentsReplays ?? this.commentsReplays;
+  }
+}
+
+GetCompanyCommentDataCommentsReplaysCommentsReplays $GetCompanyCommentDataCommentsReplaysCommentsReplaysFromJson(
+    Map<String, dynamic> json) {
+  final GetCompanyCommentDataCommentsReplaysCommentsReplays getCompanyCommentDataCommentsReplaysCommentsReplays = GetCompanyCommentDataCommentsReplaysCommentsReplays();
+  final int? id = jsonConvert.convert<int>(json['id']);
+  if (id != null) {
+    getCompanyCommentDataCommentsReplaysCommentsReplays.id = id;
+  }
+  final String? comment = jsonConvert.convert<String>(json['comment']);
+  if (comment != null) {
+    getCompanyCommentDataCommentsReplaysCommentsReplays.comment = comment;
+  }
+  final String? createdate = jsonConvert.convert<String>(json['createdate']);
+  if (createdate != null) {
+    getCompanyCommentDataCommentsReplaysCommentsReplays.createdate = createdate;
+  }
+  final int? userid = jsonConvert.convert<int>(json['userid']);
+  if (userid != null) {
+    getCompanyCommentDataCommentsReplaysCommentsReplays.userid = userid;
+  }
+  final String? name = jsonConvert.convert<String>(json['name']);
+  if (name != null) {
+    getCompanyCommentDataCommentsReplaysCommentsReplays.name = name;
+  }
+  final String? userimage = jsonConvert.convert<String>(json['userimage']);
+  if (userimage != null) {
+    getCompanyCommentDataCommentsReplaysCommentsReplays.userimage = userimage;
+  }
+  final List<dynamic>? commentsReplays = (json['comments_replays'] as List<
+      dynamic>?)?.map(
+          (e) => e).toList();
+  if (commentsReplays != null) {
+    getCompanyCommentDataCommentsReplaysCommentsReplays.commentsReplays =
+        commentsReplays;
+  }
+  return getCompanyCommentDataCommentsReplaysCommentsReplays;
+}
+
+Map<String, dynamic> $GetCompanyCommentDataCommentsReplaysCommentsReplaysToJson(
+    GetCompanyCommentDataCommentsReplaysCommentsReplays entity) {
+  final Map<String, dynamic> data = <String, dynamic>{};
+  data['id'] = entity.id;
+  data['comment'] = entity.comment;
+  data['createdate'] = entity.createdate;
+  data['userid'] = entity.userid;
+  data['name'] = entity.name;
+  data['userimage'] = entity.userimage;
+  data['comments_replays'] = entity.commentsReplays;
+  return data;
+}
+
+extension GetCompanyCommentDataCommentsReplaysCommentsReplaysExtension on GetCompanyCommentDataCommentsReplaysCommentsReplays {
+  GetCompanyCommentDataCommentsReplaysCommentsReplays copyWith({
+    int? id,
+    String? comment,
+    String? createdate,
+    int? userid,
+    String? name,
+    String? userimage,
+    List<dynamic>? commentsReplays,
+  }) {
+    return GetCompanyCommentDataCommentsReplaysCommentsReplays()
+      ..id = id ?? this.id
+      ..comment = comment ?? this.comment
+      ..createdate = createdate ?? this.createdate
+      ..userid = userid ?? this.userid
+      ..name = name ?? this.name
+      ..userimage = userimage ?? this.userimage
+      ..commentsReplays = commentsReplays ?? this.commentsReplays;
   }
 }

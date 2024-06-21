@@ -49,6 +49,9 @@ class _ManageClassifiedPlusIconState extends State<ManageClassifiedPlusIcon> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.fetchClassifieds();
+    });
   }
 
   @override
@@ -237,132 +240,115 @@ class _ManageClassifiedPlusIconState extends State<ManageClassifiedPlusIcon> {
                     ),
                   ),
                   10.sbh,
-                  Padding(
-                      padding: const EdgeInsets.fromLTRB(25.0, 5.0, 25.0, 5.0),
-                      child: Obx(
-                        () => TextFormField(
-                          controller: controller.location.value,
-                          readOnly: true,
-                          style: const TextStyle(
-                              fontSize: 15.0,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black,
-                              fontFamily: 'assets/fonst/Metropolis-Black.otf'),
-                          onTap: () async {
-                            var place = await PlacesAutocomplete.show(
-                              context: context,
-                              apiKey: googleApikey,
-                              mode: Mode.overlay,
-                              types: ['geocode', 'establishment'],
-                              strictbounds: false,
-                              onError: (err) {},
-                            );
+                  Obx(
+                    () => TextFormField(
+                      controller: controller.location.value,
+                      readOnly: true,
+                      style: const TextStyle(
+                          fontSize: 15.0,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black,
+                          fontFamily: 'assets/fonts/Metropolis-Black.otf'),
+                      onTap: () async {
+                        var place = await PlacesAutocomplete.show(
+                          context: context,
+                          apiKey: googleApikey,
+                          mode: Mode.fullscreen,
+                          hint: 'Search and Save Location.',
+                          cursorColor: AppColors.primaryColor,
+                          types: ['geocode', 'establishment'],
+                          strictbounds: false,
+                          onError: (err) {},
+                        );
 
-                            if (place != null) {
-                              setState(() {
-                                var locationDescription =
-                                    place.description.toString();
-                                _loc.text = locationDescription;
-
-                                // Concatenate city, state, and country
-                                var city = controller.city.value.text;
-                                var state = controller.state.value.text;
-                                var country = controller.country.value.text;
-
-                                var locationWithCityStateCountry =
-                                    "$locationDescription, $city, $state, $country";
-
-                                // Update location controller value
-                                controller.location.value.text =
-                                    locationWithCityStateCountry;
-
-                                controller.validateAddress();
-                              });
-
-                              final plist = GoogleMapsPlaces(
-                                apiKey: googleApikey,
-                                apiHeaders:
-                                    await const GoogleApiHeaders().getHeaders(),
-                              );
-                              String placeid = place.placeId ?? "0";
-                              final detail =
-                                  await plist.getDetailsByPlaceId(placeid);
-                              for (var component
-                                  in detail.result.addressComponents) {
-                                for (var type in component.types) {
-                                  if (type == "administrative_area_level_1") {
-                                    controller.state.value.text =
-                                        component.longName;
-                                  } else if (type == "locality") {
-                                    controller.city.value.text =
-                                        component.longName;
-                                  } else if (type == "country") {
-                                    controller.country.value.text =
-                                        component.longName;
-                                  }
-                                }
+                        if (place != null) {
+                          setState(() {
+                            controller.location.value.text =
+                                place.description.toString();
+                            _loc.text = controller.location.value.text;
+                            controller.validateAddress();
+                          });
+                          final plist = GoogleMapsPlaces(
+                            apiKey: googleApikey,
+                            apiHeaders:
+                                await const GoogleApiHeaders().getHeaders(),
+                          );
+                          String placeid = place.placeId ?? "0";
+                          final detail =
+                              await plist.getDetailsByPlaceId(placeid);
+                          for (var component
+                              in detail.result.addressComponents) {
+                            for (var type in component.types) {
+                              if (type == "administrative_area_level_1") {
+                                controller.state.value.text =
+                                    component.longName;
+                              } else if (type == "locality") {
+                                controller.city.value.text = component.longName;
+                              } else if (type == "country") {
+                                controller.country.value.text =
+                                    component.longName;
                               }
+                            }
+                          }
 
-                              final geometry = detail.result.geometry!;
-                              setState(() {
-                                lat = geometry.location.lat;
-                                log = geometry.location.lng;
-                              });
-                            }
-                          },
-                          decoration: InputDecoration(
-                            hintText: "Location/ Address / City *",
-                            hintStyle: const TextStyle(
-                                    fontSize: 15.0,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.black,
-                                    fontFamily:
-                                        'assets/fonst/Metropolis-Black.otf')
-                                .copyWith(color: Colors.black45),
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    width: 1,
-                                    color: controller
-                                        .addressValidationColor.value),
-                                borderRadius: BorderRadius.circular(10.0)),
-                            border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    width: 1,
-                                    color: controller
-                                        .addressValidationColor.value),
-                                borderRadius: BorderRadius.circular(10.0)),
-                            focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    width: 1,
-                                    color: controller
-                                        .addressValidationColor.value),
-                                borderRadius: BorderRadius.circular(10.0)),
-                          ),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              setState(() {
-                                controller.validateAddress();
-                              });
-                            } else {}
-                            return null;
-                          },
-                          onFieldSubmitted: (value) {
-                            if (value.isEmpty) {
-                              Fluttertoast.showToast(
-                                  timeInSecForIosWeb: 2,
-                                  msg:
-                                      'Please Search and Save your Business Location');
-                              setState(() {
-                                controller.validateAddress();
-                              });
-                            } else if (value.isNotEmpty) {
-                              setState(() {
-                                controller.validateAddress();
-                              });
-                            }
-                          },
-                        ),
-                      )),
+                          final geometry = detail.result.geometry!;
+                          setState(() {
+                            controller.lat.value.text =
+                                geometry.location.lat.toString();
+                            controller.lng.value.text =
+                                geometry.location.lng.toString();
+                          });
+                        }
+                      },
+                      decoration: InputDecoration(
+                        hintText: "Location/ Address / City *",
+                        hintStyle: const TextStyle(
+                                fontSize: 15.0,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black,
+                                fontFamily: 'assets/fonts/Metropolis-Black.otf')
+                            .copyWith(color: Colors.black45),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                width: 1,
+                                color: controller.addressValidationColor.value),
+                            borderRadius: BorderRadius.circular(10.0)),
+                        border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                width: 1,
+                                color: controller.addressValidationColor.value),
+                            borderRadius: BorderRadius.circular(10.0)),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                width: 1,
+                                color: controller.addressValidationColor.value),
+                            borderRadius: BorderRadius.circular(10.0)),
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          setState(() {
+                            controller.validateAddress();
+                          });
+                        } else {}
+                        return null;
+                      },
+                      onFieldSubmitted: (value) {
+                        if (value.isEmpty) {
+                          Fluttertoast.showToast(
+                              timeInSecForIosWeb: 2,
+                              msg:
+                                  'Please Search and Save your Business Location');
+                          setState(() {
+                            controller.validateAddress();
+                          });
+                        } else if (value.isNotEmpty) {
+                          setState(() {
+                            controller.validateAddress();
+                          });
+                        }
+                      },
+                    ),
+                  ),
                   20.sbh,
                   ClipRRect(
                     borderRadius: BorderRadius.circular(13.05),
@@ -372,18 +358,16 @@ class _ManageClassifiedPlusIconState extends State<ManageClassifiedPlusIcon> {
                           child: file.value != null
                               ? Image.file(
                                   file.value!,
-                                  height: 100,
-                                  width: 100,
+                                  height: 200,
+                                  width: double.infinity,
                                   fit: BoxFit.cover,
                                 )
                               : controller.userImage.value.isNotEmpty
-                                  ? ClipOval(
-                                      child: Image.network(
-                                        controller.userImage.value,
-                                        height: 120,
-                                        width: 120,
-                                        fit: BoxFit.cover,
-                                      ),
+                                  ? Image.network(
+                                      controller.userImage.value,
+                                      height: 200,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
                                     )
                                   : ClipOval(
                                       child: Image.asset(
@@ -403,10 +387,11 @@ class _ManageClassifiedPlusIconState extends State<ManageClassifiedPlusIcon> {
                           },
                         ),
                         Visibility(
-                          visible: file.value == null ? false : true,
+                          visible: file.value != null ||
+                              controller.userImage.value.isNotEmpty,
                           child: Positioned(
-                              bottom: -5,
-                              left: 0,
+                              top: 10,
+                              left: 320,
                               right: 0,
                               child: Container(
                                 width: 40,

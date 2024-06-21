@@ -26,6 +26,7 @@ class ManageClassifiedCard extends StatefulWidget {
     required this.controller,
     required this.viewcounts,
     required this.likedCount,
+    required this.commentcount,
   });
   final String userImage;
   final String userName;
@@ -39,6 +40,7 @@ class ManageClassifiedCard extends StatefulWidget {
   final ManageClasifiedController controller;
   final int viewcounts;
   final int likedCount;
+  final int commentcount;
 
   @override
   State<ManageClassifiedCard> createState() => _ManageClassifiedCardState();
@@ -148,7 +150,7 @@ class _ManageClassifiedCardState extends State<ManageClassifiedCard> {
                     likeCount.value == 0
                         ? const SizedBox.shrink()
                         : Text(
-                            'Like (${likeCount.value})',
+                            likeCount.value.toString(),
                             style: textStyleW600(
                                 size.width * 0.038, AppColors.blackText),
                           ),
@@ -169,14 +171,14 @@ class _ManageClassifiedCardState extends State<ManageClassifiedCard> {
                           ),
                         ),
                         5.sbw,
-                        // Text(
-                        //   '${widget.commentcount}',
-                        //   style: TextStyle(
-                        //     fontFamily: "Metropolis",
-                        //     fontWeight: FontWeight.w600,
-                        //     fontSize: size.width * 0.038,
-                        //   ),
-                        // ),
+                        Text(
+                          '${widget.commentcount}',
+                          style: TextStyle(
+                            fontFamily: "Metropolis",
+                            fontWeight: FontWeight.w600,
+                            fontSize: size.width * 0.038,
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(
@@ -191,7 +193,7 @@ class _ManageClassifiedCardState extends State<ManageClassifiedCard> {
                       width: 7,
                     ),
                     Text(
-                      'Views (${widget.viewcounts})',
+                      widget.viewcounts.toString(),
                       style: TextStyle(
                           fontFamily: "Metropolis",
                           fontWeight: FontWeight.w600,
@@ -201,8 +203,122 @@ class _ManageClassifiedCardState extends State<ManageClassifiedCard> {
                 ),
                 Row(
                   children: [
+                    // InkWell(
+                    //   onTap: () {
+                    //     widget.controller
+                    //         .boostOnTopClassified(widget.classifiedId, context);
+                    //   },
+                    //   child: Ink(
+                    //     height: size.height * 0.030,
+                    //     width: size.height * 0.030,
+                    //     child: SvgPicture.asset(Assets.svgBoostClassified),
+                    //   ),
+                    // ),
+                    10.sbw,
                     InkWell(
-                      onTap: () {},
+                      onTap: () async {
+                        bool success = await widget.controller
+                            .boostOnTopClassifiedPremium(
+                                widget.classifiedId, context);
+                        if (success) {
+                          showDialog(
+                            // ignore: use_build_context_synchronously
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                backgroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                ),
+                                contentPadding: EdgeInsets.zero,
+                                content: Padding(
+                                  padding: const EdgeInsets.all(8),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Container(
+                                        width: double.infinity,
+                                        height: 80,
+                                        decoration: const BoxDecoration(
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(12),
+                                            topRight: Radius.circular(12),
+                                          ),
+                                        ),
+                                        child: Center(
+                                          child: Icon(
+                                            Icons.cancel_outlined,
+                                            size: 80,
+                                            color: AppColors.redText,
+                                          ),
+                                        ),
+                                      ),
+                                      16.sbh,
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 16),
+                                        child: Text(
+                                          'You wanted to premium classified to top so you have to pay. For Details',
+                                          style: textStyleW600(
+                                            size.width * 0.032,
+                                            AppColors.blackText,
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: TextButton(
+                                                    onPressed: () {
+                                                      Get.back();
+                                                    },
+                                                    child: Text(
+                                                      'Cancel',
+                                                      style: textStyleW700(
+                                                          size.width * 0.035,
+                                                          AppColors.blackText),
+                                                    ),
+                                                  ),
+                                                ),
+                                                5.sbw,
+                                                Expanded(
+                                                  child: ElevatedButton(
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      backgroundColor: AppColors
+                                                          .primaryColor,
+                                                      shadowColor: AppColors
+                                                          .primaryColor,
+                                                      elevation: 3,
+                                                    ),
+                                                    onPressed: () {
+                                                      Get.back();
+                                                    },
+                                                    child: Text(
+                                                      'Pay Now',
+                                                      style: textStyleW700(
+                                                          size.width * 0.035,
+                                                          AppColors.white),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        } else {}
+                      },
                       child: Ink(
                         height: size.height * 0.030,
                         width: size.height * 0.030,
@@ -252,17 +368,24 @@ class _ManageClassifiedCardState extends State<ManageClassifiedCard> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  width: 120,
-                  height: 30,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(40),
-                    color: AppColors.primaryColor,
-                  ),
-                  child: Center(
-                    child: Text(
-                      'Post on top',
-                      style: textStyleW500(size.width * 0.035, AppColors.white),
+                InkWell(
+                  onTap: () {
+                    widget.controller
+                        .boostOnTopClassified(widget.classifiedId, context);
+                  },
+                  child: Container(
+                    width: 120,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(40),
+                      color: AppColors.primaryColor,
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Post on top',
+                        style:
+                            textStyleW500(size.width * 0.035, AppColors.white),
+                      ),
                     ),
                   ),
                 ),

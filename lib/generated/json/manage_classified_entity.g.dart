@@ -113,6 +113,19 @@ ManageClassifiedData $ManageClassifiedDataFromJson(Map<String, dynamic> json) {
   if (country != null) {
     manageClassifiedData.country = country;
   }
+  final dynamic lat = json['lat'];
+  if (lat != null) {
+    manageClassifiedData.lat = lat;
+  }
+  final dynamic lng = json['lng'];
+  if (lng != null) {
+    manageClassifiedData.lng = lng;
+  }
+  final int? userRequestedForPaid = jsonConvert.convert<int>(
+      json['user_requested_for_paid']);
+  if (userRequestedForPaid != null) {
+    manageClassifiedData.userRequestedForPaid = userRequestedForPaid;
+  }
   final String? urlcomponent = jsonConvert.convert<String>(
       json['urlcomponent']);
   if (urlcomponent != null) {
@@ -122,9 +135,9 @@ ManageClassifiedData $ManageClassifiedDataFromJson(Map<String, dynamic> json) {
   if (totallike != null) {
     manageClassifiedData.totallike = totallike;
   }
-  final int? totalbookmark = jsonConvert.convert<int>(json['totalbookmark']);
-  if (totalbookmark != null) {
-    manageClassifiedData.totalbookmark = totalbookmark;
+  final int? totalcomment = jsonConvert.convert<int>(json['totalcomment']);
+  if (totalcomment != null) {
+    manageClassifiedData.totalcomment = totalcomment;
   }
   final bool? likedByUser = jsonConvert.convert<bool>(json['liked_by_user']);
   if (likedByUser != null) {
@@ -172,9 +185,12 @@ Map<String, dynamic> $ManageClassifiedDataToJson(ManageClassifiedData entity) {
   data['city'] = entity.city;
   data['state'] = entity.state;
   data['country'] = entity.country;
+  data['lat'] = entity.lat;
+  data['lng'] = entity.lng;
+  data['user_requested_for_paid'] = entity.userRequestedForPaid;
   data['urlcomponent'] = entity.urlcomponent;
   data['totallike'] = entity.totallike;
-  data['totalbookmark'] = entity.totalbookmark;
+  data['totalcomment'] = entity.totalcomment;
   data['liked_by_user'] = entity.likedByUser;
   data['bookmarked_by_user'] = entity.bookmarkedByUser;
   data['user_data'] = entity.userData?.toJson();
@@ -203,9 +219,12 @@ extension ManageClassifiedDataExtension on ManageClassifiedData {
     String? city,
     String? state,
     String? country,
+    dynamic lat,
+    dynamic lng,
+    int? userRequestedForPaid,
     String? urlcomponent,
     int? totallike,
-    int? totalbookmark,
+    int? totalcomment,
     bool? likedByUser,
     bool? bookmarkedByUser,
     ManageClassifiedDataUserData? userData,
@@ -231,9 +250,12 @@ extension ManageClassifiedDataExtension on ManageClassifiedData {
       ..city = city ?? this.city
       ..state = state ?? this.state
       ..country = country ?? this.country
+      ..lat = lat ?? this.lat
+      ..lng = lng ?? this.lng
+      ..userRequestedForPaid = userRequestedForPaid ?? this.userRequestedForPaid
       ..urlcomponent = urlcomponent ?? this.urlcomponent
       ..totallike = totallike ?? this.totallike
-      ..totalbookmark = totalbookmark ?? this.totalbookmark
+      ..totalcomment = totalcomment ?? this.totalcomment
       ..likedByUser = likedByUser ?? this.likedByUser
       ..bookmarkedByUser = bookmarkedByUser ?? this.bookmarkedByUser
       ..userData = userData ?? this.userData

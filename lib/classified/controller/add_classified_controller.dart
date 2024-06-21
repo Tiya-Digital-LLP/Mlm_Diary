@@ -35,14 +35,19 @@ class ClasifiedController extends GetxController {
   Rx<Color> addressValidationColor = Colors.black45.obs;
   Rx<TextEditingController> city = TextEditingController().obs;
   Rx<TextEditingController> state = TextEditingController().obs;
+  Rx<TextEditingController> lat = TextEditingController().obs;
+  Rx<TextEditingController> lng = TextEditingController().obs;
+
   Rx<TextEditingController> pincode = TextEditingController().obs;
   Rx<TextEditingController> country = TextEditingController().obs;
   RxList<GetClassifiedData> classifiedList = <GetClassifiedData>[].obs;
   Rx<TextEditingController> commment = TextEditingController().obs;
 
   final search = TextEditingController();
-
+// company
   RxList<String> companyNames = <String>[].obs;
+  TextEditingController searchController = TextEditingController();
+  RxList<bool> isCompanySelectedList = <bool>[].obs;
 
   //category
   RxList<GetCategoryCategory> categorylist = RxList<GetCategoryCategory>();
@@ -557,6 +562,8 @@ class ClasifiedController extends GetxController {
         request.fields['city'] = city.value.text;
         request.fields['state'] = state.value.text;
         request.fields['pincode'] = '382350';
+        request.fields['lat'] = lat.value.text;
+        request.fields['lng'] = lng.value.text;
         request.fields['country'] = country.value.text;
         request.fields['companys'] = companyName.value.text;
         request.fields['website'] = url.value.text;
@@ -626,8 +633,9 @@ class ClasifiedController extends GetxController {
     url.value.clear();
   }
 
-  //getcompany
+  // Fetch company names
   Future<void> fetchCompanyNames(String query) async {
+    isLoading.value = true;
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
       // ignore: unrelated_type_equality_checks
@@ -641,18 +649,35 @@ class ClasifiedController extends GetxController {
           final getCompanyEntity = GetCompanyEntity.fromJson(jsonBody);
 
           if (getCompanyEntity.result == 1) {
-            companyNames.value = getCompanyEntity.data ?? [];
+            companyNames.assignAll(getCompanyEntity.data ?? []);
+            isCompanySelectedList
+                .assignAll(List.filled(companyNames.length, false));
           } else {
             companyNames.clear();
+            isCompanySelectedList.clear();
           }
         } else {
           companyNames.clear();
+          isCompanySelectedList.clear();
         }
       } else {
         companyNames.clear();
+        isCompanySelectedList.clear();
       }
     } catch (e) {
       companyNames.clear();
+      isCompanySelectedList.clear();
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  void toggleCompanySelected(int index) {
+    isCompanySelectedList[index] = !isCompanySelectedList[index];
+    if (isCompanySelectedList[index]) {
+      selectedCountCompany++;
+    } else {
+      selectedCountCompany.value--;
     }
   }
 

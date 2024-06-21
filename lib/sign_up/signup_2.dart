@@ -479,7 +479,7 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                         children: [
                           GestureDetector(
                             onTap: () {
-                              controller.togglePlanSelected(index);
+                              controller.togglePlanSelected(index, context);
                             },
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
@@ -489,7 +489,8 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                                   Obx(
                                     () => GestureDetector(
                                       onTap: () {
-                                        controller.togglePlanSelected(index);
+                                        controller.togglePlanSelected(
+                                            index, context);
                                       },
                                       child: Image.asset(
                                         controller.isPlanSelectedList[index]

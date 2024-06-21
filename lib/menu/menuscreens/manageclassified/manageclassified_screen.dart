@@ -98,6 +98,7 @@ class _MlmClassifiedState extends State<ManageClassified> {
                       viewcounts: post.pgcnt ?? 0,
                       likedCount: post.totallike ?? 0,
                       classifiedId: post.id ?? 0,
+                      commentcount: post.totalcomment ?? 0,
                     ),
                   ),
                 );

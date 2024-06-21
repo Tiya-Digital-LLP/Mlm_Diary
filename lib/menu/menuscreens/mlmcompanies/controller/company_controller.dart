@@ -13,6 +13,7 @@ import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/add_company_comment_entity.dart';
 import 'package:mlmdiary/generated/bookmark_company_entity.dart';
 import 'package:mlmdiary/generated/company_count_view_entity.dart';
+import 'package:mlmdiary/generated/edit_comment_entity.dart';
 import 'package:mlmdiary/generated/get_admin_company_entity.dart';
 import 'package:mlmdiary/generated/get_company_comment_entity.dart';
 import 'package:mlmdiary/generated/mlm_like_company_entity.dart';
@@ -445,6 +446,114 @@ class CompanyController extends GetxController {
 
           if (kDebugMode) {
             print('Success: $addCompanyCommentEntity');
+          }
+        } else {
+          Fluttertoast.showToast(
+            msg: "Error: ${response.body}",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
+        }
+      } else {
+        Fluttertoast.showToast(
+          msg: "No internet connection",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+        );
+      }
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Error: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+      );
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<void> deleteComment(int blogId, int commentId) async {
+    isLoading(true);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = Platform.isAndroid ? 'android' : 'ios';
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri = Uri.parse('${Constants.baseUrl}${Constants.deletecommment}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['type'] = 'company';
+        request.fields['comment_id'] = commentId.toString();
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          jsonDecode(response.body);
+          // Handle success response as needed
+          await getCommentCompany(1, blogId);
+        } else {
+          Fluttertoast.showToast(
+            msg: "Error: ${response.body}",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
+        }
+      } else {
+        Fluttertoast.showToast(
+          msg: "No internet connection",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+        );
+      }
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Error: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+      );
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<void> editComment(
+      int companyId, int commentId, String newComment, String type) async {
+    isLoading(true);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = Platform.isAndroid ? 'android' : 'ios';
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri = Uri.parse('${Constants.baseUrl}${Constants.editcommment}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['comment_id'] = commentId.toString();
+        request.fields['type'] = type;
+        request.fields['comment'] = commment.value.text;
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var editCommentEntity = EditCommentEntity.fromJson(data);
+          await getCommentCompany(1, companyId);
+
+          if (kDebugMode) {
+            print('Success: $editCommentEntity');
           }
         } else {
           Fluttertoast.showToast(

@@ -24,6 +24,8 @@ import 'package:mlmdiary/generated/bookmark_company_entity.dart';
 import 'package:mlmdiary/generated/bookmark_news_entity.dart';
 import 'package:mlmdiary/generated/bookmark_user_entity.dart';
 import 'package:mlmdiary/generated/bookmark_video_entity.dart';
+import 'package:mlmdiary/generated/boost_on_top_classified_entity.dart';
+import 'package:mlmdiary/generated/boost_on_top_classified_premium_entity.dart';
 import 'package:mlmdiary/generated/change_email_entity.dart';
 import 'package:mlmdiary/generated/change_password_entity.dart';
 import 'package:mlmdiary/generated/classified_count_view_entity.dart';
@@ -370,6 +372,15 @@ class JsonConvert {
       return data.map<BookmarkVideoEntity>((Map<String, dynamic> e) =>
           BookmarkVideoEntity.fromJson(e)).toList() as M;
     }
+    if (<BoostOnTopClassifiedEntity>[] is M) {
+      return data.map<BoostOnTopClassifiedEntity>((Map<String, dynamic> e) =>
+          BoostOnTopClassifiedEntity.fromJson(e)).toList() as M;
+    }
+    if (<BoostOnTopClassifiedPremiumEntity>[] is M) {
+      return data.map<BoostOnTopClassifiedPremiumEntity>((
+          Map<String, dynamic> e) =>
+          BoostOnTopClassifiedPremiumEntity.fromJson(e)).toList() as M;
+    }
     if (<ChangeEmailEntity>[] is M) {
       return data.map<ChangeEmailEntity>((Map<String, dynamic> e) =>
           ChangeEmailEntity.fromJson(e)).toList() as M;
@@ -602,6 +613,12 @@ class JsonConvert {
       return data.map<GetCompanyCommentDataCommentsReplays>((
           Map<String, dynamic> e) =>
           GetCompanyCommentDataCommentsReplays.fromJson(e)).toList() as M;
+    }
+    if (<GetCompanyCommentDataCommentsReplaysCommentsReplays>[] is M) {
+      return data.map<GetCompanyCommentDataCommentsReplaysCommentsReplays>((
+          Map<String, dynamic> e) =>
+          GetCompanyCommentDataCommentsReplaysCommentsReplays.fromJson(e))
+          .toList() as M;
     }
     if (<GetCompanyEntity>[] is M) {
       return data.map<GetCompanyEntity>((Map<String, dynamic> e) =>
@@ -1016,6 +1033,10 @@ class JsonConvertClassCollection {
     (BookmarkNewsEntity).toString(): BookmarkNewsEntity.fromJson,
     (BookmarkUserEntity).toString(): BookmarkUserEntity.fromJson,
     (BookmarkVideoEntity).toString(): BookmarkVideoEntity.fromJson,
+    (BoostOnTopClassifiedEntity).toString(): BoostOnTopClassifiedEntity
+        .fromJson,
+    (BoostOnTopClassifiedPremiumEntity)
+        .toString(): BoostOnTopClassifiedPremiumEntity.fromJson,
     (ChangeEmailEntity).toString(): ChangeEmailEntity.fromJson,
     (ChangePasswordEntity).toString(): ChangePasswordEntity.fromJson,
     (ClassifiedCountViewEntity).toString(): ClassifiedCountViewEntity.fromJson,
@@ -1083,6 +1104,9 @@ class JsonConvertClassCollection {
     (GetCompanyCommentData).toString(): GetCompanyCommentData.fromJson,
     (GetCompanyCommentDataCommentsReplays)
         .toString(): GetCompanyCommentDataCommentsReplays.fromJson,
+    (GetCompanyCommentDataCommentsReplaysCommentsReplays)
+        .toString(): GetCompanyCommentDataCommentsReplaysCommentsReplays
+        .fromJson,
     (GetCompanyEntity).toString(): GetCompanyEntity.fromJson,
     (GetFollowersEntity).toString(): GetFollowersEntity.fromJson,
     (GetFollowersData).toString(): GetFollowersData.fromJson,

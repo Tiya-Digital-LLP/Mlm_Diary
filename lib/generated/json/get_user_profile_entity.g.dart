@@ -47,7 +47,7 @@ GetUserProfileUserProfile $GetUserProfileUserProfileFromJson(
   if (id != null) {
     getUserProfileUserProfile.id = id;
   }
-  final String? immlm = jsonConvert.convert<String>(json['immlm']);
+  final dynamic immlm = json['immlm'];
   if (immlm != null) {
     getUserProfileUserProfile.immlm = immlm;
   }
@@ -135,7 +135,7 @@ GetUserProfileUserProfile $GetUserProfileUserProfileFromJson(
   if (compWebsite != null) {
     getUserProfileUserProfile.compWebsite = compWebsite;
   }
-  final dynamic company = json['company'];
+  final String? company = jsonConvert.convert<String>(json['company']);
   if (company != null) {
     getUserProfileUserProfile.company = company;
   }
@@ -284,6 +284,14 @@ GetUserProfileUserProfile $GetUserProfileUserProfileFromJson(
   if (countrycode1 != null) {
     getUserProfileUserProfile.countrycode1 = countrycode1;
   }
+  final int? followersCount = jsonConvert.convert<int>(json['followers_count']);
+  if (followersCount != null) {
+    getUserProfileUserProfile.followersCount = followersCount;
+  }
+  final int? followingCount = jsonConvert.convert<int>(json['following_count']);
+  if (followingCount != null) {
+    getUserProfileUserProfile.followingCount = followingCount;
+  }
   final String? imagePath = jsonConvert.convert<String>(json['image_path']);
   if (imagePath != null) {
     getUserProfileUserProfile.imagePath = imagePath;
@@ -358,6 +366,8 @@ Map<String, dynamic> $GetUserProfileUserProfileToJson(
   data['proceeddate'] = entity.proceeddate;
   data['is_approved'] = entity.isApproved;
   data['countrycode1'] = entity.countrycode1;
+  data['followers_count'] = entity.followersCount;
+  data['following_count'] = entity.followingCount;
   data['image_path'] = entity.imagePath;
   data['image_thum_path'] = entity.imageThumPath;
   return data;
@@ -366,7 +376,7 @@ Map<String, dynamic> $GetUserProfileUserProfileToJson(
 extension GetUserProfileUserProfileExtension on GetUserProfileUserProfile {
   GetUserProfileUserProfile copyWith({
     int? id,
-    String? immlm,
+    dynamic immlm,
     String? username,
     String? password,
     String? sex,
@@ -388,7 +398,7 @@ extension GetUserProfileUserProfileExtension on GetUserProfileUserProfile {
     String? aboutyou,
     dynamic website,
     dynamic compWebsite,
-    dynamic company,
+    String? company,
     String? newregi,
     int? status,
     int? points,
@@ -424,6 +434,8 @@ extension GetUserProfileUserProfileExtension on GetUserProfileUserProfile {
     String? proceeddate,
     int? isApproved,
     String? countrycode1,
+    int? followersCount,
+    int? followingCount,
     String? imagePath,
     String? imageThumPath,
   }) {
@@ -487,6 +499,8 @@ extension GetUserProfileUserProfileExtension on GetUserProfileUserProfile {
       ..proceeddate = proceeddate ?? this.proceeddate
       ..isApproved = isApproved ?? this.isApproved
       ..countrycode1 = countrycode1 ?? this.countrycode1
+      ..followersCount = followersCount ?? this.followersCount
+      ..followingCount = followingCount ?? this.followingCount
       ..imagePath = imagePath ?? this.imagePath
       ..imageThumPath = imageThumPath ?? this.imageThumPath;
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:mlmdiary/generated/assets.dart'; // assuming you're using Get for navigation
+import 'package:mlmdiary/generated/assets.dart';
 
 class CustomBackButton extends StatelessWidget {
   final VoidCallback? onTap;

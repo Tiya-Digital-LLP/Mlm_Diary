@@ -134,26 +134,29 @@ class _FolowersState extends State<Folowers> with TickerProviderStateMixin {
                                         final follower =
                                             controller.followers[index];
                                         return Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 16),
+                                          padding: const EdgeInsets.all(8),
                                           child: SizedBox(
                                             width: double.infinity,
                                             child: Row(
                                               children: [
-                                                ClipOval(
-                                                  child: CachedNetworkImage(
-                                                    imageUrl:
-                                                        follower.imageUrl ??
-                                                            Assets.imagesIcon,
-                                                    fit: BoxFit.cover,
-                                                    height: 50,
-                                                    width: 50,
-                                                    placeholder:
-                                                        (context, url) =>
-                                                            Container(),
-                                                    errorWidget: (context, url,
-                                                            error) =>
-                                                        const Icon(Icons.error),
+                                                InkWell(
+                                                  onTap: () {},
+                                                  child: ClipOval(
+                                                    child: CachedNetworkImage(
+                                                      imageUrl:
+                                                          follower.imageUrl ??
+                                                              Assets.imagesIcon,
+                                                      fit: BoxFit.cover,
+                                                      height: 50,
+                                                      width: 50,
+                                                      placeholder:
+                                                          (context, url) =>
+                                                              Container(),
+                                                      errorWidget: (context,
+                                                              url, error) =>
+                                                          const Icon(
+                                                              Icons.error),
+                                                    ),
                                                   ),
                                                 ),
                                                 20.sbw,
