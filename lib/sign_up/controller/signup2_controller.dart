@@ -10,7 +10,6 @@ import 'package:http_parser/http_parser.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/get_plan_list_entity.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
-import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Signup2Controller extends GetxController {
@@ -98,11 +97,6 @@ class Signup2Controller extends GetxController {
   }
 
   void togglePlanSelected(int index, BuildContext context) {
-    if (!isPlanSelectedList[index] && selectedCountPlan.value >= 3) {
-      showToasterrorborder("You can select up to 3 plans only.", context);
-      return;
-    }
-
     isPlanSelectedList[index] = !isPlanSelectedList[index];
 
     if (isPlanSelectedList[index]) {

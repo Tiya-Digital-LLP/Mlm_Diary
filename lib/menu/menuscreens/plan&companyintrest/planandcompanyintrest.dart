@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
-import 'package:mlmdiary/sign_up/controller/signup2_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/plan&companyintrest/controller/intrest_controller.dart';
+import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
@@ -19,16 +19,23 @@ class PlanandCompany extends StatefulWidget {
 }
 
 class _PlanandCompanyState extends State<PlanandCompany> {
-  final Signup2Controller controller = Get.put(Signup2Controller());
-  final ClasifiedController clasifiedController =
-      Get.put(ClasifiedController());
+  final IntrestController controller = Get.put(IntrestController());
 
   bool isNextStep = false;
 
   @override
   void initState() {
     super.initState();
-    controller.fetchPlanList();
+    _refreshData();
+    _refreshDataCompany();
+  }
+
+  Future<void> _refreshData() async {
+    await controller.fetchSelectedPlanList();
+  }
+
+  Future<void> _refreshDataCompany() async {
+    await controller.fetchSelectedCompanyList(1);
   }
 
   @override
@@ -72,7 +79,8 @@ class _PlanandCompanyState extends State<PlanandCompany> {
       ),
       body: isNextStep
           ? Obx(() {
-              if (clasifiedController.isLoading.value) {
+              if (controller.isLoading.value &&
+                  controller.companyList.isEmpty) {
                 return const Center(
                   child: CircularProgressIndicator(),
                 );
@@ -82,84 +90,81 @@ class _PlanandCompanyState extends State<PlanandCompany> {
                 decoration: BoxDecoration(
                   color: AppColors.background,
                 ),
-                child: clasifiedController.companyNames.isEmpty
-                    ? Center(
-                        child: Text(
-                          'No companies found.',
-                          style: textStyleW500(
-                              size.width * 0.041, AppColors.blackText),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 16),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: CustomSearchInput(
+                          controller: controller.search,
+                          onSubmitted: (value) {
+                            controller.companyList.clear();
+                            controller.isEndOfData.value = false;
+                            controller.fetchSelectedCompanyList(1);
+                          },
+                          onChanged: (value) {},
                         ),
-                      )
-                    : Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 16),
-                            child: SizedBox(
-                              width: double.infinity,
-                              child: CustomSearchInput(
-                                controller:
-                                    clasifiedController.searchController,
-                                onSubmitted: (value) {
-                                  clasifiedController.fetchCompanyNames(value);
-                                },
-                                onChanged: (value) {},
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: ListView.builder(
-                              itemCount:
-                                  clasifiedController.companyNames.length,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 2,
-                                  ),
-                                  child: Card(
-                                    elevation: 2.5,
-                                    color: AppColors.white,
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          clasifiedController
-                                              .toggleCompanySelected(index);
-                                        });
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(16.0),
-                                        child: Row(
-                                          children: [
-                                            Image.asset(
-                                              clasifiedController
-                                                          .isCompanySelectedList[
-                                                      index]
-                                                  ? Assets.imagesTrueCircle
-                                                  : Assets.imagesCircle,
-                                            ),
-                                            15.sbw,
-                                            Expanded(
-                                              child: Text(
-                                                clasifiedController
-                                                    .companyNames[index],
-                                                style: textStyleW700(
+                      ),
+                    ),
+                    Expanded(
+                      child: RefreshIndicator(
+                        onRefresh: _refreshDataCompany,
+                        child: ListView.builder(
+                          itemCount: controller.companyList.length +
+                              (controller.isLoading.value ? 1 : 0),
+                          controller: controller.scrollController,
+                          itemBuilder: (context, index) {
+                            if (index == controller.companyList.length) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            }
+
+                            final post = controller.companyList[index];
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 2),
+                              child: Card(
+                                elevation: 2.5,
+                                color: AppColors.white,
+                                child: Obx(
+                                  () => GestureDetector(
+                                    onTap: () {
+                                      controller.toggleCompanySelected(index);
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Row(
+                                        children: [
+                                          Image.asset(
+                                            controller.isCompanySelectedList[
+                                                    index]
+                                                ? Assets.imagesTrueCircle
+                                                : Assets.imagesCircle,
+                                          ),
+                                          15.sbw,
+                                          Expanded(
+                                            child: Text(
+                                              post.name ?? '',
+                                              style: textStyleW700(
                                                   size.width * 0.036,
-                                                  AppColors.blackText,
-                                                ),
-                                              ),
+                                                  AppColors.blackText),
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),
-                                );
-                              },
-                            ),
-                          ),
-                        ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                       ),
+                    ),
+                  ],
+                ),
               );
             })
           : Obx(() {
@@ -169,59 +174,108 @@ class _PlanandCompanyState extends State<PlanandCompany> {
                 );
               }
 
-              return ListView.builder(
-                itemCount: controller.planList.length,
-                itemBuilder: (context, index) {
-                  return Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 2),
-                        child: SizedBox(
-                          height: 60,
-                          child: Card(
-                            elevation: 2.5,
-                            color: AppColors.white,
-                            child: GestureDetector(
-                              onTap: () {
-                                controller.togglePlanSelected(index, context);
-                              },
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                child: Row(
-                                  children: [
-                                    Obx(
-                                      () => GestureDetector(
-                                        onTap: () {
-                                          controller.togglePlanSelected(
-                                              index, context);
-                                        },
-                                        child: Image.asset(
-                                          controller.isPlanSelectedList[index]
-                                              ? Assets.imagesTrueCircle
-                                              : Assets.imagesCircle,
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: CustomSearchInput(
+                        controller: controller.search,
+                        onSubmitted: (value) {
+                          _refreshData();
+                        },
+                        onChanged: (value) {
+                          _refreshData();
+                        },
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: RefreshIndicator(
+                      onRefresh: _refreshData,
+                      child: ListView.builder(
+                        itemCount: controller.planList.length,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 2),
+                                child: SizedBox(
+                                  height: 60,
+                                  child: Card(
+                                    elevation: 2.5,
+                                    color: AppColors.white,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        // User-initiated selection
+                                        controller.togglePlanSelected(
+                                          index,
+                                        );
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 16),
+                                        child: Row(
+                                          children: [
+                                            Obx(
+                                              () => GestureDetector(
+                                                onTap: () {
+                                                  controller.togglePlanSelected(
+                                                      index);
+                                                },
+                                                child: Image.asset(
+                                                  controller.isPlanSelectedList[
+                                                          index]
+                                                      ? Assets.imagesTrueCircle
+                                                      : Assets.imagesCircle,
+                                                ),
+                                              ),
+                                            ),
+                                            15.sbw,
+                                            Text(
+                                              controller.planList[index].name ??
+                                                  '',
+                                              style: textStyleW700(
+                                                  size.width * 0.036,
+                                                  AppColors.blackText),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
-                                    15.sbw,
-                                    Text(
-                                      controller.planList[index].name ?? '',
-                                      style: textStyleW700(size.width * 0.036,
-                                          AppColors.blackText),
-                                    ),
-                                  ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
-                        ),
+                            ],
+                          );
+                        },
                       ),
-                    ],
-                  );
-                },
+                    ),
+                  ),
+                ],
               );
             }),
+      floatingActionButton: isNextStep
+          ? InkWell(
+              onTap: () async {
+                Get.toNamed(Routes.addcompany);
+              },
+              child: Ink(
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.transparent,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: SvgPicture.asset(
+                    Assets.svgPlusIcon,
+                  ),
+                ),
+              ),
+            )
+          : null,
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SizedBox(
@@ -230,9 +284,9 @@ class _PlanandCompanyState extends State<PlanandCompany> {
             title: isNextStep ? "Done" : "Next",
             btnColor: AppColors.primaryColor,
             titleColor: AppColors.white,
-            onTap: () {
+            onTap: () async {
               if (isNextStep) {
-                if (clasifiedController.selectedCountCompany > 0) {
+                if (controller.selectedCountCompany > 0) {
                   Get.back();
                 } else {
                   showToasterrorborder(
@@ -241,11 +295,23 @@ class _PlanandCompanyState extends State<PlanandCompany> {
                   );
                 }
               } else {
-                if (controller.selectedCountPlan > 0) {
+                bool hasAutoSelected =
+                    controller.planList.any((plan) => plan.selected == true);
+
+                if (controller.selectedCountPlan > 0 || hasAutoSelected) {
                   setState(() {
                     isNextStep = true;
                   });
-                  clasifiedController.fetchCompanyNames("");
+
+                  List<String> selectedPlanname = [];
+                  for (int i = 0; i < controller.planList.length; i++) {
+                    if (controller.isPlanSelectedList[i]) {
+                      selectedPlanname
+                          .add(controller.planList[i].name.toString());
+                    }
+                  }
+
+                  await controller.updateUserPlan(selectedPlanname);
                 } else {
                   showToasterrorborder(
                     "Please select at least one field.",

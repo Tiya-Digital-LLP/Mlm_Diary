@@ -57,11 +57,13 @@ import 'package:mlmdiary/generated/get_comment_classified_entity.dart';
 import 'package:mlmdiary/generated/get_comment_news_entity.dart';
 import 'package:mlmdiary/generated/get_company_comment_entity.dart';
 import 'package:mlmdiary/generated/get_company_entity.dart';
+import 'package:mlmdiary/generated/get_company_with_selected_entity.dart';
 import 'package:mlmdiary/generated/get_followers_entity.dart';
 import 'package:mlmdiary/generated/get_following_entity.dart';
 import 'package:mlmdiary/generated/get_mlm_database_entity.dart';
 import 'package:mlmdiary/generated/get_news_list_entity.dart';
 import 'package:mlmdiary/generated/get_plan_list_entity.dart';
+import 'package:mlmdiary/generated/get_plan_with_selected_entity.dart';
 import 'package:mlmdiary/generated/get_question_list_entity.dart';
 import 'package:mlmdiary/generated/get_sub_category_entity.dart';
 import 'package:mlmdiary/generated/get_tutorial_video_entity.dart';
@@ -624,6 +626,14 @@ class JsonConvert {
       return data.map<GetCompanyEntity>((Map<String, dynamic> e) =>
           GetCompanyEntity.fromJson(e)).toList() as M;
     }
+    if (<GetCompanyWithSelectedEntity>[] is M) {
+      return data.map<GetCompanyWithSelectedEntity>((Map<String, dynamic> e) =>
+          GetCompanyWithSelectedEntity.fromJson(e)).toList() as M;
+    }
+    if (<GetCompanyWithSelectedCompany>[] is M) {
+      return data.map<GetCompanyWithSelectedCompany>((Map<String, dynamic> e) =>
+          GetCompanyWithSelectedCompany.fromJson(e)).toList() as M;
+    }
     if (<GetFollowersEntity>[] is M) {
       return data.map<GetFollowersEntity>((Map<String, dynamic> e) =>
           GetFollowersEntity.fromJson(e)).toList() as M;
@@ -667,6 +677,14 @@ class JsonConvert {
     if (<GetPlanListPlan>[] is M) {
       return data.map<GetPlanListPlan>((Map<String, dynamic> e) =>
           GetPlanListPlan.fromJson(e)).toList() as M;
+    }
+    if (<GetPlanWithSelectedEntity>[] is M) {
+      return data.map<GetPlanWithSelectedEntity>((Map<String, dynamic> e) =>
+          GetPlanWithSelectedEntity.fromJson(e)).toList() as M;
+    }
+    if (<GetPlanWithSelectedPlan>[] is M) {
+      return data.map<GetPlanWithSelectedPlan>((Map<String, dynamic> e) =>
+          GetPlanWithSelectedPlan.fromJson(e)).toList() as M;
     }
     if (<GetQuestionListEntity>[] is M) {
       return data.map<GetQuestionListEntity>((Map<String, dynamic> e) =>
@@ -1108,6 +1126,10 @@ class JsonConvertClassCollection {
         .toString(): GetCompanyCommentDataCommentsReplaysCommentsReplays
         .fromJson,
     (GetCompanyEntity).toString(): GetCompanyEntity.fromJson,
+    (GetCompanyWithSelectedEntity).toString(): GetCompanyWithSelectedEntity
+        .fromJson,
+    (GetCompanyWithSelectedCompany).toString(): GetCompanyWithSelectedCompany
+        .fromJson,
     (GetFollowersEntity).toString(): GetFollowersEntity.fromJson,
     (GetFollowersData).toString(): GetFollowersData.fromJson,
     (GetFollowingEntity).toString(): GetFollowingEntity.fromJson,
@@ -1119,6 +1141,8 @@ class JsonConvertClassCollection {
     (GetNewsListDataUserData).toString(): GetNewsListDataUserData.fromJson,
     (GetPlanListEntity).toString(): GetPlanListEntity.fromJson,
     (GetPlanListPlan).toString(): GetPlanListPlan.fromJson,
+    (GetPlanWithSelectedEntity).toString(): GetPlanWithSelectedEntity.fromJson,
+    (GetPlanWithSelectedPlan).toString(): GetPlanWithSelectedPlan.fromJson,
     (GetQuestionListEntity).toString(): GetQuestionListEntity.fromJson,
     (GetQuestionListQuestions).toString(): GetQuestionListQuestions.fromJson,
     (GetQuestionListQuestionsUserData)

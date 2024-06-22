@@ -51,6 +51,7 @@ dependencies:
   video_player: ^2.8.6
   text_link: ^1.0.0
   html: ^0.15.4
+  textfield_tags: ^3.0.1
   
 
 

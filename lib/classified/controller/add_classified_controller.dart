@@ -42,11 +42,11 @@ class ClasifiedController extends GetxController {
   Rx<TextEditingController> country = TextEditingController().obs;
   RxList<GetClassifiedData> classifiedList = <GetClassifiedData>[].obs;
   Rx<TextEditingController> commment = TextEditingController().obs;
+  TextEditingController searchController = TextEditingController();
 
   final search = TextEditingController();
 // company
   RxList<String> companyNames = <String>[].obs;
-  TextEditingController searchController = TextEditingController();
   RxList<bool> isCompanySelectedList = <bool>[].obs;
 
   //category

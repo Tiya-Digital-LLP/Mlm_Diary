@@ -18,6 +18,11 @@ class Constants {
   static const String verifyotp = "/register/email_verify";
   static const String userregister = "/user/register";
   static const String getplanlist = "/getplan";
+  static const String getplanlistwithselected = "/getplanWithSelected";
+  static const String getcompanylistwithselected = "/getCompanyWithSelected";
+
+  static const String updateUserPlan = "/updateUserPlan";
+
   static const String savecompany = "/user/savecompany";
   static const String login = "/user/login";
   static const String forgotpassword = "/user/forgotpassword_otp";

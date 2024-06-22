@@ -66,4 +66,6 @@ abstract class Routes {
   static const userquestion = '/userQuestion';
 
   static const favouritrdetailsscreen = '/favouritrDetailsScreen';
+  static const addcompany = '/addCompany';
+  static const addcompanyclassified = '/addCompanyClassified';
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/classified/add_classified.dart';
 import 'package:mlmdiary/classified/classified_detail_screen.dart';
+import 'package:mlmdiary/classified/custom/add_comapany_classfied.dart';
 import 'package:mlmdiary/firstscreen/first_screen.dart';
 import 'package:mlmdiary/forgotpassword/enter_new_password.dart';
 import 'package:mlmdiary/forgotpassword/enter_otp_screen.dart';
@@ -41,6 +42,7 @@ import 'package:mlmdiary/menu/menuscreens/news/manage_news.dart';
 import 'package:mlmdiary/menu/menuscreens/news/mlm_news.dart';
 import 'package:mlmdiary/menu/menuscreens/news/my_news_detail_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/news/news_details_screen.dart';
+import 'package:mlmdiary/menu/menuscreens/plan&companyintrest/custom/add_company.dart';
 import 'package:mlmdiary/menu/menuscreens/plan&companyintrest/planandcompanyintrest.dart';
 import 'package:mlmdiary/menu/menuscreens/premiumplan/premium_plan.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/edit_post.dart';
@@ -290,6 +292,14 @@ class AppPages {
       page: () => FavouritrDetailScreen(
         key: UniqueKey(),
       ),
+    ),
+    GetPage(
+      name: Routes.addcompany,
+      page: () => const AddCompany(),
+    ),
+    GetPage(
+      name: Routes.addcompanyclassified,
+      page: () => const AddComapanyClassfied(),
     ),
   ];
 }

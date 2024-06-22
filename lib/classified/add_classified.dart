@@ -15,17 +15,20 @@ import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_category_entity.dart';
 import 'package:mlmdiary/generated/get_sub_category_entity.dart';
+import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/border_text_field.dart';
+import 'package:mlmdiary/widgets/company_border_textfield.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_border_container.dart';
 import 'package:mlmdiary/widgets/custom_button.dart';
 import 'package:mlmdiary/widgets/discription_text_field.dart';
 import 'package:mlmdiary/widgets/normal_button.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:textfield_tags/textfield_tags.dart';
 
 class AddClassified extends StatefulWidget {
   const AddClassified({super.key});
@@ -161,47 +164,37 @@ class _AddClassifiedState extends State<AddClassified> {
                     ),
                   ),
                   10.sbh,
-                  Obx(() => Column(
-                        children: [
-                          BorderTextField(
-                            maxLength: 25,
+                  Column(
+                    children: [
+                      TextFieldTags<String>(
+                        textfieldTagsController:
+                            StringTagController(), // Initialize a new controller
+                        textSeparators: const [' ', ','],
+                        letterCase: LetterCase.normal,
+                        inputFieldBuilder: (context, inputFieldValues) {
+                          return CompanyBorderTextfield(
                             height: 65,
-                            keyboard: TextInputType.name,
+                            keyboard: TextInputType.multiline,
                             textInputType: const [],
                             hint: "Company Name",
                             readOnly: controller.companyNameOnly.value,
-                            controller: controller.companyName.value,
+                            controller: controller
+                                .companyName.value, // Using the controller here
                             isError: controller.companyError.value,
                             byDefault: !controller.isCompanyNameTyping.value,
                             onChanged: (value) {
-                              controller.companyNameValidation();
-                              controller.isCompanyNameTyping.value = true;
-                              controller.fetchCompanyNames(value);
+                              // Add any necessary logic here if needed
+                              inputFieldValues.onTagChanged(
+                                  value); // Propagate changes to tag controller
                             },
-                          ),
-                          if (controller.companyNames.isNotEmpty)
-                            Container(
-                              decoration: BoxDecoration(
-                                color: AppColors.white,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              height: 200,
-                              child: ListView.builder(
-                                itemCount: controller.companyNames.length,
-                                itemBuilder: (context, index) {
-                                  return ListTile(
-                                    title: Text(controller.companyNames[index]),
-                                    onTap: () {
-                                      controller.companyName.value.text =
-                                          controller.companyNames[index];
-                                      controller.companyNames.clear();
-                                    },
-                                  );
-                                },
-                              ),
-                            ),
-                        ],
-                      )),
+                            onTap: () {
+                              Get.toNamed(Routes.addcompanyclassified);
+                            },
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                   10.sbh,
                   Obx(
                     () => DiscriptionTextField(
