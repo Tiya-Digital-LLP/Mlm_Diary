@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/menu/menuscreens/plan&companyintrest/controller/intrest_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -17,6 +18,7 @@ class AddCompany extends StatefulWidget {
 class _StringMultilineTagsState extends State<AddCompany> {
   late double _distanceToField;
   late StringTagController _stringTagController;
+  final IntrestController controller = Get.put(IntrestController());
 
   @override
   void didChangeDependencies() {
@@ -36,25 +38,12 @@ class _StringMultilineTagsState extends State<AddCompany> {
     _stringTagController.dispose();
   }
 
-  static const List<String> _initialTags = <String>[
-    'yaml',
-    'gradle',
-    'c',
-    'c++',
-    'java',
-    'python',
-    'javascript',
-    'sql',
-    'html',
-    'css',
-  ];
-
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         scrolledUnderElevation: 0,
         centerTitle: true,
@@ -88,7 +77,6 @@ class _StringMultilineTagsState extends State<AddCompany> {
           children: [
             TextFieldTags<String>(
               textfieldTagsController: _stringTagController,
-              initialTags: _initialTags,
               textSeparators: const [' ', ','],
               letterCase: LetterCase.normal,
               validator: (String tag) {
@@ -107,7 +95,7 @@ class _StringMultilineTagsState extends State<AddCompany> {
                     onTap: () {
                       _stringTagController.getFocusNode?.requestFocus();
                     },
-                    controller: inputFieldValues.textEditingController,
+                    controller: controller.company.value,
                     focusNode: inputFieldValues.focusNode,
                     decoration: InputDecoration(
                       isDense: true,
@@ -192,25 +180,49 @@ class _StringMultilineTagsState extends State<AddCompany> {
                             )
                           : null,
                     ),
-                    onChanged: inputFieldValues.onTagChanged,
+                    onChanged: (value) {
+                      inputFieldValues.onTagChanged(value);
+                    },
                     onSubmitted: inputFieldValues.onTagSubmitted,
                   ),
                 );
               },
             ),
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all<Color>(
-                  AppColors.primaryColor,
+            10.sbh,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all<Color>(
+                      AppColors.primaryColor,
+                    ),
+                  ),
+                  onPressed: () {
+                    _stringTagController.clearTags();
+                    controller.company.value.clear();
+                  },
+                  child: const Text(
+                    'CLEAR TAGS',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
-              ),
-              onPressed: () {
-                _stringTagController.clearTags();
-              },
-              child: const Text(
-                'CLEAR TAGS',
-                style: TextStyle(color: Colors.white),
-              ),
+                ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all<Color>(
+                      AppColors.primaryColor,
+                    ),
+                  ),
+                  onPressed: () async {
+                    await controller.updateUserCompany();
+                    Get.back();
+                  },
+                  child: const Text(
+                    'Add TAGS',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

@@ -167,8 +167,7 @@ class _AddClassifiedState extends State<AddClassified> {
                   Column(
                     children: [
                       TextFieldTags<String>(
-                        textfieldTagsController:
-                            StringTagController(), // Initialize a new controller
+                        textfieldTagsController: StringTagController(),
                         textSeparators: const [' ', ','],
                         letterCase: LetterCase.normal,
                         inputFieldBuilder: (context, inputFieldValues) {

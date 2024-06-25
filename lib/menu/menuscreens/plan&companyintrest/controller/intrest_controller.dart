@@ -19,6 +19,8 @@ class IntrestController extends GetxController {
   final RxList<bool> isPlanSelectedList = RxList<bool>([]);
   final RxList<bool> isCompanySelectedList = RxList<bool>([]);
 
+  Rx<TextEditingController> company = TextEditingController().obs;
+
   var isLoading = false.obs;
   RxInt selectedCountPlan = 0.obs;
   RxInt selectedCountCompany = 0.obs;
@@ -220,6 +222,105 @@ class IntrestController extends GetxController {
           if (kDebugMode) {
             print(
                 "HTTP error: Failed to update user plan. Status code: ${response.statusCode}");
+          }
+        }
+      } else {
+        if (kDebugMode) {
+          print("No internet connection available.");
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("An error occurred: $e");
+      }
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> updateCompany(List<String> selectedComapanyname) async {
+    isLoading.value = true;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = Platform.isAndroid ? 'android' : 'ios';
+    if (kDebugMode) {
+      print('Device Name: $device');
+    }
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri = Uri.parse('${Constants.baseUrl}${Constants.updateCompany}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['company'] = selectedComapanyname.join(',');
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          final Map<String, dynamic> jsonBody = jsonDecode(response.body);
+          if (kDebugMode) {
+            print("Update  Company response: $jsonBody");
+          }
+
+          // Process your response here if needed
+        } else {
+          if (kDebugMode) {
+            print(
+                "HTTP error: Failed to update  Company. Status code: ${response.statusCode}");
+          }
+        }
+      } else {
+        if (kDebugMode) {
+          print("No internet connection available.");
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("An error occurred: $e");
+      }
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> updateUserCompany() async {
+    isLoading.value = true;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = Platform.isAndroid ? 'android' : 'ios';
+    if (kDebugMode) {
+      print('Device Name: $device');
+    }
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri =
+            Uri.parse('${Constants.baseUrl}${Constants.updateUserCompany}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['company'] = company.value.text;
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          final Map<String, dynamic> jsonBody = jsonDecode(response.body);
+          if (kDebugMode) {
+            print("Update user Company response: $jsonBody");
+          }
+
+          // Process your response here if needed
+        } else {
+          if (kDebugMode) {
+            print(
+                "HTTP error: Failed to update user Company. Status code: ${response.statusCode}");
           }
         }
       } else {

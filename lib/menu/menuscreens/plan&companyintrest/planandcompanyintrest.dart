@@ -104,7 +104,9 @@ class _PlanandCompanyState extends State<PlanandCompany> {
                             controller.isEndOfData.value = false;
                             controller.fetchSelectedCompanyList(1);
                           },
-                          onChanged: (value) {},
+                          onChanged: (value) {
+                            _refreshDataCompany();
+                          },
                         ),
                       ),
                     ),
@@ -286,7 +288,18 @@ class _PlanandCompanyState extends State<PlanandCompany> {
             titleColor: AppColors.white,
             onTap: () async {
               if (isNextStep) {
-                if (controller.selectedCountCompany > 0) {
+                bool hasAutoSelected = controller.companyList
+                    .any((company) => company.selected == true);
+                if (controller.selectedCountCompany > 0 || hasAutoSelected) {
+                  List<String> selectedComapanyname = [];
+                  for (int i = 0; i < controller.companyList.length; i++) {
+                    if (controller.isCompanySelectedList[i]) {
+                      selectedComapanyname
+                          .add(controller.companyList[i].name.toString());
+                    }
+                  }
+
+                  await controller.updateCompany(selectedComapanyname);
                   Get.back();
                 } else {
                   showToasterrorborder(

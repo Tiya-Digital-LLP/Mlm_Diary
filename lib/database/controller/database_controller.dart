@@ -147,19 +147,36 @@ class DatabaseController extends GetxController {
   }
 
   Future<void> fetchUserPost(int userId, context) async {
+    if (kDebugMode) {
+      print('fetchUserPost started');
+    }
+
     isLoading.value = true;
     String device =
         Platform.isAndroid ? 'android' : (Platform.isIOS ? 'ios' : '');
+    if (kDebugMode) {
+      print('Device type: $device');
+    }
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
+    if (kDebugMode) {
+      print('API Token: $apiToken');
+    }
 
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
+      if (kDebugMode) {
+        print('Connectivity Result: $connectivityResult');
+      }
+
       // ignore: unrelated_type_equality_checks
       if (connectivityResult == ConnectivityResult.none) {
         showToasterrorborder("No internet connection", context);
         isLoading.value = false;
+        if (kDebugMode) {
+          print('No internet connection');
+        }
         return;
       }
 
@@ -168,36 +185,68 @@ class DatabaseController extends GetxController {
         'device': device,
         'user_id': userId.toString(),
       };
+      if (kDebugMode) {
+        print('Query Params: $queryParams');
+      }
 
       Uri uri = Uri.parse(Constants.baseUrl + Constants.userpost)
           .replace(queryParameters: queryParams);
+      if (kDebugMode) {
+        print('Request URI: $uri');
+      }
 
       final response = await http.post(uri);
+      if (kDebugMode) {
+        print('Response Status Code: ${response.statusCode}');
+        print('Response Body: ${response.body}');
+      }
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
+        if (kDebugMode) {
+          print('Response Data: $responseData');
+        }
+
         final DatabaseDetailEntity postEntity =
             DatabaseDetailEntity.fromJson(responseData);
-
         final DatabaseDetailData? firstPost = postEntity.data;
+        if (kDebugMode) {
+          print('First Post: $firstPost');
+        }
+
         if (firstPost != null) {
           final String postId = firstPost.id.toString();
           await prefs.setString('lastPostid', postId);
+          if (kDebugMode) {
+            print('Last Post ID saved: $postId');
+          }
 
           // Add the fetched post to the list
           mlmDetailsDatabaseList.add(firstPost);
         } else {
           showToasterrorborder("No data found", context);
+          if (kDebugMode) {
+            print('No data found in the response');
+          }
         }
       } else {
         showToasterrorborder(
             "Failed to fetch data. Status code: ${response.statusCode}",
             context);
+        if (kDebugMode) {
+          print('Failed to fetch data. Status code: ${response.statusCode}');
+        }
       }
     } catch (error) {
       showToasterrorborder("An error occurred: $error", context);
+      if (kDebugMode) {
+        print('Error: $error');
+      }
     } finally {
       isLoading.value = false;
+      if (kDebugMode) {
+        print('fetchUserPost ended');
+      }
     }
   }
 }

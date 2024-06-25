@@ -9,6 +9,8 @@ class Constants {
   static const String baseUrl = "https://laravel.mlmdiary.com/api";
 
   ///End Points
+  static const String savefcm = "/savefcm";
+
   static const String getUserType = "/getusertype";
   static const String domesticPhoneOtp = "/register/domestic_phone_otp";
   static const String foreignPhoneOtp = "/register/foreign_phone_otp";
@@ -22,6 +24,9 @@ class Constants {
   static const String getcompanylistwithselected = "/getCompanyWithSelected";
 
   static const String updateUserPlan = "/updateUserPlan";
+  static const String updateUserCompany = "/updateUserCompany";
+
+  static const String updateCompany = "/updateUserCompany";
 
   static const String savecompany = "/user/savecompany";
   static const String login = "/user/login";
@@ -123,7 +128,16 @@ class Constants {
   static const String addcommentanswerreply = "/add_answer_comment";
 
   static const String allbookmark = "/getallbookmarked";
+  static const String getnotification = "/getnotification";
+  static const String notificationcount = "/getcount_of_notification";
+
+  static const String deletenotification = "/deleteNotification";
 
   static const String videoBookmark = "/bookmark_video";
   static const String tutorialVideo = "/gettutorial_video";
+
+  static const String getchathistory = "/chat/getmychathistory";
+  static const String getchathistorydetail = "/chat/getmychatdetail";
+  static const String sendchat = "/chat/send";
+  static const String deleteChat = "/chat/deletechat";
 }

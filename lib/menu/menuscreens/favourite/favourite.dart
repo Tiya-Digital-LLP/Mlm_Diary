@@ -330,7 +330,7 @@ class _FavouriteState extends State<Favourite> {
         Get.toNamed(Routes.favouritrdetailsscreen, arguments: post);
         break;
       case 'database':
-        Get.toNamed(Routes.favouritrdetailsscreen, arguments: post);
+        Get.toNamed(Routes.userprofilescreen, arguments: post);
         break;
       case 'question':
         Get.toNamed(Routes.favouritrdetailsscreen, arguments: post);
@@ -376,7 +376,7 @@ class _FavouriteState extends State<Favourite> {
                     ChoiceChip(
                       label: Text(
                         controller.types[index],
-                      ),  
+                      ),
                       selected: controller.selectedType.value ==
                           controller.types[index],
                       selectedColor: AppColors.blackText,

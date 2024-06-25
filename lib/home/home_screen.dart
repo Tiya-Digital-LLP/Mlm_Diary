@@ -40,6 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     controller.fetchBanners();
+    controller.fetchNotificationCount(1, 'all');
   }
 
   @override
@@ -131,12 +132,45 @@ class _HomeScreenState extends State<HomeScreen> {
                                 onTap: () {
                                   Get.toNamed(Routes.notification);
                                 },
-                                child: SizedBox(
-                                  height: size.height * 0.036,
-                                  width: size.height * 0.036,
-                                  child: SvgPicture.asset(
-                                    Assets.svgNotificationBing,
-                                  ),
+                                child: Stack(
+                                  children: [
+                                    SizedBox(
+                                      height: size.height * 0.036,
+                                      width: size.height * 0.036,
+                                      child: SvgPicture.asset(
+                                        Assets.svgNotificationBing,
+                                      ),
+                                    ),
+                                    Obx(
+                                      () => controller.notificationCount > 0
+                                          ? Positioned(
+                                              top: 0,
+                                              right: 0,
+                                              child: Container(
+                                                padding:
+                                                    const EdgeInsets.all(2),
+                                                decoration: const BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: Colors.red,
+                                                ),
+                                                constraints:
+                                                    const BoxConstraints(
+                                                  minWidth: 18,
+                                                  minHeight: 18,
+                                                ),
+                                                child: Text(
+                                                  '${controller.notificationCount}',
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 12,
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                            )
+                                          : const SizedBox.shrink(),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],

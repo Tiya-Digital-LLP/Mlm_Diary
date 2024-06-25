@@ -248,7 +248,8 @@ class _ManageBlogCardState extends State<ManageBlogCard> {
                   children: [
                     Material(
                       child: InkWell(
-                        onTap: () {
+                        onTap: () async {
+                        await widget.controller.fetchMyBlog(articleId: widget.blogId);
                           Get.toNamed(
                             Routes.blogplusicon,
                           );

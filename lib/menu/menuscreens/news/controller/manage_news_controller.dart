@@ -172,7 +172,11 @@ class ManageNewsController extends GetxController {
   }
 
   // Method to fetch data from API
-  Future<void> fetchMyNews({int page = 1, context}) async {
+  Future<void> fetchMyNews({
+    int page = 1,
+    BuildContext? context,
+    int? newsId,
+  }) async {
     isLoading.value = true;
     String device = '';
     if (Platform.isAndroid) {
@@ -180,81 +184,124 @@ class ManageNewsController extends GetxController {
     } else if (Platform.isIOS) {
       device = 'ios';
     }
+
     if (kDebugMode) {
       print('Device Name: $device');
     }
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
 
     try {
-      // Check internet connection
-      var connectivityResult = await (Connectivity().checkConnectivity());
+      var connectivityResult = await Connectivity().checkConnectivity();
       // ignore: unrelated_type_equality_checks
       if (connectivityResult == ConnectivityResult.none) {
-        showToasterrorborder("No internet connection", context);
+        if (context != null) {
+          // ignore: use_build_context_synchronously
+          showToasterrorborder("No internet connection", context);
+        }
         isLoading.value = false;
         return;
       }
 
-      // Prepare query parameters
-      Map<String, String> queryParams = {
+      Map<String, String> formData = {
         'api_token': apiToken ?? '',
         'device': device,
         'page': page.toString(),
       };
 
-      // Build URL
-      Uri uri = Uri.parse(Constants.baseUrl + Constants.mynews)
-          .replace(queryParameters: queryParams);
+      // If articleId is provided, add it to formData
+      if (newsId != null) {
+        formData['news_id'] = newsId.toString();
+      }
 
-      // Make HTTP GET request
-      final response = await http.post(uri);
+      Uri uri = Uri.parse(Constants.baseUrl + Constants.mynews);
+      final response = await http.post(uri, body: formData);
 
       if (response.statusCode == 200) {
-        // Parse JSON data
         final Map<String, dynamic> responseData = json.decode(response.body);
         final MyNewsEntity myNewsEntity = MyNewsEntity.fromJson(responseData);
 
         if (kDebugMode) {
-          print('manage News data: $responseData');
+          print('Manage Blog data: $responseData');
         }
 
-        // Store ID using SharedPreferences
-        final List<MyNewsData> mynewsData = myNewsEntity.data ?? [];
-        if (mynewsData.isNotEmpty) {
-          final MyNewsData firstNews = mynewsData[0];
-          final String newsId = firstNews.id.toString();
-          await prefs.setString('lastnewsid', newsId);
-          if (kDebugMode) {
-            print('Last news ID stored: $newsId');
+        final List<MyNewsData> myNewsData = myNewsEntity.data ?? [];
+
+        // Assign or add data to myBlogList based on the page number
+        if (page == 1) {
+          myNewsList.assignAll(myNewsData);
+        } else {
+          myNewsList.addAll(myNewsData);
+        }
+
+        // Update UI with appropriate blog data
+        if (newsId != null) {
+          // Find the selected blog by articleId
+          MyNewsData? selectedBlog;
+          for (var blog in myNewsData) {
+            if (blog.id == newsId) {
+              selectedBlog = blog;
+              break;
+            }
           }
 
-          // Map data to controllers
-          title.value.text = firstNews.title ?? '';
-          discription.value.text = firstNews.description ?? '';
-          url.value.text = firstNews.website ?? '';
-          userImage.value = firstNews.imagePath ?? '';
-
-          // Update Category and SubCategory Lists
-          updateCategorySelection(firstNews.category);
-          updateSubCategorySelection(firstNews.subcategory);
-        }
-
-        // Update state with fetched data
-        if (page == 1) {
-          myNewsList.assignAll(myNewsEntity.data ?? []);
+          if (selectedBlog != null) {
+            updateUIWithBlogData(selectedBlog);
+          } else {
+            // Show error message if blog with articleId is not found
+            if (context != null) {
+              // ignore: use_build_context_synchronously
+              showToasterrorborder("Blog with ID $newsId not found", context);
+            }
+          }
         } else {
-          myNewsList.addAll(myNewsEntity.data ?? []);
+          // If articleId is not provided, update UI with the first news
+          if (myNewsData.isNotEmpty) {
+            updateUIWithBlogData(myNewsData[0]);
+          } else {
+            // Show error message if no data found
+            if (context != null) {
+              // ignore: use_build_context_synchronously
+              showToasterrorborder("No data found", context);
+            }
+          }
         }
       } else {
-        // Handle error response
-        showToasterrorborder("Failed to fetch data", context);
+        // Show error message if response status code is not 200
+        if (context != null) {
+          // ignore: use_build_context_synchronously
+          showToasterrorborder("Failed to fetch data", context);
+        }
       }
     } catch (error) {
-      // Handle network or parsing errors
-      showToasterrorborder("An error occurred: $error", context);
+      // Show error message for any caught exception
+      if (context != null) {
+        // ignore: use_build_context_synchronously
+        showToasterrorborder("An error occurred: $error", context);
+      }
     } finally {
+      // Set isLoading to false after completing fetch operation
       isLoading.value = false;
+    }
+  }
+
+  void updateUIWithBlogData(MyNewsData blogData) {
+    title.value.text = blogData.title ?? '';
+    discription.value.text = blogData.description ?? '';
+    url.value.text = blogData.website ?? '';
+    userImage.value = blogData.imagePath ?? '';
+
+    isCategorySelectedList.clear();
+    for (var category in categorylist) {
+      bool isSelected = blogData.category == (category.id.toString());
+      isCategorySelectedList.add(isSelected);
+    }
+
+    isSubCategorySelectedList.clear();
+    for (var subcategory in subcategoryList) {
+      bool isSelected = blogData.subcategory == (subcategory.id.toString());
+      isSubCategorySelectedList.add(isSelected);
     }
   }
 

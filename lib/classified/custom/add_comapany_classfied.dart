@@ -213,6 +213,8 @@ class _StringMultilineTagsState extends State<AddComapanyClassfied> {
                           title: Text(controller.companyNames[index]),
                           onTap: () {
                             // Update the text field with the selected company name
+                            _stringTagController
+                                .addTag(controller.companyNames[index]);
                             controller.companyName.value.text =
                                 controller.companyNames[index];
                           },

@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "756619884404",
+    "project_id": "mlm-diary",
+    "storage_bucket": "mlm-diary.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:756619884404:android:3cfc4b25051f789d1ade21",
+        "android_client_info": {
+          "package_name": "com.example.mlmdiary"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "756619884404-m5qahpiebao0hcjbs3gsrd8gks5u4pcd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBR4pYNkAPbUwv54SsH54QXkMxr9E1Ygvs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "756619884404-m5qahpiebao0hcjbs3gsrd8gks5u4pcd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:756619884404:android:7c08f6a22d68ef541ade21",
+        "android_client_info": {
+          "package_name": "com.mlm.mlmdiary"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "756619884404-m5qahpiebao0hcjbs3gsrd8gks5u4pcd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBR4pYNkAPbUwv54SsH54QXkMxr9E1Ygvs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "756619884404-m5qahpiebao0hcjbs3gsrd8gks5u4pcd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

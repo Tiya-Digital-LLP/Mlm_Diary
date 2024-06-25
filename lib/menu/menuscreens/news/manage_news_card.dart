@@ -225,7 +225,9 @@ class _ManageNewsCardState extends State<ManageNewsCard> {
                 Row(
                   children: [
                     InkWell(
-                      onTap: () {
+                      onTap: () async {
+                        await widget.controller
+                            .fetchMyNews(newsId: widget.newsId);
                         Get.toNamed(Routes.newsplusicon);
                       },
                       child: Ink(

@@ -4,6 +4,7 @@ class Assets {
 
   static const String fontsMetropolisRegular = 'assets/fonts/Metropolis-Regular.otf';
   static const String fontsSatoshiRegular = 'assets/fonts/Satoshi-Regular.otf';
+  static const String imagesAdminlogo = 'assets/images/adminlogo.png';
   static const String imagesAdwithus1 = 'assets/images/Adwithus1.png';
   static const String imagesAdwithus2 = 'assets/images/Adwithus2.png';
   static const String imagesAdwithus3 = 'assets/images/Adwithus3.png';

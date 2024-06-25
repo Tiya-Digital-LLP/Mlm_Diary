@@ -2,36 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
-import 'package:mlmdiary/modal_class/post_class.dart';
+import 'package:mlmdiary/home/message/controller/message_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 
 class MessageDetailsScreen extends StatefulWidget {
-  final PostClass post;
-  const MessageDetailsScreen({super.key, required this.post});
+  const MessageDetailsScreen({super.key});
 
   @override
   State<MessageDetailsScreen> createState() => _MessageDetailsScreenState();
 }
 
 class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
-  final List<ChatMessage> _messages = [
-    ChatMessage(
-      sender: 'Aman Talaviya',
-      message: 'Hello!',
-      isMe: false,
-      imageUrl: Assets.imagesIcon,
-    ),
-    ChatMessage(
-      sender: 'Me',
-      message: 'Hi Aman!',
-      isMe: true,
-      imageUrl: Assets.imagesIcon,
-    ),
-  ];
+  final MessageController messageController = Get.put(MessageController());
+
+  @override
+  void initState() {
+    super.initState();
+    final post = Get.arguments;
+    if (post != null && post.chatId != null) {
+      messageController.fetchMyChatDetail(post.chatId.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
+    final post = Get.arguments;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -67,7 +64,7 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
                   ),
                   10.sbw,
                   Text(
-                    widget.post.userName,
+                    post.username ?? 'Unknown',
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: size.width * 0.05,
@@ -88,45 +85,33 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
               fit: BoxFit.cover,
             ),
           ),
-          ListView.builder(
-            itemCount: _messages.length,
-            itemBuilder: (context, index) {
-              final message = _messages[index];
-              return Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (!message.isMe)
-                      CircleAvatar(
-                        backgroundImage: AssetImage(message.imageUrl),
-                      ),
-                    8.sbw,
-                    Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: message.isMe ? Colors.blue : Colors.grey[200],
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        padding: const EdgeInsets.all(12),
-                        child: Text(
-                          message.message,
-                          style: TextStyle(
-                            color: message.isMe ? Colors.white : Colors.black,
+          Obx(
+            () => ListView.builder(
+              itemCount: messageController.chatdetailsList.length,
+              itemBuilder: (context, index) {
+                final message = messageController.chatdetailsList[index];
+                return Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.all(12),
+                          child: Text(
+                            message.msg ?? '',
+                            style: TextStyle(
+                              color: AppColors.blackText,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    8.sbw,
-                    if (message.isMe)
-                      CircleAvatar(
-                        backgroundImage: AssetImage(message.imageUrl),
-                      ),
-                  ],
-                ),
-              );
-            },
+                    ],
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),
@@ -153,8 +138,8 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
                       ],
                     ),
                     child: SvgPicture.asset(
-                      height: 40,
                       Assets.svgPlusIcon,
+                      height: 40,
                     ),
                   ),
                   Expanded(
@@ -165,21 +150,35 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
                           color: AppColors.searchbar,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 16.0, vertical: 4),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: TextField(
-                            decoration: InputDecoration(
+                            controller: messageController.msg.value,
+                            decoration: const InputDecoration(
                               hintText: 'Write your answer here',
                               border: InputBorder.none,
                             ),
+                            onChanged: (value) {
+                              messageController.sendChat(
+                                toId: post.toid.toString(),
+                                chatId: post.chatId.toString(),
+                              );
+                            },
                           ),
                         ),
                       ),
                     ),
                   ),
-                  SvgPicture.asset(
-                    Assets.svgSend,
+                  IconButton(
+                    icon: SvgPicture.asset(
+                      Assets.svgSend,
+                    ),
+                    onPressed: () {
+                      messageController.sendChat(
+                        toId: post.toid.toString(),
+                        chatId: post.chatId.toString(),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -189,18 +188,4 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
       ),
     );
   }
-}
-
-class ChatMessage {
-  final String sender;
-  final String message;
-  final bool isMe;
-  final String imageUrl;
-
-  ChatMessage({
-    required this.sender,
-    required this.message,
-    required this.isMe,
-    required this.imageUrl,
-  });
 }

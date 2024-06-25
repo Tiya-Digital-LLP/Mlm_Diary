@@ -218,7 +218,7 @@ class ManageBlogController extends GetxController {
     String? apiToken = prefs.getString(Constants.accessToken);
 
     try {
-      var connectivityResult = await (Connectivity().checkConnectivity());
+      var connectivityResult = await Connectivity().checkConnectivity();
       // ignore: unrelated_type_equality_checks
       if (connectivityResult == ConnectivityResult.none) {
         if (context != null) {
@@ -229,15 +229,19 @@ class ManageBlogController extends GetxController {
         return;
       }
 
-      Map<String, String> queryParams = {
+      Map<String, String> formData = {
         'api_token': apiToken ?? '',
         'device': device,
         'page': page.toString(),
       };
 
-      Uri uri = Uri.parse(Constants.baseUrl + Constants.myblog)
-          .replace(queryParameters: queryParams);
-      final response = await http.post(uri);
+      // If articleId is provided, add it to formData
+      if (articleId != null) {
+        formData['blog_id'] = articleId.toString();
+      }
+
+      Uri uri = Uri.parse(Constants.baseUrl + Constants.myblog);
+      final response = await http.post(uri, body: formData);
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
@@ -250,60 +254,61 @@ class ManageBlogController extends GetxController {
 
         final List<MyBlogListData> myBlogData = myBlogEntity.data ?? [];
 
-        myBlogList.assignAll(myBlogData);
-        if (myBlogData.isNotEmpty) {
-          final MyBlogListData firstNews = myBlogData[0];
-          final String blogId = firstNews.articleId.toString();
-          await prefs.setString('lastBlogid', blogId);
-          if (kDebugMode) {
-            print('Last Blog ID stored: $blogId');
+        // Assign or add data to myBlogList based on the page number
+        if (page == 1) {
+          myBlogList.assignAll(myBlogData);
+        } else {
+          myBlogList.addAll(myBlogData);
+        }
+
+        // Update UI with appropriate blog data
+        if (articleId != null) {
+          // Find the selected blog by articleId
+          MyBlogListData? selectedBlog;
+          for (var blog in myBlogData) {
+            if (blog.articleId == articleId) {
+              selectedBlog = blog;
+              break;
+            }
           }
 
-          if (page == 1) {
-            myBlogList.assignAll(myBlogEntity.data ?? []);
+          if (selectedBlog != null) {
+            updateUIWithBlogData(selectedBlog);
           } else {
-            myBlogList.addAll(myBlogEntity.data ?? []);
-          }
-
-          if (articleId != null) {
-            MyBlogListData? selectedBlog;
-            for (var blog in myBlogEntity.data ?? []) {
-              if (blog.articleId == articleId) {
-                selectedBlog = blog;
-                break;
-              }
+            // Show error message if blog with articleId is not found
+            if (context != null) {
+              showToasterrorborder(
+                  // ignore: use_build_context_synchronously
+                  "Blog with ID $articleId not found", context);
             }
-
-            if (selectedBlog != null) {
-              updateUIWithBlogData(selectedBlog);
-            } else {
-              if (context != null) {
-                showToasterrorborder(
-                    // ignore: use_build_context_synchronously
-                    "Blog with ID $articleId not found",
-                    // ignore: use_build_context_synchronously
-                    context);
-              }
-            }
-          } else {
-            updateUIWithBlogData(firstNews);
           }
         } else {
-          // ignore: use_build_context_synchronously
-          if (context != null) showToasterrorborder("No data found", context);
+          // If articleId is not provided, update UI with the first news
+          if (myBlogData.isNotEmpty) {
+            updateUIWithBlogData(myBlogData[0]);
+          } else {
+            // Show error message if no data found
+            if (context != null) {
+              // ignore: use_build_context_synchronously
+              showToasterrorborder("No data found", context);
+            }
+          }
         }
       } else {
+        // Show error message if response status code is not 200
         if (context != null) {
           // ignore: use_build_context_synchronously
           showToasterrorborder("Failed to fetch data", context);
         }
       }
     } catch (error) {
+      // Show error message for any caught exception
       if (context != null) {
         // ignore: use_build_context_synchronously
         showToasterrorborder("An error occurred: $error", context);
       }
     } finally {
+      // Set isLoading to false after completing fetch operation
       isLoading.value = false;
     }
   }

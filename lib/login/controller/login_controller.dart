@@ -1,4 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,6 +11,7 @@ import 'package:mlmdiary/generated/login_entity.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 class LoginController extends GetxController {
   Rx<TextEditingController> email = TextEditingController().obs;
@@ -23,6 +27,8 @@ class LoginController extends GetxController {
   RxBool isMobileTyping = false.obs;
 
   RxBool isPasswordTyping = false.obs;
+
+  var isLoading = false.obs;
 
   void emailValidation() {
     String emailPattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
@@ -108,6 +114,7 @@ class LoginController extends GetxController {
         // Show success toast
         // ignore: use_build_context_synchronously
         showToastverifedborder('Login successful!', context);
+        saveFcm();
 
         // Store token and user id
         await saveAccessToken(loginEntity.apiToken, loginEntity.userId);
@@ -129,6 +136,79 @@ class LoginController extends GetxController {
       // ignore: use_build_context_synchronously
       showToasterrorborder("Login failed: ${response.reasonPhrase}", context);
     }
+  }
+
+  Future<void> saveFcm() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String device = Platform.isAndroid ? 'android' : 'ios';
+    int? userId = prefs.getInt('user_id');
+    String? fcmToken = prefs.getString('fcm_token');
+    String? deviceToken = await generateDeviceToken();
+
+    isLoading(true);
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri = Uri.parse('${Constants.baseUrl}${Constants.savefcm}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['user_id'] = userId.toString();
+        request.fields['device_id'] = deviceToken.toString();
+        request.fields['device'] = device;
+        request.fields['fcm_token'] = fcmToken.toString();
+
+        if (kDebugMode) {
+          print('userId: $userId');
+          print('deviceId: $deviceToken');
+          print('device: $device');
+          print('device: $device');
+          print('fcmtoken: $fcmToken');
+        }
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+        } else {
+          if (kDebugMode) {
+            print('Error: ${response.body}');
+          }
+        }
+      } else {
+        if (kDebugMode) {
+          print('No internet connection');
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error: $e');
+      }
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<String?> generateDeviceToken() async {
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    String? deviceToken;
+
+    try {
+      if (Platform.isAndroid) {
+        AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+        deviceToken = androidInfo.id;
+      } else if (Platform.isIOS) {
+        IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+        deviceToken = iosInfo.identifierForVendor;
+      } else {
+        // For other platforms, generate a UUID
+        deviceToken = const Uuid().v4();
+      }
+    } catch (e) {
+      deviceToken = const Uuid().v4(); // Fallback to UUID generation on error
+    }
+
+    return deviceToken;
   }
 
   Future<void> saveAccessToken(String? token, int? userId) async {

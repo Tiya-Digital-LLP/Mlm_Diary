@@ -115,13 +115,11 @@ class AppPages {
     ),
     GetPage(
       name: Routes.messagescreen,
-      page: () => const Message(),
+      page: () => Message(),
     ),
     GetPage(
       name: Routes.messagedetailscreen,
-      page: () => MessageDetailsScreen(
-        post: Get.arguments,
-      ),
+      page: () => const MessageDetailsScreen(),
     ),
     GetPage(
       name: Routes.aboutus,

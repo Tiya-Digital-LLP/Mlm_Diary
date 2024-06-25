@@ -37,6 +37,7 @@ import 'package:mlmdiary/generated/delete_classified_entity.dart';
 import 'package:mlmdiary/generated/delete_comment_entity.dart';
 import 'package:mlmdiary/generated/delete_entity.dart';
 import 'package:mlmdiary/generated/delete_news_entity.dart';
+import 'package:mlmdiary/generated/delete_notification_entity.dart';
 import 'package:mlmdiary/generated/delete_user_post_entity.dart';
 import 'package:mlmdiary/generated/domestic_phoneotp_entity.dart';
 import 'package:mlmdiary/generated/edit_comment_entity.dart';
@@ -61,7 +62,10 @@ import 'package:mlmdiary/generated/get_company_with_selected_entity.dart';
 import 'package:mlmdiary/generated/get_followers_entity.dart';
 import 'package:mlmdiary/generated/get_following_entity.dart';
 import 'package:mlmdiary/generated/get_mlm_database_entity.dart';
+import 'package:mlmdiary/generated/get_my_chat_detail_entity.dart';
+import 'package:mlmdiary/generated/get_my_chat_history_entity.dart';
 import 'package:mlmdiary/generated/get_news_list_entity.dart';
+import 'package:mlmdiary/generated/get_notification_entity.dart';
 import 'package:mlmdiary/generated/get_plan_list_entity.dart';
 import 'package:mlmdiary/generated/get_plan_with_selected_entity.dart';
 import 'package:mlmdiary/generated/get_question_list_entity.dart';
@@ -83,6 +87,7 @@ import 'package:mlmdiary/generated/my_post_list_entity.dart';
 import 'package:mlmdiary/generated/my_question_entity.dart';
 import 'package:mlmdiary/generated/news_count_view_entity.dart';
 import 'package:mlmdiary/generated/news_like_list_entity.dart';
+import 'package:mlmdiary/generated/notification_count_entity.dart';
 import 'package:mlmdiary/generated/post_bookmark_entity.dart';
 import 'package:mlmdiary/generated/post_count_view_entity.dart';
 import 'package:mlmdiary/generated/post_like_entity.dart';
@@ -440,6 +445,10 @@ class JsonConvert {
       return data.map<DeleteNewsEntity>((Map<String, dynamic> e) =>
           DeleteNewsEntity.fromJson(e)).toList() as M;
     }
+    if (<DeleteNotificationEntity>[] is M) {
+      return data.map<DeleteNotificationEntity>((Map<String, dynamic> e) =>
+          DeleteNotificationEntity.fromJson(e)).toList() as M;
+    }
     if (<DeleteUserPostEntity>[] is M) {
       return data.map<DeleteUserPostEntity>((Map<String, dynamic> e) =>
           DeleteUserPostEntity.fromJson(e)).toList() as M;
@@ -658,6 +667,43 @@ class JsonConvert {
       return data.map<GetMlmDatabaseData>((Map<String, dynamic> e) =>
           GetMlmDatabaseData.fromJson(e)).toList() as M;
     }
+    if (<GetMyChatDetailEntity>[] is M) {
+      return data.map<GetMyChatDetailEntity>((Map<String, dynamic> e) =>
+          GetMyChatDetailEntity.fromJson(e)).toList() as M;
+    }
+    if (<GetMyChatDetailMychatoverview>[] is M) {
+      return data.map<GetMyChatDetailMychatoverview>((Map<String, dynamic> e) =>
+          GetMyChatDetailMychatoverview.fromJson(e)).toList() as M;
+    }
+    if (<GetMyChatDetailMychatoverviewData>[] is M) {
+      return data.map<GetMyChatDetailMychatoverviewData>((
+          Map<String, dynamic> e) =>
+          GetMyChatDetailMychatoverviewData.fromJson(e)).toList() as M;
+    }
+    if (<GetMyChatDetailMychatoverviewLinks>[] is M) {
+      return data.map<GetMyChatDetailMychatoverviewLinks>((
+          Map<String, dynamic> e) =>
+          GetMyChatDetailMychatoverviewLinks.fromJson(e)).toList() as M;
+    }
+    if (<GetMyChatHistoryEntity>[] is M) {
+      return data.map<GetMyChatHistoryEntity>((Map<String, dynamic> e) =>
+          GetMyChatHistoryEntity.fromJson(e)).toList() as M;
+    }
+    if (<GetMyChatHistoryMychatoverview>[] is M) {
+      return data.map<GetMyChatHistoryMychatoverview>((
+          Map<String, dynamic> e) => GetMyChatHistoryMychatoverview.fromJson(e))
+          .toList() as M;
+    }
+    if (<GetMyChatHistoryMychatoverviewData>[] is M) {
+      return data.map<GetMyChatHistoryMychatoverviewData>((
+          Map<String, dynamic> e) =>
+          GetMyChatHistoryMychatoverviewData.fromJson(e)).toList() as M;
+    }
+    if (<GetMyChatHistoryMychatoverviewLinks>[] is M) {
+      return data.map<GetMyChatHistoryMychatoverviewLinks>((
+          Map<String, dynamic> e) =>
+          GetMyChatHistoryMychatoverviewLinks.fromJson(e)).toList() as M;
+    }
     if (<GetNewsListEntity>[] is M) {
       return data.map<GetNewsListEntity>((Map<String, dynamic> e) =>
           GetNewsListEntity.fromJson(e)).toList() as M;
@@ -669,6 +715,14 @@ class JsonConvert {
     if (<GetNewsListDataUserData>[] is M) {
       return data.map<GetNewsListDataUserData>((Map<String, dynamic> e) =>
           GetNewsListDataUserData.fromJson(e)).toList() as M;
+    }
+    if (<GetNotificationEntity>[] is M) {
+      return data.map<GetNotificationEntity>((Map<String, dynamic> e) =>
+          GetNotificationEntity.fromJson(e)).toList() as M;
+    }
+    if (<GetNotificationData>[] is M) {
+      return data.map<GetNotificationData>((Map<String, dynamic> e) =>
+          GetNotificationData.fromJson(e)).toList() as M;
     }
     if (<GetPlanListEntity>[] is M) {
       return data.map<GetPlanListEntity>((Map<String, dynamic> e) =>
@@ -853,6 +907,10 @@ class JsonConvert {
     if (<NewsLikeListDataUserData>[] is M) {
       return data.map<NewsLikeListDataUserData>((Map<String, dynamic> e) =>
           NewsLikeListDataUserData.fromJson(e)).toList() as M;
+    }
+    if (<NotificationCountEntity>[] is M) {
+      return data.map<NotificationCountEntity>((Map<String, dynamic> e) =>
+          NotificationCountEntity.fromJson(e)).toList() as M;
     }
     if (<PostBookmarkEntity>[] is M) {
       return data.map<PostBookmarkEntity>((Map<String, dynamic> e) =>
@@ -1070,6 +1128,7 @@ class JsonConvertClassCollection {
     (DeleteCommentEntity).toString(): DeleteCommentEntity.fromJson,
     (DeleteEntity).toString(): DeleteEntity.fromJson,
     (DeleteNewsEntity).toString(): DeleteNewsEntity.fromJson,
+    (DeleteNotificationEntity).toString(): DeleteNotificationEntity.fromJson,
     (DeleteUserPostEntity).toString(): DeleteUserPostEntity.fromJson,
     (DomesticPhoneotpEntity).toString(): DomesticPhoneotpEntity.fromJson,
     (EditCommentEntity).toString(): EditCommentEntity.fromJson,
@@ -1136,9 +1195,25 @@ class JsonConvertClassCollection {
     (GetFollowingData).toString(): GetFollowingData.fromJson,
     (GetMlmDatabaseEntity).toString(): GetMlmDatabaseEntity.fromJson,
     (GetMlmDatabaseData).toString(): GetMlmDatabaseData.fromJson,
+    (GetMyChatDetailEntity).toString(): GetMyChatDetailEntity.fromJson,
+    (GetMyChatDetailMychatoverview).toString(): GetMyChatDetailMychatoverview
+        .fromJson,
+    (GetMyChatDetailMychatoverviewData)
+        .toString(): GetMyChatDetailMychatoverviewData.fromJson,
+    (GetMyChatDetailMychatoverviewLinks)
+        .toString(): GetMyChatDetailMychatoverviewLinks.fromJson,
+    (GetMyChatHistoryEntity).toString(): GetMyChatHistoryEntity.fromJson,
+    (GetMyChatHistoryMychatoverview).toString(): GetMyChatHistoryMychatoverview
+        .fromJson,
+    (GetMyChatHistoryMychatoverviewData)
+        .toString(): GetMyChatHistoryMychatoverviewData.fromJson,
+    (GetMyChatHistoryMychatoverviewLinks)
+        .toString(): GetMyChatHistoryMychatoverviewLinks.fromJson,
     (GetNewsListEntity).toString(): GetNewsListEntity.fromJson,
     (GetNewsListData).toString(): GetNewsListData.fromJson,
     (GetNewsListDataUserData).toString(): GetNewsListDataUserData.fromJson,
+    (GetNotificationEntity).toString(): GetNotificationEntity.fromJson,
+    (GetNotificationData).toString(): GetNotificationData.fromJson,
     (GetPlanListEntity).toString(): GetPlanListEntity.fromJson,
     (GetPlanListPlan).toString(): GetPlanListPlan.fromJson,
     (GetPlanWithSelectedEntity).toString(): GetPlanWithSelectedEntity.fromJson,
@@ -1190,6 +1265,7 @@ class JsonConvertClassCollection {
     (NewsLikeListEntity).toString(): NewsLikeListEntity.fromJson,
     (NewsLikeListData).toString(): NewsLikeListData.fromJson,
     (NewsLikeListDataUserData).toString(): NewsLikeListDataUserData.fromJson,
+    (NotificationCountEntity).toString(): NotificationCountEntity.fromJson,
     (PostBookmarkEntity).toString(): PostBookmarkEntity.fromJson,
     (PostCountViewEntity).toString(): PostCountViewEntity.fromJson,
     (PostLikeEntity).toString(): PostLikeEntity.fromJson,
