@@ -153,19 +153,20 @@ class ManageNewsController extends GetxController {
           if (kDebugMode) {
             print('Success: $countViewNewsEntity');
           }
-          Fluttertoast.showToast(
-            msg: "Success: $countViewNewsEntity",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
         } else {
-          //
+          if (kDebugMode) {
+            print("Error: ${response.body}");
+          }
         }
       } else {
-        showToasterrorborder("No internet connection", context);
+        showToasterrorborder(
+          "No internet connection",
+        );
       }
     } catch (e) {
-      //
+      if (kDebugMode) {
+        print("Error: $e");
+      }
     } finally {
       isLoading(false);
     }
@@ -198,7 +199,9 @@ class ManageNewsController extends GetxController {
       if (connectivityResult == ConnectivityResult.none) {
         if (context != null) {
           // ignore: use_build_context_synchronously
-          showToasterrorborder("No internet connection", context);
+          showToasterrorborder(
+            "No internet connection",
+          );
         }
         isLoading.value = false;
         return;
@@ -223,7 +226,7 @@ class ManageNewsController extends GetxController {
         final MyNewsEntity myNewsEntity = MyNewsEntity.fromJson(responseData);
 
         if (kDebugMode) {
-          print('Manage Blog data: $responseData');
+          print('Manage News data: $responseData');
         }
 
         final List<MyNewsData> myNewsData = myNewsEntity.data ?? [];
@@ -252,7 +255,9 @@ class ManageNewsController extends GetxController {
             // Show error message if blog with articleId is not found
             if (context != null) {
               // ignore: use_build_context_synchronously
-              showToasterrorborder("Blog with ID $newsId not found", context);
+              showToasterrorborder(
+                "Blog with ID $newsId not found",
+              );
             }
           }
         } else {
@@ -263,7 +268,9 @@ class ManageNewsController extends GetxController {
             // Show error message if no data found
             if (context != null) {
               // ignore: use_build_context_synchronously
-              showToasterrorborder("No data found", context);
+              showToasterrorborder(
+                "No data found",
+              );
             }
           }
         }
@@ -271,14 +278,18 @@ class ManageNewsController extends GetxController {
         // Show error message if response status code is not 200
         if (context != null) {
           // ignore: use_build_context_synchronously
-          showToasterrorborder("Failed to fetch data", context);
+          showToasterrorborder(
+            "Failed to fetch data",
+          );
         }
       }
     } catch (error) {
       // Show error message for any caught exception
       if (context != null) {
         // ignore: use_build_context_synchronously
-        showToasterrorborder("An error occurred: $error", context);
+        showToasterrorborder(
+          "An error occurred: $error",
+        );
       }
     } finally {
       // Set isLoading to false after completing fetch operation
@@ -364,9 +375,9 @@ class ManageNewsController extends GetxController {
           }
         }
       } else {
-        if (kDebugMode) {
-          print("No internet connection available.");
-        }
+        showToasterrorborder(
+          "No internet connection",
+        );
       }
     } catch (e) {
       if (kDebugMode) {
@@ -419,9 +430,9 @@ class ManageNewsController extends GetxController {
           }
         }
       } else {
-        if (kDebugMode) {
-          print("No internet connection available.");
-        }
+        showToasterrorborder(
+          "No internet connection",
+        );
       }
     } catch (e) {
       if (kDebugMode) {
@@ -462,18 +473,11 @@ class ManageNewsController extends GetxController {
           var message = data['message'];
 
           if (status == 1) {
-            Fluttertoast.showToast(
-              msg: message,
-              toastLength: Toast.LENGTH_LONG,
-              gravity: ToastGravity.BOTTOM,
+            showToastverifedborder(
+              message!,
             );
             myNewsList.removeAt(index);
           } else {
-            Fluttertoast.showToast(
-              msg: "Failed to delete News: $message",
-              toastLength: Toast.LENGTH_LONG,
-              gravity: ToastGravity.BOTTOM,
-            );
             if (kDebugMode) {
               print('Failed to delete News: $message');
             }
@@ -658,9 +662,9 @@ class ManageNewsController extends GetxController {
           }
         }
       } else {
-        if (kDebugMode) {
-          print("No internet connection available.");
-        }
+        showToasterrorborder(
+          "No internet connection",
+        );
       }
     } catch (e) {
       if (kDebugMode) {
@@ -706,15 +710,23 @@ class ManageNewsController extends GetxController {
             likeCountMap[newsId] = (likeCountMap[newsId] ?? 0) - 1;
           }
 
-          showToastverifedborder(message!, context);
+          showToastverifedborder(
+            message!,
+          );
         } else {
-          showToasterrorborder("Error: ${response.body}", context);
+          if (kDebugMode) {
+            print("Error: ${response.body}");
+          }
         }
       } else {
-        showToasterrorborder("No internet connection", context);
+        showToasterrorborder(
+          "No internet connection",
+        );
       }
     } catch (e) {
-      showToasterrorborder("Error: $e", context);
+      if (kDebugMode) {
+        print("Error: $e");
+      }
     } finally {
       isLoading(false);
     }
@@ -790,9 +802,9 @@ class ManageNewsController extends GetxController {
         }
       } else {
         // Log no internet connection
-        if (kDebugMode) {
-          print('No internet connection');
-        }
+        showToasterrorborder(
+          "No internet connection",
+        );
       }
     } catch (e) {
       // Log exception
@@ -812,7 +824,9 @@ class ManageNewsController extends GetxController {
     String enteredTitle = title.value.text;
     if (enteredTitle.isEmpty || hasSpecialCharactersOrNumbers(enteredTitle)) {
       // Show toast message for invalid title
-      showToasterrorborder("Please Enter Title", context);
+      showToasterrorborder(
+        "Please Enter Title",
+      );
       titleError.value = true;
     } else {
       titleError.value = false;
@@ -884,25 +898,19 @@ class ManageNewsController extends GetxController {
             isEndOfData(true);
           }
         } else {
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+          if (kDebugMode) {
+            print("Error: ${response.body}");
+          }
         }
       } else {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
+        showToasterrorborder(
+          "No internet connection",
         );
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
+      if (kDebugMode) {
+        print("Error: $e");
+      }
     } finally {
       isLoading(false);
     }
@@ -943,31 +951,23 @@ class ManageNewsController extends GetxController {
             bookmarkCountMap[newsId] = (bookmarkCountMap[newsId] ?? 0) - 1;
           }
 
-          Fluttertoast.showToast(
-            msg: message!,
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
+          showToastverifedborder(
+            message!,
           );
         } else {
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+          if (kDebugMode) {
+            print("Error: ${response.body}");
+          }
         }
       } else {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
+        showToasterrorborder(
+          "No internet connection",
         );
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
+      if (kDebugMode) {
+        print("Error: $e");
+      }
     } finally {
       isLoading(false);
     }
@@ -1038,25 +1038,19 @@ class ManageNewsController extends GetxController {
             isEndOfData(true);
           }
         } else {
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+          if (kDebugMode) {
+            print("Error: ${response.body}");
+          }
         }
       } else {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
+        showToasterrorborder(
+          "No internet connection",
         );
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
+      if (kDebugMode) {
+        print("Error: $e");
+      }
     } finally {
       isLoading(false);
     }
@@ -1100,25 +1094,19 @@ class ManageNewsController extends GetxController {
             print('Success: $addCommentNewsEntity');
           }
         } else {
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+          if (kDebugMode) {
+            print("Error: ${response.body}");
+          }
         }
       } else {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
+        showToasterrorborder(
+          "No internet connection",
         );
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
+      if (kDebugMode) {
+        print("Error: $e");
+      }
     } finally {
       isLoading(false);
     }
@@ -1151,25 +1139,19 @@ class ManageNewsController extends GetxController {
           // Handle success response as needed
           await getCommentNews(1, newsId);
         } else {
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+          if (kDebugMode) {
+            print("Error: ${response.body}");
+          }
         }
       } else {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
+        showToasterrorborder(
+          "No internet connection",
         );
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
+      if (kDebugMode) {
+        print("Error: $e");
+      }
     } finally {
       isLoading(false);
     }
@@ -1208,25 +1190,19 @@ class ManageNewsController extends GetxController {
             print('Success: $editCommentEntity');
           }
         } else {
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+          if (kDebugMode) {
+            print("Error: ${response.body}");
+          }
         }
       } else {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
+        showToasterrorborder(
+          "No internet connection",
         );
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
+      if (kDebugMode) {
+        print("Error: $e");
+      }
     } finally {
       isLoading(false);
     }
@@ -1236,7 +1212,9 @@ class ManageNewsController extends GetxController {
     String enteredDiscription = discription.value.text;
     if (enteredDiscription.isEmpty ||
         hasSpecialTextOrNumbers(enteredDiscription)) {
-      showToasterrorborder("Please Enter Discription", context);
+      showToasterrorborder(
+        "Please Enter Discription",
+      );
       discriptionError.value = true;
     } else {
       discriptionError.value = false;

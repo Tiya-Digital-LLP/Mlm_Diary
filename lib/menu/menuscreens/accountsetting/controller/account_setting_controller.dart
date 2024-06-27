@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
@@ -175,10 +174,14 @@ class AccountSeetingController extends GetxController {
           print('Account Settings Data: $responseData');
         }
       } else {
-        Get.snackbar('Error', 'Failed to fetch user profile');
+        if (kDebugMode) {
+          print("Error: ${response.body}");
+        }
       }
     } catch (e) {
-      Get.snackbar('Error', 'An error occurred while fetching user profile');
+      if (kDebugMode) {
+        print("Error: $e");
+      }
     } finally {
       isLoading(false);
     }
@@ -241,9 +244,9 @@ class AccountSeetingController extends GetxController {
           }
         }
       } else {
-        if (kDebugMode) {
-          print("No internet connection available.");
-        }
+        showToasterrorborder(
+          "No internet connection",
+        );
       }
     } catch (e) {
       if (kDebugMode) {
@@ -294,9 +297,9 @@ class AccountSeetingController extends GetxController {
       if (connectivityResult != ConnectivityResult.none) {
         await executeRequest();
       } else {
-        if (kDebugMode) {
-          print("No internet connection available.");
-        }
+        showToasterrorborder(
+          "No internet connection",
+        );
       }
     } catch (e) {
       if (kDebugMode) {
@@ -389,9 +392,9 @@ class AccountSeetingController extends GetxController {
           }
         }
       } else {
-        if (kDebugMode) {
-          print("No internet connection available.");
-        }
+        showToasterrorborder(
+          "No internet connection",
+        );
       }
     } catch (e) {
       if (kDebugMode) {
@@ -471,9 +474,9 @@ class AccountSeetingController extends GetxController {
     if (connectivityResult != ConnectivityResult.none) {
       await executeRequest();
     } else {
-      if (kDebugMode) {
-        print("No internet connection available.");
-      }
+      showToasterrorborder(
+        "No internet connection",
+      );
     }
   }
 
@@ -524,17 +527,13 @@ class AccountSeetingController extends GetxController {
           }
         } else {
           if (kDebugMode) {
-            print(
-                "HTTP error: Failed to verify phone OTP. Status code: ${response.statusCode}");
+            print("Error: ${response.body}");
           }
-          ToastUtils.showToast("Failed to Verify Mobile OTP: HTTP Error");
         }
       } catch (e) {
         if (kDebugMode) {
           print("An error occurred: $e");
         }
-        // Handle other errors
-        ToastUtils.showToast("Failed to Verify Mobile OTP: $e");
       }
     }
 
@@ -544,10 +543,9 @@ class AccountSeetingController extends GetxController {
     if (connectivityResult != ConnectivityResult.none) {
       await executeRequest();
     } else {
-      if (kDebugMode) {
-        print("No internet connection available.");
-      }
-      ToastUtils.showToast("No internet connection available.");
+      showToasterrorborder(
+        "No internet connection",
+      );
     }
   }
 
@@ -579,34 +577,24 @@ class AccountSeetingController extends GetxController {
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
           var updateSocialMediaEntity = UpdateSocialMediaEntity.fromJson(data);
-          Fluttertoast.showToast(
-            msg: "Success: ${updateSocialMediaEntity.toString()}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+
           if (kDebugMode) {
             print('Success: $updateSocialMediaEntity');
           }
         } else {
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+          if (kDebugMode) {
+            print("Error: ${response.body}");
+          }
         }
       } else {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
+        showToasterrorborder(
+          "No internet connection",
         );
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
+      if (kDebugMode) {
+        print("Error: $e");
+      }
     } finally {
       isLoading(false);
     }
@@ -720,22 +708,17 @@ class AccountSeetingController extends GetxController {
               print(
                   "Failed to verify Email OTP: ${verifyEmailOtpEntity.message}");
             }
-            ToastUtils.showToast(
-                "Failed to Verify Email OTP: ${verifyEmailOtpEntity.message}");
           }
         } else {
           if (kDebugMode) {
             print(
                 "HTTP error: Failed to verify Email OTP. Status code: ${response.statusCode}");
           }
-          ToastUtils.showToast("Failed to Verify Email OTP: HTTP Error");
         }
       } catch (e) {
         if (kDebugMode) {
           print("An error occurred: $e");
         }
-        // Handle other errors
-        ToastUtils.showToast("Failed to Verify Email OTP: $e");
       }
     }
 
@@ -745,10 +728,9 @@ class AccountSeetingController extends GetxController {
     if (connectivityResult != ConnectivityResult.none) {
       await executeRequest();
     } else {
-      if (kDebugMode) {
-        print("No internet connection available.");
-      }
-      ToastUtils.showToast("No internet connection available.");
+      showToasterrorborder(
+        "No internet connection",
+      );
     }
   }
 
@@ -774,23 +756,27 @@ class AccountSeetingController extends GetxController {
         final responseData = json.decode(response.body);
         if (responseData['result'] == 1) {
           // ignore: use_build_context_synchronously
-          showToastverifedborder("Password changed successfully!", context);
+          showToastverifedborder(
+            "Password changed successfully!",
+          );
         } else {
           showToasterrorborder(
-              // ignore: use_build_context_synchronously
-              responseData['message'] ?? "Password change failed",
-              // ignore: use_build_context_synchronously
-              context);
+            // ignore: use_build_context_synchronously
+            responseData['message'] ?? "Password change failed",
+            // ignore: use_build_context_synchronously
+          );
         }
       } else {
         showToasterrorborder(
-            "Password change request failed: ${response.reasonPhrase}",
-            // ignore: use_build_context_synchronously
-            context);
+          "Password change request failed: ${response.reasonPhrase}",
+          // ignore: use_build_context_synchronously
+        );
       }
     } catch (e) {
       // ignore: use_build_context_synchronously
-      showToasterrorborder("An error occurred: $e", context);
+      showToasterrorborder(
+        "An error occurred: $e",
+      );
       if (kDebugMode) {
         print('Error: $e');
       }

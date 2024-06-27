@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
+import 'package:mlmdiary/database/controller/database_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/favourite/controller/favourite_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/favourite/custom/blog_faviourite_card.dart';
@@ -41,6 +42,7 @@ class _FavouriteState extends State<Favourite> {
   final CompanyController companyController = Get.put(CompanyController());
   final QuestionAnswerController questionAnswerController =
       Get.put(QuestionAnswerController());
+  final DatabaseController databaseController = Get.put(DatabaseController());
 
   @override
   void initState() {
@@ -312,28 +314,57 @@ class _FavouriteState extends State<Favourite> {
     );
   }
 
-  void _navigateToDetails(post) {
+  Future<void> _navigateToDetails(post) async {
     switch (post.type) {
       case 'classified':
-        Get.toNamed(Routes.favouritrdetailsscreen, arguments: post);
+        if (kDebugMode) {
+          print('classified');
+        }
+        await clasifiedController.fetchClassifiedDetail(post.id ?? 0, context);
+
+        Get.toNamed(Routes.mlmclassifieddetail, arguments: post);
         break;
       case 'company':
-        Get.toNamed(Routes.favouritrdetailsscreen, arguments: post);
+        if (kDebugMode) {
+          print('company');
+        }
+        Get.toNamed(Routes.mlmcompaniesdetails, arguments: post);
         break;
       case 'blog':
-        Get.toNamed(Routes.favouritrdetailsscreen, arguments: post);
+        if (kDebugMode) {
+          print('blog');
+        }
+        Get.toNamed(Routes.blogdetails, arguments: post);
         break;
       case 'news':
-        Get.toNamed(Routes.favouritrdetailsscreen, arguments: post);
+        if (kDebugMode) {
+          print('news');
+        }
+        Get.toNamed(Routes.newsdetails, arguments: post);
         break;
       case 'video':
-        Get.toNamed(Routes.favouritrdetailsscreen, arguments: post);
+        if (kDebugMode) {
+          print('video');
+        }
         break;
       case 'database':
-        Get.toNamed(Routes.userprofilescreen, arguments: post);
+        if (kDebugMode) {
+          print('database');
+        }
+        Get.toNamed(
+          Routes.userprofilescreen,
+          arguments: post,
+        );
         break;
       case 'question':
-        Get.toNamed(Routes.favouritrdetailsscreen, arguments: post);
+        if (kDebugMode) {
+          print('question');
+        }
+        await questionAnswerController.getAnswers(
+          1,
+          post.id ?? 0,
+        );
+        Get.toNamed(Routes.userquestion, arguments: post);
         break;
       default:
         Get.toNamed(Routes.favouritrdetailsscreen, arguments: post);

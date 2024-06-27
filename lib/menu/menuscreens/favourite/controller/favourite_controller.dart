@@ -12,6 +12,7 @@ import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_contro
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FavouriteController extends GetxController {
@@ -196,7 +197,7 @@ class FavouriteController extends GetxController {
         bookmarkId,
       );
     } else if (type == 'database') {
-      editPostController.toggleProfileBookMark(bookmarkId);
+      editPostController.toggleProfileBookMark(bookmarkId, context);
     } else if (type == 'question') {
       questionAnswerController.toggleBookMark(bookmarkId, context);
     }
@@ -228,6 +229,9 @@ class FavouriteController extends GetxController {
       var connectivityResult = await (Connectivity().checkConnectivity());
       // ignore: unrelated_type_equality_checks
       if (connectivityResult == ConnectivityResult.none) {
+        showToasterrorborder(
+          "No internet connection",
+        );
         isLoading.value = false;
         return;
       }

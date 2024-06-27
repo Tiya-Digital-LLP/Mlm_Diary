@@ -318,7 +318,9 @@ class _MyProfileCardState extends State<MyProfileCard> {
               itemBuilder: (BuildContext context) {
                 return [
                   PopupMenuItem(
-                    onTap: () {
+                    onTap: () async {
+                      await widget.controller
+                          .fetchMyPost(postId: widget.postId);
                       Get.toNamed(Routes.editpost);
                     },
                     value: 'edit',

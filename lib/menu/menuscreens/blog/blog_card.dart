@@ -8,6 +8,7 @@ import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/blog_liked_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/custom_blog_comment.dart';
+import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -115,43 +116,48 @@ class _BlogCardState extends State<BlogCard> {
         ),
         child: Column(
           children: [
-            Row(
-              children: [
-                ClipOval(
-                  child: CachedNetworkImage(
-                    imageUrl: widget.image,
-                    height: 60.0,
-                    width: 60.0,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) =>
-                        const CircularProgressIndicator(),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
+            InkWell(
+              onTap: () {
+                Get.toNamed(Routes.userprofilescreen);
+              },
+              child: Row(
+                children: [
+                  ClipOval(
+                    child: CachedNetworkImage(
+                      imageUrl: widget.image,
+                      height: 60.0,
+                      width: 60.0,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) =>
+                          const CircularProgressIndicator(),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                    ),
                   ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          widget.userName,
-                          style: textStyleW700(
-                              size.width * 0.043, AppColors.blackText),
-                        ),
-                      ],
-                    ),
-                    Text(
-                      postTimeFormatter.formatPostTime(widget.dateTime),
-                      style: textStyleW400(size.width * 0.035,
-                          AppColors.blackText.withOpacity(0.5)),
-                    ),
-                  ],
-                ),
-              ],
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            widget.userName,
+                            style: textStyleW700(
+                                size.width * 0.043, AppColors.blackText),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        postTimeFormatter.formatPostTime(widget.dateTime),
+                        style: textStyleW400(size.width * 0.035,
+                            AppColors.blackText.withOpacity(0.5)),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
             SizedBox(
               height: size.height * 0.01,

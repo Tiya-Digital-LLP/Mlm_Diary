@@ -1,30 +1,49 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mlmdiary/home/message/controller/message_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
+import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 
-class ChatCard extends StatelessWidget {
+class ChatCard extends StatefulWidget {
   final String userImage;
   final String userName;
   final String postCaption;
+  final String datetime;
+  final int readStatus;
+
   final String chatId;
   final MessageController controller;
-
   const ChatCard({
     super.key,
     required this.userImage,
     required this.userName,
     required this.postCaption,
+    required this.datetime,
     required this.chatId,
     required this.controller,
+    required this.readStatus,
   });
+
+  @override
+  State<ChatCard> createState() => _ChatCardState();
+}
+
+class _ChatCardState extends State<ChatCard> {
+  late PostTimeFormatter postTimeFormatter;
+
+  @override
+  void initState() {
+    super.initState();
+    postTimeFormatter = PostTimeFormatter();
+  }
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return Dismissible(
-      key: Key(chatId.toString()),
+      key: Key(widget.chatId.toString()),
       direction: DismissDirection.endToStart,
       background: Container(
         color: Colors.red,
@@ -34,7 +53,7 @@ class ChatCard extends StatelessWidget {
       ),
       onDismissed: (direction) {
         // Perform delete operation
-        controller.deleteChat(chatId: chatId);
+        widget.controller.deleteChat(chatId: widget.chatId);
       },
       child: Container(
         padding: EdgeInsets.symmetric(
@@ -48,16 +67,15 @@ class ChatCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CircleAvatar(
-              backgroundColor: const Color(0XFFCCC9C9),
-              radius: size.width * 0.07,
-              child: ClipOval(
-                child: Image.asset(
-                  userImage,
-                  height: 100,
-                  width: 100,
-                  fit: BoxFit.cover,
-                ),
+            ClipOval(
+              child: CachedNetworkImage(
+                imageUrl: widget.userImage,
+                height: 60.0,
+                width: 60.0,
+                fit: BoxFit.cover,
+                placeholder: (context, url) =>
+                    const CircularProgressIndicator(),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
             ),
             10.sbw,
@@ -71,18 +89,16 @@ class ChatCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          userName,
+                          widget.userName,
                           style: textStyleW700(
                               size.width * 0.035, AppColors.blackText),
                         ),
                         Row(
                           children: [
                             Text(
-                              "9:41 AM",
-                              style: textStyleW400(
-                                size.width * 0.030,
-                                AppColors.blackText.withOpacity(0.5),
-                              ),
+                              postTimeFormatter.formatPostTime(widget.datetime),
+                              style: textStyleW400(size.width * 0.035,
+                                  AppColors.blackText.withOpacity(0.5)),
                             ),
                             3.sbw,
                             Icon(
@@ -96,12 +112,13 @@ class ChatCard extends StatelessWidget {
                     ),
                     3.sbh,
                     Text(
-                      postCaption,
+                      widget.postCaption,
                       maxLines: 2,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.blackText,
-                        fontSize: size.width * 0.030,
+                      style: textStyleW700(
+                        size.width * 0.035,
+                        widget.readStatus == 0
+                            ? AppColors.blackText
+                            : AppColors.blackText.withOpacity(0.5),
                       ),
                     ),
                   ],

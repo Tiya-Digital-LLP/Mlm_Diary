@@ -470,39 +470,57 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
   // Method to handle save button pressed
   Future<void> handleSaveButtonPressed() async {
     if (file.value == null && controller.userImage.value.isEmpty) {
-      showToasterrorborder("Please Upload Photo", context);
+      showToasterrorborder(
+        "Please Upload Photo",
+      );
     } else if (controller
         .getSelectedOptionsTextController()
         .value
         .text
         .isEmpty) {
-      showToasterrorborder("Please Enter UserTypes", context);
+      showToasterrorborder(
+        "Please Enter UserTypes",
+      );
     } else if (controller.name.value.text.isEmpty) {
-      showToasterrorborder("Please Enter Your Name", context);
+      showToasterrorborder(
+        "Please Enter Your Name",
+      );
     } else if (controller.companyname.value.text.isEmpty) {
-      showToasterrorborder("Please Enter Company Name", context);
+      showToasterrorborder(
+        "Please Enter Company Name",
+      );
     } else if (controller
         .getSelectedPlanOptionsTextController()
         .value
         .text
         .isEmpty) {
-      showToasterrorborder("Please Select Plam", context);
+      showToasterrorborder(
+        "Please Select Plam",
+      );
     } else if (controller.location.value.text.isEmpty) {
-      showToasterrorborder("The address field is required.", context);
+      showToasterrorborder(
+        "The address field is required.",
+      );
     } else if (controller.isTypeSelectedList.contains(true)) {
       if (controller.city.value.text.isEmpty) {
-        showToasterrorborder("Please select a valid location.", context);
+        showToasterrorborder(
+          "Please select a valid location.",
+        );
       } else {
         // Perform address validation
         if (controller.addressValidationColor.value != AppColors.redText) {
           await controller.updateUserProfile(imageFile: file.value);
           Get.back();
         } else {
-          showToasterrorborder("Please enter a valid address.", context);
+          showToasterrorborder(
+            "Please enter a valid address.",
+          );
         }
       }
     } else {
-      showToasterrorborder("Please select at least one plan.", context);
+      showToasterrorborder(
+        "Please select at least one plan.",
+      );
     }
   }
 

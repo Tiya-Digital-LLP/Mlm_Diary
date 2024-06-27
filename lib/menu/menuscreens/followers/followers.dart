@@ -93,7 +93,7 @@ class _FolowersState extends State<Folowers> with TickerProviderStateMixin {
               ),
               30.sbh,
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.6,
+                height: MediaQuery.of(context).size.height * 1,
                 child: TabBarView(
                   controller: _tabController,
                   children: [
@@ -115,20 +115,18 @@ class _FolowersState extends State<Folowers> with TickerProviderStateMixin {
                           ),
                         ),
                         20.sbh,
-                        RefreshIndicator(
-                          onRefresh: _refreshFollowers,
-                          child: Obx(() {
-                            if (controller.isLoading.value) {
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            }
-                            return controller.followers.isEmpty
-                                ? const Center(
-                                    child: Text('No followers found'))
-                                : SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.45,
-                                    child: ListView.builder(
+                        Expanded(
+                          child: RefreshIndicator(
+                            onRefresh: _refreshFollowers,
+                            child: Obx(() {
+                              if (controller.isLoading.value) {
+                                return const Center(
+                                    child: CircularProgressIndicator());
+                              }
+                              return controller.followers.isEmpty
+                                  ? const Center(
+                                      child: Text('No followers found'))
+                                  : ListView.builder(
                                       itemCount: controller.followers.length,
                                       itemBuilder: (context, index) {
                                         final follower =
@@ -200,9 +198,9 @@ class _FolowersState extends State<Folowers> with TickerProviderStateMixin {
                                           ),
                                         );
                                       },
-                                    ),
-                                  );
-                          }),
+                                    );
+                            }),
+                          ),
                         ),
                       ],
                     ),
@@ -224,20 +222,18 @@ class _FolowersState extends State<Folowers> with TickerProviderStateMixin {
                           ),
                         ),
                         20.sbh,
-                        RefreshIndicator(
-                          onRefresh: _refreshFollowing,
-                          child: Obx(() {
-                            if (controller.isLoading.value) {
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            }
-                            return controller.following.isEmpty
-                                ? const Center(
-                                    child: Text('No followers found'))
-                                : SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.45,
-                                    child: ListView.builder(
+                        Expanded(
+                          child: RefreshIndicator(
+                            onRefresh: _refreshFollowing,
+                            child: Obx(() {
+                              if (controller.isLoading.value) {
+                                return const Center(
+                                    child: CircularProgressIndicator());
+                              }
+                              return controller.following.isEmpty
+                                  ? const Center(
+                                      child: Text('No followers found'))
+                                  : ListView.builder(
                                       itemCount: controller.following.length,
                                       itemBuilder: (context, index) {
                                         final following =
@@ -306,9 +302,9 @@ class _FolowersState extends State<Folowers> with TickerProviderStateMixin {
                                           ),
                                         );
                                       },
-                                    ),
-                                  );
-                          }),
+                                    );
+                            }),
+                          ),
                         ),
                       ],
                     ),

@@ -359,8 +359,8 @@ class _SignupPageState extends State<SignupPage> {
                                                     if (controller.password
                                                         .value.text.isEmpty) {
                                                       showToasterrorborder(
-                                                          "Please Enter Password",
-                                                          context);
+                                                        "Please Enter Password",
+                                                      );
                                                     } else if (controller
                                                             .password
                                                             .value
@@ -368,16 +368,16 @@ class _SignupPageState extends State<SignupPage> {
                                                             .length <
                                                         6) {
                                                       showToasterrorborder(
-                                                          "Password Have Must be 6 Character",
-                                                          context);
+                                                        "Password Have Must be 6 Character",
+                                                      );
                                                     } else if (controller
                                                         .confirmPassword
                                                         .value
                                                         .text
                                                         .isEmpty) {
                                                       showToasterrorborder(
-                                                          "Please Enter Confirm Password",
-                                                          context);
+                                                        "Please Enter Confirm Password",
+                                                      );
                                                     } else if (controller
                                                             .password
                                                             .value
@@ -387,15 +387,15 @@ class _SignupPageState extends State<SignupPage> {
                                                             .value
                                                             .text) {
                                                       showToasterrorborder(
-                                                          "Both Password Should be Same",
-                                                          context);
+                                                        "Both Password Should be Same",
+                                                      );
                                                     } else if (controller
                                                             .termsCondition
                                                             .value ==
                                                         false) {
                                                       showToasterrorborder(
-                                                          "Please Agree Terms & Conditions",
-                                                          context);
+                                                        "Please Agree Terms & Conditions",
+                                                      );
                                                     } else {
                                                       log("Signup Process Start");
 
@@ -498,12 +498,12 @@ class _SignupPageState extends State<SignupPage> {
                                                             controller
                                                                 .startTimer();
                                                             showToastverifedborder(
-                                                                "Email OTP Resend Successfully",
-                                                                context);
+                                                              "Email OTP Resend Successfully",
+                                                            );
                                                           } else {
                                                             showToasterrorborder(
-                                                                "Please enter a valid email",
-                                                                context);
+                                                              "Please enter a valid email",
+                                                            );
                                                           }
                                                         },
                                                         child: Text(
@@ -534,8 +534,8 @@ class _SignupPageState extends State<SignupPage> {
                                                     if (controller.emailOtp
                                                         .value.text.isEmpty) {
                                                       showToasterrorborder(
-                                                          "Please Enter Email OTP",
-                                                          context);
+                                                        "Please Enter Email OTP",
+                                                      );
                                                     } else if (controller
                                                             .emailOtp
                                                             .value
@@ -543,8 +543,8 @@ class _SignupPageState extends State<SignupPage> {
                                                             .length <
                                                         6) {
                                                       showToasterrorborder(
-                                                          "OTP Must be 6 Digits",
-                                                          context);
+                                                        "OTP Must be 6 Digits",
+                                                      );
                                                     } else {
                                                       String email = controller
                                                           .email.value.text;
@@ -587,18 +587,18 @@ class _SignupPageState extends State<SignupPage> {
                                             if (controller
                                                 .email.value.text.isEmpty) {
                                               showToasterrorborder(
-                                                  "Please Enter Email",
-                                                  context);
+                                                "Please Enter Email",
+                                              );
                                             } else if (controller
                                                     .emailError.value ==
                                                 true) {
                                               showToasterrorborder(
-                                                  "Please Enter Valid Email",
-                                                  context);
+                                                "Please Enter Valid Email",
+                                              );
                                             } else {
                                               showToastverifedborder(
-                                                  "Email OTP Sent Successfully",
-                                                  context);
+                                                "Email OTP Sent Successfully",
+                                              );
                                               controller.sendEmailOtp(
                                                   email, userId);
                                               controller.emailOtpSend.value =
@@ -643,14 +643,14 @@ class _SignupPageState extends State<SignupPage> {
                                                     30;
                                                 controller.startTimer();
                                                 showToastverifedborder(
-                                                    "OTP Resent Successfully",
-                                                    // ignore: use_build_context_synchronously
-                                                    context);
+                                                  "OTP Resent Successfully",
+                                                  // ignore: use_build_context_synchronously
+                                                );
                                               } catch (e) {
                                                 showToasterrorborder(
-                                                    "Failed to Resend OTP",
-                                                    // ignore: use_build_context_synchronously
-                                                    context);
+                                                  "Failed to Resend OTP",
+                                                  // ignore: use_build_context_synchronously
+                                                );
                                                 if (kDebugMode) {
                                                   print(
                                                       "Error resending OTP: $e");
@@ -683,14 +683,14 @@ class _SignupPageState extends State<SignupPage> {
                                         if (controller
                                             .mobileOtp.value.text.isEmpty) {
                                           showToasterrorborder(
-                                              "Please Enter Mobile OTP",
-                                              context);
+                                            "Please Enter Mobile OTP",
+                                          );
                                         } else if (controller
                                                 .mobileOtp.value.text.length <
                                             6) {
                                           showToasterrorborder(
-                                              "Mobile OTP Must be 6 Digits",
-                                              context);
+                                            "Mobile OTP Must be 6 Digits",
+                                          );
                                         } else {
                                           try {
                                             await controller.verifyPhoneOtp(
@@ -702,9 +702,9 @@ class _SignupPageState extends State<SignupPage> {
                                             controller.stopTimer();
                                           } catch (e) {
                                             showToasterrorborder(
-                                                "Failed to Verify Mobile OTP",
-                                                // ignore: use_build_context_synchronously
-                                                context);
+                                              "Failed to Verify Mobile OTP",
+                                              // ignore: use_build_context_synchronously
+                                            );
                                             if (kDebugMode) {
                                               print("Error verifying OTP: $e");
                                             }
@@ -722,27 +722,31 @@ class _SignupPageState extends State<SignupPage> {
                               onTap: () {
                                 if (controller.selectedCount.value < 1) {
                                   showToasterrorborder(
-                                      "Please Select At least One MLM Type",
-                                      context);
+                                    "Please Select At least One MLM Type",
+                                  );
                                 } else if (controller.name.value.text.isEmpty) {
                                   showToasterrorborder(
-                                      "Please Enter Name", context);
+                                    "Please Enter Name",
+                                  );
                                 } else if (controller
                                     .mobile.value.text.isEmpty) {
                                   showToasterrorborder(
-                                      "Please Enter Mobile Number", context);
+                                    "Please Enter Mobile Number",
+                                  );
                                 } else if (controller.nameError.value == true) {
                                   showToasterrorborder(
-                                      "Please Enter Valid Name", context);
+                                    "Please Enter Valid Name",
+                                  );
                                 } else if (controller.mobile.value.text.length <
                                     6) {
                                   showToasterrorborder(
-                                      "Please Enter Valid Mobile Number",
-                                      context);
+                                    "Please Enter Valid Mobile Number",
+                                  );
                                 } else {
                                   log("Mobile OTP Sent Successfully");
                                   showToastverifedborder(
-                                      "OTP Sent Successfully", context);
+                                    "OTP Sent Successfully",
+                                  );
                                   controller.mobileOtpSend.value = true;
                                   controller.startTimer();
                                   sendOtp();

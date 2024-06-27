@@ -178,32 +178,25 @@ class ManageClasifiedController extends GetxController {
               print('Success: $getClassifiedEntity');
             }
           } else {
-            Fluttertoast.showToast(
-              msg: "No classified found matching the ID from fetchClassifieds",
-              toastLength: Toast.LENGTH_LONG,
-              gravity: ToastGravity.BOTTOM,
-            );
+            if (kDebugMode) {
+              print(
+                  "No classified found matching the ID from fetchClassifieds");
+            }
           }
         } else {
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+          if (kDebugMode) {
+            print("Error: ${response.body}");
+          }
         }
       } else {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
+        showToasterrorborder(
+          "No internet connection",
         );
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
+      if (kDebugMode) {
+        print("Error: $e");
+      }
     } finally {
       isLoading(false);
     }
@@ -234,7 +227,9 @@ class ManageClasifiedController extends GetxController {
       var connectivityResult = await (Connectivity().checkConnectivity());
       // ignore: unrelated_type_equality_checks
       if (connectivityResult == ConnectivityResult.none) {
-        showToasterrorborder("No internet connection", context);
+        showToasterrorborder(
+          "No internet connection",
+        );
         isLoading.value = false;
         return;
       }
@@ -289,12 +284,14 @@ class ManageClasifiedController extends GetxController {
           classifiedList.addAll(classifiedEntity.data!);
         }
       } else {
-        // Handle error response
-        showToasterrorborder("Failed to fetch data", context);
+        if (kDebugMode) {
+          print("Error: ${response.body}");
+        }
       }
     } catch (error) {
-      // Handle network or parsing errors
-      showToasterrorborder("An error occurred: $error", context);
+      if (kDebugMode) {
+        print("Error: $error");
+      }
     } finally {
       isLoading.value = false;
     }
@@ -332,7 +329,9 @@ class ManageClasifiedController extends GetxController {
               print("category list: $categorylist");
             }
           } else {
-            //
+            if (kDebugMode) {
+              print("Error: ${response.body}");
+            }
           }
         } else {
           if (kDebugMode) {
@@ -341,9 +340,9 @@ class ManageClasifiedController extends GetxController {
           }
         }
       } else {
-        if (kDebugMode) {
-          print("No internet connection available.");
-        }
+        showToasterrorborder(
+          "No internet connection",
+        );
       }
     } catch (e) {
       if (kDebugMode) {
@@ -423,9 +422,9 @@ class ManageClasifiedController extends GetxController {
           }
         }
       } else {
-        if (kDebugMode) {
-          print("No internet connection available.");
-        }
+        showToasterrorborder(
+          "No internet connection",
+        );
       }
     } catch (e) {
       if (kDebugMode) {
@@ -591,9 +590,9 @@ class ManageClasifiedController extends GetxController {
           }
         }
       } else {
-        if (kDebugMode) {
-          print("No internet connection available.");
-        }
+        showToasterrorborder(
+          "No internet connection",
+        );
       }
     } catch (e) {
       if (kDebugMode) {
@@ -831,7 +830,9 @@ class ManageClasifiedController extends GetxController {
           //
         }
       } else {
-        showToasterrorborder("No internet connection", context);
+        showToasterrorborder(
+          "No internet connection",
+        );
       }
     } catch (e) {
       //
@@ -967,7 +968,6 @@ class ManageClasifiedController extends GetxController {
 
           showToastverifedborder(
             "Success: Your Post On Top",
-            context,
           );
         } else {
           if (kDebugMode) {
@@ -975,7 +975,9 @@ class ManageClasifiedController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder("No internet connection", context);
+        showToasterrorborder(
+          "No internet connection",
+        );
         if (kDebugMode) {
           print('No internet connection');
         }
@@ -1049,7 +1051,9 @@ class ManageClasifiedController extends GetxController {
         }
       } else {
         // ignore: use_build_context_synchronously
-        showToasterrorborder("No internet connection", context);
+        showToasterrorborder(
+          "No internet connection",
+        );
         if (kDebugMode) {
           print('No internet connection');
         }

@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_answers_entity.dart';
-import 'package:mlmdiary/generated/get_question_list_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
@@ -29,7 +28,7 @@ class UserQuestion extends StatefulWidget {
 class _UserQuestionState extends State<UserQuestion> {
   final QuestionAnswerController controller =
       Get.put(QuestionAnswerController());
-  final post = Get.arguments as GetQuestionListQuestions;
+  dynamic post;
   PostTimeFormatter postTimeFormatter = PostTimeFormatter();
   late ScrollController _scrollController;
 
@@ -37,6 +36,13 @@ class _UserQuestionState extends State<UserQuestion> {
   void initState() {
     super.initState();
     _refreshData();
+    post = Get.arguments;
+    if (post != null && post.id != null) {
+      controller.getAnswers(
+        1,
+        post.id ?? 0,
+      );
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.getAnswers(1, post.id!);
     });
@@ -818,12 +824,12 @@ class _UserQuestionState extends State<UserQuestion> {
                               ),
                               Row(
                                 children: [
-                                  Text(
-                                    postTimeFormatter
-                                        .formatPostTime(post.creatdate ?? ''),
-                                    style: textStyleW400(size.width * 0.028,
-                                        AppColors.blackText.withOpacity(0.8)),
-                                  ),
+                                  // Text(
+                                  //   postTimeFormatter
+                                  //       .formatPostTime(post.creatdate ?? ''),
+                                  //   style: textStyleW400(size.width * 0.028,
+                                  //       AppColors.blackText.withOpacity(0.8)),
+                                  // ),
                                   8.sbw,
                                   Text(
                                     'asked a question',
@@ -946,14 +952,14 @@ class _UserQuestionState extends State<UserQuestion> {
                     ),
                   ),
                   20.sbh,
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      'Answer (${post.totalquestionAnswer.toString()})',
-                      style: textStyleW700(
-                          size.width * 0.038, AppColors.blackText),
-                    ),
-                  ),
+                  // Align(
+                  //   alignment: Alignment.topLeft,
+                  //   child: Text(
+                  //     'Answer (${post.totalquestionAnswer.toString()})',
+                  //     style: textStyleW700(
+                  //         size.width * 0.038, AppColors.blackText),
+                  //   ),
+                  // ),
                   10.sbh,
                   Obx(() {
                     if (controller.isLoading.value &&

@@ -388,16 +388,20 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                   titleColor: AppColors.white,
                   onTap: () {
                     if (file.value == null) {
-                      showToasterrorborder("Please Upload Photo", context);
+                      showToasterrorborder(
+                        "Please Upload Photo",
+                      );
                     } else if (controller.companyName.value.text.isEmpty) {
                       showToasterrorborder(
-                          "Please Enter Company Name", context);
+                        "Please Enter Company Name",
+                      );
                     } else {
                       if (controller.selectedCountPlan > 0) {
                         // Retrieve city information from the location text field
                         if (controller.city.value.text.isEmpty) {
                           showToasterrorborder(
-                              "Please select a valid location.", context);
+                            "Please select a valid location.",
+                          );
                         } else {
                           controller.saveCompanyDetails(
                             imageFile: file.value,
@@ -405,7 +409,8 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                         }
                       } else {
                         showToasterrorborder(
-                            "Please select at least one plan.", context);
+                          "Please select at least one plan.",
+                        );
                       }
                     }
                   },
@@ -526,7 +531,6 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                       } else {
                         showToasterrorborder(
                           "Please select at least one field.",
-                          context,
                         );
                       }
                     },

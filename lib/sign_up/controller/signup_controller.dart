@@ -17,8 +17,8 @@ import 'package:mlmdiary/generated/resent_otp_register_entity.dart';
 import 'package:mlmdiary/generated/user_register_entity_entity.dart';
 import 'package:mlmdiary/generated/verify_phone_otp_entity.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
-import 'package:mlmdiary/sign_up/controller/auth_controller.dart';
 import 'package:mlmdiary/utils/common_toast.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/email_validator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -26,7 +26,6 @@ class SignupController extends GetxController {
   RxList<GetUserTypeUsertype> userTypes = RxList<GetUserTypeUsertype>();
   RxList<GetPlanListPlan> planList = RxList<GetPlanListPlan>();
   final RxList<bool> isPlanSelectedList = RxList<bool>([]);
-  final AuthController controller = Get.put((AuthController()));
 
   final RxList<bool> isTypeSelectedList = RxList<bool>([]);
 
@@ -145,9 +144,9 @@ class SignupController extends GetxController {
       if (connectivityResult != ConnectivityResult.none) {
         await executeRequest();
       } else {
-        if (kDebugMode) {
-          print("No internet connection available.");
-        }
+        showToasterrorborder(
+          "No internet connection",
+        );
       }
     } catch (e) {
       if (kDebugMode) {
@@ -215,9 +214,9 @@ class SignupController extends GetxController {
     if (connectivityResult != ConnectivityResult.none) {
       await executeRequest();
     } else {
-      if (kDebugMode) {
-        print("No internet connection available.");
-      }
+      showToasterrorborder(
+        "No internet connection",
+      );
     }
   }
 
@@ -280,9 +279,9 @@ class SignupController extends GetxController {
     if (connectivityResult != ConnectivityResult.none) {
       await executeRequest();
     } else {
-      if (kDebugMode) {
-        print("No internet connection available.");
-      }
+      showToasterrorborder(
+        "No internet connection",
+      );
     }
   }
 
@@ -335,9 +334,9 @@ class SignupController extends GetxController {
     if (connectivityResult != ConnectivityResult.none) {
       await executeRequest();
     } else {
-      if (kDebugMode) {
-        print("No internet connection available.");
-      }
+      showToasterrorborder(
+        "No internet connection",
+      );
     }
   }
 
@@ -381,8 +380,7 @@ class SignupController extends GetxController {
               print(
                   "Failed to verify phone OTP: ${verifyPhoneOtpEntity.message}");
             }
-            ToastUtils.showToast(
-                "Failed to Verify Mobile OTP: ${verifyPhoneOtpEntity.message}");
+
             showEmailField.value = false;
           }
         } else {
@@ -390,14 +388,11 @@ class SignupController extends GetxController {
             print(
                 "HTTP error: Failed to verify phone OTP. Status code: ${response.statusCode}");
           }
-          ToastUtils.showToast("Failed to Verify Mobile OTP: HTTP Error");
         }
       } catch (e) {
         if (kDebugMode) {
           print("An error occurred: $e");
         }
-        // Handle other errors
-        ToastUtils.showToast("Failed to Verify Mobile OTP: $e");
       }
     }
 
@@ -407,10 +402,9 @@ class SignupController extends GetxController {
     if (connectivityResult != ConnectivityResult.none) {
       await executeRequest();
     } else {
-      if (kDebugMode) {
-        print("No internet connection available.");
-      }
-      ToastUtils.showToast("No internet connection available.");
+      showToasterrorborder(
+        "No internet connection",
+      );
     }
   }
 
@@ -452,9 +446,7 @@ class SignupController extends GetxController {
             if (kDebugMode) {
               print("Failed to send Email OTP: ${emailOtpEntity.message}");
             }
-            // Handle failure to send email OTP
-            ToastUtils.showToast(
-                "Failed to send Email OTP: ${emailOtpEntity.message}");
+
             emailOtpSend.value = false;
           }
         } else {
@@ -463,7 +455,7 @@ class SignupController extends GetxController {
             print(
                 "HTTP error: Failed to send Email OTP. Status code: ${response.statusCode}");
           }
-          ToastUtils.showToast("Failed to send Email OTP: HTTP Error");
+
           emailOtpSend.value = false;
         }
       } catch (e) {
@@ -471,7 +463,7 @@ class SignupController extends GetxController {
         if (kDebugMode) {
           print("An error occurred: $e");
         }
-        ToastUtils.showToast("Failed to send Email OTP: $e");
+
         emailOtpSend.value = false;
       }
     }
@@ -482,10 +474,9 @@ class SignupController extends GetxController {
     if (connectivityResult != ConnectivityResult.none) {
       await executeRequest();
     } else {
-      if (kDebugMode) {
-        print("No internet connection available.");
-      }
-      ToastUtils.showToast("No internet connection available.");
+      showToasterrorborder(
+        "No internet connection",
+      );
       emailOtpSend.value = false;
     }
   }
@@ -526,21 +517,18 @@ class SignupController extends GetxController {
           }
         } else {
           // Registration failed
-          ToastUtils.showToast("Registration failed");
         }
       } else {
         // Handle HTTP error
         if (kDebugMode) {
           print('HTTP Error: ${response.statusCode}');
         }
-        ToastUtils.showToast("HTTP Error: ${response.statusCode}");
       }
     } catch (e) {
       // Handle other errors
       if (kDebugMode) {
         print('Error: $e');
       }
-      ToastUtils.showToast("Error: $e");
     }
   }
 
@@ -609,9 +597,9 @@ class SignupController extends GetxController {
     if (connectivityResult != ConnectivityResult.none) {
       await executeRequest();
     } else {
-      if (kDebugMode) {
-        print("No internet connection available.");
-      }
+      showToasterrorborder(
+        "No internet connection",
+      );
       showPasswordField.value = false;
     }
   }
@@ -655,9 +643,9 @@ class SignupController extends GetxController {
           }
         }
       } else {
-        if (kDebugMode) {
-          print("No internet connection available.");
-        }
+        showToasterrorborder(
+          "No internet connection",
+        );
       }
     } catch (e) {
       if (kDebugMode) {

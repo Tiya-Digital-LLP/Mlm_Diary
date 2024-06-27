@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/follow_user_entity.dart';
 import 'package:mlmdiary/generated/get_followers_entity.dart';
 import 'package:mlmdiary/generated/get_following_entity.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FollowersController extends GetxController {
@@ -70,31 +70,23 @@ class FollowersController extends GetxController {
                 (followProfileCountMap[userId] ?? 0) - 1;
           }
 
-          Fluttertoast.showToast(
-            msg: message!,
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
+          showToastverifedborder(
+            message!,
           );
         } else {
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+          if (kDebugMode) {
+            print("Error: ${response.body}");
+          }
         }
       } else {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
+        showToasterrorborder(
+          "No internet connection",
         );
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
+      if (kDebugMode) {
+        print("Error: $e");
+      }
     } finally {
       isLoading(false);
     }
@@ -159,40 +151,23 @@ class FollowersController extends GetxController {
             print('Followers: ${getFollowerEntity.data}');
           } // Print followers
 
-          Fluttertoast.showToast(
-            msg: message!,
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
+          showToastverifedborder(
+            message!,
           );
         } else {
           if (kDebugMode) {
             print('Error: ${response.body}');
           } // Print error message
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
         }
       } else {
-        if (kDebugMode) {
-          print('No internet connection');
-        } // Print no internet connection
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
+        showToasterrorborder(
+          "No internet connection",
         );
       }
     } catch (e) {
       if (kDebugMode) {
         print('Error: $e');
-      } // Print exception
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
+      }
     } finally {
       isLoading(false);
     }
@@ -246,40 +221,23 @@ class FollowersController extends GetxController {
             print('Following: ${getFollowingEntity.data}');
           } // Print followers
 
-          Fluttertoast.showToast(
-            msg: message!,
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
+          showToastverifedborder(
+            message!,
           );
         } else {
           if (kDebugMode) {
             print('Error: ${response.body}');
           } // Print error message
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
         }
       } else {
-        if (kDebugMode) {
-          print('No internet connection');
-        } // Print no internet connection
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
+        showToasterrorborder(
+          "No internet connection",
         );
       }
     } catch (e) {
       if (kDebugMode) {
         print('Error: $e');
       } // Print exception
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
     } finally {
       isLoading(false);
     }

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
-import 'package:mlmdiary/generated/get_blog_list_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/custom_blog_comment.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
@@ -26,13 +25,15 @@ class BlogDetailScreen extends StatefulWidget {
 
 class _BlogDetailScreenState extends State<BlogDetailScreen> {
   final ManageBlogController controller = Get.put(ManageBlogController());
-  final post = Get.arguments as GetBlogListData;
+  dynamic post;
 
   PostTimeFormatter postTimeFormatter = PostTimeFormatter();
 
   @override
   void initState() {
     super.initState();
+    post = Get.arguments;
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.countViewBlog(post.articleId ?? 0, context);
     });
@@ -101,12 +102,12 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                                   ),
                                 ],
                               ),
-                              Text(
-                                postTimeFormatter
-                                    .formatPostTime(post.createdDate ?? ''),
-                                style: textStyleW400(size.width * 0.035,
-                                    AppColors.blackText.withOpacity(0.5)),
-                              ),
+                              // Text(
+                              //   postTimeFormatter
+                              //       .formatPostTime(post.createdDate ?? ''),
+                              //   style: textStyleW400(size.width * 0.035,
+                              //       AppColors.blackText.withOpacity(0.5)),
+                              // ),
                             ],
                           )
                         ],
@@ -125,16 +126,16 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                         ),
-                        child: CachedNetworkImage(
-                          imageUrl: post.imagePath ?? '',
-                          height: 97,
-                          width: 105,
-                          fit: BoxFit.fill,
-                          placeholder: (context, url) =>
-                              const Center(child: CircularProgressIndicator()),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
-                        ),
+                        // child: CachedNetworkImage(
+                        //   imageUrl: post.imagePath ?? '',
+                        //   height: 97,
+                        //   width: 105,
+                        //   fit: BoxFit.fill,
+                        //   placeholder: (context, url) =>
+                        //       const Center(child: CircularProgressIndicator()),
+                        //   errorWidget: (context, url, error) =>
+                        //       const Icon(Icons.error),
+                        // ),
                       ),
                     ),
                     SizedBox(

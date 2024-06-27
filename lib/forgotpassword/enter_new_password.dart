@@ -117,7 +117,8 @@ class _EnterNewPasswordScreenState extends State<EnterNewPasswordScreen> {
                 if (controller.password.value.text !=
                     controller.confirmPassword.value.text) {
                   showToasterrorborder(
-                      "Both Passwords Should be the Same.", context);
+                    "Both Passwords Should be the Same.",
+                  );
                 } else {
                   // Call the method to send the change password request
                   controller.sendChangePasswordRequest(

@@ -5,7 +5,6 @@ import 'package:html/parser.dart' as htmlParser;
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
-import 'package:mlmdiary/generated/get_news_list_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/custom_news_comment.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
@@ -26,12 +25,18 @@ class NewsDetailScreen extends StatefulWidget {
 
 class _MyNewsDetailScreenState extends State<NewsDetailScreen> {
   final ManageNewsController controller = Get.put(ManageNewsController());
-  final post = Get.arguments as GetNewsListData;
+  dynamic post;
   PostTimeFormatter postTimeFormatter = PostTimeFormatter();
 
   @override
   void initState() {
     super.initState();
+    post = Get.arguments;
+    if (post != null && post.id != null) {
+      controller.getNews(
+        post.id ?? 0,
+      );
+    }
     // ignore: unrelated_type_equality_checks
     controller.likeCountMap == 0;
     // ignore: unrelated_type_equality_checks
@@ -70,22 +75,22 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen> {
                           horizontal: 16, vertical: 8),
                       child: Row(
                         children: [
-                          CircleAvatar(
-                            backgroundColor: const Color(0XFFCCC9C9),
-                            radius: size.width * 0.07,
-                            child: ClipOval(
-                              child: CachedNetworkImage(
-                                imageUrl: post.imagePath ?? '',
-                                height: 97,
-                                width: 105,
-                                fit: BoxFit.fill,
-                                placeholder: (context, url) => const Center(
-                                    child: CircularProgressIndicator()),
-                                errorWidget: (context, url, error) =>
-                                    const Icon(Icons.error),
-                              ),
-                            ),
-                          ),
+                          // CircleAvatar(
+                          //   backgroundColor: const Color(0XFFCCC9C9),
+                          //   radius: size.width * 0.07,
+                          //   child: ClipOval(
+                          //     child: CachedNetworkImage(
+                          //       imageUrl: post.imagePath ?? '',
+                          //       height: 97,
+                          //       width: 105,
+                          //       fit: BoxFit.fill,
+                          //       placeholder: (context, url) => const Center(
+                          //           child: CircularProgressIndicator()),
+                          //       errorWidget: (context, url, error) =>
+                          //           const Icon(Icons.error),
+                          //     ),
+                          //   ),
+                          // ),
                           const SizedBox(
                             width: 10,
                           ),
@@ -118,28 +123,28 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen> {
                     SizedBox(
                       height: size.height * 0.012,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                      ),
-                      child: Container(
-                        height: size.height * 0.28,
-                        width: size.width,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: CachedNetworkImage(
-                          imageUrl: post.imagePath ?? '',
-                          height: 97,
-                          width: 105,
-                          fit: BoxFit.fill,
-                          placeholder: (context, url) =>
-                              const Center(child: CircularProgressIndicator()),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
-                        ),
-                      ),
-                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.symmetric(
+                    //     horizontal: 16,
+                    //   ),
+                    //   child: Container(
+                    //     height: size.height * 0.28,
+                    //     width: size.width,
+                    //     decoration: BoxDecoration(
+                    //       borderRadius: BorderRadius.circular(15),
+                    //     ),
+                    //     child: CachedNetworkImage(
+                    //       imageUrl: post.imagePath ?? '',
+                    //       height: 97,
+                    //       width: 105,
+                    //       fit: BoxFit.fill,
+                    //       placeholder: (context, url) =>
+                    //           const Center(child: CircularProgressIndicator()),
+                    //       errorWidget: (context, url, error) =>
+                    //           const Icon(Icons.error),
+                    //     ),
+                    //   ),
+                    // ),
                     SizedBox(
                       height: size.height * 0.01,
                     ),

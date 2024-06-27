@@ -304,7 +304,6 @@ class _PlanandCompanyState extends State<PlanandCompany> {
                 } else {
                   showToasterrorborder(
                     "Please select at least one Company.",
-                    context,
                   );
                 }
               } else {
@@ -328,7 +327,6 @@ class _PlanandCompanyState extends State<PlanandCompany> {
                 } else {
                   showToasterrorborder(
                     "Please select at least one field.",
-                    context,
                   );
                 }
               }

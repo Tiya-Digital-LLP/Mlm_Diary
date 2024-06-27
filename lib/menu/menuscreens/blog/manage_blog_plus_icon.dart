@@ -301,24 +301,33 @@ class _ManageBlogPlusIconState extends State<ManageBlogPlusIcon> {
 
   Future<void> handleSaveButtonPressed() async {
     if (controller.title.value.text.isEmpty) {
-      showToasterrorborder("Please Enter Your Blog Title", context);
+      showToasterrorborder(
+        "Please Enter Your Blog Title",
+      );
     } else if (controller
         .getSelectedCategoryTextController()
         .value
         .text
         .isEmpty) {
-      showToasterrorborder("Please Select Category", context);
+      showToasterrorborder(
+        "Please Select Category",
+      );
     } else if (controller
         .getSelectedSubCategoryTextController()
         .value
         .text
         .isEmpty) {
-      showToasterrorborder("Please Select Sub Category", context);
+      showToasterrorborder(
+        "Please Select Sub Category",
+      );
     } else if (controller.discription.value.text.isEmpty) {
       showToasterrorborder(
-          "Please Enter Description Minimum 250 Characters", context);
+        "Please Enter Description Minimum 250 Characters",
+      );
     } else if (file.value == null && controller.userImage.value.isEmpty) {
-      showToasterrorborder("Please Upload Photo", context);
+      showToasterrorborder(
+        "Please Upload Photo",
+      );
     } else {
       try {
         await controller.updateBlog(imageFile: file.value);
@@ -425,7 +434,6 @@ class _ManageBlogPlusIconState extends State<ManageBlogPlusIcon> {
       showToasterrorborder(
         'Please select an image',
         // ignore: use_build_context_synchronously
-        context,
       );
       return; // Exit function if no image is selected
     }

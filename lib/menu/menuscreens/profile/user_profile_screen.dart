@@ -5,11 +5,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/database/controller/database_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
-import 'package:mlmdiary/generated/get_mlm_database_entity.dart';
+import 'package:mlmdiary/home/message/controller/message_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/custom/about_user.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/custom/social_button.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/custom/user_profie_card.dart';
+import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/lists.dart';
@@ -30,9 +31,9 @@ class _UserProfileScreenState extends State<UserProfileScreen>
   late TabController _tabController;
   final EditPostController controller = Get.put(EditPostController());
   final DatabaseController databaseController = Get.put(DatabaseController());
+  final MessageController messageController = Get.put(MessageController());
 
-  final GetMlmDatabaseData mlmDatabaseList =
-      Get.arguments as GetMlmDatabaseData;
+  dynamic mlmDatabaseList;
 
   RxBool isFollowing = false.obs;
   RxBool isBookmarked = false.obs;
@@ -51,7 +52,8 @@ class _UserProfileScreenState extends State<UserProfileScreen>
 
       isFollowing.value = followStatus;
 
-      await controller.toggleProfileFollow(userId);
+      // ignore: use_build_context_synchronously
+      await controller.toggleProfileFollow(userId, context);
 
       isFollowing.toggle(); // Toggle the boolean value
     } catch (e) {
@@ -74,11 +76,9 @@ class _UserProfileScreenState extends State<UserProfileScreen>
     try {
       bool bookmarkStatus = await _fetchBookmarkStatus(userId);
 
-      isBookmarked.value = bookmarkStatus;
-
-      await controller.toggleProfileBookMark(userId);
-
-      isBookmarked.toggle(); // Toggle the boolean value
+      isBookmarked.value = !bookmarkStatus;
+      // ignore: use_build_context_synchronously
+      await controller.toggleProfileBookMark(userId, context);
     } catch (e) {
       Fluttertoast.showToast(
         msg: "Error: $e",
@@ -95,11 +95,16 @@ class _UserProfileScreenState extends State<UserProfileScreen>
   @override
   void initState() {
     super.initState();
+    mlmDatabaseList = Get.arguments;
+    if (mlmDatabaseList != null && mlmDatabaseList.id != null) {
+      databaseController.fetchUserPost(mlmDatabaseList.id!, context);
+    }
     _tabController = TabController(length: 2, vsync: this);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       controller.countViewUserProfile(mlmDatabaseList.id ?? 0, context);
-      isBookmarked.value =
-          controller.bookmarkProfileStatusMap[mlmDatabaseList.id] ?? false;
+      bool bookmarkStatus =
+          mlmDatabaseList.fav_status ?? false; // Correcting this line
+      isBookmarked.value = bookmarkStatus;
     });
   }
 
@@ -279,8 +284,21 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                       const SocialButton(
                           icon: Assets.svgCalling, label: 'Call'),
                       10.sbw,
-                      const SocialButton(
-                          icon: Assets.svgChat, label: 'Message'),
+                      InkWell(
+                        onTap: () async {
+                          final post = messageController.chatList[0];
+                          await messageController
+                              .fetchMyChatDetail(post.chatId.toString());
+                          Get.toNamed(
+                            Routes.messagedetailscreen,
+                            arguments: post,
+                          );
+                        },
+                        child: const SocialButton(
+                          icon: Assets.svgChat,
+                          label: 'Message',
+                        ),
+                      ),
                       10.sbw,
                       const SocialButton(
                           icon: Assets.svgWhatsappIcon, label: 'WhatsApp'),

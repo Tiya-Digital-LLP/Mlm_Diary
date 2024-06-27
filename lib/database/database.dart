@@ -264,10 +264,12 @@ class _DatabaseState extends State<DatabaseScreen> {
                           String location =
                               '${user.city ?? ''}, ${user.state ?? ''}, ${user.country ?? ''}';
                           return GestureDetector(
-                            onTap: () {
+                            onTap: () async {
+                              await controller.fetchUserPost(
+                                  user.id ?? 0, context);
                               Get.toNamed(
                                 Routes.userprofilescreen,
-                                arguments: controller.mlmDatabaseList[index],
+                                arguments: user,
                               );
                             },
                             child: UserCard(

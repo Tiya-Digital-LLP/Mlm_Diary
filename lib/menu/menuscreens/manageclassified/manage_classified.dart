@@ -438,32 +438,46 @@ class _ManageClassifiedPlusIconState extends State<ManageClassifiedPlusIcon> {
 
   Future<void> handleSaveButtonPressed() async {
     if (file.value == null && controller.userImage.value.isEmpty) {
-      showToasterrorborder("Please Upload Photo", context);
+      showToasterrorborder(
+        "Please Upload Photo",
+      );
     } else if (controller
         .getSelectedCategoryTextController()
         .value
         .text
         .isEmpty) {
-      showToasterrorborder("Please Select Category", context);
+      showToasterrorborder(
+        "Please Select Category",
+      );
     } else if (controller
         .getSelectedSubCategoryTextController()
         .value
         .text
         .isEmpty) {
-      showToasterrorborder("Please Select SubCategory", context);
+      showToasterrorborder(
+        "Please Select SubCategory",
+      );
     } else if (controller.companyName.value.text.isEmpty) {
-      showToasterrorborder("Please Enter Company Name", context);
+      showToasterrorborder(
+        "Please Enter Company Name",
+      );
     } else if (controller.location.value.text.isEmpty) {
-      showToasterrorborder("The address field is required.", context);
+      showToasterrorborder(
+        "The address field is required.",
+      );
     } else if (controller.isCategorySelectedList.contains(true)) {
       // Perform address validation
       if (controller.addressValidationColor.value != AppColors.redText) {
         await controller.updateClassified(imageFile: file.value);
       } else {
-        showToasterrorborder("Please enter a valid address.", context);
+        showToasterrorborder(
+          "Please enter a valid address.",
+        );
       }
     } else {
-      showToasterrorborder("Please select at least one plan.", context);
+      showToasterrorborder(
+        "Please select at least one plan.",
+      );
     }
   }
 
@@ -562,7 +576,6 @@ class _ManageClassifiedPlusIconState extends State<ManageClassifiedPlusIcon> {
       showToasterrorborder(
         'Please select an image',
         // ignore: use_build_context_synchronously
-        context,
       );
       return; // Exit function if no image is selected
     }

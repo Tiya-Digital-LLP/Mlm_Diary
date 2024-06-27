@@ -6,7 +6,6 @@ import 'package:html/parser.dart' as htmlParser;
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
-import 'package:mlmdiary/generated/get_admin_company_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
@@ -25,11 +24,16 @@ class MlmCompaniesDetails extends StatefulWidget {
 
 class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
   final CompanyController controller = Get.put(CompanyController());
-  final post = Get.arguments as GetAdminCompanyData;
+  dynamic post;
 
   @override
   void initState() {
     super.initState();
+    post = Get.arguments;
+    if (post != null && post.id != null) {
+      controller.getAdminCompany(1);
+    }
+
     // ignore: unrelated_type_equality_checks
     controller.likeCountMap == 0;
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -268,7 +272,8 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
                                               }
                                             } else {
                                               showToasterrorborder(
-                                                  "No Any Url Fond", context);
+                                                "No Any Url Fond",
+                                              );
                                             }
                                           },
                                           child: SvgPicture.asset(
@@ -284,7 +289,8 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
                                               }
                                             } else {
                                               showToasterrorborder(
-                                                  "No Any Url Fond", context);
+                                                "No Any Url Fond",
+                                              );
                                             }
                                           },
                                           child: SvgPicture.asset(
@@ -299,7 +305,8 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
                                             }
                                           } else {
                                             showToasterrorborder(
-                                                "No Any Url Fond", context);
+                                              "No Any Url Fond",
+                                            );
                                           }
                                         },
                                         child: SvgPicture.asset(
@@ -316,7 +323,8 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
                                               }
                                             } else {
                                               showToasterrorborder(
-                                                  "No Any Url Fond", context);
+                                                "No Any Url Fond",
+                                              );
                                             }
                                           },
                                           child: SvgPicture.asset(

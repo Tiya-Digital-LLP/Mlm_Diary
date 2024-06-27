@@ -63,22 +63,18 @@ class LoginController extends GetxController {
     if (email.value.text.isEmpty && password.value.text.isEmpty) {
       showToasterrorborder(
         "Please Enter Email and \nPassword",
-        context,
       );
     } else if (email.value.text.isEmpty) {
       showToasterrorborder(
         "Please Enter Email",
-        context,
       );
     } else if (password.value.text.isEmpty) {
       showToasterrorborder(
         "Please Enter Password",
-        context,
       );
     } else if (password.value.text.length < 6) {
       showToasterrorborder(
         "Password Must be 6 Character Long",
-        context,
       );
     } else {
       login(context);
@@ -113,7 +109,9 @@ class LoginController extends GetxController {
 
         // Show success toast
         // ignore: use_build_context_synchronously
-        showToastverifedborder('Login successful!', context);
+        showToastverifedborder(
+          'Login successful!',
+        );
         saveFcm();
 
         // Store token and user id
@@ -130,11 +128,15 @@ class LoginController extends GetxController {
         }
       } else {
         // ignore: use_build_context_synchronously
-        showToasterrorborder(loginEntity.message ?? "Login failed", context);
+        showToasterrorborder(
+          loginEntity.message ?? "Login failed",
+        );
       }
     } else {
       // ignore: use_build_context_synchronously
-      showToasterrorborder("Login failed: ${response.reasonPhrase}", context);
+      showToasterrorborder(
+        "Login failed: ${response.reasonPhrase}",
+      );
     }
   }
 
@@ -176,9 +178,9 @@ class LoginController extends GetxController {
           }
         }
       } else {
-        if (kDebugMode) {
-          print('No internet connection');
-        }
+        showToasterrorborder(
+          "No internet connection",
+        );
       }
     } catch (e) {
       if (kDebugMode) {
@@ -201,11 +203,10 @@ class LoginController extends GetxController {
         IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
         deviceToken = iosInfo.identifierForVendor;
       } else {
-        // For other platforms, generate a UUID
         deviceToken = const Uuid().v4();
       }
     } catch (e) {
-      deviceToken = const Uuid().v4(); // Fallback to UUID generation on error
+      deviceToken = const Uuid().v4();
     }
 
     return deviceToken;

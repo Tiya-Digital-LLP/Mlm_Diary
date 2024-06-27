@@ -199,7 +199,6 @@ class _AddPostState extends State<AddPost> {
                         } else {
                           showToasterrorborder(
                             'Select only one image or video',
-                            context,
                           );
                         }
                       },
@@ -216,7 +215,6 @@ class _AddPostState extends State<AddPost> {
                         } else {
                           showToasterrorborder(
                             'Select only one image or video',
-                            context,
                           );
                         }
                       },
@@ -355,7 +353,6 @@ class _AddPostState extends State<AddPost> {
       showToasterrorborder(
         'Please select an image',
         // ignore: use_build_context_synchronously
-        context,
       );
       return; // Exit function if no image is selected
     }

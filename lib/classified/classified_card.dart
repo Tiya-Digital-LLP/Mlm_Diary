@@ -26,6 +26,8 @@ class ClassifiedCard extends StatefulWidget {
   final String image;
   final String url;
   final bool likedbyuser;
+  final bool bookmarkedbyuser;
+
   final int commentcount;
 
   const ClassifiedCard({
@@ -44,6 +46,7 @@ class ClassifiedCard extends StatefulWidget {
     required this.url,
     required this.likedbyuser,
     required this.commentcount,
+    required this.bookmarkedbyuser,
   });
 
   @override
@@ -206,16 +209,31 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
               children: [
                 Row(
                   children: [
+                    // SizedBox(
+                    //   height: size.height * 0.028,
+                    //   width: size.height * 0.028,
+                    //   child: InkWell(
+                    //     onTap: toggleLike,
+                    //     child: Icon(
+                    //       isLiked.value
+                    //           ? Icons.thumb_up_off_alt_sharp
+                    //           : Icons.thumb_up_off_alt_outlined,
+                    //       color: isLiked.value ? AppColors.primaryColor : null,
+                    //     ),
+                    //   ),
+                    // ),
                     SizedBox(
                       height: size.height * 0.028,
                       width: size.height * 0.028,
                       child: InkWell(
                         onTap: toggleLike,
                         child: Icon(
-                          isLiked.value
+                          widget.likedbyuser
                               ? Icons.thumb_up_off_alt_sharp
                               : Icons.thumb_up_off_alt_outlined,
-                          color: isLiked.value ? AppColors.primaryColor : null,
+                          color: widget.likedbyuser
+                              ? AppColors.primaryColor
+                              : null,
                         ),
                       ),
                     ),
@@ -276,13 +294,26 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
                 ),
                 Row(
                   children: [
+                    // SizedBox(
+                    //   height: size.height * 0.028,
+                    //   width: size.height * 0.028,
+                    //   child: GestureDetector(
+                    //     onTap: () => toggleBookmark(),
+                    //     child: SvgPicture.asset(
+                    //       isBookmarked.value
+                    //           ? Assets.svgCheckBookmark
+                    //           : Assets.svgSavePost,
+                    //       height: size.height * 0.032,
+                    //     ),
+                    //   ),
+                    // ),
                     SizedBox(
                       height: size.height * 0.028,
                       width: size.height * 0.028,
                       child: GestureDetector(
                         onTap: () => toggleBookmark(),
                         child: SvgPicture.asset(
-                          isBookmarked.value
+                          widget.bookmarkedbyuser
                               ? Assets.svgCheckBookmark
                               : Assets.svgSavePost,
                           height: size.height * 0.032,

@@ -115,7 +115,7 @@ class AppPages {
     ),
     GetPage(
       name: Routes.messagescreen,
-      page: () => Message(),
+      page: () => const Message(),
     ),
     GetPage(
       name: Routes.messagedetailscreen,

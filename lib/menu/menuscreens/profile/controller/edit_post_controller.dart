@@ -58,7 +58,11 @@ class EditPostController extends GetxController {
   }
 
   // Method to fetch data from API
-  Future<void> fetchMyPost({int page = 1, context}) async {
+  Future<void> fetchMyPost({
+    int page = 1,
+    context,
+    int? postId,
+  }) async {
     isLoading.value = true;
     String device = '';
     if (Platform.isAndroid) {
@@ -77,24 +81,27 @@ class EditPostController extends GetxController {
       var connectivityResult = await (Connectivity().checkConnectivity());
       // ignore: unrelated_type_equality_checks
       if (connectivityResult == ConnectivityResult.none) {
-        showToasterrorborder("No internet connection", context);
+        showToasterrorborder(
+          "No internet connection",
+        );
         isLoading.value = false;
         return;
       }
 
       // Prepare query parameters
-      Map<String, String> queryParams = {
+      Map<String, String> formData = {
         'api_token': apiToken ?? '',
         'device': device,
         'page': page.toString(),
       };
 
-      // Build URL
-      Uri uri = Uri.parse(Constants.baseUrl + Constants.mypost)
-          .replace(queryParameters: queryParams);
+      if (postId != null) {
+        formData['post_id'] = postId.toString();
+      }
 
-      // Make HTTP GET request
-      final response = await http.post(uri);
+      // Build URL
+      Uri uri = Uri.parse(Constants.baseUrl + Constants.mypost);
+      final response = await http.post(uri, body: formData);
 
       if (response.statusCode == 200) {
         // Parse JSON data
@@ -128,11 +135,15 @@ class EditPostController extends GetxController {
         }
       } else {
         // Handle error response
-        showToasterrorborder("Failed to fetch data", context);
+        showToasterrorborder(
+          "Failed to fetch data",
+        );
       }
     } catch (error) {
       // Handle network or parsing errors
-      showToasterrorborder("An error occurred: $error", context);
+      showToasterrorborder(
+        "An error occurred: $error",
+      );
     } finally {
       isLoading.value = false;
     }
@@ -150,7 +161,9 @@ class EditPostController extends GetxController {
       var connectivityResult = await (Connectivity().checkConnectivity());
       // ignore: unrelated_type_equality_checks
       if (connectivityResult == ConnectivityResult.none) {
-        showToasterrorborder("No internet connection", context);
+        showToasterrorborder(
+          "No internet connection",
+        );
         isLoading.value = false;
         return;
       }
@@ -180,10 +193,14 @@ class EditPostController extends GetxController {
           postList.add(firstPost);
         }
       } else {
-        showToasterrorborder("Failed to fetch data", context);
+        showToasterrorborder(
+          "Failed to fetch data",
+        );
       }
     } catch (error) {
-      showToasterrorborder("An error occurred: $error", context);
+      showToasterrorborder(
+        "An error occurred: $error",
+      );
     } finally {
       isLoading.value = false;
     }
@@ -290,9 +307,9 @@ class EditPostController extends GetxController {
           }
         }
       } else {
-        if (kDebugMode) {
-          print("No internet connection available.");
-        }
+        showToasterrorborder(
+          "No internet connection",
+        );
       }
     } catch (e) {
       if (kDebugMode) {
@@ -342,11 +359,6 @@ class EditPostController extends GetxController {
             );
             myPostList.removeAt(index);
           } else {
-            Fluttertoast.showToast(
-              msg: "Failed to delete News: $message",
-              toastLength: Toast.LENGTH_LONG,
-              gravity: ToastGravity.BOTTOM,
-            );
             if (kDebugMode) {
               print('Failed to delete News: $message');
             }
@@ -356,31 +368,16 @@ class EditPostController extends GetxController {
             print('data from delete News: $data');
           }
         } else {
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
           if (kDebugMode) {
             print('Error: ${response.body}');
           }
         }
       } else {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
+        showToasterrorborder(
+          "No internet connection",
         );
-        if (kDebugMode) {
-          print('No internet connection');
-        }
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
       if (kDebugMode) {
         print('Error: $e');
       }
@@ -436,10 +433,14 @@ class EditPostController extends GetxController {
           //
         }
       } else {
-        showToasterrorborder("No internet connection", context);
+        showToasterrorborder(
+          "No internet connection",
+        );
       }
     } catch (e) {
-      //
+      if (kDebugMode) {
+        print("Error: $e");
+      }
     } finally {
       isLoading(false);
     }
@@ -480,7 +481,9 @@ class EditPostController extends GetxController {
             likeCountMap[postId] = (likeCountMap[postId] ?? 0) - 1;
           }
 
-          showToastverifedborder(message!, context);
+          showToastverifedborder(
+            message!,
+          );
         } else {
           if (kDebugMode) {
             print("Response body: ${response.body}");
@@ -488,7 +491,9 @@ class EditPostController extends GetxController {
         }
       } else {
         if (kDebugMode) {
-          showToasterrorborder("No internet connection available.", context);
+          showToasterrorborder(
+            "No internet connection available.",
+          );
         }
       }
     } catch (e) {
@@ -545,16 +550,18 @@ class EditPostController extends GetxController {
             bookmarkCountMap[postId] = (bookmarkCountMap[postId] ?? 0) - 1;
           }
 
-          showToastverifedborder(message!, context);
+          showToastverifedborder(
+            message!,
+          );
         } else {
           if (kDebugMode) {
             print("Response body: ${response.body}");
           }
         }
       } else {
-        if (kDebugMode) {
-          showToasterrorborder("No internet connection available.", context);
-        }
+        showToasterrorborder(
+          "No internet connection",
+        );
       }
     } catch (e) {
       if (kDebugMode) {
@@ -645,10 +652,9 @@ class EditPostController extends GetxController {
           }
         }
       } else {
-        // Log no internet connection
-        if (kDebugMode) {
-          print('No internet connection');
-        }
+        showToasterrorborder(
+          "No internet connection",
+        );
       }
     } catch (e) {
       // Log exception
@@ -665,7 +671,7 @@ class EditPostController extends GetxController {
   }
 
   // Bookmark
-  Future<void> profileBookmark(int databaseId) async {
+  Future<void> profileBookmark(int databaseId, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
 
@@ -701,37 +707,29 @@ class EditPostController extends GetxController {
                 (bookmarkCountMap[databaseId] ?? 0) - 1;
           }
 
-          Fluttertoast.showToast(
-            msg: message!,
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
+          showToastverifedborder(
+            message!,
           );
         } else {
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+          if (kDebugMode) {
+            print("Error: ${response.body}");
+          }
         }
       } else {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
+        showToasterrorborder(
+          "No internet connection",
         );
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
+      if (kDebugMode) {
+        print("Error: $e");
+      }
     } finally {
       isLoading(false);
     }
   }
 
-  Future<void> toggleProfileBookMark(int databaseId) async {
+  Future<void> toggleProfileBookMark(int databaseId, context) async {
     bool isBookmark = bookmarkProfileStatusMap[databaseId] ?? false;
     isBookmark = !isBookmark;
     bookmarkProfileStatusMap[databaseId] = isBookmark;
@@ -739,11 +737,11 @@ class EditPostController extends GetxController {
         databaseId, (value) => isBookmark ? value + 1 : value - 1,
         ifAbsent: () => isBookmark ? 1 : 0);
 
-    await profileBookmark(databaseId);
+    await profileBookmark(databaseId, context);
   }
 
   // Follow-Unfollow
-  Future<void> profileFollow(int userId) async {
+  Future<void> profileFollow(int userId, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
 
@@ -770,47 +768,38 @@ class EditPostController extends GetxController {
 
           // Update the liked status and like count based on the message
           if (message == 'You have Follow this Profile') {
-            bookmarkProfileStatusMap[userId] = true;
-            bookmarkProfileCountMap[userId] =
+            followProfileStatusMap[userId] = true;
+            followProfileCountMap[userId] =
                 (bookmarkProfileCountMap[userId] ?? 0) + 1;
           } else if (message == 'You have UnFollow this Profile') {
-            bookmarkProfileStatusMap[userId] = false;
-            bookmarkProfileCountMap[userId] =
+            followProfileStatusMap[userId] = false;
+            followProfileCountMap[userId] =
                 (bookmarkProfileCountMap[userId] ?? 0) - 1;
           }
-          // Save user_id to SharedPreferences
-          await prefs.setInt('user_id', userId);
-          Fluttertoast.showToast(
-            msg: message!,
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
+
+          showToastverifedborder(
+            message!,
           );
         } else {
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+          if (kDebugMode) {
+            print("Error: ${response.body}");
+          }
         }
       } else {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
+        showToasterrorborder(
+          "No internet connection",
         );
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
+      if (kDebugMode) {
+        print("Error: $e");
+      }
     } finally {
       isLoading(false);
     }
   }
 
-  Future<void> toggleProfileFollow(int userId) async {
+  Future<void> toggleProfileFollow(int userId, context) async {
     bool isFollow = followProfileStatusMap[userId] ?? false;
     isFollow = !isFollow;
     followProfileStatusMap[userId] = isFollow;
@@ -818,7 +807,7 @@ class EditPostController extends GetxController {
         userId, (value) => isFollow ? value + 1 : value - 1,
         ifAbsent: () => isFollow ? 1 : 0);
 
-    await profileFollow(userId);
+    await profileFollow(userId, context);
   }
 
   // comment for Post
@@ -876,25 +865,19 @@ class EditPostController extends GetxController {
             isEndOfData(true);
           }
         } else {
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+          if (kDebugMode) {
+            print("Error: ${response.body}");
+          }
         }
       } else {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
+        showToasterrorborder(
+          "No internet connection",
         );
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
+      if (kDebugMode) {
+        print("Error: $e");
+      }
     } finally {
       isLoading(false);
     }
@@ -938,25 +921,19 @@ class EditPostController extends GetxController {
             print('Success: $addPostCommentEntity');
           }
         } else {
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+          if (kDebugMode) {
+            print("Error: ${response.body}");
+          }
         }
       } else {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
+        showToasterrorborder(
+          "No internet connection",
         );
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
+      if (kDebugMode) {
+        print("Error: $e");
+      }
     } finally {
       isLoading(false);
     }
@@ -989,25 +966,19 @@ class EditPostController extends GetxController {
           // Handle success response as needed
           await getCommentPost(1, postId);
         } else {
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+          if (kDebugMode) {
+            print("Error: ${response.body}");
+          }
         }
       } else {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
+        showToasterrorborder(
+          "No internet connection",
         );
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
+      if (kDebugMode) {
+        print("Error: $e");
+      }
     } finally {
       isLoading(false);
     }
@@ -1046,25 +1017,19 @@ class EditPostController extends GetxController {
             print('Success: $editCommentEntity');
           }
         } else {
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+          if (kDebugMode) {
+            print("Error: ${response.body}");
+          }
         }
       } else {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
+        showToasterrorborder(
+          "No internet connection",
         );
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
+      if (kDebugMode) {
+        print("Error: $e");
+      }
     } finally {
       isLoading(false);
     }

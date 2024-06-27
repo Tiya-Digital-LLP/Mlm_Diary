@@ -136,9 +136,9 @@ class NewsController extends GetxController {
           }
         }
       } else {
-        if (kDebugMode) {
-          showToasterrorborder("No internet connection available.", context);
-        }
+        showToasterrorborder(
+          "No internet connection",
+        );
       }
     } catch (e) {
       if (kDebugMode) {
@@ -188,9 +188,9 @@ class NewsController extends GetxController {
           }
         }
       } else {
-        if (kDebugMode) {
-          print("No internet connection available.");
-        }
+        showToasterrorborder(
+          "No internet connection",
+        );
       }
     } catch (e) {
       if (kDebugMode) {
@@ -243,9 +243,9 @@ class NewsController extends GetxController {
           }
         }
       } else {
-        if (kDebugMode) {
-          print("No internet connection available.");
-        }
+        showToasterrorborder(
+          "No internet connection",
+        );
       }
     } catch (e) {
       if (kDebugMode) {
@@ -316,7 +316,9 @@ class NewsController extends GetxController {
     String enteredTitle = title.value.text;
     if (enteredTitle.isEmpty || hasSpecialCharactersOrNumbers(enteredTitle)) {
       // Show toast message for invalid title
-      showToasterrorborder("Please Enter Title", context);
+      showToasterrorborder(
+        "Please Enter Title",
+      );
       titleError.value = true;
     } else {
       titleError.value = false;
@@ -342,7 +344,9 @@ class NewsController extends GetxController {
     String enteredDiscription = discription.value.text;
     if (enteredDiscription.isEmpty ||
         hasSpecialTextOrNumbers(enteredDiscription)) {
-      showToasterrorborder("Please Enter Discription", context);
+      showToasterrorborder(
+        "Please Enter Discription",
+      );
       discriptionError.value = true;
     } else {
       discriptionError.value = false;

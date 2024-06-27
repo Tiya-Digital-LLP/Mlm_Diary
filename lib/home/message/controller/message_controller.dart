@@ -163,21 +163,18 @@ class MessageController extends GetxController {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    int? userId = prefs.getInt(Constants.userId);
-    String? fcmToken = prefs.getString('fcm_token');
+    String? apiToken = prefs.getString(Constants.accessToken);
 
     try {
       var uri = Uri.parse('${Constants.baseUrl}${Constants.sendchat}');
       var request = http.MultipartRequest('POST', uri);
-      request.fields['user_id'] = userId.toString();
-      request.fields['usertoken'] = fcmToken.toString();
+      request.fields['api_token'] = apiToken.toString();
       request.fields['toid'] = toId;
       request.fields['msg'] = msg.value.text;
       request.fields['chat_id'] = chatId;
 
       if (kDebugMode) {
-        print('user_id : $userId');
-        print('usertoken : $fcmToken');
+        print('api_token : $apiToken');
         print('toid : $toId');
         print('msg : ${msg.value.text}');
         print('chat_id : $chatId');

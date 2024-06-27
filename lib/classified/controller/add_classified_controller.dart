@@ -5,7 +5,6 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:mlmdiary/data/constants.dart';
@@ -15,6 +14,7 @@ import 'package:mlmdiary/generated/classified_count_view_entity.dart';
 import 'package:mlmdiary/generated/classified_like_list_entity.dart';
 import 'package:mlmdiary/generated/edit_comment_entity.dart';
 import 'package:mlmdiary/generated/get_category_entity.dart';
+import 'package:mlmdiary/generated/get_classified_detail_entity.dart';
 import 'package:mlmdiary/generated/get_classified_entity.dart';
 import 'package:mlmdiary/generated/get_comment_classified_entity.dart';
 import 'package:mlmdiary/generated/get_company_entity.dart';
@@ -43,6 +43,9 @@ class ClasifiedController extends GetxController {
   RxList<GetClassifiedData> classifiedList = <GetClassifiedData>[].obs;
   Rx<TextEditingController> commment = TextEditingController().obs;
   TextEditingController searchController = TextEditingController();
+
+  RxList<GetClassifiedDetailData> classifiedDetailList =
+      <GetClassifiedDetailData>[].obs;
 
   final search = TextEditingController();
 // company
@@ -138,6 +141,66 @@ class ClasifiedController extends GetxController {
     getClassified(1);
   }
 
+  Future<void> fetchClassifiedDetail(int classfiedId, context) async {
+    isLoading.value = true;
+    String device =
+        Platform.isAndroid ? 'android' : (Platform.isIOS ? 'ios' : '');
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+
+    try {
+      var connectivityResult = await (Connectivity().checkConnectivity());
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult == ConnectivityResult.none) {
+        showToasterrorborder(
+          "No internet connection",
+        );
+        isLoading.value = false;
+        return;
+      }
+
+      Map<String, String> queryParams = {
+        'api_token': apiToken ?? '',
+        'device': device,
+        'classified_id': classfiedId.toString(),
+      };
+
+      if (kDebugMode) {
+        print('api_token: $apiToken');
+        print('device: $device');
+        print('classfiedId: $classfiedId');
+      }
+
+      Uri uri = Uri.parse(Constants.baseUrl + Constants.classifieddetail)
+          .replace(queryParameters: queryParams);
+
+      final response = await http.post(uri);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        final GetClassifiedDetailEntity classifiedDetailEntity =
+            GetClassifiedDetailEntity.fromJson(responseData);
+
+        final GetClassifiedDetailData? firstPost = classifiedDetailEntity.data;
+        if (firstPost != null) {
+          // Add the fetched post to the list
+          classifiedDetailList.add(firstPost);
+        }
+      } else {
+        if (kDebugMode) {
+          print("Error: ${response.body}");
+        }
+      }
+    } catch (error) {
+      if (kDebugMode) {
+        print("Error: $error");
+      }
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   Future<void> fetchCategoryList() async {
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
@@ -179,9 +242,9 @@ class ClasifiedController extends GetxController {
           }
         }
       } else {
-        if (kDebugMode) {
-          print("No internet connection available.");
-        }
+        showToasterrorborder(
+          "No internet connection",
+        );
       }
     } catch (e) {
       if (kDebugMode) {
@@ -267,9 +330,9 @@ class ClasifiedController extends GetxController {
           }
         }
       } else {
-        if (kDebugMode) {
-          print("No internet connection available.");
-        }
+        showToasterrorborder(
+          "No internet connection",
+        );
       }
     } catch (e) {
       if (kDebugMode) {
@@ -371,9 +434,9 @@ class ClasifiedController extends GetxController {
           }
         }
       } else {
-        if (kDebugMode) {
-          print("No internet connection available.");
-        }
+        showToasterrorborder(
+          "No internet connection",
+        );
       }
     } catch (e) {
       if (kDebugMode) {
@@ -420,27 +483,23 @@ class ClasifiedController extends GetxController {
             likeCountMap[classifiedId] = (likeCountMap[classifiedId] ?? 0) - 1;
           }
 
-          showToastverifedborder(message!, context);
-        } else {
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
+          showToastverifedborder(
+            message!,
           );
+        } else {
+          if (kDebugMode) {
+            print("Error: ${response.body}");
+          }
         }
       } else {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
+        showToasterrorborder(
+          "No internet connection",
         );
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
+      if (kDebugMode) {
+        print("Error: $e");
+      }
     } finally {
       isLoading(false);
     }
@@ -484,31 +543,23 @@ class ClasifiedController extends GetxController {
                 (bookmarkCountMap[classifiedId] ?? 0) - 1;
           }
 
-          Fluttertoast.showToast(
-            msg: message!,
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
+          showToastverifedborder(
+            message!,
           );
         } else {
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+          if (kDebugMode) {
+            print("Error: ${response.body}");
+          }
         }
       } else {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
+        showToasterrorborder(
+          "No internet connection",
         );
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
+      if (kDebugMode) {
+        print("Error: $e");
+      }
     } finally {
       isLoading(false);
     }
@@ -611,9 +662,9 @@ class ClasifiedController extends GetxController {
           }
         }
       } else {
-        if (kDebugMode) {
-          print("No internet connection available.");
-        }
+        showToasterrorborder(
+          "No internet connection",
+        );
       }
     } catch (e) {
       if (kDebugMode) {
@@ -678,72 +729,6 @@ class ClasifiedController extends GetxController {
       selectedCountCompany++;
     } else {
       selectedCountCompany.value--;
-    }
-  }
-
-  Future<Map<String, dynamic>?> classifiedRemainingCount(String type) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? apiToken = prefs.getString(Constants.accessToken);
-
-    String device = Platform.isAndroid ? 'android' : 'ios';
-
-    try {
-      var connectivityResult = await Connectivity().checkConnectivity();
-      if (kDebugMode) {
-        print('Connectivity result: $connectivityResult');
-      }
-
-      // ignore: unrelated_type_equality_checks
-      if (connectivityResult != ConnectivityResult.none) {
-        var uri = Uri.parse('${Constants.baseUrl}${Constants.remainigcount}');
-        if (kDebugMode) {
-          print('Request URI: $uri');
-        }
-
-        var request = http.MultipartRequest('POST', uri);
-        request.fields['api_token'] = apiToken ?? '';
-        request.fields['device'] = device;
-        request.fields['type'] = type;
-
-        if (kDebugMode) {
-          print('Request fields: ${request.fields}');
-        }
-
-        final streamedResponse = await request.send();
-        final response = await http.Response.fromStream(streamedResponse);
-
-        if (kDebugMode) {
-          print('Response status code: ${response.statusCode}');
-        }
-        if (kDebugMode) {
-          print('Response body: ${response.body}');
-        }
-
-        if (response.statusCode == 200) {
-          var data = jsonDecode(response.body);
-          if (kDebugMode) {
-            print('Decoded data: $data');
-          }
-          return data;
-        } else {
-          if (kDebugMode) {
-            print('Error: ${response.body}');
-          }
-          return null;
-        }
-      } else {
-        if (kDebugMode) {
-          print('No internet connection');
-        }
-        return null;
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error: $e');
-      }
-      return null;
-    } finally {
-      isLoading(false); // Assuming this method handles loading state
     }
   }
 
@@ -819,9 +804,9 @@ class ClasifiedController extends GetxController {
         }
       } else {
         // Log no internet connection
-        if (kDebugMode) {
-          print('No internet connection');
-        }
+        showToasterrorborder(
+          "No internet connection",
+        );
       }
     } catch (e) {
       // Log exception
@@ -883,19 +868,20 @@ class ClasifiedController extends GetxController {
           if (kDebugMode) {
             print('Success: $countViewClassifiedEntity');
           }
-          Fluttertoast.showToast(
-            msg: "Success: $countViewClassifiedEntity",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
         } else {
-          //
+          if (kDebugMode) {
+            print("Error: ${response.body}");
+          }
         }
       } else {
-        showToasterrorborder("No internet connection", context);
+        showToasterrorborder(
+          "No internet connection",
+        );
       }
     } catch (e) {
-      //
+      if (kDebugMode) {
+        print("Error: $e");
+      }
     } finally {
       isLoading(false);
     }
@@ -956,25 +942,19 @@ class ClasifiedController extends GetxController {
             isEndOfData(true);
           }
         } else {
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+          if (kDebugMode) {
+            print("Error: ${response.body}");
+          }
         }
       } else {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
+        showToasterrorborder(
+          "No internet connection",
         );
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
+      if (kDebugMode) {
+        print("Error: $e");
+      }
     } finally {
       isLoading(false);
     }
@@ -1017,25 +997,19 @@ class ClasifiedController extends GetxController {
             print('Success: $addCommentEntity');
           }
         } else {
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+          if (kDebugMode) {
+            print("Error: ${response.body}");
+          }
         }
       } else {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
+        showToasterrorborder(
+          "No internet connection",
         );
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
+      if (kDebugMode) {
+        print("Error: $e");
+      }
     } finally {
       isLoading(false);
     }
@@ -1068,25 +1042,19 @@ class ClasifiedController extends GetxController {
           // Handle success response as needed
           await getCommentClassified(1, classifiedId);
         } else {
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+          if (kDebugMode) {
+            print("Error: ${response.body}");
+          }
         }
       } else {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
+        showToasterrorborder(
+          "No internet connection",
         );
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
+      if (kDebugMode) {
+        print("Error: $e");
+      }
     } finally {
       isLoading(false);
     }
@@ -1125,25 +1093,19 @@ class ClasifiedController extends GetxController {
             print('Success: $editCommentEntity');
           }
         } else {
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+          if (kDebugMode) {
+            print("Error: ${response.body}");
+          }
         }
       } else {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
+        showToasterrorborder(
+          "No internet connection",
         );
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
+      if (kDebugMode) {
+        print("Error: $e");
+      }
     } finally {
       isLoading(false);
     }
@@ -1153,7 +1115,9 @@ class ClasifiedController extends GetxController {
     String enteredTitle = title.value.text;
     if (enteredTitle.isEmpty || hasSpecialCharactersOrNumbers(enteredTitle)) {
       // Show toast message for invalid title
-      showToasterrorborder("Please Enter Title", context);
+      showToasterrorborder(
+        "Please Enter Title",
+      );
       titleError.value = true;
     } else {
       titleError.value = false;
@@ -1186,7 +1150,9 @@ class ClasifiedController extends GetxController {
     String enteredDiscription = discription.value.text;
     if (enteredDiscription.isEmpty ||
         hasSpecialTextOrNumbers(enteredDiscription)) {
-      showToasterrorborder("Please Enter Discription", context);
+      showToasterrorborder(
+        "Please Enter Discription",
+      );
       discriptionError.value = true;
     } else {
       discriptionError.value = false;

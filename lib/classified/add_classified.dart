@@ -414,34 +414,49 @@ class _AddClassifiedState extends State<AddClassified> {
 
   Future<void> handleSaveButtonPressed() async {
     if (controller.title.value.text.isEmpty) {
-      showToasterrorborder("Please Enter Your Classified Title", context);
+      showToasterrorborder(
+        "Please Enter Your Classified Title",
+      );
     } else if (controller
         .getSelectedCategoryTextController()
         .value
         .text
         .isEmpty) {
-      showToasterrorborder("Please Select Category", context);
+      showToasterrorborder(
+        "Please Select Category",
+      );
     } else if (controller
         .getSelectedSubCategoryTextController()
         .value
         .text
         .isEmpty) {
-      showToasterrorborder("Please Select Sub Category", context);
+      showToasterrorborder(
+        "Please Select Sub Category",
+      );
     } else if (controller.companyName.value.text.isEmpty) {
-      showToasterrorborder("Please Add Your Company Name", context);
+      showToasterrorborder(
+        "Please Add Your Company Name",
+      );
     } else if (controller.discription.value.text.isEmpty) {
       showToasterrorborder(
-          "Please Enter Description Minimum 250 Characters", context);
+        "Please Enter Description Minimum 250 Characters",
+      );
     } else if (controller.location.value.text.isEmpty) {
-      showToasterrorborder("Please Search and Save Location.", context);
+      showToasterrorborder(
+        "Please Search and Save Location.",
+      );
     } else if (file.value == null) {
-      showToasterrorborder("Please Upload Photo", context);
+      showToasterrorborder(
+        "Please Upload Photo",
+      );
     } else if (controller.isCategorySelectedList.contains(true)) {
       // Perform address validation
       if (controller.addressValidationColor.value != AppColors.redText) {
         await controller.addClassifiedDetails(imageFile: file.value);
       } else {
-        showToasterrorborder("Please enter a valid address.", context);
+        showToasterrorborder(
+          "Please enter a valid address.",
+        );
       }
     } else {
       //
@@ -547,8 +562,6 @@ class _AddClassifiedState extends State<AddClassified> {
     } else {
       showToasterrorborder(
         'Please select an image',
-        // ignore: use_build_context_synchronously
-        context,
       );
       return; // Exit function if no image is selected
     }

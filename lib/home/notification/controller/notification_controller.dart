@@ -80,9 +80,9 @@ class NotificationController extends GetxController {
       var connectivityResult = await (Connectivity().checkConnectivity());
       // ignore: unrelated_type_equality_checks
       if (connectivityResult == ConnectivityResult.none) {
-        if (kDebugMode) {
-          print('No internet connection');
-        }
+        showToasterrorborder(
+          "No internet connection",
+        );
         isLoading.value = false;
         return;
       }
@@ -213,16 +213,18 @@ class NotificationController extends GetxController {
           if (kDebugMode) {
             print('Delete Notification Response: $message');
           }
-          showToastverifedborder(message!, context);
+          showToastverifedborder(
+            message!,
+          );
         } else {
           if (kDebugMode) {
             print("Error: ${response.body}");
           }
         }
       } else {
-        if (kDebugMode) {
-          print("No internet connection");
-        }
+        showToasterrorborder(
+          "No internet connection",
+        );
       }
     } catch (e) {
       if (kDebugMode) {

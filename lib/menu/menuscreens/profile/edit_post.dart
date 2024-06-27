@@ -82,19 +82,27 @@ class _AddPostState extends State<EditPost> {
                 borderRadius: BorderRadius.circular(13.05),
                 child: Stack(
                   children: [
-                    file.value != null
-                        ? Image.file(
-                            file.value!,
-                            height: 200,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                          )
-                        : const SizedBox(),
+                    // Show selected image if available
+                    if (file.value != null)
+                      Image.file(
+                        file.value!,
+                        height: 200,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                    // Show fetched image if available
+                    if (file.value == null)
+                      Image.network(
+                        controller.userImage.value,
+                        height: 200,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                    // Delete button for selected image
                     Visibility(
-                      visible: file.value == null ? false : true,
+                      visible: file.value != null,
                       child: Positioned(
                         top: 10,
-                        left: 320,
                         right: 0,
                         child: Container(
                           width: 40,
@@ -124,7 +132,7 @@ class _AddPostState extends State<EditPost> {
                           ),
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -192,7 +200,6 @@ class _AddPostState extends State<EditPost> {
                         } else {
                           showToasterrorborder(
                             'Select only one image or video',
-                            context,
                           );
                         }
                       },
@@ -209,7 +216,6 @@ class _AddPostState extends State<EditPost> {
                         } else {
                           showToasterrorborder(
                             'Select only one image or video',
-                            context,
                           );
                         }
                       },
@@ -348,7 +354,6 @@ class _AddPostState extends State<EditPost> {
       showToasterrorborder(
         'Please select an image',
         // ignore: use_build_context_synchronously
-        context,
       );
       return; // Exit function if no image is selected
     }

@@ -8,10 +8,20 @@ import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
 
-class Message extends StatelessWidget {
+class Message extends StatefulWidget {
+  const Message({super.key});
+
+  @override
+  State<Message> createState() => _MessageState();
+}
+
+class _MessageState extends State<Message> {
   final MessageController messageController = Get.put(MessageController());
 
-  Message({super.key});
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -150,6 +160,8 @@ class Message extends StatelessWidget {
                                 postCaption: post.msg ?? '',
                                 chatId: post.chatId.toString(),
                                 controller: messageController,
+                                datetime: post.createdAt ?? '',
+                                readStatus: post.readStatus ?? 0,
                               ),
                             ),
                           ),

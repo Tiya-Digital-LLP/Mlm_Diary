@@ -132,10 +132,12 @@ class _ClassifiedScreenState extends State<ClassifiedScreen> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 8),
                         child: GestureDetector(
-                          onTap: () {
+                          onTap: () async {
+                            await controller.fetchClassifiedDetail(
+                                post.id ?? 0, context);
                             Get.toNamed(
                               Routes.mlmclassifieddetail,
-                              arguments: controller.classifiedList[index],
+                              arguments: post,
                             );
                           },
                           child: ClassifiedCard(
@@ -152,6 +154,7 @@ class _ClassifiedScreenState extends State<ClassifiedScreen> {
                             isPopular: post.popular == 'Y',
                             url: post.fullUrl ?? '',
                             likedbyuser: post.likedByUser ?? false,
+                            bookmarkedbyuser: post.bookmarkedByUser ?? false,
                             commentcount: post.totalcomment ?? 0,
                           ),
                         ),

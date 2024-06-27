@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/classified/custom_commment.dart';
 import 'package:mlmdiary/generated/assets.dart';
-import 'package:mlmdiary/generated/get_classified_entity.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -26,13 +25,17 @@ class ClassidiedDetailsScreen extends StatefulWidget {
 
 class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
   final ClasifiedController controller = Get.put(ClasifiedController());
-  final post = Get.arguments as GetClassifiedData;
+  dynamic post;
 
   PostTimeFormatter postTimeFormatter = PostTimeFormatter();
 
   @override
   void initState() {
     super.initState();
+    post = Get.arguments;
+    if (post != null && post.id != null) {
+      controller.fetchClassifiedDetail(post.id ?? 0, context);
+    }
     // ignore: unrelated_type_equality_checks
     controller.likeCountMap == 0;
     // ignore: unrelated_type_equality_checks
@@ -103,7 +106,7 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
                               ),
                               Text(
                                 postTimeFormatter
-                                    .formatPostTime(post.datecreated ?? ''),
+                                    .formatPostTime(post.createdate ?? ''),
                                 style: textStyleW400(
                                   size.width * 0.035,
                                   AppColors.blackText.withOpacity(0.5),
@@ -128,7 +131,7 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: CachedNetworkImage(
-                          imageUrl: post.imagePath ?? '',
+                          imageUrl: post.imageUrl ?? '',
                           height: 97,
                           width: 105,
                           fit: BoxFit.fill,

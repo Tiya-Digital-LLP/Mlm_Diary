@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/get_tutorial_video_entity.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 
 class TutorialVideoController extends GetxController {
   var isLoading = false.obs;
@@ -18,6 +19,9 @@ class TutorialVideoController extends GetxController {
       var connectivityResult = await Connectivity().checkConnectivity();
       // ignore: unrelated_type_equality_checks
       if (connectivityResult == ConnectivityResult.none) {
+        showToasterrorborder(
+          "No internet connection",
+        );
         isLoading.value = false;
         return;
       }

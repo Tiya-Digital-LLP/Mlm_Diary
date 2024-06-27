@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/data/constants.dart';
@@ -108,25 +107,19 @@ class DatabaseController extends GetxController {
             isEndOfData(true);
           }
         } else {
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+          if (kDebugMode) {
+            print("Error: ${response.body}");
+          }
         }
       } else {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
+        showToasterrorborder(
+          "No internet connection",
         );
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
+      if (kDebugMode) {
+        print("Error: $e");
+      }
     } finally {
       isLoading(false);
     }
@@ -172,11 +165,10 @@ class DatabaseController extends GetxController {
 
       // ignore: unrelated_type_equality_checks
       if (connectivityResult == ConnectivityResult.none) {
-        showToasterrorborder("No internet connection", context);
+        showToasterrorborder(
+          "No internet connection",
+        );
         isLoading.value = false;
-        if (kDebugMode) {
-          print('No internet connection');
-        }
         return;
       }
 
@@ -185,6 +177,12 @@ class DatabaseController extends GetxController {
         'device': device,
         'user_id': userId.toString(),
       };
+
+      if (kDebugMode) {
+        print('api_token : $apiToken');
+        print('device : $device');
+        print('userId : $userId');
+      }
       if (kDebugMode) {
         print('Query Params: $queryParams');
       }
@@ -224,21 +222,25 @@ class DatabaseController extends GetxController {
           // Add the fetched post to the list
           mlmDetailsDatabaseList.add(firstPost);
         } else {
-          showToasterrorborder("No data found", context);
+          showToasterrorborder(
+            "No data found",
+          );
           if (kDebugMode) {
             print('No data found in the response');
           }
         }
       } else {
         showToasterrorborder(
-            "Failed to fetch data. Status code: ${response.statusCode}",
-            context);
+          "Failed to fetch data. Status code: ${response.statusCode}",
+        );
         if (kDebugMode) {
           print('Failed to fetch data. Status code: ${response.statusCode}');
         }
       }
     } catch (error) {
-      showToasterrorborder("An error occurred: $error", context);
+      showToasterrorborder(
+        "An error occurred: $error",
+      );
       if (kDebugMode) {
         print('Error: $error');
       }

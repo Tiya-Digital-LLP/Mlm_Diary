@@ -53,6 +53,7 @@ import 'package:mlmdiary/generated/get_banner_entity.dart';
 import 'package:mlmdiary/generated/get_blog_comment_entity.dart';
 import 'package:mlmdiary/generated/get_blog_list_entity.dart';
 import 'package:mlmdiary/generated/get_category_entity.dart';
+import 'package:mlmdiary/generated/get_classified_detail_entity.dart';
 import 'package:mlmdiary/generated/get_classified_entity.dart';
 import 'package:mlmdiary/generated/get_comment_classified_entity.dart';
 import 'package:mlmdiary/generated/get_comment_news_entity.dart';
@@ -561,6 +562,19 @@ class JsonConvert {
     if (<GetCategoryCategory>[] is M) {
       return data.map<GetCategoryCategory>((Map<String, dynamic> e) =>
           GetCategoryCategory.fromJson(e)).toList() as M;
+    }
+    if (<GetClassifiedDetailEntity>[] is M) {
+      return data.map<GetClassifiedDetailEntity>((Map<String, dynamic> e) =>
+          GetClassifiedDetailEntity.fromJson(e)).toList() as M;
+    }
+    if (<GetClassifiedDetailData>[] is M) {
+      return data.map<GetClassifiedDetailData>((Map<String, dynamic> e) =>
+          GetClassifiedDetailData.fromJson(e)).toList() as M;
+    }
+    if (<GetClassifiedDetailDataUserData>[] is M) {
+      return data.map<GetClassifiedDetailDataUserData>((
+          Map<String, dynamic> e) =>
+          GetClassifiedDetailDataUserData.fromJson(e)).toList() as M;
     }
     if (<GetClassifiedEntity>[] is M) {
       return data.map<GetClassifiedEntity>((Map<String, dynamic> e) =>
@@ -1160,6 +1174,10 @@ class JsonConvertClassCollection {
     (GetBlogListDataUserData).toString(): GetBlogListDataUserData.fromJson,
     (GetCategoryEntity).toString(): GetCategoryEntity.fromJson,
     (GetCategoryCategory).toString(): GetCategoryCategory.fromJson,
+    (GetClassifiedDetailEntity).toString(): GetClassifiedDetailEntity.fromJson,
+    (GetClassifiedDetailData).toString(): GetClassifiedDetailData.fromJson,
+    (GetClassifiedDetailDataUserData)
+        .toString(): GetClassifiedDetailDataUserData.fromJson,
     (GetClassifiedEntity).toString(): GetClassifiedEntity.fromJson,
     (GetClassifiedData).toString(): GetClassifiedData.fromJson,
     (GetClassifiedDataUserData).toString(): GetClassifiedDataUserData.fromJson,
