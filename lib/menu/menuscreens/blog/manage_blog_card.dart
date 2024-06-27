@@ -96,7 +96,7 @@ class _ManageBlogCardState extends State<ManageBlogCard> {
     bookmarkCount.value =
         newBookmarkedValue ? bookmarkCount.value + 1 : bookmarkCount.value - 1;
 
-    await widget.controller.toggleBookMark(widget.blogId);
+    await widget.controller.toggleBookMark(widget.blogId, context);
   }
 
   String getStatusText(int status) {
@@ -249,7 +249,8 @@ class _ManageBlogCardState extends State<ManageBlogCard> {
                     Material(
                       child: InkWell(
                         onTap: () async {
-                        await widget.controller.fetchMyBlog(articleId: widget.blogId);
+                          await widget.controller
+                              .fetchMyBlog(articleId: widget.blogId);
                           Get.toNamed(
                             Routes.blogplusicon,
                           );

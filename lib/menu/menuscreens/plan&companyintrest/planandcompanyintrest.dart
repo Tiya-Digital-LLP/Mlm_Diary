@@ -299,12 +299,11 @@ class _PlanandCompanyState extends State<PlanandCompany> {
                     }
                   }
 
-                  await controller.updateCompany(selectedComapanyname);
+                  await controller.updateCompany(selectedComapanyname, context);
                   Get.back();
                 } else {
                   showToasterrorborder(
-                    "Please select at least one Company.",
-                  );
+                      "Please select at least one Company.", context);
                 }
               } else {
                 bool hasAutoSelected =
@@ -323,11 +322,10 @@ class _PlanandCompanyState extends State<PlanandCompany> {
                     }
                   }
 
-                  await controller.updateUserPlan(selectedPlanname);
+                  await controller.updateUserPlan(selectedPlanname, context);
                 } else {
                   showToasterrorborder(
-                    "Please select at least one field.",
-                  );
+                      "Please select at least one field.", context);
                 }
               }
             },

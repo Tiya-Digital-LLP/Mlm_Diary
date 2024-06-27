@@ -429,7 +429,8 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen> {
                       height: size.height * 0.028,
                       width: size.height * 0.028,
                       child: GestureDetector(
-                        onTap: () => controller.toggleBookMark(post.id ?? 0),
+                        onTap: () =>
+                            controller.toggleBookMark(post.id ?? 0, context),
                         child: Icon(
                           // Observe like status
                           controller.bookmarkStatusMap[post.id ?? 0] ?? false

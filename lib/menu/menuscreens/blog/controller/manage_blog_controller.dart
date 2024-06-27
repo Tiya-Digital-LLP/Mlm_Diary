@@ -117,7 +117,9 @@ class ManageBlogController extends GetxController {
     getBlog(1);
   }
 
-  Future<void> getBlog(int page) async {
+  Future<void> getBlog(
+    int pag,
+  ) async {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -177,9 +179,7 @@ class ManageBlogController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        //
       }
     } catch (e) {
       if (kDebugMode) {
@@ -216,9 +216,7 @@ class ManageBlogController extends GetxController {
       if (connectivityResult == ConnectivityResult.none) {
         if (context != null) {
           // ignore: use_build_context_synchronously
-          showToasterrorborder(
-            "No internet connection",
-          );
+          showToasterrorborder("No internet connection", context);
         }
         isLoading.value = false;
         return;
@@ -273,9 +271,9 @@ class ManageBlogController extends GetxController {
             // Show error message if blog with articleId is not found
             if (context != null) {
               showToasterrorborder(
-                // ignore: use_build_context_synchronously
-                "Blog with ID $articleId not found",
-              );
+                  "Blog with ID $articleId not found",
+                  // ignore: use_build_context_synchronously
+                  context);
             }
           }
         } else {
@@ -286,9 +284,7 @@ class ManageBlogController extends GetxController {
             // Show error message if no data found
             if (context != null) {
               // ignore: use_build_context_synchronously
-              showToasterrorborder(
-                "No data found",
-              );
+              showToasterrorborder("No data found", context);
             }
           }
         }
@@ -375,9 +371,7 @@ class ManageBlogController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        //
       }
     } catch (e) {
       if (kDebugMode) {
@@ -430,9 +424,7 @@ class ManageBlogController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        //
       }
     } catch (e) {
       if (kDebugMode) {
@@ -499,7 +491,7 @@ class ManageBlogController extends GetxController {
     subCategoryError.value = selectedCountSubCategory == 0;
   }
 
-  Future<void> deleteBlog(int blogId, int index) async {
+  Future<void> deleteBlog(int blogId, int index, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
     String device = Platform.isAndroid ? 'android' : 'ios';
@@ -530,9 +522,7 @@ class ManageBlogController extends GetxController {
           var message = data['message'];
 
           if (status == 1) {
-            showToastverifedborder(
-              message!,
-            );
+            showToastverifedborder(message!, context);
             myBlogList.removeAt(index);
           } else {
             if (kDebugMode) {
@@ -549,9 +539,7 @@ class ManageBlogController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -597,18 +585,14 @@ class ManageBlogController extends GetxController {
             likeCountMap[blogId] = (likeCountMap[blogId] ?? 0) - 1;
           }
 
-          showToastverifedborder(
-            message!,
-          );
+          showToastverifedborder(message!, context);
         } else {
           if (kDebugMode) {
             print("Error: ${response.body}");
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -620,7 +604,7 @@ class ManageBlogController extends GetxController {
   }
 
   // Bookmark
-  Future<void> blogBookmark(int blogId) async {
+  Future<void> blogBookmark(int blogId, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
 
@@ -654,18 +638,14 @@ class ManageBlogController extends GetxController {
             bookmarkCountMap[blogId] = (bookmarkCountMap[blogId] ?? 0) - 1;
           }
 
-          showToastverifedborder(
-            message!,
-          );
+          showToastverifedborder(message!, context);
         } else {
           if (kDebugMode) {
             print("Error: ${response.body}");
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -677,9 +657,7 @@ class ManageBlogController extends GetxController {
   }
 
   //update-Blog
-  Future<void> updateBlog({
-    required File? imageFile,
-  }) async {
+  Future<void> updateBlog({required File? imageFile, context}) async {
     isLoading(true);
     String device = '';
     if (Platform.isAndroid) {
@@ -759,9 +737,7 @@ class ManageBlogController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -814,9 +790,7 @@ class ManageBlogController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -828,7 +802,7 @@ class ManageBlogController extends GetxController {
   }
 
   // like_list_blog
-  Future<void> fetchLikeListBlog(int blogId) async {
+  Future<void> fetchLikeListBlog(int blogId, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
     String device = Platform.isAndroid ? 'android' : 'ios';
@@ -897,9 +871,7 @@ class ManageBlogController extends GetxController {
         }
       } else {
         // Log no internet connection
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       // Log exception
@@ -916,7 +888,7 @@ class ManageBlogController extends GetxController {
   }
 
   // comment for news
-  Future<void> getCommentBlog(int page, int blogId) async {
+  Future<void> getCommentBlog(int page, int blogId, context) async {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -974,9 +946,7 @@ class ManageBlogController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -987,7 +957,7 @@ class ManageBlogController extends GetxController {
     }
   }
 
-  Future<void> addReplyBlogComment(int blodId, int commentId) async {
+  Future<void> addReplyBlogComment(int blodId, int commentId, context) async {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -1019,7 +989,7 @@ class ManageBlogController extends GetxController {
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
           var addCommentBlogEntity = AddCommentBlogEntity.fromJson(data);
-          getCommentBlog(1, blodId);
+          getCommentBlog(1, blodId, context);
 
           if (kDebugMode) {
             print('Success: $addCommentBlogEntity');
@@ -1030,9 +1000,7 @@ class ManageBlogController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -1043,7 +1011,7 @@ class ManageBlogController extends GetxController {
     }
   }
 
-  Future<void> deleteComment(int blogId, int commentId) async {
+  Future<void> deleteComment(int blogId, int commentId, context) async {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -1068,16 +1036,14 @@ class ManageBlogController extends GetxController {
         if (response.statusCode == 200) {
           jsonDecode(response.body);
           // Handle success response as needed
-          await getCommentBlog(1, blogId);
+          await getCommentBlog(1, blogId, context);
         } else {
           if (kDebugMode) {
             print("Error: ${response.body}");
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -1088,8 +1054,8 @@ class ManageBlogController extends GetxController {
     }
   }
 
-  Future<void> editComment(
-      int blogId, int commentId, String newComment, String type) async {
+  Future<void> editComment(int blogId, int commentId, String newComment,
+      String type, context) async {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -1115,7 +1081,7 @@ class ManageBlogController extends GetxController {
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
           var editCommentEntity = EditCommentEntity.fromJson(data);
-          await getCommentBlog(1, blogId);
+          await getCommentBlog(1, blogId, context);
 
           if (kDebugMode) {
             print('Success: $editCommentEntity');
@@ -1126,9 +1092,7 @@ class ManageBlogController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -1143,9 +1107,7 @@ class ManageBlogController extends GetxController {
     String enteredTitle = title.value.text;
     if (enteredTitle.isEmpty || hasSpecialCharactersOrNumbers(enteredTitle)) {
       // Show toast message for invalid title
-      showToasterrorborder(
-        "Please Enter Title",
-      );
+      showToasterrorborder("Please Enter Title", context);
       titleError.value = true;
     } else {
       titleError.value = false;
@@ -1162,7 +1124,7 @@ class ManageBlogController extends GetxController {
     await likedBlogUser(blogId, context);
   }
 
-  Future<void> toggleBookMark(int blogId) async {
+  Future<void> toggleBookMark(int blogId, context) async {
     bool isBookmark = bookmarkStatusMap[blogId] ?? false;
     isBookmark = !isBookmark;
     bookmarkStatusMap[blogId] = isBookmark;
@@ -1170,16 +1132,14 @@ class ManageBlogController extends GetxController {
         blogId, (value) => isBookmark ? value + 1 : value - 1,
         ifAbsent: () => isBookmark ? 1 : 0);
 
-    await blogBookmark(blogId);
+    await blogBookmark(blogId, context);
   }
 
   void discriptionValidation(context) {
     String enteredDiscription = discription.value.text;
     if (enteredDiscription.isEmpty ||
         hasSpecialTextOrNumbers(enteredDiscription)) {
-      showToasterrorborder(
-        "Please Enter Discription",
-      );
+      showToasterrorborder("Please Enter Discription", context);
       discriptionError.value = true;
     } else {
       discriptionError.value = false;

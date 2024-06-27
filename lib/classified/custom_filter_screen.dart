@@ -240,7 +240,8 @@ void showSelectCategory(
                           GestureDetector(
                             onTap: () {
                               if (!controller.isCategorySelectedList[index]) {
-                                controller.toggleCategorySelected(index);
+                                controller.toggleCategorySelected(
+                                    index, context);
                               } else {
                                 Fluttertoast.showToast(
                                   msg: "Please select only one category.",
@@ -262,8 +263,8 @@ void showSelectCategory(
                                       onTap: () {
                                         if (!controller
                                             .isCategorySelectedList[index]) {
-                                          controller
-                                              .toggleCategorySelected(index);
+                                          controller.toggleCategorySelected(
+                                              index, context);
                                         } else {
                                           Fluttertoast.showToast(
                                             msg:

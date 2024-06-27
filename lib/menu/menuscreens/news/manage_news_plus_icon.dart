@@ -305,33 +305,24 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
 
   Future<void> handleSaveButtonPressed() async {
     if (controller.title.value.text.isEmpty) {
-      showToasterrorborder(
-        "Please Enter Your News Title",
-      );
+      showToasterrorborder("Please Enter Your News Title", context);
     } else if (controller
         .getSelectedCategoryTextController()
         .value
         .text
         .isEmpty) {
-      showToasterrorborder(
-        "Please Select Category",
-      );
+      showToasterrorborder("Please Select Category", context);
     } else if (controller
         .getSelectedSubCategoryTextController()
         .value
         .text
         .isEmpty) {
-      showToasterrorborder(
-        "Please Select Sub Category",
-      );
+      showToasterrorborder("Please Select Sub Category", context);
     } else if (controller.discription.value.text.isEmpty) {
       showToasterrorborder(
-        "Please Enter Description Minimum 250 Characters",
-      );
+          "Please Enter Description Minimum 250 Characters", context);
     } else if (file.value == null && controller.userImage.value.isEmpty) {
-      showToasterrorborder(
-        "Please Upload Photo",
-      );
+      showToasterrorborder("Please Upload Photo", context);
     } else {
       try {
         await controller.updateNews(imageFile: file.value);
@@ -435,10 +426,8 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
 
       Get.back();
     } else {
-      showToasterrorborder(
-        'Please select an image',
-        // ignore: use_build_context_synchronously
-      );
+      // ignore: use_build_context_synchronously
+      showToasterrorborder('Please select an image', context);
       return; // Exit function if no image is selected
     }
   }

@@ -180,7 +180,8 @@ class _FolowersState extends State<Folowers> with TickerProviderStateMixin {
                                                     onPressed: () {
                                                       controller
                                                           .toggleProfileFollow(
-                                                              follower.id ?? 0);
+                                                              follower.id ?? 0,
+                                                              context);
                                                     },
                                                     child: Text(
                                                       follower.isFollowing ??
@@ -283,8 +284,8 @@ class _FolowersState extends State<Folowers> with TickerProviderStateMixin {
                                                     onPressed: () {
                                                       controller
                                                           .toggleProfileFollow(
-                                                              following.id ??
-                                                                  0);
+                                                              following.id ?? 0,
+                                                              context);
                                                     },
                                                     child: Text(
                                                       following.isFollowing ??

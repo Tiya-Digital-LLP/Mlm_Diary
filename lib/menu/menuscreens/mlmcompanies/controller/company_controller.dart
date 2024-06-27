@@ -115,9 +115,7 @@ class CompanyController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        //
       }
     } catch (e) {
       if (kDebugMode) {
@@ -163,18 +161,14 @@ class CompanyController extends GetxController {
             likeCountMap[companyId] = (likeCountMap[companyId] ?? 0) - 1;
           }
 
-          showToastverifedborder(
-            message!,
-          );
+          showToastverifedborder(message!, context);
         } else {
           if (kDebugMode) {
             print("Error: ${response.body}");
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -228,9 +222,7 @@ class CompanyController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -253,7 +245,7 @@ class CompanyController extends GetxController {
   }
 
   // Bookmark
-  Future<void> bookmarkCompany(int companyId) async {
+  Future<void> bookmarkCompany(int companyId, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
 
@@ -290,18 +282,14 @@ class CompanyController extends GetxController {
                 (bookmarkCountMap[companyId] ?? 0) - 1;
           }
 
-          showToastverifedborder(
-            message!,
-          );
+          showToastverifedborder(message!, context);
         } else {
           if (kDebugMode) {
             print("Error: ${response.body}");
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -312,7 +300,7 @@ class CompanyController extends GetxController {
     }
   }
 
-  Future<void> toggleBookMark(int companyId) async {
+  Future<void> toggleBookMark(int companyId, context) async {
     bool isBookmark = likedStatusMap[companyId] ?? false;
     isBookmark = !isBookmark;
     likedStatusMap[companyId] = isBookmark;
@@ -320,11 +308,11 @@ class CompanyController extends GetxController {
         companyId, (value) => isBookmark ? value + 1 : value - 1,
         ifAbsent: () => isBookmark ? 1 : 0);
 
-    await bookmarkCompany(companyId);
+    await bookmarkCompany(companyId, context);
   }
 
   // comment for Post
-  Future<void> getCommentCompany(int page, int companyId) async {
+  Future<void> getCommentCompany(int page, int companyId, context) async {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -383,9 +371,7 @@ class CompanyController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -396,7 +382,8 @@ class CompanyController extends GetxController {
     }
   }
 
-  Future<void> addReplyCompanyComment(int companyId, int commentId) async {
+  Future<void> addReplyCompanyComment(
+      int companyId, int commentId, context) async {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -428,7 +415,7 @@ class CompanyController extends GetxController {
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
           var addCompanyCommentEntity = AddCompanyCommentEntity.fromJson(data);
-          getCommentCompany(1, companyId);
+          getCommentCompany(1, companyId, context);
 
           if (kDebugMode) {
             print('Success: $addCompanyCommentEntity');
@@ -439,9 +426,7 @@ class CompanyController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -452,7 +437,7 @@ class CompanyController extends GetxController {
     }
   }
 
-  Future<void> deleteComment(int blogId, int commentId) async {
+  Future<void> deleteComment(int blogId, int commentId, context) async {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -477,16 +462,14 @@ class CompanyController extends GetxController {
         if (response.statusCode == 200) {
           jsonDecode(response.body);
           // Handle success response as needed
-          await getCommentCompany(1, blogId);
+          await getCommentCompany(1, blogId, context);
         } else {
           if (kDebugMode) {
             print("Error: ${response.body}");
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -497,8 +480,8 @@ class CompanyController extends GetxController {
     }
   }
 
-  Future<void> editComment(
-      int companyId, int commentId, String newComment, String type) async {
+  Future<void> editComment(int companyId, int commentId, String newComment,
+      String type, context) async {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -524,7 +507,7 @@ class CompanyController extends GetxController {
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
           var editCommentEntity = EditCommentEntity.fromJson(data);
-          await getCommentCompany(1, companyId);
+          await getCommentCompany(1, companyId, context);
 
           if (kDebugMode) {
             print('Success: $editCommentEntity');
@@ -535,9 +518,7 @@ class CompanyController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {

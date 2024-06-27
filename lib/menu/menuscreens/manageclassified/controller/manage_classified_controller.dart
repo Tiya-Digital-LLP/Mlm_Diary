@@ -189,9 +189,7 @@ class ManageClasifiedController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        //
       }
     } catch (e) {
       if (kDebugMode) {
@@ -227,9 +225,7 @@ class ManageClasifiedController extends GetxController {
       var connectivityResult = await (Connectivity().checkConnectivity());
       // ignore: unrelated_type_equality_checks
       if (connectivityResult == ConnectivityResult.none) {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
         isLoading.value = false;
         return;
       }
@@ -340,9 +336,7 @@ class ManageClasifiedController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        //
       }
     } catch (e) {
       if (kDebugMode) {
@@ -351,13 +345,15 @@ class ManageClasifiedController extends GetxController {
     }
   }
 
-  void toggleCategorySelected(int index) {
+  void toggleCategorySelected(int index, context) {
     isCategorySelectedList[index] = !isCategorySelectedList[index];
 
     selectedCountCategory.value = isCategorySelectedList[index] ? 1 : 0;
 
     if (isCategorySelectedList[index]) {
-      fetchSubCategoryList(categorylist[index].id!);
+      fetchSubCategoryList(
+        categorylist[index].id!,
+      );
     }
   }
 
@@ -378,7 +374,9 @@ class ManageClasifiedController extends GetxController {
     categoryError.value = selectedCountCategory == 0;
   }
 
-  Future<void> fetchSubCategoryList(int categoryId) async {
+  Future<void> fetchSubCategoryList(
+    int categoryId,
+  ) async {
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
       // ignore: unrelated_type_equality_checks
@@ -422,9 +420,7 @@ class ManageClasifiedController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        //
       }
     } catch (e) {
       if (kDebugMode) {
@@ -504,9 +500,7 @@ class ManageClasifiedController extends GetxController {
 
   //updateclassified
 
-  Future<void> updateClassified({
-    required File? imageFile,
-  }) async {
+  Future<void> updateClassified({required File? imageFile, context}) async {
     isLoading(true);
     String device = '';
     if (Platform.isAndroid) {
@@ -590,9 +584,7 @@ class ManageClasifiedController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -830,9 +822,7 @@ class ManageClasifiedController extends GetxController {
           //
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       //
@@ -966,18 +956,14 @@ class ManageClasifiedController extends GetxController {
             print('Success: $boostOnTopClassifiedEntity');
           }
 
-          showToastverifedborder(
-            "Success: Your Post On Top",
-          );
+          showToastverifedborder("Success: Your Post On Top", context);
         } else {
           if (kDebugMode) {
             print('HTTP Error: ${response.statusCode}');
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
         if (kDebugMode) {
           print('No internet connection');
         }
@@ -1051,9 +1037,7 @@ class ManageClasifiedController extends GetxController {
         }
       } else {
         // ignore: use_build_context_synchronously
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
         if (kDebugMode) {
           print('No internet connection');
         }

@@ -98,7 +98,7 @@ class _NewsCardState extends State<NewsCard> {
     bookmarkCount.value =
         newBookmarkedValue ? bookmarkCount.value + 1 : bookmarkCount.value - 1;
 
-    await widget.controller.toggleBookMark(widget.newsId);
+    await widget.controller.toggleBookMark(widget.newsId, context);
   }
 
   @override
@@ -333,6 +333,6 @@ class _NewsCardState extends State<NewsCard> {
   }
 
   void fetchLikeList() async {
-    await widget.controller.fetchLikeListNews(widget.newsId);
+    await widget.controller.fetchLikeListNews(widget.newsId, context);
   }
 }

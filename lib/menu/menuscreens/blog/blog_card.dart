@@ -98,7 +98,7 @@ class _BlogCardState extends State<BlogCard> {
     bookmarkCount.value =
         newBookmarkedValue ? bookmarkCount.value + 1 : bookmarkCount.value - 1;
 
-    await widget.controller.toggleBookMark(widget.blogId);
+    await widget.controller.toggleBookMark(widget.blogId, context);
   }
 
   @override
@@ -337,6 +337,6 @@ class _BlogCardState extends State<BlogCard> {
   }
 
   void fetchLikeList() async {
-    await widget.controller.fetchLikeListBlog(widget.blogId);
+    await widget.controller.fetchLikeListBlog(widget.blogId, context);
   }
 }

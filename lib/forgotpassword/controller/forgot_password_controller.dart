@@ -29,9 +29,7 @@ class ForgotPasswordController extends GetxController {
 
   void forgotValidation(BuildContext context) {
     if (email.value.text.isEmpty) {
-      showToasterrorborder(
-        "Please Enter Email",
-      );
+      showToasterrorborder("Please Enter Email", context);
     } else {
       sendForgotPasswordRequest(context);
     }
@@ -60,17 +58,16 @@ class ForgotPasswordController extends GetxController {
         if (forgotPasswordEntity.result == 1) {
           // ignore: use_build_context_synchronously
           showToastverifedborder(
-            "Password reset email sent successfully!",
-            // ignore: use_build_context_synchronously
-          );
+              "Password reset email sent successfully!",
+              // ignore: use_build_context_synchronously
+              context);
           if (forgotPasswordEntity.userId != null) {
             await saveUserId(forgotPasswordEntity.userId!); // Save userId
           } else {
             showToasterrorborder(
-              // ignore: use_build_context_synchronously
-              "User ID is null, cannot save to shared preferences",
-              // ignore: use_build_context_synchronously
-            );
+                "User ID is null, cannot save to shared preferences",
+                // ignore: use_build_context_synchronously
+                context);
           }
 
           Get.toNamed(
@@ -82,21 +79,17 @@ class ForgotPasswordController extends GetxController {
           );
         } else {
           showToasterrorborder(
-            forgotPasswordEntity.message ?? "Forgot password request failed",
-            // ignore: use_build_context_synchronously
-          );
+              forgotPasswordEntity.message ?? "Forgot password request failed",
+              // ignore: use_build_context_synchronously
+              context);
         }
       } else {
         showToasterrorborder(
-          "Forgot password request failed: ${response.reasonPhrase}",
-          // ignore: use_build_context_synchronously
-        );
+            "Forgot password request failed: ${response.reasonPhrase}",
+            // ignore: use_build_context_synchronously
+            context);
       }
     } catch (e) {
-      // ignore: use_build_context_synchronously
-      showToasterrorborder(
-        "An error occurred: $e",
-      );
       if (kDebugMode) {
         print('Error: $e');
       }
@@ -136,30 +129,23 @@ class ForgotPasswordController extends GetxController {
         final responseData = json.decode(response.body);
         if (responseData['result'] == 1) {
           // ignore: use_build_context_synchronously
-          showToastverifedborder(
-            "Password changed successfully!",
-          );
+          showToastverifedborder("Password changed successfully!", context);
           Get.offNamed(
             Routes.mainscreen,
           );
         } else {
           showToasterrorborder(
-            // ignore: use_build_context_synchronously
-            responseData['message'] ?? "Password change failed",
-            // ignore: use_build_context_synchronously
-          );
+              responseData['message'] ?? "Password change failed",
+              // ignore: use_build_context_synchronously
+              context);
         }
       } else {
         showToasterrorborder(
-          "Password change request failed: ${response.reasonPhrase}",
-          // ignore: use_build_context_synchronously
-        );
+            "Password change request failed: ${response.reasonPhrase}",
+            // ignore: use_build_context_synchronously
+            context);
       }
     } catch (e) {
-      // ignore: use_build_context_synchronously
-      showToasterrorborder(
-        "An error occurred: $e",
-      );
       if (kDebugMode) {
         print('Error: $e');
       }

@@ -27,7 +27,6 @@ class ClassifiedCard extends StatefulWidget {
   final String url;
   final bool likedbyuser;
   final bool bookmarkedbyuser;
-
   final int commentcount;
 
   const ClassifiedCard({
@@ -56,10 +55,8 @@ class ClassifiedCard extends StatefulWidget {
 class _ClassifiedCardState extends State<ClassifiedCard> {
   late RxBool isLiked;
   late RxBool isBookmarked;
-
   late RxInt likeCount;
   late RxInt bookmarkCount;
-
   late PostTimeFormatter postTimeFormatter;
 
   bool showCommentBox = false;
@@ -73,18 +70,13 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
   }
 
   void initializeLikes() {
-    isLiked =
-        RxBool(widget.controller.likedStatusMap[widget.classifiedId] ?? false);
-    likeCount = RxInt(widget.controller.likeCountMap[widget.classifiedId] ??
-        widget.likedCount);
+    isLiked = RxBool(widget.likedbyuser);
+    likeCount = RxInt(widget.likedCount);
   }
 
   void initializeBookmarks() {
-    isBookmarked = RxBool(
-        widget.controller.bookmarkStatusMap[widget.classifiedId] ?? false);
-    bookmarkCount = RxInt(
-        widget.controller.bookmarkCountMap[widget.classifiedId] ??
-            widget.bookmarkCount);
+    isBookmarked = RxBool(widget.bookmarkedbyuser);
+    bookmarkCount = RxInt(widget.bookmarkCount);
   }
 
   void toggleLike() async {
@@ -99,7 +91,7 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
     isBookmarked.value = newBookmarkedValue;
     bookmarkCount.value =
         newBookmarkedValue ? bookmarkCount.value + 1 : bookmarkCount.value - 1;
-    await widget.controller.toggleBookMark(widget.classifiedId);
+    await widget.controller.toggleBookMark(widget.classifiedId, context);
   }
 
   @override
@@ -147,7 +139,7 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
                   ],
                 ),
                 const Spacer(),
-                if (widget.isPopular != false)
+                if (widget.isPopular)
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.yellow,
@@ -209,31 +201,16 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
               children: [
                 Row(
                   children: [
-                    // SizedBox(
-                    //   height: size.height * 0.028,
-                    //   width: size.height * 0.028,
-                    //   child: InkWell(
-                    //     onTap: toggleLike,
-                    //     child: Icon(
-                    //       isLiked.value
-                    //           ? Icons.thumb_up_off_alt_sharp
-                    //           : Icons.thumb_up_off_alt_outlined,
-                    //       color: isLiked.value ? AppColors.primaryColor : null,
-                    //     ),
-                    //   ),
-                    // ),
                     SizedBox(
                       height: size.height * 0.028,
                       width: size.height * 0.028,
                       child: InkWell(
                         onTap: toggleLike,
                         child: Icon(
-                          widget.likedbyuser
+                          isLiked.value
                               ? Icons.thumb_up_off_alt_sharp
                               : Icons.thumb_up_off_alt_outlined,
-                          color: widget.likedbyuser
-                              ? AppColors.primaryColor
-                              : null,
+                          color: isLiked.value ? AppColors.primaryColor : null,
                         ),
                       ),
                     ),
@@ -294,26 +271,13 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
                 ),
                 Row(
                   children: [
-                    // SizedBox(
-                    //   height: size.height * 0.028,
-                    //   width: size.height * 0.028,
-                    //   child: GestureDetector(
-                    //     onTap: () => toggleBookmark(),
-                    //     child: SvgPicture.asset(
-                    //       isBookmarked.value
-                    //           ? Assets.svgCheckBookmark
-                    //           : Assets.svgSavePost,
-                    //       height: size.height * 0.032,
-                    //     ),
-                    //   ),
-                    // ),
                     SizedBox(
                       height: size.height * 0.028,
                       width: size.height * 0.028,
                       child: GestureDetector(
                         onTap: () => toggleBookmark(),
                         child: SvgPicture.asset(
-                          widget.bookmarkedbyuser
+                          isBookmarked.value
                               ? Assets.svgCheckBookmark
                               : Assets.svgSavePost,
                           height: size.height * 0.032,
@@ -356,6 +320,7 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
   }
 
   void fetchLikeList() async {
-    await widget.controller.fetchLikeListClassified(widget.classifiedId);
+    await widget.controller
+        .fetchLikeListClassified(widget.classifiedId, context);
   }
 }

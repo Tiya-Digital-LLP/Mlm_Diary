@@ -71,7 +71,7 @@ class _CustomSocialState extends State<CustomSocial> {
                         if (kDebugMode) {
                           print('tap');
                         }
-                        await controller.updateSocialMedia();
+                        await controller.updateSocialMedia(context);
                       },
                       text: 'Save & Update'),
                 ],

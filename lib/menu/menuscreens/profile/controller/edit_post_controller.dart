@@ -81,9 +81,7 @@ class EditPostController extends GetxController {
       var connectivityResult = await (Connectivity().checkConnectivity());
       // ignore: unrelated_type_equality_checks
       if (connectivityResult == ConnectivityResult.none) {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
         isLoading.value = false;
         return;
       }
@@ -135,15 +133,11 @@ class EditPostController extends GetxController {
         }
       } else {
         // Handle error response
-        showToasterrorborder(
-          "Failed to fetch data",
-        );
+        showToasterrorborder("Failed to fetch data", context);
       }
     } catch (error) {
       // Handle network or parsing errors
-      showToasterrorborder(
-        "An error occurred: $error",
-      );
+      showToasterrorborder("An error occurred: $error", context);
     } finally {
       isLoading.value = false;
     }
@@ -161,9 +155,7 @@ class EditPostController extends GetxController {
       var connectivityResult = await (Connectivity().checkConnectivity());
       // ignore: unrelated_type_equality_checks
       if (connectivityResult == ConnectivityResult.none) {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
         isLoading.value = false;
         return;
       }
@@ -193,23 +185,17 @@ class EditPostController extends GetxController {
           postList.add(firstPost);
         }
       } else {
-        showToasterrorborder(
-          "Failed to fetch data",
-        );
+        showToasterrorborder("Failed to fetch data", context);
       }
     } catch (error) {
-      showToasterrorborder(
-        "An error occurred: $error",
-      );
+      showToasterrorborder("An error occurred: $error", context);
     } finally {
       isLoading.value = false;
     }
   }
 
-  Future<void> editPost({
-    required File? imageFile,
-    required File? videoFile,
-  }) async {
+  Future<void> editPost(
+      {required File? imageFile, required File? videoFile, context}) async {
     isLoading(true);
     String device = Platform.isAndroid ? 'android' : 'ios';
 
@@ -307,9 +293,7 @@ class EditPostController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -321,7 +305,7 @@ class EditPostController extends GetxController {
   }
 
   // Delete-Post
-  Future<void> deletePost(int postId, int index) async {
+  Future<void> deletePost(int postId, int index, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
     String device = Platform.isAndroid ? 'android' : 'ios';
@@ -373,9 +357,7 @@ class EditPostController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -433,9 +415,7 @@ class EditPostController extends GetxController {
           //
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -481,9 +461,7 @@ class EditPostController extends GetxController {
             likeCountMap[postId] = (likeCountMap[postId] ?? 0) - 1;
           }
 
-          showToastverifedborder(
-            message!,
-          );
+          showToastverifedborder(message!, context);
         } else {
           if (kDebugMode) {
             print("Response body: ${response.body}");
@@ -491,9 +469,7 @@ class EditPostController extends GetxController {
         }
       } else {
         if (kDebugMode) {
-          showToasterrorborder(
-            "No internet connection available.",
-          );
+          showToasterrorborder("No internet connection available.", context);
         }
       }
     } catch (e) {
@@ -550,18 +526,14 @@ class EditPostController extends GetxController {
             bookmarkCountMap[postId] = (bookmarkCountMap[postId] ?? 0) - 1;
           }
 
-          showToastverifedborder(
-            message!,
-          );
+          showToastverifedborder(message!, context);
         } else {
           if (kDebugMode) {
             print("Response body: ${response.body}");
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -584,7 +556,7 @@ class EditPostController extends GetxController {
   }
 
   // like_list_blog
-  Future<void> fetchLikeListPost(int postId) async {
+  Future<void> fetchLikeListPost(int postId, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
     String device = Platform.isAndroid ? 'android' : 'ios';
@@ -652,9 +624,7 @@ class EditPostController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       // Log exception
@@ -707,18 +677,14 @@ class EditPostController extends GetxController {
                 (bookmarkCountMap[databaseId] ?? 0) - 1;
           }
 
-          showToastverifedborder(
-            message!,
-          );
+          showToastverifedborder(message!, context);
         } else {
           if (kDebugMode) {
             print("Error: ${response.body}");
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -777,18 +743,14 @@ class EditPostController extends GetxController {
                 (bookmarkProfileCountMap[userId] ?? 0) - 1;
           }
 
-          showToastverifedborder(
-            message!,
-          );
+          showToastverifedborder(message!, context);
         } else {
           if (kDebugMode) {
             print("Error: ${response.body}");
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -811,7 +773,7 @@ class EditPostController extends GetxController {
   }
 
   // comment for Post
-  Future<void> getCommentPost(int page, int postId) async {
+  Future<void> getCommentPost(int page, int postId, context) async {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -870,9 +832,7 @@ class EditPostController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -883,7 +843,7 @@ class EditPostController extends GetxController {
     }
   }
 
-  Future<void> addReplyPostComment(int postId, int commentId) async {
+  Future<void> addReplyPostComment(int postId, int commentId, context) async {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -915,7 +875,7 @@ class EditPostController extends GetxController {
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
           var addPostCommentEntity = AddPostCommentEntity.fromJson(data);
-          getCommentPost(1, postId);
+          getCommentPost(1, postId, context);
 
           if (kDebugMode) {
             print('Success: $addPostCommentEntity');
@@ -926,9 +886,7 @@ class EditPostController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -939,7 +897,7 @@ class EditPostController extends GetxController {
     }
   }
 
-  Future<void> deleteComment(int postId, int commentId) async {
+  Future<void> deleteComment(int postId, int commentId, context) async {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -964,16 +922,14 @@ class EditPostController extends GetxController {
         if (response.statusCode == 200) {
           jsonDecode(response.body);
           // Handle success response as needed
-          await getCommentPost(1, postId);
+          await getCommentPost(1, postId, context);
         } else {
           if (kDebugMode) {
             print("Error: ${response.body}");
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -984,8 +940,8 @@ class EditPostController extends GetxController {
     }
   }
 
-  Future<void> editComment(
-      int postId, int commentId, String newComment, String type) async {
+  Future<void> editComment(int postId, int commentId, String newComment,
+      String type, context) async {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -1011,7 +967,7 @@ class EditPostController extends GetxController {
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
           var editCommentEntity = EditCommentEntity.fromJson(data);
-          await getCommentPost(1, postId);
+          await getCommentPost(1, postId, context);
 
           if (kDebugMode) {
             print('Success: $editCommentEntity');
@@ -1022,9 +978,7 @@ class EditPostController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {

@@ -425,8 +425,8 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                     height: size.height * 0.028,
                     width: size.height * 0.028,
                     child: GestureDetector(
-                      onTap: () =>
-                          controller.toggleBookMark(post.articleId ?? 0),
+                      onTap: () => controller.toggleBookMark(
+                          post.articleId ?? 0, context),
                       child: Icon(
                         // Observe like status
                         controller.bookmarkStatusMap[post.articleId ?? 0] ??

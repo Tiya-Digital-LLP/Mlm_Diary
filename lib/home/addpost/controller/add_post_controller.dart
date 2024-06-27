@@ -14,10 +14,8 @@ class AddPostController extends GetxController {
   Rx<TextEditingController> comments = TextEditingController().obs;
   var isLoading = false.obs;
 
-  Future<void> addPost({
-    required File? imageFile,
-    required File? videoFile,
-  }) async {
+  Future<void> addPost(
+      {required File? imageFile, required File? videoFile, context}) async {
     isLoading(true);
     String device = Platform.isAndroid ? 'android' : 'ios';
 
@@ -128,9 +126,7 @@ class AddPostController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {

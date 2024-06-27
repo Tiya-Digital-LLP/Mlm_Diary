@@ -50,7 +50,7 @@ class _UserQuestionState extends State<UserQuestion> {
       controller.getQuestion(1);
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.countViewQuestion(post.id ?? 0);
+      controller.countViewQuestion(post.id ?? 0, context);
     });
     _scrollController = ScrollController();
     _scrollController.addListener(_scrollListener);
@@ -306,9 +306,7 @@ class _UserQuestionState extends State<UserQuestion> {
                             }
 
                             await controller.addReplyAnswerComment(
-                              post.id!,
-                              commentId,
-                            );
+                                post.id!, commentId, context);
                             controller.commment.value.clear();
                             Get.back();
                           },
@@ -510,7 +508,7 @@ class _UserQuestionState extends State<UserQuestion> {
           TextButton(
             onPressed: () async {
               Navigator.of(context).pop(true);
-              await controller.deleteComment(post.id!, commentId);
+              await controller.deleteComment(post.id!, commentId, context);
               await _refreshData();
             },
             child: const Text('Delete'),
@@ -578,19 +576,11 @@ class _UserQuestionState extends State<UserQuestion> {
                   String editedComment = editController.text;
                   Navigator.of(context).pop();
                   if (isReply) {
-                    await controller.editComment(
-                      post.id!,
-                      data.id ?? 0,
-                      editedComment,
-                      'ansewer',
-                    );
+                    await controller.editComment(post.id!, data.id ?? 0,
+                        editedComment, 'ansewer', context);
                   } else {
-                    await controller.editComment(
-                      post.id!,
-                      data.id ?? 0,
-                      editedComment,
-                      'ansewer',
-                    );
+                    await controller.editComment(post.id!, data.id ?? 0,
+                        editedComment, 'ansewer', context);
                   }
                   await _refreshData();
                 },
@@ -1083,7 +1073,8 @@ class _UserQuestionState extends State<UserQuestion> {
                                     if (answerText.isNotEmpty) {
                                       controller.answerValidation(context);
                                       if (!controller.answerError.value) {
-                                        controller.addAnswers(post.id ?? 0);
+                                        controller.addAnswers(
+                                            post.id ?? 0, context);
                                       }
                                     }
                                   },

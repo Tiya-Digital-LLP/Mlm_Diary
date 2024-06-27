@@ -101,9 +101,7 @@ class IntrestController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        //
       }
     } catch (e) {
       if (kDebugMode) {
@@ -177,9 +175,7 @@ class IntrestController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        //
       }
     } catch (e) {
       if (kDebugMode) {
@@ -190,7 +186,7 @@ class IntrestController extends GetxController {
     }
   }
 
-  Future<void> updateUserPlan(List<String> selectedPlanname) async {
+  Future<void> updateUserPlan(List<String> selectedPlanname, context) async {
     isLoading.value = true;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
@@ -226,9 +222,7 @@ class IntrestController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -239,7 +233,7 @@ class IntrestController extends GetxController {
     }
   }
 
-  Future<void> updateCompany(List<String> selectedComapanyname) async {
+  Future<void> updateCompany(List<String> selectedComapanyname, context) async {
     isLoading.value = true;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
@@ -275,9 +269,7 @@ class IntrestController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -288,7 +280,7 @@ class IntrestController extends GetxController {
     }
   }
 
-  Future<void> updateUserCompany() async {
+  Future<void> updateUserCompany(context) async {
     isLoading.value = true;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
@@ -325,9 +317,7 @@ class IntrestController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {

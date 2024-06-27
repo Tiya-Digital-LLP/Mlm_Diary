@@ -367,6 +367,6 @@ class _MyProfileCardState extends State<MyProfileCard> {
   }
 
   void fetchLikeList() async {
-    await widget.controller.fetchLikeListPost(widget.postId);
+    await widget.controller.fetchLikeListPost(widget.postId, context);
   }
 }

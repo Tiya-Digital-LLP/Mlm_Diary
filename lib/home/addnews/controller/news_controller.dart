@@ -136,9 +136,7 @@ class NewsController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -188,9 +186,7 @@ class NewsController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        //
       }
     } catch (e) {
       if (kDebugMode) {
@@ -199,7 +195,9 @@ class NewsController extends GetxController {
     }
   }
 
-  Future<void> fetchSubCategoryList(int categoryId) async {
+  Future<void> fetchSubCategoryList(
+    int categoryId,
+  ) async {
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
       // ignore: unrelated_type_equality_checks
@@ -243,9 +241,7 @@ class NewsController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        //
       }
     } catch (e) {
       if (kDebugMode) {
@@ -316,9 +312,7 @@ class NewsController extends GetxController {
     String enteredTitle = title.value.text;
     if (enteredTitle.isEmpty || hasSpecialCharactersOrNumbers(enteredTitle)) {
       // Show toast message for invalid title
-      showToasterrorborder(
-        "Please Enter Title",
-      );
+      showToasterrorborder("Please Enter Title", context);
       titleError.value = true;
     } else {
       titleError.value = false;
@@ -344,9 +338,7 @@ class NewsController extends GetxController {
     String enteredDiscription = discription.value.text;
     if (enteredDiscription.isEmpty ||
         hasSpecialTextOrNumbers(enteredDiscription)) {
-      showToasterrorborder(
-        "Please Enter Discription",
-      );
+      showToasterrorborder("Please Enter Discription", context);
       discriptionError.value = true;
     } else {
       discriptionError.value = false;

@@ -388,20 +388,16 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                   titleColor: AppColors.white,
                   onTap: () {
                     if (file.value == null) {
-                      showToasterrorborder(
-                        "Please Upload Photo",
-                      );
+                      showToasterrorborder("Please Upload Photo", context);
                     } else if (controller.companyName.value.text.isEmpty) {
                       showToasterrorborder(
-                        "Please Enter Company Name",
-                      );
+                          "Please Enter Company Name", context);
                     } else {
                       if (controller.selectedCountPlan > 0) {
                         // Retrieve city information from the location text field
                         if (controller.city.value.text.isEmpty) {
                           showToasterrorborder(
-                            "Please select a valid location.",
-                          );
+                              "Please select a valid location.", context);
                         } else {
                           controller.saveCompanyDetails(
                             imageFile: file.value,
@@ -409,8 +405,7 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                         }
                       } else {
                         showToasterrorborder(
-                          "Please select at least one plan.",
-                        );
+                            "Please select at least one plan.", context);
                       }
                     }
                   },
@@ -530,8 +525,7 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                         Get.back();
                       } else {
                         showToasterrorborder(
-                          "Please select at least one field.",
-                        );
+                            "Please select at least one field.", context);
                       }
                     },
                   ),

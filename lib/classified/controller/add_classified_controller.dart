@@ -125,7 +125,9 @@ class ClasifiedController extends GetxController {
               scrollController.position.maxScrollExtent &&
           !isEndOfData.value) {
         int nextPage = (classifiedList.length ~/ 10) + 1;
-        getClassified(nextPage);
+        getClassified(
+          nextPage,
+        );
       }
     });
   }
@@ -153,9 +155,7 @@ class ClasifiedController extends GetxController {
       var connectivityResult = await (Connectivity().checkConnectivity());
       // ignore: unrelated_type_equality_checks
       if (connectivityResult == ConnectivityResult.none) {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
         isLoading.value = false;
         return;
       }
@@ -227,7 +227,9 @@ class ClasifiedController extends GetxController {
                 .assignAll(List<bool>.filled(categorylist.length, false));
             if (categorylist.isNotEmpty) {
               // Fetch subcategories for the first category by default
-              fetchSubCategoryList(categorylist[0].id!);
+              fetchSubCategoryList(
+                categorylist[0].id!,
+              );
             }
             if (kDebugMode) {
               print("category list: $categorylist");
@@ -242,9 +244,7 @@ class ClasifiedController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        //
       }
     } catch (e) {
       if (kDebugMode) {
@@ -253,7 +253,7 @@ class ClasifiedController extends GetxController {
     }
   }
 
-  void toggleCategorySelected(int index) {
+  void toggleCategorySelected(int index, context) {
     // Deselect all categories first
     for (int i = 0; i < isCategorySelectedList.length; i++) {
       isCategorySelectedList[i] = false;
@@ -266,7 +266,9 @@ class ClasifiedController extends GetxController {
     selectedCountCategory.value = 1;
 
     // Fetch subcategory list for the selected category
-    fetchSubCategoryList(categorylist[index].id!);
+    fetchSubCategoryList(
+      categorylist[index].id!,
+    );
   }
 
   TextEditingController getSelectedCategoryTextController() {
@@ -286,7 +288,9 @@ class ClasifiedController extends GetxController {
     categoryError.value = selectedCountCategory == 0;
   }
 
-  Future<void> fetchSubCategoryList(int categoryId) async {
+  Future<void> fetchSubCategoryList(
+    int categoryId,
+  ) async {
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
       // ignore: unrelated_type_equality_checks
@@ -330,9 +334,7 @@ class ClasifiedController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        //
       }
     } catch (e) {
       if (kDebugMode) {
@@ -372,7 +374,9 @@ class ClasifiedController extends GetxController {
     subCategoryError.value = selectedCountSubCategory == 0;
   }
 
-  Future<void> getClassified(int page) async {
+  Future<void> getClassified(
+    int page,
+  ) async {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -434,9 +438,7 @@ class ClasifiedController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        //
       }
     } catch (e) {
       if (kDebugMode) {
@@ -483,18 +485,14 @@ class ClasifiedController extends GetxController {
             likeCountMap[classifiedId] = (likeCountMap[classifiedId] ?? 0) - 1;
           }
 
-          showToastverifedborder(
-            message!,
-          );
+          showToastverifedborder(message!, context);
         } else {
           if (kDebugMode) {
             print("Error: ${response.body}");
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        //
       }
     } catch (e) {
       if (kDebugMode) {
@@ -506,7 +504,7 @@ class ClasifiedController extends GetxController {
   }
 
   // Bookmark
-  Future<void> bookmarkUser(int classifiedId) async {
+  Future<void> bookmarkUser(int classifiedId, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
 
@@ -543,18 +541,14 @@ class ClasifiedController extends GetxController {
                 (bookmarkCountMap[classifiedId] ?? 0) - 1;
           }
 
-          showToastverifedborder(
-            message!,
-          );
+          showToastverifedborder(message!, context);
         } else {
           if (kDebugMode) {
             print("Error: ${response.body}");
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -575,9 +569,7 @@ class ClasifiedController extends GetxController {
     }
   }
 
-  Future<void> addClassifiedDetails({
-    required File? imageFile,
-  }) async {
+  Future<void> addClassifiedDetails({required File? imageFile, context}) async {
     isLoading(true);
     String device = '';
     if (Platform.isAndroid) {
@@ -662,9 +654,7 @@ class ClasifiedController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -733,7 +723,7 @@ class ClasifiedController extends GetxController {
   }
 
 // like_list_classified
-  Future<void> fetchLikeListClassified(int classifiedId) async {
+  Future<void> fetchLikeListClassified(int classifiedId, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
     String device = Platform.isAndroid ? 'android' : 'ios';
@@ -804,9 +794,7 @@ class ClasifiedController extends GetxController {
         }
       } else {
         // Log no internet connection
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       // Log exception
@@ -874,9 +862,7 @@ class ClasifiedController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -887,7 +873,7 @@ class ClasifiedController extends GetxController {
     }
   }
 
-  Future<void> getCommentClassified(int page, int classifiedId) async {
+  Future<void> getCommentClassified(int page, int classifiedId, context) async {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -947,9 +933,7 @@ class ClasifiedController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -960,7 +944,7 @@ class ClasifiedController extends GetxController {
     }
   }
 
-  Future<void> addReplyComment(int classifiedId, int commentId) async {
+  Future<void> addReplyComment(int classifiedId, int commentId, context) async {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -991,7 +975,7 @@ class ClasifiedController extends GetxController {
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
           var addCommentEntity = AddCommentEntity.fromJson(data);
-          getCommentClassified(1, classifiedId);
+          getCommentClassified(1, classifiedId, context);
 
           if (kDebugMode) {
             print('Success: $addCommentEntity');
@@ -1002,9 +986,7 @@ class ClasifiedController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -1015,7 +997,7 @@ class ClasifiedController extends GetxController {
     }
   }
 
-  Future<void> deleteComment(int classifiedId, int commentId) async {
+  Future<void> deleteComment(int classifiedId, int commentId, context) async {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -1040,16 +1022,14 @@ class ClasifiedController extends GetxController {
         if (response.statusCode == 200) {
           jsonDecode(response.body);
           // Handle success response as needed
-          await getCommentClassified(1, classifiedId);
+          await getCommentClassified(1, classifiedId, context);
         } else {
           if (kDebugMode) {
             print("Error: ${response.body}");
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -1060,8 +1040,8 @@ class ClasifiedController extends GetxController {
     }
   }
 
-  Future<void> editComment(
-      int classifiedId, int commentId, String newComment, String type) async {
+  Future<void> editComment(int classifiedId, int commentId, String newComment,
+      String type, context) async {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -1087,7 +1067,7 @@ class ClasifiedController extends GetxController {
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
           var editCommentEntity = EditCommentEntity.fromJson(data);
-          await getCommentClassified(1, classifiedId);
+          await getCommentClassified(1, classifiedId, context);
 
           if (kDebugMode) {
             print('Success: $editCommentEntity');
@@ -1098,9 +1078,7 @@ class ClasifiedController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -1115,9 +1093,7 @@ class ClasifiedController extends GetxController {
     String enteredTitle = title.value.text;
     if (enteredTitle.isEmpty || hasSpecialCharactersOrNumbers(enteredTitle)) {
       // Show toast message for invalid title
-      showToasterrorborder(
-        "Please Enter Title",
-      );
+      showToasterrorborder("Please Enter Title", context);
       titleError.value = true;
     } else {
       titleError.value = false;
@@ -1135,7 +1111,7 @@ class ClasifiedController extends GetxController {
     await likedUser(classifiedId, context);
   }
 
-  Future<void> toggleBookMark(int classifiedId) async {
+  Future<void> toggleBookMark(int classifiedId, context) async {
     bool isBookmark = bookmarkStatusMap[classifiedId] ?? false;
     isBookmark = !isBookmark;
     bookmarkStatusMap[classifiedId] = isBookmark;
@@ -1143,16 +1119,14 @@ class ClasifiedController extends GetxController {
         classifiedId, (value) => isBookmark ? value + 1 : value - 1,
         ifAbsent: () => isBookmark ? 1 : 0);
 
-    await bookmarkUser(classifiedId);
+    await bookmarkUser(classifiedId, context);
   }
 
   void discriptionValidation(context) {
     String enteredDiscription = discription.value.text;
     if (enteredDiscription.isEmpty ||
         hasSpecialTextOrNumbers(enteredDiscription)) {
-      showToasterrorborder(
-        "Please Enter Discription",
-      );
+      showToasterrorborder("Please Enter Discription", context);
       discriptionError.value = true;
     } else {
       discriptionError.value = false;

@@ -18,7 +18,6 @@ import 'package:mlmdiary/generated/user_register_entity_entity.dart';
 import 'package:mlmdiary/generated/verify_phone_otp_entity.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/common_toast.dart';
-import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/email_validator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -144,9 +143,7 @@ class SignupController extends GetxController {
       if (connectivityResult != ConnectivityResult.none) {
         await executeRequest();
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        //
       }
     } catch (e) {
       if (kDebugMode) {
@@ -214,9 +211,7 @@ class SignupController extends GetxController {
     if (connectivityResult != ConnectivityResult.none) {
       await executeRequest();
     } else {
-      showToasterrorborder(
-        "No internet connection",
-      );
+      //
     }
   }
 
@@ -279,9 +274,7 @@ class SignupController extends GetxController {
     if (connectivityResult != ConnectivityResult.none) {
       await executeRequest();
     } else {
-      showToasterrorborder(
-        "No internet connection",
-      );
+      //
     }
   }
 
@@ -334,9 +327,7 @@ class SignupController extends GetxController {
     if (connectivityResult != ConnectivityResult.none) {
       await executeRequest();
     } else {
-      showToasterrorborder(
-        "No internet connection",
-      );
+      //
     }
   }
 
@@ -402,9 +393,7 @@ class SignupController extends GetxController {
     if (connectivityResult != ConnectivityResult.none) {
       await executeRequest();
     } else {
-      showToasterrorborder(
-        "No internet connection",
-      );
+      //
     }
   }
 
@@ -474,9 +463,7 @@ class SignupController extends GetxController {
     if (connectivityResult != ConnectivityResult.none) {
       await executeRequest();
     } else {
-      showToasterrorborder(
-        "No internet connection",
-      );
+      //
       emailOtpSend.value = false;
     }
   }
@@ -597,9 +584,7 @@ class SignupController extends GetxController {
     if (connectivityResult != ConnectivityResult.none) {
       await executeRequest();
     } else {
-      showToasterrorborder(
-        "No internet connection",
-      );
+      //
       showPasswordField.value = false;
     }
   }
@@ -643,9 +628,7 @@ class SignupController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        //
       }
     } catch (e) {
       if (kDebugMode) {

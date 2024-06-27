@@ -187,29 +187,22 @@ class _AddClassifiedState extends State<AddQuestionAnswer> {
 
   Future<void> handleSaveButtonPressed() async {
     if (controller.title.value.text.isEmpty) {
-      showToasterrorborder(
-        "Please Enter Your Classified Title",
-      );
+      showToasterrorborder("Please Enter Your Classified Title", context);
     } else if (controller.answer.value.text.isEmpty) {
       showToasterrorborder(
-        "Please Enter Description Minimum 250 Characters",
-      );
+          "Please Enter Description Minimum 250 Characters", context);
     } else if (controller
         .getSelectedCategoryTextController()
         .value
         .text
         .isEmpty) {
-      showToasterrorborder(
-        "Please Select Category",
-      );
+      showToasterrorborder("Please Select Category", context);
     } else if (controller
         .getSelectedSubCategoryTextController()
         .value
         .text
         .isEmpty) {
-      showToasterrorborder(
-        "Please Select Sub Category",
-      );
+      showToasterrorborder("Please Select Sub Category", context);
     } else if (controller.isCategorySelectedList.contains(true)) {
       await controller.addClassifiedDetails(imageFile: file.value);
     } else {

@@ -7,7 +7,6 @@ import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/get_banner_entity.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:mlmdiary/generated/notification_count_entity.dart';
-import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -41,9 +40,6 @@ class HomeController extends GetxController {
       var connectivityResult = await Connectivity().checkConnectivity();
       // ignore: unrelated_type_equality_checks
       if (connectivityResult == ConnectivityResult.none) {
-        showToasterrorborder(
-          "No internet connection",
-        );
         return;
       }
 
@@ -126,9 +122,6 @@ class HomeController extends GetxController {
       var connectivityResult = await Connectivity().checkConnectivity();
       // ignore: unrelated_type_equality_checks
       if (connectivityResult == ConnectivityResult.none) {
-        showToasterrorborder(
-          "No internet connection",
-        );
         isLoading.value = false;
         return;
       }

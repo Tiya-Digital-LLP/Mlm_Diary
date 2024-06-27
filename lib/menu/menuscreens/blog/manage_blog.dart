@@ -31,7 +31,7 @@ class _ManageBlogState extends State<ManageBlog> {
 
   void deletePost(int index) async {
     int blogId = controller.myBlogList[index].articleId ?? 0;
-    await controller.deleteBlog(blogId, index);
+    await controller.deleteBlog(blogId, index, context);
   }
 
   @override

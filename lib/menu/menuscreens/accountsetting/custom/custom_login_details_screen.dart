@@ -239,7 +239,9 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
 
                                           // Call updateVerifyPhoneOtp method here
                                           controller.updateVerifyPhoneOtp(
-                                              mobileOtpText, countryText);
+                                              mobileOtpText,
+                                              countryText,
+                                              context);
                                         },
                                         text: 'Verify',
                                       )
@@ -257,9 +259,9 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                     onPressed: () {
                                       // Call your API function here
                                       controller.sendPhoneOtp(
-                                        controller.mobile.value.text,
-                                        selectedCountry.value!.callingCode,
-                                      );
+                                          controller.mobile.value.text,
+                                          selectedCountry.value!.callingCode,
+                                          context);
                                     },
                                     text: 'Send Otp',
                                   );
@@ -375,7 +377,8 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                       NormalButton(
                                         onPressed: () {
                                           controller.updateVerifyEmailOtp(
-                                              controller.emailOtp.value.text);
+                                              controller.emailOtp.value.text,
+                                              context);
                                         },
                                         text: 'Verify',
                                       )
@@ -515,8 +518,8 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                     if (controller.password.value.text !=
                                         controller.confirmPassword.value.text) {
                                       showToasterrorborder(
-                                        "Both Passwords Should be the Same.",
-                                      );
+                                          "Both Passwords Should be the Same.",
+                                          context);
                                     } else {
                                       // Call the method to send the change password request
                                       controller.sendChangePasswordRequest(

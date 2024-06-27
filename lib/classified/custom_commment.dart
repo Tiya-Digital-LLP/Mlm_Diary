@@ -40,7 +40,7 @@ class _CommentDialogState extends State<CommentDialog> {
   }
 
   Future<void> _refreshData() async {
-    controller.getCommentClassified(1, widget.classifiedId);
+    controller.getCommentClassified(1, widget.classifiedId, context);
   }
 
   Future<int?> getUserId() async {
@@ -59,7 +59,7 @@ class _CommentDialogState extends State<CommentDialog> {
             _scrollController.position.maxScrollExtent &&
         !controller.isEndOfData.value) {
       int nextPage = (controller.getCommentList.length ~/ 10) + 1;
-      controller.getCommentClassified(nextPage, widget.classifiedId);
+      controller.getCommentClassified(nextPage, widget.classifiedId, context);
     }
   }
 
@@ -203,9 +203,7 @@ class _CommentDialogState extends State<CommentDialog> {
                               }
 
                               await controller.addReplyComment(
-                                widget.classifiedId,
-                                0,
-                              );
+                                  widget.classifiedId, 0, context);
                               controller.commment.value.clear();
                             },
                             child: Container(
@@ -398,19 +396,11 @@ class _CommentDialogState extends State<CommentDialog> {
                   String editedComment = editController.text;
                   Navigator.of(context).pop();
                   if (isReply) {
-                    await controller.editComment(
-                      widget.classifiedId,
-                      data.id ?? 0,
-                      editedComment,
-                      'classified',
-                    );
+                    await controller.editComment(widget.classifiedId,
+                        data.id ?? 0, editedComment, 'classified', context);
                   } else {
-                    await controller.editComment(
-                      widget.classifiedId,
-                      data.id ?? 0,
-                      editedComment,
-                      'classified',
-                    );
+                    await controller.editComment(widget.classifiedId,
+                        data.id ?? 0, editedComment, 'classified', context);
                   }
                   await _refreshData();
                 },
@@ -453,7 +443,8 @@ class _CommentDialogState extends State<CommentDialog> {
           TextButton(
             onPressed: () async {
               Navigator.of(context).pop(true);
-              await controller.deleteComment(widget.classifiedId, commentId);
+              await controller.deleteComment(
+                  widget.classifiedId, commentId, context);
               await _refreshData();
             },
             child: const Text('Delete'),
@@ -769,9 +760,7 @@ class _CommentDialogState extends State<CommentDialog> {
                             }
 
                             await controller.addReplyComment(
-                              widget.classifiedId,
-                              commentId,
-                            );
+                                widget.classifiedId, commentId, context);
                             controller.commment.value.clear();
                             Get.back();
                           },

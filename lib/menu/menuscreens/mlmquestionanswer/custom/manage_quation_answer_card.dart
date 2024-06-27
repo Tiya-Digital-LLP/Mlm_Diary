@@ -288,6 +288,6 @@ class _ManageQuestionCardState extends State<ManageQuestionCard> {
   }
 
   void fetchLikeList() async {
-    await widget.controller.fetchLikeListQuestion(widget.questionId);
+    await widget.controller.fetchLikeListQuestion(widget.questionId, context);
   }
 }

@@ -29,7 +29,7 @@ class _MlmNewsScreenState extends State<MlmNews> {
   void initState() {
     super.initState();
     _refreshData();
-    videoController.fetchVideo(position);
+    videoController.fetchVideo(position, context);
   }
 
   Future<void> _refreshData() async {

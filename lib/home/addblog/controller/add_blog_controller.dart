@@ -142,9 +142,7 @@ class AddBlogController extends GetxController {
         }
       } else {
         if (kDebugMode) {
-          showToasterrorborder(
-            "No internet connection",
-          );
+          showToasterrorborder("No internet connection", context);
         }
       }
     } catch (e) {
@@ -195,9 +193,7 @@ class AddBlogController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        //
       }
     } catch (e) {
       if (kDebugMode) {
@@ -250,9 +246,7 @@ class AddBlogController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        //
       }
     } catch (e) {
       if (kDebugMode) {
@@ -323,9 +317,7 @@ class AddBlogController extends GetxController {
     String enteredTitle = title.value.text;
     if (enteredTitle.isEmpty || hasSpecialCharactersOrNumbers(enteredTitle)) {
       // Show toast message for invalid title
-      showToasterrorborder(
-        "Please Enter Title",
-      );
+      showToasterrorborder("Please Enter Title", context);
       titleError.value = true;
     } else {
       titleError.value = false;
@@ -336,9 +328,7 @@ class AddBlogController extends GetxController {
     String enteredDiscription = discription.value.text;
     if (enteredDiscription.isEmpty ||
         hasSpecialTextOrNumbers(enteredDiscription)) {
-      showToasterrorborder(
-        "Please Enter Discription",
-      );
+      showToasterrorborder("Please Enter Discription", context);
       discriptionError.value = true;
     } else {
       discriptionError.value = false;

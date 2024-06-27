@@ -55,7 +55,7 @@ class _ProfileScreenState extends State<ProfileScreen>
 
   void deletePost(int index) async {
     int newsId = controller.myPostList[index].id ?? 0;
-    await controller.deletePost(newsId, index);
+    await controller.deletePost(newsId, index, context);
   }
 
   @override
@@ -312,8 +312,8 @@ class _ProfileScreenState extends State<ProfileScreen>
                                                   );
                                                 } else {
                                                   showToasterrorborder(
-                                                    'Select only one image or video',
-                                                  );
+                                                      'Select only one image or video',
+                                                      context);
                                                 }
                                               },
                                               child: file.value == null
@@ -367,8 +367,8 @@ class _ProfileScreenState extends State<ProfileScreen>
                                                   _selectVideo();
                                                 } else {
                                                   showToasterrorborder(
-                                                    'Select only one image or video',
-                                                  );
+                                                      'Select only one image or video',
+                                                      context);
                                                 }
                                               },
                                               child: videoFile.value == null
@@ -674,10 +674,8 @@ class _ProfileScreenState extends State<ProfileScreen>
 
       Get.back();
     } else {
-      showToasterrorborder(
-        'Please select an image',
-        // ignore: use_build_context_synchronously
-      );
+      // ignore: use_build_context_synchronously
+      showToasterrorborder('Please select an image', context);
       return; // Exit function if no image is selected
     }
   }

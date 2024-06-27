@@ -57,34 +57,34 @@ class CustonTestAppBar extends StatelessWidget implements PreferredSizeWidget {
         InkWell(
           onTap: () async {
             if (position.isEmpty) {
-              await videoController?.fetchVideo('');
+              await videoController?.fetchVideo('', context);
               Get.toNamed(Routes.tutorialvideo, arguments: {'position': ''});
             } else if (position == 'classified') {
-              await videoController?.fetchVideo('classified');
+              await videoController?.fetchVideo('classified', context);
               Get.toNamed(Routes.tutorialvideo,
                   arguments: {'position': 'classified'});
             } else if (position == 'database') {
-              await videoController?.fetchVideo('database');
+              await videoController?.fetchVideo('database', context);
               Get.toNamed(Routes.tutorialvideo,
                   arguments: {'position': 'database'});
             } else if (position == 'advertisewithus') {
-              await videoController?.fetchVideo('advertisewithus');
+              await videoController?.fetchVideo('advertisewithus', context);
               Get.toNamed(Routes.tutorialvideo,
                   arguments: {'position': 'advertisewithus'});
             } else if (position == 'news') {
-              await videoController?.fetchVideo('news');
+              await videoController?.fetchVideo('news', context);
               Get.toNamed(Routes.tutorialvideo,
                   arguments: {'position': 'news'});
             } else if (position == 'blog') {
-              await videoController?.fetchVideo('blog');
+              await videoController?.fetchVideo('blog', context);
               Get.toNamed(Routes.tutorialvideo,
                   arguments: {'position': 'blog'});
             } else if (position == 'questionanswer') {
-              await videoController?.fetchVideo('questionanswer');
+              await videoController?.fetchVideo('questionanswer', context);
               Get.toNamed(Routes.tutorialvideo,
                   arguments: {'position': 'questionanswer'});
             } else if (position == 'company') {
-              await videoController?.fetchVideo('company');
+              await videoController?.fetchVideo('company', context);
               Get.toNamed(Routes.tutorialvideo,
                   arguments: {'position': 'company'});
             }

@@ -68,7 +68,7 @@ class _AdwithusState extends State<AddwertiseWithUs>
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
     _termsController.fetchTermsAndConditions();
-    videoController.fetchVideo(position);
+    videoController.fetchVideo(position, context);
   }
 
   @override

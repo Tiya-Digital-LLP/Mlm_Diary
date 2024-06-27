@@ -28,9 +28,9 @@ class _TutorialVideoState extends State<TutorialVideo> {
     }
     if (args != null && args['position'] != null) {
       position = args['position'];
-      controller.fetchVideo(position);
+      controller.fetchVideo(position, context);
     } else {
-      controller.fetchVideo('');
+      controller.fetchVideo('', context);
     }
   }
 

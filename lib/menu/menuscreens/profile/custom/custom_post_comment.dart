@@ -39,7 +39,7 @@ class _CommentDialogState extends State<CommentDialogPost> {
   }
 
   Future<void> _refreshData() async {
-    controller.getCommentPost(1, widget.postId);
+    controller.getCommentPost(1, widget.postId, context);
   }
 
   Future<int?> getUserId() async {
@@ -58,7 +58,7 @@ class _CommentDialogState extends State<CommentDialogPost> {
             _scrollController.position.maxScrollExtent &&
         !controller.isEndOfData.value) {
       int nextPage = (controller.getCommentList.length ~/ 10) + 1;
-      controller.getCommentPost(nextPage, widget.postId);
+      controller.getCommentPost(nextPage, widget.postId, context);
     }
   }
 
@@ -204,9 +204,7 @@ class _CommentDialogState extends State<CommentDialogPost> {
                               }
 
                               await controller.addReplyPostComment(
-                                widget.postId,
-                                0,
-                              );
+                                  widget.postId, 0, context);
                               controller.commment.value.clear();
                             },
                             child: Container(
@@ -399,19 +397,11 @@ class _CommentDialogState extends State<CommentDialogPost> {
                   String editedComment = editController.text;
                   Navigator.of(context).pop();
                   if (isReply) {
-                    await controller.editComment(
-                      widget.postId,
-                      data.id ?? 0,
-                      editedComment,
-                      'post',
-                    );
+                    await controller.editComment(widget.postId, data.id ?? 0,
+                        editedComment, 'post', context);
                   } else {
-                    await controller.editComment(
-                      widget.postId,
-                      data.id ?? 0,
-                      editedComment,
-                      'post',
-                    );
+                    await controller.editComment(widget.postId, data.id ?? 0,
+                        editedComment, 'post', context);
                   }
                   await _refreshData();
                 },
@@ -454,7 +444,7 @@ class _CommentDialogState extends State<CommentDialogPost> {
           TextButton(
             onPressed: () async {
               Navigator.of(context).pop(true);
-              await controller.deleteComment(widget.postId, commentId);
+              await controller.deleteComment(widget.postId, commentId, context);
               await _refreshData();
             },
             child: const Text('Delete'),
@@ -770,9 +760,7 @@ class _CommentDialogState extends State<CommentDialogPost> {
                             }
 
                             await controller.addReplyPostComment(
-                              widget.postId,
-                              commentId,
-                            );
+                                widget.postId, commentId, context);
                             controller.commment.value.clear();
                             Get.back();
                           },

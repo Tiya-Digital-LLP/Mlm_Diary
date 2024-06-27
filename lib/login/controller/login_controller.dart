@@ -61,21 +61,13 @@ class LoginController extends GetxController {
 
   void loginValidation(BuildContext context) {
     if (email.value.text.isEmpty && password.value.text.isEmpty) {
-      showToasterrorborder(
-        "Please Enter Email and \nPassword",
-      );
+      showToasterrorborder("Please Enter Email and \nPassword", context);
     } else if (email.value.text.isEmpty) {
-      showToasterrorborder(
-        "Please Enter Email",
-      );
+      showToasterrorborder("Please Enter Email", context);
     } else if (password.value.text.isEmpty) {
-      showToasterrorborder(
-        "Please Enter Password",
-      );
+      showToasterrorborder("Please Enter Password", context);
     } else if (password.value.text.length < 6) {
-      showToasterrorborder(
-        "Password Must be 6 Character Long",
-      );
+      showToasterrorborder("Password Must be 6 Character Long", context);
     } else {
       login(context);
     }
@@ -109,10 +101,9 @@ class LoginController extends GetxController {
 
         // Show success toast
         // ignore: use_build_context_synchronously
-        showToastverifedborder(
-          'Login successful!',
-        );
-        saveFcm();
+        showToastverifedborder('Login successful!', context);
+        // ignore: use_build_context_synchronously
+        saveFcm(context);
 
         // Store token and user id
         await saveAccessToken(loginEntity.apiToken, loginEntity.userId);
@@ -128,19 +119,15 @@ class LoginController extends GetxController {
         }
       } else {
         // ignore: use_build_context_synchronously
-        showToasterrorborder(
-          loginEntity.message ?? "Login failed",
-        );
+        showToasterrorborder(loginEntity.message ?? "Login failed", context);
       }
     } else {
       // ignore: use_build_context_synchronously
-      showToasterrorborder(
-        "Login failed: ${response.reasonPhrase}",
-      );
+      showToasterrorborder("Login failed: ${response.reasonPhrase}", context);
     }
   }
 
-  Future<void> saveFcm() async {
+  Future<void> saveFcm(context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String device = Platform.isAndroid ? 'android' : 'ios';
     int? userId = prefs.getInt('user_id');
@@ -178,9 +165,7 @@ class LoginController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {

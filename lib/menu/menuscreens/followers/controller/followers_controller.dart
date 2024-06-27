@@ -34,7 +34,7 @@ class FollowersController extends GetxController {
   }
 
   // Follow-Unfollow
-  Future<void> profileFollow(int userId) async {
+  Future<void> profileFollow(int userId, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
 
@@ -70,18 +70,14 @@ class FollowersController extends GetxController {
                 (followProfileCountMap[userId] ?? 0) - 1;
           }
 
-          showToastverifedborder(
-            message!,
-          );
+          showToastverifedborder(message!, context);
         } else {
           if (kDebugMode) {
             print("Error: ${response.body}");
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -92,7 +88,7 @@ class FollowersController extends GetxController {
     }
   }
 
-  Future<void> toggleProfileFollow(int userId) async {
+  Future<void> toggleProfileFollow(int userId, context) async {
     bool isFollow = followProfileStatusMap[userId] ?? false;
     isFollow = !isFollow;
     followProfileStatusMap[userId] = isFollow;
@@ -100,7 +96,7 @@ class FollowersController extends GetxController {
         userId, (value) => isFollow ? value + 1 : value - 1,
         ifAbsent: () => isFollow ? 1 : 0);
 
-    await profileFollow(userId);
+    await profileFollow(userId, context);
   }
 
 // Follow-Unfollow
@@ -144,25 +140,19 @@ class FollowersController extends GetxController {
           } // Print response data
 
           var getFollowerEntity = GetFollowersEntity.fromJson(data);
-          var message = getFollowerEntity.message;
+
           followers.assignAll(getFollowerEntity.data ?? []);
 
           if (kDebugMode) {
             print('Followers: ${getFollowerEntity.data}');
           } // Print followers
-
-          showToastverifedborder(
-            message!,
-          );
         } else {
           if (kDebugMode) {
             print('Error: ${response.body}');
           } // Print error message
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        //
       }
     } catch (e) {
       if (kDebugMode) {
@@ -214,25 +204,19 @@ class FollowersController extends GetxController {
           } // Print response data
 
           var getFollowingEntity = GetFollowingEntity.fromJson(data);
-          var message = getFollowingEntity.message;
+
           following.assignAll(getFollowingEntity.data ?? []);
 
           if (kDebugMode) {
             print('Following: ${getFollowingEntity.data}');
           } // Print followers
-
-          showToastverifedborder(
-            message!,
-          );
         } else {
           if (kDebugMode) {
             print('Error: ${response.body}');
           } // Print error message
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        //
       }
     } catch (e) {
       if (kDebugMode) {

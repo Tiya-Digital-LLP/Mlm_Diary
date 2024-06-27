@@ -198,8 +198,7 @@ class _AddPostState extends State<AddPost> {
                           );
                         } else {
                           showToasterrorborder(
-                            'Select only one image or video',
-                          );
+                              'Select only one image or video', context);
                         }
                       },
                       child: SvgPicture.asset(
@@ -214,8 +213,7 @@ class _AddPostState extends State<AddPost> {
                           _selectVideo();
                         } else {
                           showToasterrorborder(
-                            'Select only one image or video',
-                          );
+                              'Select only one image or video', context);
                         }
                       },
                       child: SvgPicture.asset(
@@ -350,10 +348,8 @@ class _AddPostState extends State<AddPost> {
 
       Get.back();
     } else {
-      showToasterrorborder(
-        'Please select an image',
-        // ignore: use_build_context_synchronously
-      );
+      // ignore: use_build_context_synchronously
+      showToasterrorborder('Please select an image', context);
       return; // Exit function if no image is selected
     }
   }

@@ -66,8 +66,10 @@ class CustomToast extends StatelessWidget {
 // verified with border
 void showToastverifedborder(
   String message,
+  BuildContext context,
 ) {
   toastification.show(
+    context: context,
     alignment: Alignment.bottomCenter,
     backgroundColor: AppColors.white,
     type: ToastificationType.success,
@@ -87,8 +89,10 @@ void showToastverifedborder(
 // error with border
 void showToasterrorborder(
   String message,
+  BuildContext context,
 ) {
   toastification.show(
+    context: context,
     alignment: Alignment.bottomCenter,
     backgroundColor: AppColors.white,
     type: ToastificationType.error,

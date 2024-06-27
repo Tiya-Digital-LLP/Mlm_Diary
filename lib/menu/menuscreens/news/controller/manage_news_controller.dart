@@ -159,9 +159,7 @@ class ManageNewsController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -199,9 +197,7 @@ class ManageNewsController extends GetxController {
       if (connectivityResult == ConnectivityResult.none) {
         if (context != null) {
           // ignore: use_build_context_synchronously
-          showToasterrorborder(
-            "No internet connection",
-          );
+          showToasterrorborder("No internet connection", context);
         }
         isLoading.value = false;
         return;
@@ -255,9 +251,7 @@ class ManageNewsController extends GetxController {
             // Show error message if blog with articleId is not found
             if (context != null) {
               // ignore: use_build_context_synchronously
-              showToasterrorborder(
-                "Blog with ID $newsId not found",
-              );
+              showToasterrorborder("Blog with ID $newsId not found", context);
             }
           }
         } else {
@@ -268,9 +262,7 @@ class ManageNewsController extends GetxController {
             // Show error message if no data found
             if (context != null) {
               // ignore: use_build_context_synchronously
-              showToasterrorborder(
-                "No data found",
-              );
+              showToasterrorborder("No data found", context);
             }
           }
         }
@@ -278,18 +270,14 @@ class ManageNewsController extends GetxController {
         // Show error message if response status code is not 200
         if (context != null) {
           // ignore: use_build_context_synchronously
-          showToasterrorborder(
-            "Failed to fetch data",
-          );
+          showToasterrorborder("Failed to fetch data", context);
         }
       }
     } catch (error) {
       // Show error message for any caught exception
       if (context != null) {
         // ignore: use_build_context_synchronously
-        showToasterrorborder(
-          "An error occurred: $error",
-        );
+        showToasterrorborder("An error occurred: $error", context);
       }
     } finally {
       // Set isLoading to false after completing fetch operation
@@ -375,9 +363,7 @@ class ManageNewsController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        //
       }
     } catch (e) {
       if (kDebugMode) {
@@ -430,9 +416,7 @@ class ManageNewsController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        //
       }
     } catch (e) {
       if (kDebugMode) {
@@ -442,7 +426,7 @@ class ManageNewsController extends GetxController {
   }
 
   // Delete-News
-  Future<void> deleteNews(int newsId, int index) async {
+  Future<void> deleteNews(int newsId, int index, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
     String device = Platform.isAndroid ? 'android' : 'ios';
@@ -473,9 +457,7 @@ class ManageNewsController extends GetxController {
           var message = data['message'];
 
           if (status == 1) {
-            showToastverifedborder(
-              message!,
-            );
+            showToastverifedborder(message!, context);
             myNewsList.removeAt(index);
           } else {
             if (kDebugMode) {
@@ -580,9 +562,7 @@ class ManageNewsController extends GetxController {
 
   //updateclassified
 
-  Future<void> updateNews({
-    required File? imageFile,
-  }) async {
+  Future<void> updateNews({required File? imageFile, context}) async {
     isLoading(true);
     String device = '';
     if (Platform.isAndroid) {
@@ -662,9 +642,7 @@ class ManageNewsController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -710,18 +688,14 @@ class ManageNewsController extends GetxController {
             likeCountMap[newsId] = (likeCountMap[newsId] ?? 0) - 1;
           }
 
-          showToastverifedborder(
-            message!,
-          );
+          showToastverifedborder(message!, context);
         } else {
           if (kDebugMode) {
             print("Error: ${response.body}");
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -733,7 +707,7 @@ class ManageNewsController extends GetxController {
   }
 
   // like_list_classified
-  Future<void> fetchLikeListNews(int classifiedId) async {
+  Future<void> fetchLikeListNews(int classifiedId, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
     String device = Platform.isAndroid ? 'android' : 'ios';
@@ -802,9 +776,7 @@ class ManageNewsController extends GetxController {
         }
       } else {
         // Log no internet connection
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       // Log exception
@@ -824,9 +796,7 @@ class ManageNewsController extends GetxController {
     String enteredTitle = title.value.text;
     if (enteredTitle.isEmpty || hasSpecialCharactersOrNumbers(enteredTitle)) {
       // Show toast message for invalid title
-      showToasterrorborder(
-        "Please Enter Title",
-      );
+      showToasterrorborder("Please Enter Title", context);
       titleError.value = true;
     } else {
       titleError.value = false;
@@ -903,9 +873,7 @@ class ManageNewsController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        //
       }
     } catch (e) {
       if (kDebugMode) {
@@ -917,7 +885,7 @@ class ManageNewsController extends GetxController {
   }
 
   // Bookmark
-  Future<void> bookmarkUser(int newsId) async {
+  Future<void> bookmarkUser(int newsId, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
 
@@ -951,18 +919,14 @@ class ManageNewsController extends GetxController {
             bookmarkCountMap[newsId] = (bookmarkCountMap[newsId] ?? 0) - 1;
           }
 
-          showToastverifedborder(
-            message!,
-          );
+          showToastverifedborder(message!, context);
         } else {
           if (kDebugMode) {
             print("Error: ${response.body}");
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -973,7 +937,7 @@ class ManageNewsController extends GetxController {
     }
   }
 
-  Future<void> toggleBookMark(int newsId) async {
+  Future<void> toggleBookMark(int newsId, context) async {
     bool isBookmark = bookmarkStatusMap[newsId] ?? false;
     isBookmark = !isBookmark;
     bookmarkStatusMap[newsId] = isBookmark;
@@ -981,11 +945,11 @@ class ManageNewsController extends GetxController {
         newsId, (value) => isBookmark ? value + 1 : value - 1,
         ifAbsent: () => isBookmark ? 1 : 0);
 
-    await bookmarkUser(newsId);
+    await bookmarkUser(newsId, context);
   }
 
 // comment for news
-  Future<void> getCommentNews(int page, int newsId) async {
+  Future<void> getCommentNews(int page, int newsId, context) async {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -1043,9 +1007,7 @@ class ManageNewsController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -1056,7 +1018,7 @@ class ManageNewsController extends GetxController {
     }
   }
 
-  Future<void> addReplyNewsComment(int newsId, int commentId) async {
+  Future<void> addReplyNewsComment(int newsId, int commentId, context) async {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -1088,7 +1050,7 @@ class ManageNewsController extends GetxController {
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
           var addCommentNewsEntity = AddCommentNewsEntity.fromJson(data);
-          getCommentNews(1, newsId);
+          getCommentNews(1, newsId, context);
 
           if (kDebugMode) {
             print('Success: $addCommentNewsEntity');
@@ -1099,9 +1061,7 @@ class ManageNewsController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -1112,7 +1072,7 @@ class ManageNewsController extends GetxController {
     }
   }
 
-  Future<void> deleteComment(int newsId, int commentId) async {
+  Future<void> deleteComment(int newsId, int commentId, context) async {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -1137,16 +1097,14 @@ class ManageNewsController extends GetxController {
         if (response.statusCode == 200) {
           jsonDecode(response.body);
           // Handle success response as needed
-          await getCommentNews(1, newsId);
+          await getCommentNews(1, newsId, context);
         } else {
           if (kDebugMode) {
             print("Error: ${response.body}");
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -1157,8 +1115,8 @@ class ManageNewsController extends GetxController {
     }
   }
 
-  Future<void> editComment(
-      int newsId, int commentId, String newComment, String type) async {
+  Future<void> editComment(int newsId, int commentId, String newComment,
+      String type, context) async {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -1184,7 +1142,7 @@ class ManageNewsController extends GetxController {
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
           var editCommentEntity = EditCommentEntity.fromJson(data);
-          await getCommentNews(1, newsId);
+          await getCommentNews(1, newsId, context);
 
           if (kDebugMode) {
             print('Success: $editCommentEntity');
@@ -1195,9 +1153,7 @@ class ManageNewsController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -1212,9 +1168,7 @@ class ManageNewsController extends GetxController {
     String enteredDiscription = discription.value.text;
     if (enteredDiscription.isEmpty ||
         hasSpecialTextOrNumbers(enteredDiscription)) {
-      showToasterrorborder(
-        "Please Enter Discription",
-      );
+      showToasterrorborder("Please Enter Discription", context);
       discriptionError.value = true;
     } else {
       discriptionError.value = false;

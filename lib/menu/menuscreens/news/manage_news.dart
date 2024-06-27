@@ -27,7 +27,7 @@ class _MlmnewsState extends State<ManageNews> {
 
   void deletePost(int index) async {
     int newsId = controller.myNewsList[index].id ?? 0;
-    await controller.deleteNews(newsId, index);
+    await controller.deleteNews(newsId, index, context);
   }
 
   Future<void> _refreshData() async {

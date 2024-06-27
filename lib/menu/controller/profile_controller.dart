@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/get_user_profile_entity.dart';
-import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileController extends GetxController {
@@ -26,9 +25,7 @@ class ProfileController extends GetxController {
     if (apiToken == null || apiToken.isEmpty) {
       // Handle the case where there is no token
       isLoading(false);
-      showToasterrorborder(
-        "No API token found",
-      );
+
       return;
     }
 

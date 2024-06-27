@@ -214,7 +214,7 @@ class _StringMultilineTagsState extends State<AddCompany> {
                     ),
                   ),
                   onPressed: () async {
-                    await controller.updateUserCompany();
+                    await controller.updateUserCompany(context);
                     Get.back();
                   },
                   child: const Text(

@@ -78,7 +78,7 @@ class _MlmcompaniesCardState extends State<MlmCompaniesCard> {
   void toggleBookmark() async {
     bool newBookmarkedValue = !isBookmarked.value;
     isBookmarked.value = newBookmarkedValue;
-    await widget.controller.toggleBookMark(widget.companyId);
+    await widget.controller.toggleBookMark(widget.companyId, context);
   }
 
   @override

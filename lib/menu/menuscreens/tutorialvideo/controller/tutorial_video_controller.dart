@@ -12,16 +12,14 @@ class TutorialVideoController extends GetxController {
   RxList<GetTutorialVideoData> videoList = RxList<GetTutorialVideoData>();
   var isEndOfData = false.obs;
 
-  Future<void> fetchVideo(String? position) async {
+  Future<void> fetchVideo(String? position, context) async {
     isLoading.value = true;
 
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
       // ignore: unrelated_type_equality_checks
       if (connectivityResult == ConnectivityResult.none) {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
         isLoading.value = false;
         return;
       }

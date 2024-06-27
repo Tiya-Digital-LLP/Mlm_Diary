@@ -112,9 +112,7 @@ class DatabaseController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        //
       }
     } catch (e) {
       if (kDebugMode) {
@@ -165,9 +163,7 @@ class DatabaseController extends GetxController {
 
       // ignore: unrelated_type_equality_checks
       if (connectivityResult == ConnectivityResult.none) {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
         isLoading.value = false;
         return;
       }
@@ -222,25 +218,21 @@ class DatabaseController extends GetxController {
           // Add the fetched post to the list
           mlmDetailsDatabaseList.add(firstPost);
         } else {
-          showToasterrorborder(
-            "No data found",
-          );
+          showToasterrorborder("No data found", context);
           if (kDebugMode) {
             print('No data found in the response');
           }
         }
       } else {
         showToasterrorborder(
-          "Failed to fetch data. Status code: ${response.statusCode}",
-        );
+            "Failed to fetch data. Status code: ${response.statusCode}",
+            context);
         if (kDebugMode) {
           print('Failed to fetch data. Status code: ${response.statusCode}');
         }
       }
     } catch (error) {
-      showToasterrorborder(
-        "An error occurred: $error",
-      );
+      showToasterrorborder("An error occurred: $error", context);
       if (kDebugMode) {
         print('Error: $error');
       }

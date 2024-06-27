@@ -244,9 +244,7 @@ class AccountSeetingController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        //
       }
     } catch (e) {
       if (kDebugMode) {
@@ -297,9 +295,7 @@ class AccountSeetingController extends GetxController {
       if (connectivityResult != ConnectivityResult.none) {
         await executeRequest();
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        //
       }
     } catch (e) {
       if (kDebugMode) {
@@ -319,9 +315,7 @@ class AccountSeetingController extends GetxController {
     return TextEditingController(text: selectedTypeOptions.join(', '));
   }
 
-  Future<void> updateUserProfile({
-    required File? imageFile,
-  }) async {
+  Future<void> updateUserProfile({required File? imageFile, context}) async {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -392,9 +386,7 @@ class AccountSeetingController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -414,7 +406,7 @@ class AccountSeetingController extends GetxController {
     }
   }
 
-  Future<void> sendPhoneOtp(String mobile, String countryCode) async {
+  Future<void> sendPhoneOtp(String mobile, String countryCode, context) async {
     String device = '';
     if (Platform.isAndroid) {
       device = 'android';
@@ -474,13 +466,12 @@ class AccountSeetingController extends GetxController {
     if (connectivityResult != ConnectivityResult.none) {
       await executeRequest();
     } else {
-      showToasterrorborder(
-        "No internet connection",
-      );
+      showToasterrorborder("No internet connection", context);
     }
   }
 
-  Future<void> updateVerifyPhoneOtp(String otp, String countryCode) async {
+  Future<void> updateVerifyPhoneOtp(
+      String otp, String countryCode, context) async {
     String device = '';
     if (Platform.isAndroid) {
       device = 'android';
@@ -543,13 +534,11 @@ class AccountSeetingController extends GetxController {
     if (connectivityResult != ConnectivityResult.none) {
       await executeRequest();
     } else {
-      showToasterrorborder(
-        "No internet connection",
-      );
+      showToasterrorborder("No internet connection", context);
     }
   }
 
-  Future<void> updateSocialMedia() async {
+  Future<void> updateSocialMedia(context) async {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -587,9 +576,7 @@ class AccountSeetingController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -665,9 +652,7 @@ class AccountSeetingController extends GetxController {
     }
   }
 
-  Future<void> updateVerifyEmailOtp(
-    String otp,
-  ) async {
+  Future<void> updateVerifyEmailOtp(String otp, context) async {
     String device = '';
     if (Platform.isAndroid) {
       device = 'android';
@@ -728,9 +713,7 @@ class AccountSeetingController extends GetxController {
     if (connectivityResult != ConnectivityResult.none) {
       await executeRequest();
     } else {
-      showToasterrorborder(
-        "No internet connection",
-      );
+      showToasterrorborder("No internet connection", context);
     }
   }
 
@@ -756,27 +739,26 @@ class AccountSeetingController extends GetxController {
         final responseData = json.decode(response.body);
         if (responseData['result'] == 1) {
           // ignore: use_build_context_synchronously
-          showToastverifedborder(
-            "Password changed successfully!",
-          );
+          showToastverifedborder("Password changed successfully!", context);
         } else {
           showToasterrorborder(
-            // ignore: use_build_context_synchronously
-            responseData['message'] ?? "Password change failed",
-            // ignore: use_build_context_synchronously
-          );
+              responseData['message'] ?? "Password change failed",
+              // ignore: use_build_context_synchronously
+              context
+              // ignore: use_build_context_synchronously
+              );
         }
       } else {
         showToasterrorborder(
-          "Password change request failed: ${response.reasonPhrase}",
-          // ignore: use_build_context_synchronously
-        );
+            "Password change request failed: ${response.reasonPhrase}",
+            // ignore: use_build_context_synchronously
+            context
+            // ignore: use_build_context_synchronously
+            );
       }
     } catch (e) {
       // ignore: use_build_context_synchronously
-      showToasterrorborder(
-        "An error occurred: $e",
-      );
+      showToasterrorborder("An error occurred: $e", context);
       if (kDebugMode) {
         print('Error: $e');
       }

@@ -154,9 +154,7 @@ class QuestionAnswerController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        //
       }
     } catch (e) {
       if (kDebugMode) {
@@ -225,9 +223,7 @@ class QuestionAnswerController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        //
       }
     } catch (e) {
       if (kDebugMode) {
@@ -238,7 +234,7 @@ class QuestionAnswerController extends GetxController {
     }
   }
 
-  Future<void> deleteComment(int newsId, int commentId) async {
+  Future<void> deleteComment(int newsId, int commentId, context) async {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -270,9 +266,7 @@ class QuestionAnswerController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -283,8 +277,8 @@ class QuestionAnswerController extends GetxController {
     }
   }
 
-  Future<void> editComment(
-      int newsId, int commentId, String newComment, String type) async {
+  Future<void> editComment(int newsId, int commentId, String newComment,
+      String type, context) async {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -321,9 +315,7 @@ class QuestionAnswerController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -334,7 +326,7 @@ class QuestionAnswerController extends GetxController {
     }
   }
 
-  Future<void> countViewQuestion(int answerId) async {
+  Future<void> countViewQuestion(int answerId, context) async {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -377,9 +369,7 @@ class QuestionAnswerController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -390,7 +380,7 @@ class QuestionAnswerController extends GetxController {
     }
   }
 
-  Future<void> addAnswers(int answerId) async {
+  Future<void> addAnswers(int answerId, context) async {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -433,9 +423,7 @@ class QuestionAnswerController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -447,7 +435,8 @@ class QuestionAnswerController extends GetxController {
     }
   }
 
-  Future<void> addReplyAnswerComment(int answerId, int commentId) async {
+  Future<void> addReplyAnswerComment(
+      int answerId, int commentId, context) async {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -490,9 +479,7 @@ class QuestionAnswerController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -523,9 +510,7 @@ class QuestionAnswerController extends GetxController {
       var connectivityResult = await (Connectivity().checkConnectivity());
       // ignore: unrelated_type_equality_checks
       if (connectivityResult == ConnectivityResult.none) {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
         isLoading.value = false;
         return;
       }
@@ -581,15 +566,11 @@ class QuestionAnswerController extends GetxController {
         }
       } else {
         // Handle error response
-        showToasterrorborder(
-          "Failed to fetch data",
-        );
+        showToasterrorborder("Failed to fetch data", context);
       }
     } catch (error) {
       // Handle network or parsing errors
-      showToasterrorborder(
-        "An error occurred: $error",
-      );
+      showToasterrorborder("An error occurred: $error", context);
     } finally {
       isLoading.value = false;
     }
@@ -654,9 +635,7 @@ class QuestionAnswerController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        //
       }
     } catch (e) {
       if (kDebugMode) {
@@ -709,9 +688,7 @@ class QuestionAnswerController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        //
       }
     } catch (e) {
       if (kDebugMode) {
@@ -778,9 +755,7 @@ class QuestionAnswerController extends GetxController {
     subCategoryError.value = selectedCountSubCategory == 0;
   }
 
-  Future<void> addClassifiedDetails({
-    required File? imageFile,
-  }) async {
+  Future<void> addClassifiedDetails({required File? imageFile, context}) async {
     isLoading(true);
     String device = '';
     if (Platform.isAndroid) {
@@ -832,9 +807,7 @@ class QuestionAnswerController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -852,7 +825,7 @@ class QuestionAnswerController extends GetxController {
   }
 
   // like_list_question
-  Future<void> fetchLikeListQuestion(int questionId) async {
+  Future<void> fetchLikeListQuestion(int questionId, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
     String device = Platform.isAndroid ? 'android' : 'ios';
@@ -921,9 +894,7 @@ class QuestionAnswerController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       // Log exception
@@ -974,23 +945,17 @@ class QuestionAnswerController extends GetxController {
             likeCountMap[questionId] = (likeCountMap[questionId] ?? 0) - 1;
           }
 
-          showToastverifedborder(
-            message!,
-          );
+          showToastverifedborder(message!, context);
         } else {
-          showToasterrorborder(
-            "Error: ${response.body}",
-          );
+          showToasterrorborder("Error: ${response.body}", context);
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
-      showToasterrorborder(
-        "Error: $e",
-      );
+      if (kDebugMode) {
+        print("Error: $e");
+      }
     } finally {
       isLoading(false);
     }
@@ -1031,23 +996,19 @@ class QuestionAnswerController extends GetxController {
             answerlikeCountMap[answerId] = (likeCountMap[answerId] ?? 0) - 1;
           }
 
-          showToastverifedborder(
-            message!,
-          );
+          showToastverifedborder(message!, context);
         } else {
-          showToasterrorborder(
-            "Error: ${response.body}",
-          );
+          showToasterrorborder("Error: ${response.body}", context);
         }
       } else {
-        showToasterrorborder(
-          "No internet connection",
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
-      showToasterrorborder(
-        "Error: $e",
-      );
+      if (kDebugMode) {
+        print(
+          "Error: $e",
+        );
+      }
     } finally {
       isLoading(false);
     }
@@ -1103,18 +1064,14 @@ class QuestionAnswerController extends GetxController {
                 (bookmarkCountMap[questionId] ?? 0) - 1;
           }
 
-          showToastverifedborder(
-            message!,
-          );
+          showToastverifedborder(message!, context);
         } else {
           if (kDebugMode) {
             print('Error: ${response.body}');
           }
         }
       } else {
-        showToastverifedborder(
-          'No internet connection',
-        );
+        showToastverifedborder('No internet connection', context);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -1150,9 +1107,7 @@ class QuestionAnswerController extends GetxController {
     String enteredTitle = title.value.text;
     if (enteredTitle.isEmpty || hasSpecialCharactersOrNumbers(enteredTitle)) {
       // Show toast message for invalid title
-      showToasterrorborder(
-        "Please Enter Title",
-      );
+      showToasterrorborder("Please Enter Title", context);
       titleError.value = true;
     } else {
       titleError.value = false;
@@ -1163,9 +1118,7 @@ class QuestionAnswerController extends GetxController {
     String enteredDiscription = answer.value.text;
     if (enteredDiscription.isEmpty ||
         hasSpecialTextOrNumbers(enteredDiscription)) {
-      showToasterrorborder(
-        "Please Enter Answer",
-      );
+      showToasterrorborder("Please Enter Answer", context);
       answerError.value = true;
     } else {
       answerError.value = false;
