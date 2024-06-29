@@ -33,7 +33,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 widget.onTap(index);
               },
               child: SizedBox(
-                height: size.height * 0.1,
+                height: size.height * 0.07,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -43,7 +43,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                       color: (controller.tappedIndex.value == index)
                           ? AppColors.primaryColor
                           : AppColors.bottomIcon,
-                      height: 30,
+                      height: 26,
                     ),
                     Text(
                       bottomBarTexts[index],

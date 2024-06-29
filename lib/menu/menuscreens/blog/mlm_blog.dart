@@ -66,13 +66,13 @@ class _MlmBlogState extends State<MlmBlog> {
                         onSubmitted: (value) {
                           WidgetsBinding.instance.focusManager.primaryFocus
                               ?.unfocus();
-                          setState(() {});
+                          _refreshData();
                         },
                         onChanged: (value) {
                           if (value.isNotEmpty) {
-                            controller.getBlog(1);
+                            _refreshData();
                           } else {
-                            controller.getBlog(1);
+                            _refreshData();
                           }
                           setState(() {});
                         },
@@ -145,9 +145,9 @@ class _MlmBlogState extends State<MlmBlog> {
                           },
                           child: BlogCard(
                             image: post.userData!.imagePath ?? '',
-                            dateTime: post.createdDate ?? '',
-                            blogId: post.articleId ?? 0,
-                            userImage: post.imagePath ?? '',
+                            dateTime: post.createdate ?? '',
+                            blogId: post.id ?? 0,
+                            userImage: post.imageUrl ?? '',
                             userName: post.userData?.name ?? '',
                             postTitle: post.title ?? '',
                             likedCount: post.totallike ?? 0,
@@ -155,6 +155,8 @@ class _MlmBlogState extends State<MlmBlog> {
                             viewcounts: post.pgcnt ?? 0,
                             bookmarkCount: post.totalbookmark ?? 0,
                             commentcount: post.totalcomment ?? 0,
+                            likedbyuser: post.likedByUser ?? false,
+                            bookmarkedbyuser: post.bookmarkedByUser ?? false,
                           ),
                         ),
                       );

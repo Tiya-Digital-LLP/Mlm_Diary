@@ -179,11 +179,15 @@ class _FavouritrCardState extends State<NewsFaviouriteCard> {
                         style: textStyleW700(
                             size.width * 0.038, AppColors.blackText),
                       ),
-                      Text(
-                        postTimeFormatter.formatPostTime(widget.dateTime),
-                        style: textStyleW400(size.width * 0.035,
-                            AppColors.blackText.withOpacity(0.8)),
-                      )
+                      Row(
+                        children: [
+                          Text(
+                            postTimeFormatter.formatPostTime(widget.dateTime),
+                            style: textStyleW400(size.width * 0.035,
+                                AppColors.blackText.withOpacity(0.8)),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -216,7 +220,7 @@ class _FavouritrCardState extends State<NewsFaviouriteCard> {
                 data: widget.postCaption,
                 style: {
                   "html": Style(
-                    maxLines: 2,
+                    maxLines: 1,
                     fontFamily: fontFamily,
                     fontWeight: FontWeight.w700,
                     fontSize: FontSize.medium,
@@ -313,8 +317,8 @@ class _FavouritrCardState extends State<NewsFaviouriteCard> {
                           onTap: togleBookmark,
                           child: SvgPicture.asset(
                             isBookmarked
-                                ? Assets.svgCheckBookmark
-                                : Assets.svgSavePost,
+                                ? Assets.svgSavePost
+                                : Assets.svgCheckBookmark,
                             height: size.height * 0.032,
                           ),
                         ),

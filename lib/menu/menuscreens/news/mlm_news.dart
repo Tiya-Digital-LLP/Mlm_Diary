@@ -137,14 +137,17 @@ class _MlmNewsScreenState extends State<MlmNews> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 8),
                         child: GestureDetector(
-                          onTap: () {
+                          onTap: () async {
+                            await controller.getNews(
+                              post.id ?? 0,
+                            );
                             Get.toNamed(
                               Routes.newsdetails,
-                              arguments: controller.newsList[index],
+                              arguments: post,
                             );
                           },
                           child: NewsCard(
-                            image: post.imagePath ?? '',
+                            image: post.imageUrl ?? '',
                             dateTime: post.createdate ?? '',
                             newsId: post.id ?? 0,
                             userImage: post.imagePath ?? '',
@@ -155,6 +158,8 @@ class _MlmNewsScreenState extends State<MlmNews> {
                             viewcounts: post.pgcnt ?? 0,
                             bookmarkCount: post.totalbookmark ?? 0,
                             commentcount: post.totalcomment ?? 0,
+                            likedbyuser: post.likedByUser ?? false,
+                            bookmarkedbyuser: post.bookmarkedByUser ?? false,
                           ),
                         ),
                       );

@@ -98,6 +98,8 @@ class _ManageBlogState extends State<ManageBlog> {
                       blogId: post.articleId ?? 0,
                       blogstatus: post.status ?? 0,
                       commentcount: post.totalcomment ?? 0,
+                      likedbyuser: post.likedByUser ?? false,
+                      bookmarkedbyuser: post.bookmarkedByUser ?? false,
                     ),
                   ),
                 );

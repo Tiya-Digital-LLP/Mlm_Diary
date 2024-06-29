@@ -25,6 +25,8 @@ class ManageNewsCard extends StatefulWidget {
   final int newsId;
   final int newsstatus;
   final int commentcount;
+  final bool likedbyuser;
+  final bool bookmarkedbyuser;
 
   final ManageNewsController controller;
 
@@ -43,6 +45,8 @@ class ManageNewsCard extends StatefulWidget {
     required this.controller,
     required this.newsstatus,
     required this.commentcount,
+    required this.likedbyuser,
+    required this.bookmarkedbyuser,
   });
 
   @override
@@ -62,9 +66,8 @@ class _ManageNewsCardState extends State<ManageNewsCard> {
   }
 
   void initializeLikes() {
-    isLiked = RxBool(widget.controller.likedStatusMap[widget.newsId] ?? false);
-    likeCount = RxInt(
-        widget.controller.likeCountMap[widget.newsId] ?? widget.likedCount);
+    isLiked = RxBool(widget.likedbyuser);
+    likeCount = RxInt(widget.likedCount);
   }
 
   void toggleLike() async {

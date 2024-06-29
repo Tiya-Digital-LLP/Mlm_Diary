@@ -10,6 +10,7 @@ class Constants {
 
   ///End Points
   static const String savefcm = "/savefcm";
+  static const String logout = "/user/logout";
 
   static const String getUserType = "/getusertype";
   static const String domesticPhoneOtp = "/register/domestic_phone_otp";
@@ -137,8 +138,10 @@ class Constants {
   static const String videoBookmark = "/bookmark_video";
   static const String tutorialVideo = "/gettutorial_video";
 
-  static const String getchathistory = "/chat/getmychathistory";
+  static const String getchathistory = "/chat/chatroom";
   static const String getchathistorydetail = "/chat/getmychatdetail";
   static const String sendchat = "/chat/send";
+  static const String sendnewchat = "/chat/getnewmessages";
+
   static const String deleteChat = "/chat/deletechat";
 }

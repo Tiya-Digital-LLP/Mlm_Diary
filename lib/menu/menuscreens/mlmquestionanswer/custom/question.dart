@@ -33,10 +33,18 @@ class _QuestionState extends State<Question> {
   PostTimeFormatter postTimeFormatter = PostTimeFormatter();
   late ScrollController _scrollController;
 
+  late RxBool isLiked;
+  late RxBool isBookmarked;
+
+  late RxInt likeCount;
+  late RxInt bookmarkCount;
+
   @override
   void initState() {
     super.initState();
     _refreshData();
+    initializeLikes();
+    initializeBookmarks();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.getAnswers(1, post.id!);
     });
@@ -48,6 +56,33 @@ class _QuestionState extends State<Question> {
     });
     _scrollController = ScrollController();
     _scrollController.addListener(_scrollListener);
+  }
+
+  void initializeLikes() {
+    isLiked = RxBool(controller.questionList[0].likedByUser ?? false);
+    likeCount = RxInt(controller.questionList[0].totallike ?? 0);
+  }
+
+  void toggleLike() async {
+    bool newLikedValue = !isLiked.value;
+    isLiked.value = newLikedValue;
+    likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
+
+    await controller.toggleLike(post.id ?? 0, context);
+  }
+
+  void initializeBookmarks() {
+    isBookmarked = RxBool(controller.questionList[0].bookmarkedByUser ?? false);
+    bookmarkCount = RxInt(controller.questionList[0].totalbookmark ?? 0);
+  }
+
+  void toggleBookmark() async {
+    bool newBookmarkedValue = !isBookmarked.value;
+    isBookmarked.value = newBookmarkedValue;
+    bookmarkCount.value =
+        newBookmarkedValue ? bookmarkCount.value + 1 : bookmarkCount.value - 1;
+
+    await controller.toggleBookMark(post.id ?? 0, context);
   }
 
   void _scrollListener() {
@@ -857,10 +892,24 @@ class _QuestionState extends State<Question> {
                               onTap: () {},
                               child: Row(
                                 children: [
-                                  SizedBox(
-                                    height: size.height * 0.028,
-                                    width: size.height * 0.028,
-                                    child: SvgPicture.asset(Assets.svgLike),
+                                  Obx(
+                                    () => SizedBox(
+                                      height: size.height * 0.028,
+                                      width: size.height * 0.028,
+                                      child: GestureDetector(
+                                        onTap: toggleLike,
+                                        child: Icon(
+                                          // Observe like status
+                                          isLiked.value
+                                              ? Icons.thumb_up_off_alt_sharp
+                                              : Icons.thumb_up_off_alt_outlined,
+                                          color: isLiked.value
+                                              ? AppColors.primaryColor
+                                              : null,
+                                          size: size.height * 0.032,
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                   const SizedBox(width: 7),
                                   Text(

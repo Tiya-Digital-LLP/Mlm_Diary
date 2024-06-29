@@ -281,7 +281,7 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
                               .fetchMyChatDetail(post.chatId.toString());
                           messageController.sendChat(
                             toId: post.toid.toString(),
-                            chatId: post.chatId.toString(),
+                            chatId: post.chatId ?? '',
                           );
 
                           // Scroll to the bottom after sending a message

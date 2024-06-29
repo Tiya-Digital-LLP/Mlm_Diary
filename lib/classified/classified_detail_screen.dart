@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:mlmdiary/classified/classified_like_list_content.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/classified/custom_commment.dart';
 import 'package:mlmdiary/generated/assets.dart';
@@ -29,6 +30,41 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
 
   PostTimeFormatter postTimeFormatter = PostTimeFormatter();
 
+  // like
+  late RxBool isLiked;
+  late RxInt likeCount;
+// bookmark
+  late RxBool isBookmarked;
+  late RxInt bookmarkCount;
+
+  void initializeLikes() {
+    isLiked = RxBool(controller.classifiedList[0].likedByUser ?? false);
+    likeCount = RxInt(controller.classifiedList[0].totallike ?? 0);
+  }
+
+  void initializeBookmarks() {
+    isBookmarked =
+        RxBool(controller.classifiedList[0].bookmarkedByUser ?? false);
+    bookmarkCount = RxInt(controller.classifiedList[0].totalbookmark ?? 0);
+  }
+
+  void toggleLike() async {
+    bool newLikedValue = !isLiked.value;
+    isLiked.value = newLikedValue;
+    likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
+
+    await controller.toggleLike(post.id ?? 0, context);
+  }
+
+  void toggleBookmark() async {
+    bool newBookmarkedValue = !isBookmarked.value;
+    isBookmarked.value = newBookmarkedValue;
+    bookmarkCount.value =
+        newBookmarkedValue ? bookmarkCount.value + 1 : bookmarkCount.value - 1;
+
+    await controller.toggleBookMark(post.id ?? 0, context);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -36,6 +72,8 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
     if (post != null && post.id != null) {
       controller.fetchClassifiedDetail(post.id ?? 0, context);
     }
+    initializeLikes();
+    initializeBookmarks();
     // ignore: unrelated_type_equality_checks
     controller.likeCountMap == 0;
     // ignore: unrelated_type_equality_checks
@@ -202,7 +240,7 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
                           ),
                           3.sbh,
                           Text(
-                            post.company ?? '',
+                            post.company ?? 'N/A',
                             style: textStyleW400(
                                 size.width * 0.032, AppColors.blackText),
                           ),
@@ -282,29 +320,31 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
                             ],
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    'Email',
-                                    style: textStyleW400(
-                                        size.width * 0.035, AppColors.grey),
-                                  ),
-                                ],
-                              ),
-                              3.sbh,
-                              Text(
-                                '${post.userData!.email}',
-                                style: textStyleW400(
-                                    size.width * 0.032, AppColors.blackText),
-                              ),
-                            ],
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Email',
+                                      style: textStyleW400(
+                                          size.width * 0.035, AppColors.grey),
+                                    ),
+                                  ],
+                                ),
+                                3.sbh,
+                                Text(
+                                  '${post.userData!.email}',
+                                  style: textStyleW400(
+                                      size.width * 0.032, AppColors.blackText),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],
@@ -378,22 +418,21 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
                     const SizedBox(
                       width: 10,
                     ),
-                    SizedBox(
-                      height: size.height * 0.028,
-                      width: size.height * 0.028,
-                      child: GestureDetector(
-                        onTap: () =>
-                            controller.toggleLike(post.id ?? 0, context),
-                        child: Icon(
-                          // Observe like status
-                          controller.likedStatusMap[post.id ?? 0] ?? false
-                              ? Icons.thumb_up_off_alt_sharp
-                              : Icons.thumb_up_off_alt_outlined,
-                          color:
-                              controller.likedStatusMap[post.id ?? 0] ?? false
-                                  ? AppColors.primaryColor
-                                  : null,
-                          size: size.height * 0.032,
+                    Obx(
+                      () => SizedBox(
+                        height: size.height * 0.028,
+                        width: size.height * 0.028,
+                        child: GestureDetector(
+                          onTap: toggleLike,
+                          child: Icon(
+                            // Observe like status
+                            isLiked.value
+                                ? Icons.thumb_up_off_alt_sharp
+                                : Icons.thumb_up_off_alt_outlined,
+                            color:
+                                isLiked.value ? AppColors.primaryColor : null,
+                            size: size.height * 0.032,
+                          ),
                         ),
                       ),
                     ),
@@ -402,12 +441,17 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
                       width: 7,
                     ),
                     // ignore: unrelated_type_equality_checks
-                    controller.likeCountMap == 0
+                    likeCount.value == 0
                         ? const SizedBox.shrink()
-                        : Text(
-                            post.totallike.toString(),
-                            style: textStyleW600(
-                                size.width * 0.040, AppColors.blackText),
+                        : InkWell(
+                            onTap: () {
+                              showLikeList(context);
+                            },
+                            child: Text(
+                              '${likeCount.value}',
+                              style: textStyleW600(
+                                  size.width * 0.038, AppColors.blackText),
+                            ),
                           ),
                     const SizedBox(
                       width: 15,
@@ -456,22 +500,18 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
                 ),
                 Row(
                   children: [
-                    SizedBox(
-                      height: size.height * 0.028,
-                      width: size.height * 0.028,
-                      child: GestureDetector(
-                        onTap: () =>
-                            controller.toggleBookMark(post.id ?? 0, context),
-                        child: Icon(
-                          // Observe like status
-                          controller.bookmarkStatusMap[post.id ?? 0] ?? false
-                              ? Icons.bookmark
-                              : Icons.bookmark_border,
-                          color: controller.bookmarkStatusMap[post.id ?? 0] ??
-                                  false
-                              ? AppColors.primaryColor
-                              : null,
-                          size: size.height * 0.032,
+                    Obx(
+                      () => SizedBox(
+                        height: size.height * 0.028,
+                        width: size.height * 0.028,
+                        child: GestureDetector(
+                          onTap: () => toggleBookmark(),
+                          child: SvgPicture.asset(
+                            isBookmarked.value
+                                ? Assets.svgCheckBookmark
+                                : Assets.svgSavePost,
+                            height: size.height * 0.032,
+                          ),
                         ),
                       ),
                     ),
@@ -501,6 +541,21 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
             ),
           )),
     );
+  }
+
+  void showLikeList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        // Fetch like list after bottom sheet is shown
+        fetchLikeList();
+        return const ClassifiedLikedListContent();
+      },
+    );
+  }
+
+  void fetchLikeList() async {
+    await controller.fetchLikeListClassified(post.id ?? 0, context);
   }
 
   Widget _buildHtmlContent(String htmlContent, Size size) {

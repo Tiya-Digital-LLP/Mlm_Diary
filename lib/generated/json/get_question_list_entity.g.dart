@@ -89,18 +89,19 @@ GetQuestionListQuestions $GetQuestionListQuestionsFromJson(
   if (totalquestionAnswer != null) {
     getQuestionListQuestions.totalquestionAnswer = totalquestionAnswer;
   }
-  final int? userliked = jsonConvert.convert<int>(json['userliked']);
-  if (userliked != null) {
-    getQuestionListQuestions.userliked = userliked;
-  }
-  final int? userbookmarked = jsonConvert.convert<int>(json['userbookmarked']);
-  if (userbookmarked != null) {
-    getQuestionListQuestions.userbookmarked = userbookmarked;
-  }
   final GetQuestionListQuestionsUserData? userData = jsonConvert.convert<
       GetQuestionListQuestionsUserData>(json['user_data']);
   if (userData != null) {
     getQuestionListQuestions.userData = userData;
+  }
+  final bool? likedByUser = jsonConvert.convert<bool>(json['liked_by_user']);
+  if (likedByUser != null) {
+    getQuestionListQuestions.likedByUser = likedByUser;
+  }
+  final bool? bookmarkedByUser = jsonConvert.convert<bool>(
+      json['bookmarked_by_user']);
+  if (bookmarkedByUser != null) {
+    getQuestionListQuestions.bookmarkedByUser = bookmarkedByUser;
   }
   return getQuestionListQuestions;
 }
@@ -118,9 +119,9 @@ Map<String, dynamic> $GetQuestionListQuestionsToJson(
   data['totallike'] = entity.totallike;
   data['totalbookmark'] = entity.totalbookmark;
   data['totalquestion_answer'] = entity.totalquestionAnswer;
-  data['userliked'] = entity.userliked;
-  data['userbookmarked'] = entity.userbookmarked;
   data['user_data'] = entity.userData?.toJson();
+  data['liked_by_user'] = entity.likedByUser;
+  data['bookmarked_by_user'] = entity.bookmarkedByUser;
   return data;
 }
 
@@ -136,9 +137,9 @@ extension GetQuestionListQuestionsExtension on GetQuestionListQuestions {
     int? totallike,
     int? totalbookmark,
     int? totalquestionAnswer,
-    int? userliked,
-    int? userbookmarked,
     GetQuestionListQuestionsUserData? userData,
+    bool? likedByUser,
+    bool? bookmarkedByUser,
   }) {
     return GetQuestionListQuestions()
       ..id = id ?? this.id
@@ -151,9 +152,9 @@ extension GetQuestionListQuestionsExtension on GetQuestionListQuestions {
       ..totallike = totallike ?? this.totallike
       ..totalbookmark = totalbookmark ?? this.totalbookmark
       ..totalquestionAnswer = totalquestionAnswer ?? this.totalquestionAnswer
-      ..userliked = userliked ?? this.userliked
-      ..userbookmarked = userbookmarked ?? this.userbookmarked
-      ..userData = userData ?? this.userData;
+      ..userData = userData ?? this.userData
+      ..likedByUser = likedByUser ?? this.likedByUser
+      ..bookmarkedByUser = bookmarkedByUser ?? this.bookmarkedByUser;
   }
 }
 

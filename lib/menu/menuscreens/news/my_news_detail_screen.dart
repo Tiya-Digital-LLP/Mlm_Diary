@@ -6,6 +6,7 @@ import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/my_news_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/custom_blog_comment.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/news/news_like_list_content.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -26,6 +27,48 @@ class MyNewsDetailScreen extends StatefulWidget {
 class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
   final ManageNewsController controller = Get.put(ManageNewsController());
   final post = Get.arguments as MyNewsData;
+
+  // like
+  late RxBool isLiked;
+  late RxInt likeCount;
+// bookmark
+  late RxBool isBookmarked;
+  late RxInt bookmarkCount;
+
+  void initializeLikes() {
+    isLiked = RxBool(controller.newsList[0].likedByUser ?? false);
+    likeCount = RxInt(controller.newsList[0].totallike ?? 0);
+  }
+
+  void initializeBookmarks() {
+    isBookmarked = RxBool(controller.newsList[0].bookmarkedByUser ?? false);
+    bookmarkCount = RxInt(controller.newsList[0].totalbookmark ?? 0);
+  }
+
+  void toggleLike() async {
+    bool newLikedValue = !isLiked.value;
+    isLiked.value = newLikedValue;
+    likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
+
+    await controller.toggleLike(post.id ?? 0, context);
+  }
+
+  void toggleBookmark() async {
+    bool newBookmarkedValue = !isBookmarked.value;
+    isBookmarked.value = newBookmarkedValue;
+    bookmarkCount.value =
+        newBookmarkedValue ? bookmarkCount.value + 1 : bookmarkCount.value - 1;
+
+    await controller.toggleBookMark(post.id ?? 0, context);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    initializeLikes();
+    initializeBookmarks();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -370,33 +413,39 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
                     const SizedBox(
                       width: 10,
                     ),
-                    SizedBox(
-                      height: size.height * 0.028,
-                      width: size.height * 0.028,
-                      child: GestureDetector(
-                        onTap: () =>
-                            controller.toggleLike(post.id ?? 0, context),
-                        child: Icon(
-                          // Observe like status
-                          controller.likedStatusMap[post.id ?? 0] ?? false
-                              ? Icons.thumb_up_off_alt_sharp
-                              : Icons.thumb_up_off_alt_outlined,
-                          color:
-                              controller.likedStatusMap[post.id ?? 0] ?? false
-                                  ? AppColors.primaryColor
-                                  : null,
-                          size: size.height * 0.032,
+                    Obx(
+                      () => SizedBox(
+                        height: size.height * 0.028,
+                        width: size.height * 0.028,
+                        child: GestureDetector(
+                          onTap: toggleLike,
+                          child: Icon(
+                            // Observe like status
+                            isLiked.value
+                                ? Icons.thumb_up_off_alt_sharp
+                                : Icons.thumb_up_off_alt_outlined,
+                            color:
+                                isLiked.value ? AppColors.primaryColor : null,
+                            size: size.height * 0.032,
+                          ),
                         ),
                       ),
                     ),
                     const SizedBox(
                       width: 7,
                     ),
-                    Text(
-                      post.totallike.toString(),
-                      style: textStyleW600(
-                          size.width * 0.040, AppColors.blackText),
-                    ),
+                    likeCount.value == 0
+                        ? const SizedBox.shrink()
+                        : InkWell(
+                            onTap: () {
+                              showLikeList(context);
+                            },
+                            child: Text(
+                              '${likeCount.value}',
+                              style: textStyleW600(
+                                  size.width * 0.038, AppColors.blackText),
+                            ),
+                          ),
                     const SizedBox(
                       width: 15,
                     ),
@@ -444,22 +493,18 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
                 ),
                 Row(
                   children: [
-                    SizedBox(
-                      height: size.height * 0.028,
-                      width: size.height * 0.028,
-                      child: GestureDetector(
-                        onTap: () =>
-                            controller.toggleBookMark(post.id ?? 0, context),
-                        child: Icon(
-                          // Observe like status
-                          controller.bookmarkStatusMap[post.id ?? 0] ?? false
-                              ? Icons.bookmark
-                              : Icons.bookmark_border,
-                          color: controller.bookmarkStatusMap[post.id ?? 0] ??
-                                  false
-                              ? AppColors.primaryColor
-                              : null,
-                          size: size.height * 0.032,
+                    Obx(
+                      () => SizedBox(
+                        height: size.height * 0.028,
+                        width: size.height * 0.028,
+                        child: GestureDetector(
+                          onTap: () => toggleBookmark(),
+                          child: SvgPicture.asset(
+                            isBookmarked.value
+                                ? Assets.svgCheckBookmark
+                                : Assets.svgSavePost,
+                            height: size.height * 0.032,
+                          ),
                         ),
                       ),
                     ),
@@ -480,6 +525,21 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
             ),
           )),
     );
+  }
+
+  void showLikeList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        // Fetch like list after bottom sheet is shown
+        fetchLikeList();
+        return const NewsLikeListContent();
+      },
+    );
+  }
+
+  void fetchLikeList() async {
+    await controller.fetchLikeListNews(post.id ?? 0, context);
   }
 
   Widget _buildHtmlContent(String htmlContent, Size size) {

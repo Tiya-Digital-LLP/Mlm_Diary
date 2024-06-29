@@ -28,7 +28,6 @@ import 'package:mlmdiary/widgets/custom_button.dart';
 import 'package:mlmdiary/widgets/discription_text_field.dart';
 import 'package:mlmdiary/widgets/normal_button.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:textfield_tags/textfield_tags.dart';
 
 class AddClassified extends StatefulWidget {
   const AddClassified({super.key});
@@ -51,6 +50,12 @@ class _AddClassifiedState extends State<AddClassified> {
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.companyName.value.dispose();
+    super.dispose();
   }
 
   @override
@@ -166,30 +171,18 @@ class _AddClassifiedState extends State<AddClassified> {
                   10.sbh,
                   Column(
                     children: [
-                      TextFieldTags<String>(
-                        textfieldTagsController: StringTagController(),
-                        textSeparators: const [' ', ','],
-                        letterCase: LetterCase.normal,
-                        inputFieldBuilder: (context, inputFieldValues) {
-                          return CompanyBorderTextfield(
-                            height: 65,
-                            keyboard: TextInputType.multiline,
-                            textInputType: const [],
-                            hint: "Company Name",
-                            readOnly: controller.companyNameOnly.value,
-                            controller: controller
-                                .companyName.value, // Using the controller here
-                            isError: controller.companyError.value,
-                            byDefault: !controller.isCompanyNameTyping.value,
-                            onChanged: (value) {
-                              // Add any necessary logic here if needed
-                              inputFieldValues.onTagChanged(
-                                  value); // Propagate changes to tag controller
-                            },
-                            onTap: () {
-                              Get.toNamed(Routes.addcompanyclassified);
-                            },
-                          );
+                      CompanyBorderTextfield(
+                        height: 65,
+                        keyboard: TextInputType.multiline,
+                        textInputType: const [],
+                        hint: "Company Name",
+                        readOnly: controller.companyNameOnly.value,
+                        controller: controller.companyName.value,
+                        isError: controller.companyError.value,
+                        byDefault: !controller.isCompanyNameTyping.value,
+                        onChanged: (value) {},
+                        onTap: () {
+                          Get.toNamed(Routes.addcompanyclassified);
                         },
                       ),
                     ],

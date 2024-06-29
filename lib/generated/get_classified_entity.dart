@@ -31,7 +31,7 @@ class GetClassifiedData {
 	String? premiumsdate = '';
 	String? premiumedate = '';
 	String? datemodified = '';
-	String? datecreated = '';
+	String? createdate = '';
 	String? category = '';
 	String? creatby = '';
 	String? subcategory = '';
@@ -40,6 +40,8 @@ class GetClassifiedData {
 	String? city = '';
 	String? state = '';
 	String? country = '';
+	String? lat = '';
+	String? lng = '';
 	String? urlcomponent = '';
 	int? totallike = 0;
 	int? totalbookmark = 0;
@@ -52,6 +54,8 @@ class GetClassifiedData {
 	GetClassifiedDataUserData? userData;
 	@JSONField(name: "full_url")
 	String? fullUrl = '';
+	@JSONField(name: "image_url")
+	String? imageUrl = '';
 	@JSONField(name: "image_path")
 	String? imagePath = '';
 	@JSONField(name: "image_thum_path")
@@ -74,8 +78,8 @@ class GetClassifiedDataUserData {
 	String? name = '';
 	String? userimage = '';
 	String? email = '';
-	String? mobile = '';
-	String? countrycode1 = '';
+	dynamic mobile;
+	dynamic countrycode1;
 	@JSONField(name: "image_path")
 	String? imagePath = '';
 	@JSONField(name: "image_thum_path")

@@ -96,6 +96,8 @@ class _MlmnewsState extends State<ManageNews> {
                         controller: controller,
                         newsstatus: post.status ?? 0,
                         commentcount: post.totalcomment ?? 0,
+                        likedbyuser: post.likedByUser ?? false,
+                        bookmarkedbyuser: post.bookmarkedByUser ?? false,
                       ),
                     ),
                   );

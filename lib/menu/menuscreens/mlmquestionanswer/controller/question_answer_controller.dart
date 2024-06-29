@@ -549,13 +549,6 @@ class QuestionAnswerController extends GetxController {
           if (kDebugMode) {
             print('last question ID stored: $questionId');
           }
-
-          // Map data to controllers
-          title.value.text = firstQuestion.title ?? '';
-
-          // Update Category and SubCategory Lists
-          updateCategorySelection(firstQuestion.category);
-          updateSubCategorySelection(firstQuestion.subcategory);
         }
 
         // Update state with fetched data
@@ -573,24 +566,6 @@ class QuestionAnswerController extends GetxController {
       showToasterrorborder("An error occurred: $error", context);
     } finally {
       isLoading.value = false;
-    }
-  }
-
-  // Method to update Category selection
-  void updateCategorySelection(String? selectedCategoryId) {
-    isCategorySelectedList.clear();
-    for (var category in categorylist) {
-      bool isSelected = selectedCategoryId == category.id.toString();
-      isCategorySelectedList.add(isSelected);
-    }
-  }
-
-// Method to update SubCategory selection
-  void updateSubCategorySelection(String? selectedSubCategoryId) {
-    isSubCategorySelectedList.clear();
-    for (var subcategory in subcategoryList) {
-      bool isSelected = selectedSubCategoryId == subcategory.id.toString();
-      isSubCategorySelectedList.add(isSelected);
     }
   }
 

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/menu/menuscreens/blog/blog_liked_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/custom_blog_comment.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
@@ -29,13 +30,48 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
 
   PostTimeFormatter postTimeFormatter = PostTimeFormatter();
 
+  // like
+  late RxBool isLiked;
+  late RxInt likeCount;
+// bookmark
+  late RxBool isBookmarked;
+  late RxInt bookmarkCount;
+
+  void initializeLikes() {
+    isLiked = RxBool(controller.blogList[0].likedByUser ?? false);
+    likeCount = RxInt(controller.blogList[0].totallike ?? 0);
+  }
+
+  void initializeBookmarks() {
+    isBookmarked = RxBool(controller.blogList[0].bookmarkedByUser ?? false);
+    bookmarkCount = RxInt(controller.blogList[0].totalbookmark ?? 0);
+  }
+
+  void toggleLike() async {
+    bool newLikedValue = !isLiked.value;
+    isLiked.value = newLikedValue;
+    likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
+
+    await controller.toggleLike(post.id, context);
+  }
+
+  void toggleBookmark() async {
+    bool newBookmarkedValue = !isBookmarked.value;
+    isBookmarked.value = newBookmarkedValue;
+    bookmarkCount.value =
+        newBookmarkedValue ? bookmarkCount.value + 1 : bookmarkCount.value - 1;
+
+    await controller.toggleBookMark(post.id, context);
+  }
+
   @override
   void initState() {
     super.initState();
     post = Get.arguments;
-
+    initializeLikes();
+    initializeBookmarks();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.countViewBlog(post.articleId ?? 0, context);
+      controller.countViewBlog(post.id ?? 0, context);
     });
   }
 
@@ -102,12 +138,12 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                                   ),
                                 ],
                               ),
-                              // Text(
-                              //   postTimeFormatter
-                              //       .formatPostTime(post.createdDate ?? ''),
-                              //   style: textStyleW400(size.width * 0.035,
-                              //       AppColors.blackText.withOpacity(0.5)),
-                              // ),
+                              Text(
+                                postTimeFormatter
+                                    .formatPostTime(post.createdate ?? ''),
+                                style: textStyleW400(size.width * 0.035,
+                                    AppColors.blackText.withOpacity(0.5)),
+                              ),
                             ],
                           )
                         ],
@@ -126,16 +162,16 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                         ),
-                        // child: CachedNetworkImage(
-                        //   imageUrl: post.imagePath ?? '',
-                        //   height: 97,
-                        //   width: 105,
-                        //   fit: BoxFit.fill,
-                        //   placeholder: (context, url) =>
-                        //       const Center(child: CircularProgressIndicator()),
-                        //   errorWidget: (context, url, error) =>
-                        //       const Icon(Icons.error),
-                        // ),
+                        child: CachedNetworkImage(
+                          imageUrl: post.imageUrl ?? '',
+                          height: 97,
+                          width: 105,
+                          fit: BoxFit.fill,
+                          placeholder: (context, url) =>
+                              const Center(child: CircularProgressIndicator()),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -344,22 +380,20 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                   const SizedBox(
                     width: 10,
                   ),
-                  SizedBox(
-                    height: size.height * 0.028,
-                    width: size.height * 0.028,
-                    child: GestureDetector(
-                      onTap: () =>
-                          controller.toggleLike(post.articleId ?? 0, context),
-                      child: Icon(
-                        // Observe like status
-                        controller.likedStatusMap[post.articleId ?? 0] ?? false
-                            ? Icons.thumb_up_off_alt_sharp
-                            : Icons.thumb_up_off_alt_outlined,
-                        color: controller.likedStatusMap[post.articleId ?? 0] ??
-                                false
-                            ? AppColors.primaryColor
-                            : null,
-                        size: size.height * 0.032,
+                  Obx(
+                    () => SizedBox(
+                      height: size.height * 0.028,
+                      width: size.height * 0.028,
+                      child: GestureDetector(
+                        onTap: toggleLike,
+                        child: Icon(
+                          // Observe like status
+                          isLiked.value
+                              ? Icons.thumb_up_off_alt_sharp
+                              : Icons.thumb_up_off_alt_outlined,
+                          color: isLiked.value ? AppColors.primaryColor : null,
+                          size: size.height * 0.032,
+                        ),
                       ),
                     ),
                   ),
@@ -367,12 +401,17 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                     width: 7,
                   ),
                   // ignore: unrelated_type_equality_checks
-                  controller.likeCountMap == 0
+                  likeCount.value == 0
                       ? const SizedBox.shrink()
-                      : Text(
-                          post.totallike.toString(),
-                          style: textStyleW600(
-                              size.width * 0.040, AppColors.blackText),
+                      : InkWell(
+                          onTap: () {
+                            showLikeList(context);
+                          },
+                          child: Text(
+                            '${likeCount.value}',
+                            style: textStyleW600(
+                                size.width * 0.038, AppColors.blackText),
+                          ),
                         ),
                   const SizedBox(
                     width: 15,
@@ -382,7 +421,7 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                       GestureDetector(
                         onTap: () => showFullScreenDialogBlog(
                           context,
-                          post.articleId!,
+                          post.id!,
                         ),
                         child: SizedBox(
                           height: size.height * 0.028,
@@ -421,24 +460,18 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
               ),
               Row(
                 children: [
-                  SizedBox(
-                    height: size.height * 0.028,
-                    width: size.height * 0.028,
-                    child: GestureDetector(
-                      onTap: () => controller.toggleBookMark(
-                          post.articleId ?? 0, context),
-                      child: Icon(
-                        // Observe like status
-                        controller.bookmarkStatusMap[post.articleId ?? 0] ??
-                                false
-                            ? Icons.bookmark
-                            : Icons.bookmark_border,
-                        color:
-                            controller.bookmarkStatusMap[post.articleId ?? 0] ??
-                                    false
-                                ? AppColors.primaryColor
-                                : null,
-                        size: size.height * 0.032,
+                  Obx(
+                    () => SizedBox(
+                      height: size.height * 0.028,
+                      width: size.height * 0.028,
+                      child: GestureDetector(
+                        onTap: () => toggleBookmark(),
+                        child: SvgPicture.asset(
+                          isBookmarked.value
+                              ? Assets.svgCheckBookmark
+                              : Assets.svgSavePost,
+                          height: size.height * 0.032,
+                        ),
                       ),
                     ),
                   ),
@@ -460,6 +493,21 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
         ),
       ),
     );
+  }
+
+  void showLikeList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        // Fetch like list after bottom sheet is shown
+        fetchLikeList();
+        return const BlogLikedListContent();
+      },
+    );
+  }
+
+  void fetchLikeList() async {
+    await controller.fetchLikeListBlog(post.id ?? 0, context);
   }
 
   Widget _buildHtmlContent(String htmlContent, Size size) {

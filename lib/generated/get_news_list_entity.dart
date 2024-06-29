@@ -44,6 +44,8 @@ class GetNewsListData {
 	bool? bookmarkedByUser = false;
 	@JSONField(name: "user_data")
 	GetNewsListDataUserData? userData;
+	@JSONField(name: "image_url")
+	String? imageUrl = '';
 	@JSONField(name: "image_path")
 	String? imagePath = '';
 

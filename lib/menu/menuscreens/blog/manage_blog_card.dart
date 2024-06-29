@@ -27,6 +27,8 @@ class ManageBlogCard extends StatefulWidget {
   final int commentcount;
 
   final int bookmarkCount;
+  final bool likedbyuser;
+  final bool bookmarkedbyuser;
 
   final ManageBlogController controller;
 
@@ -46,7 +48,8 @@ class ManageBlogCard extends StatefulWidget {
       required this.blogId,
       required this.blogstatus,
       required this.commentcount,
-      s});
+      required this.likedbyuser,
+      required this.bookmarkedbyuser});
 
   @override
   State<ManageBlogCard> createState() => _ManageBlogCardState();
@@ -70,9 +73,8 @@ class _ManageBlogCardState extends State<ManageBlogCard> {
   }
 
   void initializeLikes() {
-    isLiked = RxBool(widget.controller.likedStatusMap[widget.blogId] ?? false);
-    likeCount = RxInt(
-        widget.controller.likeCountMap[widget.blogId] ?? widget.likedCount);
+    isLiked = RxBool(widget.likedbyuser);
+    likeCount = RxInt(widget.likedCount);
   }
 
   void toggleLike() async {

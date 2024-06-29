@@ -358,22 +358,22 @@ class _ManageClassifiedPlusIconState extends State<ManageClassifiedPlusIcon> {
                           child: file.value != null
                               ? Image.file(
                                   file.value!,
-                                  height: 200,
+                                  height: 100,
                                   width: double.infinity,
                                   fit: BoxFit.cover,
                                 )
                               : controller.userImage.value.isNotEmpty
                                   ? Image.network(
                                       controller.userImage.value,
-                                      height: 200,
+                                      height: 100,
                                       width: double.infinity,
                                       fit: BoxFit.cover,
                                     )
                                   : ClipOval(
                                       child: Image.asset(
                                         Assets.imagesIcon,
-                                        height: 120,
-                                        width: 120,
+                                        height: 100,
+                                        width: double.infinity,
                                         fit: BoxFit.cover,
                                       ),
                                     ),

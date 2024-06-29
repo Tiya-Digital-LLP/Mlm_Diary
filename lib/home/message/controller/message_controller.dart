@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -157,7 +158,7 @@ class MessageController extends GetxController {
 
   Future<void> sendChat({
     required String toId,
-    required String chatId,
+    String? chatId,
   }) async {
     isLoading(true);
 
@@ -171,7 +172,7 @@ class MessageController extends GetxController {
       request.fields['api_token'] = apiToken.toString();
       request.fields['toid'] = toId;
       request.fields['msg'] = msg.value.text;
-      request.fields['chat_id'] = chatId;
+      request.fields['chat_id'] = chatId ?? '';
 
       if (kDebugMode) {
         print('api_token : $apiToken');
@@ -260,6 +261,71 @@ class MessageController extends GetxController {
           // Handle unexpected response format
           if (kDebugMode) {
             print('Failed to Delete chat: Unexpected response format');
+            print('Response body: $jsonBody');
+          }
+        }
+      } else {
+        // Handle HTTP error status codes
+        if (kDebugMode) {
+          print('Failed to send chat. Status Code: ${response.statusCode}');
+        }
+      }
+    } catch (e) {
+      // Handle exceptions thrown during request or parsing
+      if (kDebugMode) {
+        print('Error sending chat: $e');
+      }
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<void> sendNewChat(
+    int lastId,
+    String chatId,
+  ) async {
+    isLoading(true);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = Platform.isAndroid ? 'android' : 'ios';
+    try {
+      var uri = Uri.parse('${Constants.baseUrl}${Constants.sendnewchat}');
+      var request = http.MultipartRequest('POST', uri);
+      request.fields['api_token'] = apiToken.toString();
+      request.fields['device'] = device;
+      request.fields['chat_id'] = chatId.toString();
+      request.fields['last_id'] = lastId.toString();
+
+      if (kDebugMode) {
+        print('api_token : $apiToken');
+        print('device : $device');
+        print('chat_id : $chatId');
+        print('last_id : $lastId');
+      }
+
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonBody = json.decode(response.body);
+
+        // Check if response contains 'success' or 'error' keys
+        if (jsonBody.containsKey('success')) {
+          // Handle success scenario
+          if (kDebugMode) {
+            print('Chat sent successfully');
+          }
+        } else if (jsonBody.containsKey('error')) {
+          // Handle failure scenario
+          if (kDebugMode) {
+            print('Failed to send chat: ${jsonBody['error']}');
+          }
+        } else {
+          // Handle unexpected response format
+          if (kDebugMode) {
+            print('Failed to send chat: Unexpected response format');
             print('Response body: $jsonBody');
           }
         }

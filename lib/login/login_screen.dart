@@ -64,12 +64,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: CustomTextField(
                         controller: controller.email.value,
                         title: "Enter Your Email / Mobile",
-                        isError: controller.emailError.value,
-                        byDefault: !controller.isEmailTyping.value,
+                        isError: controller.emailError.value ||
+                            controller.mobileError.value,
+                        byDefault: !controller.isEmailTyping.value &&
+                            !controller.isMobileTyping.value,
                         onChanged: () {
                           controller.isEmailTyping.value = true;
-                          controller.isEmailTyping.value = true;
-                          controller.emailValidation();
+                          controller.isMobileTyping.value = true;
+                          controller.validateEmailOrMobile();
                         },
                       ),
                     ),

@@ -48,14 +48,17 @@ class _UserProfileScreenState extends State<UserProfileScreen>
     final userId = mlmDatabaseList.id ?? 0;
 
     try {
+      // Fetch current follow status
       bool followStatus = await _fetchFollowStatus(userId);
 
-      isFollowing.value = followStatus;
+      // Defer the state update
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        isFollowing.value = !followStatus;
+      });
 
+      // Call the API to toggle the follow status
       // ignore: use_build_context_synchronously
       await controller.toggleProfileFollow(userId, context);
-
-      isFollowing.toggle(); // Toggle the boolean value
     } catch (e) {
       // Handle API errors
       Fluttertoast.showToast(
@@ -74,9 +77,15 @@ class _UserProfileScreenState extends State<UserProfileScreen>
     final userId = mlmDatabaseList.id ?? 0;
 
     try {
+      // Fetch current bookmark status
       bool bookmarkStatus = await _fetchBookmarkStatus(userId);
 
-      isBookmarked.value = !bookmarkStatus;
+      // Defer the state update
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        isBookmarked.value = !bookmarkStatus;
+      });
+
+      // Call the API to toggle the bookmark status
       // ignore: use_build_context_synchronously
       await controller.toggleProfileBookMark(userId, context);
     } catch (e) {
@@ -102,9 +111,10 @@ class _UserProfileScreenState extends State<UserProfileScreen>
     _tabController = TabController(length: 2, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       controller.countViewUserProfile(mlmDatabaseList.id ?? 0, context);
-      bool bookmarkStatus =
-          mlmDatabaseList.fav_status ?? false; // Correcting this line
-      isBookmarked.value = bookmarkStatus;
+      RxBool bookmarkStatus = mlmDatabaseList.favStatus ?? false;
+      isBookmarked.value = bookmarkStatus.value;
+      bool followStatus = mlmDatabaseList.followStatus ?? false;
+      isFollowing.value = followStatus;
     });
   }
 
@@ -286,13 +296,11 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                       10.sbw,
                       InkWell(
                         onTap: () async {
-                          final post = messageController.chatList[0];
-                          await messageController
-                              .fetchMyChatDetail(post.chatId.toString());
-                          Get.toNamed(
-                            Routes.messagedetailscreen,
-                            arguments: post,
-                          );
+                          Get.toNamed(Routes.messagedetailscreen, arguments: {
+                            'userId': mlmDatabaseList.id,
+                            'imagePath': mlmDatabaseList.imagePath,
+                            'username': mlmDatabaseList.name,
+                          });
                         },
                         child: const SocialButton(
                           icon: Assets.svgChat,

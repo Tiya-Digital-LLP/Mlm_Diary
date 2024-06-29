@@ -192,7 +192,7 @@ class _ManageBlogPlusIconState extends State<ManageBlogPlusIcon> {
                       height: 65,
                     ),
                   ),
-                  20.sbh,
+                  10.sbh,
                   ClipRRect(
                     borderRadius: BorderRadius.circular(13.05),
                     child: Stack(
@@ -202,25 +202,21 @@ class _ManageBlogPlusIconState extends State<ManageBlogPlusIcon> {
                               ? Image.file(
                                   file.value!,
                                   height: 100,
-                                  width: 100,
+                                  width: double.infinity,
                                   fit: BoxFit.cover,
                                 )
                               : controller.userImage.value.isNotEmpty
-                                  ? ClipOval(
-                                      child: Image.network(
-                                        controller.userImage.value,
-                                        height: 120,
-                                        width: 120,
-                                        fit: BoxFit.cover,
-                                      ),
+                                  ? Image.network(
+                                      controller.userImage.value,
+                                      height: 100,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
                                     )
-                                  : ClipOval(
-                                      child: Image.asset(
-                                        Assets.imagesIcon,
-                                        height: 120,
-                                        width: 120,
-                                        fit: BoxFit.cover,
-                                      ),
+                                  : Image.asset(
+                                      Assets.imagesIcon,
+                                      height: 120,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
                                     ),
                           onTap: () {
                             if (file.value == null) {

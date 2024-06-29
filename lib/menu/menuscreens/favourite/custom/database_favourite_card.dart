@@ -109,21 +109,26 @@ class _FavouritrCardState extends State<DatabaseFavouriteCard> {
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(100),
-                  child: CachedNetworkImage(
-                    imageUrl: widget.postImage,
-                    height: 60,
-                    width: 60,
-                    fit: BoxFit.fill,
-                    placeholder: (context, url) =>
-                        const CircularProgressIndicator(),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
+                Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(color: AppColors.grey, width: 2),
+                      borderRadius: BorderRadius.circular(100)),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: CachedNetworkImage(
+                      imageUrl: widget.postImage,
+                      height: 60,
+                      width: 60,
+                      fit: BoxFit.fill,
+                      placeholder: (context, url) =>
+                          const CircularProgressIndicator(),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                    ),
                   ),
                 ),
                 10.sbw,
@@ -131,10 +136,33 @@ class _FavouritrCardState extends State<DatabaseFavouriteCard> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        widget.userName,
-                        style: textStyleW700(
-                            size.width * 0.038, AppColors.blackText),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              widget.userName,
+                              style: textStyleW700(
+                                  size.width * 0.038, AppColors.blackText),
+                            ),
+                          ),
+                          Container(
+                            width: 70,
+                            height: 25,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(40),
+                              color: AppColors.primaryColor,
+                            ),
+                            child: Center(
+                              child: Text(
+                                widget.type,
+                                style: textStyleW700(
+                                  size.width * 0.026,
+                                  AppColors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       Text(
                         widget.postLocation,
@@ -146,52 +174,34 @@ class _FavouritrCardState extends State<DatabaseFavouriteCard> {
                         style: textStyleW700(
                             size.width * 0.038, AppColors.blackText),
                       ),
-                      Text(
-                        widget.plan,
-                        style: textStyleW700(
-                            size.width * 0.038, AppColors.blackText),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              widget.plan,
+                              style: textStyleW700(
+                                size.width * 0.038,
+                                AppColors.blackText,
+                              ),
+                              maxLines: 1,
+                            ),
+                          ),
+                          SizedBox(
+                            height: size.height * 0.028,
+                            width: size.height * 0.028,
+                            child: GestureDetector(
+                              onTap: togleBookmark,
+                              child: SvgPicture.asset(
+                                isBookmarked
+                                    ? Assets.svgSavePost
+                                    : Assets.svgCheckBookmark,
+                                height: size.height * 0.032,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
-                  ),
-                ),
-                Row(
-                  children: [
-                    Container(
-                      width: 70,
-                      height: 25,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(40),
-                        color: AppColors.primaryColor,
-                      ),
-                      child: Center(
-                        child: Text(
-                          widget.type,
-                          style: textStyleW700(
-                            size.width * 0.026,
-                            AppColors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            10.sbh,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                SizedBox(
-                  height: size.height * 0.028,
-                  width: size.height * 0.028,
-                  child: GestureDetector(
-                    onTap: togleBookmark,
-                    child: SvgPicture.asset(
-                      isBookmarked
-                          ? Assets.svgCheckBookmark
-                          : Assets.svgSavePost,
-                      height: size.height * 0.032,
-                    ),
                   ),
                 ),
               ],

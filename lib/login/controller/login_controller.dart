@@ -16,42 +16,38 @@ import 'package:uuid/uuid.dart';
 class LoginController extends GetxController {
   Rx<TextEditingController> email = TextEditingController().obs;
   Rx<TextEditingController> mobile = TextEditingController().obs;
-
   Rx<TextEditingController> password = TextEditingController().obs;
+
   RxBool emailError = false.obs;
   RxBool mobileError = false.obs;
-
   RxBool passwordError = false.obs;
 
   RxBool isEmailTyping = false.obs;
   RxBool isMobileTyping = false.obs;
-
   RxBool isPasswordTyping = false.obs;
 
   var isLoading = false.obs;
 
-  void emailValidation() {
+  void validateEmailOrMobile() {
     String emailPattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
     RegExp emailRegex = RegExp(emailPattern);
 
     String mobilePattern = r'^[0-9]{10}$';
     RegExp mobileRegex = RegExp(mobilePattern);
 
-    if (email.value.text.isEmpty || !emailRegex.hasMatch(email.value.text)) {
-      emailError.value = true;
-    } else {
-      emailError.value = false;
-    }
-
-    if (mobile.value.text.length != 10 ||
-        !mobileRegex.hasMatch(mobile.value.text)) {
-      mobileError.value = true;
-    } else {
+    if (email.value.text.isNotEmpty) {
+      emailError.value = !emailRegex.hasMatch(email.value.text);
       mobileError.value = false;
+    } else if (mobile.value.text.isNotEmpty) {
+      mobileError.value = !mobileRegex.hasMatch(mobile.value.text);
+      emailError.value = false;
+    } else {
+      emailError.value = true;
+      mobileError.value = true;
     }
   }
 
-  passwordValidation() {
+  void passwordValidation() {
     if (password.value.text.isEmpty || password.value.text.length < 6) {
       passwordError.value = true;
     } else {
@@ -61,9 +57,10 @@ class LoginController extends GetxController {
 
   void loginValidation(BuildContext context) {
     if (email.value.text.isEmpty && password.value.text.isEmpty) {
-      showToasterrorborder("Please Enter Email and \nPassword", context);
-    } else if (email.value.text.isEmpty) {
-      showToasterrorborder("Please Enter Email", context);
+      showToasterrorborder(
+          "Please Enter Email or Mobile and \nPassword", context);
+    } else if (email.value.text.isEmpty && mobile.value.text.isEmpty) {
+      showToasterrorborder("Please Enter Email or Mobile", context);
     } else if (password.value.text.isEmpty) {
       showToasterrorborder("Please Enter Password", context);
     } else if (password.value.text.length < 6) {
@@ -84,8 +81,6 @@ class LoginController extends GetxController {
 
     if (kDebugMode) {
       print('Response status: ${response.statusCode}');
-    }
-    if (kDebugMode) {
       print('Response body: ${response.body}');
     }
 
@@ -94,27 +89,20 @@ class LoginController extends GetxController {
       LoginEntity loginEntity = LoginEntity.fromJson(responseData);
 
       if (loginEntity.result == 1) {
-        // Print the entire response including access token
         if (kDebugMode) {
           print('Login successful! Full response: $responseData');
         }
-
-        // Show success toast
         // ignore: use_build_context_synchronously
         showToastverifedborder('Login successful!', context);
         // ignore: use_build_context_synchronously
         saveFcm(context);
 
-        // Store token and user id
         await saveAccessToken(loginEntity.apiToken, loginEntity.userId);
 
-        // Check for redirection
         if (responseData.containsKey('redirect_to_company') &&
             responseData['redirect_to_company'] == true) {
-          // Redirect to sign up 2
           Get.offAllNamed(Routes.signUp2);
         } else {
-          // Redirect to main screen
           Get.offAllNamed(Routes.mainscreen);
         }
       } else {
@@ -151,7 +139,6 @@ class LoginController extends GetxController {
           print('userId: $userId');
           print('deviceId: $deviceToken');
           print('device: $device');
-          print('device: $device');
           print('fcmtoken: $fcmToken');
         }
 
@@ -165,6 +152,57 @@ class LoginController extends GetxController {
           }
         }
       } else {
+        showToasterrorborder("No internet connection", context);
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error: $e');
+      }
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<void> logout(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String device = Platform.isAndroid ? 'android' : 'ios';
+    String? deviceToken = await generateDeviceToken();
+    String? apiToken = prefs.getString(Constants.accessToken);
+
+    isLoading(true);
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri = Uri.parse('${Constants.baseUrl}${Constants.logout}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken.toString();
+        request.fields['device_id'] = deviceToken.toString();
+        request.fields['device'] = device;
+
+        if (kDebugMode) {
+          print('deviceId: $deviceToken');
+          print('device: $device');
+        }
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          // Clear SharedPreferences on successful logout
+          await prefs.remove(Constants.accessToken);
+          await prefs.remove(Constants.userId);
+          await prefs.remove(Constants.isLoggedIn);
+
+          Get.offAllNamed(Routes.login);
+        } else {
+          if (kDebugMode) {
+            print('Error: ${response.body}');
+          }
+        }
+      } else {
+        // ignore: use_build_context_synchronously
         showToasterrorborder("No internet connection", context);
       }
     } catch (e) {

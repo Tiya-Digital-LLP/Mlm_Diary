@@ -304,22 +304,14 @@ class ManageNewsController extends GetxController {
     }
   }
 
-  // Method to update Category selection
-  void updateCategorySelection(String? selectedCategoryId) {
-    isCategorySelectedList.clear();
-    for (var category in categorylist) {
-      bool isSelected = selectedCategoryId == category.id.toString();
-      isCategorySelectedList.add(isSelected);
+  String getSelectedSubCategoryText() {
+    List<String> selectedSubCategories = [];
+    for (int i = 0; i < isSubCategorySelectedList.length; i++) {
+      if (isSubCategorySelectedList[i]) {
+        selectedSubCategories.add(subcategoryList[i].name ?? '');
+      }
     }
-  }
-
-// Method to update SubCategory selection
-  void updateSubCategorySelection(String? selectedSubCategoryId) {
-    isSubCategorySelectedList.clear();
-    for (var subcategory in subcategoryList) {
-      bool isSelected = selectedSubCategoryId == subcategory.id.toString();
-      isSubCategorySelectedList.add(isSelected);
-    }
+    return selectedSubCategories.join(', ');
   }
 
   Future<void> fetchCategoryList() async {
@@ -847,7 +839,18 @@ class ManageNewsController extends GetxController {
         final response = await http.Response.fromStream(streamedResponse);
 
         if (response.statusCode == 200) {
+          // Print the raw response body
+          if (kDebugMode) {
+            print('Raw Response Body: ${response.body}');
+          }
+
           var data = jsonDecode(response.body);
+
+          // Print the parsed JSON data
+          if (kDebugMode) {
+            print('Parsed JSON Data: $data');
+          }
+
           var getNewsEntity = GetNewsListEntity.fromJson(data);
 
           if (kDebugMode) {

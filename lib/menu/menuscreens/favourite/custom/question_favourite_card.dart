@@ -297,8 +297,8 @@ class _FavouritrCardState extends State<QuestionFavouriteCard> {
                           onTap: togleBookmark,
                           child: SvgPicture.asset(
                             isBookmarked
-                                ? Assets.svgCheckBookmark
-                                : Assets.svgSavePost,
+                                ? Assets.svgSavePost
+                                : Assets.svgCheckBookmark,
                             height: size.height * 0.032,
                           ),
                         ),

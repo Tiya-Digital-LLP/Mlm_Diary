@@ -105,11 +105,16 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
 
                               // BUILDING ICON
-                              SizedBox(
-                                height: size.height * 0.036,
-                                width: size.height * 0.036,
-                                child: SvgPicture.asset(
-                                  Assets.svgBuilding,
+                              GestureDetector(
+                                onTap: () {
+                                  Get.toNamed(Routes.mlmcompanies);
+                                },
+                                child: SizedBox(
+                                  height: size.height * 0.036,
+                                  width: size.height * 0.036,
+                                  child: SvgPicture.asset(
+                                    Assets.svgBuilding,
+                                  ),
                                 ),
                               ),
 
@@ -220,7 +225,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             height: size.height * 0.22,
                             child: Obx(() {
                               final banners = controller.banners;
-                              return sliderHome(banners);
+                              return sliderHome(banners, context);
                             }),
                           ),
                           SizedBox(
@@ -388,7 +393,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget sliderHome(List<GetBannerData> banners) {
+  Widget sliderHome(List<GetBannerData> banners, context) {
     // Define a page controller with desired properties
     PageController pageController = PageController(
       initialPage: 0, // Set the initial page index
@@ -417,13 +422,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       if (kDebugMode) {
                         print('Android specific behavior');
                       }
-                      launchURL(banner.weblink!);
+                      launchURL(banner.weblink ?? '');
                     } else if (Platform.isIOS) {
                       // iOS-specific behavior
                       if (kDebugMode) {
                         print('iOS specific behavior');
                       }
-                      launchURL(banner.weblink!);
+                      launchURL(banner.weblink ?? '');
                     }
                   } else {
                     if (kDebugMode) {
@@ -468,17 +473,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
             ),
-          )
+          ),
         ],
       ),
     );
   }
 
   void launchURL(String url) async {
+    final Uri uri = Uri.parse(url);
     // ignore: deprecated_member_use
-    if (await canLaunch(url)) {
+    if (await canLaunch(uri.toString())) {
       // ignore: deprecated_member_use
-      await launch(url);
+      await launch(uri.toString());
     } else {
       throw 'Could not launch $url';
     }

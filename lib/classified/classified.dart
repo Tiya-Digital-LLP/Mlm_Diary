@@ -142,9 +142,9 @@ class _ClassifiedScreenState extends State<ClassifiedScreen> {
                           },
                           child: ClassifiedCard(
                             image: post.userData?.imagePath ?? '',
-                            dateTime: post.datecreated ?? '',
+                            dateTime: post.createdate ?? '',
                             classifiedId: post.id ?? 0,
-                            userImage: post.imagePath ?? '',
+                            userImage: post.imageUrl ?? '',
                             userName: post.userData?.name ?? '',
                             postTitle: post.title ?? '',
                             likedCount: post.totallike ?? 0,

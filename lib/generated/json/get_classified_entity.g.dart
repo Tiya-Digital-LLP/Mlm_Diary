@@ -76,9 +76,9 @@ GetClassifiedData $GetClassifiedDataFromJson(Map<String, dynamic> json) {
   if (datemodified != null) {
     getClassifiedData.datemodified = datemodified;
   }
-  final String? datecreated = jsonConvert.convert<String>(json['datecreated']);
-  if (datecreated != null) {
-    getClassifiedData.datecreated = datecreated;
+  final String? createdate = jsonConvert.convert<String>(json['createdate']);
+  if (createdate != null) {
+    getClassifiedData.createdate = createdate;
   }
   final String? category = jsonConvert.convert<String>(json['category']);
   if (category != null) {
@@ -111,6 +111,14 @@ GetClassifiedData $GetClassifiedDataFromJson(Map<String, dynamic> json) {
   final String? country = jsonConvert.convert<String>(json['country']);
   if (country != null) {
     getClassifiedData.country = country;
+  }
+  final String? lat = jsonConvert.convert<String>(json['lat']);
+  if (lat != null) {
+    getClassifiedData.lat = lat;
+  }
+  final String? lng = jsonConvert.convert<String>(json['lng']);
+  if (lng != null) {
+    getClassifiedData.lng = lng;
   }
   final String? urlcomponent = jsonConvert.convert<String>(
       json['urlcomponent']);
@@ -147,6 +155,10 @@ GetClassifiedData $GetClassifiedDataFromJson(Map<String, dynamic> json) {
   if (fullUrl != null) {
     getClassifiedData.fullUrl = fullUrl;
   }
+  final String? imageUrl = jsonConvert.convert<String>(json['image_url']);
+  if (imageUrl != null) {
+    getClassifiedData.imageUrl = imageUrl;
+  }
   final String? imagePath = jsonConvert.convert<String>(json['image_path']);
   if (imagePath != null) {
     getClassifiedData.imagePath = imagePath;
@@ -170,7 +182,7 @@ Map<String, dynamic> $GetClassifiedDataToJson(GetClassifiedData entity) {
   data['premiumsdate'] = entity.premiumsdate;
   data['premiumedate'] = entity.premiumedate;
   data['datemodified'] = entity.datemodified;
-  data['datecreated'] = entity.datecreated;
+  data['createdate'] = entity.createdate;
   data['category'] = entity.category;
   data['creatby'] = entity.creatby;
   data['subcategory'] = entity.subcategory;
@@ -179,6 +191,8 @@ Map<String, dynamic> $GetClassifiedDataToJson(GetClassifiedData entity) {
   data['city'] = entity.city;
   data['state'] = entity.state;
   data['country'] = entity.country;
+  data['lat'] = entity.lat;
+  data['lng'] = entity.lng;
   data['urlcomponent'] = entity.urlcomponent;
   data['totallike'] = entity.totallike;
   data['totalbookmark'] = entity.totalbookmark;
@@ -187,6 +201,7 @@ Map<String, dynamic> $GetClassifiedDataToJson(GetClassifiedData entity) {
   data['bookmarked_by_user'] = entity.bookmarkedByUser;
   data['user_data'] = entity.userData?.toJson();
   data['full_url'] = entity.fullUrl;
+  data['image_url'] = entity.imageUrl;
   data['image_path'] = entity.imagePath;
   data['image_thum_path'] = entity.imageThumPath;
   return data;
@@ -203,7 +218,7 @@ extension GetClassifiedDataExtension on GetClassifiedData {
     String? premiumsdate,
     String? premiumedate,
     String? datemodified,
-    String? datecreated,
+    String? createdate,
     String? category,
     String? creatby,
     String? subcategory,
@@ -212,6 +227,8 @@ extension GetClassifiedDataExtension on GetClassifiedData {
     String? city,
     String? state,
     String? country,
+    String? lat,
+    String? lng,
     String? urlcomponent,
     int? totallike,
     int? totalbookmark,
@@ -220,6 +237,7 @@ extension GetClassifiedDataExtension on GetClassifiedData {
     bool? bookmarkedByUser,
     GetClassifiedDataUserData? userData,
     String? fullUrl,
+    String? imageUrl,
     String? imagePath,
     String? imageThumPath,
   }) {
@@ -233,7 +251,7 @@ extension GetClassifiedDataExtension on GetClassifiedData {
       ..premiumsdate = premiumsdate ?? this.premiumsdate
       ..premiumedate = premiumedate ?? this.premiumedate
       ..datemodified = datemodified ?? this.datemodified
-      ..datecreated = datecreated ?? this.datecreated
+      ..createdate = createdate ?? this.createdate
       ..category = category ?? this.category
       ..creatby = creatby ?? this.creatby
       ..subcategory = subcategory ?? this.subcategory
@@ -242,6 +260,8 @@ extension GetClassifiedDataExtension on GetClassifiedData {
       ..city = city ?? this.city
       ..state = state ?? this.state
       ..country = country ?? this.country
+      ..lat = lat ?? this.lat
+      ..lng = lng ?? this.lng
       ..urlcomponent = urlcomponent ?? this.urlcomponent
       ..totallike = totallike ?? this.totallike
       ..totalbookmark = totalbookmark ?? this.totalbookmark
@@ -250,6 +270,7 @@ extension GetClassifiedDataExtension on GetClassifiedData {
       ..bookmarkedByUser = bookmarkedByUser ?? this.bookmarkedByUser
       ..userData = userData ?? this.userData
       ..fullUrl = fullUrl ?? this.fullUrl
+      ..imageUrl = imageUrl ?? this.imageUrl
       ..imagePath = imagePath ?? this.imagePath
       ..imageThumPath = imageThumPath ?? this.imageThumPath;
   }
@@ -270,12 +291,11 @@ GetClassifiedDataUserData $GetClassifiedDataUserDataFromJson(
   if (email != null) {
     getClassifiedDataUserData.email = email;
   }
-  final String? mobile = jsonConvert.convert<String>(json['mobile']);
+  final dynamic mobile = json['mobile'];
   if (mobile != null) {
     getClassifiedDataUserData.mobile = mobile;
   }
-  final String? countrycode1 = jsonConvert.convert<String>(
-      json['countrycode1']);
+  final dynamic countrycode1 = json['countrycode1'];
   if (countrycode1 != null) {
     getClassifiedDataUserData.countrycode1 = countrycode1;
   }
@@ -309,8 +329,8 @@ extension GetClassifiedDataUserDataExtension on GetClassifiedDataUserData {
     String? name,
     String? userimage,
     String? email,
-    String? mobile,
-    String? countrycode1,
+    dynamic mobile,
+    dynamic countrycode1,
     String? imagePath,
     String? imageThumPath,
   }) {

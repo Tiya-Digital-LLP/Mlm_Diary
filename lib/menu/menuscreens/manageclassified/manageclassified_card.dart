@@ -27,6 +27,8 @@ class ManageClassifiedCard extends StatefulWidget {
     required this.viewcounts,
     required this.likedCount,
     required this.commentcount,
+    required this.likedbyuser,
+    required this.bookmarkedbyuser,
   });
   final String userImage;
   final String userName;
@@ -41,6 +43,8 @@ class ManageClassifiedCard extends StatefulWidget {
   final int viewcounts;
   final int likedCount;
   final int commentcount;
+  final bool likedbyuser;
+  final bool bookmarkedbyuser;
 
   @override
   State<ManageClassifiedCard> createState() => _ManageClassifiedCardState();
@@ -61,10 +65,8 @@ class _ManageClassifiedCardState extends State<ManageClassifiedCard> {
   }
 
   void initializeLikes() {
-    isLiked =
-        RxBool(widget.controller.likedStatusMap[widget.classifiedId] ?? false);
-    likeCount = RxInt(widget.controller.likeCountMap[widget.classifiedId] ??
-        widget.likedCount);
+    isLiked = RxBool(widget.likedbyuser);
+    likeCount = RxInt(widget.likedCount);
   }
 
   void toggleLike() async {
@@ -131,16 +133,19 @@ class _ManageClassifiedCardState extends State<ManageClassifiedCard> {
                     const SizedBox(
                       width: 10,
                     ),
-                    SizedBox(
-                      height: size.height * 0.028,
-                      width: size.height * 0.028,
-                      child: GestureDetector(
-                        onTap: toggleLike,
-                        child: Icon(
-                          isLiked.value
-                              ? Icons.thumb_up_off_alt_sharp
-                              : Icons.thumb_up_off_alt_outlined,
-                          color: isLiked.value ? AppColors.primaryColor : null,
+                    Obx(
+                      () => SizedBox(
+                        height: size.height * 0.028,
+                        width: size.height * 0.028,
+                        child: GestureDetector(
+                          onTap: toggleLike,
+                          child: Icon(
+                            isLiked.value
+                                ? Icons.thumb_up_off_alt_sharp
+                                : Icons.thumb_up_off_alt_outlined,
+                            color:
+                                isLiked.value ? AppColors.primaryColor : null,
+                          ),
                         ),
                       ),
                     ),

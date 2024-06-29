@@ -23,14 +23,12 @@ class GetBlogListEntity {
 
 @JsonSerializable()
 class GetBlogListData {
-	@JSONField(name: "article_id")
-	int? articleId = 0;
+	int? id = 0;
 	String? title = '';
 	String? image = '';
 	String? description = '';
 	int? pgcnt = 0;
-	@JSONField(name: "created_date")
-	String? createdDate = '';
+	String? createdate = '';
 	String? category = '';
 	@JSONField(name: "user_id")
 	int? userId = 0;
@@ -46,6 +44,8 @@ class GetBlogListData {
 	bool? bookmarkedByUser = false;
 	@JSONField(name: "user_data")
 	GetBlogListDataUserData? userData;
+	@JSONField(name: "image_url")
+	String? imageUrl = '';
 	@JSONField(name: "image_path")
 	String? imagePath = '';
 
@@ -67,8 +67,8 @@ class GetBlogListDataUserData {
 	String? name = '';
 	String? userimage = '';
 	String? email = '';
-	String? mobile = '';
-	String? countrycode1 = '';
+	dynamic mobile;
+	dynamic countrycode1;
 	@JSONField(name: "image_path")
 	String? imagePath = '';
 	@JSONField(name: "image_thum_path")

@@ -26,6 +26,8 @@ class BlogCard extends StatefulWidget {
   final int bookmarkCount;
   final String image;
   final int commentcount;
+  final bool likedbyuser;
+  final bool bookmarkedbyuser;
 
   const BlogCard({
     super.key,
@@ -40,6 +42,8 @@ class BlogCard extends StatefulWidget {
     required this.bookmarkCount,
     required this.image,
     required this.commentcount,
+    required this.likedbyuser,
+    required this.bookmarkedbyuser,
   });
 
   @override
@@ -72,9 +76,8 @@ class _BlogCardState extends State<BlogCard> {
   }
 
   void initializeLikes() {
-    isLiked = RxBool(widget.controller.likedStatusMap[widget.blogId] ?? false);
-    likeCount = RxInt(
-        widget.controller.likeCountMap[widget.blogId] ?? widget.likedCount);
+    isLiked = RxBool(widget.likedbyuser);
+    likeCount = RxInt(widget.likedCount);
   }
 
   void toggleLike() async {
@@ -86,10 +89,8 @@ class _BlogCardState extends State<BlogCard> {
   }
 
   void initializeBookmarks() {
-    isBookmarked =
-        RxBool(widget.controller.bookmarkStatusMap[widget.blogId] ?? false);
-    bookmarkCount = RxInt(widget.controller.bookmarkCountMap[widget.blogId] ??
-        widget.bookmarkCount);
+    isBookmarked = RxBool(widget.bookmarkedbyuser);
+    bookmarkCount = RxInt(widget.bookmarkCount);
   }
 
   void toggleBookmark() async {

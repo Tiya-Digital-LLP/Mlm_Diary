@@ -44,9 +44,9 @@ extension GetBlogListEntityExtension on GetBlogListEntity {
 
 GetBlogListData $GetBlogListDataFromJson(Map<String, dynamic> json) {
   final GetBlogListData getBlogListData = GetBlogListData();
-  final int? articleId = jsonConvert.convert<int>(json['article_id']);
-  if (articleId != null) {
-    getBlogListData.articleId = articleId;
+  final int? id = jsonConvert.convert<int>(json['id']);
+  if (id != null) {
+    getBlogListData.id = id;
   }
   final String? title = jsonConvert.convert<String>(json['title']);
   if (title != null) {
@@ -64,9 +64,9 @@ GetBlogListData $GetBlogListDataFromJson(Map<String, dynamic> json) {
   if (pgcnt != null) {
     getBlogListData.pgcnt = pgcnt;
   }
-  final String? createdDate = jsonConvert.convert<String>(json['created_date']);
-  if (createdDate != null) {
-    getBlogListData.createdDate = createdDate;
+  final String? createdate = jsonConvert.convert<String>(json['createdate']);
+  if (createdate != null) {
+    getBlogListData.createdate = createdate;
   }
   final String? category = jsonConvert.convert<String>(json['category']);
   if (category != null) {
@@ -115,6 +115,10 @@ GetBlogListData $GetBlogListDataFromJson(Map<String, dynamic> json) {
   if (userData != null) {
     getBlogListData.userData = userData;
   }
+  final String? imageUrl = jsonConvert.convert<String>(json['image_url']);
+  if (imageUrl != null) {
+    getBlogListData.imageUrl = imageUrl;
+  }
   final String? imagePath = jsonConvert.convert<String>(json['image_path']);
   if (imagePath != null) {
     getBlogListData.imagePath = imagePath;
@@ -124,12 +128,12 @@ GetBlogListData $GetBlogListDataFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> $GetBlogListDataToJson(GetBlogListData entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
-  data['article_id'] = entity.articleId;
+  data['id'] = entity.id;
   data['title'] = entity.title;
   data['image'] = entity.image;
   data['description'] = entity.description;
   data['pgcnt'] = entity.pgcnt;
-  data['created_date'] = entity.createdDate;
+  data['createdate'] = entity.createdate;
   data['category'] = entity.category;
   data['user_id'] = entity.userId;
   data['subcategory'] = entity.subcategory;
@@ -141,18 +145,19 @@ Map<String, dynamic> $GetBlogListDataToJson(GetBlogListData entity) {
   data['liked_by_user'] = entity.likedByUser;
   data['bookmarked_by_user'] = entity.bookmarkedByUser;
   data['user_data'] = entity.userData?.toJson();
+  data['image_url'] = entity.imageUrl;
   data['image_path'] = entity.imagePath;
   return data;
 }
 
 extension GetBlogListDataExtension on GetBlogListData {
   GetBlogListData copyWith({
-    int? articleId,
+    int? id,
     String? title,
     String? image,
     String? description,
     int? pgcnt,
-    String? createdDate,
+    String? createdate,
     String? category,
     int? userId,
     String? subcategory,
@@ -164,15 +169,16 @@ extension GetBlogListDataExtension on GetBlogListData {
     bool? likedByUser,
     bool? bookmarkedByUser,
     GetBlogListDataUserData? userData,
+    String? imageUrl,
     String? imagePath,
   }) {
     return GetBlogListData()
-      ..articleId = articleId ?? this.articleId
+      ..id = id ?? this.id
       ..title = title ?? this.title
       ..image = image ?? this.image
       ..description = description ?? this.description
       ..pgcnt = pgcnt ?? this.pgcnt
-      ..createdDate = createdDate ?? this.createdDate
+      ..createdate = createdate ?? this.createdate
       ..category = category ?? this.category
       ..userId = userId ?? this.userId
       ..subcategory = subcategory ?? this.subcategory
@@ -184,6 +190,7 @@ extension GetBlogListDataExtension on GetBlogListData {
       ..likedByUser = likedByUser ?? this.likedByUser
       ..bookmarkedByUser = bookmarkedByUser ?? this.bookmarkedByUser
       ..userData = userData ?? this.userData
+      ..imageUrl = imageUrl ?? this.imageUrl
       ..imagePath = imagePath ?? this.imagePath;
   }
 }
@@ -207,12 +214,11 @@ GetBlogListDataUserData $GetBlogListDataUserDataFromJson(
   if (email != null) {
     getBlogListDataUserData.email = email;
   }
-  final String? mobile = jsonConvert.convert<String>(json['mobile']);
+  final dynamic mobile = json['mobile'];
   if (mobile != null) {
     getBlogListDataUserData.mobile = mobile;
   }
-  final String? countrycode1 = jsonConvert.convert<String>(
-      json['countrycode1']);
+  final dynamic countrycode1 = json['countrycode1'];
   if (countrycode1 != null) {
     getBlogListDataUserData.countrycode1 = countrycode1;
   }
@@ -248,8 +254,8 @@ extension GetBlogListDataUserDataExtension on GetBlogListDataUserData {
     String? name,
     String? userimage,
     String? email,
-    String? mobile,
-    String? countrycode1,
+    dynamic mobile,
+    dynamic countrycode1,
     String? imagePath,
     String? imageThumPath,
   }) {

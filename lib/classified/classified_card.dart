@@ -123,20 +123,25 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
                   child: widget.image.isEmpty ? const Icon(Icons.person) : null,
                 ),
                 const SizedBox(width: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.userName,
-                      style: textStyleW700(
-                          size.width * 0.043, AppColors.blackText),
-                    ),
-                    Text(
-                      postTimeFormatter.formatPostTime(widget.dateTime),
-                      style: textStyleW400(size.width * 0.035,
-                          AppColors.blackText.withOpacity(0.5)),
-                    ),
-                  ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.userName,
+                        style: textStyleW700(
+                          size.width * 0.043,
+                          AppColors.blackText,
+                        ),
+                        maxLines: 1,
+                      ),
+                      Text(
+                        postTimeFormatter.formatPostTime(widget.dateTime),
+                        style: textStyleW400(size.width * 0.035,
+                            AppColors.blackText.withOpacity(0.5)),
+                      ),
+                    ],
+                  ),
                 ),
                 const Spacer(),
                 if (widget.isPopular)
@@ -161,14 +166,11 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
               ],
             ),
             SizedBox(height: size.height * 0.01),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: Text(
-                  widget.postTitle,
-                  style: textStyleW700(size.width * 0.040, AppColors.blackText),
-                ),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                widget.postTitle,
+                style: textStyleW700(size.width * 0.040, AppColors.blackText),
               ),
             ),
             Align(

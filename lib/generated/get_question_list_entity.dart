@@ -35,10 +35,12 @@ class GetQuestionListQuestions {
 	int? totalbookmark = 0;
 	@JSONField(name: "totalquestion_answer")
 	int? totalquestionAnswer = 0;
-	int? userliked = 0;
-	int? userbookmarked = 0;
 	@JSONField(name: "user_data")
 	GetQuestionListQuestionsUserData? userData;
+	@JSONField(name: "liked_by_user")
+	bool? likedByUser = false;
+	@JSONField(name: "bookmarked_by_user")
+	bool? bookmarkedByUser = false;
 
 	GetQuestionListQuestions();
 

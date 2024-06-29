@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -6,9 +7,18 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
+import 'firebase_options.dart'; // Import the Firebase options file
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } on FirebaseException catch (e) {
+    if (e.code != 'duplicate-app') {
+      rethrow;
+    }
+  }
   if (kDebugMode) {
     print("Handling a background message: ${message.messageId}");
   }
@@ -16,7 +26,18 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+
+  // Initialize Firebase with the default options for the current platform
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } on FirebaseException catch (e) {
+    if (e.code != 'duplicate-app') {
+      rethrow;
+    }
+  }
+
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(const MyApp());
 }
@@ -33,6 +54,9 @@ class _MyAppState extends State<MyApp> {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+  static FirebaseAnalyticsObserver observer =
+      FirebaseAnalyticsObserver(analytics: analytics);
 
   @override
   void initState() {
@@ -49,7 +73,6 @@ class _MyAppState extends State<MyApp> {
       requestBadgePermission: true,
       requestSoundPermission: true,
       onDidReceiveLocalNotification: (id, title, body, payload) async {
-        // Handle notification tap in iOS
         navigatorKey.currentState?.pushNamed('/details', arguments: payload);
       },
     );
@@ -63,18 +86,11 @@ class _MyAppState extends State<MyApp> {
     flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onDidReceiveNotificationResponse:
             (NotificationResponse response) async {
-      // Handle notification tap
       navigatorKey.currentState
           ?.pushNamed('/details', arguments: response.payload);
     });
 
-    _firebaseMessaging.getToken().then((token) async {
-      if (kDebugMode) {
-        print("FCM Token: $token");
-      }
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('fcm_token', token ?? '');
-    });
+    _requestAPNSToken();
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (kDebugMode) {
@@ -88,6 +104,28 @@ class _MyAppState extends State<MyApp> {
         print('Message opened app: ${message.notification?.title}');
       }
       navigatorKey.currentState?.pushNamed('/details', arguments: message.data);
+    });
+  }
+
+  Future<void> _requestAPNSToken() async {
+    if (defaultTargetPlatform == TargetPlatform.iOS ||
+        defaultTargetPlatform == TargetPlatform.macOS) {
+      String? apnsToken = await _firebaseMessaging.getAPNSToken();
+      if (apnsToken != null) {
+        _getToken();
+      }
+    } else {
+      _getToken();
+    }
+  }
+
+  Future<void> _getToken() async {
+    _firebaseMessaging.getToken().then((token) async {
+      if (kDebugMode) {
+        print("FCM Token: $token");
+      }
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('fcm_token', token ?? '');
     });
   }
 
@@ -129,6 +167,7 @@ class _MyAppState extends State<MyApp> {
         useMaterial3: true,
       ),
       getPages: AppPages.routes,
+      navigatorObservers: <NavigatorObserver>[observer],
       debugShowCheckedModeBanner: false,
       initialRoute: Routes.splash,
     );

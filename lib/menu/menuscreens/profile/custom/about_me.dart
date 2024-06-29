@@ -1,11 +1,14 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_user_profile_entity.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AboutMeSection extends StatelessWidget {
   final Size size;
@@ -34,21 +37,113 @@ class AboutMeSection extends StatelessWidget {
                     Text('Follow me on',
                         style:
                             textStyleW400(size.width * 0.035, AppColors.grey)),
-                    15.sbh,
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        SvgPicture.asset(Assets.svgLogosFacebook),
-                        12.sbw,
-                        SvgPicture.asset(Assets.svgInstagram),
-                        12.sbw,
-                        SvgPicture.asset(Assets.svgLogosLinkedinIcon),
-                        12.sbw,
-                        SvgPicture.asset(Assets.svgYoutube),
-                        12.sbw,
-                        SvgPicture.asset(Assets.svgTwitter),
-                        12.sbw,
-                        SvgPicture.asset(Assets.svgTelegram),
+                        IconButton(
+                          onPressed: () {
+                            if (userProfile.wplink != null) {
+                              _launchURL(userProfile.wplink.toString());
+                              if (kDebugMode) {
+                                print('URL: ${userProfile.wplink}');
+                              }
+                            } else {
+                              showToasterrorborder("No Any Url Fond", context);
+                            }
+                          },
+                          icon: SvgPicture.asset(
+                            Assets.svgLogosWhatsappIcon,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            if (userProfile.fblink != null) {
+                              _launchURL(userProfile.fblink.toString());
+                              if (kDebugMode) {
+                                print('URL: ${userProfile.fblink}');
+                              }
+                            } else {
+                              showToasterrorborder("No Any Url Fond", context);
+                            }
+                          },
+                          icon: SvgPicture.asset(
+                            Assets.svgLogosFacebook,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            if (userProfile.instalink != null) {
+                              _launchURL(userProfile.instalink.toString());
+                              if (kDebugMode) {
+                                print('URL: ${userProfile.instalink}');
+                              }
+                            } else {
+                              showToasterrorborder("No Any Url Fond", context);
+                            }
+                          },
+                          icon: SvgPicture.asset(
+                            Assets.svgInstagram,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            if (userProfile.lilink != null) {
+                              _launchURL(userProfile.lilink.toString());
+                              if (kDebugMode) {
+                                print('URL: ${userProfile.lilink}');
+                              }
+                            } else {
+                              showToasterrorborder("No Any Url Fond", context);
+                            }
+                          },
+                          icon: SvgPicture.asset(
+                            Assets.svgLogosLinkedinIcon,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            if (userProfile.youlink != null) {
+                              _launchURL(userProfile.youlink.toString());
+                              if (kDebugMode) {
+                                print('URL: ${userProfile.youlink}');
+                              }
+                            } else {
+                              showToasterrorborder("No Any Url Fond", context);
+                            }
+                          },
+                          icon: SvgPicture.asset(
+                            Assets.svgYoutube,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            if (userProfile.telink != null) {
+                              _launchURL(userProfile.telink.toString());
+                              if (kDebugMode) {
+                                print('URL: ${userProfile.telink}');
+                              }
+                            } else {
+                              showToasterrorborder("No Any Url Fond", context);
+                            }
+                          },
+                          icon: SvgPicture.asset(
+                            Assets.svgTelegram,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            if (userProfile.twiterlink != null) {
+                              _launchURL(userProfile.twiterlink.toString());
+                              if (kDebugMode) {
+                                print('URL: ${userProfile.twiterlink}');
+                              }
+                            } else {
+                              showToasterrorborder("No Any Url Fond", context);
+                            }
+                          },
+                          icon: SvgPicture.asset(
+                            Assets.svgTwitter,
+                          ),
+                        ),
                       ],
                     ),
                   ],
@@ -56,7 +151,6 @@ class AboutMeSection extends StatelessWidget {
               ),
             ],
           ),
-          10.sbh,
           const Divider(color: Colors.grey),
           10.sbh,
           Padding(
@@ -94,5 +188,15 @@ class AboutMeSection extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _launchURL(String url) async {
+    // ignore: deprecated_member_use
+    if (await canLaunch(url)) {
+      // ignore: deprecated_member_use
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }

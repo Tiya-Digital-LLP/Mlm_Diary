@@ -8,14 +8,17 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/login/controller/login_controller.dart';
 import 'package:mlmdiary/menu/controller/profile_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:flutter/material.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MoreOptionScreen extends StatefulWidget {
   const MoreOptionScreen({super.key});
@@ -56,6 +59,7 @@ const List<Choice> choices = <Choice>[
 
 class _moreState extends State<MoreOptionScreen> {
   final ProfileController controller = Get.put(ProfileController());
+  final LoginController loginController = Get.put(LoginController());
 
   String? packageName;
 
@@ -493,43 +497,106 @@ class _moreState extends State<MoreOptionScreen> {
                   children: [
                     IconButton(
                       padding: EdgeInsets.zero,
-                      onPressed: () {},
+                      onPressed: () {
+                        if (userProfile.wplink != null) {
+                          _launchURL(userProfile.wplink.toString());
+                          if (kDebugMode) {
+                            print('URL: ${userProfile.wplink}');
+                          }
+                        } else {
+                          showToasterrorborder("No Any Url Fond", context);
+                        }
+                      },
                       icon: SvgPicture.asset(Assets.svgLogosWhatsappIcon,
                           height: 26, width: 26),
                     ),
                     IconButton(
                       padding: EdgeInsets.zero,
-                      onPressed: () {},
+                      onPressed: () {
+                        if (userProfile.fblink != null) {
+                          _launchURL(userProfile.fblink.toString());
+                          if (kDebugMode) {
+                            print('URL: ${userProfile.fblink}');
+                          }
+                        } else {
+                          showToasterrorborder("No Any Url Fond", context);
+                        }
+                      },
                       icon: SvgPicture.asset(Assets.svgLogosFacebook,
                           height: 26, width: 26),
                     ),
                     IconButton(
                       padding: EdgeInsets.zero,
-                      onPressed: () {},
+                      onPressed: () {
+                        if (userProfile.instalink != null) {
+                          _launchURL(userProfile.instalink.toString());
+                          if (kDebugMode) {
+                            print('URL: ${userProfile.instalink}');
+                          }
+                        } else {
+                          showToasterrorborder("No Any Url Fond", context);
+                        }
+                      },
                       icon: SvgPicture.asset(Assets.svgInstagram,
                           height: 26, width: 26),
                     ),
                     IconButton(
                       padding: EdgeInsets.zero,
-                      onPressed: () {},
+                      onPressed: () {
+                        if (userProfile.lilink != null) {
+                          _launchURL(userProfile.lilink.toString());
+                          if (kDebugMode) {
+                            print('URL: ${userProfile.lilink}');
+                          }
+                        } else {
+                          showToasterrorborder("No Any Url Fond", context);
+                        }
+                      },
                       icon: SvgPicture.asset(Assets.svgLogosLinkedinIcon,
                           height: 26, width: 26),
                     ),
                     IconButton(
                       padding: EdgeInsets.zero,
-                      onPressed: () {},
+                      onPressed: () {
+                        if (userProfile.youlink != null) {
+                          _launchURL(userProfile.youlink.toString());
+                          if (kDebugMode) {
+                            print('URL: ${userProfile.youlink}');
+                          }
+                        } else {
+                          showToasterrorborder("No Any Url Fond", context);
+                        }
+                      },
                       icon: SvgPicture.asset(Assets.svgYoutube,
                           height: 26, width: 26),
                     ),
                     IconButton(
                       padding: EdgeInsets.zero,
-                      onPressed: () {},
+                      onPressed: () {
+                        if (userProfile.telink != null) {
+                          _launchURL(userProfile.telink.toString());
+                          if (kDebugMode) {
+                            print('URL: ${userProfile.telink}');
+                          }
+                        } else {
+                          showToasterrorborder("No Any Url Fond", context);
+                        }
+                      },
                       icon: SvgPicture.asset(Assets.svgTelegram,
                           height: 26, width: 26),
                     ),
                     IconButton(
                       padding: EdgeInsets.zero,
-                      onPressed: () {},
+                      onPressed: () {
+                        if (userProfile.twiterlink != null) {
+                          _launchURL(userProfile.twiterlink.toString());
+                          if (kDebugMode) {
+                            print('URL: ${userProfile.twiterlink}');
+                          }
+                        } else {
+                          showToasterrorborder("No Any Url Fond", context);
+                        }
+                      },
                       icon: SvgPicture.asset(Assets.svgTwitter,
                           height: 26, width: 26),
                     ),
@@ -675,6 +742,16 @@ class _moreState extends State<MoreOptionScreen> {
     );
   }
 
+  void _launchURL(String url) async {
+    // ignore: deprecated_member_use
+    if (await canLaunch(url)) {
+      // ignore: deprecated_member_use
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
   void _showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -752,8 +829,8 @@ class _moreState extends State<MoreOptionScreen> {
                                   shadowColor: AppColors.primaryColor,
                                   elevation: 3,
                                 ),
-                                onPressed: () {
-                                  Get.toNamed(Routes.login);
+                                onPressed: () async {
+                                  await loginController.logout(context);
                                 },
                                 child: Text(
                                   'Logout',

@@ -119,6 +119,10 @@ GetNewsListData $GetNewsListDataFromJson(Map<String, dynamic> json) {
   if (userData != null) {
     getNewsListData.userData = userData;
   }
+  final String? imageUrl = jsonConvert.convert<String>(json['image_url']);
+  if (imageUrl != null) {
+    getNewsListData.imageUrl = imageUrl;
+  }
   final String? imagePath = jsonConvert.convert<String>(json['image_path']);
   if (imagePath != null) {
     getNewsListData.imagePath = imagePath;
@@ -146,6 +150,7 @@ Map<String, dynamic> $GetNewsListDataToJson(GetNewsListData entity) {
   data['liked_by_user'] = entity.likedByUser;
   data['bookmarked_by_user'] = entity.bookmarkedByUser;
   data['user_data'] = entity.userData?.toJson();
+  data['image_url'] = entity.imageUrl;
   data['image_path'] = entity.imagePath;
   return data;
 }
@@ -170,6 +175,7 @@ extension GetNewsListDataExtension on GetNewsListData {
     bool? likedByUser,
     bool? bookmarkedByUser,
     GetNewsListDataUserData? userData,
+    String? imageUrl,
     String? imagePath,
   }) {
     return GetNewsListData()
@@ -191,6 +197,7 @@ extension GetNewsListDataExtension on GetNewsListData {
       ..likedByUser = likedByUser ?? this.likedByUser
       ..bookmarkedByUser = bookmarkedByUser ?? this.bookmarkedByUser
       ..userData = userData ?? this.userData
+      ..imageUrl = imageUrl ?? this.imageUrl
       ..imagePath = imagePath ?? this.imagePath;
   }
 }

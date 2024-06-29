@@ -55,8 +55,6 @@ class ManageBlogController extends GetxController {
 
   RxString userImage = ''.obs;
 
-  RxInt articleId = RxInt(0);
-
   // news blog
   RxList<GetBlogCommentData> getCommentList = <GetBlogCommentData>[].obs;
   Rx<TextEditingController> commment = TextEditingController().obs;
