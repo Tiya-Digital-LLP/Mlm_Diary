@@ -162,7 +162,6 @@ class _ManageBlogPlusIconState extends State<ManageBlogPlusIcon> {
                   10.sbh,
                   Obx(
                     () => DiscriptionTextField(
-                      maxLength: 25,
                       keyboard: TextInputType.multiline,
                       textInputType: const [],
                       hint: "Description",

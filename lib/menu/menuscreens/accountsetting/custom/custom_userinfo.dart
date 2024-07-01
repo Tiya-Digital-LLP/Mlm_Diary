@@ -9,15 +9,18 @@ import 'package:get/get.dart';
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mlmdiary/classified/custom/add_comapany_classfied.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_plan_list_entity.dart';
 import 'package:mlmdiary/generated/get_user_type_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/accountsetting/controller/account_setting_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/manageclassified/controller/manage_classified_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/border_text_field.dart';
+import 'package:mlmdiary/widgets/company_border_textfield.dart';
 import 'package:mlmdiary/widgets/custom_border_container.dart';
 import 'package:mlmdiary/widgets/custom_button.dart';
 import 'package:mlmdiary/widgets/discription_text_field.dart';
@@ -39,6 +42,9 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
   final AccountSeetingController controller =
       Get.put(AccountSeetingController());
   final TextEditingController _loc = TextEditingController();
+  final ManageClasifiedController manageClasifiedController =
+      Get.put(ManageClasifiedController());
+  final RxList<String> selectedCompanies = <String>[].obs;
 
   final ImagePicker _picker = ImagePicker();
   Rx<io.File?> file = Rx<io.File?>(null);
@@ -269,17 +275,29 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
               ),
             ),
             10.sbh,
-            Obx(
-              () => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: BorderTextField(
-                  maxLength: 25,
-                  keyboard: TextInputType.name,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Obx(
+                () => CompanyBorderTextfield(
+                  height: 65,
+                  keyboard: TextInputType.multiline,
                   textInputType: const [],
-                  hint: "Company",
+                  hint: "Company Name",
                   controller: controller.companyname.value,
                   byDefault: !controller.isCompanyNameTyping.value,
-                  height: 65,
+                  onChanged: (value) {
+                    manageClasifiedController
+                        .fetchCompanyNames(value.toString());
+                  },
+                  onTap: () {
+                    Get.to(() => const AddComapanyClassfied())?.then((result) {
+                      if (result != null && result is List<String>) {
+                        selectedCompanies.addAll(result);
+                        controller.companyname.value.text =
+                            selectedCompanies.join(", ");
+                      }
+                    });
+                  },
                 ),
               ),
             ),
@@ -426,7 +444,6 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
               () => Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: DiscriptionTextField(
-                  maxLength: 25,
                   keyboard: TextInputType.name,
                   textInputType: const [],
                   hint: "About you",
@@ -443,7 +460,6 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                   horizontal: 16,
                 ),
                 child: DiscriptionTextField(
-                  maxLength: 25,
                   keyboard: TextInputType.name,
                   textInputType: const [],
                   hint: "About company",

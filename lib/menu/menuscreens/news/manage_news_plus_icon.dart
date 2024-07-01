@@ -166,7 +166,6 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
                   10.sbh,
                   Obx(
                     () => DiscriptionTextField(
-                      maxLength: 1000,
                       keyboard: TextInputType.multiline,
                       textInputType: const [],
                       hint: "Description",

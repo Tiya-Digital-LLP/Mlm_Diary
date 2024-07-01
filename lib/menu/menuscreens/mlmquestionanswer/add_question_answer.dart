@@ -78,7 +78,6 @@ class _AddClassifiedState extends State<AddQuestionAnswer> {
                   10.sbh,
                   Obx(
                     () => DiscriptionTextField(
-                      maxLength: 150000,
                       keyboard: TextInputType.multiline,
                       textInputType: const [],
                       hint: " Enter answer",

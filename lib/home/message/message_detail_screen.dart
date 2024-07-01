@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/generated/get_my_chat_history_entity.dart';
 import 'package:mlmdiary/home/message/controller/message_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
@@ -25,9 +27,17 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
   void initState() {
     super.initState();
     post = Get.arguments;
-    if (post != null && post.chatId != null) {
-      messageController.fetchMyChatDetail(post.chatId.toString());
-      postTimeFormatter = PostTimeFormatter();
+    postTimeFormatter = PostTimeFormatter();
+
+    if (post != null) {
+      String chatId = '';
+      if (post is Map<String, dynamic>) {
+        chatId = post['chatId'].toString();
+      } else if (post is GetMyChatHistoryMychatoverviewData) {
+        chatId = post.chatId.toString();
+      }
+
+      messageController.fetchMyChatDetail(chatId);
 
       // Scroll to the bottom when the chat details are fetched
       messageController.chatdetailsList.listen((_) {
@@ -81,10 +91,10 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
               Row(
                 children: [
                   // Example of accessing userImage from post
-                  if (post != null && post.userImage != null) ...[
+                  if (post != null && post['userImage'] != null) ...[
                     ClipOval(
                       child: Image.network(
-                        post.userImage,
+                        post['userImage'],
                         height: 30.0,
                         width: 30.0,
                         fit: BoxFit.cover,
@@ -95,7 +105,7 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
                     10.sbw,
                   ],
                   Text(
-                    post.username ?? 'Unknown',
+                    post['username'] ?? 'Unknown',
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: size.width * 0.05,
@@ -126,7 +136,7 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
                     reverse: true,
                     itemBuilder: (context, index) {
                       final message = messageController.chatdetailsList[index];
-                      final isSender = message.fromid == post.fromid;
+                      final isSender = message.fromid == post['fromid'];
 
                       return Padding(
                         padding: const EdgeInsets.symmetric(
@@ -138,10 +148,10 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
                           children: [
                             if (!isSender &&
                                 post != null &&
-                                post.userImage != null) ...[
+                                post['userImage'] != null) ...[
                               ClipOval(
                                 child: Image.network(
-                                  post.userImage,
+                                  post['userImage'],
                                   height: 30.0,
                                   width: 30.0,
                                   fit: BoxFit.cover,
@@ -183,7 +193,7 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
                                         children: [
                                           Text(
                                             postTimeFormatter.formatPostTime(
-                                                message.updatedAt!),
+                                                message.updatedAt ?? ''),
                                             style: textStyleW400(
                                               size.width * 0.03,
                                               AppColors.white.withOpacity(0.7),
@@ -278,20 +288,28 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
                         ),
                         onPressed: () {
                           messageController
-                              .fetchMyChatDetail(post.chatId.toString());
-                          messageController.sendChat(
-                            toId: post.toid.toString(),
-                            chatId: post.chatId ?? '',
-                          );
+                              .fetchMyChatDetail(post['chatId'].toString());
 
-                          // Scroll to the bottom after sending a message
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            if (_scrollController.hasClients) {
-                              _scrollController.jumpTo(
-                                _scrollController.position.maxScrollExtent,
-                              );
+                          String? toId = post['toid']?.toString();
+
+                          if (toId != null) {
+                            messageController.sendChat(
+                              toId: toId,
+                              chatId: post['chatId'].toString(),
+                            );
+
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              if (_scrollController.hasClients) {
+                                _scrollController.jumpTo(
+                                  _scrollController.position.maxScrollExtent,
+                                );
+                              }
+                            });
+                          } else {
+                            if (kDebugMode) {
+                              print('Error: toId (toid) is null');
                             }
-                          });
+                          }
                         },
                       ),
                     ],

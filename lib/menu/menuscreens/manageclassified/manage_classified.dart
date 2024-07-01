@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
+import 'package:mlmdiary/classified/custom/add_comapany_classfied.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_category_entity.dart';
 import 'package:mlmdiary/generated/get_sub_category_entity.dart';
@@ -17,6 +18,7 @@ import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/border_text_field.dart';
+import 'package:mlmdiary/widgets/company_border_textfield.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_border_container.dart';
 import 'package:mlmdiary/widgets/custom_button.dart';
@@ -38,6 +40,7 @@ class _ManageClassifiedPlusIconState extends State<ManageClassifiedPlusIcon> {
   Rx<io.File?> file = Rx<io.File?>(null);
   static List<io.File> imagesList = <io.File>[];
   final TextEditingController _loc = TextEditingController();
+  final RxList<String> selectedCompanies = <String>[].obs;
 
   late double lat = 0.0;
   late double log = 0.0;
@@ -165,51 +168,34 @@ class _ManageClassifiedPlusIconState extends State<ManageClassifiedPlusIcon> {
                     ),
                   ),
                   10.sbh,
-                  Obx(() => Column(
-                        children: [
-                          BorderTextField(
-                            maxLength: 25,
-                            height: 65,
-                            keyboard: TextInputType.name,
-                            textInputType: const [],
-                            hint: "Company Name",
-                            readOnly: controller.companyNameOnly.value,
-                            controller: controller.companyName.value,
-                            isError: controller.companyError.value,
-                            byDefault: !controller.isCompanyNameTyping.value,
-                            onChanged: (value) {
-                              controller.companyNameValidation();
-                              controller.isCompanyNameTyping.value = true;
-                              controller.fetchCompanyNames(value);
-                            },
-                          ),
-                          if (controller.companyNames.isNotEmpty)
-                            Container(
-                              decoration: BoxDecoration(
-                                color: AppColors.white,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              height: 200,
-                              child: ListView.builder(
-                                itemCount: controller.companyNames.length,
-                                itemBuilder: (context, index) {
-                                  return ListTile(
-                                    title: Text(controller.companyNames[index]),
-                                    onTap: () {
-                                      controller.companyName.value.text =
-                                          controller.companyNames[index];
-                                      controller.companyNames.clear();
-                                    },
-                                  );
-                                },
-                              ),
-                            ),
-                        ],
-                      )),
+                  Obx(
+                    () => CompanyBorderTextfield(
+                      height: 65,
+                      keyboard: TextInputType.multiline,
+                      textInputType: const [],
+                      hint: "Company Name",
+                      readOnly: controller.companyNameOnly.value,
+                      controller: controller.companyName.value,
+                      isError: controller.companyError.value,
+                      byDefault: !controller.isCompanyNameTyping.value,
+                      onChanged: (value) {
+                        controller.fetchCompanyNames(value.toString());
+                      },
+                      onTap: () {
+                        Get.to(() => const AddComapanyClassfied())
+                            ?.then((result) {
+                          if (result != null && result is List<String>) {
+                            selectedCompanies.addAll(result);
+                            controller.companyName.value.text =
+                                selectedCompanies.join(", ");
+                          }
+                        });
+                      },
+                    ),
+                  ),
                   10.sbh,
                   Obx(
                     () => DiscriptionTextField(
-                      maxLength: 1000,
                       keyboard: TextInputType.multiline,
                       textInputType: const [],
                       hint: "Description",

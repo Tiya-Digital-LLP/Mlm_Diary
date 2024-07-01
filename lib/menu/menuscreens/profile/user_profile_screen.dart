@@ -297,9 +297,9 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                       InkWell(
                         onTap: () async {
                           Get.toNamed(Routes.messagedetailscreen, arguments: {
-                            'userId': mlmDatabaseList.id,
-                            'imagePath': mlmDatabaseList.imagePath,
-                            'username': mlmDatabaseList.name,
+                            'toid': mlmDatabaseList.id.toString(),
+                            'userImage': mlmDatabaseList.imagePath ?? '',
+                            'username': mlmDatabaseList.name ?? 'N/A',
                           });
                         },
                         child: const SocialButton(

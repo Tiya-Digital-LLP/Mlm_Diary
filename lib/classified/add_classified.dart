@@ -12,10 +12,10 @@ import 'package:google_api_headers/google_api_headers.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
+import 'package:mlmdiary/classified/custom/add_comapany_classfied.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_category_entity.dart';
 import 'package:mlmdiary/generated/get_sub_category_entity.dart';
-import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
@@ -42,7 +42,7 @@ class _AddClassifiedState extends State<AddClassified> {
   late double lat = 0.0;
   late double log = 0.0;
   String googleApikey = "AIzaSyB3s5ixJVnWzsXoUZaP9ISDp_80GXWJXuU";
-
+  final RxList<String> selectedCompanies = <String>[].obs;
   static List<io.File> imagesList = <io.File>[];
   final ImagePicker _picker = ImagePicker();
   final TextEditingController _loc = TextEditingController();
@@ -50,12 +50,6 @@ class _AddClassifiedState extends State<AddClassified> {
   @override
   void initState() {
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    controller.companyName.value.dispose();
-    super.dispose();
   }
 
   @override
@@ -169,28 +163,34 @@ class _AddClassifiedState extends State<AddClassified> {
                     ),
                   ),
                   10.sbh,
-                  Column(
-                    children: [
-                      CompanyBorderTextfield(
-                        height: 65,
-                        keyboard: TextInputType.multiline,
-                        textInputType: const [],
-                        hint: "Company Name",
-                        readOnly: controller.companyNameOnly.value,
-                        controller: controller.companyName.value,
-                        isError: controller.companyError.value,
-                        byDefault: !controller.isCompanyNameTyping.value,
-                        onChanged: (value) {},
-                        onTap: () {
-                          Get.toNamed(Routes.addcompanyclassified);
-                        },
-                      ),
-                    ],
+                  Obx(
+                    () => CompanyBorderTextfield(
+                      height: 65,
+                      keyboard: TextInputType.multiline,
+                      textInputType: const [],
+                      hint: "Company Name",
+                      readOnly: controller.companyNameOnly.value,
+                      controller: controller.companyName.value,
+                      isError: controller.companyError.value,
+                      byDefault: !controller.isCompanyNameTyping.value,
+                      onChanged: (value) {
+                        controller.fetchCompanyNames(value.toString());
+                      },
+                      onTap: () {
+                        Get.to(() => const AddComapanyClassfied())
+                            ?.then((result) {
+                          if (result != null && result is List<String>) {
+                            selectedCompanies.addAll(result);
+                            controller.companyName.value.text =
+                                selectedCompanies.join(", ");
+                          }
+                        });
+                      },
+                    ),
                   ),
                   10.sbh,
                   Obx(
                     () => DiscriptionTextField(
-                      maxLength: 150000,
                       keyboard: TextInputType.multiline,
                       textInputType: const [],
                       hint: "Description",
