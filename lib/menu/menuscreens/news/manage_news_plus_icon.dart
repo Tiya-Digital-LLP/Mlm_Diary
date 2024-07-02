@@ -68,7 +68,6 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
                 children: [
                   Obx(
                     () => BorderTextField(
-                      maxLength: 25,
                       keyboard: TextInputType.name,
                       textInputType: const [],
                       hint: "Enter Title",
@@ -181,7 +180,6 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
                   10.sbh,
                   Obx(
                     () => BorderTextField(
-                      maxLength: 25,
                       keyboard: TextInputType.url,
                       textInputType: const [],
                       hint: "Website Url",

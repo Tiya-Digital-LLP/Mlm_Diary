@@ -16,6 +16,7 @@ import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:flutter/material.dart';
 import 'package:mlmdiary/utils/text_style.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -62,11 +63,13 @@ class _moreState extends State<MoreOptionScreen> {
   final LoginController loginController = Get.put(LoginController());
 
   String? packageName;
+  String appVersion = '';
 
   @override
   void initState() {
     super.initState();
     controller.fetchUserProfile();
+    _getAppVersion();
   }
 
   @override
@@ -607,7 +610,7 @@ class _moreState extends State<MoreOptionScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'App Version',
+                    'App Version $appVersion',
                     style:
                         textStyleW500(size.width * 0.032, AppColors.blackText),
                   ),
@@ -740,6 +743,13 @@ class _moreState extends State<MoreOptionScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _getAppVersion() async {
+    final packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      appVersion = packageInfo.version;
+    });
   }
 
   void _launchURL(String url) async {

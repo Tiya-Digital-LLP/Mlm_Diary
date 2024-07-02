@@ -12,7 +12,7 @@ import 'package:mlmdiary/home/addnews/add_news.dart';
 import 'package:mlmdiary/home/addpost/add_post.dart';
 import 'package:mlmdiary/home/notification/notification.dart';
 import 'package:mlmdiary/home/notification/notification_setting_screen.dart';
-import 'package:mlmdiary/home/searchbar_screen.dart';
+import 'package:mlmdiary/home/home/searchbar_screen.dart';
 import 'package:mlmdiary/login/login_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/aboutus/about_us.dart';
 import 'package:mlmdiary/menu/menuscreens/accountsetting/account_setting_screen.dart';
@@ -46,6 +46,8 @@ import 'package:mlmdiary/menu/menuscreens/plan&companyintrest/custom/add_company
 import 'package:mlmdiary/menu/menuscreens/plan&companyintrest/planandcompanyintrest.dart';
 import 'package:mlmdiary/menu/menuscreens/premiumplan/premium_plan.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/edit_post.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/my_post_detail_screen.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/post_detail_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/profile_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/managequationanswer.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/user_profile_screen.dart';
@@ -297,7 +299,15 @@ class AppPages {
     ),
     GetPage(
       name: Routes.addcompanyclassified,
-      page: () => const AddComapanyClassfied(),
+      page: () => const AddCompanyClassified(),
+    ),
+    GetPage(
+      name: Routes.postdetail,
+      page: () => const PostDetailScreen(),
+    ),
+    GetPage(
+      name: Routes.mypostdetails,
+      page: () => const MyPostDetailScreen(),
     ),
   ];
 }

@@ -68,4 +68,6 @@ abstract class Routes {
   static const favouritrdetailsscreen = '/favouritrDetailsScreen';
   static const addcompany = '/addCompany';
   static const addcompanyclassified = '/addCompanyClassified';
+  static const postdetail = '/postDetail';
+  static const mypostdetails = '/myPostDetails';
 }

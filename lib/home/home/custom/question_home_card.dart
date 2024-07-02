@@ -4,8 +4,8 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/home/home/controller/homescreen_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
-import 'package:mlmdiary/menu/menuscreens/favourite/controller/favourite_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
@@ -16,7 +16,7 @@ import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 import 'package:share_plus/share_plus.dart';
 
-class ClassifiedFavouriteCard extends StatefulWidget {
+class QuestionHomeCard extends StatefulWidget {
   final String userImage;
   final String userName;
   final String postTitle;
@@ -25,7 +25,6 @@ class ClassifiedFavouriteCard extends StatefulWidget {
   final String dateTime;
   final int viewcounts;
   final int bookmarkId;
-
   final String url;
   final String type;
   final ManageBlogController manageBlogController;
@@ -34,13 +33,12 @@ class ClassifiedFavouriteCard extends StatefulWidget {
   final EditPostController editpostController;
   final QuestionAnswerController questionAnswerController;
   final bool likedbyuser;
-  final int likecount;
 
   final CompanyController companyController;
 
-  final FavouriteController controller;
+  final HomeController controller;
 
-  const ClassifiedFavouriteCard({
+  const QuestionHomeCard({
     super.key,
     required this.userImage,
     required this.userName,
@@ -60,14 +58,13 @@ class ClassifiedFavouriteCard extends StatefulWidget {
     required this.editpostController,
     required this.questionAnswerController,
     required this.likedbyuser,
-    required this.likecount,
   });
 
   @override
-  State<ClassifiedFavouriteCard> createState() => _FavouritrCardState();
+  State<QuestionHomeCard> createState() => _FavouritrCardState();
 }
 
-class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
+class _FavouritrCardState extends State<QuestionHomeCard> {
   late PostTimeFormatter postTimeFormatter;
   late bool isLiked;
   late int likeCount;
@@ -78,6 +75,7 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
   void initState() {
     super.initState();
     postTimeFormatter = PostTimeFormatter();
+    isLiked = widget.likedbyuser;
     isLiked = widget.controller.isItemLiked(
       widget.type,
       widget.bookmarkId,
@@ -86,16 +84,17 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
       widget.clasifiedController,
       widget.companyController,
       widget.questionAnswerController,
+      widget.editpostController,
     );
     likeCount = widget.controller.getItemLikes(
-      widget.type,
-      widget.bookmarkId,
-      widget.manageBlogController,
-      widget.manageNewsController,
-      widget.clasifiedController,
-      widget.companyController,
-      widget.questionAnswerController,
-    );
+        widget.type,
+        widget.bookmarkId,
+        widget.manageBlogController,
+        widget.manageNewsController,
+        widget.clasifiedController,
+        widget.companyController,
+        widget.questionAnswerController,
+        widget.editpostController);
 
     isBookmarked = widget.controller.isItemBookmark(
       widget.type,
@@ -106,6 +105,7 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
       widget.companyController,
       widget.editpostController,
       widget.questionAnswerController,
+      widget.editpostController,
     );
   }
 
@@ -121,6 +121,7 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
         widget.clasifiedController,
         widget.companyController,
         widget.questionAnswerController,
+        widget.editpostController,
       );
     });
   }
@@ -138,6 +139,7 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
         widget.companyController,
         widget.editpostController,
         widget.questionAnswerController,
+        widget.editpostController,
       );
     });
   }
@@ -183,9 +185,9 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
                       ),
                       Text(
                         postTimeFormatter.formatPostTime(widget.dateTime),
-                        style: textStyleW400(size.width * 0.035,
+                        style: textStyleW400(size.width * 0.028,
                             AppColors.blackText.withOpacity(0.8)),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -212,57 +214,22 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
                 ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: CachedNetworkImage(
-                      imageUrl: widget.postImage,
-                      height: 105,
-                      width: 105,
-                      fit: BoxFit.fill,
-                      placeholder: (context, url) =>
-                          const CircularProgressIndicator(),
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.error),
-                    ),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Html(
+                data: widget.postTitle,
+                style: {
+                  "html": Style(
+                    maxLines: 2,
+                    fontFamily: fontFamily,
+                    fontWeight: FontWeight.w700,
+                    fontSize: FontSize.medium,
+                    color: AppColors.blackText,
                   ),
-                  10.sbw,
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.postTitle,
-                          style: TextStyle(
-                            fontFamily: fontFamily,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.blackText,
-                          ),
-                          maxLines: 2,
-                          textAlign: TextAlign.left,
-                        ),
-                        Html(
-                          data: widget.postCaption,
-                          style: {
-                            "html": Style(
-                              maxLines: 2,
-                              fontFamily: fontFamily,
-                              fontWeight: FontWeight.w700,
-                              fontSize: FontSize.medium,
-                              color: AppColors.blackText,
-                            ),
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                },
               ),
             ),
+            10.sbh,
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
@@ -283,28 +250,9 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
                       ),
                       8.sbw,
                       Text(
-                        widget.likecount.toString(),
+                        '$likeCount',
                         style: textStyleW600(
                             size.width * 0.038, AppColors.blackText),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      GestureDetector(
-                        child: SizedBox(
-                          height: size.height * 0.028,
-                          width: size.height * 0.028,
-                          child: SvgPicture.asset(Assets.svgComment),
-                        ),
-                      ),
-                      8.sbw,
-                      Text(
-                        '1K',
-                        style: TextStyle(
-                            fontFamily: "Metropolis",
-                            fontWeight: FontWeight.w600,
-                            fontSize: size.width * 0.038),
                       ),
                     ],
                   ),
@@ -334,13 +282,16 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
                           onTap: togleBookmark,
                           child: SvgPicture.asset(
                             isBookmarked
-                                ? Assets.svgSavePost
-                                : Assets.svgCheckBookmark,
+                                ? Assets.svgCheckBookmark
+                                : Assets.svgSavePost,
                             height: size.height * 0.032,
                           ),
                         ),
                       ),
-                      10.sbw,
+                    ],
+                  ),
+                  Row(
+                    children: [
                       InkWell(
                         onTap: () {
                           Share.share(widget.url);

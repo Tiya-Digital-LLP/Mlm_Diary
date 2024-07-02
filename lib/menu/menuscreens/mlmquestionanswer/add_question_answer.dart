@@ -61,7 +61,6 @@ class _AddClassifiedState extends State<AddQuestionAnswer> {
                 children: [
                   Obx(
                     () => BorderTextField(
-                      maxLength: 45,
                       keyboard: TextInputType.name,
                       textInputType: const [],
                       hint: "Enter Title",

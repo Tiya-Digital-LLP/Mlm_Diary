@@ -12,6 +12,13 @@ class Constants {
   static const String savefcm = "/savefcm";
   static const String logout = "/user/logout";
 
+  //versioncheck
+
+  static const String versioncheck = "/checkversion";
+
+  //home
+  static const String gethome = "/gethomepost_like_count";
+
   static const String getUserType = "/getusertype";
   static const String domesticPhoneOtp = "/register/domestic_phone_otp";
   static const String foreignPhoneOtp = "/register/foreign_phone_otp";

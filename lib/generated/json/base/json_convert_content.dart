@@ -62,6 +62,7 @@ import 'package:mlmdiary/generated/get_company_entity.dart';
 import 'package:mlmdiary/generated/get_company_with_selected_entity.dart';
 import 'package:mlmdiary/generated/get_followers_entity.dart';
 import 'package:mlmdiary/generated/get_following_entity.dart';
+import 'package:mlmdiary/generated/get_home_entity.dart';
 import 'package:mlmdiary/generated/get_mlm_database_entity.dart';
 import 'package:mlmdiary/generated/get_my_chat_detail_entity.dart';
 import 'package:mlmdiary/generated/get_my_chat_history_entity.dart';
@@ -112,6 +113,7 @@ import 'package:mlmdiary/generated/update_user_profile_entity.dart';
 import 'package:mlmdiary/generated/user_profile_count_view_entity.dart';
 import 'package:mlmdiary/generated/user_register_entity_entity.dart';
 import 'package:mlmdiary/generated/verify_phone_otp_entity.dart';
+import 'package:mlmdiary/generated/version_check_entity.dart';
 
 JsonConvert jsonConvert = JsonConvert();
 
@@ -673,6 +675,18 @@ class JsonConvert {
       return data.map<GetFollowingData>((Map<String, dynamic> e) =>
           GetFollowingData.fromJson(e)).toList() as M;
     }
+    if (<GetHomeEntity>[] is M) {
+      return data.map<GetHomeEntity>((Map<String, dynamic> e) =>
+          GetHomeEntity.fromJson(e)).toList() as M;
+    }
+    if (<GetHomeData>[] is M) {
+      return data.map<GetHomeData>((Map<String, dynamic> e) =>
+          GetHomeData.fromJson(e)).toList() as M;
+    }
+    if (<GetHomeDataUserData>[] is M) {
+      return data.map<GetHomeDataUserData>((Map<String, dynamic> e) =>
+          GetHomeDataUserData.fromJson(e)).toList() as M;
+    }
     if (<GetMlmDatabaseEntity>[] is M) {
       return data.map<GetMlmDatabaseEntity>((Map<String, dynamic> e) =>
           GetMlmDatabaseEntity.fromJson(e)).toList() as M;
@@ -1067,6 +1081,10 @@ class JsonConvert {
       return data.map<VerifyPhoneOtpEntity>((Map<String, dynamic> e) =>
           VerifyPhoneOtpEntity.fromJson(e)).toList() as M;
     }
+    if (<VersionCheckEntity>[] is M) {
+      return data.map<VersionCheckEntity>((Map<String, dynamic> e) =>
+          VersionCheckEntity.fromJson(e)).toList() as M;
+    }
 
     debugPrint("$M not found");
 
@@ -1211,6 +1229,9 @@ class JsonConvertClassCollection {
     (GetFollowersData).toString(): GetFollowersData.fromJson,
     (GetFollowingEntity).toString(): GetFollowingEntity.fromJson,
     (GetFollowingData).toString(): GetFollowingData.fromJson,
+    (GetHomeEntity).toString(): GetHomeEntity.fromJson,
+    (GetHomeData).toString(): GetHomeData.fromJson,
+    (GetHomeDataUserData).toString(): GetHomeDataUserData.fromJson,
     (GetMlmDatabaseEntity).toString(): GetMlmDatabaseEntity.fromJson,
     (GetMlmDatabaseData).toString(): GetMlmDatabaseData.fromJson,
     (GetMyChatDetailEntity).toString(): GetMyChatDetailEntity.fromJson,
@@ -1325,6 +1346,7 @@ class JsonConvertClassCollection {
         .fromJson,
     (UserRegisterEntityEntity).toString(): UserRegisterEntityEntity.fromJson,
     (VerifyPhoneOtpEntity).toString(): VerifyPhoneOtpEntity.fromJson,
+    (VersionCheckEntity).toString(): VersionCheckEntity.fromJson,
   };
 
   bool containsKey(String type) {

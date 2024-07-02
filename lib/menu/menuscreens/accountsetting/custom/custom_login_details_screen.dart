@@ -182,7 +182,6 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                     child: Obx(
                                       () => BorderTextField(
                                         height: 65,
-                                        maxLength: 11,
                                         hint: "New Mobile Number",
                                         readOnly:
                                             controller.mobileReadOnly.value,
@@ -221,7 +220,6 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                             controller.mobileOtpError.value,
                                         byDefault:
                                             !controller.isMobileOtpTyping.value,
-                                        maxLength: 6,
                                         onChanged: (value) {
                                           controller.mobileOtpValidation();
                                           controller.isMobileOtpTyping.value =
@@ -342,7 +340,6 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                             children: [
                               Obx(
                                 () => BorderTextField(
-                                  maxLength: 30,
                                   keyboard: TextInputType.name,
                                   textInputType: const [],
                                   hint: "New Email Address",
@@ -366,7 +363,6 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                         isError: controller.emailOtpError.value,
                                         byDefault:
                                             !controller.isemailOtpTyping.value,
-                                        maxLength: 6,
                                         onChanged: (value) {
                                           controller.emailOtpValidation();
                                           controller.isemailOtpTyping.value =

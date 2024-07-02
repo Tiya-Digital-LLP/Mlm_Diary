@@ -4,6 +4,7 @@ import 'package:flutter_google_places_hoc081098/google_maps_webservice_places.da
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_api_headers/google_api_headers.dart';
+import 'package:mlmdiary/classified/custom/add_comapany_classfied.dart';
 import 'package:mlmdiary/database/controller/database_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_plan_list_entity.dart';
@@ -13,7 +14,7 @@ import 'package:mlmdiary/sign_up/controller/signup_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
-import 'package:mlmdiary/widgets/border_text_field.dart';
+import 'package:mlmdiary/widgets/company_border_textfield.dart';
 import 'package:mlmdiary/widgets/custom_border_container.dart';
 import 'package:mlmdiary/widgets/custom_button.dart';
 
@@ -30,6 +31,7 @@ class _MyWidgetState extends State<BottomSheetContent> {
   String googleApikey = "AIzaSyB3s5ixJVnWzsXoUZaP9ISDp_80GXWJXuU";
   late double lat = 0.0;
   late double log = 0.0;
+  final RxList<String> selectedCompanies = <String>[].obs;
 
   @override
   Widget build(BuildContext context) {
@@ -93,57 +95,34 @@ class _MyWidgetState extends State<BottomSheetContent> {
               ),
             ),
             10.sbh,
-            Obx(() => Column(
-                  children: [
-                    BorderTextField(
-                      maxLength: 25,
-                      height: 65,
-                      keyboard: TextInputType.name,
-                      textInputType: const [],
-                      hint: "Company Name",
-                      readOnly:
-                          controller.clasifiedController.companyNameOnly.value,
-                      controller:
-                          controller.clasifiedController.companyName.value,
-                      isError:
-                          controller.clasifiedController.companyError.value,
-                      byDefault: !controller
-                          .clasifiedController.isCompanyNameTyping.value,
-                      onChanged: (value) {
-                        controller.clasifiedController.companyNameValidation();
-                        controller.clasifiedController.isCompanyNameTyping
-                            .value = true;
-                        controller.clasifiedController.fetchCompanyNames(value);
-                      },
-                    ),
-                    if (controller.clasifiedController.companyNames.isNotEmpty)
-                      Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.white,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        height: 200,
-                        child: ListView.builder(
-                          itemCount: controller
-                              .clasifiedController.companyNames.length,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              title: Text(controller
-                                  .clasifiedController.companyNames[index]),
-                              onTap: () {
-                                controller.clasifiedController.companyName.value
-                                        .text =
-                                    controller.clasifiedController
-                                        .companyNames[index];
-                                controller.clasifiedController.companyNames
-                                    .clear();
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                  ],
-                )),
+            Obx(
+              () => CompanyBorderTextfield(
+                height: 65,
+                keyboard: TextInputType.multiline,
+                textInputType: const [],
+                hint: "Company Name",
+                readOnly: controller.clasifiedController.companyNameOnly.value,
+                controller: controller.clasifiedController.companyName.value,
+                isError: controller.clasifiedController.companyError.value,
+                byDefault:
+                    !controller.clasifiedController.isCompanyNameTyping.value,
+                onChanged: (value) {
+                  controller.clasifiedController
+                      .fetchCompanyNames(value.toString());
+                },
+                onTap: () async {
+                  final result = await Get.to(() => AddCompanyClassified(
+                        selectedCompanies: selectedCompanies,
+                      ));
+                  if (result != null && result is List<String>) {
+                    selectedCompanies.clear();
+                    selectedCompanies.addAll(result);
+                    controller.clasifiedController.companyName.value.text =
+                        selectedCompanies.join(", ");
+                  }
+                },
+              ),
+            ),
             10.sbh,
             Obx(() => Container(
                   decoration: BoxDecoration(

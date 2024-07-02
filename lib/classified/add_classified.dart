@@ -75,7 +75,6 @@ class _AddClassifiedState extends State<AddClassified> {
                 children: [
                   Obx(
                     () => BorderTextField(
-                      maxLength: 45,
                       keyboard: TextInputType.name,
                       textInputType: const [],
                       hint: "Enter Title",
@@ -176,15 +175,16 @@ class _AddClassifiedState extends State<AddClassified> {
                       onChanged: (value) {
                         controller.fetchCompanyNames(value.toString());
                       },
-                      onTap: () {
-                        Get.to(() => const AddComapanyClassfied())
-                            ?.then((result) {
-                          if (result != null && result is List<String>) {
-                            selectedCompanies.addAll(result);
-                            controller.companyName.value.text =
-                                selectedCompanies.join(", ");
-                          }
-                        });
+                      onTap: () async {
+                        final result = await Get.to(() => AddCompanyClassified(
+                              selectedCompanies: selectedCompanies,
+                            ));
+                        if (result != null && result is List<String>) {
+                          selectedCompanies.clear();
+                          selectedCompanies.addAll(result);
+                          controller.companyName.value.text =
+                              selectedCompanies.join(", ");
+                        }
                       },
                     ),
                   ),
@@ -206,7 +206,6 @@ class _AddClassifiedState extends State<AddClassified> {
                   10.sbh,
                   Obx(
                     () => BorderTextField(
-                      maxLength: 25,
                       keyboard: TextInputType.url,
                       textInputType: const [],
                       hint: "Website Url",

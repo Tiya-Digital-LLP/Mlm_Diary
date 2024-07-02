@@ -9,18 +9,26 @@ import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_search_add_company.dart';
 import 'package:mlmdiary/widgets/normal_button.dart';
 
-class AddComapanyClassfied extends StatefulWidget {
-  const AddComapanyClassfied({super.key});
+class AddCompanyClassified extends StatefulWidget {
+  final List<String>? selectedCompanies;
+
+  const AddCompanyClassified({super.key, this.selectedCompanies});
 
   @override
   // ignore: library_private_types_in_public_api
   _AddCompanyClassifiedState createState() => _AddCompanyClassifiedState();
 }
 
-class _AddCompanyClassifiedState extends State<AddComapanyClassfied> {
+class _AddCompanyClassifiedState extends State<AddCompanyClassified> {
   final ClasifiedController controller = Get.put(ClasifiedController());
-  final RxList<String> selectedCompanies = <String>[].obs;
+  late RxList<String> selectedCompanies;
   final RxList<String> suggestions = <String>[].obs;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedCompanies = RxList<String>(widget.selectedCompanies ?? []);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +45,7 @@ class _AddCompanyClassifiedState extends State<AddComapanyClassfied> {
             alignment: Alignment.topLeft,
             child: InkWell(
               onTap: () {
-                Get.back();
+                Get.back(result: selectedCompanies);
               },
               child: SvgPicture.asset(Assets.svgBack),
             ),
@@ -167,15 +175,18 @@ class _AddCompanyClassifiedState extends State<AddComapanyClassfied> {
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-            color: AppColors.white, borderRadius: BorderRadius.circular(30)),
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(30),
+        ),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: NormalButton(
-              onPressed: () {
-                controller.companyName.value.clear();
-                Get.back(result: selectedCompanies);
-              },
-              text: 'Submit'),
+            onPressed: () {
+              controller.companyName.value.clear();
+              Get.back(result: selectedCompanies);
+            },
+            text: 'Submit',
+          ),
         ),
       ),
     );

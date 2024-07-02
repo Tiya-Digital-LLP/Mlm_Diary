@@ -280,7 +280,7 @@ class MessageController extends GetxController {
     }
   }
 
-  Future<void> sendNewChat(
+  Future<void> fecthNewChat(
     int lastId,
     String chatId,
   ) async {

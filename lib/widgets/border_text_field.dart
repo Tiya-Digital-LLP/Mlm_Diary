@@ -9,7 +9,6 @@ class BorderTextField extends StatelessWidget {
   final bool isError;
   final bool readOnly;
   final bool byDefault;
-  final int maxLength;
   final List<TextInputFormatter> textInputType;
   final TextInputType keyboard;
   final ValueChanged<String>? onChanged;
@@ -25,7 +24,6 @@ class BorderTextField extends StatelessWidget {
     required this.keyboard,
     required this.byDefault,
     this.onChanged,
-    required this.maxLength,
     this.height = 80.0,
   });
 
@@ -57,7 +55,6 @@ class BorderTextField extends StatelessWidget {
             keyboardType: keyboard,
             inputFormatters: textInputType,
             onChanged: onChanged,
-            maxLength: maxLength,
             controller: controller,
             style: textStyleW500(size.width * 0.04, AppColors.blackText),
             cursorColor: AppColors.blackText,

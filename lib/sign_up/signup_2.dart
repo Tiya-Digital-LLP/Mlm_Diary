@@ -11,6 +11,8 @@ import 'package:get/get.dart';
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
+import 'package:mlmdiary/classified/custom/add_comapany_classfied.dart';
 
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_plan_list_entity.dart';
@@ -20,7 +22,7 @@ import 'package:mlmdiary/utils/common_header.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
-import 'package:mlmdiary/widgets/border_text_field.dart';
+import 'package:mlmdiary/widgets/company_border_textfield.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
 import 'package:mlmdiary/widgets/custom_border_container.dart';
 import 'package:mlmdiary/widgets/custom_button.dart';
@@ -37,12 +39,16 @@ class AddMoreDetails extends StatefulWidget {
 
 class _AddMoreDetailsState extends State<AddMoreDetails> {
   final Signup2Controller controller = Get.put(Signup2Controller());
+  final ClasifiedController clasifiedController =
+      Get.put(ClasifiedController());
+
   final ImagePicker _picker = ImagePicker();
   Rx<io.File?> file = Rx<io.File?>(null);
   final TextEditingController _loc = TextEditingController();
   Color _color5 = Colors.black26;
   late double lat = 0.0;
   late double log = 0.0;
+  final RxList<String> selectedCompanies = <String>[].obs;
 
   String googleApikey = "AIzaSyB3s5ixJVnWzsXoUZaP9ISDp_80GXWJXuU";
 
@@ -230,21 +236,31 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                 SizedBox(
                   height: size.height * 0.015,
                 ),
-                Obx(() => BorderTextField(
-                      maxLength: 25,
-                      height: 65,
-                      keyboard: TextInputType.name,
-                      textInputType: const [],
-                      hint: "Company Name",
-                      readOnly: controller.companyNameOnly.value,
-                      controller: controller.companyName.value,
-                      isError: controller.comapnyNameError.value,
-                      byDefault: !controller.isCompanyNameTyping.value,
-                      onChanged: (value) {
-                        controller.companyNameValidation();
-                        controller.isCompanyNameTyping.value = true;
-                      },
-                    )),
+                Obx(
+                  () => CompanyBorderTextfield(
+                    height: 65,
+                    keyboard: TextInputType.multiline,
+                    textInputType: const [],
+                    hint: "Company Name",
+                    readOnly: controller.companyNameOnly.value,
+                    controller: controller.companyName.value,
+                    byDefault: !controller.isCompanyNameTyping.value,
+                    onChanged: (value) {
+                      clasifiedController.fetchCompanyNames(value.toString());
+                    },
+                    onTap: () async {
+                      final result = await Get.to(() => AddCompanyClassified(
+                            selectedCompanies: selectedCompanies,
+                          ));
+                      if (result != null && result is List<String>) {
+                        selectedCompanies.clear();
+                        selectedCompanies.addAll(result);
+                        controller.companyName.value.text =
+                            selectedCompanies.join(", ");
+                      }
+                    },
+                  ),
+                ),
                 SizedBox(
                   height: size.height * 0.015,
                 ),

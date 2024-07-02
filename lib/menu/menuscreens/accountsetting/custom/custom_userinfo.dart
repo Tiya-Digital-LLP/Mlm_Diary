@@ -166,7 +166,6 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
               () => Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: BorderTextField(
-                  maxLength: 25,
                   keyboard: TextInputType.name,
                   textInputType: const [],
                   hint: "Your Name",
@@ -289,14 +288,16 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                     manageClasifiedController
                         .fetchCompanyNames(value.toString());
                   },
-                  onTap: () {
-                    Get.to(() => const AddComapanyClassfied())?.then((result) {
-                      if (result != null && result is List<String>) {
-                        selectedCompanies.addAll(result);
-                        controller.companyname.value.text =
-                            selectedCompanies.join(", ");
-                      }
-                    });
+                  onTap: () async {
+                    final result = await Get.to(() => AddCompanyClassified(
+                          selectedCompanies: selectedCompanies,
+                        ));
+                    if (result != null && result is List<String>) {
+                      selectedCompanies.clear();
+                      selectedCompanies.addAll(result);
+                      controller.companyname.value.text =
+                          selectedCompanies.join(", ");
+                    }
                   },
                 ),
               ),

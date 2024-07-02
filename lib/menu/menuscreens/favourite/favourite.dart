@@ -157,6 +157,7 @@ class _FavouriteState extends State<Favourite> {
                           editpostController: editPostController,
                           questionAnswerController: questionAnswerController,
                           likedbyuser: post.likedByUser ?? false,
+                          likecount: post.totallike ?? 0,
                         );
                         break;
                       case 'company':

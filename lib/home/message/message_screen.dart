@@ -152,12 +152,7 @@ class _MessageState extends State<Message> {
                                 await messageController
                                     .fetchMyChatDetail(post.chatId.toString());
                                 Get.toNamed(Routes.messagedetailscreen,
-                                    arguments: {
-                                      'toid': post.toid.toString(),
-                                      'chatId': post.chatId.toString(),
-                                      'userImage': post.userImage ?? '',
-                                      'username': post.username ?? 'N/A',
-                                    });
+                                    arguments: post);
                               },
                               child: ChatCard(
                                 userImage: post.userImage ?? '',

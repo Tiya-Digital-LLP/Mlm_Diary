@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
+import 'package:mlmdiary/classified/custom_commment.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/home/home/controller/homescreen_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
-import 'package:mlmdiary/menu/menuscreens/favourite/controller/favourite_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
@@ -16,7 +17,7 @@ import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 import 'package:share_plus/share_plus.dart';
 
-class ClassifiedFavouriteCard extends StatefulWidget {
+class ClassifiedHomeCard extends StatefulWidget {
   final String userImage;
   final String userName;
   final String postTitle;
@@ -25,6 +26,7 @@ class ClassifiedFavouriteCard extends StatefulWidget {
   final String dateTime;
   final int viewcounts;
   final int bookmarkId;
+  final int classifiedId;
 
   final String url;
   final String type;
@@ -35,12 +37,13 @@ class ClassifiedFavouriteCard extends StatefulWidget {
   final QuestionAnswerController questionAnswerController;
   final bool likedbyuser;
   final int likecount;
+  final int commentcount;
 
   final CompanyController companyController;
 
-  final FavouriteController controller;
+  final HomeController controller;
 
-  const ClassifiedFavouriteCard({
+  const ClassifiedHomeCard({
     super.key,
     required this.userImage,
     required this.userName,
@@ -61,13 +64,15 @@ class ClassifiedFavouriteCard extends StatefulWidget {
     required this.questionAnswerController,
     required this.likedbyuser,
     required this.likecount,
+    required this.classifiedId,
+    required this.commentcount,
   });
 
   @override
-  State<ClassifiedFavouriteCard> createState() => _FavouritrCardState();
+  State<ClassifiedHomeCard> createState() => _FavouritrCardState();
 }
 
-class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
+class _FavouritrCardState extends State<ClassifiedHomeCard> {
   late PostTimeFormatter postTimeFormatter;
   late bool isLiked;
   late int likeCount;
@@ -86,16 +91,17 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
       widget.clasifiedController,
       widget.companyController,
       widget.questionAnswerController,
+      widget.editpostController,
     );
     likeCount = widget.controller.getItemLikes(
-      widget.type,
-      widget.bookmarkId,
-      widget.manageBlogController,
-      widget.manageNewsController,
-      widget.clasifiedController,
-      widget.companyController,
-      widget.questionAnswerController,
-    );
+        widget.type,
+        widget.bookmarkId,
+        widget.manageBlogController,
+        widget.manageNewsController,
+        widget.clasifiedController,
+        widget.companyController,
+        widget.questionAnswerController,
+        widget.editpostController);
 
     isBookmarked = widget.controller.isItemBookmark(
       widget.type,
@@ -106,6 +112,7 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
       widget.companyController,
       widget.editpostController,
       widget.questionAnswerController,
+      widget.editpostController,
     );
   }
 
@@ -121,6 +128,7 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
         widget.clasifiedController,
         widget.companyController,
         widget.questionAnswerController,
+        widget.editpostController,
       );
     });
   }
@@ -138,6 +146,7 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
         widget.companyController,
         widget.editpostController,
         widget.questionAnswerController,
+        widget.editpostController,
       );
     });
   }
@@ -292,19 +301,24 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
                   Row(
                     children: [
                       GestureDetector(
+                        onTap: () => showFullScreenDialog(
+                          context,
+                          widget.classifiedId,
+                        ),
                         child: SizedBox(
                           height: size.height * 0.028,
                           width: size.height * 0.028,
                           child: SvgPicture.asset(Assets.svgComment),
                         ),
                       ),
-                      8.sbw,
+                      5.sbw,
                       Text(
-                        '1K',
+                        '${widget.commentcount}',
                         style: TextStyle(
-                            fontFamily: "Metropolis",
-                            fontWeight: FontWeight.w600,
-                            fontSize: size.width * 0.038),
+                          fontFamily: "Metropolis",
+                          fontWeight: FontWeight.w600,
+                          fontSize: size.width * 0.038,
+                        ),
                       ),
                     ],
                   ),
@@ -334,8 +348,8 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
                           onTap: togleBookmark,
                           child: SvgPicture.asset(
                             isBookmarked
-                                ? Assets.svgSavePost
-                                : Assets.svgCheckBookmark,
+                                ? Assets.svgCheckBookmark
+                                : Assets.svgSavePost,
                             height: size.height * 0.032,
                           ),
                         ),

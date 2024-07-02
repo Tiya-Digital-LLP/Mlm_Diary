@@ -84,154 +84,165 @@ class _CommentDialogState extends State<CommentDialog> {
           ),
         ),
       ),
-      body: RefreshIndicator(
-        onRefresh: _refreshData,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Obx(
-            () {
-              if (controller.isLoading.value &&
-                  controller.getCommentList.isEmpty) {
-                return const Center(child: CircularProgressIndicator());
-              }
+      body: Column(
+        children: [
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: _refreshData,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Obx(
+                  () {
+                    if (controller.isLoading.value &&
+                        controller.getCommentList.isEmpty) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
 
-              return ListView.builder(
-                itemCount: controller.getCommentList.length +
-                    (controller.isLoading.value ? 1 : 0),
-                controller: _scrollController,
-                itemBuilder: (context, index) {
-                  if (index < controller.getCommentList.length) {
-                    final comment = controller.getCommentList[index];
+                    return ListView.builder(
+                      itemCount: controller.getCommentList.length +
+                          (controller.isLoading.value ? 1 : 0),
+                      controller: _scrollController,
+                      itemBuilder: (context, index) {
+                        if (index < controller.getCommentList.length) {
+                          final comment = controller.getCommentList[index];
 
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildComment(comment, size),
-                          if (comment.commentsReplays != null &&
-                              comment.commentsReplays!.isNotEmpty)
-                            Column(
-                              children: comment.commentsReplays!.map((reply) {
-                                return Column(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 32, top: 8),
-                                      child: _buildSingleReply(reply, size),
-                                    ),
-                                    if (reply.commentsReplays != null &&
-                                        reply.commentsReplays!.isNotEmpty)
-                                      Column(
-                                        children: reply.commentsReplays!
-                                            .map((replyToReply) {
-                                          return Padding(
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 8,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _buildComment(comment, size),
+                                if (comment.commentsReplays != null &&
+                                    comment.commentsReplays!.isNotEmpty)
+                                  Column(
+                                    children:
+                                        comment.commentsReplays!.map((reply) {
+                                      return Column(
+                                        children: [
+                                          Padding(
                                             padding: const EdgeInsets.only(
-                                                left: 48, top: 8),
-                                            child: _buildNestedReply(
-                                                replyToReply, size),
-                                          );
-                                        }).toList(),
-                                      ),
-                                  ],
-                                );
-                              }).toList(),
+                                                left: 32, top: 8),
+                                            child:
+                                                _buildSingleReply(reply, size),
+                                          ),
+                                          if (reply.commentsReplays != null &&
+                                              reply.commentsReplays!.isNotEmpty)
+                                            Column(
+                                              children: reply.commentsReplays!
+                                                  .map((replyToReply) {
+                                                return Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 48, top: 8),
+                                                  child: _buildNestedReply(
+                                                      replyToReply, size),
+                                                );
+                                              }).toList(),
+                                            ),
+                                        ],
+                                      );
+                                    }).toList(),
+                                  ),
+                              ],
                             ),
-                        ],
-                      ),
+                          );
+                        } else {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+                      },
                     );
-                  } else {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                },
-              );
-            },
-          ),
-        ),
-      ),
-      bottomSheet: Container(
-        height: 100,
-        color: AppColors.white,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 8,
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.searchbar,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 10,
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: TextField(
-                              controller: controller.commment.value,
-                              maxLines: 5,
-                              decoration: const InputDecoration(
-                                hintText: 'Write your answer here',
-                                border: InputBorder.none,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: GestureDetector(
-                            onTap: () async {
-                              if (controller.commment.value.text.isEmpty) {
-                                Fluttertoast.showToast(
-                                  msg: "Please enter your reply",
-                                  toastLength: Toast.LENGTH_LONG,
-                                  gravity: ToastGravity.BOTTOM,
-                                );
-                                return;
-                              }
-
-                              await controller.addReplyComment(
-                                  widget.classifiedId, 0, context);
-                              controller.commment.value.clear();
-                            },
-                            child: Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: AppColors.primaryColor,
-                                boxShadow: [
-                                  customBoxShadow(),
-                                ],
-                              ),
-                              child: const Icon(
-                                Icons.send_rounded,
-                                color: Colors.white,
-                                size: 22,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  },
                 ),
               ),
-            ],
+            ),
           ),
-        ),
+          Container(
+            height: 100,
+            color: AppColors.white,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 8,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.searchbar,
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 10,
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                child: TextField(
+                                  controller: controller.commment.value,
+                                  maxLines: 5,
+                                  decoration: const InputDecoration(
+                                    hintText: 'Write your answer here',
+                                    border: InputBorder.none,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: GestureDetector(
+                                onTap: () async {
+                                  if (controller.commment.value.text.isEmpty) {
+                                    Fluttertoast.showToast(
+                                      msg: "Please enter your reply",
+                                      toastLength: Toast.LENGTH_LONG,
+                                      gravity: ToastGravity.BOTTOM,
+                                    );
+                                    return;
+                                  }
+
+                                  await controller.addReplyComment(
+                                      widget.classifiedId, 0, context);
+                                  controller.commment.value.clear();
+                                },
+                                child: Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: AppColors.primaryColor,
+                                    boxShadow: [
+                                      customBoxShadow(),
+                                    ],
+                                  ),
+                                  child: const Icon(
+                                    Icons.send_rounded,
+                                    color: Colors.white,
+                                    size: 22,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

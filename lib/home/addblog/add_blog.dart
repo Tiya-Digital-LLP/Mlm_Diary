@@ -67,7 +67,6 @@ class _ManageBlogPlusIconState extends State<AddBlog> {
                 children: [
                   Obx(
                     () => BorderTextField(
-                      maxLength: 25,
                       keyboard: TextInputType.name,
                       textInputType: const [],
                       hint: "Enter Title",
@@ -176,7 +175,6 @@ class _ManageBlogPlusIconState extends State<AddBlog> {
                   10.sbh,
                   Obx(
                     () => BorderTextField(
-                      maxLength: 25,
                       keyboard: TextInputType.url,
                       textInputType: const [],
                       hint: "Website Url",

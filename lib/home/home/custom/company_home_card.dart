@@ -4,9 +4,10 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/home/home/controller/homescreen_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
-import 'package:mlmdiary/menu/menuscreens/favourite/controller/favourite_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmcompanies/custom_company_comment.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
@@ -16,8 +17,7 @@ import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 import 'package:share_plus/share_plus.dart';
 
-class ClassifiedFavouriteCard extends StatefulWidget {
-  final String userImage;
+class CompanyHomeCard extends StatefulWidget {
   final String userName;
   final String postTitle;
   final String postCaption;
@@ -25,24 +25,24 @@ class ClassifiedFavouriteCard extends StatefulWidget {
   final String dateTime;
   final int viewcounts;
   final int bookmarkId;
-
   final String url;
   final String type;
   final ManageBlogController manageBlogController;
   final ManageNewsController manageNewsController;
   final ClasifiedController clasifiedController;
+  final CompanyController companyController;
   final EditPostController editpostController;
   final QuestionAnswerController questionAnswerController;
   final bool likedbyuser;
-  final int likecount;
+  final int companyId;
+  final int commentcount;
 
-  final CompanyController companyController;
+  final String userImage;
 
-  final FavouriteController controller;
+  final HomeController controller;
 
-  const ClassifiedFavouriteCard({
+  const CompanyHomeCard({
     super.key,
-    required this.userImage,
     required this.userName,
     required this.postTitle,
     required this.postCaption,
@@ -57,17 +57,19 @@ class ClassifiedFavouriteCard extends StatefulWidget {
     required this.manageNewsController,
     required this.clasifiedController,
     required this.companyController,
+    required this.userImage,
     required this.editpostController,
     required this.questionAnswerController,
     required this.likedbyuser,
-    required this.likecount,
+    required this.companyId,
+    required this.commentcount,
   });
 
   @override
-  State<ClassifiedFavouriteCard> createState() => _FavouritrCardState();
+  State<CompanyHomeCard> createState() => _CompanieFaviouriteCardState();
 }
 
-class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
+class _CompanieFaviouriteCardState extends State<CompanyHomeCard> {
   late PostTimeFormatter postTimeFormatter;
   late bool isLiked;
   late int likeCount;
@@ -86,16 +88,17 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
       widget.clasifiedController,
       widget.companyController,
       widget.questionAnswerController,
+      widget.editpostController,
     );
     likeCount = widget.controller.getItemLikes(
-      widget.type,
-      widget.bookmarkId,
-      widget.manageBlogController,
-      widget.manageNewsController,
-      widget.clasifiedController,
-      widget.companyController,
-      widget.questionAnswerController,
-    );
+        widget.type,
+        widget.bookmarkId,
+        widget.manageBlogController,
+        widget.manageNewsController,
+        widget.clasifiedController,
+        widget.companyController,
+        widget.questionAnswerController,
+        widget.editpostController);
 
     isBookmarked = widget.controller.isItemBookmark(
       widget.type,
@@ -106,6 +109,7 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
       widget.companyController,
       widget.editpostController,
       widget.questionAnswerController,
+      widget.editpostController,
     );
   }
 
@@ -121,6 +125,7 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
         widget.clasifiedController,
         widget.companyController,
         widget.questionAnswerController,
+        widget.editpostController,
       );
     });
   }
@@ -138,6 +143,7 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
         widget.companyController,
         widget.editpostController,
         widget.questionAnswerController,
+        widget.editpostController,
       );
     });
   }
@@ -158,17 +164,27 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(100),
-                  child: CachedNetworkImage(
-                    imageUrl: widget.userImage,
-                    height: 60,
-                    width: 60,
-                    fit: BoxFit.fill,
-                    placeholder: (context, url) =>
-                        const CircularProgressIndicator(),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 1.5,
+                      color: AppColors.grey.withOpacity(0.5),
+                    ),
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(12),
+                    ),
+                  ),
+                  child: ClipOval(
+                    child: CachedNetworkImage(
+                      imageUrl: widget.postImage,
+                      height: 60.0,
+                      width: 60.0,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) =>
+                          const CircularProgressIndicator(),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                    ),
                   ),
                 ),
                 10.sbw,
@@ -177,15 +193,18 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.userName,
+                        widget.postTitle,
                         style: textStyleW700(
                             size.width * 0.038, AppColors.blackText),
                       ),
                       Text(
-                        postTimeFormatter.formatPostTime(widget.dateTime),
-                        style: textStyleW400(size.width * 0.035,
-                            AppColors.blackText.withOpacity(0.8)),
-                      )
+                        'Ahemdabad,Gujarat,India',
+                        style: textStyleW400(
+                          size.width * 0.032,
+                          AppColors.blackText.withOpacity(0.5),
+                        ),
+                        maxLines: 2,
+                      ),
                     ],
                   ),
                 ),
@@ -212,55 +231,15 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
                 ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: CachedNetworkImage(
-                      imageUrl: widget.postImage,
-                      height: 105,
-                      width: 105,
-                      fit: BoxFit.fill,
-                      placeholder: (context, url) =>
-                          const CircularProgressIndicator(),
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.error),
-                    ),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Html(
+                data: widget.postCaption,
+                style: {
+                  "html": Style(
+                    maxLines: 2,
                   ),
-                  10.sbw,
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.postTitle,
-                          style: TextStyle(
-                            fontFamily: fontFamily,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.blackText,
-                          ),
-                          maxLines: 2,
-                          textAlign: TextAlign.left,
-                        ),
-                        Html(
-                          data: widget.postCaption,
-                          style: {
-                            "html": Style(
-                              maxLines: 2,
-                              fontFamily: fontFamily,
-                              fontWeight: FontWeight.w700,
-                              fontSize: FontSize.medium,
-                              color: AppColors.blackText,
-                            ),
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                },
               ),
             ),
             Padding(
@@ -283,7 +262,7 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
                       ),
                       8.sbw,
                       Text(
-                        widget.likecount.toString(),
+                        '$likeCount',
                         style: textStyleW600(
                             size.width * 0.038, AppColors.blackText),
                       ),
@@ -292,19 +271,24 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
                   Row(
                     children: [
                       GestureDetector(
+                        onTap: () => showFullScreenDialogCompany(
+                          context,
+                          widget.companyId,
+                        ),
                         child: SizedBox(
                           height: size.height * 0.028,
                           width: size.height * 0.028,
                           child: SvgPicture.asset(Assets.svgComment),
                         ),
                       ),
-                      8.sbw,
+                      5.sbw,
                       Text(
-                        '1K',
+                        '${widget.commentcount}',
                         style: TextStyle(
-                            fontFamily: "Metropolis",
-                            fontWeight: FontWeight.w600,
-                            fontSize: size.width * 0.038),
+                          fontFamily: "Metropolis",
+                          fontWeight: FontWeight.w600,
+                          fontSize: size.width * 0.038,
+                        ),
                       ),
                     ],
                   ),
@@ -334,8 +318,8 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
                           onTap: togleBookmark,
                           child: SvgPicture.asset(
                             isBookmarked
-                                ? Assets.svgSavePost
-                                : Assets.svgCheckBookmark,
+                                ? Assets.svgCheckBookmark
+                                : Assets.svgSavePost,
                             height: size.height * 0.032,
                           ),
                         ),

@@ -89,7 +89,6 @@ class _ContactUsState extends State<ContactUs> {
                 ),
                 Obx(
                   () => BorderTextField(
-                    maxLength: 25,
                     keyboard: TextInputType.name,
                     textInputType: const [],
                     hint: "Your Name*",
@@ -102,7 +101,6 @@ class _ContactUsState extends State<ContactUs> {
                 10.sbh,
                 Obx(
                   () => BorderTextField(
-                    maxLength: 25,
                     keyboard: TextInputType.emailAddress,
                     textInputType: const [],
                     hint: "Email Address*",
@@ -159,7 +157,6 @@ class _ContactUsState extends State<ContactUs> {
                       child: Obx(
                         () => BorderTextField(
                           height: 70,
-                          maxLength: 11,
                           hint: " Mobile Number",
                           readOnly: controller.mobileReadOnly.value,
                           controller: controller.mobile.value,
@@ -181,7 +178,6 @@ class _ContactUsState extends State<ContactUs> {
                 10.sbh,
                 Obx(
                   () => BorderTextField(
-                    maxLength: 25,
                     keyboard: TextInputType.name,
                     textInputType: const [],
                     hint: "Company",
@@ -194,7 +190,6 @@ class _ContactUsState extends State<ContactUs> {
                 10.sbh,
                 Obx(
                   () => BorderTextField(
-                    maxLength: 25,
                     keyboard: TextInputType.name,
                     textInputType: const [],
                     hint: "Message*",

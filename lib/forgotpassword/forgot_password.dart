@@ -65,7 +65,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     isError: controller.emailError.value,
                     keyboard: TextInputType.name,
                     byDefault: !controller.isEmailTyping.value,
-                    maxLength: 30,
                     onChanged: (value) {
                       controller.emailValidation();
                       controller.isEmailTyping.value = true;

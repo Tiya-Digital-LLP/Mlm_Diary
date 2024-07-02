@@ -482,7 +482,12 @@ class _ProfileScreenState extends State<ProfileScreen>
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 12, vertical: 8),
                                   child: GestureDetector(
-                                    onTap: () {},
+                                    onTap: () {
+                                      Get.toNamed(
+                                        Routes.mypostdetails,
+                                        arguments: controller.myPostList[index],
+                                      );
+                                    },
                                     child: MyProfileCard(
                                       onDelete: () => deletePost(index),
                                       userImage: post.userData!.imagePath ?? '',

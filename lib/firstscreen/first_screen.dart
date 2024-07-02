@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:mlmdiary/classified/classified.dart';
 import 'package:mlmdiary/database/database.dart';
 import 'package:mlmdiary/firstscreen/home_controller.dart';
-import 'package:mlmdiary/home/home_screen.dart';
+import 'package:mlmdiary/home/home/home_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/terms&condition/advertise_with_us_screen.dart';
 import 'package:mlmdiary/menu/more_option.dart';
 import 'package:mlmdiary/utils/app_colors.dart';

@@ -136,7 +136,6 @@ class _SignupPageState extends State<SignupPage> {
                     ),
                     Obx(
                       () => BorderTextField(
-                        maxLength: 25,
                         height: 65,
                         keyboard: TextInputType.name,
                         textInputType: const [],
@@ -199,7 +198,6 @@ class _SignupPageState extends State<SignupPage> {
                             flex: 5,
                             child: Obx(
                               () => BorderTextField(
-                                maxLength: 11,
                                 height: 65,
                                 hint: "Mobile Number",
                                 readOnly: controller.mobileReadOnly.value,
@@ -235,7 +233,6 @@ class _SignupPageState extends State<SignupPage> {
                                     keyboard: TextInputType.emailAddress,
                                     isError: controller.emailError.value,
                                     byDefault: !controller.isEmailTyping.value,
-                                    maxLength: 25,
                                     onChanged: (value) {
                                       controller.emailValidation();
                                       controller.isEmailTyping.value = true;
@@ -462,7 +459,6 @@ class _SignupPageState extends State<SignupPage> {
                                                       .emailOtpError.value,
                                                   byDefault: !controller
                                                       .isEmailOtpTyping.value,
-                                                  maxLength: 6,
                                                   onChanged: (value) {
                                                     controller
                                                         .emailOtpValidation();
@@ -621,7 +617,6 @@ class _SignupPageState extends State<SignupPage> {
                                       isError: controller.mobileOtpError.value,
                                       byDefault:
                                           !controller.isMobileOtpTyping.value,
-                                      maxLength: 6,
                                       onChanged: (value) {
                                         controller.mobileOtpValidation();
                                         controller.isMobileOtpTyping.value =
