@@ -1,19 +1,19 @@
 import 'package:mlmdiary/generated/json/base/json_field.dart';
-import 'package:mlmdiary/generated/json/get_mlm_database_entity.g.dart';
+import 'package:mlmdiary/generated/json/get_post_entity.g.dart';
 import 'dart:convert';
-export 'package:mlmdiary/generated/json/get_mlm_database_entity.g.dart';
+export 'package:mlmdiary/generated/json/get_post_entity.g.dart';
 
 @JsonSerializable()
-class GetMlmDatabaseEntity {
+class GetPostEntity {
 	int? status = 0;
 	String? message = '';
-	List<GetMlmDatabaseData>? data = [];
+	List<GetPostData>? data = [];
 
-	GetMlmDatabaseEntity();
+	GetPostEntity();
 
-	factory GetMlmDatabaseEntity.fromJson(Map<String, dynamic> json) => $GetMlmDatabaseEntityFromJson(json);
+	factory GetPostEntity.fromJson(Map<String, dynamic> json) => $GetPostEntityFromJson(json);
 
-	Map<String, dynamic> toJson() => $GetMlmDatabaseEntityToJson(this);
+	Map<String, dynamic> toJson() => $GetPostEntityToJson(this);
 
 	@override
 	String toString() {
@@ -22,7 +22,39 @@ class GetMlmDatabaseEntity {
 }
 
 @JsonSerializable()
-class GetMlmDatabaseData {
+class GetPostData {
+	int? id = 0;
+	String? comments = '';
+	String? attachment = '';
+	String? createdate = '';
+	String? comtype = '';
+	String? userid = '';
+	int? totallike = 0;
+	int? totalbookmark = 0;
+	int? totalcomment = 0;
+	@JSONField(name: "liked_by_user")
+	bool? likedByUser = false;
+	@JSONField(name: "bookmarked_by_user")
+	bool? bookmarkedByUser = false;
+	@JSONField(name: "user_data")
+	GetPostDataUserData? userData;
+	@JSONField(name: "attachment_path")
+	String? attachmentPath = '';
+
+	GetPostData();
+
+	factory GetPostData.fromJson(Map<String, dynamic> json) => $GetPostDataFromJson(json);
+
+	Map<String, dynamic> toJson() => $GetPostDataToJson(this);
+
+	@override
+	String toString() {
+		return jsonEncode(this);
+	}
+}
+
+@JsonSerializable()
+class GetPostDataUserData {
 	int? id = 0;
 	String? immlm = '';
 	String? username = '';
@@ -43,7 +75,7 @@ class GetMlmDatabaseData {
 	String? ip = '';
 	String? lastip = '';
 	String? lastlogin = '';
-	dynamic aboutyou;
+	String? aboutyou = '';
 	dynamic website;
 	@JSONField(name: "comp_website")
 	dynamic compWebsite;
@@ -56,7 +88,7 @@ class GetMlmDatabaseData {
 	String? vemailcode = '';
 	String? vphonecode = '';
 	dynamic stepno;
-	dynamic token;
+	String? token = '';
 	dynamic approve;
 	@JSONField(name: "verify_email")
 	dynamic verifyEmail;
@@ -70,9 +102,9 @@ class GetMlmDatabaseData {
 	String? passtoken = '';
 	dynamic tokendate;
 	String? urlcomponent = '';
-	dynamic aboutcompany;
+	String? aboutcompany = '';
 	dynamic fblink;
-	dynamic instalink;
+	String? instalink = '';
 	dynamic twiterlink;
 	dynamic lilink;
 	dynamic youlink;
@@ -85,24 +117,16 @@ class GetMlmDatabaseData {
 	@JSONField(name: "is_approved")
 	int? isApproved = 0;
 	String? countrycode1 = '';
-	@JSONField(name: "fav_status")
-	bool? favStatus = false;
-	@JSONField(name: "follow_status")
-	bool? followStatus = false;
-	@JSONField(name: "image_url")
-	String? imageUrl = '';
-	String? title = '';
-	dynamic pgcnt;
 	@JSONField(name: "image_path")
 	String? imagePath = '';
 	@JSONField(name: "image_thum_path")
 	String? imageThumPath = '';
 
-	GetMlmDatabaseData();
+	GetPostDataUserData();
 
-	factory GetMlmDatabaseData.fromJson(Map<String, dynamic> json) => $GetMlmDatabaseDataFromJson(json);
+	factory GetPostDataUserData.fromJson(Map<String, dynamic> json) => $GetPostDataUserDataFromJson(json);
 
-	Map<String, dynamic> toJson() => $GetMlmDatabaseDataToJson(this);
+	Map<String, dynamic> toJson() => $GetPostDataUserDataToJson(this);
 
 	@override
 	String toString() {
