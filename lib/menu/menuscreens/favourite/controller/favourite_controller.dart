@@ -24,6 +24,8 @@ class FavouriteController extends GetxController {
   final List<String> types = [
     'All',
     'blog',
+    'database',
+    'post',
     'news',
     'classified',
     'company',
@@ -53,6 +55,7 @@ class FavouriteController extends GetxController {
     ClasifiedController classifiedController,
     CompanyController companyController,
     QuestionAnswerController questionAnswerController,
+    EditPostController editpostController,
   ) {
     if (type == 'blog') {
       return manageBlogController.likedStatusMap[bookmarkId] ?? false;
@@ -64,6 +67,8 @@ class FavouriteController extends GetxController {
       return companyController.likedStatusMap[bookmarkId] ?? false;
     } else if (type == 'question') {
       return questionAnswerController.likedStatusMap[bookmarkId] ?? false;
+    } else if (type == 'post') {
+      return editpostController.likedStatusMap[bookmarkId] ?? false;
     }
     return false;
   }
@@ -76,6 +81,7 @@ class FavouriteController extends GetxController {
     ClasifiedController classifiedController,
     CompanyController companyController,
     QuestionAnswerController questionAnswerController,
+    EditPostController editpostController,
   ) {
     if (type == 'blog') {
       return manageBlogController.likeCountMap[bookmarkId] ?? 0;
@@ -87,6 +93,8 @@ class FavouriteController extends GetxController {
       return companyController.likeCountMap[bookmarkId] ?? 0;
     } else if (type == 'question') {
       return questionAnswerController.likeCountMap[bookmarkId] ?? 0;
+    } else if (type == 'post') {
+      return editpostController.likeCountMap[bookmarkId] ?? 0;
     }
     return 0;
   }
@@ -100,6 +108,7 @@ class FavouriteController extends GetxController {
     ClasifiedController classifiedController,
     CompanyController companyController,
     QuestionAnswerController questionAnswerController,
+    EditPostController editpostController,
   ) {
     if (type == 'blog') {
       manageBlogController.toggleLike(bookmarkId, context);
@@ -111,6 +120,8 @@ class FavouriteController extends GetxController {
       companyController.toggleLike(bookmarkId, context);
     } else if (type == 'question') {
       questionAnswerController.toggleLike(bookmarkId, context);
+    } else if (type == 'post') {
+      editpostController.toggleLike(bookmarkId, context);
     }
   }
 
@@ -125,6 +136,7 @@ class FavouriteController extends GetxController {
     CompanyController companyController,
     EditPostController editPostController,
     QuestionAnswerController questionAnswerController,
+    EditPostController editpostController,
   ) {
     if (type == 'blog') {
       return manageBlogController.bookmarkStatusMap[bookmarkId] ?? false;
@@ -138,6 +150,8 @@ class FavouriteController extends GetxController {
       return editPostController.bookmarkProfileStatusMap[bookmarkId] ?? false;
     } else if (type == 'question') {
       return questionAnswerController.bookmarkStatusMap[bookmarkId] ?? false;
+    } else if (type == 'post') {
+      return editPostController.bookmarkStatusMap[bookmarkId] ?? false;
     }
     return false;
   }
@@ -151,6 +165,7 @@ class FavouriteController extends GetxController {
     CompanyController companyController,
     EditPostController editPostController,
     QuestionAnswerController questionAnswerController,
+    EditPostController editpostController,
   ) {
     if (type == 'blog') {
       return manageBlogController.bookmarkCountMap[bookmarkId] ?? 0;
@@ -164,6 +179,8 @@ class FavouriteController extends GetxController {
       return editPostController.bookmarkProfileCountMap[bookmarkId] ?? 0;
     } else if (type == 'question') {
       return questionAnswerController.bookmarkCountMap[bookmarkId] ?? 0;
+    } else if (type == 'post') {
+      return editPostController.bookmarkCountMap[bookmarkId] ?? 0;
     }
     return 0;
   }
@@ -178,6 +195,7 @@ class FavouriteController extends GetxController {
     CompanyController companyController,
     EditPostController editPostController,
     QuestionAnswerController questionAnswerController,
+    EditPostController editpostController,
   ) {
     if (type == 'blog') {
       manageBlogController.toggleBookMark(bookmarkId, context);
@@ -191,6 +209,8 @@ class FavouriteController extends GetxController {
       editPostController.toggleProfileBookMark(bookmarkId, context);
     } else if (type == 'question') {
       questionAnswerController.toggleBookMark(bookmarkId, context);
+    } else if (type == 'post') {
+      editpostController.toggleBookMark(bookmarkId, context);
     }
   }
 

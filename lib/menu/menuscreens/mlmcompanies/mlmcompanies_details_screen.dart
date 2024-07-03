@@ -12,6 +12,7 @@ import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
+import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 import 'package:text_link/text_link.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -25,6 +26,7 @@ class MlmCompaniesDetails extends StatefulWidget {
 class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
   final CompanyController controller = Get.put(CompanyController());
   dynamic post;
+  final PostTimeFormatter postTimeFormatter = PostTimeFormatter();
 
   @override
   void initState() {
@@ -350,7 +352,8 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Last Updated on 25 May, 2023',
+                                postTimeFormatter
+                                    .formatPostTime(post.adddate ?? ''),
                                 style: textStyleW400(size.width * 0.035,
                                     AppColors.blackText.withOpacity(0.8)),
                               ),

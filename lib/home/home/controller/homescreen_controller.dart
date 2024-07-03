@@ -28,6 +28,7 @@ class HomeController extends GetxController {
   final List<String> types = [
     'All',
     'blog',
+    'database',
     'news',
     'classified',
     'post',

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/plan&companyintrest/controller/intrest_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
@@ -10,6 +11,7 @@ import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_button.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
+import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 
 class PlanandCompany extends StatefulWidget {
   const PlanandCompany({super.key});
@@ -81,8 +83,12 @@ class _PlanandCompanyState extends State<PlanandCompany> {
           ? Obx(() {
               if (controller.isLoading.value &&
                   controller.companyList.isEmpty) {
-                return const Center(
-                  child: CircularProgressIndicator(),
+                return Center(
+                  child: CustomLottieAnimation(
+                    child: Lottie.asset(
+                      Assets.lottieLottie,
+                    ),
+                  ),
                 );
               }
 
@@ -119,8 +125,13 @@ class _PlanandCompanyState extends State<PlanandCompany> {
                           controller: controller.scrollController,
                           itemBuilder: (context, index) {
                             if (index == controller.companyList.length) {
-                              return const Center(
-                                  child: CircularProgressIndicator());
+                              return Center(
+                                child: CustomLottieAnimation(
+                                  child: Lottie.asset(
+                                    Assets.lottieLottie,
+                                  ),
+                                ),
+                              );
                             }
 
                             final post = controller.companyList[index];
@@ -171,8 +182,12 @@ class _PlanandCompanyState extends State<PlanandCompany> {
             })
           : Obx(() {
               if (controller.isLoading.value) {
-                return const Center(
-                  child: CircularProgressIndicator(),
+                return Center(
+                  child: CustomLottieAnimation(
+                    child: Lottie.asset(
+                      Assets.lottieLottie,
+                    ),
+                  ),
                 );
               }
 

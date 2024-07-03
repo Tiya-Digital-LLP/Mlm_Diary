@@ -34,7 +34,7 @@ class NotificationController extends GetxController {
       }
     });
   }
-
+  
   Future<void> fetchNotification(int page, String? type) async {
     if (kDebugMode) {
       print('fetchNotification called with page: $page, type: $type');

@@ -171,7 +171,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                         borderRadius: BorderRadius.circular(60.0),
                         child: CachedNetworkImage(
                           imageUrl:
-                              mlmDatabaseList.imagePath ?? Assets.imagesIcon,
+                              mlmDatabaseList.imageUrl ?? Assets.imagesIcon,
                           fit: BoxFit.cover,
                           height: 100,
                           width: 100,
@@ -187,7 +187,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            mlmDatabaseList.name ?? 'N/A',
+                            mlmDatabaseList.title ?? 'N/A',
                             style: textStyleW700(
                                 size.width * 0.045, AppColors.blackText),
                           ),
@@ -381,7 +381,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                 height: MediaQuery.of(context).size.height,
                 child: InteractiveViewer(
                   child: Image.network(
-                    '${mlmDatabaseList.imagePath.toString()}?${DateTime.now().millisecondsSinceEpoch}',
+                    '${mlmDatabaseList.imageUrl.toString()}?${DateTime.now().millisecondsSinceEpoch}',
                     fit: BoxFit.contain,
                     width: MediaQuery.of(context).size.width,
                   ),

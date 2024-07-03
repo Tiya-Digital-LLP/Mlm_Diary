@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
-import 'package:mlmdiary/generated/my_news_entity.dart';
+import 'package:mlmdiary/generated/my_post_list_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/custom_blog_comment.dart';
 import 'package:mlmdiary/menu/menuscreens/news/news_like_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
@@ -24,7 +24,7 @@ class MyPostDetailScreen extends StatefulWidget {
 
 class _NewsDetailScreenState extends State<MyPostDetailScreen> {
   final EditPostController controller = Get.put(EditPostController());
-  final post = Get.arguments as MyNewsData;
+  final post = Get.arguments as MyPostListData;
 
   // like
   late RxBool isLiked;
@@ -76,7 +76,7 @@ class _NewsDetailScreenState extends State<MyPostDetailScreen> {
       backgroundColor: AppColors.background,
       appBar: CustomAppBar(
         size: MediaQuery.of(context).size,
-        titleText: 'MLM News',
+        titleText: 'MLM Post',
         onTap: () {},
       ),
       body: SingleChildScrollView(
@@ -122,7 +122,7 @@ class _NewsDetailScreenState extends State<MyPostDetailScreen> {
                               Row(
                                 children: [
                                   Text(
-                                    post.title ?? '',
+                                    post.userData!.name ?? '',
                                     style: textStyleW700(size.width * 0.043,
                                         AppColors.blackText),
                                   ),
@@ -155,7 +155,7 @@ class _NewsDetailScreenState extends State<MyPostDetailScreen> {
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: CachedNetworkImage(
-                          imageUrl: post.imagePath ?? '',
+                          imageUrl: post.userData!.imagePath ?? '',
                           height: 97,
                           width: 105,
                           fit: BoxFit.fill,
@@ -175,38 +175,12 @@ class _NewsDetailScreenState extends State<MyPostDetailScreen> {
                       ),
                       child: Align(
                         alignment: Alignment.topLeft,
-                        child: _buildHtmlContent(post.description ?? '', size),
+                        child: _buildHtmlContent(post.comments ?? '', size),
                       ),
                     ),
                     SizedBox(
                       height: size.height * 0.01,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                      ),
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          '${post.category} | ${post.subcategory}',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            color: AppColors.blackText,
-                            fontSize: size.width * 0.035,
-                          ),
-                        ),
-                      ),
-                    ),
-                    5.sbh,
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        color: AppColors.white,
-                        border: const Border(
-                            bottom: BorderSide(color: Colors.grey)),
-                      ),
-                    ),
-                    5.sbh,
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 16,
@@ -369,17 +343,6 @@ class _NewsDetailScreenState extends State<MyPostDetailScreen> {
                               ),
                             ],
                           ),
-                          LinkText(
-                            text: post.website ?? '',
-                            style: textStyleW400(
-                              size.width * 0.035,
-                              AppColors.blackText.withOpacity(0.5),
-                            ),
-                            linkStyle: const TextStyle(
-                              color: Colors.blue,
-                              decoration: TextDecoration.underline,
-                            ),
-                          ),
                         ],
                       ),
                     ),
@@ -481,11 +444,6 @@ class _NewsDetailScreenState extends State<MyPostDetailScreen> {
                     ),
                     const SizedBox(
                       width: 7,
-                    ),
-                    Text(
-                      post.pgcnt.toString(),
-                      style: textStyleW600(
-                          size.width * 0.040, AppColors.blackText),
                     ),
                   ],
                 ),

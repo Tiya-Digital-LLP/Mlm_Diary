@@ -1,8 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/database/controller/database_controller.dart';
+import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/favourite/controller/favourite_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/favourite/custom/blog_faviourite_card.dart';
@@ -10,6 +12,7 @@ import 'package:mlmdiary/menu/menuscreens/favourite/custom/classified_faviourite
 import 'package:mlmdiary/menu/menuscreens/favourite/custom/company_favourite_card.dart';
 import 'package:mlmdiary/menu/menuscreens/favourite/custom/database_favourite_card.dart';
 import 'package:mlmdiary/menu/menuscreens/favourite/custom/news_faviourite_card.dart';
+import 'package:mlmdiary/menu/menuscreens/favourite/custom/post_favourite_card.dart';
 import 'package:mlmdiary/menu/menuscreens/favourite/custom/question_favourite_card.dart';
 import 'package:mlmdiary/menu/menuscreens/favourite/custom/video_faviouritr_card.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
@@ -21,6 +24,7 @@ import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
+import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 
 class Favourite extends StatefulWidget {
   const Favourite({super.key});
@@ -106,8 +110,13 @@ class _FavouriteState extends State<Favourite> {
             Obx(() {
               if (controller.isLoading.value &&
                   controller.favouriteList.isEmpty) {
-                return const SliverFillRemaining(
-                  child: Center(child: CircularProgressIndicator()),
+                return SliverFillRemaining(
+                  child: Center(
+                      child: CustomLottieAnimation(
+                    child: Lottie.asset(
+                      Assets.lottieLottie,
+                    ),
+                  )),
                 );
               }
 
@@ -132,7 +141,12 @@ class _FavouriteState extends State<Favourite> {
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
                     if (index == controller.favouriteList.length) {
-                      return const Center(child: CircularProgressIndicator());
+                      return Center(
+                          child: CustomLottieAnimation(
+                        child: Lottie.asset(
+                          Assets.lottieLottie,
+                        ),
+                      ));
                     }
                     final post = controller.favouriteList[index];
                     Widget cardWidget;
@@ -180,6 +194,7 @@ class _FavouriteState extends State<Favourite> {
                           editpostController: editPostController,
                           questionAnswerController: questionAnswerController,
                           likedbyuser: post.likedByUser ?? false,
+                          likedCount: post.totallike ?? 0,
                         );
                         break;
 
@@ -203,6 +218,8 @@ class _FavouriteState extends State<Favourite> {
                           editpostController: editPostController,
                           questionAnswerController: questionAnswerController,
                           likedbyuser: post.likedByUser ?? false,
+                          likedCount: post.totallike ?? 0,
+                          commentcount: post.totalcomment ?? 0,
                         );
                         break;
                       case 'news':
@@ -225,6 +242,7 @@ class _FavouriteState extends State<Favourite> {
                           editpostController: editPostController,
                           questionAnswerController: questionAnswerController,
                           likedbyuser: post.likedByUser ?? false,
+                          likedCount: post.totallike ?? 0,
                         );
                         break;
 
@@ -284,9 +302,33 @@ class _FavouriteState extends State<Favourite> {
                           editpostController: editPostController,
                           questionAnswerController: questionAnswerController,
                           likedbyuser: post.likedByUser ?? false,
+                          likedCount: post.totallike ?? 0,
                         );
                         break;
-
+                      case 'post':
+                        cardWidget = PostFavouriteCard(
+                          userImage: post.userData?.imagePath ?? '',
+                          userName: post.userData?.name ?? '',
+                          postTitle: post.title ?? '',
+                          postCaption: post.description ?? '',
+                          postImage: post.imageUrl ?? '',
+                          dateTime: post.createdate ?? '',
+                          viewcounts: post.pgcnt ?? 0,
+                          controller: controller,
+                          bookmarkId: post.id ?? 0,
+                          url: post.urlcomponent ?? '',
+                          type: post.type ?? '',
+                          manageBlogController: manageBlogController,
+                          manageNewsController: manageNewsController,
+                          clasifiedController: clasifiedController,
+                          companyController: companyController,
+                          editpostController: editPostController,
+                          questionAnswerController: questionAnswerController,
+                          likedbyuser: post.likedByUser ?? false,
+                          likecount: post.totallike ?? 0,
+                          commentcount: post.totalcomment ?? 0,
+                        );
+                        break;
                       default:
                         cardWidget = const SizedBox();
                     }
@@ -375,68 +417,71 @@ class _FavouriteState extends State<Favourite> {
 
   Widget horiztallist() {
     return SizedBox(
-      height: 50,
-      child: Obx(() {
-        if (controller.isLoading.value && controller.favouriteList.isEmpty) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        if (controller.favouriteList.isEmpty) {
-          return const Center(
-            child: Text(
-              'Data not found',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
+        height: 50,
+        child: Obx(() {
+          if (controller.isLoading.value && controller.favouriteList.isEmpty) {
+            return Center(
+                child: CustomLottieAnimation(
+              child: Lottie.asset(
+                Assets.lottieLottie,
               ),
-            ),
-          );
-        }
+            ));
+          }
 
-        return ListView.builder(
-            shrinkWrap: false,
-            scrollDirection: Axis.horizontal,
-            itemCount: controller.types.length,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                child: Wrap(
-                  spacing: 6.0,
-                  runSpacing: 6.0,
-                  children: [
-                    ChoiceChip(
-                      label: Text(
-                        controller.types[index],
-                      ),
-                      selected: controller.selectedType.value ==
-                          controller.types[index],
-                      selectedColor: AppColors.blackText,
-                      onSelected: (bool selected) {
-                        controller.selectedType.value =
-                            selected ? controller.types[index] : 'All';
-                        controller.fetchBookmark(1);
-                      },
-                      backgroundColor: AppColors.grey.withOpacity(0.3),
-                      side: BorderSide.none,
-                      labelStyle: TextStyle(
-                              fontSize: 12.0,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.blackText,
-                              fontFamily: 'assets/fonst/Metropolis-Black.otf')
-                          .copyWith(
-                              color: controller.selectedType.value ==
-                                      controller.types[index]
-                                  ? Colors.white
-                                  : Colors.black),
-                      showCheckmark: false,
-                      // checkmarkColor: AppColors.backgroundColor,
-                    ),
-                  ],
+          if (controller.favouriteList.isEmpty) {
+            return const Center(
+              child: Text(
+                'Data not found',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
                 ),
-              );
-            });
-      }),
-    );
+              ),
+            );
+          }
+          return ListView.builder(
+              shrinkWrap: false,
+              scrollDirection: Axis.horizontal,
+              itemCount: controller.types.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                  child: Wrap(
+                    spacing: 6.0,
+                    runSpacing: 6.0,
+                    children: [
+                      ChoiceChip(
+                        label: Text(
+                          controller.types[index],
+                        ),
+                        selected: controller.selectedType.value ==
+                            controller.types[index],
+                        selectedColor: AppColors.blackText,
+                        onSelected: (bool selected) {
+                          controller.selectedType.value =
+                              selected ? controller.types[index] : 'All';
+                          controller.fetchBookmark(1);
+                        },
+                        backgroundColor: AppColors.grey.withOpacity(0.3),
+                        side: BorderSide.none,
+                        labelStyle: TextStyle(
+                                fontSize: 12.0,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.blackText,
+                                fontFamily: 'assets/fonst/Metropolis-Black.otf')
+                            .copyWith(
+                                color: controller.selectedType.value ==
+                                        controller.types[index]
+                                    ? Colors.white
+                                    : Colors.black),
+                        showCheckmark: false,
+                        // checkmarkColor: AppColors.backgroundColor,
+                      ),
+                    ],
+                  ),
+                );
+              });
+        }));
   }
 }

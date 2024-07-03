@@ -185,18 +185,24 @@ class _NotificationState extends State<NotificationScreen>
                 controller: _tabController,
                 children: [
                   RefreshIndicator(
+                    backgroundColor: AppColors.primaryColor,
+                    color: AppColors.white,
                     onRefresh: _refreshData,
                     child: const SizedBox(
                       child: Center(child: AllNotification()),
                     ),
                   ),
                   RefreshIndicator(
+                    backgroundColor: AppColors.primaryColor,
+                    color: AppColors.white,
                     onRefresh: _refreshData,
                     child: const SizedBox(
                       child: Center(child: UserNotification()),
                     ),
                   ),
                   RefreshIndicator(
+                    backgroundColor: AppColors.primaryColor,
+                    color: AppColors.white,
                     onRefresh: _refreshData,
                     child: const SizedBox(
                       child: Center(child: AdminNotification()),

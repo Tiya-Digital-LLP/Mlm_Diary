@@ -1,8 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/database/controller/database_controller.dart';
+import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/home/home/controller/homescreen_controller.dart';
 import 'package:mlmdiary/home/home/custom/blog_home_card.dart';
 import 'package:mlmdiary/home/home/custom/classified_home_card.dart';
@@ -23,6 +25,7 @@ import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
+import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 
 import '../../menu/menuscreens/profile/controller/edit_post_controller.dart';
 
@@ -124,7 +127,12 @@ class _SearchBarAppState extends State<SearchBarApp> {
                 child: Obx(() {
                   if (controller.isLoading.value &&
                       controller.homeList.isEmpty) {
-                    return const Center(child: CircularProgressIndicator());
+                    return Center(
+                        child: CustomLottieAnimation(
+                      child: Lottie.asset(
+                        Assets.lottieLottie,
+                      ),
+                    ));
                   }
                   if (controller.homeList.isEmpty) {
                     return const Center(
@@ -144,7 +152,12 @@ class _SearchBarAppState extends State<SearchBarApp> {
                         (controller.isLoading.value ? 1 : 0),
                     itemBuilder: (context, index) {
                       if (index == controller.homeList.length) {
-                        return const Center(child: CircularProgressIndicator());
+                        return Center(
+                            child: CustomLottieAnimation(
+                          child: Lottie.asset(
+                            Assets.lottieLottie,
+                          ),
+                        ));
                       }
                       final post = controller.homeList[index];
                       Widget cardWidget;
@@ -194,6 +207,7 @@ class _SearchBarAppState extends State<SearchBarApp> {
                             editpostController: editPostController,
                             questionAnswerController: questionAnswerController,
                             likedbyuser: post.likedByUser ?? false,
+                            likedCount: post.totallike ?? 0,
                             companyId: post.id ?? 0,
                             commentcount: post.totalcomment ?? 0,
                           );
@@ -218,6 +232,7 @@ class _SearchBarAppState extends State<SearchBarApp> {
                             editpostController: editPostController,
                             questionAnswerController: questionAnswerController,
                             likedbyuser: post.likedByUser ?? false,
+                            likedCount: post.totallike ?? 0,
                             commentcount: post.totalcomment ?? 0,
                           );
                           break;
@@ -241,6 +256,7 @@ class _SearchBarAppState extends State<SearchBarApp> {
                             editpostController: editPostController,
                             questionAnswerController: questionAnswerController,
                             likedbyuser: post.likedByUser ?? false,
+                            likedCount: post.totallike ?? 0,
                             commentcount: post.totalcomment ?? 0,
                           );
                           break;
@@ -300,6 +316,7 @@ class _SearchBarAppState extends State<SearchBarApp> {
                             editpostController: editPostController,
                             questionAnswerController: questionAnswerController,
                             likedbyuser: post.likedByUser ?? false,
+                            likedCount: post.totallike ?? 0,
                           );
                           break;
                         case 'post':
@@ -324,6 +341,7 @@ class _SearchBarAppState extends State<SearchBarApp> {
                             likedbyuser: post.likedByUser ?? false,
                             likecount: post.totallike ?? 0,
                             commentcount: post.totalcomment ?? 0,
+                            likedCount: post.totallike ?? 0,
                           );
                           break;
                         default:
@@ -406,9 +424,8 @@ class _SearchBarAppState extends State<SearchBarApp> {
         if (kDebugMode) {
           print('post');
         }
-        await clasifiedController.fetchClassifiedDetail(post.id ?? 0, context);
 
-        Get.toNamed(Routes.mlmclassifieddetail, arguments: post);
+        Get.toNamed(Routes.postdetail, arguments: post);
         break;
       default:
         Get.toNamed(Routes.favouritrdetailsscreen, arguments: post);
@@ -421,7 +438,12 @@ class _SearchBarAppState extends State<SearchBarApp> {
       height: 50,
       child: Obx(() {
         if (controller.isLoading.value && controller.homeList.isEmpty) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(
+              child: CustomLottieAnimation(
+            child: Lottie.asset(
+              Assets.lottieLottie,
+            ),
+          ));
         }
 
         if (controller.homeList.isEmpty) {

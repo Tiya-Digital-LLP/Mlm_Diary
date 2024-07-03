@@ -2,7 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/data/constants.dart';
+import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_company_comment_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
@@ -10,6 +12,7 @@ import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
+import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:text_link/text_link.dart';
 // ignore: library_prefixes
@@ -93,7 +96,12 @@ class _CommentDialogState extends State<CommentDialogPost> {
             () {
               if (controller.isLoading.value &&
                   controller.getCommentList.isEmpty) {
-                return const Center(child: CircularProgressIndicator());
+                return Center(
+                    child: CustomLottieAnimation(
+                  child: Lottie.asset(
+                    Assets.lottieLottie,
+                  ),
+                ));
               }
 
               return ListView.builder(
@@ -145,7 +153,12 @@ class _CommentDialogState extends State<CommentDialogPost> {
                       ),
                     );
                   } else {
-                    return const Center(child: CircularProgressIndicator());
+                    return Center(
+                        child: CustomLottieAnimation(
+                      child: Lottie.asset(
+                        Assets.lottieLottie,
+                      ),
+                    ));
                   }
                 },
               );
@@ -242,7 +255,12 @@ class _CommentDialogState extends State<CommentDialogPost> {
       future: getUserId(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
+          return Center(
+              child: CustomLottieAnimation(
+            child: Lottie.asset(
+              Assets.lottieLottie,
+            ),
+          ));
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
@@ -482,7 +500,12 @@ class _CommentDialogState extends State<CommentDialogPost> {
       future: getUserId(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
+          return Center(
+              child: CustomLottieAnimation(
+            child: Lottie.asset(
+              Assets.lottieLottie,
+            ),
+          ));
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
@@ -597,7 +620,12 @@ class _CommentDialogState extends State<CommentDialogPost> {
       future: getUserId(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
+          return Center(
+              child: CustomLottieAnimation(
+            child: Lottie.asset(
+              Assets.lottieLottie,
+            ),
+          ));
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {

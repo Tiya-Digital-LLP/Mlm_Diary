@@ -54,6 +54,7 @@ dependencies:
   flutter_local_notifications: ^17.1.2
   firebase_analytics: ^11.1.0
   package_info_plus: ^4.2.0
+  lottie: ^3.1.2
 
   
 
@@ -74,6 +75,7 @@ flutter:
   assets:
     - assets/images/
     - assets/svg/
+    - assets/lottie/
 
   fonts:
     - family: Satoshi

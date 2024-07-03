@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
+import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/home/notification/card/admin_notification_card.dart';
 import 'package:mlmdiary/home/notification/controller/notification_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 
 class AdminNotification extends StatefulWidget {
   const AdminNotification({super.key});
@@ -30,7 +33,12 @@ class _AllNotificationState extends State<AdminNotification> {
               child: Obx(() {
                 if (controller.isLoading.value &&
                     controller.notificationList.isEmpty) {
-                  return const Center(child: CircularProgressIndicator());
+                  return Center(
+                      child: CustomLottieAnimation(
+                    child: Lottie.asset(
+                      Assets.lottieLottie,
+                    ),
+                  ));
                 }
 
                 if (controller.notificationList.isEmpty) {
@@ -55,7 +63,12 @@ class _AllNotificationState extends State<AdminNotification> {
                       (controller.isLoading.value ? 1 : 0),
                   itemBuilder: (context, index) {
                     if (index == controller.notificationList.length) {
-                      return const Center(child: CircularProgressIndicator());
+                      return Center(
+                          child: CustomLottieAnimation(
+                        child: Lottie.asset(
+                          Assets.lottieLottie,
+                        ),
+                      ));
                     }
 
                     final post = controller.notificationList[index];

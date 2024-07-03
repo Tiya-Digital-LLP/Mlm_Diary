@@ -37,13 +37,13 @@ class _PostDetailsScreenState extends State<PostDetailScreen> {
   late RxInt bookmarkCount;
 
   void initializeLikes() {
-    // isLiked = RxBool(controller.postList[0].likedByUser ?? false);
-    // likeCount = RxInt(controller.postList[0].totallike ?? 0);
+    isLiked = RxBool(controller.getpostList[0].likedByUser ?? false);
+    likeCount = RxInt(controller.getpostList[0].totallike ?? 0);
   }
 
   void initializeBookmarks() {
-    // isBookmarked = RxBool(controller.postList[0].bookmarkedByUser ?? false);
-    // bookmarkCount = RxInt(controller.postList[0].totalbookmark ?? 0);
+    isBookmarked = RxBool(controller.getpostList[0].bookmarkedByUser ?? false);
+    bookmarkCount = RxInt(controller.getpostList[0].totalbookmark ?? 0);
   }
 
   void toggleLike() async {
@@ -68,7 +68,7 @@ class _PostDetailsScreenState extends State<PostDetailScreen> {
     super.initState();
     post = Get.arguments;
     if (post != null && post.id != null) {
-      controller.fetchUserPost(post.id ?? 0, context);
+      controller.fetchPost(post.id ?? 0);
     }
     initializeLikes();
     initializeBookmarks();
@@ -89,7 +89,7 @@ class _PostDetailsScreenState extends State<PostDetailScreen> {
       backgroundColor: AppColors.background,
       appBar: CustomAppBar(
         size: MediaQuery.of(context).size,
-        titleText: 'MLM Classified',
+        titleText: 'MLM Post',
         onTap: () {},
       ),
       body: SingleChildScrollView(

@@ -12,6 +12,7 @@ import 'package:mlmdiary/generated/add_post_comment_entity.dart';
 import 'package:mlmdiary/generated/database_detail_entity.dart';
 import 'package:mlmdiary/generated/edit_comment_entity.dart';
 import 'package:mlmdiary/generated/follow_user_entity.dart';
+import 'package:mlmdiary/generated/get_post_entity.dart';
 import 'package:mlmdiary/generated/get_user_post_comment_entity.dart';
 import 'package:mlmdiary/generated/my_post_list_entity.dart';
 import 'package:mlmdiary/generated/post_bookmark_entity.dart';
@@ -28,6 +29,8 @@ class EditPostController extends GetxController {
   RxList<MyPostListData> myPostList = <MyPostListData>[].obs;
   RxList<PostLikeListData> postLikeList = RxList<PostLikeListData>();
   RxList<DatabaseDetailData> postList = <DatabaseDetailData>[].obs;
+  RxList<GetPostData> getpostList = <GetPostData>[].obs;
+
   // Post comment
   RxList<GetUserPostCommentData> getCommentList =
       <GetUserPostCommentData>[].obs;
@@ -55,6 +58,85 @@ class EditPostController extends GetxController {
   void onInit() {
     super.onInit();
     fetchMyPost();
+    fetchPost(1);
+  }
+
+  Future<void> fetchPost(int page, {int? postId}) async {
+    isLoading(true);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = '';
+    if (Platform.isAndroid) {
+      device = 'android';
+    } else if (Platform.isIOS) {
+      device = 'ios';
+    }
+    if (kDebugMode) {
+      print('Device Name: $device');
+    }
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri = Uri.parse('${Constants.baseUrl}${Constants.getpost}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['page'] = page.toString();
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          // Print the raw response body
+          if (kDebugMode) {
+            print('Raw Response Body: ${response.body}');
+          }
+
+          var data = jsonDecode(response.body);
+
+          // Print the parsed JSON data
+          if (kDebugMode) {
+            print('Parsed JSON Data: $data');
+          }
+
+          var getNewsEntity = GetPostEntity.fromJson(data);
+
+          if (kDebugMode) {
+            print('Success: $getNewsEntity');
+          }
+
+          if (getNewsEntity.data != null && getNewsEntity.data!.isNotEmpty) {
+            if (page == 1) {
+              getpostList.value = getNewsEntity.data!;
+            } else {
+              getpostList.addAll(getNewsEntity.data!);
+            }
+            isEndOfData(false);
+          } else {
+            if (page == 1) {
+              getpostList.clear();
+            }
+            isEndOfData(true);
+          }
+        } else {
+          if (kDebugMode) {
+            print("Error: ${response.body}");
+          }
+        }
+      } else {
+        //
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error: $e");
+      }
+    } finally {
+      isLoading(false);
+    }
   }
 
   // Method to fetch data from API

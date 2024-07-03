@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/database/controller/database_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
@@ -30,6 +31,7 @@ import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/lists.dart';
 import 'package:mlmdiary/utils/text_style.dart';
+import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:mlmdiary/widgets/remimaining_count_controller./remaining_count.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -279,8 +281,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     Obx(() {
                       if (controller.isLoading.value &&
                           controller.homeList.isEmpty) {
-                        return const SliverToBoxAdapter(
-                          child: Center(child: CircularProgressIndicator()),
+                        return SliverToBoxAdapter(
+                          child: Center(
+                            child: CustomLottieAnimation(
+                              child: Lottie.asset(
+                                Assets.lottieLottie,
+                              ),
+                            ),
+                          ),
                         );
                       }
                       if (controller.homeList.isEmpty) {
@@ -301,8 +309,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         delegate: SliverChildBuilderDelegate(
                           (context, index) {
                             if (index == controller.homeList.length) {
-                              return const Center(
-                                  child: CircularProgressIndicator());
+                              return Center(
+                                child: CustomLottieAnimation(
+                                  child: Lottie.asset(
+                                    Assets.lottieLottie,
+                                  ),
+                                ),
+                              );
                             }
                             final post = controller.homeList[index];
                             Widget cardWidget;
@@ -354,6 +367,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   questionAnswerController:
                                       questionAnswerController,
                                   likedbyuser: post.likedByUser ?? false,
+                                  likedCount: post.totallike ?? 0,
                                   companyId: post.id ?? 0,
                                   commentcount: post.totalcomment ?? 0,
                                 );
@@ -379,6 +393,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   questionAnswerController:
                                       questionAnswerController,
                                   likedbyuser: post.likedByUser ?? false,
+                                  likedCount: post.totallike ?? 0,
                                   commentcount: post.totalcomment ?? 0,
                                 );
                                 break;
@@ -404,6 +419,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       questionAnswerController,
                                   likedbyuser: post.likedByUser ?? false,
                                   commentcount: post.totalcomment ?? 0,
+                                  likedCount: post.totallike ?? 0,
                                 );
                                 break;
                               case 'video':
@@ -464,6 +480,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   questionAnswerController:
                                       questionAnswerController,
                                   likedbyuser: post.likedByUser ?? false,
+                                  likedCount: post.totallike ?? 0,
                                 );
                                 break;
                               case 'post':
@@ -489,6 +506,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   likedbyuser: post.likedByUser ?? false,
                                   likecount: post.totallike ?? 0,
                                   commentcount: post.totalcomment ?? 0,
+                                  likedCount: post.totallike ?? 0,
                                 );
                                 break;
                               default:
@@ -663,7 +681,6 @@ class _HomeScreenState extends State<HomeScreen> {
         if (kDebugMode) {
           print('post');
         }
-        await editPostController.fetchUserPost(post.id ?? 0, context);
 
         Get.toNamed(Routes.postdetail, arguments: post);
         break;

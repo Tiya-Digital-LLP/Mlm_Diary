@@ -82,7 +82,7 @@ class ManageNewsController extends GetxController {
   //image
   RxString userImage = ''.obs;
 
-  var isLoading = false.obs;
+  RxBool isLoading = false.obs;
 
   // READ ONLY FIELDS
   RxBool titleReadOnly = false.obs;
@@ -176,7 +176,7 @@ class ManageNewsController extends GetxController {
     BuildContext? context,
     int? newsId,
   }) async {
-    isLoading.value = true;
+    isLoading(true);
     String device = '';
     if (Platform.isAndroid) {
       device = 'android';
@@ -199,7 +199,9 @@ class ManageNewsController extends GetxController {
           // ignore: use_build_context_synchronously
           showToasterrorborder("No internet connection", context);
         }
-        isLoading.value = false;
+
+        isLoading(false);
+
         return;
       }
 
@@ -280,8 +282,7 @@ class ManageNewsController extends GetxController {
         showToasterrorborder("An error occurred: $error", context);
       }
     } finally {
-      // Set isLoading to false after completing fetch operation
-      isLoading.value = false;
+      isLoading(false);
     }
   }
 

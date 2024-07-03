@@ -12,13 +12,15 @@ import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_contro
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/custom/custom_post_comment.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 import 'package:share_plus/share_plus.dart';
 
-class CompanieFaviouriteCard extends StatefulWidget {
+class PostFavouriteCard extends StatefulWidget {
+  final String userImage;
   final String userName;
   final String postTitle;
   final String postCaption;
@@ -26,23 +28,25 @@ class CompanieFaviouriteCard extends StatefulWidget {
   final String dateTime;
   final int viewcounts;
   final int bookmarkId;
+
   final String url;
   final String type;
   final ManageBlogController manageBlogController;
   final ManageNewsController manageNewsController;
   final ClasifiedController clasifiedController;
-  final CompanyController companyController;
   final EditPostController editpostController;
   final QuestionAnswerController questionAnswerController;
   final bool likedbyuser;
+  final int likecount;
+  final int commentcount;
 
-  final String userImage;
+  final CompanyController companyController;
 
   final FavouriteController controller;
-  final int likedCount;
 
-  const CompanieFaviouriteCard({
+  const PostFavouriteCard({
     super.key,
+    required this.userImage,
     required this.userName,
     required this.postTitle,
     required this.postCaption,
@@ -57,18 +61,18 @@ class CompanieFaviouriteCard extends StatefulWidget {
     required this.manageNewsController,
     required this.clasifiedController,
     required this.companyController,
-    required this.userImage,
     required this.editpostController,
     required this.questionAnswerController,
     required this.likedbyuser,
-    required this.likedCount,
+    required this.likecount,
+    required this.commentcount,
   });
 
   @override
-  State<CompanieFaviouriteCard> createState() => _CompanieFaviouriteCardState();
+  State<PostFavouriteCard> createState() => _FavouritrCardState();
 }
 
-class _CompanieFaviouriteCardState extends State<CompanieFaviouriteCard> {
+class _FavouritrCardState extends State<PostFavouriteCard> {
   late PostTimeFormatter postTimeFormatter;
   late RxBool isLiked;
   late RxInt likeCount;
@@ -96,7 +100,7 @@ class _CompanieFaviouriteCardState extends State<CompanieFaviouriteCard> {
 
   void initializeLikes() {
     isLiked = RxBool(widget.likedbyuser);
-    likeCount = RxInt(widget.likedCount);
+    likeCount = RxInt(widget.likecount);
   }
 
   void toggleLike() async {
@@ -150,27 +154,17 @@ class _CompanieFaviouriteCardState extends State<CompanieFaviouriteCard> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      width: 1.5,
-                      color: AppColors.grey.withOpacity(0.5),
-                    ),
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(12),
-                    ),
-                  ),
-                  child: ClipOval(
-                    child: CachedNetworkImage(
-                      imageUrl: widget.postImage,
-                      height: 60.0,
-                      width: 60.0,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) =>
-                          const CircularProgressIndicator(),
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.error),
-                    ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(100),
+                  child: CachedNetworkImage(
+                    imageUrl: widget.userImage,
+                    height: 60,
+                    width: 60,
+                    fit: BoxFit.fill,
+                    placeholder: (context, url) =>
+                        const CircularProgressIndicator(),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
                   ),
                 ),
                 10.sbw,
@@ -179,17 +173,18 @@ class _CompanieFaviouriteCardState extends State<CompanieFaviouriteCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.postTitle,
+                        widget.userName,
                         style: textStyleW700(
                             size.width * 0.038, AppColors.blackText),
                       ),
-                      Text(
-                        'Ahemdabad,Gujarat,India',
-                        style: textStyleW400(
-                          size.width * 0.032,
-                          AppColors.blackText.withOpacity(0.5),
-                        ),
-                        maxLines: 2,
+                      Row(
+                        children: [
+                          Text(
+                            postTimeFormatter.formatPostTime(widget.dateTime),
+                            style: textStyleW400(size.width * 0.035,
+                                AppColors.blackText.withOpacity(0.8)),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -223,11 +218,32 @@ class _CompanieFaviouriteCardState extends State<CompanieFaviouriteCard> {
                 data: widget.postCaption,
                 style: {
                   "html": Style(
-                    maxLines: 2,
+                    maxLines: 1,
+                    fontFamily: fontFamily,
+                    fontWeight: FontWeight.w700,
+                    fontSize: FontSize.medium,
+                    color: AppColors.blackText,
                   ),
                 },
               ),
             ),
+            SizedBox(
+              height: size.height * 0.26,
+              width: size.width,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12.0),
+                child: CachedNetworkImage(
+                  imageUrl: widget.postImage,
+                  height: 100.0,
+                  width: 60.0,
+                  fit: BoxFit.fill,
+                  placeholder: (context, url) =>
+                      const CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                ),
+              ),
+            ),
+            10.sbh,
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
@@ -267,19 +283,24 @@ class _CompanieFaviouriteCardState extends State<CompanieFaviouriteCard> {
                   Row(
                     children: [
                       GestureDetector(
+                        onTap: () => showFullScreenDialogPost(
+                          context,
+                          widget.bookmarkId,
+                        ),
                         child: SizedBox(
                           height: size.height * 0.028,
                           width: size.height * 0.028,
                           child: SvgPicture.asset(Assets.svgComment),
                         ),
                       ),
-                      8.sbw,
+                      5.sbw,
                       Text(
-                        '1K',
+                        '${widget.commentcount}',
                         style: TextStyle(
-                            fontFamily: "Metropolis",
-                            fontWeight: FontWeight.w600,
-                            fontSize: size.width * 0.038),
+                          fontFamily: "Metropolis",
+                          fontWeight: FontWeight.w600,
+                          fontSize: size.width * 0.038,
+                        ),
                       ),
                     ],
                   ),

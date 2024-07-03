@@ -28,6 +28,7 @@ class Assets {
   static const String imagesSquare = 'assets/images/square.png';
   static const String imagesTrueCircle = 'assets/images/true_circle.png';
   static const String imagesVerified = 'assets/images/verified.png';
+  static const String lottieLottie = 'assets/lottie/Lottie.json';
   static const String svgArchive = 'assets/svg/archive.svg';
   static const String svgBack = 'assets/svg/back.svg';
   static const String svgBannerAd = 'assets/svg/banner_ad.svg';

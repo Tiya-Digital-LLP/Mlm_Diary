@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/manageclassified/controller/manage_classified_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/manageclassified/manageclassified_card.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
+import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:mlmdiary/widgets/remimaining_count_controller./remaining_count.dart';
 
 class ManageClassified extends StatefulWidget {
@@ -53,7 +55,12 @@ class _MlmClassifiedState extends State<ManageClassified> {
           child: Obx(() {
             if (controller.isLoading.value &&
                 controller.classifiedList.isEmpty) {
-              return const Center(child: CircularProgressIndicator());
+              return Center(
+                  child: CustomLottieAnimation(
+                child: Lottie.asset(
+                  Assets.lottieLottie,
+                ),
+              ));
             }
 
             if (controller.classifiedList.isEmpty) {

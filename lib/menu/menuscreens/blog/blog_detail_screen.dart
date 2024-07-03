@@ -99,163 +99,193 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            backgroundColor: const Color(0XFFCCC9C9),
-                            radius: size.width * 0.07,
-                            child: ClipOval(
-                              child: CachedNetworkImage(
-                                imageUrl: post.userData!.imagePath ?? '',
-                                height: 97,
-                                width: 105,
-                                fit: BoxFit.fill,
-                                placeholder: (context, url) => const Center(
-                                    child: CircularProgressIndicator()),
-                                errorWidget: (context, url, error) =>
-                                    const Icon(Icons.error),
+                    if (post.userData!.name != null) ...[
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              backgroundColor: const Color(0XFFCCC9C9),
+                              radius: size.width * 0.07,
+                              child: ClipOval(
+                                child: CachedNetworkImage(
+                                  imageUrl: post.userData!.imagePath ?? '',
+                                  height: 97,
+                                  width: 105,
+                                  fit: BoxFit.fill,
+                                  placeholder: (context, url) => const Center(
+                                      child: CircularProgressIndicator()),
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(Icons.error),
+                                ),
                               ),
                             ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      post.userData!.name!,
+                                      style: textStyleW700(size.width * 0.043,
+                                          AppColors.blackText),
+                                    ),
+                                    const SizedBox(
+                                      width: 07,
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  postTimeFormatter
+                                      .formatPostTime(post.createdate ?? ''),
+                                  style: textStyleW400(size.width * 0.035,
+                                      AppColors.blackText.withOpacity(0.5)),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: size.height * 0.012,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                        ),
+                        child: Container(
+                          height: size.height * 0.28,
+                          width: size.width,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
                           ),
-                          const SizedBox(
-                            width: 10,
+                          child: CachedNetworkImage(
+                            imageUrl: post.imageUrl ?? '',
+                            height: 97,
+                            width: 105,
+                            fit: BoxFit.fill,
+                            placeholder: (context, url) => const Center(
+                                child: CircularProgressIndicator()),
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
+                        ),
+                      ),
+                      SizedBox(
+                        height: size.height * 0.01,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                        ),
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child:
+                              _buildHtmlContent(post.description ?? '', size),
+                        ),
+                      ),
+                      SizedBox(
+                        height: size.height * 0.01,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                        ),
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            '${post.category} | ${post.subcategory}',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.blackText,
+                              fontSize: size.width * 0.035,
+                            ),
+                          ),
+                        ),
+                      ),
+                      5.sbh,
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          color: AppColors.white,
+                          border: const Border(
+                              bottom: BorderSide(color: Colors.grey)),
+                        ),
+                      ),
+                      5.sbh,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  'Company',
+                                  style: textStyleW400(
+                                      size.width * 0.035, AppColors.grey),
+                                ),
+                                const SizedBox(
+                                  width: 07,
+                                ),
+                              ],
+                            ),
+                            Text(
+                              "Vicodin",
+                              style: textStyleW400(
+                                  size.width * 0.035, AppColors.blackText),
+                            ),
+                          ],
+                        ),
+                      ),
+                      5.sbh,
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          color: AppColors.white,
+                          border: const Border(
+                              bottom: BorderSide(color: Colors.grey)),
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    post.userData!.name ?? '',
-                                    style: textStyleW700(size.width * 0.043,
-                                        AppColors.blackText),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        'Phone',
+                                        style: textStyleW400(
+                                            size.width * 0.035, AppColors.grey),
+                                      ),
+                                      const SizedBox(
+                                        width: 07,
+                                      ),
+                                    ],
                                   ),
-                                  const SizedBox(
-                                    width: 07,
+                                  Text(
+                                    '${post.userData!.countrycode1} - ${post.userData!.mobile}',
+                                    style: textStyleW400(size.width * 0.035,
+                                        AppColors.blackText),
                                   ),
                                 ],
                               ),
-                              Text(
-                                postTimeFormatter
-                                    .formatPostTime(post.createdate ?? ''),
-                                style: textStyleW400(size.width * 0.035,
-                                    AppColors.blackText.withOpacity(0.5)),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: size.height * 0.012,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                      ),
-                      child: Container(
-                        height: size.height * 0.28,
-                        width: size.width,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: CachedNetworkImage(
-                          imageUrl: post.imageUrl ?? '',
-                          height: 97,
-                          width: 105,
-                          fit: BoxFit.fill,
-                          placeholder: (context, url) =>
-                              const Center(child: CircularProgressIndicator()),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: size.height * 0.01,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                      ),
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: _buildHtmlContent(post.description ?? '', size),
-                      ),
-                    ),
-                    SizedBox(
-                      height: size.height * 0.01,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                      ),
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          '${post.category} | ${post.subcategory}',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            color: AppColors.blackText,
-                            fontSize: size.width * 0.035,
+                            ),
                           ),
-                        ),
-                      ),
-                    ),
-                    5.sbh,
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        color: AppColors.white,
-                        border: const Border(
-                            bottom: BorderSide(color: Colors.grey)),
-                      ),
-                    ),
-                    5.sbh,
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                'Company',
-                                style: textStyleW400(
-                                    size.width * 0.035, AppColors.grey),
-                              ),
-                              const SizedBox(
-                                width: 07,
-                              ),
-                            ],
-                          ),
-                          Text(
-                            "Vicodin",
-                            style: textStyleW400(
-                                size.width * 0.035, AppColors.blackText),
-                          ),
-                        ],
-                      ),
-                    ),
-                    5.sbh,
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        color: AppColors.white,
-                        border: const Border(
-                            bottom: BorderSide(color: Colors.grey)),
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Padding(
+                          Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 16,
                             ),
@@ -265,7 +295,7 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                                 Row(
                                   children: [
                                     Text(
-                                      'Phone',
+                                      'Email',
                                       style: textStyleW400(
                                           size.width * 0.035, AppColors.grey),
                                     ),
@@ -275,86 +305,59 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                                   ],
                                 ),
                                 Text(
-                                  '${post.userData!.countrycode1} - ${post.userData!.mobile}',
+                                  '${post.userData!.email}',
                                   style: textStyleW400(
                                       size.width * 0.035, AppColors.blackText),
                                 ),
                               ],
                             ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    'Email',
-                                    style: textStyleW400(
-                                        size.width * 0.035, AppColors.grey),
-                                  ),
-                                  const SizedBox(
-                                    width: 07,
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                '${post.userData!.email}',
-                                style: textStyleW400(
-                                    size.width * 0.035, AppColors.blackText),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    5.sbh,
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        color: AppColors.white,
-                        border: const Border(
-                            bottom: BorderSide(color: Colors.grey)),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                'Website',
-                                style: textStyleW400(
-                                    size.width * 0.035, AppColors.grey),
-                              ),
-                            ],
-                          ),
-                          LinkText(
-                            text: post.website ?? '',
-                            style: textStyleW400(
-                              size.width * 0.035,
-                              AppColors.blackText.withOpacity(0.5),
-                            ),
-                            linkStyle: const TextStyle(
-                              color: Colors.blue,
-                              decoration: TextDecoration.underline,
-                            ),
-                          ),
                         ],
                       ),
-                    ),
-                    5.sbh,
-                    SizedBox(
-                      height: size.height * 0.017,
-                    ),
+                      5.sbh,
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          color: AppColors.white,
+                          border: const Border(
+                              bottom: BorderSide(color: Colors.grey)),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  'Website',
+                                  style: textStyleW400(
+                                      size.width * 0.035, AppColors.grey),
+                                ),
+                              ],
+                            ),
+                            LinkText(
+                              text: post.website ?? '',
+                              style: textStyleW400(
+                                size.width * 0.035,
+                                AppColors.blackText.withOpacity(0.5),
+                              ),
+                              linkStyle: const TextStyle(
+                                color: Colors.blue,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      5.sbh,
+                      SizedBox(
+                        height: size.height * 0.017,
+                      ),
+                    ],
                   ],
                 ),
               ),

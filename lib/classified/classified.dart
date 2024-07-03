@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/classified/classified_card.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/classified/custom_filter_screen.dart';
@@ -11,6 +12,7 @@ import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
 import 'package:mlmdiary/widgets/custon_test_app_bar.dart';
+import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:mlmdiary/widgets/remimaining_count_controller./remaining_count.dart';
 
 class ClassifiedScreen extends StatefulWidget {
@@ -99,7 +101,13 @@ class _ClassifiedScreenState extends State<ClassifiedScreen> {
                 child: Obx(() {
                   if (controller.isLoading.value &&
                       controller.classifiedList.isEmpty) {
-                    return const Center(child: CircularProgressIndicator());
+                    return Center(
+                      child: CustomLottieAnimation(
+                        child: Lottie.asset(
+                          Assets.lottieLottie,
+                        ),
+                      ),
+                    );
                   }
 
                   if (controller.classifiedList.isEmpty) {
@@ -124,7 +132,12 @@ class _ClassifiedScreenState extends State<ClassifiedScreen> {
                         (controller.isLoading.value ? 1 : 0),
                     itemBuilder: (context, index) {
                       if (index == controller.classifiedList.length) {
-                        return const Center(child: CircularProgressIndicator());
+                        return Center(
+                            child: CustomLottieAnimation(
+                          child: Lottie.asset(
+                            Assets.lottieLottie,
+                          ),
+                        ));
                       }
 
                       final post = controller.classifiedList[index];

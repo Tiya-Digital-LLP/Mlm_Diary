@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/home/home/controller/homescreen_controller.dart';
@@ -36,6 +38,7 @@ class CompanyHomeCard extends StatefulWidget {
   final bool likedbyuser;
   final int companyId;
   final int commentcount;
+  final int likedCount;
 
   final String userImage;
 
@@ -63,6 +66,7 @@ class CompanyHomeCard extends StatefulWidget {
     required this.likedbyuser,
     required this.companyId,
     required this.commentcount,
+    required this.likedCount,
   });
 
   @override
@@ -71,8 +75,8 @@ class CompanyHomeCard extends StatefulWidget {
 
 class _CompanieFaviouriteCardState extends State<CompanyHomeCard> {
   late PostTimeFormatter postTimeFormatter;
-  late bool isLiked;
-  late int likeCount;
+  late RxBool isLiked;
+  late RxInt likeCount;
 
   late bool isBookmarked;
 
@@ -80,25 +84,7 @@ class _CompanieFaviouriteCardState extends State<CompanyHomeCard> {
   void initState() {
     super.initState();
     postTimeFormatter = PostTimeFormatter();
-    isLiked = widget.controller.isItemLiked(
-      widget.type,
-      widget.bookmarkId,
-      widget.manageBlogController,
-      widget.manageNewsController,
-      widget.clasifiedController,
-      widget.companyController,
-      widget.questionAnswerController,
-      widget.editpostController,
-    );
-    likeCount = widget.controller.getItemLikes(
-        widget.type,
-        widget.bookmarkId,
-        widget.manageBlogController,
-        widget.manageNewsController,
-        widget.clasifiedController,
-        widget.companyController,
-        widget.questionAnswerController,
-        widget.editpostController);
+    initializeLikes();
 
     isBookmarked = widget.controller.isItemBookmark(
       widget.type,
@@ -113,21 +99,26 @@ class _CompanieFaviouriteCardState extends State<CompanyHomeCard> {
     );
   }
 
-  void toggleLike() {
-    setState(() {
-      isLiked = !isLiked;
-      widget.controller.toggleLike(
-        widget.type,
-        widget.bookmarkId,
-        context,
-        widget.manageBlogController,
-        widget.manageNewsController,
-        widget.clasifiedController,
-        widget.companyController,
-        widget.questionAnswerController,
-        widget.editpostController,
-      );
-    });
+  void initializeLikes() {
+    isLiked = RxBool(widget.likedbyuser);
+    likeCount = RxInt(widget.likedCount);
+  }
+
+  void toggleLike() async {
+    bool newLikedValue = !isLiked.value;
+    isLiked.value = newLikedValue;
+    likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
+    widget.controller.toggleLike(
+      widget.type,
+      widget.bookmarkId,
+      context,
+      widget.manageBlogController,
+      widget.manageNewsController,
+      widget.clasifiedController,
+      widget.companyController,
+      widget.questionAnswerController,
+      widget.editpostController,
+    );
   }
 
   void togleBookmark() {
@@ -247,26 +238,36 @@ class _CompanieFaviouriteCardState extends State<CompanyHomeCard> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      GestureDetector(
-                        onTap: toggleLike,
-                        child: Icon(
-                          widget.likedbyuser
-                              ? Icons.thumb_up
-                              : Icons.thumb_up_off_alt,
-                          color: widget.likedbyuser
-                              ? AppColors.primaryColor
-                              : AppColors.blackText,
+                  Obx(
+                    () => Row(
+                      children: [
+                        SizedBox(
+                          height: size.height * 0.028,
+                          width: size.height * 0.028,
+                          child: InkWell(
+                            onTap: toggleLike,
+                            child: Icon(
+                              isLiked.value
+                                  ? Icons.thumb_up_off_alt_sharp
+                                  : Icons.thumb_up_off_alt_outlined,
+                              color:
+                                  isLiked.value ? AppColors.primaryColor : null,
+                            ),
+                          ),
                         ),
-                      ),
-                      8.sbw,
-                      Text(
-                        '$likeCount',
-                        style: textStyleW600(
-                            size.width * 0.038, AppColors.blackText),
-                      ),
-                    ],
+                        8.sbw,
+                        likeCount.value == 0
+                            ? const SizedBox.shrink()
+                            : InkWell(
+                                onTap: () {},
+                                child: Text(
+                                  '${likeCount.value}',
+                                  style: textStyleW600(
+                                      size.width * 0.038, AppColors.blackText),
+                                ),
+                              ),
+                      ],
+                    ),
                   ),
                   Row(
                     children: [

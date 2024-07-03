@@ -1,7 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/home/home/controller/homescreen_controller.dart';
@@ -35,10 +35,9 @@ class BlogHomeCard extends StatefulWidget {
   final QuestionAnswerController questionAnswerController;
   final bool likedbyuser;
   final int commentcount;
-
   final CompanyController companyController;
-
   final HomeController controller;
+  final int likedCount;
 
   const BlogHomeCard({
     super.key,
@@ -61,6 +60,7 @@ class BlogHomeCard extends StatefulWidget {
     required this.questionAnswerController,
     required this.likedbyuser,
     required this.commentcount,
+    required this.likedCount,
   });
 
   @override
@@ -69,35 +69,15 @@ class BlogHomeCard extends StatefulWidget {
 
 class _FavouritrCardState extends State<BlogHomeCard> {
   late PostTimeFormatter postTimeFormatter;
-  late bool isLiked;
-  late int likeCount;
-
+  late RxBool isLiked;
+  late RxInt likeCount;
   late bool isBookmarked;
 
   @override
   void initState() {
     super.initState();
     postTimeFormatter = PostTimeFormatter();
-    isLiked = widget.controller.isItemLiked(
-      widget.type,
-      widget.bookmarkId,
-      widget.manageBlogController,
-      widget.manageNewsController,
-      widget.clasifiedController,
-      widget.companyController,
-      widget.questionAnswerController,
-      widget.editpostController,
-    );
-    likeCount = widget.controller.getItemLikes(
-        widget.type,
-        widget.bookmarkId,
-        widget.manageBlogController,
-        widget.manageNewsController,
-        widget.clasifiedController,
-        widget.companyController,
-        widget.questionAnswerController,
-        widget.editpostController);
-
+    initializeLikes();
     isBookmarked = widget.controller.isItemBookmark(
       widget.type,
       widget.bookmarkId,
@@ -111,24 +91,29 @@ class _FavouritrCardState extends State<BlogHomeCard> {
     );
   }
 
-  void toggleLike() {
-    setState(() {
-      isLiked = !isLiked;
-      widget.controller.toggleLike(
-        widget.type,
-        widget.bookmarkId,
-        context,
-        widget.manageBlogController,
-        widget.manageNewsController,
-        widget.clasifiedController,
-        widget.companyController,
-        widget.questionAnswerController,
-        widget.editpostController,
-      );
-    });
+  void initializeLikes() {
+    isLiked = RxBool(widget.likedbyuser);
+    likeCount = RxInt(widget.likedCount);
   }
 
-  void togleBookmark() {
+  void toggleLike() async {
+    bool newLikedValue = !isLiked.value;
+    isLiked.value = newLikedValue;
+    likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
+    widget.controller.toggleLike(
+      widget.type,
+      widget.bookmarkId,
+      context,
+      widget.manageBlogController,
+      widget.manageNewsController,
+      widget.clasifiedController,
+      widget.companyController,
+      widget.questionAnswerController,
+      widget.editpostController,
+    );
+  }
+
+  void toggleBookmark() {
     setState(() {
       isBookmarked = !isBookmarked;
       widget.controller.toggleBookmark(
@@ -149,7 +134,6 @@ class _FavouritrCardState extends State<BlogHomeCard> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
@@ -162,18 +146,15 @@ class _FavouritrCardState extends State<BlogHomeCard> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(100),
-                  child: CachedNetworkImage(
-                    imageUrl: widget.userImage,
-                    height: 60,
-                    width: 60,
-                    fit: BoxFit.fill,
-                    placeholder: (context, url) =>
-                        const CircularProgressIndicator(),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
-                  ),
+                CircleAvatar(
+                  backgroundImage: widget.userImage.isNotEmpty &&
+                          Uri.tryParse(widget.userImage)?.hasAbsolutePath ==
+                              true
+                      ? NetworkImage(widget.userImage)
+                      : null,
+                  child: widget.userImage.isEmpty
+                      ? Image.asset(Assets.imagesIcon)
+                      : null,
                 ),
                 10.sbw,
                 Expanded(
@@ -181,15 +162,19 @@ class _FavouritrCardState extends State<BlogHomeCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.userName,
+                        widget.userName.isNotEmpty
+                            ? widget.userName.toString()
+                            : 'N/A',
                         style: textStyleW700(
-                            size.width * 0.038, AppColors.blackText),
+                          size.width * 0.038,
+                          AppColors.blackText,
+                        ),
                       ),
                       Text(
                         postTimeFormatter.formatPostTime(widget.dateTime),
                         style: textStyleW400(size.width * 0.035,
                             AppColors.blackText.withOpacity(0.8)),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -206,9 +191,7 @@ class _FavouritrCardState extends State<BlogHomeCard> {
                         child: Text(
                           widget.type,
                           style: textStyleW700(
-                            size.width * 0.026,
-                            AppColors.white,
-                          ),
+                              size.width * 0.026, AppColors.white),
                         ),
                       ),
                     ),
@@ -231,56 +214,64 @@ class _FavouritrCardState extends State<BlogHomeCard> {
                 },
               ),
             ),
-            SizedBox(
-              height: size.height * 0.26,
-              width: size.width,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12.0),
-                child: CachedNetworkImage(
-                  imageUrl: widget.postImage,
-                  height: 100.0,
-                  width: 60.0,
+            if (widget.postImage.isNotEmpty &&
+                Uri.tryParse(widget.postImage)?.hasAbsolutePath == true)
+              Container(
+                height: size.height * 0.28,
+                width: size.width,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Image.network(
+                  widget.postImage,
                   fit: BoxFit.fill,
-                  placeholder: (context, url) =>
-                      const CircularProgressIndicator(),
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                  errorBuilder: (context, error, stackTrace) {
+                    return const SizedBox();
+                  },
                 ),
               ),
-            ),
             10.sbh,
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      GestureDetector(
-                        onTap: toggleLike,
-                        child: Icon(
-                          widget.likedbyuser
-                              ? Icons.thumb_up
-                              : Icons.thumb_up_off_alt,
-                          color: widget.likedbyuser
-                              ? AppColors.primaryColor
-                              : AppColors.blackText,
+                  Obx(
+                    () => Row(
+                      children: [
+                        SizedBox(
+                          height: size.height * 0.028,
+                          width: size.height * 0.028,
+                          child: InkWell(
+                            onTap: toggleLike,
+                            child: Icon(
+                              isLiked.value
+                                  ? Icons.thumb_up_off_alt_sharp
+                                  : Icons.thumb_up_off_alt_outlined,
+                              color:
+                                  isLiked.value ? AppColors.primaryColor : null,
+                            ),
+                          ),
                         ),
-                      ),
-                      8.sbw,
-                      Text(
-                        '$likeCount',
-                        style: textStyleW600(
-                            size.width * 0.038, AppColors.blackText),
-                      ),
-                    ],
+                        8.sbw,
+                        likeCount.value == 0
+                            ? const SizedBox.shrink()
+                            : InkWell(
+                                onTap: () {},
+                                child: Text(
+                                  '${likeCount.value}',
+                                  style: textStyleW600(
+                                      size.width * 0.038, AppColors.blackText),
+                                ),
+                              ),
+                      ],
+                    ),
                   ),
                   Row(
                     children: [
                       GestureDetector(
                         onTap: () => showFullScreenDialogBlog(
-                          context,
-                          widget.bookmarkId,
-                        ),
+                            context, widget.bookmarkId),
                         child: SizedBox(
                           height: size.height * 0.028,
                           width: size.height * 0.028,
@@ -309,9 +300,10 @@ class _FavouritrCardState extends State<BlogHomeCard> {
                       Text(
                         '${widget.viewcounts}',
                         style: TextStyle(
-                            fontFamily: "Metropolis",
-                            fontWeight: FontWeight.w600,
-                            fontSize: size.width * 0.038),
+                          fontFamily: "Metropolis",
+                          fontWeight: FontWeight.w600,
+                          fontSize: size.width * 0.038,
+                        ),
                       ),
                     ],
                   ),
@@ -321,7 +313,7 @@ class _FavouritrCardState extends State<BlogHomeCard> {
                         height: size.height * 0.028,
                         width: size.height * 0.028,
                         child: GestureDetector(
-                          onTap: togleBookmark,
+                          onTap: toggleBookmark,
                           child: SvgPicture.asset(
                             isBookmarked
                                 ? Assets.svgCheckBookmark

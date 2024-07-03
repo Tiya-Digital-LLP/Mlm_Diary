@@ -70,6 +70,7 @@ import 'package:mlmdiary/generated/get_news_list_entity.dart';
 import 'package:mlmdiary/generated/get_notification_entity.dart';
 import 'package:mlmdiary/generated/get_plan_list_entity.dart';
 import 'package:mlmdiary/generated/get_plan_with_selected_entity.dart';
+import 'package:mlmdiary/generated/get_post_entity.dart';
 import 'package:mlmdiary/generated/get_question_list_entity.dart';
 import 'package:mlmdiary/generated/get_sub_category_entity.dart';
 import 'package:mlmdiary/generated/get_tutorial_video_entity.dart';
@@ -768,6 +769,18 @@ class JsonConvert {
       return data.map<GetPlanWithSelectedPlan>((Map<String, dynamic> e) =>
           GetPlanWithSelectedPlan.fromJson(e)).toList() as M;
     }
+    if (<GetPostEntity>[] is M) {
+      return data.map<GetPostEntity>((Map<String, dynamic> e) =>
+          GetPostEntity.fromJson(e)).toList() as M;
+    }
+    if (<GetPostData>[] is M) {
+      return data.map<GetPostData>((Map<String, dynamic> e) =>
+          GetPostData.fromJson(e)).toList() as M;
+    }
+    if (<GetPostDataUserData>[] is M) {
+      return data.map<GetPostDataUserData>((Map<String, dynamic> e) =>
+          GetPostDataUserData.fromJson(e)).toList() as M;
+    }
     if (<GetQuestionListEntity>[] is M) {
       return data.map<GetQuestionListEntity>((Map<String, dynamic> e) =>
           GetQuestionListEntity.fromJson(e)).toList() as M;
@@ -1257,6 +1270,9 @@ class JsonConvertClassCollection {
     (GetPlanListPlan).toString(): GetPlanListPlan.fromJson,
     (GetPlanWithSelectedEntity).toString(): GetPlanWithSelectedEntity.fromJson,
     (GetPlanWithSelectedPlan).toString(): GetPlanWithSelectedPlan.fromJson,
+    (GetPostEntity).toString(): GetPostEntity.fromJson,
+    (GetPostData).toString(): GetPostData.fromJson,
+    (GetPostDataUserData).toString(): GetPostDataUserData.fromJson,
     (GetQuestionListEntity).toString(): GetQuestionListEntity.fromJson,
     (GetQuestionListQuestions).toString(): GetQuestionListQuestions.fromJson,
     (GetQuestionListQuestionsUserData)

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -22,7 +23,7 @@ class _MlmnewsState extends State<ManageNews> {
   @override
   void initState() {
     super.initState();
-    _refreshData();
+    controller.fetchMyNews();
   }
 
   void deletePost(int index) async {
@@ -49,6 +50,10 @@ class _MlmnewsState extends State<ManageNews> {
         child: Container(
           color: AppColors.background,
           child: Obx(() {
+            if (kDebugMode) {
+              print('isLoading: ${controller.isLoading.value}');
+              print('myNewsList: ${controller.myNewsList.length}');
+            }
             if (controller.isLoading.value && controller.myNewsList.isEmpty) {
               return const Center(child: CircularProgressIndicator());
             }

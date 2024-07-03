@@ -77,6 +77,7 @@ class _FavouritrCardState extends State<DatabaseFavouriteCard> {
       widget.companyController,
       widget.editpostController,
       widget.questionAnswerController,
+      widget.editpostController,
     );
   }
 
@@ -93,6 +94,7 @@ class _FavouritrCardState extends State<DatabaseFavouriteCard> {
         widget.companyController,
         widget.editpostController,
         widget.questionAnswerController,
+        widget.editpostController,
       );
     });
   }
