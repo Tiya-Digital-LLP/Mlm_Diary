@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/news_bottomsheet_content.dart';
@@ -11,6 +12,7 @@ import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
 import 'package:mlmdiary/widgets/custon_test_app_bar.dart';
+import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:mlmdiary/widgets/remimaining_count_controller./remaining_count.dart';
 
 class MlmNews extends StatefulWidget {
@@ -104,7 +106,12 @@ class _MlmNewsScreenState extends State<MlmNews> {
                 child: Obx(() {
                   if (controller.isLoading.value &&
                       controller.newsList.isEmpty) {
-                    return const Center(child: CircularProgressIndicator());
+                    return Center(
+                        child: CustomLottieAnimation(
+                      child: Lottie.asset(
+                        Assets.lottieLottie,
+                      ),
+                    ));
                   }
 
                   if (controller.newsList.isEmpty) {
@@ -129,7 +136,12 @@ class _MlmNewsScreenState extends State<MlmNews> {
                         (controller.isLoading.value ? 1 : 0),
                     itemBuilder: (context, index) {
                       if (index == controller.newsList.length) {
-                        return const Center(child: CircularProgressIndicator());
+                        return Center(
+                            child: CustomLottieAnimation(
+                          child: Lottie.asset(
+                            Assets.lottieLottie,
+                          ),
+                        ));
                       }
 
                       final post = controller.newsList[index];

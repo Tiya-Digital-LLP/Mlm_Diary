@@ -8,7 +8,6 @@ import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/blog_liked_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/custom_blog_comment.dart';
-import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -58,14 +57,6 @@ class _BlogCardState extends State<BlogCard> {
   late RxInt bookmarkCount;
 
   late PostTimeFormatter postTimeFormatter;
-
-  bool showCommentBox = false;
-
-  void toggleCommentBox() {
-    setState(() {
-      showCommentBox = !showCommentBox;
-    });
-  }
 
   @override
   void initState() {
@@ -118,22 +109,16 @@ class _BlogCardState extends State<BlogCard> {
         child: Column(
           children: [
             InkWell(
-              onTap: () {
-                Get.toNamed(Routes.userprofilescreen);
-              },
+              onTap: () {},
               child: Row(
                 children: [
-                  ClipOval(
-                    child: CachedNetworkImage(
-                      imageUrl: widget.image,
-                      height: 60.0,
-                      width: 60.0,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) =>
-                          const CircularProgressIndicator(),
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.error),
-                    ),
+                  CircleAvatar(
+                    backgroundImage: widget.image.isNotEmpty &&
+                            Uri.tryParse(widget.image)?.hasAbsolutePath == true
+                        ? NetworkImage(widget.image)
+                        : null,
+                    child:
+                        widget.image.isEmpty ? const Icon(Icons.person) : null,
                   ),
                   const SizedBox(
                     width: 10,
@@ -187,25 +172,24 @@ class _BlogCardState extends State<BlogCard> {
             SizedBox(
               height: size.height * 0.01,
             ),
-            SizedBox(
-              height: size.height * 0.012,
-            ),
-            Container(
-              height: size.height * 0.28,
-              width: size.width,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
+            if (widget.userImage.isNotEmpty &&
+                Uri.tryParse(widget.userImage)?.hasAbsolutePath == true)
+              Container(
+                height: size.height * 0.28,
+                width: size.width,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: CachedNetworkImage(
+                  imageUrl: widget.userImage,
+                  height: 97,
+                  width: 105,
+                  fit: BoxFit.fill,
+                  placeholder: (context, url) =>
+                      const CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                ),
               ),
-              child: CachedNetworkImage(
-                imageUrl: widget.userImage,
-                height: 97,
-                width: 105,
-                fit: BoxFit.fill,
-                placeholder: (context, url) =>
-                    const CircularProgressIndicator(),
-                errorWidget: (context, url, error) => const Icon(Icons.error),
-              ),
-            ),
             SizedBox(
               height: size.height * 0.017,
             ),

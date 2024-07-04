@@ -248,17 +248,8 @@ class _FavouriteState extends State<Favourite> {
 
                       case 'video':
                         cardWidget = VideoFavouriteCard(
-                          userImage: post.userData?.imagePath ?? '',
-                          userName: post.userData?.name ?? '',
                           postTitle: post.title ?? '',
-                          postCaption: post.description ?? '',
                           postVideo: post.image ?? '',
-                          dateTime: post.bookmarkDate ?? '',
-                          viewcounts: post.pgcnt ?? 0,
-                          controller: controller,
-                          bookmarkId: post.id ?? 0,
-                          url: post.urlcomponent ?? '',
-                          type: post.type ?? '',
                         );
                         break;
                       case 'database':
@@ -363,7 +354,6 @@ class _FavouriteState extends State<Favourite> {
         if (kDebugMode) {
           print('classified');
         }
-        await clasifiedController.fetchClassifiedDetail(post.id ?? 0, context);
 
         Get.toNamed(Routes.mlmclassifieddetail, arguments: post);
         break;
@@ -403,12 +393,15 @@ class _FavouriteState extends State<Favourite> {
         if (kDebugMode) {
           print('question');
         }
-        await questionAnswerController.getAnswers(
-          1,
-          post.id ?? 0,
-        );
+
         Get.toNamed(Routes.userquestion, arguments: post);
         break;
+      case 'post':
+        if (kDebugMode) {
+          print('post');
+        }
+
+        Get.toNamed(Routes.postdetail, arguments: post);
       default:
         Get.toNamed(Routes.favouritrdetailsscreen, arguments: post);
         break;

@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
+import 'package:mlmdiary/classified/custom/add_comapany_classfied.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/plan&companyintrest/controller/intrest_controller.dart';
-import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
@@ -22,6 +23,9 @@ class PlanandCompany extends StatefulWidget {
 
 class _PlanandCompanyState extends State<PlanandCompany> {
   final IntrestController controller = Get.put(IntrestController());
+  final RxList<String> selectedCompanies = <String>[].obs;
+  final ClasifiedController clasifiedController =
+      Get.put(ClasifiedController());
 
   bool isNextStep = false;
 
@@ -277,7 +281,15 @@ class _PlanandCompanyState extends State<PlanandCompany> {
       floatingActionButton: isNextStep
           ? InkWell(
               onTap: () async {
-                Get.toNamed(Routes.addcompany);
+                final result = await Get.to(() => AddCompanyClassified(
+                      selectedCompanies: selectedCompanies,
+                    ));
+                if (result != null && result is List<String>) {
+                  selectedCompanies.clear();
+                  selectedCompanies.addAll(result);
+                  clasifiedController.companyName.value.text =
+                      selectedCompanies.join(", ");
+                }
               },
               child: Ink(
                 decoration: const BoxDecoration(

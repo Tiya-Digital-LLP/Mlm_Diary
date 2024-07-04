@@ -58,6 +58,8 @@ class GetAdminCompanyData {
 	bool? likedByUser = false;
 	@JSONField(name: "bookmarked_by_user")
 	bool? bookmarkedByUser = false;
+	String? title = '';
+	dynamic createdate;
 	@JSONField(name: "full_url")
 	String? fullUrl = '';
 

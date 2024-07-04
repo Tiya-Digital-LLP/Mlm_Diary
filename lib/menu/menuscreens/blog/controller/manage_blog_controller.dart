@@ -116,7 +116,7 @@ class ManageBlogController extends GetxController {
   }
 
   Future<void> getBlog(
-    int pag,
+    int page,
   ) async {
     isLoading(true);
 

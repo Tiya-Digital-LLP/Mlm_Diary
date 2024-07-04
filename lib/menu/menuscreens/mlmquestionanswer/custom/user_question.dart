@@ -1013,14 +1013,14 @@ class _UserQuestionState extends State<UserQuestion> {
                     ),
                   ),
                   20.sbh,
-                  // Align(
-                  //   alignment: Alignment.topLeft,
-                  //   child: Text(
-                  //     'Answer (${post.totalquestionAnswer.toString()})',
-                  //     style: textStyleW700(
-                  //         size.width * 0.038, AppColors.blackText),
-                  //   ),
-                  // ),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      'Answer',
+                      style: textStyleW700(
+                          size.width * 0.038, AppColors.blackText),
+                    ),
+                  ),
                   10.sbh,
                   Obx(() {
                     if (controller.isLoading.value &&

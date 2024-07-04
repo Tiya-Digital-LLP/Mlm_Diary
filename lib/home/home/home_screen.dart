@@ -271,6 +271,26 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                     ],
                                   ),
+                                10.sbw,
+                                InkWell(
+                                  onTap: () {
+                                    Get.toNamed(Routes.databasescreen);
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        'view all',
+                                        style: textStyleW700(size.width * 0.036,
+                                            AppColors.blackText),
+                                      ),
+                                      const Icon(
+                                        Icons.arrow_right,
+                                        size: 30,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                20.sbw,
                               ],
                             ),
                           ),
@@ -318,6 +338,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               );
                             }
                             final post = controller.homeList[index];
+                            String location =
+                                '${post.city ?? ''}, ${post.state ?? ''}, ${post.country ?? ''}';
                             Widget cardWidget;
                             switch (post.type) {
                               case 'classified':
@@ -341,9 +363,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                   questionAnswerController:
                                       questionAnswerController,
                                   likedbyuser: post.likedByUser ?? false,
+                                  bookmarkedbyuser:
+                                      post.bookmarkByUser ?? false,
                                   likecount: post.totallike ?? 0,
                                   classifiedId: post.id ?? 0,
                                   commentcount: post.totalcomment ?? 0,
+                                  isPopular: post.popular == 'Y',
                                 );
                                 break;
                               case 'company':
@@ -370,6 +395,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   likedCount: post.totallike ?? 0,
                                   companyId: post.id ?? 0,
                                   commentcount: post.totalcomment ?? 0,
+                                  bookmarkedbyuser:
+                                      post.bookmarkByUser ?? false,
                                 );
                                 break;
                               case 'blog':
@@ -395,6 +422,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   likedbyuser: post.likedByUser ?? false,
                                   likedCount: post.totallike ?? 0,
                                   commentcount: post.totalcomment ?? 0,
+                                  bookmarkedbyuser:
+                                      post.bookmarkByUser ?? false,
                                 );
                                 break;
                               case 'news':
@@ -420,21 +449,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                   likedbyuser: post.likedByUser ?? false,
                                   commentcount: post.totalcomment ?? 0,
                                   likedCount: post.totallike ?? 0,
+                                  bookmarkedbyuser:
+                                      post.bookmarkByUser ?? false,
                                 );
                                 break;
                               case 'video':
                                 cardWidget = VideoHomeCard(
-                                  userImage: post.userData?.imagePath ?? '',
-                                  userName: post.userData?.name ?? '',
                                   postTitle: post.title ?? '',
-                                  postCaption: post.description ?? '',
                                   postVideo: post.image ?? '',
-                                  dateTime: post.createdate ?? '',
-                                  viewcounts: post.pgcnt ?? 0,
-                                  controller: controller,
-                                  bookmarkId: post.id ?? 0,
-                                  url: post.urlcomponent ?? '',
-                                  type: post.type ?? '',
                                 );
                                 break;
                               case 'database':
@@ -442,7 +464,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   userImage: post.userData?.imagePath ?? '',
                                   userName: post.title ?? '',
                                   postTitle: post.title ?? '',
-                                  postLocation: post.city ?? '',
+                                  postLocation: location,
                                   immlm: post.immlm ?? '',
                                   plan: post.plan ?? '',
                                   postImage: post.imageUrl ?? '',
@@ -481,6 +503,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       questionAnswerController,
                                   likedbyuser: post.likedByUser ?? false,
                                   likedCount: post.totallike ?? 0,
+                                  bookmarkedbyuser:
+                                      post.bookmarkByUser ?? false,
                                 );
                                 break;
                               case 'post':
@@ -507,6 +531,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   likecount: post.totallike ?? 0,
                                   commentcount: post.totalcomment ?? 0,
                                   likedCount: post.totallike ?? 0,
+                                  bookmarkedbyuser:
+                                      post.bookmarkByUser ?? false,
                                 );
                                 break;
                               default:
@@ -530,97 +556,90 @@ class _HomeScreenState extends State<HomeScreen> {
                     }),
                   ],
                 ),
-                Positioned(
-                  bottom: 16.0,
-                  right: 16.0,
-                  child: PopupMenuButton(
-                    padding: const EdgeInsets.only(top: 260),
-                    elevation: 9,
-                    color: AppColors.white,
-                    key: _popupMenuButtonKey,
-                    itemBuilder: (_) => <PopupMenuEntry>[
-                      PopupMenuItem(
-                        value: 1,
-                        onTap: () {
-                          Get.toNamed(Routes.addpost);
-                        },
-                        child: Row(
-                          children: [
-                            SvgPicture.asset(Assets.svgClipboardText),
-                            3.sbw,
-                            const Text('Add Post'),
-                          ],
-                        ),
-                      ),
-                      PopupMenuItem(
-                        value: 2,
-                        onTap: () async {
-                          var controller =
-                              CustomFloatingActionButtonController(context);
-                          String selectedType = 'classified';
-                          await controller.handleTap(selectedType);
-                        },
-                        child: Row(
-                          children: [
-                            SvgPicture.asset(Assets.svgGrid3),
-                            3.sbw,
-                            const Text('Add Classified'),
-                          ],
-                        ),
-                      ),
-                      PopupMenuItem(
-                        value: 3,
-                        onTap: () {
-                          Get.toNamed(Routes.addquestionanswer);
-                        },
-                        child: Row(
-                          children: [
-                            SvgPicture.asset(Assets.svgMessageQuestion),
-                            3.sbw,
-                            const Text('Add Question'),
-                          ],
-                        ),
-                      ),
-                      PopupMenuItem(
-                        value: 4,
-                        onTap: () async {
-                          var controller =
-                              CustomFloatingActionButtonController(context);
-                          String selectedType = 'blog';
-                          await controller.handleTap(selectedType);
-                        },
-                        child: Row(
-                          children: [
-                            SvgPicture.asset(Assets.svgDocumentText),
-                            3.sbw,
-                            const Text('Add Blog'),
-                          ],
-                        ),
-                      ),
-                      PopupMenuItem(
-                        value: 5,
-                        onTap: () async {
-                          var controller =
-                              CustomFloatingActionButtonController(context);
-                          String selectedType = 'news';
-                          await controller.handleTap(selectedType);
-                        },
-                        child: Row(
-                          children: [
-                            SvgPicture.asset(Assets.svgClipboardText),
-                            3.sbw,
-                            const Text('Add News'),
-                          ],
-                        ),
-                      ),
-                    ],
-                    icon: SvgPicture.asset(Assets.svgPlusIcon),
-                  ),
-                ),
               ],
             ),
           ),
         ),
+      ),
+      floatingActionButton: PopupMenuButton(
+        padding: const EdgeInsets.only(top: 260),
+        elevation: 9,
+        color: AppColors.white,
+        key: _popupMenuButtonKey,
+        itemBuilder: (_) => <PopupMenuEntry>[
+          PopupMenuItem(
+            value: 1,
+            onTap: () {
+              Get.toNamed(Routes.addpost);
+            },
+            child: Row(
+              children: [
+                SvgPicture.asset(Assets.svgClipboardText),
+                3.sbw,
+                const Text('Add Post'),
+              ],
+            ),
+          ),
+          PopupMenuItem(
+            value: 2,
+            onTap: () async {
+              var controller = CustomFloatingActionButtonController(context);
+              String selectedType = 'classified';
+              await controller.handleTap(selectedType);
+            },
+            child: Row(
+              children: [
+                SvgPicture.asset(Assets.svgGrid3),
+                3.sbw,
+                const Text('Add Classified'),
+              ],
+            ),
+          ),
+          PopupMenuItem(
+            value: 3,
+            onTap: () {
+              Get.toNamed(Routes.addquestionanswer);
+            },
+            child: Row(
+              children: [
+                SvgPicture.asset(Assets.svgMessageQuestion),
+                3.sbw,
+                const Text('Add Question'),
+              ],
+            ),
+          ),
+          PopupMenuItem(
+            value: 4,
+            onTap: () async {
+              var controller = CustomFloatingActionButtonController(context);
+              String selectedType = 'blog';
+              await controller.handleTap(selectedType);
+            },
+            child: Row(
+              children: [
+                SvgPicture.asset(Assets.svgDocumentText),
+                3.sbw,
+                const Text('Add Blog'),
+              ],
+            ),
+          ),
+          PopupMenuItem(
+            value: 5,
+            onTap: () async {
+              var controller = CustomFloatingActionButtonController(context);
+              String selectedType = 'news';
+              await controller.handleTap(selectedType);
+            },
+            child: Row(
+              children: [
+                SvgPicture.asset(Assets.svgClipboardText),
+                3.sbw,
+                const Text('Add News'),
+              ],
+            ),
+          ),
+        ],
+        icon: SvgPicture.asset(Assets.svgPlusIcon),
       ),
     );
   }
@@ -631,7 +650,6 @@ class _HomeScreenState extends State<HomeScreen> {
         if (kDebugMode) {
           print('classified');
         }
-        await clasifiedController.fetchClassifiedDetail(post.id ?? 0, context);
 
         Get.toNamed(Routes.mlmclassifieddetail, arguments: post);
         break;
@@ -671,10 +689,7 @@ class _HomeScreenState extends State<HomeScreen> {
         if (kDebugMode) {
           print('question');
         }
-        await questionAnswerController.getAnswers(
-          1,
-          post.id ?? 0,
-        );
+
         Get.toNamed(Routes.userquestion, arguments: post);
         break;
       case 'post':
@@ -685,7 +700,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Get.toNamed(Routes.postdetail, arguments: post);
         break;
       default:
-        Get.toNamed(Routes.favouritrdetailsscreen, arguments: post);
+        Get.toNamed(Routes.mainscreen, arguments: post);
         break;
     }
   }

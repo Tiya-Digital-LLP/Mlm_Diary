@@ -40,6 +40,7 @@ class QuestionHomeCard extends StatefulWidget {
 
   final HomeController controller;
   final int likedCount;
+  final bool bookmarkedbyuser;
 
   const QuestionHomeCard({
     super.key,
@@ -62,6 +63,7 @@ class QuestionHomeCard extends StatefulWidget {
     required this.questionAnswerController,
     required this.likedbyuser,
     required this.likedCount,
+    required this.bookmarkedbyuser,
   });
 
   @override
@@ -73,30 +75,23 @@ class _FavouritrCardState extends State<QuestionHomeCard> {
   late RxBool isLiked;
   late RxInt likeCount;
 
-  late bool isBookmarked;
+  late RxBool isBookmarked;
 
   @override
   void initState() {
     super.initState();
     postTimeFormatter = PostTimeFormatter();
     initializeLikes();
-
-    isBookmarked = widget.controller.isItemBookmark(
-      widget.type,
-      widget.bookmarkId,
-      widget.manageBlogController,
-      widget.manageNewsController,
-      widget.clasifiedController,
-      widget.companyController,
-      widget.editpostController,
-      widget.questionAnswerController,
-      widget.editpostController,
-    );
+    initializeBookmarks();
   }
 
   void initializeLikes() {
     isLiked = RxBool(widget.likedbyuser);
     likeCount = RxInt(widget.likedCount);
+  }
+
+  void initializeBookmarks() {
+    isBookmarked = RxBool(widget.bookmarkedbyuser);
   }
 
   void toggleLike() async {
@@ -116,22 +111,22 @@ class _FavouritrCardState extends State<QuestionHomeCard> {
     );
   }
 
-  void togleBookmark() {
-    setState(() {
-      isBookmarked = !isBookmarked;
-      widget.controller.toggleBookmark(
-        widget.type,
-        widget.bookmarkId,
-        context,
-        widget.manageBlogController,
-        widget.manageNewsController,
-        widget.clasifiedController,
-        widget.companyController,
-        widget.editpostController,
-        widget.questionAnswerController,
-        widget.editpostController,
-      );
-    });
+  void toggleBookmark() async {
+    bool newBookmarkedValue = !isBookmarked.value;
+    isBookmarked.value = newBookmarkedValue;
+
+    widget.controller.toggleBookmark(
+      widget.type,
+      widget.bookmarkId,
+      context,
+      widget.manageBlogController,
+      widget.manageNewsController,
+      widget.clasifiedController,
+      widget.companyController,
+      widget.editpostController,
+      widget.questionAnswerController,
+      widget.editpostController,
+    );
   }
 
   @override
@@ -275,16 +270,18 @@ class _FavouritrCardState extends State<QuestionHomeCard> {
                   ),
                   Row(
                     children: [
-                      SizedBox(
-                        height: size.height * 0.028,
-                        width: size.height * 0.028,
-                        child: GestureDetector(
-                          onTap: togleBookmark,
-                          child: SvgPicture.asset(
-                            isBookmarked
-                                ? Assets.svgCheckBookmark
-                                : Assets.svgSavePost,
-                            height: size.height * 0.032,
+                      Obx(
+                        () => SizedBox(
+                          height: size.height * 0.028,
+                          width: size.height * 0.028,
+                          child: GestureDetector(
+                            onTap: toggleBookmark,
+                            child: SvgPicture.asset(
+                              isBookmarked.value
+                                  ? Assets.svgCheckBookmark
+                                  : Assets.svgSavePost,
+                              height: size.height * 0.032,
+                            ),
                           ),
                         ),
                       ),

@@ -59,8 +59,6 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
   late RxInt bookmarkCount;
   late PostTimeFormatter postTimeFormatter;
 
-  bool showCommentBox = false;
-
   @override
   void initState() {
     super.initState();

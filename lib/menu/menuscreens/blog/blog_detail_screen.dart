@@ -217,42 +217,6 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                         ),
                       ),
                       5.sbh,
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  'Company',
-                                  style: textStyleW400(
-                                      size.width * 0.035, AppColors.grey),
-                                ),
-                                const SizedBox(
-                                  width: 07,
-                                ),
-                              ],
-                            ),
-                            Text(
-                              "Vicodin",
-                              style: textStyleW400(
-                                  size.width * 0.035, AppColors.blackText),
-                            ),
-                          ],
-                        ),
-                      ),
-                      5.sbh,
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(14),
-                          color: AppColors.white,
-                          border: const Border(
-                              bottom: BorderSide(color: Colors.grey)),
-                        ),
-                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

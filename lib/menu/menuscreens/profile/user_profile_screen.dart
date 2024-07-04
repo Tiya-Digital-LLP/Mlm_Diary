@@ -33,7 +33,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
   final DatabaseController databaseController = Get.put(DatabaseController());
   final MessageController messageController = Get.put(MessageController());
 
-  dynamic mlmDatabaseList;
+  dynamic post;
 
   RxBool isFollowing = false.obs;
   RxBool isBookmarked = false.obs;
@@ -45,7 +45,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
   }
 
   void _toggleFollow() async {
-    final userId = mlmDatabaseList.id ?? 0;
+    final userId = post.id ?? 0;
 
     try {
       // Fetch current follow status
@@ -74,7 +74,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
   }
 
   void _toggleBookmark() async {
-    final userId = mlmDatabaseList.id ?? 0;
+    final userId = post.id ?? 0;
 
     try {
       // Fetch current bookmark status
@@ -104,17 +104,17 @@ class _UserProfileScreenState extends State<UserProfileScreen>
   @override
   void initState() {
     super.initState();
-    mlmDatabaseList = Get.arguments;
-    if (mlmDatabaseList != null && mlmDatabaseList.id != null) {
-      databaseController.fetchUserPost(mlmDatabaseList.id!, context);
+    post = Get.arguments;
+    if (post != null && post.id != null) {
+      databaseController.fetchUserPost(post.id!, context);
     }
     _tabController = TabController(length: 2, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      controller.countViewUserProfile(mlmDatabaseList.id ?? 0, context);
-      RxBool bookmarkStatus = mlmDatabaseList.favStatus ?? false;
+      controller.countViewUserProfile(post.id ?? 0, context);
+      RxBool bookmarkStatus = post.favStatus ?? false;
       isBookmarked.value = bookmarkStatus.value;
-      bool followStatus = mlmDatabaseList.followStatus ?? false;
-      isFollowing.value = followStatus;
+      RxBool followStatus = post.followStatus ?? false;
+      isFollowing.value = followStatus.value;
     });
   }
 
@@ -170,8 +170,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(60.0),
                         child: CachedNetworkImage(
-                          imageUrl:
-                              mlmDatabaseList.imageUrl ?? Assets.imagesIcon,
+                          imageUrl: post.imageUrl ?? Assets.imagesIcon,
                           fit: BoxFit.cover,
                           height: 100,
                           width: 100,
@@ -187,24 +186,24 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            mlmDatabaseList.title ?? 'N/A',
+                            post.title ?? 'N/A',
                             style: textStyleW700(
                                 size.width * 0.045, AppColors.blackText),
                           ),
                           Text(
-                            '${mlmDatabaseList.city ?? 'N/A'}, ${mlmDatabaseList.state ?? 'N/A'}, ${mlmDatabaseList.country ?? 'N/A'}',
+                            '${post.city ?? 'N/A'}, ${post.state ?? 'N/A'}, ${post.country ?? 'N/A'}',
                             style: textStyleW500(
                               size.width * 0.035,
                               AppColors.blackText,
                             ),
                           ),
                           Text(
-                            mlmDatabaseList.company ?? 'N/A',
+                            post.company ?? 'N/A',
                             style: textStyleW500(
                                 size.width * 0.035, AppColors.blackText),
                           ),
                           Text(
-                            mlmDatabaseList.plan ?? 'N/A',
+                            post.plan ?? 'N/A',
                             style: textStyleW500(
                                 size.width * 0.035, AppColors.blackText),
                           ),
@@ -239,11 +238,11 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                         children: [
                           Column(
                             children: [
-                              Text(
-                                mlmDatabaseList.followersCount.toString(),
-                                style: textStyleW700(
-                                    size.width * 0.045, AppColors.blackText),
-                              ),
+                              // Text(
+                              //   mlmDatabaseList.followersCount.toString(),
+                              //   style: textStyleW700(
+                              //       size.width * 0.045, AppColors.blackText),
+                              // ),
                               Text(
                                 'Followers',
                                 style: textStyleW500(
@@ -254,11 +253,11 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                           20.sbw,
                           Column(
                             children: [
-                              Text(
-                                mlmDatabaseList.followingCount.toString(),
-                                style: textStyleW700(
-                                    size.width * 0.045, AppColors.blackText),
-                              ),
+                              // Text(
+                              //   mlmDatabaseList.followingCount.toString(),
+                              //   style: textStyleW700(
+                              //       size.width * 0.045, AppColors.blackText),
+                              // ),
                               Text(
                                 'Following',
                                 style: textStyleW500(
@@ -269,11 +268,11 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                           20.sbw,
                           Column(
                             children: [
-                              Text(
-                                mlmDatabaseList.views.toString(),
-                                style: textStyleW700(
-                                    size.width * 0.045, AppColors.blackText),
-                              ),
+                              // Text(
+                              //   post.views.toString(),
+                              //   style: textStyleW700(
+                              //       size.width * 0.045, AppColors.blackText),
+                              // ),
                               Text(
                                 'Profile Visits',
                                 style: textStyleW500(
@@ -297,7 +296,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                       InkWell(
                         onTap: () async {
                           Get.toNamed(Routes.messagedetailscreen,
-                              arguments: mlmDatabaseList);
+                              arguments: post);
                         },
                         child: const SocialButton(
                           icon: Assets.svgChat,
@@ -381,7 +380,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                 height: MediaQuery.of(context).size.height,
                 child: InteractiveViewer(
                   child: Image.network(
-                    '${mlmDatabaseList.imageUrl.toString()}?${DateTime.now().millisecondsSinceEpoch}',
+                    '${post.imageUrl.toString()}?${DateTime.now().millisecondsSinceEpoch}',
                     fit: BoxFit.contain,
                     width: MediaQuery.of(context).size.width,
                   ),

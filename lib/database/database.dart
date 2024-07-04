@@ -260,24 +260,24 @@ class _DatabaseState extends State<DatabaseScreen> {
                             return const Center(
                                 child: CircularProgressIndicator());
                           }
-                          final user = controller.mlmDatabaseList[index];
+                          final post = controller.mlmDatabaseList[index];
                           String location =
-                              '${user.city ?? ''}, ${user.state ?? ''}, ${user.country ?? ''}';
+                              '${post.city ?? ''}, ${post.state ?? ''}, ${post.country ?? ''}';
                           return GestureDetector(
                             onTap: () async {
                               await controller.fetchUserPost(
-                                  user.id ?? 0, context);
+                                  post.id ?? 0, context);
                               Get.toNamed(
                                 Routes.userprofilescreen,
-                                arguments: user,
+                                arguments: post,
                               );
                             },
                             child: UserCard(
-                              userImage: user.imagePath ?? '',
-                              userName: user.name ?? '',
+                              userImage: post.imagePath ?? '',
+                              userName: post.name ?? '',
                               location: location,
-                              designation: user.immlm ?? '',
-                              plan: user.plan ?? '',
+                              designation: post.immlm ?? '',
+                              plan: post.plan ?? '',
                             ),
                           );
                         }),

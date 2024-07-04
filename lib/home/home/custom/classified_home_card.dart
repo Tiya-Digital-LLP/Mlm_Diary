@@ -40,10 +40,12 @@ class ClassifiedHomeCard extends StatefulWidget {
   final bool likedbyuser;
   final int likecount;
   final int commentcount;
+  final bool bookmarkedbyuser;
 
   final CompanyController companyController;
 
   final HomeController controller;
+  final bool isPopular;
 
   const ClassifiedHomeCard({
     super.key,
@@ -68,6 +70,8 @@ class ClassifiedHomeCard extends StatefulWidget {
     required this.likecount,
     required this.classifiedId,
     required this.commentcount,
+    required this.bookmarkedbyuser,
+    required this.isPopular,
   });
 
   @override
@@ -79,25 +83,18 @@ class _FavouritrCardState extends State<ClassifiedHomeCard> {
   late RxBool isLiked;
   late RxInt likeCount;
 
-  late bool isBookmarked;
+  late RxBool isBookmarked;
 
   @override
   void initState() {
     super.initState();
     postTimeFormatter = PostTimeFormatter();
     initializeLikes();
+    initializeBookmarks();
+  }
 
-    isBookmarked = widget.controller.isItemBookmark(
-      widget.type,
-      widget.bookmarkId,
-      widget.manageBlogController,
-      widget.manageNewsController,
-      widget.clasifiedController,
-      widget.companyController,
-      widget.editpostController,
-      widget.questionAnswerController,
-      widget.editpostController,
-    );
+  void initializeBookmarks() {
+    isBookmarked = RxBool(widget.bookmarkedbyuser);
   }
 
   void initializeLikes() {
@@ -122,22 +119,22 @@ class _FavouritrCardState extends State<ClassifiedHomeCard> {
     );
   }
 
-  void togleBookmark() {
-    setState(() {
-      isBookmarked = !isBookmarked;
-      widget.controller.toggleBookmark(
-        widget.type,
-        widget.bookmarkId,
-        context,
-        widget.manageBlogController,
-        widget.manageNewsController,
-        widget.clasifiedController,
-        widget.companyController,
-        widget.editpostController,
-        widget.questionAnswerController,
-        widget.editpostController,
-      );
-    });
+  void toggleBookmark() async {
+    bool newBookmarkedValue = !isBookmarked.value;
+    isBookmarked.value = newBookmarkedValue;
+
+    widget.controller.toggleBookmark(
+      widget.type,
+      widget.bookmarkId,
+      context,
+      widget.manageBlogController,
+      widget.manageNewsController,
+      widget.clasifiedController,
+      widget.companyController,
+      widget.editpostController,
+      widget.questionAnswerController,
+      widget.editpostController,
+    );
   }
 
   @override
@@ -148,6 +145,10 @@ class _FavouritrCardState extends State<ClassifiedHomeCard> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
         color: AppColors.white,
+        border: Border.all(
+          color: widget.isPopular ? Colors.yellow : Colors.transparent,
+          width: 3.0,
+        ),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -193,17 +194,26 @@ class _FavouritrCardState extends State<ClassifiedHomeCard> {
                       width: 70,
                       height: 25,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(40),
-                        color: AppColors.primaryColor,
+                        color: widget.isPopular
+                            ? Colors.yellow
+                            : AppColors.primaryColor,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: widget.isPopular
+                              ? Colors.yellow
+                              : AppColors.primaryColor,
+                        ),
                       ),
                       child: Center(
-                        child: Text(
-                          widget.type,
-                          style: textStyleW700(
-                            size.width * 0.026,
-                            AppColors.white,
-                          ),
-                        ),
+                        child: Text(widget.type,
+                            style: TextStyle(
+                              color: widget.isPopular
+                                  ? Colors.black
+                                  : AppColors.white,
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: Assets.fontsSatoshiRegular,
+                            )),
                       ),
                     ),
                   ],
@@ -340,16 +350,18 @@ class _FavouritrCardState extends State<ClassifiedHomeCard> {
                   ),
                   Row(
                     children: [
-                      SizedBox(
-                        height: size.height * 0.028,
-                        width: size.height * 0.028,
-                        child: GestureDetector(
-                          onTap: togleBookmark,
-                          child: SvgPicture.asset(
-                            isBookmarked
-                                ? Assets.svgCheckBookmark
-                                : Assets.svgSavePost,
-                            height: size.height * 0.032,
+                      Obx(
+                        () => SizedBox(
+                          height: size.height * 0.028,
+                          width: size.height * 0.028,
+                          child: GestureDetector(
+                            onTap: toggleBookmark,
+                            child: SvgPicture.asset(
+                              isBookmarked.value
+                                  ? Assets.svgCheckBookmark
+                                  : Assets.svgSavePost,
+                              height: size.height * 0.032,
+                            ),
                           ),
                         ),
                       ),

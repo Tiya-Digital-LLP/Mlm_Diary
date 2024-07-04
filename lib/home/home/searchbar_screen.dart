@@ -185,6 +185,8 @@ class _SearchBarAppState extends State<SearchBarApp> {
                             likecount: post.totallike ?? 0,
                             classifiedId: post.id ?? 0,
                             commentcount: post.totalcomment ?? 0,
+                            bookmarkedbyuser: post.bookmarkByUser ?? false,
+                            isPopular: post.popular == 'Y',
                           );
                           break;
                         case 'company':
@@ -210,6 +212,7 @@ class _SearchBarAppState extends State<SearchBarApp> {
                             likedCount: post.totallike ?? 0,
                             companyId: post.id ?? 0,
                             commentcount: post.totalcomment ?? 0,
+                            bookmarkedbyuser: post.bookmarkByUser ?? false,
                           );
                           break;
                         case 'blog':
@@ -234,6 +237,7 @@ class _SearchBarAppState extends State<SearchBarApp> {
                             likedbyuser: post.likedByUser ?? false,
                             likedCount: post.totallike ?? 0,
                             commentcount: post.totalcomment ?? 0,
+                            bookmarkedbyuser: post.bookmarkByUser ?? false,
                           );
                           break;
                         case 'news':
@@ -258,21 +262,13 @@ class _SearchBarAppState extends State<SearchBarApp> {
                             likedbyuser: post.likedByUser ?? false,
                             likedCount: post.totallike ?? 0,
                             commentcount: post.totalcomment ?? 0,
+                            bookmarkedbyuser: post.bookmarkByUser ?? false,
                           );
                           break;
                         case 'video':
                           cardWidget = VideoHomeCard(
-                            userImage: post.userData?.imagePath ?? '',
-                            userName: post.userData?.name ?? '',
                             postTitle: post.title ?? '',
-                            postCaption: post.description ?? '',
                             postVideo: post.image ?? '',
-                            dateTime: post.createdate ?? '',
-                            viewcounts: post.pgcnt ?? 0,
-                            controller: controller,
-                            bookmarkId: post.id ?? 0,
-                            url: post.urlcomponent ?? '',
-                            type: post.type ?? '',
                           );
                           break;
                         case 'database':
@@ -317,6 +313,7 @@ class _SearchBarAppState extends State<SearchBarApp> {
                             questionAnswerController: questionAnswerController,
                             likedbyuser: post.likedByUser ?? false,
                             likedCount: post.totallike ?? 0,
+                            bookmarkedbyuser: post.bookmarkByUser ?? false,
                           );
                           break;
                         case 'post':
@@ -342,6 +339,7 @@ class _SearchBarAppState extends State<SearchBarApp> {
                             likecount: post.totallike ?? 0,
                             commentcount: post.totalcomment ?? 0,
                             likedCount: post.totallike ?? 0,
+                            bookmarkedbyuser: post.bookmarkByUser ?? false,
                           );
                           break;
                         default:
@@ -374,7 +372,6 @@ class _SearchBarAppState extends State<SearchBarApp> {
         if (kDebugMode) {
           print('classified');
         }
-        await clasifiedController.fetchClassifiedDetail(post.id ?? 0, context);
 
         Get.toNamed(Routes.mlmclassifieddetail, arguments: post);
         break;
@@ -414,10 +411,7 @@ class _SearchBarAppState extends State<SearchBarApp> {
         if (kDebugMode) {
           print('question');
         }
-        await questionAnswerController.getAnswers(
-          1,
-          post.id ?? 0,
-        );
+
         Get.toNamed(Routes.userquestion, arguments: post);
         break;
       case 'post':
@@ -428,7 +422,7 @@ class _SearchBarAppState extends State<SearchBarApp> {
         Get.toNamed(Routes.postdetail, arguments: post);
         break;
       default:
-        Get.toNamed(Routes.favouritrdetailsscreen, arguments: post);
+        Get.toNamed(Routes.mainscreen, arguments: post);
         break;
     }
   }

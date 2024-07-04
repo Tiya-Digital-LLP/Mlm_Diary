@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/question_like_list_content.dart';
@@ -20,6 +21,7 @@ class ManageQuestionCard extends StatefulWidget {
   final QuestionAnswerController controller;
   final int bookmarkCount;
   final int likedCount;
+  final int totalreply;
 
   const ManageQuestionCard({
     super.key,
@@ -32,6 +34,7 @@ class ManageQuestionCard extends StatefulWidget {
     required this.controller,
     required this.bookmarkCount,
     required this.likedCount,
+    required this.totalreply,
   });
 
   @override
@@ -174,34 +177,42 @@ class _ManageQuestionCardState extends State<ManageQuestionCard> {
                     const SizedBox(
                       width: 10,
                     ),
-                    SizedBox(
-                      height: size.height * 0.028,
-                      width: size.height * 0.028,
-                      child: GestureDetector(
-                        onTap: toggleLike,
-                        child: Icon(
-                          isLiked.value
-                              ? Icons.thumb_up_off_alt_sharp
-                              : Icons.thumb_up_off_alt_outlined,
-                          color: isLiked.value ? AppColors.primaryColor : null,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 7,
-                    ),
-                    likeCount.value == 0
-                        ? const SizedBox.shrink()
-                        : InkWell(
-                            onTap: () {
-                              showLikeList(context);
-                            },
-                            child: Text(
-                              '${likeCount.value}',
-                              style: textStyleW600(
-                                  size.width * 0.038, AppColors.blackText),
+                    Obx(
+                      () => Row(
+                        children: [
+                          SizedBox(
+                            height: size.height * 0.028,
+                            width: size.height * 0.028,
+                            child: GestureDetector(
+                              onTap: toggleLike,
+                              child: Icon(
+                                isLiked.value
+                                    ? Icons.thumb_up_off_alt_sharp
+                                    : Icons.thumb_up_off_alt_outlined,
+                                color: isLiked.value
+                                    ? AppColors.primaryColor
+                                    : null,
+                              ),
                             ),
                           ),
+                          const SizedBox(
+                            width: 7,
+                          ),
+                          likeCount.value == 0
+                              ? const SizedBox.shrink()
+                              : InkWell(
+                                  onTap: () {
+                                    showLikeList(context);
+                                  },
+                                  child: Text(
+                                    '${likeCount.value}',
+                                    style: textStyleW600(size.width * 0.038,
+                                        AppColors.blackText),
+                                  ),
+                                ),
+                        ],
+                      ),
+                    ),
                     const SizedBox(
                       width: 15,
                     ),
@@ -214,7 +225,7 @@ class _ManageQuestionCardState extends State<ManageQuestionCard> {
                       width: 7,
                     ),
                     Text(
-                      "12",
+                      widget.totalreply.toString(),
                       style: TextStyle(
                           fontFamily: "Metropolis",
                           fontWeight: FontWeight.w600,
@@ -242,16 +253,18 @@ class _ManageQuestionCardState extends State<ManageQuestionCard> {
                 ),
                 Row(
                   children: [
-                    SizedBox(
-                      height: size.height * 0.028,
-                      width: size.height * 0.028,
-                      child: GestureDetector(
-                        onTap: () => toggleBookmark(),
-                        child: Icon(
-                          isBookmarked.value
-                              ? Icons.bookmark
-                              : Icons.bookmark_border,
-                          size: size.height * 0.032,
+                    Obx(
+                      () => SizedBox(
+                        height: size.height * 0.028,
+                        width: size.height * 0.028,
+                        child: GestureDetector(
+                          onTap: () => toggleBookmark(),
+                          child: SvgPicture.asset(
+                            isBookmarked.value
+                                ? Assets.svgCheckBookmark
+                                : Assets.svgSavePost,
+                            height: size.height * 0.032,
+                          ),
                         ),
                       ),
                     ),

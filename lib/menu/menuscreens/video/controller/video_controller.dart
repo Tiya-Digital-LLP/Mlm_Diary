@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -10,6 +9,7 @@ import 'package:mlmdiary/generated/bookmark_video_entity.dart';
 import 'dart:convert';
 
 import 'package:mlmdiary/generated/get_video_list_entity.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class VideoController extends GetxController {
@@ -64,7 +64,7 @@ class VideoController extends GetxController {
   }
 
   // Bookmark
-  Future<void> videoBookmark(int videoId) async {
+  Future<void> videoBookmark(int videoId, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
 
@@ -100,37 +100,25 @@ class VideoController extends GetxController {
                 (bookmarkVideoCountMap[videoId] ?? 0) - 1;
           }
 
-          Fluttertoast.showToast(
-            msg: message!,
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+          showToastverifedborder(message!, context);
         } else {
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+          if (kDebugMode) {
+            print("Error: ${response.body}");
+          }
         }
       } else {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-        );
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
+      if (kDebugMode) {
+        print("Error: $e");
+      }
     } finally {
       isLoading(false);
     }
   }
 
-  Future<void> togglevideoBookMark(int videoId) async {
+  Future<void> togglevideoBookMark(int videoId, context) async {
     bool isBookmark = bookmarkVideoStatusMap[videoId] ?? false;
     isBookmark = !isBookmark;
     bookmarkVideoStatusMap[videoId] = isBookmark;
@@ -138,6 +126,6 @@ class VideoController extends GetxController {
         videoId, (value) => isBookmark ? value + 1 : value - 1,
         ifAbsent: () => isBookmark ? 1 : 0);
 
-    await videoBookmark(videoId);
+    await videoBookmark(videoId, context);
   }
 }

@@ -10,6 +10,8 @@ abstract class Routes {
   static const signUp = '/signUp1';
   static const signUp2 = '/signUp2';
   static const mainscreen = '/mainScreen';
+  static const databasescreen = '/databaseScreen';
+
   static const addclassified = '/addClassified';
   static const manageClassifiedplusicon = '/manageClassifiedplusicon';
   static const mlmclassifieddetail = '/mlmClassifiedDetailScreen';

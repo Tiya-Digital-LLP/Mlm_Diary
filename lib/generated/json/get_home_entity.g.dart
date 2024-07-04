@@ -59,6 +59,15 @@ GetHomeData $GetHomeDataFromJson(Map<String, dynamic> json) {
   if (company != null) {
     getHomeData.company = company;
   }
+  final String? popular = jsonConvert.convert<String>(json['popular']);
+  if (popular != null) {
+    getHomeData.popular = popular;
+  }
+  final String? premiumsdate = jsonConvert.convert<String>(
+      json['premiumsdate']);
+  if (premiumsdate != null) {
+    getHomeData.premiumsdate = premiumsdate;
+  }
   final String? category = jsonConvert.convert<String>(json['category']);
   if (category != null) {
     getHomeData.category = category;
@@ -74,6 +83,14 @@ GetHomeData $GetHomeDataFromJson(Map<String, dynamic> json) {
   final String? website = jsonConvert.convert<String>(json['website']);
   if (website != null) {
     getHomeData.website = website;
+  }
+  final dynamic email = json['email'];
+  if (email != null) {
+    getHomeData.email = email;
+  }
+  final dynamic phone = json['phone'];
+  if (phone != null) {
+    getHomeData.phone = phone;
   }
   final String? createdate = jsonConvert.convert<String>(json['createdate']);
   if (createdate != null) {
@@ -107,23 +124,23 @@ GetHomeData $GetHomeDataFromJson(Map<String, dynamic> json) {
   if (immlm != null) {
     getHomeData.immlm = immlm;
   }
-  final String? plan = jsonConvert.convert<String>(json['plan']);
+  final dynamic plan = json['plan'];
   if (plan != null) {
     getHomeData.plan = plan;
   }
-  final String? city = jsonConvert.convert<String>(json['city']);
+  final dynamic city = json['city'];
   if (city != null) {
     getHomeData.city = city;
   }
-  final String? state = jsonConvert.convert<String>(json['state']);
+  final dynamic state = json['state'];
   if (state != null) {
     getHomeData.state = state;
   }
-  final String? country = jsonConvert.convert<String>(json['country']);
+  final dynamic country = json['country'];
   if (country != null) {
     getHomeData.country = country;
   }
-  final String? posttype = jsonConvert.convert<String>(json['posttype']);
+  final dynamic posttype = json['posttype'];
   if (posttype != null) {
     getHomeData.posttype = posttype;
   }
@@ -134,6 +151,16 @@ GetHomeData $GetHomeDataFromJson(Map<String, dynamic> json) {
   final int? totalcomment = jsonConvert.convert<int>(json['totalcomment']);
   if (totalcomment != null) {
     getHomeData.totalcomment = totalcomment;
+  }
+  final int? isPopularClassified = jsonConvert.convert<int>(
+      json['is_popular_classified']);
+  if (isPopularClassified != null) {
+    getHomeData.isPopularClassified = isPopularClassified;
+  }
+  final bool? bookmarkByUser = jsonConvert.convert<bool>(
+      json['bookmark_by_user']);
+  if (bookmarkByUser != null) {
+    getHomeData.bookmarkByUser = bookmarkByUser;
   }
   final bool? likedByUser = jsonConvert.convert<bool>(json['liked_by_user']);
   if (likedByUser != null) {
@@ -157,10 +184,14 @@ Map<String, dynamic> $GetHomeDataToJson(GetHomeData entity) {
   data['title'] = entity.title;
   data['urlcomponent'] = entity.urlcomponent;
   data['company'] = entity.company;
+  data['popular'] = entity.popular;
+  data['premiumsdate'] = entity.premiumsdate;
   data['category'] = entity.category;
   data['subcategory'] = entity.subcategory;
   data['description'] = entity.description;
   data['website'] = entity.website;
+  data['email'] = entity.email;
+  data['phone'] = entity.phone;
   data['createdate'] = entity.createdate;
   data['updated_at'] = entity.updatedAt;
   data['pgcnt'] = entity.pgcnt;
@@ -176,6 +207,8 @@ Map<String, dynamic> $GetHomeDataToJson(GetHomeData entity) {
   data['posttype'] = entity.posttype;
   data['totallike'] = entity.totallike;
   data['totalcomment'] = entity.totalcomment;
+  data['is_popular_classified'] = entity.isPopularClassified;
+  data['bookmark_by_user'] = entity.bookmarkByUser;
   data['liked_by_user'] = entity.likedByUser;
   data['image_url'] = entity.imageUrl;
   data['user_data'] = entity.userData?.toJson();
@@ -188,10 +221,14 @@ extension GetHomeDataExtension on GetHomeData {
     String? title,
     String? urlcomponent,
     String? company,
+    String? popular,
+    String? premiumsdate,
     String? category,
     String? subcategory,
     String? description,
     String? website,
+    dynamic email,
+    dynamic phone,
     String? createdate,
     String? updatedAt,
     int? pgcnt,
@@ -200,13 +237,15 @@ extension GetHomeDataExtension on GetHomeData {
     String? userId,
     String? type,
     dynamic immlm,
-    String? plan,
-    String? city,
-    String? state,
-    String? country,
-    String? posttype,
+    dynamic plan,
+    dynamic city,
+    dynamic state,
+    dynamic country,
+    dynamic posttype,
     int? totallike,
     int? totalcomment,
+    int? isPopularClassified,
+    bool? bookmarkByUser,
     bool? likedByUser,
     String? imageUrl,
     GetHomeDataUserData? userData,
@@ -216,10 +255,14 @@ extension GetHomeDataExtension on GetHomeData {
       ..title = title ?? this.title
       ..urlcomponent = urlcomponent ?? this.urlcomponent
       ..company = company ?? this.company
+      ..popular = popular ?? this.popular
+      ..premiumsdate = premiumsdate ?? this.premiumsdate
       ..category = category ?? this.category
       ..subcategory = subcategory ?? this.subcategory
       ..description = description ?? this.description
       ..website = website ?? this.website
+      ..email = email ?? this.email
+      ..phone = phone ?? this.phone
       ..createdate = createdate ?? this.createdate
       ..updatedAt = updatedAt ?? this.updatedAt
       ..pgcnt = pgcnt ?? this.pgcnt
@@ -235,6 +278,8 @@ extension GetHomeDataExtension on GetHomeData {
       ..posttype = posttype ?? this.posttype
       ..totallike = totallike ?? this.totallike
       ..totalcomment = totalcomment ?? this.totalcomment
+      ..isPopularClassified = isPopularClassified ?? this.isPopularClassified
+      ..bookmarkByUser = bookmarkByUser ?? this.bookmarkByUser
       ..likedByUser = likedByUser ?? this.likedByUser
       ..imageUrl = imageUrl ?? this.imageUrl
       ..userData = userData ?? this.userData;
@@ -259,12 +304,11 @@ GetHomeDataUserData $GetHomeDataUserDataFromJson(Map<String, dynamic> json) {
   if (userimage != null) {
     getHomeDataUserData.userimage = userimage;
   }
-  final String? countrycode1 = jsonConvert.convert<String>(
-      json['countrycode1']);
+  final dynamic countrycode1 = json['countrycode1'];
   if (countrycode1 != null) {
     getHomeDataUserData.countrycode1 = countrycode1;
   }
-  final String? mobile = jsonConvert.convert<String>(json['mobile']);
+  final dynamic mobile = json['mobile'];
   if (mobile != null) {
     getHomeDataUserData.mobile = mobile;
   }
@@ -299,8 +343,8 @@ extension GetHomeDataUserDataExtension on GetHomeDataUserData {
     String? name,
     String? email,
     String? userimage,
-    String? countrycode1,
-    String? mobile,
+    dynamic countrycode1,
+    dynamic mobile,
     String? imagePath,
     String? imageThumPath,
   }) {

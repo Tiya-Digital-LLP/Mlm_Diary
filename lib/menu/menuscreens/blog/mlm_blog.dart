@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/blog_bottomsheet_content.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/blog_card.dart';
@@ -11,6 +12,7 @@ import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
 import 'package:mlmdiary/widgets/custon_test_app_bar.dart';
+import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:mlmdiary/widgets/remimaining_count_controller./remaining_count.dart';
 
 class MlmBlog extends StatefulWidget {
@@ -25,6 +27,7 @@ class _MlmBlogState extends State<MlmBlog> {
   final TutorialVideoController videoController =
       Get.put(TutorialVideoController());
   static const String position = 'blog';
+
   @override
   void initState() {
     super.initState();
@@ -69,11 +72,7 @@ class _MlmBlogState extends State<MlmBlog> {
                           _refreshData();
                         },
                         onChanged: (value) {
-                          if (value.isNotEmpty) {
-                            _refreshData();
-                          } else {
-                            _refreshData();
-                          }
+                          _refreshData();
                           setState(() {});
                         },
                       ),
@@ -105,7 +104,11 @@ class _MlmBlogState extends State<MlmBlog> {
                 child: Obx(() {
                   if (controller.isLoading.value &&
                       controller.blogList.isEmpty) {
-                    return const Center(child: CircularProgressIndicator());
+                    return Center(
+                      child: CustomLottieAnimation(
+                        child: Lottie.asset(Assets.lottieLottie),
+                      ),
+                    );
                   }
 
                   if (controller.blogList.isEmpty) {
@@ -113,10 +116,9 @@ class _MlmBlogState extends State<MlmBlog> {
                       child: Text(
                         'Data not found',
                         style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
                       ),
                     );
                   }
@@ -129,7 +131,11 @@ class _MlmBlogState extends State<MlmBlog> {
                         (controller.isLoading.value ? 1 : 0),
                     itemBuilder: (context, index) {
                       if (index == controller.blogList.length) {
-                        return const Center(child: CircularProgressIndicator());
+                        return Center(
+                          child: CustomLottieAnimation(
+                            child: Lottie.asset(Assets.lottieLottie),
+                          ),
+                        );
                       }
 
                       final post = controller.blogList[index];
@@ -138,13 +144,10 @@ class _MlmBlogState extends State<MlmBlog> {
                             horizontal: 12, vertical: 8),
                         child: GestureDetector(
                           onTap: () {
-                            Get.toNamed(
-                              Routes.blogdetails,
-                              arguments: controller.blogList[index],
-                            );
+                            Get.toNamed(Routes.blogdetails, arguments: post);
                           },
                           child: BlogCard(
-                            image: post.userData!.imagePath ?? '',
+                            image: post.userData?.imagePath ?? '',
                             dateTime: post.createdate ?? '',
                             blogId: post.id ?? 0,
                             userImage: post.imageUrl ?? '',
@@ -171,21 +174,15 @@ class _MlmBlogState extends State<MlmBlog> {
       floatingActionButton: InkWell(
         onTap: () async {
           var controller = CustomFloatingActionButtonController(context);
-
           String selectedType = 'blog';
-
           await controller.handleTap(selectedType);
         },
         child: Ink(
           decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.transparent,
-          ),
+              shape: BoxShape.circle, color: Colors.transparent),
           child: Padding(
             padding: const EdgeInsets.all(12.0),
-            child: SvgPicture.asset(
-              Assets.svgPlusIcon,
-            ),
+            child: SvgPicture.asset(Assets.svgPlusIcon),
           ),
         ),
       ),

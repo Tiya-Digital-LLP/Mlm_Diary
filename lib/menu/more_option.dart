@@ -902,6 +902,9 @@ class _moreState extends State<MoreOptionScreen> {
                       case '3':
                         Get.toNamed(Routes.managenews);
                         break;
+                      case '4':
+                        Get.toNamed(Routes.databasescreen);
+                        break;
                       case '5':
                         Get.toNamed(Routes.manageblog);
                         break;

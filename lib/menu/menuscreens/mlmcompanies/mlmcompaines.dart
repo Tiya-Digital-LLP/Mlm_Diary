@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
+import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/mlmcompanies_card.dart';
 import 'package:mlmdiary/menu/menuscreens/tutorialvideo/controller/tutorial_video_controller.dart';
@@ -8,6 +10,7 @@ import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
 import 'package:mlmdiary/widgets/custon_test_app_bar.dart';
+import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 
 class MlmCompanies extends StatefulWidget {
   const MlmCompanies({super.key});
@@ -70,7 +73,12 @@ class _MlmCompaniesState extends State<MlmCompanies> {
               Obx(() {
                 if (controller.isLoading.value &&
                     controller.companyAdminList.isEmpty) {
-                  return const Center(child: CircularProgressIndicator());
+                  return Center(
+                      child: CustomLottieAnimation(
+                    child: Lottie.asset(
+                      Assets.lottieLottie,
+                    ),
+                  ));
                 }
 
                 if (controller.companyAdminList.isEmpty) {
@@ -97,7 +105,12 @@ class _MlmCompaniesState extends State<MlmCompanies> {
                         (controller.isLoading.value ? 1 : 0),
                     itemBuilder: (context, index) {
                       if (index == controller.companyAdminList.length) {
-                        return const Center(child: CircularProgressIndicator());
+                        return Center(
+                            child: CustomLottieAnimation(
+                          child: Lottie.asset(
+                            Assets.lottieLottie,
+                          ),
+                        ));
                       }
 
                       final post = controller.companyAdminList[index];
@@ -120,6 +133,8 @@ class _MlmCompaniesState extends State<MlmCompanies> {
                             location: post.location ?? '',
                             shareurl: post.fullUrl ?? '',
                             commentcount: post.totalcomment ?? 0,
+                            likedbyuser: post.likedByUser ?? false,
+                            bookmarkedbyuser: post.bookmarkedByUser ?? false,
                           ),
                         ),
                       );

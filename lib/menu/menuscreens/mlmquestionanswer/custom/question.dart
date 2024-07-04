@@ -9,6 +9,7 @@ import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_answers_entity.dart';
 import 'package:mlmdiary/generated/my_question_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/question_like_list_content.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -890,10 +891,10 @@ class _QuestionState extends State<Question> {
                             const SizedBox(width: 10),
                             GestureDetector(
                               onTap: () {},
-                              child: Row(
-                                children: [
-                                  Obx(
-                                    () => SizedBox(
+                              child: Obx(
+                                () => Row(
+                                  children: [
+                                    SizedBox(
                                       height: size.height * 0.028,
                                       width: size.height * 0.028,
                                       child: GestureDetector(
@@ -910,17 +911,22 @@ class _QuestionState extends State<Question> {
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  const SizedBox(width: 7),
-                                  Text(
-                                    "50k",
-                                    style: TextStyle(
-                                      fontFamily: "Metropolis",
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: size.width * 0.045,
-                                    ),
-                                  ),
-                                ],
+                                    const SizedBox(width: 7),
+                                    likeCount.value == 0
+                                        ? const SizedBox.shrink()
+                                        : InkWell(
+                                            onTap: () {
+                                              showLikeList(context);
+                                            },
+                                            child: Text(
+                                              '${likeCount.value}',
+                                              style: textStyleW600(
+                                                  size.width * 0.038,
+                                                  AppColors.blackText),
+                                            ),
+                                          ),
+                                  ],
+                                ),
                               ),
                             ),
                             const SizedBox(width: 15),
@@ -931,7 +937,7 @@ class _QuestionState extends State<Question> {
                             ),
                             const SizedBox(width: 7),
                             Text(
-                              "12",
+                              post.totalquestionAnswer.toString(),
                               style: TextStyle(
                                 fontFamily: "Metropolis",
                                 fontWeight: FontWeight.w600,
@@ -957,10 +963,20 @@ class _QuestionState extends State<Question> {
                         ),
                         Row(
                           children: [
-                            SizedBox(
-                              height: size.height * 0.028,
-                              width: size.height * 0.028,
-                              child: SvgPicture.asset(Assets.svgSavePost),
+                            Obx(
+                              () => SizedBox(
+                                height: size.height * 0.028,
+                                width: size.height * 0.028,
+                                child: GestureDetector(
+                                  onTap: () => toggleBookmark(),
+                                  child: SvgPicture.asset(
+                                    isBookmarked.value
+                                        ? Assets.svgCheckBookmark
+                                        : Assets.svgSavePost,
+                                    height: size.height * 0.032,
+                                  ),
+                                ),
+                              ),
                             ),
                             const SizedBox(width: 10),
                             SizedBox(
@@ -1141,5 +1157,20 @@ class _QuestionState extends State<Question> {
         ),
       ),
     );
+  }
+
+  void showLikeList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        // Fetch like list after bottom sheet is shown
+        fetchLikeList();
+        return const QuestionLikeListContent();
+      },
+    );
+  }
+
+  void fetchLikeList() async {
+    await controller.fetchLikeListQuestion(post.id ?? 0, context);
   }
 }

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
@@ -117,8 +118,8 @@ class _YourWidgetState extends State<Video> {
                                   onTap: () {
                                     // Check if videoItem.id is not null before calling togglevideoBookMark
                                     if (videoItem.id != null) {
-                                      controller
-                                          .togglevideoBookMark(videoItem.id!);
+                                      controller.togglevideoBookMark(
+                                          videoItem.id!, context);
                                       setState(() {
                                         videoItem.isBookmark =
                                             !videoItem.isBookmark!;
@@ -130,14 +131,11 @@ class _YourWidgetState extends State<Video> {
                                       }
                                     }
                                   },
-                                  child: Icon(
+                                  child: SvgPicture.asset(
                                     videoItem.isBookmark ?? false
-                                        ? Icons.bookmark
-                                        : Icons.bookmark_border,
-                                    size: 28,
-                                    color: videoItem.isBookmark ?? false
-                                        ? Colors.red
-                                        : Colors.grey,
+                                        ? Assets.svgCheckBookmark
+                                        : Assets.svgSavePost,
+                                    height: size.height * 0.028,
                                   ),
                                 ),
                               ],

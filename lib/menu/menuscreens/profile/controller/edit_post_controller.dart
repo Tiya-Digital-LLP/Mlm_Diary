@@ -488,11 +488,6 @@ class EditPostController extends GetxController {
           if (kDebugMode) {
             print('Success: $countViewUserProfileEntity');
           }
-          Fluttertoast.showToast(
-            msg: "Success: $countViewUserProfileEntity",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
         } else {
           //
         }

@@ -27,10 +27,14 @@ class GetHomeData {
 	String? title = '';
 	String? urlcomponent = '';
 	String? company = '';
+	String? popular = '';
+	String? premiumsdate = '';
 	String? category = '';
 	String? subcategory = '';
 	String? description = '';
 	String? website = '';
+	dynamic email;
+	dynamic phone;
 	String? createdate = '';
 	@JSONField(name: "updated_at")
 	String? updatedAt = '';
@@ -41,13 +45,17 @@ class GetHomeData {
 	String? userId = '';
 	String? type = '';
 	dynamic immlm;
-	String? plan = '';
-	String? city = '';
-	String? state = '';
-	String? country = '';
-	String? posttype = '';
+	dynamic plan;
+	dynamic city;
+	dynamic state;
+	dynamic country;
+	dynamic posttype;
 	int? totallike = 0;
 	int? totalcomment = 0;
+	@JSONField(name: "is_popular_classified")
+	int? isPopularClassified = 0;
+	@JSONField(name: "bookmark_by_user")
+	bool? bookmarkByUser = false;
 	@JSONField(name: "liked_by_user")
 	bool? likedByUser = false;
 	@JSONField(name: "image_url")
@@ -73,8 +81,8 @@ class GetHomeDataUserData {
 	String? name = '';
 	String? email = '';
 	String? userimage = '';
-	String? countrycode1 = '';
-	String? mobile = '';
+	dynamic countrycode1;
+	dynamic mobile;
 	@JSONField(name: "image_path")
 	String? imagePath = '';
 	@JSONField(name: "image_thum_path")

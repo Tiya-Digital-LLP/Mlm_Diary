@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
@@ -22,7 +23,8 @@ class MlmCompaniesCard extends StatefulWidget {
   final int likedCount;
   final String shareurl;
   final int commentcount;
-
+  final bool likedbyuser;
+  final bool bookmarkedbyuser;
   final CompanyController controller;
   const MlmCompaniesCard({
     super.key,
@@ -36,6 +38,8 @@ class MlmCompaniesCard extends StatefulWidget {
     required this.controller,
     required this.shareurl,
     required this.commentcount,
+    required this.likedbyuser,
+    required this.bookmarkedbyuser,
   });
 
   @override
@@ -45,9 +49,7 @@ class MlmCompaniesCard extends StatefulWidget {
 class _MlmcompaniesCardState extends State<MlmCompaniesCard> {
   late RxBool isLiked;
   late RxBool isBookmarked;
-
   late RxInt likeCount;
-  late RxInt bookmarkCount;
   @override
   void initState() {
     super.initState();
@@ -56,28 +58,25 @@ class _MlmcompaniesCardState extends State<MlmCompaniesCard> {
   }
 
   void initializeLikes() {
-    isLiked =
-        RxBool(widget.controller.likedStatusMap[widget.companyId] ?? false);
-    likeCount = RxInt(
-        widget.controller.likeCountMap[widget.companyId] ?? widget.likedCount);
+    isLiked = RxBool(widget.likedbyuser);
+    likeCount = RxInt(widget.likedCount);
   }
 
   void toggleLike() async {
     bool newLikedValue = !isLiked.value;
     isLiked.value = newLikedValue;
     likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
-
     await widget.controller.toggleLike(widget.companyId, context);
   }
 
   void initializeBookmarks() {
-    isBookmarked =
-        RxBool(widget.controller.bookmarkStatusMap[widget.companyId] ?? false);
+    isBookmarked = RxBool(widget.bookmarkedbyuser);
   }
 
   void toggleBookmark() async {
     bool newBookmarkedValue = !isBookmarked.value;
     isBookmarked.value = newBookmarkedValue;
+
     await widget.controller.toggleBookMark(widget.companyId, context);
   }
 
@@ -126,10 +125,13 @@ class _MlmcompaniesCardState extends State<MlmCompaniesCard> {
                   children: [
                     Row(
                       children: [
-                        Text(
-                          widget.postTitle,
-                          style: textStyleW700(
-                              size.width * 0.040, AppColors.blackText),
+                        Expanded(
+                          child: Text(
+                            widget.postTitle,
+                            style: textStyleW700(
+                                size.width * 0.040, AppColors.blackText),
+                            maxLines: 1,
+                          ),
                         ),
                       ],
                     ),
@@ -161,7 +163,7 @@ class _MlmcompaniesCardState extends State<MlmCompaniesCard> {
             ),
           ),
           SizedBox(
-            height: size.height * 0.026,
+            height: size.height * 0.010,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -171,29 +173,37 @@ class _MlmcompaniesCardState extends State<MlmCompaniesCard> {
                   const SizedBox(
                     width: 10,
                   ),
-                  SizedBox(
-                    height: size.height * 0.028,
-                    width: size.height * 0.028,
-                    child: GestureDetector(
-                      onTap: toggleLike,
-                      child: Icon(
-                        isLiked.value
-                            ? Icons.thumb_up_off_alt_sharp
-                            : Icons.thumb_up_off_alt_outlined,
-                        color: isLiked.value ? AppColors.primaryColor : null,
-                      ),
+                  Obx(
+                    () => Row(
+                      children: [
+                        SizedBox(
+                          height: size.height * 0.028,
+                          width: size.height * 0.028,
+                          child: InkWell(
+                            onTap: toggleLike,
+                            child: Icon(
+                              isLiked.value
+                                  ? Icons.thumb_up_off_alt_sharp
+                                  : Icons.thumb_up_off_alt_outlined,
+                              color:
+                                  isLiked.value ? AppColors.primaryColor : null,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 7),
+                        likeCount.value == 0
+                            ? const SizedBox.shrink()
+                            : InkWell(
+                                onTap: () {},
+                                child: Text(
+                                  '${likeCount.value}',
+                                  style: textStyleW600(
+                                      size.width * 0.038, AppColors.blackText),
+                                ),
+                              ),
+                      ],
                     ),
                   ),
-                  const SizedBox(
-                    width: 7,
-                  ),
-                  likeCount.value == 0
-                      ? const SizedBox.shrink()
-                      : Text(
-                          likeCount.value.toString(),
-                          style: textStyleW600(
-                              size.width * 0.038, AppColors.blackText),
-                        ),
                   const SizedBox(
                     width: 15,
                   ),
@@ -243,16 +253,18 @@ class _MlmcompaniesCardState extends State<MlmCompaniesCard> {
               ),
               Row(
                 children: [
-                  SizedBox(
-                    height: size.height * 0.028,
-                    width: size.height * 0.028,
-                    child: GestureDetector(
-                      onTap: () => toggleBookmark(),
-                      child: SvgPicture.asset(
-                        isBookmarked.value
-                            ? Assets.svgCheckBookmark
-                            : Assets.svgSavePost,
-                        height: size.height * 0.032,
+                  Obx(
+                    () => SizedBox(
+                      height: size.height * 0.028,
+                      width: size.height * 0.028,
+                      child: GestureDetector(
+                        onTap: () => toggleBookmark(),
+                        child: SvgPicture.asset(
+                          isBookmarked.value
+                              ? Assets.svgCheckBookmark
+                              : Assets.svgSavePost,
+                          height: size.height * 0.032,
+                        ),
                       ),
                     ),
                   ),

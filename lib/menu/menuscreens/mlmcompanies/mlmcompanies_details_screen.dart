@@ -7,6 +7,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmcompanies/custom_company_comment.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
@@ -27,7 +28,11 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
   final CompanyController controller = Get.put(CompanyController());
   dynamic post;
   final PostTimeFormatter postTimeFormatter = PostTimeFormatter();
-
+  // like
+  late RxBool isLiked;
+  late RxInt likeCount;
+// bookmark
+  late RxBool isBookmarked;
   @override
   void initState() {
     super.initState();
@@ -35,12 +40,38 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
     if (post != null && post.id != null) {
       controller.getAdminCompany(1);
     }
-
+    initializeLikes();
+    initializeBookmarks();
     // ignore: unrelated_type_equality_checks
     controller.likeCountMap == 0;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.countViewCompany(post.id ?? 0, context);
     });
+  }
+
+  void initializeLikes() {
+    isLiked = RxBool(controller.companyAdminList[0].likedByUser ?? false);
+    likeCount = RxInt(controller.companyAdminList[0].totallike ?? 0);
+  }
+
+  void initializeBookmarks() {
+    isBookmarked =
+        RxBool(controller.companyAdminList[0].bookmarkedByUser ?? false);
+  }
+
+  void toggleLike() async {
+    bool newLikedValue = !isLiked.value;
+    isLiked.value = newLikedValue;
+    likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
+
+    await controller.toggleLike(post.id ?? 0, context);
+  }
+
+  void toggleBookmark() async {
+    bool newBookmarkedValue = !isBookmarked.value;
+    isBookmarked.value = newBookmarkedValue;
+
+    await controller.toggleBookMark(post.id ?? 0, context);
   }
 
   @override
@@ -98,7 +129,7 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
                           child: Align(
                             alignment: Alignment.topLeft,
                             child: Text(
-                              post.name ?? 'N/A',
+                              post.title ?? 'N/A',
                               style: TextStyle(
                                 fontWeight: FontWeight.w700,
                                 color: AppColors.blackText,
@@ -353,7 +384,7 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
                             children: [
                               Text(
                                 postTimeFormatter
-                                    .formatPostTime(post.adddate ?? ''),
+                                    .formatPostTime(post.createdate ?? ''),
                                 style: textStyleW400(size.width * 0.035,
                                     AppColors.blackText.withOpacity(0.8)),
                               ),
@@ -427,50 +458,66 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
                   const SizedBox(
                     width: 10,
                   ),
-                  SizedBox(
-                    height: size.height * 0.028,
-                    width: size.height * 0.028,
-                    child: GestureDetector(
-                      onTap: () => controller.toggleLike(post.id ?? 0, context),
-                      child: Icon(
-                        // Observe like status
-                        controller.likedStatusMap[post.id ?? 0] ?? false
-                            ? Icons.thumb_up_off_alt_sharp
-                            : Icons.thumb_up_off_alt_outlined,
-                        color: controller.likedStatusMap[post.id ?? 0] ?? false
-                            ? AppColors.primaryColor
-                            : null,
-                        size: size.height * 0.032,
+                  Obx(
+                    () => SizedBox(
+                      height: size.height * 0.028,
+                      width: size.height * 0.028,
+                      child: GestureDetector(
+                        onTap: toggleLike,
+                        child: Icon(
+                          // Observe like status
+                          isLiked.value
+                              ? Icons.thumb_up_off_alt_sharp
+                              : Icons.thumb_up_off_alt_outlined,
+                          color: isLiked.value ? AppColors.primaryColor : null,
+                          size: size.height * 0.032,
+                        ),
                       ),
                     ),
                   ),
+
                   const SizedBox(
                     width: 7,
                   ),
                   // ignore: unrelated_type_equality_checks
-                  controller.likeCountMap == 0
+                  likeCount.value == 0
                       ? const SizedBox.shrink()
-                      : Text(
-                          post.totallike.toString(),
-                          style: textStyleW600(
-                              size.width * 0.040, AppColors.blackText),
+                      : InkWell(
+                          onTap: () {},
+                          child: Text(
+                            '${likeCount.value}',
+                            style: textStyleW600(
+                                size.width * 0.038, AppColors.blackText),
+                          ),
                         ),
                   const SizedBox(
                     width: 15,
                   ),
-                  SizedBox(
-                    height: size.height * 0.028,
-                    width: size.height * 0.028,
-                    child: SvgPicture.asset(Assets.svgComment),
+                  Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () => showFullScreenDialogCompany(
+                          context,
+                          post.id!,
+                        ),
+                        child: SizedBox(
+                          height: size.height * 0.028,
+                          width: size.height * 0.028,
+                          child: SvgPicture.asset(Assets.svgComment),
+                        ),
+                      ),
+                      5.sbw,
+                      Text(
+                        '${post.totalcomment}',
+                        style: TextStyle(
+                          fontFamily: "Metropolis",
+                          fontWeight: FontWeight.w600,
+                          fontSize: size.width * 0.038,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(
-                    width: 7,
-                  ),
-                  Text(
-                    "24k",
-                    style:
-                        textStyleW600(size.width * 0.040, AppColors.blackText),
-                  ),
+
                   const SizedBox(
                     width: 15,
                   ),
@@ -483,7 +530,7 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
                     width: 7,
                   ),
                   Text(
-                    "286",
+                    post.pgcnt.toString(),
                     style:
                         textStyleW600(size.width * 0.040, AppColors.blackText),
                   ),
@@ -491,22 +538,18 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
               ),
               Row(
                 children: [
-                  SizedBox(
-                    height: size.height * 0.028,
-                    width: size.height * 0.028,
-                    child: GestureDetector(
-                      onTap: () =>
-                          controller.toggleBookMark(post.id ?? 0, context),
-                      child: Icon(
-                        // Observe like status
-                        controller.bookmarkStatusMap[post.id ?? 0] ?? false
-                            ? Icons.bookmark
-                            : Icons.bookmark_border,
-                        color:
-                            controller.bookmarkStatusMap[post.id ?? 0] ?? false
-                                ? AppColors.primaryColor
-                                : null,
-                        size: size.height * 0.032,
+                  Obx(
+                    () => SizedBox(
+                      height: size.height * 0.028,
+                      width: size.height * 0.028,
+                      child: GestureDetector(
+                        onTap: () => toggleBookmark(),
+                        child: SvgPicture.asset(
+                          isBookmarked.value
+                              ? Assets.svgCheckBookmark
+                              : Assets.svgSavePost,
+                          height: size.height * 0.032,
+                        ),
                       ),
                     ),
                   ),

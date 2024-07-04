@@ -168,8 +168,8 @@ class _FavouritrCardState extends State<DatabaseHomeCard> {
                       ),
                       Text(
                         widget.postLocation,
-                        style: textStyleW700(
-                            size.width * 0.038, AppColors.blackText),
+                        style: textStyleW500(
+                            size.width * 0.032, AppColors.blackText),
                       ),
                       Text(
                         widget.immlm,
@@ -181,10 +181,8 @@ class _FavouritrCardState extends State<DatabaseHomeCard> {
                           Expanded(
                             child: Text(
                               widget.plan,
-                              style: textStyleW700(
-                                size.width * 0.038,
-                                AppColors.blackText,
-                              ),
+                              style: textStyleW500(
+                                  size.width * 0.032, AppColors.blackText),
                               maxLines: 1,
                             ),
                           ),

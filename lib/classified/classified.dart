@@ -146,8 +146,6 @@ class _ClassifiedScreenState extends State<ClassifiedScreen> {
                             horizontal: 12, vertical: 8),
                         child: GestureDetector(
                           onTap: () async {
-                            await controller.fetchClassifiedDetail(
-                                post.id ?? 0, context);
                             Get.toNamed(
                               Routes.mlmclassifieddetail,
                               arguments: post,

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:mlmdiary/classified/add_classified.dart';
 import 'package:mlmdiary/classified/classified_detail_screen.dart';
 import 'package:mlmdiary/classified/custom/add_comapany_classfied.dart';
+import 'package:mlmdiary/database/database.dart';
 import 'package:mlmdiary/firstscreen/first_screen.dart';
 import 'package:mlmdiary/forgotpassword/enter_new_password.dart';
 import 'package:mlmdiary/forgotpassword/enter_otp_screen.dart';
@@ -94,6 +95,10 @@ class AppPages {
     GetPage(
       name: Routes.mainscreen,
       page: () => const FirstScreen(),
+    ),
+    GetPage(
+      name: Routes.databasescreen,
+      page: () => const DatabaseScreen(),
     ),
     GetPage(
       name: Routes.addclassified,

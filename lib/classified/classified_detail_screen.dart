@@ -31,7 +31,6 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
   dynamic post;
 
   PostTimeFormatter postTimeFormatter = PostTimeFormatter();
-
   // like
   late RxBool isLiked;
   late RxInt likeCount;
@@ -72,14 +71,13 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
     super.initState();
     post = Get.arguments;
     if (post != null && post.id != null) {
-      controller.fetchClassifiedDetail(post.id ?? 0, context);
+      controller.getClassified(1);
     }
+    controller.fetchClassifiedDetail(post.id ?? 0, context);
+
     initializeLikes();
     initializeBookmarks();
-    // ignore: unrelated_type_equality_checks
-    controller.likeCountMap == 0;
-    // ignore: unrelated_type_equality_checks
-    controller.bookmarkCountMap == 0;
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.countViewClassified(post.id ?? 0, context);
     });
@@ -280,7 +278,7 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
                                 ),
                                 3.sbh,
                                 Text(
-                                  '${post.city},${post.state},${post.country}',
+                                  post.location,
                                   style: textStyleW400(
                                       size.width * 0.035, AppColors.blackText),
                                 ),

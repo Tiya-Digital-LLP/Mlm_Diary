@@ -230,41 +230,6 @@ class _PostDetailsScreenState extends State<PostDetailScreen> {
                           Row(
                             children: [
                               Text(
-                                'Company',
-                                style: textStyleW400(
-                                    size.width * 0.035, AppColors.grey),
-                              ),
-                            ],
-                          ),
-                          3.sbh,
-                          Text(
-                            post.company ?? 'N/A',
-                            style: textStyleW400(
-                                size.width * 0.032, AppColors.blackText),
-                          ),
-                        ],
-                      ),
-                    ),
-                    5.sbh,
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        color: AppColors.white,
-                        border: const Border(
-                            bottom: BorderSide(color: Colors.grey)),
-                      ),
-                    ),
-                    5.sbh,
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
                                 'Location',
                                 style: textStyleW400(
                                     size.width * 0.035, AppColors.grey),

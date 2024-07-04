@@ -1,35 +1,16 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:mlmdiary/menu/menuscreens/favourite/controller/favourite_controller.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class VideoFavouriteCard extends StatelessWidget {
-  final String userImage;
-  final String userName;
   final String postTitle;
-  final String postCaption;
   final String postVideo;
-  final String dateTime;
-  final int viewcounts;
-  final FavouriteController controller;
-  final int bookmarkId;
-  final String url;
-  final String type;
 
   const VideoFavouriteCard({
     super.key,
-    required this.userImage,
-    required this.userName,
     required this.postTitle,
-    required this.postCaption,
     required this.postVideo,
-    required this.dateTime,
-    required this.viewcounts,
-    required this.controller,
-    required this.bookmarkId,
-    required this.url,
-    required this.type,
   });
 
   @override
@@ -77,6 +58,15 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
       print('Video URL: ${widget.url}');
     }
 
+    String? videoId = extractYoutubeVideoId(widget.url);
+    if (videoId == null) {
+      // Handle the case where the video ID could not be extracted
+      if (kDebugMode) {
+        print('Invalid video URL: ${widget.url}');
+      }
+      return;
+    }
+
     controller = YoutubePlayerController.fromVideoId(
       params: const YoutubePlayerParams(
         enableCaption: false,
@@ -86,7 +76,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
         pointerEvents: PointerEvents.auto,
         showControls: true,
       ),
-      videoId: widget.url,
+      videoId: videoId,
     );
   }
 
@@ -111,5 +101,21 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
         child: player,
       ),
     );
+  }
+
+  // Function to extract the YouTube video ID from the URL
+  String? extractYoutubeVideoId(String url) {
+    final uri = Uri.tryParse(url);
+    if (uri == null) {
+      return null;
+    }
+
+    if (uri.host.contains('youtube.com')) {
+      return uri.queryParameters['v'];
+    } else if (uri.host.contains('youtu.be')) {
+      return uri.pathSegments.isNotEmpty ? uri.pathSegments[0] : null;
+    }
+
+    return null;
   }
 }

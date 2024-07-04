@@ -179,6 +179,10 @@ class ClasifiedController extends GetxController {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
+        if (kDebugMode) {
+          print(json.encode(responseData));
+        } // Print entire response data
+
         final GetClassifiedDetailEntity classifiedDetailEntity =
             GetClassifiedDetailEntity.fromJson(responseData);
 
