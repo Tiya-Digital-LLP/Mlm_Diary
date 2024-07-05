@@ -100,6 +100,10 @@ GetClassifiedData $GetClassifiedDataFromJson(Map<String, dynamic> json) {
   if (website != null) {
     getClassifiedData.website = website;
   }
+  final String? location = jsonConvert.convert<String>(json['location']);
+  if (location != null) {
+    getClassifiedData.location = location;
+  }
   final String? city = jsonConvert.convert<String>(json['city']);
   if (city != null) {
     getClassifiedData.city = city;
@@ -188,6 +192,7 @@ Map<String, dynamic> $GetClassifiedDataToJson(GetClassifiedData entity) {
   data['subcategory'] = entity.subcategory;
   data['popular'] = entity.popular;
   data['website'] = entity.website;
+  data['location'] = entity.location;
   data['city'] = entity.city;
   data['state'] = entity.state;
   data['country'] = entity.country;
@@ -224,6 +229,7 @@ extension GetClassifiedDataExtension on GetClassifiedData {
     String? subcategory,
     String? popular,
     String? website,
+    String? location,
     String? city,
     String? state,
     String? country,
@@ -257,6 +263,7 @@ extension GetClassifiedDataExtension on GetClassifiedData {
       ..subcategory = subcategory ?? this.subcategory
       ..popular = popular ?? this.popular
       ..website = website ?? this.website
+      ..location = location ?? this.location
       ..city = city ?? this.city
       ..state = state ?? this.state
       ..country = country ?? this.country

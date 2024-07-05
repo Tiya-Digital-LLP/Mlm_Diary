@@ -1,27 +1,28 @@
 import 'package:mlmdiary/generated/json/base/json_convert_content.dart';
-import 'package:mlmdiary/generated/all_bookmark_entity.dart';
+import 'package:mlmdiary/generated/get_user_all_post_entity.dart';
 
-AllBookmarkEntity $AllBookmarkEntityFromJson(Map<String, dynamic> json) {
-  final AllBookmarkEntity allBookmarkEntity = AllBookmarkEntity();
+GetUserAllPostEntity $GetUserAllPostEntityFromJson(Map<String, dynamic> json) {
+  final GetUserAllPostEntity getUserAllPostEntity = GetUserAllPostEntity();
   final int? status = jsonConvert.convert<int>(json['status']);
   if (status != null) {
-    allBookmarkEntity.status = status;
+    getUserAllPostEntity.status = status;
   }
   final String? message = jsonConvert.convert<String>(json['message']);
   if (message != null) {
-    allBookmarkEntity.message = message;
+    getUserAllPostEntity.message = message;
   }
-  final List<AllBookmarkData>? data = (json['data'] as List<dynamic>?)
+  final List<GetUserAllPostData>? data = (json['data'] as List<dynamic>?)
       ?.map(
-          (e) => jsonConvert.convert<AllBookmarkData>(e) as AllBookmarkData)
+          (e) =>
+      jsonConvert.convert<GetUserAllPostData>(e) as GetUserAllPostData)
       .toList();
   if (data != null) {
-    allBookmarkEntity.data = data;
+    getUserAllPostEntity.data = data;
   }
-  return allBookmarkEntity;
+  return getUserAllPostEntity;
 }
 
-Map<String, dynamic> $AllBookmarkEntityToJson(AllBookmarkEntity entity) {
+Map<String, dynamic> $GetUserAllPostEntityToJson(GetUserAllPostEntity entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
   data['status'] = entity.status;
   data['message'] = entity.message;
@@ -29,141 +30,164 @@ Map<String, dynamic> $AllBookmarkEntityToJson(AllBookmarkEntity entity) {
   return data;
 }
 
-extension AllBookmarkEntityExtension on AllBookmarkEntity {
-  AllBookmarkEntity copyWith({
+extension GetUserAllPostEntityExtension on GetUserAllPostEntity {
+  GetUserAllPostEntity copyWith({
     int? status,
     String? message,
-    List<AllBookmarkData>? data,
+    List<GetUserAllPostData>? data,
   }) {
-    return AllBookmarkEntity()
+    return GetUserAllPostEntity()
       ..status = status ?? this.status
       ..message = message ?? this.message
       ..data = data ?? this.data;
   }
 }
 
-AllBookmarkData $AllBookmarkDataFromJson(Map<String, dynamic> json) {
-  final AllBookmarkData allBookmarkData = AllBookmarkData();
+GetUserAllPostData $GetUserAllPostDataFromJson(Map<String, dynamic> json) {
+  final GetUserAllPostData getUserAllPostData = GetUserAllPostData();
   final int? id = jsonConvert.convert<int>(json['id']);
   if (id != null) {
-    allBookmarkData.id = id;
+    getUserAllPostData.id = id;
   }
   final String? title = jsonConvert.convert<String>(json['title']);
   if (title != null) {
-    allBookmarkData.title = title;
+    getUserAllPostData.title = title;
   }
   final String? urlcomponent = jsonConvert.convert<String>(
       json['urlcomponent']);
   if (urlcomponent != null) {
-    allBookmarkData.urlcomponent = urlcomponent;
+    getUserAllPostData.urlcomponent = urlcomponent;
   }
   final String? company = jsonConvert.convert<String>(json['company']);
   if (company != null) {
-    allBookmarkData.company = company;
+    getUserAllPostData.company = company;
+  }
+  final String? popular = jsonConvert.convert<String>(json['popular']);
+  if (popular != null) {
+    getUserAllPostData.popular = popular;
+  }
+  final dynamic premiumsdate = json['premiumsdate'];
+  if (premiumsdate != null) {
+    getUserAllPostData.premiumsdate = premiumsdate;
   }
   final String? category = jsonConvert.convert<String>(json['category']);
   if (category != null) {
-    allBookmarkData.category = category;
+    getUserAllPostData.category = category;
   }
   final String? subcategory = jsonConvert.convert<String>(json['subcategory']);
   if (subcategory != null) {
-    allBookmarkData.subcategory = subcategory;
+    getUserAllPostData.subcategory = subcategory;
   }
   final String? description = jsonConvert.convert<String>(json['description']);
   if (description != null) {
-    allBookmarkData.description = description;
+    getUserAllPostData.description = description;
   }
   final String? website = jsonConvert.convert<String>(json['website']);
   if (website != null) {
-    allBookmarkData.website = website;
+    getUserAllPostData.website = website;
   }
-  final String? email = jsonConvert.convert<String>(json['email']);
+  final dynamic email = json['email'];
   if (email != null) {
-    allBookmarkData.email = email;
+    getUserAllPostData.email = email;
   }
-  final String? phone = jsonConvert.convert<String>(json['phone']);
+  final dynamic phone = json['phone'];
   if (phone != null) {
-    allBookmarkData.phone = phone;
+    getUserAllPostData.phone = phone;
   }
   final String? createdate = jsonConvert.convert<String>(json['createdate']);
   if (createdate != null) {
-    allBookmarkData.createdate = createdate;
+    getUserAllPostData.createdate = createdate;
+  }
+  final String? updatedAt = jsonConvert.convert<String>(json['updated_at']);
+  if (updatedAt != null) {
+    getUserAllPostData.updatedAt = updatedAt;
   }
   final int? pgcnt = jsonConvert.convert<int>(json['pgcnt']);
   if (pgcnt != null) {
-    allBookmarkData.pgcnt = pgcnt;
+    getUserAllPostData.pgcnt = pgcnt;
   }
   final String? location = jsonConvert.convert<String>(json['location']);
   if (location != null) {
-    allBookmarkData.location = location;
+    getUserAllPostData.location = location;
   }
   final String? image = jsonConvert.convert<String>(json['image']);
   if (image != null) {
-    allBookmarkData.image = image;
+    getUserAllPostData.image = image;
   }
   final String? userId = jsonConvert.convert<String>(json['user_id']);
   if (userId != null) {
-    allBookmarkData.userId = userId;
+    getUserAllPostData.userId = userId;
   }
   final String? type = jsonConvert.convert<String>(json['type']);
   if (type != null) {
-    allBookmarkData.type = type;
+    getUserAllPostData.type = type;
   }
   final dynamic immlm = json['immlm'];
   if (immlm != null) {
-    allBookmarkData.immlm = immlm;
+    getUserAllPostData.immlm = immlm;
   }
-  final String? plan = jsonConvert.convert<String>(json['plan']);
+  final dynamic plan = json['plan'];
   if (plan != null) {
-    allBookmarkData.plan = plan;
+    getUserAllPostData.plan = plan;
   }
   final dynamic city = json['city'];
   if (city != null) {
-    allBookmarkData.city = city;
+    getUserAllPostData.city = city;
   }
   final dynamic state = json['state'];
   if (state != null) {
-    allBookmarkData.state = state;
+    getUserAllPostData.state = state;
   }
   final dynamic country = json['country'];
   if (country != null) {
-    allBookmarkData.country = country;
+    getUserAllPostData.country = country;
   }
-  final String? bookmarkDate = jsonConvert.convert<String>(
-      json['bookmark_date']);
-  if (bookmarkDate != null) {
-    allBookmarkData.bookmarkDate = bookmarkDate;
+  final String? posttype = jsonConvert.convert<String>(json['posttype']);
+  if (posttype != null) {
+    getUserAllPostData.posttype = posttype;
   }
   final int? totallike = jsonConvert.convert<int>(json['totallike']);
   if (totallike != null) {
-    allBookmarkData.totallike = totallike;
+    getUserAllPostData.totallike = totallike;
   }
   final int? totalcomment = jsonConvert.convert<int>(json['totalcomment']);
   if (totalcomment != null) {
-    allBookmarkData.totalcomment = totalcomment;
+    getUserAllPostData.totalcomment = totalcomment;
+  }
+  final int? isPopularClassified = jsonConvert.convert<int>(
+      json['is_popular_classified']);
+  if (isPopularClassified != null) {
+    getUserAllPostData.isPopularClassified = isPopularClassified;
+  }
+  final bool? bookmarkByUser = jsonConvert.convert<bool>(
+      json['bookmark_by_user']);
+  if (bookmarkByUser != null) {
+    getUserAllPostData.bookmarkByUser = bookmarkByUser;
   }
   final bool? likedByUser = jsonConvert.convert<bool>(json['liked_by_user']);
   if (likedByUser != null) {
-    allBookmarkData.likedByUser = likedByUser;
+    getUserAllPostData.likedByUser = likedByUser;
   }
   final String? imageUrl = jsonConvert.convert<String>(json['image_url']);
   if (imageUrl != null) {
-    allBookmarkData.imageUrl = imageUrl;
+    getUserAllPostData.imageUrl = imageUrl;
   }
-  final AllBookmarkDataUserData? userData = jsonConvert.convert<
-      AllBookmarkDataUserData>(json['user_data']);
+  final GetUserAllPostDataUserData? userData = jsonConvert.convert<
+      GetUserAllPostDataUserData>(json['user_data']);
   if (userData != null) {
-    allBookmarkData.userData = userData;
+    getUserAllPostData.userData = userData;
   }
-  return allBookmarkData;
+  return getUserAllPostData;
 }
 
-Map<String, dynamic> $AllBookmarkDataToJson(AllBookmarkData entity) {
+Map<String, dynamic> $GetUserAllPostDataToJson(GetUserAllPostData entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
   data['id'] = entity.id;
   data['title'] = entity.title;
   data['urlcomponent'] = entity.urlcomponent;
   data['company'] = entity.company;
+  data['popular'] = entity.popular;
+  data['premiumsdate'] = entity.premiumsdate;
   data['category'] = entity.category;
   data['subcategory'] = entity.subcategory;
   data['description'] = entity.description;
@@ -171,6 +195,7 @@ Map<String, dynamic> $AllBookmarkDataToJson(AllBookmarkData entity) {
   data['email'] = entity.email;
   data['phone'] = entity.phone;
   data['createdate'] = entity.createdate;
+  data['updated_at'] = entity.updatedAt;
   data['pgcnt'] = entity.pgcnt;
   data['location'] = entity.location;
   data['image'] = entity.image;
@@ -181,50 +206,59 @@ Map<String, dynamic> $AllBookmarkDataToJson(AllBookmarkData entity) {
   data['city'] = entity.city;
   data['state'] = entity.state;
   data['country'] = entity.country;
-  data['bookmark_date'] = entity.bookmarkDate;
+  data['posttype'] = entity.posttype;
   data['totallike'] = entity.totallike;
   data['totalcomment'] = entity.totalcomment;
+  data['is_popular_classified'] = entity.isPopularClassified;
+  data['bookmark_by_user'] = entity.bookmarkByUser;
   data['liked_by_user'] = entity.likedByUser;
   data['image_url'] = entity.imageUrl;
   data['user_data'] = entity.userData?.toJson();
   return data;
 }
 
-extension AllBookmarkDataExtension on AllBookmarkData {
-  AllBookmarkData copyWith({
+extension GetUserAllPostDataExtension on GetUserAllPostData {
+  GetUserAllPostData copyWith({
     int? id,
     String? title,
     String? urlcomponent,
     String? company,
+    String? popular,
+    dynamic premiumsdate,
     String? category,
     String? subcategory,
     String? description,
     String? website,
-    String? email,
-    String? phone,
+    dynamic email,
+    dynamic phone,
     String? createdate,
+    String? updatedAt,
     int? pgcnt,
     String? location,
     String? image,
     String? userId,
     String? type,
     dynamic immlm,
-    String? plan,
+    dynamic plan,
     dynamic city,
     dynamic state,
     dynamic country,
-    String? bookmarkDate,
+    String? posttype,
     int? totallike,
     int? totalcomment,
+    int? isPopularClassified,
+    bool? bookmarkByUser,
     bool? likedByUser,
     String? imageUrl,
-    AllBookmarkDataUserData? userData,
+    GetUserAllPostDataUserData? userData,
   }) {
-    return AllBookmarkData()
+    return GetUserAllPostData()
       ..id = id ?? this.id
       ..title = title ?? this.title
       ..urlcomponent = urlcomponent ?? this.urlcomponent
       ..company = company ?? this.company
+      ..popular = popular ?? this.popular
+      ..premiumsdate = premiumsdate ?? this.premiumsdate
       ..category = category ?? this.category
       ..subcategory = subcategory ?? this.subcategory
       ..description = description ?? this.description
@@ -232,6 +266,7 @@ extension AllBookmarkDataExtension on AllBookmarkData {
       ..email = email ?? this.email
       ..phone = phone ?? this.phone
       ..createdate = createdate ?? this.createdate
+      ..updatedAt = updatedAt ?? this.updatedAt
       ..pgcnt = pgcnt ?? this.pgcnt
       ..location = location ?? this.location
       ..image = image ?? this.image
@@ -242,57 +277,59 @@ extension AllBookmarkDataExtension on AllBookmarkData {
       ..city = city ?? this.city
       ..state = state ?? this.state
       ..country = country ?? this.country
-      ..bookmarkDate = bookmarkDate ?? this.bookmarkDate
+      ..posttype = posttype ?? this.posttype
       ..totallike = totallike ?? this.totallike
       ..totalcomment = totalcomment ?? this.totalcomment
+      ..isPopularClassified = isPopularClassified ?? this.isPopularClassified
+      ..bookmarkByUser = bookmarkByUser ?? this.bookmarkByUser
       ..likedByUser = likedByUser ?? this.likedByUser
       ..imageUrl = imageUrl ?? this.imageUrl
       ..userData = userData ?? this.userData;
   }
 }
 
-AllBookmarkDataUserData $AllBookmarkDataUserDataFromJson(
+GetUserAllPostDataUserData $GetUserAllPostDataUserDataFromJson(
     Map<String, dynamic> json) {
-  final AllBookmarkDataUserData allBookmarkDataUserData = AllBookmarkDataUserData();
+  final GetUserAllPostDataUserData getUserAllPostDataUserData = GetUserAllPostDataUserData();
   final int? id = jsonConvert.convert<int>(json['id']);
   if (id != null) {
-    allBookmarkDataUserData.id = id;
+    getUserAllPostDataUserData.id = id;
   }
   final String? name = jsonConvert.convert<String>(json['name']);
   if (name != null) {
-    allBookmarkDataUserData.name = name;
+    getUserAllPostDataUserData.name = name;
   }
   final String? email = jsonConvert.convert<String>(json['email']);
   if (email != null) {
-    allBookmarkDataUserData.email = email;
+    getUserAllPostDataUserData.email = email;
   }
   final String? userimage = jsonConvert.convert<String>(json['userimage']);
   if (userimage != null) {
-    allBookmarkDataUserData.userimage = userimage;
+    getUserAllPostDataUserData.userimage = userimage;
   }
   final String? countrycode1 = jsonConvert.convert<String>(
       json['countrycode1']);
   if (countrycode1 != null) {
-    allBookmarkDataUserData.countrycode1 = countrycode1;
+    getUserAllPostDataUserData.countrycode1 = countrycode1;
   }
   final String? mobile = jsonConvert.convert<String>(json['mobile']);
   if (mobile != null) {
-    allBookmarkDataUserData.mobile = mobile;
+    getUserAllPostDataUserData.mobile = mobile;
   }
   final String? imagePath = jsonConvert.convert<String>(json['image_path']);
   if (imagePath != null) {
-    allBookmarkDataUserData.imagePath = imagePath;
+    getUserAllPostDataUserData.imagePath = imagePath;
   }
   final String? imageThumPath = jsonConvert.convert<String>(
       json['image_thum_path']);
   if (imageThumPath != null) {
-    allBookmarkDataUserData.imageThumPath = imageThumPath;
+    getUserAllPostDataUserData.imageThumPath = imageThumPath;
   }
-  return allBookmarkDataUserData;
+  return getUserAllPostDataUserData;
 }
 
-Map<String, dynamic> $AllBookmarkDataUserDataToJson(
-    AllBookmarkDataUserData entity) {
+Map<String, dynamic> $GetUserAllPostDataUserDataToJson(
+    GetUserAllPostDataUserData entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
   data['id'] = entity.id;
   data['name'] = entity.name;
@@ -305,8 +342,8 @@ Map<String, dynamic> $AllBookmarkDataUserDataToJson(
   return data;
 }
 
-extension AllBookmarkDataUserDataExtension on AllBookmarkDataUserData {
-  AllBookmarkDataUserData copyWith({
+extension GetUserAllPostDataUserDataExtension on GetUserAllPostDataUserData {
+  GetUserAllPostDataUserData copyWith({
     int? id,
     String? name,
     String? email,
@@ -316,7 +353,7 @@ extension AllBookmarkDataUserDataExtension on AllBookmarkDataUserData {
     String? imagePath,
     String? imageThumPath,
   }) {
-    return AllBookmarkDataUserData()
+    return GetUserAllPostDataUserData()
       ..id = id ?? this.id
       ..name = name ?? this.name
       ..email = email ?? this.email

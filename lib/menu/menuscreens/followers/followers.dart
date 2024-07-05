@@ -87,9 +87,13 @@ class _FolowersState extends State<Folowers> with TickerProviderStateMixin {
                   ),
                   labelColor: Colors.white,
                   unselectedLabelColor: Colors.black,
-                  tabs: const [
-                    Tab(text: 'Followers (130)'),
-                    Tab(text: 'Following (130k)'),
+                  tabs: [
+                    Obx(() => Tab(
+                        text:
+                            'Followers (${controller.followersCount.value})')),
+                    Obx(() => Tab(
+                        text:
+                            'Following (${controller.followingCount.value})')),
                   ],
                 ),
               ),
@@ -135,73 +139,79 @@ class _FolowersState extends State<Folowers> with TickerProviderStateMixin {
                                   ),
                                 );
                               } else {
-                                return ListView.builder(
-                                  itemCount: controller.followers.length,
-                                  itemBuilder: (context, index) {
-                                    final follower =
-                                        controller.followers[index];
-                                    return Padding(
-                                      padding: const EdgeInsets.all(8),
-                                      child: SizedBox(
-                                        width: double.infinity,
-                                        child: Row(
-                                          children: [
-                                            InkWell(
-                                              onTap: () {},
-                                              child: ClipOval(
-                                                child: CachedNetworkImage(
-                                                  imageUrl: follower.imageUrl ??
-                                                      Assets.imagesIcon,
-                                                  fit: BoxFit.cover,
-                                                  height: 50,
-                                                  width: 50,
-                                                  placeholder: (context, url) =>
-                                                      Container(),
-                                                  errorWidget: (context, url,
-                                                          error) =>
-                                                      const Icon(Icons.error),
+                                return Obx(
+                                  () => ListView.builder(
+                                    itemCount: controller.followers.length,
+                                    itemBuilder: (context, index) {
+                                      final follower =
+                                          controller.followers[index];
+                                      return Padding(
+                                        padding: const EdgeInsets.all(8),
+                                        child: SizedBox(
+                                          width: double.infinity,
+                                          child: Row(
+                                            children: [
+                                              InkWell(
+                                                onTap: () {},
+                                                child: ClipOval(
+                                                  child: CachedNetworkImage(
+                                                    imageUrl:
+                                                        follower.imageUrl ??
+                                                            Assets.imagesIcon,
+                                                    fit: BoxFit.cover,
+                                                    height: 50,
+                                                    width: 50,
+                                                    placeholder:
+                                                        (context, url) =>
+                                                            Container(),
+                                                    errorWidget: (context, url,
+                                                            error) =>
+                                                        const Icon(Icons.error),
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                            20.sbw,
-                                            Expanded(
-                                              child: Text(
-                                                follower.name ?? 'Unknown',
-                                                style: textStyleW700(
-                                                    size.width * 0.030,
-                                                    AppColors.blackText),
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: ElevatedButton(
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor: follower
-                                                              .isFollowing ??
-                                                          false
-                                                      ? AppColors.primaryColor
-                                                      : Colors.grey,
-                                                ),
-                                                onPressed: () {
-                                                  controller
-                                                      .toggleProfileFollow(
-                                                          follower.id ?? 0,
-                                                          context);
-                                                },
+                                              20.sbw,
+                                              Expanded(
                                                 child: Text(
-                                                  follower.isFollowing ?? false
-                                                      ? 'Following'
-                                                      : 'Follow',
+                                                  follower.name ?? 'Unknown',
                                                   style: textStyleW700(
                                                       size.width * 0.030,
-                                                      AppColors.white),
+                                                      AppColors.blackText),
                                                 ),
                                               ),
-                                            ),
-                                          ],
+                                              Expanded(
+                                                child: ElevatedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    backgroundColor: follower
+                                                                .isFollowing ??
+                                                            false
+                                                        ? AppColors.primaryColor
+                                                        : Colors.grey,
+                                                  ),
+                                                  onPressed: () {
+                                                    controller
+                                                        .toggleProfileFollow(
+                                                            follower.id ?? 0,
+                                                            context);
+                                                  },
+                                                  child: Text(
+                                                    follower.isFollowing ??
+                                                            false
+                                                        ? 'Following'
+                                                        : 'Follow',
+                                                    style: textStyleW700(
+                                                        size.width * 0.030,
+                                                        AppColors.white),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    );
-                                  },
+                                      );
+                                    },
+                                  ),
                                 );
                               }
                             }),

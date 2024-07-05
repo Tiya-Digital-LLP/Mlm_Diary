@@ -81,10 +81,10 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
               Row(
                 children: [
                   // Example of accessing userImage from post
-                  if (post != null && post.userImage != null) ...[
+                  if (post != null && post.imageUrl != null) ...[
                     ClipOval(
                       child: Image.network(
-                        post.userImage,
+                        post.imageUrl,
                         height: 30.0,
                         width: 30.0,
                         fit: BoxFit.cover,
@@ -138,10 +138,10 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
                           children: [
                             if (!isSender &&
                                 post != null &&
-                                post.userImage != null) ...[
+                                post.imageUrl != null) ...[
                               ClipOval(
                                 child: Image.network(
-                                  post.userImage,
+                                  post.imageUrl,
                                   height: 30.0,
                                   width: 30.0,
                                   fit: BoxFit.cover,

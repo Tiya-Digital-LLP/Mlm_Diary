@@ -8,18 +8,17 @@ import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/classified/custom_commment.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
-import 'package:mlmdiary/menu/menuscreens/favourite/controller/favourite_controller.dart';
-import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 import 'package:share_plus/share_plus.dart';
 
-class ClassifiedFavouriteCard extends StatefulWidget {
+class ClassifiedUserCard extends StatefulWidget {
   final String userImage;
   final String userName;
   final String postTitle;
@@ -28,6 +27,7 @@ class ClassifiedFavouriteCard extends StatefulWidget {
   final String dateTime;
   final int viewcounts;
   final int bookmarkId;
+  final int classifiedId;
 
   final String url;
   final String type;
@@ -38,13 +38,13 @@ class ClassifiedFavouriteCard extends StatefulWidget {
   final QuestionAnswerController questionAnswerController;
   final bool likedbyuser;
   final int likecount;
-
-  final CompanyController companyController;
-
-  final FavouriteController controller;
   final int commentcount;
+  final bool bookmarkedbyuser;
 
-  const ClassifiedFavouriteCard({
+  final UserProfileController controller;
+  final bool isPopular;
+
+  const ClassifiedUserCard({
     super.key,
     required this.userImage,
     required this.userName,
@@ -60,42 +60,37 @@ class ClassifiedFavouriteCard extends StatefulWidget {
     required this.manageBlogController,
     required this.manageNewsController,
     required this.clasifiedController,
-    required this.companyController,
     required this.editpostController,
     required this.questionAnswerController,
     required this.likedbyuser,
     required this.likecount,
+    required this.classifiedId,
     required this.commentcount,
+    required this.bookmarkedbyuser,
+    required this.isPopular,
   });
 
   @override
-  State<ClassifiedFavouriteCard> createState() => _FavouritrCardState();
+  State<ClassifiedUserCard> createState() => _FavouritrCardState();
 }
 
-class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
+class _FavouritrCardState extends State<ClassifiedUserCard> {
   late PostTimeFormatter postTimeFormatter;
   late RxBool isLiked;
   late RxInt likeCount;
 
-  late bool isBookmarked;
+  late RxBool isBookmarked;
 
   @override
   void initState() {
     super.initState();
     postTimeFormatter = PostTimeFormatter();
     initializeLikes();
+    initializeBookmarks();
+  }
 
-    isBookmarked = widget.controller.isItemBookmark(
-      widget.type,
-      widget.bookmarkId,
-      widget.manageBlogController,
-      widget.manageNewsController,
-      widget.clasifiedController,
-      widget.companyController,
-      widget.editpostController,
-      widget.questionAnswerController,
-      widget.editpostController,
-    );
+  void initializeBookmarks() {
+    isBookmarked = RxBool(widget.bookmarkedbyuser);
   }
 
   void initializeLikes() {
@@ -114,28 +109,26 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
       widget.manageBlogController,
       widget.manageNewsController,
       widget.clasifiedController,
-      widget.companyController,
       widget.questionAnswerController,
       widget.editpostController,
     );
   }
 
-  void togleBookmark() {
-    setState(() {
-      isBookmarked = !isBookmarked;
-      widget.controller.toggleBookmark(
-        widget.type,
-        widget.bookmarkId,
-        context,
-        widget.manageBlogController,
-        widget.manageNewsController,
-        widget.clasifiedController,
-        widget.companyController,
-        widget.editpostController,
-        widget.questionAnswerController,
-        widget.editpostController,
-      );
-    });
+  void toggleBookmark() async {
+    bool newBookmarkedValue = !isBookmarked.value;
+    isBookmarked.value = newBookmarkedValue;
+
+    widget.controller.toggleBookmark(
+      widget.type,
+      widget.bookmarkId,
+      context,
+      widget.manageBlogController,
+      widget.manageNewsController,
+      widget.clasifiedController,
+      widget.editpostController,
+      widget.questionAnswerController,
+      widget.editpostController,
+    );
   }
 
   @override
@@ -146,6 +139,10 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
         color: AppColors.white,
+        border: Border.all(
+          color: widget.isPopular ? Colors.yellow : Colors.transparent,
+          width: 3.0,
+        ),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -191,17 +188,26 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
                       width: 70,
                       height: 25,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(40),
-                        color: AppColors.primaryColor,
+                        color: widget.isPopular
+                            ? Colors.yellow
+                            : AppColors.primaryColor,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: widget.isPopular
+                              ? Colors.yellow
+                              : AppColors.primaryColor,
+                        ),
                       ),
                       child: Center(
-                        child: Text(
-                          widget.type,
-                          style: textStyleW700(
-                            size.width * 0.026,
-                            AppColors.white,
-                          ),
-                        ),
+                        child: Text(widget.type,
+                            style: TextStyle(
+                              color: widget.isPopular
+                                  ? Colors.black
+                                  : AppColors.white,
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: Assets.fontsSatoshiRegular,
+                            )),
                       ),
                     ),
                   ],
@@ -300,7 +306,7 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
                       GestureDetector(
                         onTap: () => showFullScreenDialog(
                           context,
-                          widget.bookmarkId,
+                          widget.classifiedId,
                         ),
                         child: SizedBox(
                           height: size.height * 0.028,
@@ -338,16 +344,18 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
                   ),
                   Row(
                     children: [
-                      SizedBox(
-                        height: size.height * 0.028,
-                        width: size.height * 0.028,
-                        child: GestureDetector(
-                          onTap: togleBookmark,
-                          child: SvgPicture.asset(
-                            isBookmarked
-                                ? Assets.svgSavePost
-                                : Assets.svgCheckBookmark,
-                            height: size.height * 0.032,
+                      Obx(
+                        () => SizedBox(
+                          height: size.height * 0.028,
+                          width: size.height * 0.028,
+                          child: GestureDetector(
+                            onTap: toggleBookmark,
+                            child: SvgPicture.asset(
+                              isBookmarked.value
+                                  ? Assets.svgCheckBookmark
+                                  : Assets.svgSavePost,
+                              height: size.height * 0.032,
+                            ),
                           ),
                         ),
                       ),

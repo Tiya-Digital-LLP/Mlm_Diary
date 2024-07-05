@@ -74,6 +74,7 @@ import 'package:mlmdiary/generated/get_post_entity.dart';
 import 'package:mlmdiary/generated/get_question_list_entity.dart';
 import 'package:mlmdiary/generated/get_sub_category_entity.dart';
 import 'package:mlmdiary/generated/get_tutorial_video_entity.dart';
+import 'package:mlmdiary/generated/get_user_all_post_entity.dart';
 import 'package:mlmdiary/generated/get_user_post_comment_entity.dart';
 import 'package:mlmdiary/generated/get_user_profile_entity.dart';
 import 'package:mlmdiary/generated/get_user_type_entity.dart';
@@ -810,6 +811,18 @@ class JsonConvert {
       return data.map<GetTutorialVideoData>((Map<String, dynamic> e) =>
           GetTutorialVideoData.fromJson(e)).toList() as M;
     }
+    if (<GetUserAllPostEntity>[] is M) {
+      return data.map<GetUserAllPostEntity>((Map<String, dynamic> e) =>
+          GetUserAllPostEntity.fromJson(e)).toList() as M;
+    }
+    if (<GetUserAllPostData>[] is M) {
+      return data.map<GetUserAllPostData>((Map<String, dynamic> e) =>
+          GetUserAllPostData.fromJson(e)).toList() as M;
+    }
+    if (<GetUserAllPostDataUserData>[] is M) {
+      return data.map<GetUserAllPostDataUserData>((Map<String, dynamic> e) =>
+          GetUserAllPostDataUserData.fromJson(e)).toList() as M;
+    }
     if (<GetUserPostCommentEntity>[] is M) {
       return data.map<GetUserPostCommentEntity>((Map<String, dynamic> e) =>
           GetUserPostCommentEntity.fromJson(e)).toList() as M;
@@ -1281,6 +1294,10 @@ class JsonConvertClassCollection {
     (GetSubCategoryCategory).toString(): GetSubCategoryCategory.fromJson,
     (GetTutorialVideoEntity).toString(): GetTutorialVideoEntity.fromJson,
     (GetTutorialVideoData).toString(): GetTutorialVideoData.fromJson,
+    (GetUserAllPostEntity).toString(): GetUserAllPostEntity.fromJson,
+    (GetUserAllPostData).toString(): GetUserAllPostData.fromJson,
+    (GetUserAllPostDataUserData).toString(): GetUserAllPostDataUserData
+        .fromJson,
     (GetUserPostCommentEntity).toString(): GetUserPostCommentEntity.fromJson,
     (GetUserPostCommentData).toString(): GetUserPostCommentData.fromJson,
     (GetUserPostCommentDataCommentsReplays)

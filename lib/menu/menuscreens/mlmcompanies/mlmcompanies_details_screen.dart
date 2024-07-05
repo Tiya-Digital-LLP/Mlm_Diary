@@ -107,7 +107,7 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
                               children: [
                                 ClipOval(
                                   child: CachedNetworkImage(
-                                    imageUrl: post.image ?? '',
+                                    imageUrl: post.imageUrl ?? '',
                                     height: 60.0,
                                     width: 60.0,
                                     fit: BoxFit.cover,

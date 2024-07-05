@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:mlmdiary/database/controller/database_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/tutorialvideo/controller/tutorial_video_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
@@ -25,6 +26,9 @@ class DatabaseScreen extends StatefulWidget {
 class _DatabaseState extends State<DatabaseScreen> {
   final _loc = TextEditingController();
   final DatabaseController controller = Get.put(DatabaseController());
+  final UserProfileController userProfileController =
+      Get.put(UserProfileController());
+
   String googleApikey = "AIzaSyB3s5ixJVnWzsXoUZaP9ISDp_80GXWJXuU";
   late double lat = 0.0;
   late double log = 0.0;
@@ -267,6 +271,10 @@ class _DatabaseState extends State<DatabaseScreen> {
                             onTap: () async {
                               await controller.fetchUserPost(
                                   post.id ?? 0, context);
+                              await userProfileController.fetchUserAllPost(
+                                1,
+                                post.id ?? 0,
+                              );
                               Get.toNamed(
                                 Routes.userprofilescreen,
                                 arguments: post,

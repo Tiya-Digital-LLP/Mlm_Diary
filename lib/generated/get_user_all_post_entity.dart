@@ -1,19 +1,19 @@
 import 'package:mlmdiary/generated/json/base/json_field.dart';
-import 'package:mlmdiary/generated/json/all_bookmark_entity.g.dart';
+import 'package:mlmdiary/generated/json/get_user_all_post_entity.g.dart';
 import 'dart:convert';
-export 'package:mlmdiary/generated/json/all_bookmark_entity.g.dart';
+export 'package:mlmdiary/generated/json/get_user_all_post_entity.g.dart';
 
 @JsonSerializable()
-class AllBookmarkEntity {
+class GetUserAllPostEntity {
 	int? status = 0;
 	String? message = '';
-	List<AllBookmarkData>? data = [];
+	List<GetUserAllPostData>? data = [];
 
-	AllBookmarkEntity();
+	GetUserAllPostEntity();
 
-	factory AllBookmarkEntity.fromJson(Map<String, dynamic> json) => $AllBookmarkEntityFromJson(json);
+	factory GetUserAllPostEntity.fromJson(Map<String, dynamic> json) => $GetUserAllPostEntityFromJson(json);
 
-	Map<String, dynamic> toJson() => $AllBookmarkEntityToJson(this);
+	Map<String, dynamic> toJson() => $GetUserAllPostEntityToJson(this);
 
 	@override
 	String toString() {
@@ -22,18 +22,22 @@ class AllBookmarkEntity {
 }
 
 @JsonSerializable()
-class AllBookmarkData {
+class GetUserAllPostData {
 	int? id = 0;
 	String? title = '';
 	String? urlcomponent = '';
 	String? company = '';
+	String? popular = '';
+	dynamic premiumsdate;
 	String? category = '';
 	String? subcategory = '';
 	String? description = '';
 	String? website = '';
-	String? email = '';
-	String? phone = '';
+	dynamic email;
+	dynamic phone;
 	String? createdate = '';
+	@JSONField(name: "updated_at")
+	String? updatedAt = '';
 	int? pgcnt = 0;
 	String? location = '';
 	String? image = '';
@@ -41,26 +45,29 @@ class AllBookmarkData {
 	String? userId = '';
 	String? type = '';
 	dynamic immlm;
-	String? plan = '';
+	dynamic plan;
 	dynamic city;
 	dynamic state;
 	dynamic country;
-	@JSONField(name: "bookmark_date")
-	String? bookmarkDate = '';
+	String? posttype = '';
 	int? totallike = 0;
 	int? totalcomment = 0;
+	@JSONField(name: "is_popular_classified")
+	int? isPopularClassified = 0;
+	@JSONField(name: "bookmark_by_user")
+	bool? bookmarkByUser = false;
 	@JSONField(name: "liked_by_user")
 	bool? likedByUser = false;
 	@JSONField(name: "image_url")
 	String? imageUrl = '';
 	@JSONField(name: "user_data")
-	AllBookmarkDataUserData? userData;
+	GetUserAllPostDataUserData? userData;
 
-	AllBookmarkData();
+	GetUserAllPostData();
 
-	factory AllBookmarkData.fromJson(Map<String, dynamic> json) => $AllBookmarkDataFromJson(json);
+	factory GetUserAllPostData.fromJson(Map<String, dynamic> json) => $GetUserAllPostDataFromJson(json);
 
-	Map<String, dynamic> toJson() => $AllBookmarkDataToJson(this);
+	Map<String, dynamic> toJson() => $GetUserAllPostDataToJson(this);
 
 	@override
 	String toString() {
@@ -69,7 +76,7 @@ class AllBookmarkData {
 }
 
 @JsonSerializable()
-class AllBookmarkDataUserData {
+class GetUserAllPostDataUserData {
 	int? id = 0;
 	String? name = '';
 	String? email = '';
@@ -81,11 +88,11 @@ class AllBookmarkDataUserData {
 	@JSONField(name: "image_thum_path")
 	String? imageThumPath = '';
 
-	AllBookmarkDataUserData();
+	GetUserAllPostDataUserData();
 
-	factory AllBookmarkDataUserData.fromJson(Map<String, dynamic> json) => $AllBookmarkDataUserDataFromJson(json);
+	factory GetUserAllPostDataUserData.fromJson(Map<String, dynamic> json) => $GetUserAllPostDataUserDataFromJson(json);
 
-	Map<String, dynamic> toJson() => $AllBookmarkDataUserDataToJson(this);
+	Map<String, dynamic> toJson() => $GetUserAllPostDataUserDataToJson(this);
 
 	@override
 	String toString() {

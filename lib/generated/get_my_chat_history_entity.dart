@@ -79,7 +79,8 @@ class GetMyChatHistoryMychatoverviewData {
 	@JSONField(name: "other_user_id")
 	int? otherUserId = 0;
 	String? username = '';
-	dynamic userImage;
+	@JSONField(name: "image_url")
+	String? imageUrl = '';
 
 	GetMyChatHistoryMychatoverviewData();
 

@@ -51,7 +51,9 @@ class _FavouriteState extends State<Favourite> {
   @override
   void initState() {
     super.initState();
-    _refreshData();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _refreshData();
+    });
   }
 
   Future<void> _refreshData() async {
@@ -172,6 +174,7 @@ class _FavouriteState extends State<Favourite> {
                           questionAnswerController: questionAnswerController,
                           likedbyuser: post.likedByUser ?? false,
                           likecount: post.totallike ?? 0,
+                          commentcount: post.totalcomment ?? 0,
                         );
                         break;
                       case 'company':
@@ -195,6 +198,7 @@ class _FavouriteState extends State<Favourite> {
                           questionAnswerController: questionAnswerController,
                           likedbyuser: post.likedByUser ?? false,
                           likedCount: post.totallike ?? 0,
+                          commentcount: post.totalcomment ?? 0,
                         );
                         break;
 
@@ -243,6 +247,7 @@ class _FavouriteState extends State<Favourite> {
                           questionAnswerController: questionAnswerController,
                           likedbyuser: post.likedByUser ?? false,
                           likedCount: post.totallike ?? 0,
+                          commentcount: post.totalcomment ?? 0,
                         );
                         break;
 

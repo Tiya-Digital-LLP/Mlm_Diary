@@ -14,16 +14,18 @@ import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FollowersController extends GetxController {
-  //bookmarkProfile
+  // Bookmark profile
   var followProfileStatusMap = <int, bool>{};
   var followProfileCountMap = <int, int>{};
 
   var followers = <GetFollowersData>[].obs;
   var following = <GetFollowingData>[].obs;
+  var followersCount = 0.obs;
+  var followingCount = 0.obs;
 
   final search = TextEditingController();
 
-//loading
+  // Loading
   var isLoading = false.obs;
 
   @override
@@ -64,10 +66,12 @@ class FollowersController extends GetxController {
             followProfileStatusMap[userId] = true;
             followProfileCountMap[userId] =
                 (followProfileCountMap[userId] ?? 0) + 1;
+            followersCount.value += 1;
           } else if (message == 'You have UnFollow this Profile') {
             followProfileStatusMap[userId] = false;
             followProfileCountMap[userId] =
                 (followProfileCountMap[userId] ?? 0) - 1;
+            followersCount.value -= 1;
           }
 
           showToastverifedborder(message!, context);
@@ -99,7 +103,7 @@ class FollowersController extends GetxController {
     await profileFollow(userId, context);
   }
 
-// Follow-Unfollow
+  // Follow-Unfollow
   Future<void> getFollowers() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
@@ -142,6 +146,8 @@ class FollowersController extends GetxController {
           var getFollowerEntity = GetFollowersEntity.fromJson(data);
 
           followers.assignAll(getFollowerEntity.data ?? []);
+          followersCount.value = getFollowerEntity.followersCount ?? 0;
+          followingCount.value = getFollowerEntity.followingCount ?? 0;
 
           if (kDebugMode) {
             print('Followers: ${getFollowerEntity.data}');

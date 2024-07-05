@@ -8,6 +8,10 @@ class GetFollowersEntity {
 	int? status = 0;
 	String? message = '';
 	List<GetFollowersData>? data = [];
+	@JSONField(name: "followers_count")
+	int? followersCount = 0;
+	@JSONField(name: "following_count")
+	int? followingCount = 0;
 
 	GetFollowersEntity();
 
@@ -43,7 +47,7 @@ class GetFollowersData {
 	String? ip = '';
 	String? lastip = '';
 	String? lastlogin = '';
-	String? aboutyou = '';
+	dynamic aboutyou;
 	dynamic website;
 	@JSONField(name: "comp_website")
 	dynamic compWebsite;
@@ -75,7 +79,7 @@ class GetFollowersData {
 	dynamic instalink;
 	dynamic twiterlink;
 	dynamic lilink;
-	dynamic youlink;
+	String? youlink = '';
 	dynamic wplink;
 	dynamic telink;
 	String? proceedstatus = '';

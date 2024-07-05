@@ -9,6 +9,7 @@ import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/favourite/controller/favourite_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmcompanies/custom_company_comment.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
@@ -40,6 +41,7 @@ class CompanieFaviouriteCard extends StatefulWidget {
 
   final FavouriteController controller;
   final int likedCount;
+  final int commentcount;
 
   const CompanieFaviouriteCard({
     super.key,
@@ -62,6 +64,7 @@ class CompanieFaviouriteCard extends StatefulWidget {
     required this.questionAnswerController,
     required this.likedbyuser,
     required this.likedCount,
+    required this.commentcount,
   });
 
   @override
@@ -267,19 +270,24 @@ class _CompanieFaviouriteCardState extends State<CompanieFaviouriteCard> {
                   Row(
                     children: [
                       GestureDetector(
+                        onTap: () => showFullScreenDialogCompany(
+                          context,
+                          widget.bookmarkId,
+                        ),
                         child: SizedBox(
                           height: size.height * 0.028,
                           width: size.height * 0.028,
                           child: SvgPicture.asset(Assets.svgComment),
                         ),
                       ),
-                      8.sbw,
+                      5.sbw,
                       Text(
-                        '1K',
+                        '${widget.commentcount}',
                         style: TextStyle(
-                            fontFamily: "Metropolis",
-                            fontWeight: FontWeight.w600,
-                            fontSize: size.width * 0.038),
+                          fontFamily: "Metropolis",
+                          fontWeight: FontWeight.w600,
+                          fontSize: size.width * 0.038,
+                        ),
                       ),
                     ],
                   ),

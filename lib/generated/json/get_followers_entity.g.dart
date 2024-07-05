@@ -18,6 +18,14 @@ GetFollowersEntity $GetFollowersEntityFromJson(Map<String, dynamic> json) {
   if (data != null) {
     getFollowersEntity.data = data;
   }
+  final int? followersCount = jsonConvert.convert<int>(json['followers_count']);
+  if (followersCount != null) {
+    getFollowersEntity.followersCount = followersCount;
+  }
+  final int? followingCount = jsonConvert.convert<int>(json['following_count']);
+  if (followingCount != null) {
+    getFollowersEntity.followingCount = followingCount;
+  }
   return getFollowersEntity;
 }
 
@@ -26,6 +34,8 @@ Map<String, dynamic> $GetFollowersEntityToJson(GetFollowersEntity entity) {
   data['status'] = entity.status;
   data['message'] = entity.message;
   data['data'] = entity.data?.map((v) => v.toJson()).toList();
+  data['followers_count'] = entity.followersCount;
+  data['following_count'] = entity.followingCount;
   return data;
 }
 
@@ -34,11 +44,15 @@ extension GetFollowersEntityExtension on GetFollowersEntity {
     int? status,
     String? message,
     List<GetFollowersData>? data,
+    int? followersCount,
+    int? followingCount,
   }) {
     return GetFollowersEntity()
       ..status = status ?? this.status
       ..message = message ?? this.message
-      ..data = data ?? this.data;
+      ..data = data ?? this.data
+      ..followersCount = followersCount ?? this.followersCount
+      ..followingCount = followingCount ?? this.followingCount;
   }
 }
 
@@ -124,7 +138,7 @@ GetFollowersData $GetFollowersDataFromJson(Map<String, dynamic> json) {
   if (lastlogin != null) {
     getFollowersData.lastlogin = lastlogin;
   }
-  final String? aboutyou = jsonConvert.convert<String>(json['aboutyou']);
+  final dynamic aboutyou = json['aboutyou'];
   if (aboutyou != null) {
     getFollowersData.aboutyou = aboutyou;
   }
@@ -246,7 +260,7 @@ GetFollowersData $GetFollowersDataFromJson(Map<String, dynamic> json) {
   if (lilink != null) {
     getFollowersData.lilink = lilink;
   }
-  final dynamic youlink = json['youlink'];
+  final String? youlink = jsonConvert.convert<String>(json['youlink']);
   if (youlink != null) {
     getFollowersData.youlink = youlink;
   }
@@ -388,7 +402,7 @@ extension GetFollowersDataExtension on GetFollowersData {
     String? ip,
     String? lastip,
     String? lastlogin,
-    String? aboutyou,
+    dynamic aboutyou,
     dynamic website,
     dynamic compWebsite,
     String? company,
@@ -418,7 +432,7 @@ extension GetFollowersDataExtension on GetFollowersData {
     dynamic instalink,
     dynamic twiterlink,
     dynamic lilink,
-    dynamic youlink,
+    String? youlink,
     dynamic wplink,
     dynamic telink,
     String? proceedstatus,

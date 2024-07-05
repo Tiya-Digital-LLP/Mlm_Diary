@@ -155,7 +155,7 @@ class _MessageState extends State<Message> {
                                     arguments: post);
                               },
                               child: ChatCard(
-                                userImage: post.userImage ?? '',
+                                userImage: post.imageUrl ?? '',
                                 userName: post.username ?? 'Unknown',
                                 postCaption: post.msg ?? '',
                                 chatId: post.chatId.toString(),

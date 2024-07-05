@@ -9,7 +9,6 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/add_post_comment_entity.dart';
-import 'package:mlmdiary/generated/database_detail_entity.dart';
 import 'package:mlmdiary/generated/edit_comment_entity.dart';
 import 'package:mlmdiary/generated/follow_user_entity.dart';
 import 'package:mlmdiary/generated/get_post_entity.dart';
@@ -28,7 +27,6 @@ class EditPostController extends GetxController {
   var isLoading = false.obs;
   RxList<MyPostListData> myPostList = <MyPostListData>[].obs;
   RxList<PostLikeListData> postLikeList = RxList<PostLikeListData>();
-  RxList<DatabaseDetailData> postList = <DatabaseDetailData>[].obs;
   RxList<GetPostData> getpostList = <GetPostData>[].obs;
 
   // Post comment
@@ -219,57 +217,6 @@ class EditPostController extends GetxController {
       }
     } catch (error) {
       // Handle network or parsing errors
-      showToasterrorborder("An error occurred: $error", context);
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-  Future<void> fetchUserPost(int userId, context) async {
-    isLoading.value = true;
-    String device =
-        Platform.isAndroid ? 'android' : (Platform.isIOS ? 'ios' : '');
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? apiToken = prefs.getString(Constants.accessToken);
-
-    try {
-      var connectivityResult = await (Connectivity().checkConnectivity());
-      // ignore: unrelated_type_equality_checks
-      if (connectivityResult == ConnectivityResult.none) {
-        showToasterrorborder("No internet connection", context);
-        isLoading.value = false;
-        return;
-      }
-
-      Map<String, String> queryParams = {
-        'api_token': apiToken ?? '',
-        'device': device,
-        'user_id': userId.toString(),
-      };
-
-      Uri uri = Uri.parse(Constants.baseUrl + Constants.userpost)
-          .replace(queryParameters: queryParams);
-
-      final response = await http.get(uri);
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseData = json.decode(response.body);
-        final DatabaseDetailEntity postEntity =
-            DatabaseDetailEntity.fromJson(responseData);
-
-        final DatabaseDetailData? firstPost = postEntity.data;
-        if (firstPost != null) {
-          final String postId = firstPost.id.toString();
-          await prefs.setString('lastPostid', postId);
-
-          // Add the fetched post to the list
-          postList.add(firstPost);
-        }
-      } else {
-        showToasterrorborder("Failed to fetch data", context);
-      }
-    } catch (error) {
       showToasterrorborder("An error occurred: $error", context);
     } finally {
       isLoading.value = false;

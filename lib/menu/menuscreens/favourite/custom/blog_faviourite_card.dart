@@ -7,6 +7,7 @@ import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/blog/custom_blog_comment.dart';
 import 'package:mlmdiary/menu/menuscreens/favourite/controller/favourite_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
@@ -277,19 +278,22 @@ class _FavouritrCardState extends State<BlogFaviouriteCard> {
                   Row(
                     children: [
                       GestureDetector(
+                        onTap: () => showFullScreenDialogBlog(
+                            context, widget.bookmarkId),
                         child: SizedBox(
                           height: size.height * 0.028,
                           width: size.height * 0.028,
                           child: SvgPicture.asset(Assets.svgComment),
                         ),
                       ),
-                      8.sbw,
+                      5.sbw,
                       Text(
-                        '1K',
+                        '${widget.commentcount}',
                         style: TextStyle(
-                            fontFamily: "Metropolis",
-                            fontWeight: FontWeight.w600,
-                            fontSize: size.width * 0.038),
+                          fontFamily: "Metropolis",
+                          fontWeight: FontWeight.w600,
+                          fontSize: size.width * 0.038,
+                        ),
                       ),
                     ],
                   ),

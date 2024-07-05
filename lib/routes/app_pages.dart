@@ -51,7 +51,7 @@ import 'package:mlmdiary/menu/menuscreens/profile/my_post_detail_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/post_detail_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/profile_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/managequationanswer.dart';
-import 'package:mlmdiary/menu/menuscreens/profile/user_profile_screen.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/userprofile/user_profile_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/referandearn/referand_earn.dart';
 import 'package:mlmdiary/menu/menuscreens/tutorialvideo/tutorial_video.dart';
 import 'package:mlmdiary/menu/menuscreens/video/video.dart';

@@ -113,6 +113,8 @@ class Constants {
   static const String editpost = "/updateuserpost";
   static const String mypost = "/mypostlist";
   static const String userpost = "/databasedetail";
+  static const String userallpost = "/get_all_post_user";
+
   static const String getpost = "/getallpost";
 
   static const String postlike = "/addlikepost";

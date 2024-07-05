@@ -258,25 +258,6 @@ class _FavouritrCardState extends State<QuestionFavouriteCard> {
                   ),
                   Row(
                     children: [
-                      GestureDetector(
-                        child: SizedBox(
-                          height: size.height * 0.028,
-                          width: size.height * 0.028,
-                          child: SvgPicture.asset(Assets.svgComment),
-                        ),
-                      ),
-                      8.sbw,
-                      Text(
-                        '1K',
-                        style: TextStyle(
-                            fontFamily: "Metropolis",
-                            fontWeight: FontWeight.w600,
-                            fontSize: size.width * 0.038),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
                       SizedBox(
                         height: size.height * 0.028,
                         width: size.height * 0.028,
@@ -307,7 +288,10 @@ class _FavouritrCardState extends State<QuestionFavouriteCard> {
                           ),
                         ),
                       ),
-                      10.sbw,
+                    ],
+                  ),
+                  Row(
+                    children: [
                       InkWell(
                         onTap: () {
                           Share.share(widget.url);

@@ -37,6 +37,7 @@ class GetClassifiedData {
 	String? subcategory = '';
 	String? popular = '';
 	String? website = '';
+	String? location = '';
 	String? city = '';
 	String? state = '';
 	String? country = '';

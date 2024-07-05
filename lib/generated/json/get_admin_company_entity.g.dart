@@ -167,11 +167,15 @@ GetAdminCompanyData $GetAdminCompanyDataFromJson(Map<String, dynamic> json) {
   if (bookmarkedByUser != null) {
     getAdminCompanyData.bookmarkedByUser = bookmarkedByUser;
   }
+  final String? imageUrl = jsonConvert.convert<String>(json['image_url']);
+  if (imageUrl != null) {
+    getAdminCompanyData.imageUrl = imageUrl;
+  }
   final String? title = jsonConvert.convert<String>(json['title']);
   if (title != null) {
     getAdminCompanyData.title = title;
   }
-  final dynamic createdate = json['createdate'];
+  final String? createdate = jsonConvert.convert<String>(json['createdate']);
   if (createdate != null) {
     getAdminCompanyData.createdate = createdate;
   }
@@ -215,6 +219,7 @@ Map<String, dynamic> $GetAdminCompanyDataToJson(GetAdminCompanyData entity) {
   data['totalcomment'] = entity.totalcomment;
   data['liked_by_user'] = entity.likedByUser;
   data['bookmarked_by_user'] = entity.bookmarkedByUser;
+  data['image_url'] = entity.imageUrl;
   data['title'] = entity.title;
   data['createdate'] = entity.createdate;
   data['full_url'] = entity.fullUrl;
@@ -254,8 +259,9 @@ extension GetAdminCompanyDataExtension on GetAdminCompanyData {
     int? totalcomment,
     bool? likedByUser,
     bool? bookmarkedByUser,
+    String? imageUrl,
     String? title,
-    dynamic createdate,
+    String? createdate,
     String? fullUrl,
   }) {
     return GetAdminCompanyData()
@@ -290,6 +296,7 @@ extension GetAdminCompanyDataExtension on GetAdminCompanyData {
       ..totalcomment = totalcomment ?? this.totalcomment
       ..likedByUser = likedByUser ?? this.likedByUser
       ..bookmarkedByUser = bookmarkedByUser ?? this.bookmarkedByUser
+      ..imageUrl = imageUrl ?? this.imageUrl
       ..title = title ?? this.title
       ..createdate = createdate ?? this.createdate
       ..fullUrl = fullUrl ?? this.fullUrl;

@@ -96,6 +96,7 @@ class DatabaseController extends GetxController {
           if (getmlmDatabaseEnity.data != null &&
               getmlmDatabaseEnity.data!.isNotEmpty) {
             if (page == 1) {
+              mlmDatabaseList.clear();
               mlmDatabaseList.value = getmlmDatabaseEnity.data!;
             } else {
               mlmDatabaseList.addAll(getmlmDatabaseEnity.data!);
@@ -137,7 +138,7 @@ class DatabaseController extends GetxController {
     getMlmDatabase(1);
   }
 
-  Future<void> fetchUserPost(int userId, context) async {
+  Future<void> fetchUserPost(int userId, dynamic context) async {
     if (kDebugMode) {
       print('fetchUserPost started');
     }
@@ -175,11 +176,6 @@ class DatabaseController extends GetxController {
       };
 
       if (kDebugMode) {
-        print('api_token : $apiToken');
-        print('device : $device');
-        print('userId : $userId');
-      }
-      if (kDebugMode) {
         print('Query Params: $queryParams');
       }
 
@@ -209,12 +205,7 @@ class DatabaseController extends GetxController {
         }
 
         if (firstPost != null) {
-          final String postId = firstPost.id.toString();
-          await prefs.setString('lastPostid', postId);
-          if (kDebugMode) {
-            print('Last Post ID saved: $postId');
-          }
-
+          // Do not save any IDs
           // Add the fetched post to the list
           mlmDetailsDatabaseList.add(firstPost);
         } else {

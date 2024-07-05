@@ -218,9 +218,9 @@ GetMyChatHistoryMychatoverviewData $GetMyChatHistoryMychatoverviewDataFromJson(
   if (username != null) {
     getMyChatHistoryMychatoverviewData.username = username;
   }
-  final dynamic userImage = json['userImage'];
-  if (userImage != null) {
-    getMyChatHistoryMychatoverviewData.userImage = userImage;
+  final String? imageUrl = jsonConvert.convert<String>(json['image_url']);
+  if (imageUrl != null) {
+    getMyChatHistoryMychatoverviewData.imageUrl = imageUrl;
   }
   return getMyChatHistoryMychatoverviewData;
 }
@@ -241,7 +241,7 @@ Map<String, dynamic> $GetMyChatHistoryMychatoverviewDataToJson(
   data['count_of_enread'] = entity.countOfEnread;
   data['other_user_id'] = entity.otherUserId;
   data['username'] = entity.username;
-  data['userImage'] = entity.userImage;
+  data['image_url'] = entity.imageUrl;
   return data;
 }
 
@@ -260,7 +260,7 @@ extension GetMyChatHistoryMychatoverviewDataExtension on GetMyChatHistoryMychato
     int? countOfEnread,
     int? otherUserId,
     String? username,
-    dynamic userImage,
+    String? imageUrl,
   }) {
     return GetMyChatHistoryMychatoverviewData()
       ..id = id ?? this.id
@@ -276,7 +276,7 @@ extension GetMyChatHistoryMychatoverviewDataExtension on GetMyChatHistoryMychato
       ..countOfEnread = countOfEnread ?? this.countOfEnread
       ..otherUserId = otherUserId ?? this.otherUserId
       ..username = username ?? this.username
-      ..userImage = userImage ?? this.userImage;
+      ..imageUrl = imageUrl ?? this.imageUrl;
   }
 }
 
