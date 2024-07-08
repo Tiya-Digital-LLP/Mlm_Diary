@@ -1,324 +1,327 @@
 import 'package:mlmdiary/generated/json/base/json_convert_content.dart';
-import 'package:mlmdiary/generated/database_detail_entity.dart';
+import 'package:mlmdiary/generated/mutual_friends_entity.dart';
 
-DatabaseDetailEntity $DatabaseDetailEntityFromJson(Map<String, dynamic> json) {
-  final DatabaseDetailEntity databaseDetailEntity = DatabaseDetailEntity();
+MutualFriendsEntity $MutualFriendsEntityFromJson(Map<String, dynamic> json) {
+  final MutualFriendsEntity mutualFriendsEntity = MutualFriendsEntity();
   final int? status = jsonConvert.convert<int>(json['status']);
   if (status != null) {
-    databaseDetailEntity.status = status;
+    mutualFriendsEntity.status = status;
   }
   final String? message = jsonConvert.convert<String>(json['message']);
   if (message != null) {
-    databaseDetailEntity.message = message;
+    mutualFriendsEntity.message = message;
   }
-  final DatabaseDetailData? data = jsonConvert.convert<DatabaseDetailData>(
-      json['data']);
+  final List<MutualFriendsData>? data = (json['data'] as List<dynamic>?)
+      ?.map(
+          (e) => jsonConvert.convert<MutualFriendsData>(e) as MutualFriendsData)
+      .toList();
   if (data != null) {
-    databaseDetailEntity.data = data;
+    mutualFriendsEntity.data = data;
   }
-  return databaseDetailEntity;
+  final int? total = jsonConvert.convert<int>(json['total']);
+  if (total != null) {
+    mutualFriendsEntity.total = total;
+  }
+  final int? currentPage = jsonConvert.convert<int>(json['current_page']);
+  if (currentPage != null) {
+    mutualFriendsEntity.currentPage = currentPage;
+  }
+  final int? perPage = jsonConvert.convert<int>(json['per_page']);
+  if (perPage != null) {
+    mutualFriendsEntity.perPage = perPage;
+  }
+  return mutualFriendsEntity;
 }
 
-Map<String, dynamic> $DatabaseDetailEntityToJson(DatabaseDetailEntity entity) {
+Map<String, dynamic> $MutualFriendsEntityToJson(MutualFriendsEntity entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
   data['status'] = entity.status;
   data['message'] = entity.message;
-  data['data'] = entity.data?.toJson();
+  data['data'] = entity.data?.map((v) => v.toJson()).toList();
+  data['total'] = entity.total;
+  data['current_page'] = entity.currentPage;
+  data['per_page'] = entity.perPage;
   return data;
 }
 
-extension DatabaseDetailEntityExtension on DatabaseDetailEntity {
-  DatabaseDetailEntity copyWith({
+extension MutualFriendsEntityExtension on MutualFriendsEntity {
+  MutualFriendsEntity copyWith({
     int? status,
     String? message,
-    DatabaseDetailData? data,
+    List<MutualFriendsData>? data,
+    int? total,
+    int? currentPage,
+    int? perPage,
   }) {
-    return DatabaseDetailEntity()
+    return MutualFriendsEntity()
       ..status = status ?? this.status
       ..message = message ?? this.message
-      ..data = data ?? this.data;
+      ..data = data ?? this.data
+      ..total = total ?? this.total
+      ..currentPage = currentPage ?? this.currentPage
+      ..perPage = perPage ?? this.perPage;
   }
 }
 
-DatabaseDetailData $DatabaseDetailDataFromJson(Map<String, dynamic> json) {
-  final DatabaseDetailData databaseDetailData = DatabaseDetailData();
+MutualFriendsData $MutualFriendsDataFromJson(Map<String, dynamic> json) {
+  final MutualFriendsData mutualFriendsData = MutualFriendsData();
   final int? id = jsonConvert.convert<int>(json['id']);
   if (id != null) {
-    databaseDetailData.id = id;
+    mutualFriendsData.id = id;
   }
   final String? immlm = jsonConvert.convert<String>(json['immlm']);
   if (immlm != null) {
-    databaseDetailData.immlm = immlm;
+    mutualFriendsData.immlm = immlm;
   }
   final String? username = jsonConvert.convert<String>(json['username']);
   if (username != null) {
-    databaseDetailData.username = username;
+    mutualFriendsData.username = username;
   }
   final String? password = jsonConvert.convert<String>(json['password']);
   if (password != null) {
-    databaseDetailData.password = password;
+    mutualFriendsData.password = password;
   }
   final String? sex = jsonConvert.convert<String>(json['sex']);
   if (sex != null) {
-    databaseDetailData.sex = sex;
+    mutualFriendsData.sex = sex;
   }
   final String? name = jsonConvert.convert<String>(json['name']);
   if (name != null) {
-    databaseDetailData.name = name;
+    mutualFriendsData.name = name;
   }
   final String? email = jsonConvert.convert<String>(json['email']);
   if (email != null) {
-    databaseDetailData.email = email;
+    mutualFriendsData.email = email;
   }
   final String? mobile = jsonConvert.convert<String>(json['mobile']);
   if (mobile != null) {
-    databaseDetailData.mobile = mobile;
+    mutualFriendsData.mobile = mobile;
   }
   final dynamic birthdate = json['birthdate'];
   if (birthdate != null) {
-    databaseDetailData.birthdate = birthdate;
+    mutualFriendsData.birthdate = birthdate;
   }
   final String? address = jsonConvert.convert<String>(json['address']);
   if (address != null) {
-    databaseDetailData.address = address;
+    mutualFriendsData.address = address;
   }
   final String? country = jsonConvert.convert<String>(json['country']);
   if (country != null) {
-    databaseDetailData.country = country;
+    mutualFriendsData.country = country;
   }
   final String? state = jsonConvert.convert<String>(json['state']);
   if (state != null) {
-    databaseDetailData.state = state;
+    mutualFriendsData.state = state;
   }
   final String? city = jsonConvert.convert<String>(json['city']);
   if (city != null) {
-    databaseDetailData.city = city;
+    mutualFriendsData.city = city;
   }
   final String? pincode = jsonConvert.convert<String>(json['pincode']);
   if (pincode != null) {
-    databaseDetailData.pincode = pincode;
+    mutualFriendsData.pincode = pincode;
   }
   final dynamic employment = json['employment'];
   if (employment != null) {
-    databaseDetailData.employment = employment;
+    mutualFriendsData.employment = employment;
   }
   final String? userimage = jsonConvert.convert<String>(json['userimage']);
   if (userimage != null) {
-    databaseDetailData.userimage = userimage;
+    mutualFriendsData.userimage = userimage;
   }
   final String? joindate = jsonConvert.convert<String>(json['joindate']);
   if (joindate != null) {
-    databaseDetailData.joindate = joindate;
+    mutualFriendsData.joindate = joindate;
   }
   final String? ip = jsonConvert.convert<String>(json['ip']);
   if (ip != null) {
-    databaseDetailData.ip = ip;
+    mutualFriendsData.ip = ip;
   }
   final String? lastip = jsonConvert.convert<String>(json['lastip']);
   if (lastip != null) {
-    databaseDetailData.lastip = lastip;
+    mutualFriendsData.lastip = lastip;
   }
   final String? lastlogin = jsonConvert.convert<String>(json['lastlogin']);
   if (lastlogin != null) {
-    databaseDetailData.lastlogin = lastlogin;
+    mutualFriendsData.lastlogin = lastlogin;
   }
   final dynamic aboutyou = json['aboutyou'];
   if (aboutyou != null) {
-    databaseDetailData.aboutyou = aboutyou;
+    mutualFriendsData.aboutyou = aboutyou;
   }
   final dynamic website = json['website'];
   if (website != null) {
-    databaseDetailData.website = website;
+    mutualFriendsData.website = website;
   }
   final dynamic compWebsite = json['comp_website'];
   if (compWebsite != null) {
-    databaseDetailData.compWebsite = compWebsite;
+    mutualFriendsData.compWebsite = compWebsite;
   }
   final String? company = jsonConvert.convert<String>(json['company']);
   if (company != null) {
-    databaseDetailData.company = company;
+    mutualFriendsData.company = company;
   }
   final String? newregi = jsonConvert.convert<String>(json['newregi']);
   if (newregi != null) {
-    databaseDetailData.newregi = newregi;
+    mutualFriendsData.newregi = newregi;
   }
   final int? status = jsonConvert.convert<int>(json['status']);
   if (status != null) {
-    databaseDetailData.status = status;
+    mutualFriendsData.status = status;
   }
   final int? points = jsonConvert.convert<int>(json['points']);
   if (points != null) {
-    databaseDetailData.points = points;
+    mutualFriendsData.points = points;
   }
   final int? views = jsonConvert.convert<int>(json['views']);
   if (views != null) {
-    databaseDetailData.views = views;
+    mutualFriendsData.views = views;
   }
   final String? emailvarify = jsonConvert.convert<String>(json['emailvarify']);
   if (emailvarify != null) {
-    databaseDetailData.emailvarify = emailvarify;
+    mutualFriendsData.emailvarify = emailvarify;
   }
   final String? vemailcode = jsonConvert.convert<String>(json['vemailcode']);
   if (vemailcode != null) {
-    databaseDetailData.vemailcode = vemailcode;
+    mutualFriendsData.vemailcode = vemailcode;
   }
   final String? vphonecode = jsonConvert.convert<String>(json['vphonecode']);
   if (vphonecode != null) {
-    databaseDetailData.vphonecode = vphonecode;
+    mutualFriendsData.vphonecode = vphonecode;
   }
   final dynamic stepno = json['stepno'];
   if (stepno != null) {
-    databaseDetailData.stepno = stepno;
+    mutualFriendsData.stepno = stepno;
   }
-  final dynamic token = json['token'];
+  final String? token = jsonConvert.convert<String>(json['token']);
   if (token != null) {
-    databaseDetailData.token = token;
+    mutualFriendsData.token = token;
   }
   final dynamic approve = json['approve'];
   if (approve != null) {
-    databaseDetailData.approve = approve;
+    mutualFriendsData.approve = approve;
   }
   final dynamic verifyEmail = json['verify_email'];
   if (verifyEmail != null) {
-    databaseDetailData.verifyEmail = verifyEmail;
+    mutualFriendsData.verifyEmail = verifyEmail;
   }
   final String? blockeduser = jsonConvert.convert<String>(json['blockeduser']);
   if (blockeduser != null) {
-    databaseDetailData.blockeduser = blockeduser;
+    mutualFriendsData.blockeduser = blockeduser;
   }
   final String? showindirctry = jsonConvert.convert<String>(
       json['showindirctry']);
   if (showindirctry != null) {
-    databaseDetailData.showindirctry = showindirctry;
+    mutualFriendsData.showindirctry = showindirctry;
   }
   final dynamic blockdate = json['blockdate'];
   if (blockdate != null) {
-    databaseDetailData.blockdate = blockdate;
+    mutualFriendsData.blockdate = blockdate;
   }
   final String? plan = jsonConvert.convert<String>(json['plan']);
   if (plan != null) {
-    databaseDetailData.plan = plan;
+    mutualFriendsData.plan = plan;
   }
   final String? blocktype = jsonConvert.convert<String>(json['blocktype']);
   if (blocktype != null) {
-    databaseDetailData.blocktype = blocktype;
+    mutualFriendsData.blocktype = blocktype;
   }
   final int? paidno = jsonConvert.convert<int>(json['paidno']);
   if (paidno != null) {
-    databaseDetailData.paidno = paidno;
+    mutualFriendsData.paidno = paidno;
   }
   final String? isapprove = jsonConvert.convert<String>(json['isapprove']);
   if (isapprove != null) {
-    databaseDetailData.isapprove = isapprove;
+    mutualFriendsData.isapprove = isapprove;
   }
   final String? passtoken = jsonConvert.convert<String>(json['passtoken']);
   if (passtoken != null) {
-    databaseDetailData.passtoken = passtoken;
+    mutualFriendsData.passtoken = passtoken;
   }
   final dynamic tokendate = json['tokendate'];
   if (tokendate != null) {
-    databaseDetailData.tokendate = tokendate;
+    mutualFriendsData.tokendate = tokendate;
   }
   final String? urlcomponent = jsonConvert.convert<String>(
       json['urlcomponent']);
   if (urlcomponent != null) {
-    databaseDetailData.urlcomponent = urlcomponent;
+    mutualFriendsData.urlcomponent = urlcomponent;
   }
   final dynamic aboutcompany = json['aboutcompany'];
   if (aboutcompany != null) {
-    databaseDetailData.aboutcompany = aboutcompany;
+    mutualFriendsData.aboutcompany = aboutcompany;
   }
   final dynamic fblink = json['fblink'];
   if (fblink != null) {
-    databaseDetailData.fblink = fblink;
+    mutualFriendsData.fblink = fblink;
   }
   final dynamic instalink = json['instalink'];
   if (instalink != null) {
-    databaseDetailData.instalink = instalink;
+    mutualFriendsData.instalink = instalink;
   }
   final dynamic twiterlink = json['twiterlink'];
   if (twiterlink != null) {
-    databaseDetailData.twiterlink = twiterlink;
+    mutualFriendsData.twiterlink = twiterlink;
   }
   final dynamic lilink = json['lilink'];
   if (lilink != null) {
-    databaseDetailData.lilink = lilink;
+    mutualFriendsData.lilink = lilink;
   }
-  final dynamic youlink = json['youlink'];
+  final String? youlink = jsonConvert.convert<String>(json['youlink']);
   if (youlink != null) {
-    databaseDetailData.youlink = youlink;
+    mutualFriendsData.youlink = youlink;
   }
   final dynamic wplink = json['wplink'];
   if (wplink != null) {
-    databaseDetailData.wplink = wplink;
+    mutualFriendsData.wplink = wplink;
   }
   final dynamic telink = json['telink'];
   if (telink != null) {
-    databaseDetailData.telink = telink;
+    mutualFriendsData.telink = telink;
   }
   final String? proceedstatus = jsonConvert.convert<String>(
       json['proceedstatus']);
   if (proceedstatus != null) {
-    databaseDetailData.proceedstatus = proceedstatus;
+    mutualFriendsData.proceedstatus = proceedstatus;
   }
   final String? device = jsonConvert.convert<String>(json['device']);
   if (device != null) {
-    databaseDetailData.device = device;
+    mutualFriendsData.device = device;
   }
   final String? platform = jsonConvert.convert<String>(json['platform']);
   if (platform != null) {
-    databaseDetailData.platform = platform;
+    mutualFriendsData.platform = platform;
   }
   final String? proceeddate = jsonConvert.convert<String>(json['proceeddate']);
   if (proceeddate != null) {
-    databaseDetailData.proceeddate = proceeddate;
+    mutualFriendsData.proceeddate = proceeddate;
   }
   final int? isApproved = jsonConvert.convert<int>(json['is_approved']);
   if (isApproved != null) {
-    databaseDetailData.isApproved = isApproved;
+    mutualFriendsData.isApproved = isApproved;
   }
   final String? countrycode1 = jsonConvert.convert<String>(
       json['countrycode1']);
   if (countrycode1 != null) {
-    databaseDetailData.countrycode1 = countrycode1;
-  }
-  final int? followersCount = jsonConvert.convert<int>(json['followers_count']);
-  if (followersCount != null) {
-    databaseDetailData.followersCount = followersCount;
-  }
-  final int? followingCount = jsonConvert.convert<int>(json['following_count']);
-  if (followingCount != null) {
-    databaseDetailData.followingCount = followingCount;
-  }
-  final bool? followStatus = jsonConvert.convert<bool>(json['follow_status']);
-  if (followStatus != null) {
-    databaseDetailData.followStatus = followStatus;
-  }
-  final bool? favStatus = jsonConvert.convert<bool>(json['fav_status']);
-  if (favStatus != null) {
-    databaseDetailData.favStatus = favStatus;
-  }
-  final dynamic chatId = json['chat_id'];
-  if (chatId != null) {
-    databaseDetailData.chatId = chatId;
+    mutualFriendsData.countrycode1 = countrycode1;
   }
   final String? imageUrl = jsonConvert.convert<String>(json['image_url']);
   if (imageUrl != null) {
-    databaseDetailData.imageUrl = imageUrl;
+    mutualFriendsData.imageUrl = imageUrl;
   }
   final String? imagePath = jsonConvert.convert<String>(json['image_path']);
   if (imagePath != null) {
-    databaseDetailData.imagePath = imagePath;
+    mutualFriendsData.imagePath = imagePath;
   }
   final String? imageThumPath = jsonConvert.convert<String>(
       json['image_thum_path']);
   if (imageThumPath != null) {
-    databaseDetailData.imageThumPath = imageThumPath;
+    mutualFriendsData.imageThumPath = imageThumPath;
   }
-  return databaseDetailData;
+  return mutualFriendsData;
 }
 
-Map<String, dynamic> $DatabaseDetailDataToJson(DatabaseDetailData entity) {
+Map<String, dynamic> $MutualFriendsDataToJson(MutualFriendsData entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
   data['id'] = entity.id;
   data['immlm'] = entity.immlm;
@@ -379,19 +382,14 @@ Map<String, dynamic> $DatabaseDetailDataToJson(DatabaseDetailData entity) {
   data['proceeddate'] = entity.proceeddate;
   data['is_approved'] = entity.isApproved;
   data['countrycode1'] = entity.countrycode1;
-  data['followers_count'] = entity.followersCount;
-  data['following_count'] = entity.followingCount;
-  data['follow_status'] = entity.followStatus;
-  data['fav_status'] = entity.favStatus;
-  data['chat_id'] = entity.chatId;
   data['image_url'] = entity.imageUrl;
   data['image_path'] = entity.imagePath;
   data['image_thum_path'] = entity.imageThumPath;
   return data;
 }
 
-extension DatabaseDetailDataExtension on DatabaseDetailData {
-  DatabaseDetailData copyWith({
+extension MutualFriendsDataExtension on MutualFriendsData {
+  MutualFriendsData copyWith({
     int? id,
     String? immlm,
     String? username,
@@ -424,7 +422,7 @@ extension DatabaseDetailDataExtension on DatabaseDetailData {
     String? vemailcode,
     String? vphonecode,
     dynamic stepno,
-    dynamic token,
+    String? token,
     dynamic approve,
     dynamic verifyEmail,
     String? blockeduser,
@@ -442,7 +440,7 @@ extension DatabaseDetailDataExtension on DatabaseDetailData {
     dynamic instalink,
     dynamic twiterlink,
     dynamic lilink,
-    dynamic youlink,
+    String? youlink,
     dynamic wplink,
     dynamic telink,
     String? proceedstatus,
@@ -451,16 +449,11 @@ extension DatabaseDetailDataExtension on DatabaseDetailData {
     String? proceeddate,
     int? isApproved,
     String? countrycode1,
-    int? followersCount,
-    int? followingCount,
-    bool? followStatus,
-    bool? favStatus,
-    dynamic chatId,
     String? imageUrl,
     String? imagePath,
     String? imageThumPath,
   }) {
-    return DatabaseDetailData()
+    return MutualFriendsData()
       ..id = id ?? this.id
       ..immlm = immlm ?? this.immlm
       ..username = username ?? this.username
@@ -520,11 +513,6 @@ extension DatabaseDetailDataExtension on DatabaseDetailData {
       ..proceeddate = proceeddate ?? this.proceeddate
       ..isApproved = isApproved ?? this.isApproved
       ..countrycode1 = countrycode1 ?? this.countrycode1
-      ..followersCount = followersCount ?? this.followersCount
-      ..followingCount = followingCount ?? this.followingCount
-      ..followStatus = followStatus ?? this.followStatus
-      ..favStatus = favStatus ?? this.favStatus
-      ..chatId = chatId ?? this.chatId
       ..imageUrl = imageUrl ?? this.imageUrl
       ..imagePath = imagePath ?? this.imagePath
       ..imageThumPath = imageThumPath ?? this.imageThumPath;

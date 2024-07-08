@@ -106,8 +106,9 @@ class MessageController extends GetxController {
       var request = http.MultipartRequest('POST', uri);
       request.fields['api_token'] = apiToken.toString();
       request.fields['chat_id'] = chatId.toString();
+
       if (kDebugMode) {
-        print('api toke: $apiToken');
+        print('api token: $apiToken');
         print('chatId: $chatId');
       }
 
@@ -123,6 +124,8 @@ class MessageController extends GetxController {
 
           if (getMyChatHistoryEntity.mychatoverview != null &&
               getMyChatHistoryEntity.mychatoverview!.data != null) {
+            // Clear the list before assigning new data
+            chatdetailsList.clear();
             chatdetailsList
                 .assignAll(getMyChatHistoryEntity.mychatoverview!.data!);
 

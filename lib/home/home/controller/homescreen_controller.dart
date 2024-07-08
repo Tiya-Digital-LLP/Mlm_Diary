@@ -9,6 +9,7 @@ import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/get_banner_entity.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:mlmdiary/generated/get_home_entity.dart';
+import 'package:mlmdiary/generated/mutual_friends_entity.dart';
 import 'package:mlmdiary/generated/notification_count_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
@@ -22,6 +23,8 @@ class HomeController extends GetxController {
   RxBool isSearchBarVisible = false.obs;
   RxList<GetBannerData> banners = RxList<GetBannerData>();
   RxList<GetHomeData> homeList = RxList<GetHomeData>();
+  RxList<MutualFriendsData> mutualFriendList = RxList<MutualFriendsData>();
+
   final ScrollController scrollController = ScrollController();
   final search = TextEditingController();
   var selectedType = 'All'.obs;
@@ -47,6 +50,7 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    mutualFriend(1);
     fetchNotificationCount(1, 'all');
     ever(isload, (_) {
       if (isload.value) {
@@ -425,6 +429,77 @@ class HomeController extends GetxController {
             homeList.assignAll(allHomeEntity.data ?? []);
           } else {
             homeList.addAll(allHomeEntity.data ?? []);
+          }
+
+          if (myHomeData.length < 10) {
+            isEndOfData.value = true;
+          }
+        } else {
+          isEndOfData.value = true;
+        }
+      }
+    } catch (error) {
+      // Handle general error case
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> mutualFriend(int page) async {
+    isLoading.value = true;
+    String device = Platform.isAndroid
+        ? 'android'
+        : Platform.isIOS
+            ? 'ios'
+            : '';
+
+    SharedPreferences? prefs;
+    try {
+      prefs = await SharedPreferences.getInstance();
+    } catch (error) {
+      isLoading.value = false;
+      return;
+    }
+
+    String? apiToken = prefs.getString(Constants.accessToken);
+    if (apiToken == null) {
+      isLoading.value = false;
+      return;
+    }
+
+    try {
+      var connectivityResult = await (Connectivity().checkConnectivity());
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult == ConnectivityResult.none) {
+        isLoading.value = false;
+        return;
+      }
+
+      Map<String, String> queryParams = {
+        'api_token': apiToken,
+        'device': device,
+        'page': page.toString(),
+      };
+
+      Uri uri = Uri.parse(Constants.baseUrl + Constants.mutualfriend)
+          .replace(queryParameters: queryParams);
+      final response = await http.post(uri);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        final MutualFriendsEntity allHomeEntity =
+            MutualFriendsEntity.fromJson(responseData);
+
+        if (kDebugMode) {
+          print('Mutual data: $responseData');
+        }
+
+        final List<MutualFriendsData> myHomeData = allHomeEntity.data ?? [];
+        if (myHomeData.isNotEmpty) {
+          if (page == 1) {
+            mutualFriendList.assignAll(allHomeEntity.data ?? []);
+          } else {
+            mutualFriendList.addAll(allHomeEntity.data ?? []);
           }
 
           if (myHomeData.length < 10) {

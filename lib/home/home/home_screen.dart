@@ -24,12 +24,12 @@ import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_contro
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/video/controller/video_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/home/suggestion_user_card.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
-import 'package:mlmdiary/utils/lists.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:mlmdiary/widgets/remimaining_count_controller./remaining_count.dart';
@@ -61,6 +61,8 @@ class _HomeScreenState extends State<HomeScreen> {
       Get.put(QuestionAnswerController());
   final DatabaseController databaseController = Get.put(DatabaseController());
   final PageController pageController = PageController(initialPage: 0);
+  final UserProfileController userProfileController =
+      Get.put(UserProfileController());
   int getSliderIndex = 0;
   bool isFirstTime = true;
 
@@ -255,7 +257,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Row(
                               children: [
                                 for (int index = 0;
-                                    index < suggestedAUserList.length;
+                                    index < controller.mutualFriendList.length;
                                     index++)
                                   Row(
                                     children: [
@@ -263,12 +265,46 @@ class _HomeScreenState extends State<HomeScreen> {
                                           width: (index == 0)
                                               ? 0
                                               : size.width * 0.03),
-                                      SuggestionUserCard(
-                                        userImage:
-                                            suggestedAUserList[index].userImage,
-                                        name: suggestedAUserList[index].name,
-                                        post: suggestedAUserList[index].post,
-                                      ),
+                                      Builder(builder: (context) {
+                                        return InkWell(
+                                          onTap: () async {
+                                            await databaseController
+                                                .fetchUserPost(
+                                                    controller
+                                                            .mutualFriendList[
+                                                                index]
+                                                            .id ??
+                                                        0,
+                                                    context);
+                                            await userProfileController
+                                                .fetchUserAllPost(
+                                              1,
+                                              controller.mutualFriendList[index]
+                                                      .id ??
+                                                  0,
+                                            );
+                                            Get.toNamed(
+                                              Routes.userprofilescreen,
+                                              arguments: controller
+                                                  .mutualFriendList[index],
+                                            );
+                                          },
+                                          child: SuggetionUserCard(
+                                            userImage: controller
+                                                    .mutualFriendList[index]
+                                                    .imageUrl ??
+                                                '',
+                                            name: controller
+                                                    .mutualFriendList[index]
+                                                    .name ??
+                                                '',
+                                            post: controller
+                                                    .mutualFriendList[index]
+                                                    .company ??
+                                                '',
+                                          ),
+                                        );
+                                      }),
                                     ],
                                   ),
                                 10.sbw,
@@ -680,8 +716,12 @@ class _HomeScreenState extends State<HomeScreen> {
         if (kDebugMode) {
           print('database');
         }
+        await userProfileController.fetchUserAllPost(
+          1,
+          post.id ?? 0,
+        );
         Get.toNamed(
-          Routes.userprofilescreen,
+          Routes.userprofilescreencopy,
           arguments: post,
         );
         break;

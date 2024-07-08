@@ -149,6 +149,8 @@ class _MessageState extends State<Message> {
                             },
                             child: GestureDetector(
                               onTap: () async {
+                                final post = messageController.chatList[index];
+
                                 await messageController
                                     .fetchMyChatDetail(post.chatId.toString());
                                 Get.toNamed(Routes.messagedetailscreen,

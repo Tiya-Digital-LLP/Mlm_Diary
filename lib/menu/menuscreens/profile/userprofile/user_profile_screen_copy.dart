@@ -13,7 +13,6 @@ import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
-import 'package:mlmdiary/menu/menuscreens/profile/custom/about_user.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/custom/social_button.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/custom/blog_user_card.dart';
@@ -28,18 +27,16 @@ import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 
-class UserProfileScreen extends StatefulWidget {
-  const UserProfileScreen({
-    super.key,
-  });
+class UserProfileScreenCopy extends StatefulWidget {
+  const UserProfileScreenCopy({super.key});
 
   @override
-  State<UserProfileScreen> createState() => _UserProfileScreenState();
+  State<UserProfileScreenCopy> createState() => _UserProfileScreenState();
 }
 
-class _UserProfileScreenState extends State<UserProfileScreen>
+class _UserProfileScreenState extends State<UserProfileScreenCopy>
     with SingleTickerProviderStateMixin {
-  late TabController _tabController;
+  dynamic post;
   final EditPostController editPostController = Get.put(EditPostController());
   final UserProfileController controller = Get.put(UserProfileController());
 
@@ -53,7 +50,8 @@ class _UserProfileScreenState extends State<UserProfileScreen>
       Get.put(ClasifiedController());
   final QuestionAnswerController questionAnswerController =
       Get.put(QuestionAnswerController());
-  dynamic post;
+
+  late TabController _tabController;
 
   RxBool isFollowing = false.obs;
   RxBool isBookmarked = false.obs;
@@ -117,31 +115,31 @@ class _UserProfileScreenState extends State<UserProfileScreen>
 
   @override
   void initState() {
-    super.initState();
-
-    post = Get.arguments;
-    if (post != null && post.id != null) {
-      databaseController.fetchUserPost(post.id!, context);
-    }
-
     _tabController = TabController(length: 2, vsync: this);
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      controller.fetchUserAllPost(
-        1,
-        post.id ?? 0,
-      );
-      editPostController.countViewUserProfile(post.id ?? 0, context);
-      bool bookmarkStatus = post.favStatus ?? false;
-      isBookmarked.value = bookmarkStatus;
-      bool followStatus = post.followStatus ?? false;
-      isFollowing.value = followStatus;
-    });
+
+    super.initState();
+    // Fetch arguments once during initState
+    post = Get.arguments;
+    if (kDebugMode) {
+      print('postargs: $post');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
 
+    // Check if post is null before accessing its properties
+    if (post == null) {
+      // Handle case where post is null, for example, show a loading indicator
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    // Build UI with post data
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -174,6 +172,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
         ],
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             color: AppColors.white,
@@ -259,7 +258,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                           Column(
                             children: [
                               // Text(
-                              //   mlmDatabaseList.followersCount.toString(),
+                              //   post.followersCount.toString(),
                               //   style: textStyleW700(
                               //       size.width * 0.045, AppColors.blackText),
                               // ),
@@ -288,11 +287,11 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                           20.sbw,
                           Column(
                             children: [
-                              // Text(
-                              //   post.views.toString(),
-                              //   style: textStyleW700(
-                              //       size.width * 0.045, AppColors.blackText),
-                              // ),
+                              Text(
+                                post.pgcnt.toString(),
+                                style: textStyleW700(
+                                    size.width * 0.045, AppColors.blackText),
+                              ),
                               Text(
                                 'Profile Visits',
                                 style: textStyleW500(
@@ -562,12 +561,92 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                     ],
                   ),
                 ),
-                const SingleChildScrollView(
-                  padding: EdgeInsets.only(top: 20, left: 16, right: 16),
-                  child: Column(
-                    children: [
-                      AboutUserSection(),
-                    ],
+                SingleChildScrollView(
+                  padding: const EdgeInsets.only(top: 20, left: 16, right: 16),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(14),
+                      color: AppColors.white,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Follow me on',
+                                      style: textStyleW400(
+                                          size.width * 0.035, AppColors.grey)),
+                                  15.sbh,
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      SvgPicture.asset(Assets.svgLogosFacebook),
+                                      12.sbw,
+                                      SvgPicture.asset(Assets.svgInstagram),
+                                      12.sbw,
+                                      SvgPicture.asset(
+                                          Assets.svgLogosLinkedinIcon),
+                                      12.sbw,
+                                      SvgPicture.asset(Assets.svgYoutube),
+                                      12.sbw,
+                                      SvgPicture.asset(Assets.svgTwitter),
+                                      12.sbw,
+                                      SvgPicture.asset(Assets.svgTelegram),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        10.sbh,
+                        const Divider(color: Colors.grey),
+                        10.sbh,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('About me',
+                                  style: textStyleW400(
+                                      size.width * 0.035, AppColors.grey)),
+                              // Text(
+                              //   post.aboutyou ?? 'N/A',
+                              //   style: textStyleW500(
+                              //       size.width * 0.035, AppColors.blackText),
+                              // ),
+                            ],
+                          ),
+                        ),
+                        10.sbh,
+                        const Divider(color: Colors.grey),
+                        10.sbh,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('About Company',
+                                  style: textStyleW400(
+                                      size.width * 0.035, AppColors.grey)),
+                              // Text(
+                              //   post.aboutcompany ?? 'N/A',
+                              //   style: textStyleW500(
+                              //       size.width * 0.035, AppColors.blackText),
+                              // ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: size.height * 0.017),
+                      ],
+                    ),
                   ),
                 ),
               ],

@@ -1,19 +1,24 @@
 import 'package:mlmdiary/generated/json/base/json_field.dart';
-import 'package:mlmdiary/generated/json/database_detail_entity.g.dart';
+import 'package:mlmdiary/generated/json/mutual_friends_entity.g.dart';
 import 'dart:convert';
-export 'package:mlmdiary/generated/json/database_detail_entity.g.dart';
+export 'package:mlmdiary/generated/json/mutual_friends_entity.g.dart';
 
 @JsonSerializable()
-class DatabaseDetailEntity {
+class MutualFriendsEntity {
 	int? status = 0;
 	String? message = '';
-	DatabaseDetailData? data;
+	List<MutualFriendsData>? data = [];
+	int? total = 0;
+	@JSONField(name: "current_page")
+	int? currentPage = 0;
+	@JSONField(name: "per_page")
+	int? perPage = 0;
 
-	DatabaseDetailEntity();
+	MutualFriendsEntity();
 
-	factory DatabaseDetailEntity.fromJson(Map<String, dynamic> json) => $DatabaseDetailEntityFromJson(json);
+	factory MutualFriendsEntity.fromJson(Map<String, dynamic> json) => $MutualFriendsEntityFromJson(json);
 
-	Map<String, dynamic> toJson() => $DatabaseDetailEntityToJson(this);
+	Map<String, dynamic> toJson() => $MutualFriendsEntityToJson(this);
 
 	@override
 	String toString() {
@@ -22,7 +27,7 @@ class DatabaseDetailEntity {
 }
 
 @JsonSerializable()
-class DatabaseDetailData {
+class MutualFriendsData {
 	int? id = 0;
 	String? immlm = '';
 	String? username = '';
@@ -56,7 +61,7 @@ class DatabaseDetailData {
 	String? vemailcode = '';
 	String? vphonecode = '';
 	dynamic stepno;
-	dynamic token;
+	String? token = '';
 	dynamic approve;
 	@JSONField(name: "verify_email")
 	dynamic verifyEmail;
@@ -75,7 +80,7 @@ class DatabaseDetailData {
 	dynamic instalink;
 	dynamic twiterlink;
 	dynamic lilink;
-	dynamic youlink;
+	String? youlink = '';
 	dynamic wplink;
 	dynamic telink;
 	String? proceedstatus = '';
@@ -85,16 +90,6 @@ class DatabaseDetailData {
 	@JSONField(name: "is_approved")
 	int? isApproved = 0;
 	String? countrycode1 = '';
-	@JSONField(name: "followers_count")
-	int? followersCount = 0;
-	@JSONField(name: "following_count")
-	int? followingCount = 0;
-	@JSONField(name: "follow_status")
-	bool? followStatus = false;
-	@JSONField(name: "fav_status")
-	bool? favStatus = false;
-	@JSONField(name: "chat_id")
-	dynamic chatId;
 	@JSONField(name: "image_url")
 	String? imageUrl = '';
 	@JSONField(name: "image_path")
@@ -102,11 +97,11 @@ class DatabaseDetailData {
 	@JSONField(name: "image_thum_path")
 	String? imageThumPath = '';
 
-	DatabaseDetailData();
+	MutualFriendsData();
 
-	factory DatabaseDetailData.fromJson(Map<String, dynamic> json) => $DatabaseDetailDataFromJson(json);
+	factory MutualFriendsData.fromJson(Map<String, dynamic> json) => $MutualFriendsDataFromJson(json);
 
-	Map<String, dynamic> toJson() => $DatabaseDetailDataToJson(this);
+	Map<String, dynamic> toJson() => $MutualFriendsDataToJson(this);
 
 	@override
 	String toString() {

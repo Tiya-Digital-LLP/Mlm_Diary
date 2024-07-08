@@ -269,14 +269,12 @@ class _DatabaseState extends State<DatabaseScreen> {
                               '${post.city ?? ''}, ${post.state ?? ''}, ${post.country ?? ''}';
                           return GestureDetector(
                             onTap: () async {
-                              await controller.fetchUserPost(
-                                  post.id ?? 0, context);
                               await userProfileController.fetchUserAllPost(
                                 1,
                                 post.id ?? 0,
                               );
                               Get.toNamed(
-                                Routes.userprofilescreen,
+                                Routes.userprofilescreencopy,
                                 arguments: post,
                               );
                             },

@@ -51,6 +51,8 @@ import 'package:mlmdiary/menu/menuscreens/profile/my_post_detail_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/post_detail_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/profile_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/managequationanswer.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/userprofile/custom/user_message_detail_screen.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/userprofile/user_profile_screen_copy.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/user_profile_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/referandearn/referand_earn.dart';
 import 'package:mlmdiary/menu/menuscreens/tutorialvideo/tutorial_video.dart';
@@ -129,6 +131,10 @@ class AppPages {
       page: () => const MessageDetailsScreen(),
     ),
     GetPage(
+      name: Routes.usermessagedetailscreen,
+      page: () => const UserMessageDetailScreen(),
+    ),
+    GetPage(
       name: Routes.aboutus,
       page: () => const AboutUs(),
     ),
@@ -167,6 +173,10 @@ class AppPages {
     GetPage(
       name: Routes.userprofilescreen,
       page: () => const UserProfileScreen(),
+    ),
+    GetPage(
+      name: Routes.userprofilescreencopy,
+      page: () => const UserProfileScreenCopy(),
     ),
     GetPage(
       name: Routes.accountsettingscreen,

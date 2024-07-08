@@ -18,6 +18,7 @@ import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/video/controller/video_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
@@ -50,7 +51,8 @@ class _SearchBarAppState extends State<SearchBarApp> {
   final QuestionAnswerController questionAnswerController =
       Get.put(QuestionAnswerController());
   final DatabaseController databaseController = Get.put(DatabaseController());
-
+  final UserProfileController userProfileController =
+      Get.put(UserProfileController());
   @override
   void initState() {
     super.initState();
@@ -400,10 +402,14 @@ class _SearchBarAppState extends State<SearchBarApp> {
         break;
       case 'database':
         if (kDebugMode) {
-          print('database');
+          print('Navigating to UserProfileScreenCopy with post: $post');
         }
+        await userProfileController.fetchUserAllPost(
+          1,
+          post.id ?? 0,
+        );
         Get.toNamed(
-          Routes.userprofilescreen,
+          Routes.userprofilescreencopy,
           arguments: post,
         );
         break;

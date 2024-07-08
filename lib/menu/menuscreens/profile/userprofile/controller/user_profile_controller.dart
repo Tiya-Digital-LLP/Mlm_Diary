@@ -8,7 +8,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/data/constants.dart';
-import 'package:mlmdiary/database/controller/database_controller.dart';
 import 'package:mlmdiary/generated/get_user_all_post_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
@@ -17,8 +16,6 @@ import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controlle
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserProfileController extends GetxController {
-  final DatabaseController databaseController = Get.put(DatabaseController());
-
   RxList<GetUserAllPostData> postallList = <GetUserAllPostData>[].obs;
 
   var isLoading = false.obs;
@@ -232,9 +229,9 @@ class UserProfileController extends GetxController {
           isEndOfData.value = newData.length < 10;
         } else {
           if (page == 1) {
-            postallList.clear(); // Clear existing data for new user
+            postallList.clear();
           }
-          isEndOfData.value = true; // No more data
+          isEndOfData.value = true;
         }
       }
     } catch (error) {

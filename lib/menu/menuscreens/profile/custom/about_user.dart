@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
-import 'package:mlmdiary/generated/get_mlm_database_entity.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 
-class AboutUserSection extends StatelessWidget {
-  final Size size;
-  final userProfile = Get.arguments as GetMlmDatabaseData;
-  AboutUserSection({required this.size, super.key});
+class AboutUserSection extends StatefulWidget {
+  const AboutUserSection({super.key});
 
   @override
+  State<AboutUserSection> createState() => _AboutUserSectionState();
+}
+
+class _AboutUserSectionState extends State<AboutUserSection> {
+  dynamic userProfile;
+  @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
