@@ -271,7 +271,7 @@ GetFollowingData $GetFollowingDataFromJson(Map<String, dynamic> json) {
   if (platform != null) {
     getFollowingData.platform = platform;
   }
-  final dynamic proceeddate = json['proceeddate'];
+  final String? proceeddate = jsonConvert.convert<String>(json['proceeddate']);
   if (proceeddate != null) {
     getFollowingData.proceeddate = proceeddate;
   }
@@ -284,9 +284,25 @@ GetFollowingData $GetFollowingDataFromJson(Map<String, dynamic> json) {
   if (countrycode1 != null) {
     getFollowingData.countrycode1 = countrycode1;
   }
-  final String? date = jsonConvert.convert<String>(json['date']);
+  final dynamic lat = json['lat'];
+  if (lat != null) {
+    getFollowingData.lat = lat;
+  }
+  final dynamic lng = json['lng'];
+  if (lng != null) {
+    getFollowingData.lng = lng;
+  }
+  final dynamic date = json['date'];
   if (date != null) {
     getFollowingData.date = date;
+  }
+  final String? title = jsonConvert.convert<String>(json['title']);
+  if (title != null) {
+    getFollowingData.title = title;
+  }
+  final int? pgcnt = jsonConvert.convert<int>(json['pgcnt']);
+  if (pgcnt != null) {
+    getFollowingData.pgcnt = pgcnt;
   }
   final String? imageUrl = jsonConvert.convert<String>(json['image_url']);
   if (imageUrl != null) {
@@ -360,7 +376,11 @@ Map<String, dynamic> $GetFollowingDataToJson(GetFollowingData entity) {
   data['proceeddate'] = entity.proceeddate;
   data['is_approved'] = entity.isApproved;
   data['countrycode1'] = entity.countrycode1;
+  data['lat'] = entity.lat;
+  data['lng'] = entity.lng;
   data['date'] = entity.date;
+  data['title'] = entity.title;
+  data['pgcnt'] = entity.pgcnt;
   data['image_url'] = entity.imageUrl;
   data['is_following'] = entity.isFollowing;
   return data;
@@ -424,10 +444,14 @@ extension GetFollowingDataExtension on GetFollowingData {
     String? proceedstatus,
     String? device,
     String? platform,
-    dynamic proceeddate,
+    String? proceeddate,
     int? isApproved,
     String? countrycode1,
-    String? date,
+    dynamic lat,
+    dynamic lng,
+    dynamic date,
+    String? title,
+    int? pgcnt,
     String? imageUrl,
     bool? isFollowing,
   }) {
@@ -491,7 +515,11 @@ extension GetFollowingDataExtension on GetFollowingData {
       ..proceeddate = proceeddate ?? this.proceeddate
       ..isApproved = isApproved ?? this.isApproved
       ..countrycode1 = countrycode1 ?? this.countrycode1
+      ..lat = lat ?? this.lat
+      ..lng = lng ?? this.lng
       ..date = date ?? this.date
+      ..title = title ?? this.title
+      ..pgcnt = pgcnt ?? this.pgcnt
       ..imageUrl = imageUrl ?? this.imageUrl
       ..isFollowing = isFollowing ?? this.isFollowing;
   }

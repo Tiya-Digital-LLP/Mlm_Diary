@@ -123,7 +123,7 @@ class _MlmCompaniesState extends State<MlmCompanies> {
                                 arguments: post);
                           },
                           child: MlmCompaniesCard(
-                            userImage: post.image ?? '',
+                            userImage: post.imageUrl ?? '',
                             companyId: post.id ?? 0,
                             controller: controller,
                             viewcounts: post.pgcnt ?? 0,

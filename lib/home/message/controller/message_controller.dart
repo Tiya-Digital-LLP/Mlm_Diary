@@ -58,9 +58,8 @@ class MessageController extends GetxController {
           if (getMyChatHistoryEntity.mychatoverview != null &&
               getMyChatHistoryEntity.mychatoverview!.data != null) {
             chatList.assignAll(getMyChatHistoryEntity.mychatoverview!.data!);
-
             if (kDebugMode) {
-              print('Fetched ${chatList.length} posts');
+              print('Fetched ${chatList.length} chats');
             }
           } else {
             if (kDebugMode) {

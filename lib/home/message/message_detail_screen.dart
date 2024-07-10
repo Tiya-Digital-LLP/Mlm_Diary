@@ -3,6 +3,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/home/message/controller/message_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
+import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -17,6 +19,8 @@ class MessageDetailsScreen extends StatefulWidget {
 
 class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
   final MessageController messageController = Get.put(MessageController());
+  final UserProfileController userProfileController =
+      Get.put(UserProfileController());
   late PostTimeFormatter postTimeFormatter;
   dynamic post;
   final ScrollController _scrollController = ScrollController();
@@ -78,31 +82,43 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  // Example of accessing userImage from post
-                  if (post != null && post.imageUrl != null) ...[
-                    ClipOval(
-                      child: Image.network(
-                        post.imageUrl,
-                        height: 30.0,
-                        width: 30.0,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) =>
-                            const Icon(Icons.error),
+              InkWell(
+                onTap: () async {
+                  await userProfileController.fetchUserAllPost(
+                    1,
+                    post.id ?? 0,
+                  );
+                  Get.toNamed(
+                    Routes.userprofilescreencopy,
+                    arguments: post,
+                  );
+                },
+                child: Row(
+                  children: [
+                    // Example of accessing userImage from post
+                    if (post != null && post.imageUrl != null) ...[
+                      ClipOval(
+                        child: Image.network(
+                          post.imageUrl,
+                          height: 30.0,
+                          width: 30.0,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) =>
+                              const Icon(Icons.error),
+                        ),
+                      ),
+                      10.sbw,
+                    ],
+                    Text(
+                      post.username ?? 'Unknown',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: size.width * 0.05,
+                        color: Colors.black,
                       ),
                     ),
-                    10.sbw,
                   ],
-                  Text(
-                    post.username ?? 'Unknown',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: size.width * 0.05,
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
+                ),
               ),
             ],
           ),

@@ -6,6 +6,8 @@ import 'package:mlmdiary/classified/classified_like_list_content.dart';
 import 'package:mlmdiary/classified/custom_commment.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
+import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -25,6 +27,8 @@ class PostDetailScreen extends StatefulWidget {
 
 class _PostDetailsScreenState extends State<PostDetailScreen> {
   final EditPostController controller = Get.put(EditPostController());
+  final UserProfileController userProfileController =
+      Get.put(UserProfileController());
   dynamic post;
 
   PostTimeFormatter postTimeFormatter = PostTimeFormatter();
@@ -108,49 +112,61 @@ class _PostDetailsScreenState extends State<PostDetailScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 8),
-                      child: Row(
-                        children: [
-                          ClipOval(
-                            child: CachedNetworkImage(
-                              imageUrl: post.userData!.imagePath ?? '',
-                              height: 60.0,
-                              width: 60.0,
-                              fit: BoxFit.cover,
-                              placeholder: (context, url) =>
-                                  const CircularProgressIndicator(),
-                              errorWidget: (context, url, error) =>
-                                  const Icon(Icons.error),
+                      child: InkWell(
+                        onTap: () async {
+                          await userProfileController.fetchUserAllPost(
+                            1,
+                            post.id ?? 0,
+                          );
+                          Get.toNamed(
+                            Routes.userprofilescreencopy,
+                            arguments: post,
+                          );
+                        },
+                        child: Row(
+                          children: [
+                            ClipOval(
+                              child: CachedNetworkImage(
+                                imageUrl: post.userData!.imagePath ?? '',
+                                height: 60.0,
+                                width: 60.0,
+                                fit: BoxFit.cover,
+                                placeholder: (context, url) =>
+                                    const CircularProgressIndicator(),
+                                errorWidget: (context, url, error) =>
+                                    const Icon(Icons.error),
+                              ),
                             ),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    post.userData!.name ?? '',
-                                    style: textStyleW700(size.width * 0.043,
-                                        AppColors.blackText),
-                                  ),
-                                  const SizedBox(
-                                    width: 07,
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                postTimeFormatter
-                                    .formatPostTime(post.createdate ?? ''),
-                                style: textStyleW400(
-                                  size.width * 0.035,
-                                  AppColors.blackText.withOpacity(0.5),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      post.userData!.name ?? '',
+                                      style: textStyleW700(size.width * 0.043,
+                                          AppColors.blackText),
+                                    ),
+                                    const SizedBox(
+                                      width: 07,
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            ],
-                          )
-                        ],
+                                Text(
+                                  postTimeFormatter
+                                      .formatPostTime(post.createdate ?? ''),
+                                  style: textStyleW400(
+                                    size.width * 0.035,
+                                    AppColors.blackText.withOpacity(0.5),
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
                       ),
                     ),
                     SizedBox(

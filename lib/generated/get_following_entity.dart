@@ -81,11 +81,15 @@ class GetFollowingData {
 	String? proceedstatus = '';
 	String? device = '';
 	String? platform = '';
-	dynamic proceeddate;
+	String? proceeddate = '';
 	@JSONField(name: "is_approved")
 	int? isApproved = 0;
 	String? countrycode1 = '';
-	String? date = '';
+	dynamic lat;
+	dynamic lng;
+	dynamic date;
+	String? title = '';
+	int? pgcnt = 0;
 	@JSONField(name: "image_url")
 	String? imageUrl = '';
 	@JSONField(name: "is_following")

@@ -171,7 +171,7 @@ class SignupController extends GetxController {
           Uri.parse('${Constants.baseUrl}${Constants.domesticPhoneOtp}'),
           body: {
             'name': name,
-            'user_type': userTypes.isNotEmpty ? userTypes.join(',') : '',
+            'user_type': getSelectedOptionsTextController().text.toString(),
             'mobile': mobile,
             'countrycode': countryCode,
             'device': device,
@@ -494,13 +494,10 @@ class SignupController extends GetxController {
           // Registration successful
           ToastUtils.showToast("Registration successful");
           Get.offNamed(Routes.signUp2);
-          // Extracted API token
-          String apiTokenValue = userRegisterEntity.apiToken ?? '';
-          // Store the token in shared preferences
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          await prefs.setString('apiToken', apiTokenValue);
+
+          saveAccessToken(userRegisterEntity.apiToken);
           if (kDebugMode) {
-            print('api_token: $apiTokenValue');
+            print('api_token: ${userRegisterEntity.apiToken}');
           }
         } else {
           // Registration failed
@@ -517,6 +514,11 @@ class SignupController extends GetxController {
         print('Error: $e');
       }
     }
+  }
+
+  Future<void> saveAccessToken(String? token) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(Constants.accessToken, token ?? '');
   }
 
   Future<void> verifyEmail(

@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_answers_entity.dart';
-import 'package:mlmdiary/generated/my_question_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/question_like_list_content.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
@@ -21,17 +20,17 @@ import 'package:text_link/text_link.dart';
 // ignore: library_prefixes
 import 'package:html/parser.dart' as htmlParser;
 
-class Question extends StatefulWidget {
-  const Question({super.key});
+class UserQuestionCopy extends StatefulWidget {
+  const UserQuestionCopy({super.key});
 
   @override
-  State<Question> createState() => _QuestionState();
+  State<UserQuestionCopy> createState() => _UserQuestionState();
 }
 
-class _QuestionState extends State<Question> {
+class _UserQuestionState extends State<UserQuestionCopy> {
   final QuestionAnswerController controller =
       Get.put(QuestionAnswerController());
-  final post = Get.arguments as MyQuestionQuestions;
+  dynamic post;
   PostTimeFormatter postTimeFormatter = PostTimeFormatter();
   late ScrollController _scrollController;
 
@@ -40,25 +39,6 @@ class _QuestionState extends State<Question> {
 
   late RxInt likeCount;
   late RxInt bookmarkCount;
-
-  @override
-  void initState() {
-    super.initState();
-    _refreshData();
-    initializeLikes();
-    initializeBookmarks();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.getAnswers(1, post.id!);
-    });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.getQuestion(1);
-    });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.countViewQuestion(post.id ?? 0, context);
-    });
-    _scrollController = ScrollController();
-    _scrollController.addListener(_scrollListener);
-  }
 
   void initializeLikes() {
     isLiked = RxBool(controller.questionList[0].likedByUser ?? false);
@@ -85,6 +65,32 @@ class _QuestionState extends State<Question> {
         newBookmarkedValue ? bookmarkCount.value + 1 : bookmarkCount.value - 1;
 
     await controller.toggleBookMark(post.id ?? 0, context);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshData();
+    initializeLikes();
+    initializeBookmarks();
+    post = Get.arguments;
+    if (post != null && post.id != null) {
+      controller.getAnswers(
+        1,
+        post.id ?? 0,
+      );
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.getAnswers(1, post.id!);
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.getQuestion(1);
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.countViewQuestion(post.id ?? 0, context);
+    });
+    _scrollController = ScrollController();
+    _scrollController.addListener(_scrollListener);
   }
 
   void _scrollListener() {
@@ -1159,12 +1165,12 @@ class _QuestionState extends State<Question> {
                               ),
                               Row(
                                 children: [
-                                  Text(
-                                    postTimeFormatter
-                                        .formatPostTime(post.creatdate ?? ''),
-                                    style: textStyleW400(size.width * 0.028,
-                                        AppColors.blackText.withOpacity(0.8)),
-                                  ),
+                                  // Text(
+                                  //   postTimeFormatter
+                                  //       .formatPostTime(post.creatdate ?? ''),
+                                  //   style: textStyleW400(size.width * 0.028,
+                                  //       AppColors.blackText.withOpacity(0.8)),
+                                  // ),
                                   8.sbw,
                                   Text(
                                     'asked a question',
@@ -1206,10 +1212,10 @@ class _QuestionState extends State<Question> {
                             const SizedBox(width: 10),
                             GestureDetector(
                               onTap: () {},
-                              child: Obx(
-                                () => Row(
-                                  children: [
-                                    SizedBox(
+                              child: Row(
+                                children: [
+                                  Obx(
+                                    () => SizedBox(
                                       height: size.height * 0.028,
                                       width: size.height * 0.028,
                                       child: GestureDetector(
@@ -1226,22 +1232,28 @@ class _QuestionState extends State<Question> {
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(width: 7),
-                                    likeCount.value == 0
-                                        ? const SizedBox.shrink()
-                                        : InkWell(
-                                            onTap: () {
-                                              showLikeList(context);
-                                            },
-                                            child: Text(
-                                              '${likeCount.value}',
-                                              style: textStyleW600(
-                                                  size.width * 0.038,
-                                                  AppColors.blackText),
-                                            ),
+                                  ),
+                                  const SizedBox(
+                                    width: 7,
+                                  ),
+                                  // ignore: unrelated_type_equality_checks
+                                  likeCount.value == 0
+                                      ? const SizedBox.shrink()
+                                      : InkWell(
+                                          onTap: () {
+                                            showLikeList(context);
+                                          },
+                                          child: Text(
+                                            '${likeCount.value}',
+                                            style: textStyleW600(
+                                                size.width * 0.038,
+                                                AppColors.blackText),
                                           ),
-                                  ],
-                                ),
+                                        ),
+                                  const SizedBox(
+                                    width: 15,
+                                  ),
+                                ],
                               ),
                             ),
                             const SizedBox(width: 15),
@@ -1252,7 +1264,7 @@ class _QuestionState extends State<Question> {
                             ),
                             const SizedBox(width: 7),
                             Text(
-                              post.totalquestionAnswer.toString(),
+                              "12",
                               style: TextStyle(
                                 fontFamily: "Metropolis",
                                 fontWeight: FontWeight.w600,
@@ -1319,7 +1331,7 @@ class _QuestionState extends State<Question> {
                   Align(
                     alignment: Alignment.topLeft,
                     child: Text(
-                      'Answer (${post.totalquestionAnswer.toString()})',
+                      'Answer',
                       style: textStyleW700(
                           size.width * 0.038, AppColors.blackText),
                     ),

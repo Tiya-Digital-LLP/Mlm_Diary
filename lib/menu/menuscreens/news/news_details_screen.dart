@@ -8,6 +8,8 @@ import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/custom_news_comment.dart';
 import 'package:mlmdiary/menu/menuscreens/news/news_like_list_content.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
+import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -28,6 +30,8 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen> {
   final ManageNewsController controller = Get.put(ManageNewsController());
   dynamic post;
   PostTimeFormatter postTimeFormatter = PostTimeFormatter();
+  final UserProfileController userProfileController =
+      Get.put(UserProfileController());
 // like
   late RxBool isLiked;
   late RxInt likeCount;
@@ -106,51 +110,63 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 8),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            backgroundColor: const Color(0XFFCCC9C9),
-                            radius: size.width * 0.07,
-                            child: ClipOval(
-                              child: CachedNetworkImage(
-                                imageUrl: post.imageUrl ?? '',
-                                height: 97,
-                                width: 105,
-                                fit: BoxFit.fill,
-                                placeholder: (context, url) => const Center(
-                                    child: CircularProgressIndicator()),
-                                errorWidget: (context, url, error) =>
-                                    const Icon(Icons.error),
+                      child: InkWell(
+                        onTap: () async {
+                          await userProfileController.fetchUserAllPost(
+                            1,
+                            post.id ?? 0,
+                          );
+                          Get.toNamed(
+                            Routes.userprofilescreencopy,
+                            arguments: post,
+                          );
+                        },
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              backgroundColor: const Color(0XFFCCC9C9),
+                              radius: size.width * 0.07,
+                              child: ClipOval(
+                                child: CachedNetworkImage(
+                                  imageUrl: post.imageUrl ?? '',
+                                  height: 97,
+                                  width: 105,
+                                  fit: BoxFit.fill,
+                                  placeholder: (context, url) => const Center(
+                                      child: CircularProgressIndicator()),
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(Icons.error),
+                                ),
                               ),
                             ),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    post.userData!.name ?? '',
-                                    style: textStyleW700(size.width * 0.043,
-                                        AppColors.blackText),
-                                  ),
-                                  const SizedBox(
-                                    width: 07,
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                postTimeFormatter
-                                    .formatPostTime(post.createdate ?? ''),
-                                style: textStyleW400(size.width * 0.035,
-                                    AppColors.blackText.withOpacity(0.5)),
-                              ),
-                            ],
-                          )
-                        ],
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      post.userData!.name ?? '',
+                                      style: textStyleW700(size.width * 0.043,
+                                          AppColors.blackText),
+                                    ),
+                                    const SizedBox(
+                                      width: 07,
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  postTimeFormatter
+                                      .formatPostTime(post.createdate ?? ''),
+                                  style: textStyleW400(size.width * 0.035,
+                                      AppColors.blackText.withOpacity(0.5)),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
                       ),
                     ),
                     SizedBox(

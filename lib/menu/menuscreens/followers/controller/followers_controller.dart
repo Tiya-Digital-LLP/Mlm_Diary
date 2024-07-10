@@ -17,11 +17,13 @@ class FollowersController extends GetxController {
   // Bookmark profile
   var followProfileStatusMap = <int, bool>{};
   var followProfileCountMap = <int, int>{};
+  var isEndOfData = false.obs;
 
   var followers = <GetFollowersData>[].obs;
   var following = <GetFollowingData>[].obs;
   var followersCount = 0.obs;
   var followingCount = 0.obs;
+  final ScrollController scrollController = ScrollController();
 
   final search = TextEditingController();
 
@@ -31,8 +33,22 @@ class FollowersController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    getFollowers();
-    getFollowing();
+    scrollController.addListener(() {
+      if (scrollController.position.pixels ==
+              scrollController.position.maxScrollExtent &&
+          !isEndOfData.value) {
+        int nextPage = (followers.length ~/ 10) + 1;
+        getFollowers(nextPage);
+      }
+    });
+    scrollController.addListener(() {
+      if (scrollController.position.pixels ==
+              scrollController.position.maxScrollExtent &&
+          !isEndOfData.value) {
+        int nextPage = (following.length ~/ 10) + 1;
+        getFollowing(nextPage);
+      }
+    });
   }
 
   // Follow-Unfollow
@@ -104,7 +120,7 @@ class FollowersController extends GetxController {
   }
 
   // Follow-Unfollow
-  Future<void> getFollowers() async {
+  Future<void> getFollowers(int page) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
     int? userId = prefs.getInt('user_id');
@@ -125,6 +141,7 @@ class FollowersController extends GetxController {
         request.fields['device'] = device;
         request.fields['user_id'] = userId.toString();
         request.fields['search'] = search.value.text;
+        request.fields['page'] = page.toString();
 
         if (kDebugMode) {
           print('Sending request to: ${uri.toString()}');
@@ -170,7 +187,7 @@ class FollowersController extends GetxController {
   }
 
   // Follow-Unfollow
-  Future<void> getFollowing() async {
+  Future<void> getFollowing(int page) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
     int? userId = prefs.getInt('user_id');
@@ -191,6 +208,7 @@ class FollowersController extends GetxController {
         request.fields['device'] = device;
         request.fields['user_id'] = userId.toString();
         request.fields['search'] = search.value.text;
+        request.fields['page'] = page.toString();
 
         if (kDebugMode) {
           print('Sending request to: ${uri.toString()}');

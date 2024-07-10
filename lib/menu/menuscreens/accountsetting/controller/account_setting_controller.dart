@@ -720,6 +720,10 @@ class AccountSeetingController extends GetxController {
   Future<void> sendChangePasswordRequest(
       BuildContext context, int userId, String newPassword) async {
     try {
+      if (kDebugMode) {
+        print('Sending change password request...');
+      }
+
       final response = await http.post(
         Uri.parse('${Constants.baseUrl}${Constants.changepassword}'),
         body: {
@@ -729,39 +733,52 @@ class AccountSeetingController extends GetxController {
       );
 
       if (kDebugMode) {
-        print('body userid: $userId');
+        print('Request sent.');
       }
+
       if (kDebugMode) {
+        print('body userid: $userId');
         print('body newPassword: $newPassword');
       }
 
       if (response.statusCode == 200) {
+        if (kDebugMode) {
+          print('Response received with status code 200.');
+        }
+
         final responseData = json.decode(response.body);
         if (responseData['result'] == 1) {
+          if (kDebugMode) {
+            print('Password changed successfully.');
+          }
           // ignore: use_build_context_synchronously
           showToastverifedborder("Password changed successfully!", context);
         } else {
-          showToasterrorborder(
-              responseData['message'] ?? "Password change failed",
-              // ignore: use_build_context_synchronously
-              context
-              // ignore: use_build_context_synchronously
-              );
+          final errorMessage =
+              responseData['message'] ?? "Password change failed";
+          if (kDebugMode) {
+            print('Password change failed: $errorMessage');
+          }
+          // ignore: use_build_context_synchronously
+          showToasterrorborder(errorMessage, context);
         }
       } else {
+        if (kDebugMode) {
+          print(
+              'Password change request failed with status code ${response.statusCode}: ${response.reasonPhrase}');
+        }
         showToasterrorborder(
-            "Password change request failed: ${response.reasonPhrase}",
-            // ignore: use_build_context_synchronously
-            context
-            // ignore: use_build_context_synchronously
-            );
+          "Password change request failed: ${response.reasonPhrase}",
+          // ignore: use_build_context_synchronously
+          context,
+        );
       }
     } catch (e) {
+      if (kDebugMode) {
+        print('An error occurred: $e');
+      }
       // ignore: use_build_context_synchronously
       showToasterrorborder("An error occurred: $e", context);
-      if (kDebugMode) {
-        print('Error: $e');
-      }
     }
   }
 

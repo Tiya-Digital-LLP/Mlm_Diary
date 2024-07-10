@@ -89,7 +89,11 @@ class GetFollowersData {
 	@JSONField(name: "is_approved")
 	int? isApproved = 0;
 	String? countrycode1 = '';
+	dynamic lat;
+	dynamic lng;
 	String? date = '';
+	String? title = '';
+	int? pgcnt = 0;
 	@JSONField(name: "image_url")
 	String? imageUrl = '';
 	@JSONField(name: "is_following")

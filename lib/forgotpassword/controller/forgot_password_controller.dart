@@ -7,7 +7,6 @@ import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/forgot_password_entity.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ForgotPasswordController extends GetxController {
   Rx<TextEditingController> email = TextEditingController().obs;
@@ -62,7 +61,6 @@ class ForgotPasswordController extends GetxController {
               // ignore: use_build_context_synchronously
               context);
           if (forgotPasswordEntity.userId != null) {
-            await saveUserId(forgotPasswordEntity.userId!); // Save userId
           } else {
             showToasterrorborder(
                 "User ID is null, cannot save to shared preferences",
@@ -130,8 +128,8 @@ class ForgotPasswordController extends GetxController {
         if (responseData['result'] == 1) {
           // ignore: use_build_context_synchronously
           showToastverifedborder("Password changed successfully!", context);
-          Get.offNamed(
-            Routes.mainscreen,
+          Get.toNamed(
+            Routes.login,
           );
         } else {
           showToasterrorborder(
@@ -150,15 +148,5 @@ class ForgotPasswordController extends GetxController {
         print('Error: $e');
       }
     }
-  }
-
-  Future<void> saveUserId(int userId) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('userId', userId);
-  }
-
-  Future<int?> getUserId() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getInt('userId');
   }
 }

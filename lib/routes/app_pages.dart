@@ -37,6 +37,7 @@ import 'package:mlmdiary/menu/menuscreens/mlmcompanies/mlmcompanies_details_scre
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/add_question_answer.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/user_question.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/question.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/user_question_copy.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/question_answer.dart';
 import 'package:mlmdiary/menu/menuscreens/news/manage_news_plus_icon.dart';
 import 'package:mlmdiary/menu/menuscreens/news/manage_news.dart';
@@ -148,7 +149,7 @@ class AppPages {
     ),
     GetPage(
       name: Routes.followers,
-      page: () => const Folowers(),
+      page: () => const Followers(),
     ),
     GetPage(
       name: Routes.notification,
@@ -301,6 +302,10 @@ class AppPages {
     GetPage(
       name: Routes.userquestion,
       page: () => const UserQuestion(),
+    ),
+    GetPage(
+      name: Routes.userquestioncopy,
+      page: () => const UserQuestionCopy(),
     ),
     GetPage(
       name: Routes.favouritrdetailsscreen,

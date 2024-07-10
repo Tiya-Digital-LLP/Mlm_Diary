@@ -237,14 +237,26 @@ class QuestionAnswerController extends GetxController {
   Future<void> deleteComment(int newsId, int commentId, context) async {
     isLoading(true);
 
+    if (kDebugMode) {
+      print('Starting deleteComment function');
+    }
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
     String device = Platform.isAndroid ? 'android' : 'ios';
 
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
+      if (kDebugMode) {
+        print('Connectivity check result: $connectivityResult');
+      }
+
       // ignore: unrelated_type_equality_checks
       if (connectivityResult != ConnectivityResult.none) {
+        if (kDebugMode) {
+          print('Internet connection detected');
+        }
+
         var uri = Uri.parse('${Constants.baseUrl}${Constants.deletecommment}');
         var request = http.MultipartRequest('POST', uri);
 
@@ -257,23 +269,38 @@ class QuestionAnswerController extends GetxController {
         final response = await http.Response.fromStream(streamedResponse);
 
         if (response.statusCode == 200) {
+          if (kDebugMode) {
+            print('Comment deleted successfully');
+          }
           jsonDecode(response.body);
           // Handle success response as needed
           await getAnswers(1, newsId);
         } else {
           if (kDebugMode) {
+            print('Error response received: ${response.statusCode}');
+          }
+          if (kDebugMode) {
             print("Error: ${response.body}");
           }
         }
       } else {
+        if (kDebugMode) {
+          print('No internet connection');
+        }
         showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
+      if (kDebugMode) {
+        print('Exception occurred: $e');
+      }
       if (kDebugMode) {
         print("Error: $e");
       }
     } finally {
       isLoading(false);
+      if (kDebugMode) {
+        print('deleteComment function completed');
+      }
     }
   }
 
@@ -460,6 +487,59 @@ class QuestionAnswerController extends GetxController {
         request.fields['device'] = device;
         request.fields['answer_id'] = answerId.toString();
         request.fields['comment_id'] = commentId.toString();
+        request.fields['comment'] = commment.value.text;
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var addCommentNewsEntity = AddAnswerCommentEntity.fromJson(data);
+          getAnswers(1, answerId);
+
+          if (kDebugMode) {
+            print('Success: $addCommentNewsEntity');
+          }
+        } else {
+          if (kDebugMode) {
+            print("Error: ${response.body}");
+          }
+        }
+      } else {
+        showToasterrorborder("No internet connection", context);
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error: $e");
+      }
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<void> addReplyAnswer(int answerId, context) async {
+    isLoading(true);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = '';
+    if (Platform.isAndroid) {
+      device = 'android';
+    } else if (Platform.isIOS) {
+      device = 'ios';
+    }
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri =
+            Uri.parse('${Constants.baseUrl}${Constants.addcommentanswerreply}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['answer_id'] = answerId.toString();
         request.fields['comment'] = commment.value.text;
 
         final streamedResponse = await request.send();

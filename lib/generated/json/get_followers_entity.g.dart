@@ -298,9 +298,25 @@ GetFollowersData $GetFollowersDataFromJson(Map<String, dynamic> json) {
   if (countrycode1 != null) {
     getFollowersData.countrycode1 = countrycode1;
   }
+  final dynamic lat = json['lat'];
+  if (lat != null) {
+    getFollowersData.lat = lat;
+  }
+  final dynamic lng = json['lng'];
+  if (lng != null) {
+    getFollowersData.lng = lng;
+  }
   final String? date = jsonConvert.convert<String>(json['date']);
   if (date != null) {
     getFollowersData.date = date;
+  }
+  final String? title = jsonConvert.convert<String>(json['title']);
+  if (title != null) {
+    getFollowersData.title = title;
+  }
+  final int? pgcnt = jsonConvert.convert<int>(json['pgcnt']);
+  if (pgcnt != null) {
+    getFollowersData.pgcnt = pgcnt;
   }
   final String? imageUrl = jsonConvert.convert<String>(json['image_url']);
   if (imageUrl != null) {
@@ -374,7 +390,11 @@ Map<String, dynamic> $GetFollowersDataToJson(GetFollowersData entity) {
   data['proceeddate'] = entity.proceeddate;
   data['is_approved'] = entity.isApproved;
   data['countrycode1'] = entity.countrycode1;
+  data['lat'] = entity.lat;
+  data['lng'] = entity.lng;
   data['date'] = entity.date;
+  data['title'] = entity.title;
+  data['pgcnt'] = entity.pgcnt;
   data['image_url'] = entity.imageUrl;
   data['is_following'] = entity.isFollowing;
   return data;
@@ -441,7 +461,11 @@ extension GetFollowersDataExtension on GetFollowersData {
     String? proceeddate,
     int? isApproved,
     String? countrycode1,
+    dynamic lat,
+    dynamic lng,
     String? date,
+    String? title,
+    int? pgcnt,
     String? imageUrl,
     bool? isFollowing,
   }) {
@@ -505,7 +529,11 @@ extension GetFollowersDataExtension on GetFollowersData {
       ..proceeddate = proceeddate ?? this.proceeddate
       ..isApproved = isApproved ?? this.isApproved
       ..countrycode1 = countrycode1 ?? this.countrycode1
+      ..lat = lat ?? this.lat
+      ..lng = lng ?? this.lng
       ..date = date ?? this.date
+      ..title = title ?? this.title
+      ..pgcnt = pgcnt ?? this.pgcnt
       ..imageUrl = imageUrl ?? this.imageUrl
       ..isFollowing = isFollowing ?? this.isFollowing;
   }

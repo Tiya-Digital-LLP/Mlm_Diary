@@ -108,7 +108,7 @@ class _QuationAnswerState extends State<QuationAnswer> {
                       child: GestureDetector(
                         onTap: () {
                           Get.toNamed(
-                            Routes.userquestion,
+                            Routes.userquestioncopy,
                             arguments: controller.questionList[index],
                           );
                         },

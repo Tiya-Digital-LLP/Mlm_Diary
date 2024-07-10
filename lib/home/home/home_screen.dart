@@ -254,80 +254,85 @@ class _HomeScreenState extends State<HomeScreen> {
                           SizedBox(height: size.height * 0.01),
                           SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: [
-                                for (int index = 0;
-                                    index < controller.mutualFriendList.length;
-                                    index++)
-                                  Row(
-                                    children: [
-                                      SizedBox(
-                                          width: (index == 0)
-                                              ? 0
-                                              : size.width * 0.03),
-                                      Builder(builder: (context) {
-                                        return InkWell(
-                                          onTap: () async {
-                                            await databaseController
-                                                .fetchUserPost(
-                                                    controller
-                                                            .mutualFriendList[
-                                                                index]
-                                                            .id ??
-                                                        0,
-                                                    context);
-                                            await userProfileController
-                                                .fetchUserAllPost(
-                                              1,
-                                              controller.mutualFriendList[index]
-                                                      .id ??
-                                                  0,
-                                            );
-                                            Get.toNamed(
-                                              Routes.userprofilescreen,
-                                              arguments: controller
-                                                  .mutualFriendList[index],
-                                            );
-                                          },
-                                          child: SuggetionUserCard(
-                                            userImage: controller
-                                                    .mutualFriendList[index]
-                                                    .imageUrl ??
-                                                '',
-                                            name: controller
-                                                    .mutualFriendList[index]
-                                                    .name ??
-                                                '',
-                                            post: controller
-                                                    .mutualFriendList[index]
-                                                    .company ??
-                                                '',
-                                          ),
-                                        );
-                                      }),
-                                    ],
+                            child: Obx(
+                              () => Row(
+                                children: [
+                                  for (int index = 0;
+                                      index <
+                                          controller.mutualFriendList.length;
+                                      index++)
+                                    Row(
+                                      children: [
+                                        SizedBox(
+                                            width: (index == 0)
+                                                ? 0
+                                                : size.width * 0.03),
+                                        Builder(builder: (context) {
+                                          return InkWell(
+                                            onTap: () async {
+                                              await databaseController
+                                                  .fetchUserPost(
+                                                      controller
+                                                              .mutualFriendList[
+                                                                  index]
+                                                              .id ??
+                                                          0,
+                                                      context);
+                                              await userProfileController
+                                                  .fetchUserAllPost(
+                                                1,
+                                                controller
+                                                        .mutualFriendList[index]
+                                                        .id ??
+                                                    0,
+                                              );
+                                              Get.toNamed(
+                                                Routes.userprofilescreen,
+                                                arguments: controller
+                                                    .mutualFriendList[index],
+                                              );
+                                            },
+                                            child: SuggetionUserCard(
+                                              userImage: controller
+                                                      .mutualFriendList[index]
+                                                      .imageUrl ??
+                                                  '',
+                                              name: controller
+                                                      .mutualFriendList[index]
+                                                      .name ??
+                                                  '',
+                                              post: controller
+                                                      .mutualFriendList[index]
+                                                      .company ??
+                                                  '',
+                                            ),
+                                          );
+                                        }),
+                                      ],
+                                    ),
+                                  10.sbw,
+                                  InkWell(
+                                    onTap: () {
+                                      Get.toNamed(Routes.databasescreen);
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          'view all',
+                                          style: textStyleW700(
+                                              size.width * 0.036,
+                                              AppColors.blackText),
+                                        ),
+                                        const Icon(
+                                          Icons.arrow_right,
+                                          size: 30,
+                                        )
+                                      ],
+                                    ),
                                   ),
-                                10.sbw,
-                                InkWell(
-                                  onTap: () {
-                                    Get.toNamed(Routes.databasescreen);
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        'view all',
-                                        style: textStyleW700(size.width * 0.036,
-                                            AppColors.blackText),
-                                      ),
-                                      const Icon(
-                                        Icons.arrow_right,
-                                        size: 30,
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                20.sbw,
-                              ],
+                                  20.sbw,
+                                ],
+                              ),
                             ),
                           ),
                           15.sbh,

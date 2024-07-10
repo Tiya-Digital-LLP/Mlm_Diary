@@ -314,17 +314,20 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                       10.sbw,
                       InkWell(
                         onTap: () async {
-                          final post =
-                              databaseController.mlmDetailsDatabaseList[0];
+                          if (messageController.chatList.isNotEmpty) {
+                            final post = messageController.chatList[0];
 
-                          await messageController
-                              .fetchMyChatDetail(post.chatId.toString());
-                          Get.toNamed(
-                            Routes.messagedetailscreen,
-                            arguments: {
-                              'fromid': post.id ?? '',
-                            },
-                          );
+                            await messageController
+                                .fetchMyChatDetail(post.chatId.toString());
+                            Get.toNamed(Routes.messagedetailscreen,
+                                arguments: post);
+                          } else {
+                            Get.snackbar(
+                              "No Chats",
+                              "There are no chats available.",
+                              snackPosition: SnackPosition.BOTTOM,
+                            );
+                          }
                         },
                         child: const SocialButton(
                           icon: Assets.svgChat,

@@ -137,7 +137,6 @@ class Signup2Controller extends GetxController {
     return specialCharOrNumber.hasMatch(text);
   }
 
-  // Update your saveCompanyDetails function to accept an optional image file
   // Save company details with the stored API token
   Future<void> saveCompanyDetails({
     required File? imageFile,
@@ -198,7 +197,7 @@ class Signup2Controller extends GetxController {
           if (kDebugMode) {
             print("Response body: $jsonBody");
           }
-          Get.offNamed(Routes.mainscreen);
+          Get.offAllNamed(Routes.mainscreen);
           // Parse response and update UI as needed
         } else {
           if (kDebugMode) {
