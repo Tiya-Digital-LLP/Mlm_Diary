@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_api_headers/google_api_headers.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/database/controller/database_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
@@ -15,6 +16,7 @@ import 'package:mlmdiary/widgets/customfilter/custom_filter.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
 import 'package:mlmdiary/database/user_card.dart';
 import 'package:mlmdiary/widgets/custon_test_app_bar.dart';
+import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 
 class DatabaseScreen extends StatefulWidget {
   const DatabaseScreen({super.key});
@@ -44,7 +46,7 @@ class _DatabaseState extends State<DatabaseScreen> {
   }
 
   Future<void> _refreshData() async {
-    await controller.getMlmDatabase(1);
+    controller.clearFields();
   }
 
   @override
@@ -235,7 +237,13 @@ class _DatabaseState extends State<DatabaseScreen> {
               Obx(() {
                 if (controller.isLoading.value &&
                     controller.mlmDatabaseList.isEmpty) {
-                  return const Center(child: CircularProgressIndicator());
+                  return Center(
+                    child: CustomLottieAnimation(
+                      child: Lottie.asset(
+                        Assets.lottieLottie,
+                      ),
+                    ),
+                  );
                 }
 
                 if (controller.mlmDatabaseList.isEmpty) {
@@ -261,8 +269,13 @@ class _DatabaseState extends State<DatabaseScreen> {
                         physics: const AlwaysScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
                           if (index == controller.mlmDatabaseList.length) {
-                            return const Center(
-                                child: CircularProgressIndicator());
+                            return Center(
+                              child: CustomLottieAnimation(
+                                child: Lottie.asset(
+                                  Assets.lottieLottie,
+                                ),
+                              ),
+                            );
                           }
                           final post = controller.mlmDatabaseList[index];
                           String location =

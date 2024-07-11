@@ -19,6 +19,7 @@ import 'package:mlmdiary/generated/get_classified_entity.dart';
 import 'package:mlmdiary/generated/get_comment_classified_entity.dart';
 import 'package:mlmdiary/generated/get_company_entity.dart';
 import 'package:mlmdiary/generated/get_sub_category_entity.dart';
+import 'package:mlmdiary/generated/get_user_profile_entity.dart';
 import 'package:mlmdiary/generated/liked_user_entity.dart';
 import 'package:http/http.dart' as http;
 import 'package:mlmdiary/utils/custom_toast.dart';
@@ -79,7 +80,6 @@ class ClasifiedController extends GetxController {
 
   RxBool titleError = false.obs;
   RxBool discriptionError = false.obs;
-  RxBool urlError = false.obs;
   RxBool locationError = false.obs;
   RxBool categoryError = false.obs;
   RxBool subCategoryError = false.obs;
@@ -115,6 +115,8 @@ class ClasifiedController extends GetxController {
     'classified',
   ];
 
+  var userProfile = GetUserProfileEntity().obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -130,6 +132,63 @@ class ClasifiedController extends GetxController {
         );
       }
     });
+  }
+
+  Future<void> fetchUserLocation() async {
+    isLoading(true);
+
+    final prefs = await SharedPreferences.getInstance();
+    final apiToken = prefs.getString(Constants.accessToken);
+
+    if (apiToken == null || apiToken.isEmpty) {
+      isLoading(false);
+      Get.snackbar('Error', 'No API token found');
+      return;
+    }
+
+    try {
+      final response = await http.post(
+        Uri.parse('${Constants.baseUrl}${Constants.userprofile}'),
+        body: {'api_token': apiToken},
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        final userProfileEntity = GetUserProfileEntity.fromJson(responseData);
+        userProfile(userProfileEntity);
+
+        city.value.text = userProfileEntity.userProfile?.city ?? '';
+        state.value.text = userProfileEntity.userProfile?.state ?? '';
+        country.value.text = userProfileEntity.userProfile?.country ?? '';
+
+        // Combine city, state, and country to form location
+        location.value.text = _formatLocation(
+          city.value.text,
+          state.value.text,
+          country.value.text,
+        );
+
+        if (kDebugMode) {
+          print('Account Settings Data: $responseData');
+        }
+      } else {
+        if (kDebugMode) {
+          print("Error: ${response.body}");
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error: $e");
+      }
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  String _formatLocation(String city, String state, String country) {
+    final parts =
+        [city, state, country].where((part) => part.isNotEmpty).toList();
+    return parts.join(', ');
   }
 
   void resetSelections() {
@@ -573,7 +632,8 @@ class ClasifiedController extends GetxController {
     }
   }
 
-  Future<void> addClassifiedDetails({required File? imageFile, context}) async {
+  Future<void> addClassifiedDetails(
+      {required File? imageFile, BuildContext? context}) async {
     isLoading(true);
     String device = '';
     if (Platform.isAndroid) {
@@ -608,7 +668,6 @@ class ClasifiedController extends GetxController {
         request.fields['location'] = location.value.text;
         request.fields['city'] = city.value.text;
         request.fields['state'] = state.value.text;
-        request.fields['pincode'] = '382350';
         request.fields['lat'] = lat.value.text;
         request.fields['lng'] = lng.value.text;
         request.fields['country'] = country.value.text;
@@ -648,7 +707,6 @@ class ClasifiedController extends GetxController {
           if (kDebugMode) {
             print("Response body: $jsonBody");
             clearFormFields();
-            Get.back();
           }
         } else {
           if (kDebugMode) {
@@ -658,7 +716,8 @@ class ClasifiedController extends GetxController {
           }
         }
       } else {
-        showToasterrorborder("No internet connection", context);
+        // ignore: use_build_context_synchronously
+        showToasterrorborder("No internet connection", context!);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -1097,7 +1156,7 @@ class ClasifiedController extends GetxController {
     String enteredTitle = title.value.text;
     if (enteredTitle.isEmpty || hasSpecialCharactersOrNumbers(enteredTitle)) {
       // Show toast message for invalid title
-      showToasterrorborder("Please Enter Title", context);
+      showToasterrorborder("Please Enter Your Classified Title", context);
       titleError.value = true;
     } else {
       titleError.value = false;
@@ -1130,19 +1189,11 @@ class ClasifiedController extends GetxController {
     String enteredDiscription = discription.value.text;
     if (enteredDiscription.isEmpty ||
         hasSpecialTextOrNumbers(enteredDiscription)) {
-      showToasterrorborder("Please Enter Discription", context);
+      showToasterrorborder(
+          "Please Enter Description Minimum 250 Characters", context);
       discriptionError.value = true;
     } else {
       discriptionError.value = false;
-    }
-  }
-
-  void urlValidation() {
-    String enteredUrl = url.value.text;
-    if (enteredUrl.isEmpty || hasSpecialTextOrNumbers(enteredUrl)) {
-      urlError.value = true;
-    } else {
-      urlError.value = false;
     }
   }
 

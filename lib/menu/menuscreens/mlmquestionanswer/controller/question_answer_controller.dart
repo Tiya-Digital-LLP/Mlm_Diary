@@ -19,6 +19,7 @@ import 'package:mlmdiary/generated/get_sub_category_entity.dart';
 import 'package:mlmdiary/generated/my_question_entity.dart';
 import 'package:mlmdiary/generated/question_like_entity.dart';
 import 'package:mlmdiary/generated/question_like_list_entity.dart';
+import 'package:mlmdiary/generated/update_answer_entity.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -304,6 +305,75 @@ class QuestionAnswerController extends GetxController {
     }
   }
 
+  Future<void> deleteAnswers(int newsId, int answerid, context) async {
+    isLoading(true);
+
+    if (kDebugMode) {
+      print('Starting deleteAnswer function');
+    }
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = Platform.isAndroid ? 'android' : 'ios';
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      if (kDebugMode) {
+        print('Connectivity check result: $connectivityResult');
+      }
+
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        if (kDebugMode) {
+          print('Internet connection detected');
+        }
+
+        var uri = Uri.parse('${Constants.baseUrl}${Constants.deleteanswer}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['answer_id'] = answerid.toString();
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          if (kDebugMode) {
+            print('Answer deleted successfully');
+          }
+          jsonDecode(response.body);
+          // Handle success response as needed
+          await getAnswers(1, newsId);
+        } else {
+          if (kDebugMode) {
+            print('Error response received: ${response.statusCode}');
+          }
+          if (kDebugMode) {
+            print("Error: ${response.body}");
+          }
+        }
+      } else {
+        if (kDebugMode) {
+          print('No internet connection');
+        }
+        showToasterrorborder("No internet connection", context);
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Exception occurred: $e');
+      }
+      if (kDebugMode) {
+        print("Error: $e");
+      }
+    } finally {
+      isLoading(false);
+      if (kDebugMode) {
+        print('deleteComment function completed');
+      }
+    }
+  }
+
   Future<void> editComment(int newsId, int commentId, String newComment,
       String type, context) async {
     isLoading(true);
@@ -331,6 +401,54 @@ class QuestionAnswerController extends GetxController {
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
           var editCommentEntity = EditCommentEntity.fromJson(data);
+          await getAnswers(1, newsId);
+
+          if (kDebugMode) {
+            print('Success: $editCommentEntity');
+          }
+        } else {
+          if (kDebugMode) {
+            print("Error: ${response.body}");
+          }
+        }
+      } else {
+        showToasterrorborder("No internet connection", context);
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error: $e");
+      }
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<void> editAnswer(
+      int newsId, int answerid, String newComment, context) async {
+    isLoading(true);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = Platform.isAndroid ? 'android' : 'ios';
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri = Uri.parse('${Constants.baseUrl}${Constants.editanswer}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['answer_id'] = answerid.toString();
+        request.fields['answer'] = commment.value.text;
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var editCommentEntity = UpdateAnswerEntity.fromJson(data);
           await getAnswers(1, newsId);
 
           if (kDebugMode) {

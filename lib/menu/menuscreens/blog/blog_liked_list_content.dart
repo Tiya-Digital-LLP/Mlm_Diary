@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
+import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
+import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 
 class BlogLikedListContent extends StatefulWidget {
   const BlogLikedListContent({super.key});
@@ -26,7 +29,12 @@ class _ClassifiedLikedListContentState extends State<BlogLikedListContent> {
     final Size size = MediaQuery.of(context).size;
     return Obx(
       () => controller.isLoading.value
-          ? const Center(child: CircularProgressIndicator())
+          ? Center(
+              child: CustomLottieAnimation(
+              child: Lottie.asset(
+                Assets.lottieLottie,
+              ),
+            ))
           : Container(
               color: AppColors.white,
               child: Padding(

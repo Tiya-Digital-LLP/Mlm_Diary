@@ -137,7 +137,12 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
             onRefresh: _refreshFollowers,
             child: Obx(() {
               if (controller.isLoading.value) {
-                return const Center(child: CircularProgressIndicator());
+                return Center(
+                    child: CustomLottieAnimation(
+                  child: Lottie.asset(
+                    Assets.lottieLottie,
+                  ),
+                ));
               }
               if (controller.followers.isEmpty) {
                 return Align(
@@ -153,7 +158,12 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
                       (controller.isLoading.value ? 1 : 0),
                   itemBuilder: (context, index) {
                     if (index == controller.followers.length) {
-                      return const Center(child: CircularProgressIndicator());
+                      return Center(
+                          child: CustomLottieAnimation(
+                        child: Lottie.asset(
+                          Assets.lottieLottie,
+                        ),
+                      ));
                     }
                     final follower = controller.followers[index];
                     return Padding(
@@ -251,13 +261,21 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
             onRefresh: _refreshFollowing,
             child: Obx(() {
               if (controller.isLoading.value) {
-                return const Center(child: CircularProgressIndicator());
+                return Center(
+                    child: CustomLottieAnimation(
+                  child: Lottie.asset(
+                    Assets.lottieLottie,
+                  ),
+                ));
               }
-              if (controller.following.isEmpty) {
+              if (controller.following.isEmpty &&
+                  controller.isEndOfData.value) {
                 return Align(
                   alignment: Alignment.topCenter,
-                  child: CustomLottieAnimation(
-                    child: Lottie.asset(Assets.lottieLottie),
+                  child: Text(
+                    'No following found.',
+                    style:
+                        textStyleW700(size.width * 0.030, AppColors.blackText),
                   ),
                 );
               } else {
@@ -267,7 +285,12 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
                       (controller.isLoading.value ? 1 : 0),
                   itemBuilder: (context, index) {
                     if (index == controller.following.length) {
-                      return const Center(child: CircularProgressIndicator());
+                      return Center(
+                          child: CustomLottieAnimation(
+                        child: Lottie.asset(
+                          Assets.lottieLottie,
+                        ),
+                      ));
                     }
                     final following = controller.following[index];
                     return Padding(

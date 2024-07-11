@@ -88,7 +88,7 @@ class _ManageClassifiedPlusIconState extends State<ManageClassifiedPlusIcon> {
                       isError: controller.titleError.value,
                       byDefault: !controller.isTitleTyping.value,
                       onChanged: (value) {
-                        controller.titleValidation();
+                        controller.titleValidation(context);
                         controller.isTitleTyping.value = true;
                       },
                       height: 60,
@@ -203,7 +203,7 @@ class _ManageClassifiedPlusIconState extends State<ManageClassifiedPlusIcon> {
                       isError: controller.discriptionError.value,
                       byDefault: !controller.isDiscriptionTyping.value,
                       onChanged: (value) {
-                        controller.discriptionValidation();
+                        controller.discriptionValidation(context);
                         controller.isDiscriptionTyping.value = true;
                       },
                     ),
@@ -213,12 +213,11 @@ class _ManageClassifiedPlusIconState extends State<ManageClassifiedPlusIcon> {
                     () => BorderTextField(
                       keyboard: TextInputType.url,
                       textInputType: const [],
-                      hint: "Website Url",
+                      hint: "Website Url (Optional)",
                       controller: controller.url.value,
                       isError: controller.urlError.value,
                       byDefault: !controller.isUrlTyping.value,
                       onChanged: (value) {
-                        controller.urlValidation();
                         controller.isUrlTyping.value = true;
                       },
                       height: 60,
@@ -437,13 +436,14 @@ class _ManageClassifiedPlusIconState extends State<ManageClassifiedPlusIcon> {
         .isEmpty) {
       showToasterrorborder("Please Select SubCategory", context);
     } else if (controller.companyName.value.text.isEmpty) {
-      showToasterrorborder("Please Enter Company Name", context);
+      showToasterrorborder("Please Add Your Company Name", context);
     } else if (controller.location.value.text.isEmpty) {
       showToasterrorborder("The address field is required.", context);
     } else if (controller.isCategorySelectedList.contains(true)) {
       // Perform address validation
       if (controller.addressValidationColor.value != AppColors.redText) {
         await controller.updateClassified(imageFile: file.value);
+        Get.back();
       } else {
         showToasterrorborder("Please enter a valid address.", context);
       }

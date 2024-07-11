@@ -436,72 +436,52 @@ class _SearchBarAppState extends State<SearchBarApp> {
   Widget horiztallist() {
     return SizedBox(
       height: 50,
-      child: Obx(() {
-        if (controller.isLoading.value && controller.homeList.isEmpty) {
-          return Center(
-              child: CustomLottieAnimation(
-            child: Lottie.asset(
-              Assets.lottieLottie,
-            ),
-          ));
-        }
-
-        if (controller.homeList.isEmpty) {
-          return const Center(
-            child: Text(
-              'Data not found',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
+      child: ListView.builder(
+        shrinkWrap: false,
+        scrollDirection: Axis.horizontal,
+        itemCount: controller.types.length,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+            child: Wrap(
+              spacing: 6.0,
+              runSpacing: 6.0,
+              children: [
+                Obx(
+                  () => ChoiceChip(
+                    label: Text(
+                      controller.types[index],
+                    ),
+                    selected: controller.selectedType.value ==
+                        controller.types[index],
+                    selectedColor: AppColors.blackText,
+                    onSelected: (bool selected) {
+                      controller.selectedType.value =
+                          selected ? controller.types[index] : 'All';
+                      controller.getHome(1);
+                    },
+                    backgroundColor: AppColors.grey.withOpacity(0.3),
+                    side: BorderSide.none,
+                    labelStyle: TextStyle(
+                      fontSize: 12.0,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.blackText,
+                      fontFamily: 'assets/fonst/Metropolis-Black.otf',
+                    ).copyWith(
+                      color: controller.selectedType.value ==
+                              controller.types[index]
+                          ? Colors.white
+                          : Colors.black,
+                    ),
+                    showCheckmark: false,
+                    // checkmarkColor: AppColors.backgroundColor,
+                  ),
+                ),
+              ],
             ),
           );
-        }
-
-        return ListView.builder(
-            shrinkWrap: false,
-            scrollDirection: Axis.horizontal,
-            itemCount: controller.types.length,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                child: Wrap(
-                  spacing: 6.0,
-                  runSpacing: 6.0,
-                  children: [
-                    ChoiceChip(
-                      label: Text(
-                        controller.types[index],
-                      ),
-                      selected: controller.selectedType.value ==
-                          controller.types[index],
-                      selectedColor: AppColors.blackText,
-                      onSelected: (bool selected) {
-                        controller.selectedType.value =
-                            selected ? controller.types[index] : 'All';
-                        controller.getHome(1);
-                      },
-                      backgroundColor: AppColors.grey.withOpacity(0.3),
-                      side: BorderSide.none,
-                      labelStyle: TextStyle(
-                              fontSize: 12.0,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.blackText,
-                              fontFamily: 'assets/fonst/Metropolis-Black.otf')
-                          .copyWith(
-                              color: controller.selectedType.value ==
-                                      controller.types[index]
-                                  ? Colors.white
-                                  : Colors.black),
-                      showCheckmark: false,
-                      // checkmarkColor: AppColors.backgroundColor,
-                    ),
-                  ],
-                ),
-              );
-            });
-      }),
+        },
+      ),
     );
   }
 }

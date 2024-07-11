@@ -8,7 +8,6 @@ import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_blog_comment_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
-import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
@@ -31,13 +30,14 @@ class _CommentDialogState extends State<CommentDialogBlog> {
   final PostTimeFormatter postTimeFormatter = PostTimeFormatter();
   final ManageBlogController controller = Get.put(ManageBlogController());
   late ScrollController _scrollController;
+  int? currentUserID;
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
     _refreshData();
-
+    _getUserId();
     _scrollController.addListener(_scrollListener);
   }
 
@@ -48,6 +48,12 @@ class _CommentDialogState extends State<CommentDialogBlog> {
   Future<int?> getUserId() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getInt(Constants.userId);
+  }
+
+  Future<void> _getUserId() async {
+    currentUserID = await getUserId();
+    setState(
+        () {}); // Trigger a rebuild to use the currentUserID in the build method
   }
 
   @override
@@ -102,6 +108,16 @@ class _CommentDialogState extends State<CommentDialogBlog> {
                     Assets.lottieLottie,
                   ),
                 ));
+              }
+
+              if (controller.getCommentList.isEmpty) {
+                return Center(
+                  child: Text(
+                    'No Any Comment Found',
+                    style:
+                        textStyleW700(size.width * 0.030, AppColors.blackText),
+                  ),
+                );
               }
 
               return ListView.builder(
@@ -251,127 +267,110 @@ class _CommentDialogState extends State<CommentDialogBlog> {
   }
 
   Widget _buildComment(GetBlogCommentData comment, Size size) {
-    return FutureBuilder<int?>(
-      future: getUserId(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
-              child: CustomLottieAnimation(
-            child: Lottie.asset(
-              Assets.lottieLottie,
-            ),
-          ));
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else {
-          final currentUserID = snapshot.data ?? 0;
+    currentUserID = currentUserID ?? 0;
 
-          bool isCurrentNewsUserComment = comment.userid == currentUserID;
-          if (kDebugMode) {
-            print('Current News User ID: $currentUserID');
-          }
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+    bool isCurrentNewsUserComment = comment.userid == currentUserID;
+    if (kDebugMode) {
+      print('Current News User ID: $currentUserID');
+    }
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CircleAvatar(
+                backgroundImage: NetworkImage(comment.userimage ?? ''),
+                radius: 20,
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CircleAvatar(
-                      backgroundImage: NetworkImage(comment.userimage ?? ''),
-                      radius: 20,
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            comment.name ?? '',
-                            style: TextStyle(
-                              fontSize: size.width * 0.043,
-                              color: AppColors.blackText,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            postTimeFormatter
-                                .formatPostTime(comment.createdate ?? ''),
-                            style: TextStyle(
-                              fontSize: size.width * 0.022,
-                              color: AppColors.grey,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          _buildHtmlContent(comment.comment ?? '', size),
-                          const SizedBox(height: 4),
-                          Row(
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  showModalBottomSheet(
-                                    context: context,
-                                    builder: (context) =>
-                                        _buildReplyBottomSheet(
-                                      context,
-                                      comment.id!,
-                                      size,
-                                    ),
-                                  );
-                                },
-                                child: Text(
-                                  'Reply',
-                                  style: TextStyle(
-                                    fontSize: size.width * 0.028,
-                                    color: Colors.blueAccent,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                              ),
-                              if (isCurrentNewsUserComment)
-                                TextButton(
-                                  onPressed: () {
-                                    _showEditCommentDialog(comment);
-                                  },
-                                  child: Text(
-                                    'Edit',
-                                    style: TextStyle(
-                                      fontSize: size.width * 0.028,
-                                      color: Colors.green,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                ),
-                              if (isCurrentNewsUserComment)
-                                TextButton(
-                                  onPressed: () => _showDeleteConfirmation(
-                                    context,
-                                    comment.id ?? 0,
-                                  ),
-                                  child: Text(
-                                    'Delete',
-                                    style: TextStyle(
-                                      fontSize: size.width * 0.028,
-                                      color: Colors.red,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ],
+                    Text(
+                      comment.name ?? '',
+                      style: TextStyle(
+                        fontSize: size.width * 0.043,
+                        color: AppColors.blackText,
+                        fontWeight: FontWeight.w700,
                       ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      postTimeFormatter
+                          .formatPostTime(comment.createdate ?? ''),
+                      style: TextStyle(
+                        fontSize: size.width * 0.022,
+                        color: AppColors.grey,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    _buildHtmlContent(comment.comment ?? '', size),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            showModalBottomSheet(
+                              context: context,
+                              builder: (context) => _buildReplyBottomSheet(
+                                context,
+                                comment.id!,
+                                size,
+                              ),
+                            );
+                          },
+                          child: Text(
+                            'Reply',
+                            style: TextStyle(
+                              fontSize: size.width * 0.028,
+                              color: Colors.blueAccent,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                        if (isCurrentNewsUserComment)
+                          TextButton(
+                            onPressed: () {
+                              _showEditCommentDialog(comment);
+                            },
+                            child: Text(
+                              'Edit',
+                              style: TextStyle(
+                                fontSize: size.width * 0.028,
+                                color: Colors.green,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        if (isCurrentNewsUserComment)
+                          TextButton(
+                            onPressed: () => _showDeleteConfirmation(
+                              context,
+                              comment.id ?? 0,
+                            ),
+                            child: Text(
+                              'Delete',
+                              style: TextStyle(
+                                fontSize: size.width * 0.028,
+                                color: Colors.red,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
                   ],
                 ),
-              ],
-            ),
-          );
-        }
-      },
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -495,118 +494,101 @@ class _CommentDialogState extends State<CommentDialogBlog> {
     GetBlogCommentDataCommentsReplays reply,
     Size size,
   ) {
-    return FutureBuilder<int?>(
-      future: getUserId(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
-              child: CustomLottieAnimation(
-            child: Lottie.asset(
-              Assets.lottieLottie,
-            ),
-          ));
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else {
-          final currentUserID = snapshot.data ?? 0;
-          bool isCurrentUserReply = reply.userid == currentUserID;
+    return GetBuilder<ManageBlogController>(
+      builder: (controller) {
+        currentUserID = currentUserID ?? 0;
 
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CircleAvatar(
-                  backgroundImage: NetworkImage(reply.userimage ?? ''),
-                  radius: 16,
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        reply.name ?? '',
-                        style: TextStyle(
-                          fontSize: size.width * 0.035,
-                          color: AppColors.blackText,
-                          fontWeight: FontWeight.w700,
-                        ),
+        bool isCurrentUserReply = reply.userid == currentUserID;
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CircleAvatar(
+                backgroundImage: NetworkImage(reply.userimage ?? ''),
+                radius: 16,
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      reply.name ?? '',
+                      style: TextStyle(
+                        fontSize: size.width * 0.035,
+                        color: AppColors.blackText,
+                        fontWeight: FontWeight.w700,
                       ),
-                      Text(
-                        postTimeFormatter
-                            .formatPostTime(reply.createdate ?? ''),
-                        style: TextStyle(
-                          fontSize: size.width * 0.022,
-                          color: AppColors.grey,
-                          fontWeight: FontWeight.w700,
-                        ),
+                    ),
+                    Text(
+                      postTimeFormatter.formatPostTime(reply.createdate ?? ''),
+                      style: TextStyle(
+                        fontSize: size.width * 0.022,
+                        color: AppColors.grey,
+                        fontWeight: FontWeight.w700,
                       ),
-                      4.sbh,
-                      Align(
-                        alignment: Alignment.topLeft,
-                        child: _buildHtmlContent(reply.comment ?? '', size),
-                      ),
-                      Align(
-                        alignment: Alignment.topLeft,
-                        child: InkWell(
-                          onTap: () {
-                            showModalBottomSheet(
-                              context: context,
-                              builder: (context) => _buildReplyBottomSheet(
-                                context,
-                                reply.id!,
-                                size,
-                              ),
-                            );
-                          },
-                          child: Row(
-                            children: [
-                              Text(
-                                'Reply',
+                    ),
+                    const SizedBox(height: 4),
+                    _buildHtmlContent(reply.comment ?? '', size),
+                    const SizedBox(height: 4),
+                    InkWell(
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (context) => _buildReplyBottomSheet(
+                            context,
+                            reply.id!,
+                            size,
+                          ),
+                        );
+                      },
+                      child: Row(
+                        children: [
+                          Text(
+                            'Reply',
+                            style: TextStyle(
+                              fontSize: size.width * 0.028,
+                              color: Colors.blueAccent,
+                            ),
+                          ),
+                          if (isCurrentUserReply)
+                            TextButton(
+                              onPressed: () {
+                                _showEditReplyDialog(reply);
+                              },
+                              child: Text(
+                                'Edit',
                                 style: TextStyle(
                                   fontSize: size.width * 0.028,
-                                  color: Colors.blueAccent,
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
-                              if (isCurrentUserReply)
-                                TextButton(
-                                  onPressed: () {
-                                    _showEditReplyDialog(reply);
-                                  },
-                                  child: Text(
-                                    'Edit',
-                                    style: TextStyle(
-                                      fontSize: size.width * 0.028,
-                                      color: Colors.green,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
+                            ),
+                          if (isCurrentUserReply)
+                            TextButton(
+                              onPressed: () => _showDeleteConfirmation(
+                                  context, reply.id ?? 0),
+                              child: Text(
+                                'Delete',
+                                style: TextStyle(
+                                  fontSize: size.width * 0.028,
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.w700,
                                 ),
-                              if (isCurrentUserReply)
-                                TextButton(
-                                  onPressed: () => _showDeleteConfirmation(
-                                      context, reply.id ?? 0),
-                                  child: Text(
-                                    'Delete',
-                                    style: TextStyle(
-                                      fontSize: size.width * 0.028,
-                                      color: Colors.red,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ),
+                              ),
+                            ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          );
-        }
+              ),
+            ],
+          ),
+        );
       },
     );
   }
@@ -615,119 +597,101 @@ class _CommentDialogState extends State<CommentDialogBlog> {
     GetBlogCommentDataCommentsReplaysCommentsReplays reply,
     Size size,
   ) {
-    return FutureBuilder<int?>(
-      future: getUserId(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
-              child: CustomLottieAnimation(
-            child: Lottie.asset(
-              Assets.lottieLottie,
-            ),
-          ));
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else {
-          final currentUserID = snapshot.data ?? 0;
-          bool isCurrentUserReply = reply.userid == currentUserID;
+    return GetBuilder<ManageBlogController>(
+      builder: (controller) {
+        currentUserID = currentUserID ?? 0; // Use the stored user ID
 
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Adjust layout as needed for nested replies
-                CircleAvatar(
-                  backgroundImage: NetworkImage(reply.userimage ?? ''),
-                  radius: 16,
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        reply.name ?? '',
-                        style: TextStyle(
-                          fontSize: size.width * 0.035,
-                          color: AppColors.blackText,
-                          fontWeight: FontWeight.w700,
-                        ),
+        bool isCurrentUserReply = reply.userid == currentUserID;
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CircleAvatar(
+                backgroundImage: NetworkImage(reply.userimage ?? ''),
+                radius: 16,
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      reply.name ?? '',
+                      style: TextStyle(
+                        fontSize: size.width * 0.035,
+                        color: AppColors.blackText,
+                        fontWeight: FontWeight.w700,
                       ),
-                      Text(
-                        postTimeFormatter
-                            .formatPostTime(reply.createdate ?? ''),
-                        style: TextStyle(
-                          fontSize: size.width * 0.022,
-                          color: AppColors.grey,
-                          fontWeight: FontWeight.w700,
-                        ),
+                    ),
+                    Text(
+                      postTimeFormatter.formatPostTime(reply.createdate ?? ''),
+                      style: TextStyle(
+                        fontSize: size.width * 0.022,
+                        color: AppColors.grey,
+                        fontWeight: FontWeight.w700,
                       ),
-                      4.sbh,
-                      Align(
-                        alignment: Alignment.topLeft,
-                        child: _buildHtmlContent(reply.comment ?? '', size),
-                      ),
-                      Align(
-                        alignment: Alignment.topLeft,
-                        child: InkWell(
-                          onTap: () {
-                            showModalBottomSheet(
-                              context: context,
-                              builder: (context) => _buildReplyBottomSheet(
-                                context,
-                                reply.id!,
-                                size,
-                              ),
-                            );
-                          },
-                          child: Row(
-                            children: [
-                              Text(
-                                'Reply',
+                    ),
+                    const SizedBox(height: 4),
+                    _buildHtmlContent(reply.comment ?? '', size),
+                    const SizedBox(height: 4),
+                    InkWell(
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (context) => _buildReplyBottomSheet(
+                            context,
+                            reply.id!,
+                            size,
+                          ),
+                        );
+                      },
+                      child: Row(
+                        children: [
+                          Text(
+                            'Reply',
+                            style: TextStyle(
+                              fontSize: size.width * 0.028,
+                              color: Colors.blueAccent,
+                            ),
+                          ),
+                          if (isCurrentUserReply)
+                            TextButton(
+                              onPressed: () {
+                                _showEditReplytoReplyDialog(reply);
+                              },
+                              child: Text(
+                                'Edit',
                                 style: TextStyle(
                                   fontSize: size.width * 0.028,
-                                  color: Colors.blueAccent,
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
-                              if (isCurrentUserReply)
-                                TextButton(
-                                  onPressed: () {
-                                    _showEditReplytoReplyDialog(reply);
-                                  },
-                                  child: Text(
-                                    'Edit',
-                                    style: TextStyle(
-                                      fontSize: size.width * 0.028,
-                                      color: Colors.green,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
+                            ),
+                          if (isCurrentUserReply)
+                            TextButton(
+                              onPressed: () => _showDeleteConfirmation(
+                                  context, reply.id ?? 0),
+                              child: Text(
+                                'Delete',
+                                style: TextStyle(
+                                  fontSize: size.width * 0.028,
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.w700,
                                 ),
-                              if (isCurrentUserReply)
-                                TextButton(
-                                  onPressed: () => _showDeleteConfirmation(
-                                      context, reply.id ?? 0),
-                                  child: Text(
-                                    'Delete',
-                                    style: TextStyle(
-                                      fontSize: size.width * 0.028,
-                                      color: Colors.red,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ),
+                              ),
+                            ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          );
-        }
+              ),
+            ],
+          ),
+        );
       },
     );
   }

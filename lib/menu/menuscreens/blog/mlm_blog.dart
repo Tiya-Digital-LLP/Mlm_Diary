@@ -36,7 +36,7 @@ class _MlmBlogState extends State<MlmBlog> {
   }
 
   Future<void> _refreshData() async {
-    await controller.getBlog(1);
+    controller.resetSelections();
   }
 
   @override

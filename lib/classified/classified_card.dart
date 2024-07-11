@@ -3,7 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/classified/classified_like_list_content.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
-import 'package:mlmdiary/classified/custom_commment.dart';
+import 'package:mlmdiary/classified/custom/custom_commment.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';

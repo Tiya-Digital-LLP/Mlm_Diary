@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_user_profile_entity.dart';
 import 'package:mlmdiary/home/addpost/controller/add_post_controller.dart';
@@ -20,6 +21,7 @@ import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
+import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:io' as io;
@@ -237,8 +239,13 @@ class _ProfileScreenState extends State<ProfileScreen>
                             icon: Assets.svgCalling, label: 'Call'),
                       ),
                       10.sbw,
-                      const SocialButton(
-                          icon: Assets.svgChat, label: 'Message'),
+                      InkWell(
+                        onTap: () {
+                          Get.toNamed(Routes.messagescreen);
+                        },
+                        child: const SocialButton(
+                            icon: Assets.svgChat, label: 'Message'),
+                      ),
                       10.sbw,
                       const SocialButton(
                           icon: Assets.svgWhatsappIcon, label: 'WhatsApp'),
@@ -453,8 +460,12 @@ class _ProfileScreenState extends State<ProfileScreen>
                         child: Obx(() {
                           if (controller.isLoading.value &&
                               controller.myPostList.isEmpty) {
-                            return const Center(
-                                child: CircularProgressIndicator());
+                            return Center(
+                                child: CustomLottieAnimation(
+                              child: Lottie.asset(
+                                Assets.lottieLottie,
+                              ),
+                            ));
                           }
 
                           if (controller.myPostList.isEmpty) {

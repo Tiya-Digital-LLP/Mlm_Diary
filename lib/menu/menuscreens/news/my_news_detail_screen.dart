@@ -2,15 +2,17 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/my_news_entity.dart';
-import 'package:mlmdiary/menu/menuscreens/blog/custom_blog_comment.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/news/custom_news_comment.dart';
 import 'package:mlmdiary/menu/menuscreens/news/news_like_list_content.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
+import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:text_link/text_link.dart';
 // ignore: library_prefixes
 import 'package:html/parser.dart' as htmlParser;
@@ -108,8 +110,12 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
                                 height: 97,
                                 width: 105,
                                 fit: BoxFit.fill,
-                                placeholder: (context, url) => const Center(
-                                    child: CircularProgressIndicator()),
+                                placeholder: (context, url) => Center(
+                                    child: CustomLottieAnimation(
+                                  child: Lottie.asset(
+                                    Assets.lottieLottie,
+                                  ),
+                                )),
                                 errorWidget: (context, url, error) =>
                                     const Icon(Icons.error),
                               ),
@@ -161,8 +167,12 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
                           height: 97,
                           width: 105,
                           fit: BoxFit.fill,
-                          placeholder: (context, url) =>
-                              const Center(child: CircularProgressIndicator()),
+                          placeholder: (context, url) => Center(
+                              child: CustomLottieAnimation(
+                            child: Lottie.asset(
+                              Assets.lottieLottie,
+                            ),
+                          )),
                           errorWidget: (context, url, error) =>
                               const Icon(Icons.error),
                         ),
@@ -452,7 +462,7 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
                     Row(
                       children: [
                         GestureDetector(
-                          onTap: () => showFullScreenDialogBlog(
+                          onTap: () => showFullScreenDialogNews(
                             context,
                             post.id!,
                           ),

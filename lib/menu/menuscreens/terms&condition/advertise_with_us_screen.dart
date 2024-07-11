@@ -3,10 +3,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
+import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/terms&condition/controller/terms_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/tutorialvideo/controller/tutorial_video_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/widgets/custon_test_app_bar.dart';
+import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 
 class AddwertiseWithUs extends StatefulWidget {
   const AddwertiseWithUs({super.key});
@@ -86,7 +89,11 @@ class _AdwithusState extends State<AddwertiseWithUs>
                       builder: (context) {
                         return Obx(() {
                           if (_termsController.isLoading.value) {
-                            return const CircularProgressIndicator(); // or any other loading indicator
+                            return CustomLottieAnimation(
+                              child: Lottie.asset(
+                                Assets.lottieLottie,
+                              ),
+                            ); // or any other loading indicator
                           } else if (_termsController
                                   .termsAndConditions.value !=
                               null) {

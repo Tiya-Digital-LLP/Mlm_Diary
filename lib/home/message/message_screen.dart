@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/home/message/chat_card.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/home/message/controller/message_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
+import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 
 class Message extends StatefulWidget {
   const Message({super.key});
@@ -20,6 +22,7 @@ class _MessageState extends State<Message> {
 
   @override
   void initState() {
+    messageController.fetchMyChat();
     super.initState();
   }
 
@@ -97,7 +100,12 @@ class _MessageState extends State<Message> {
                 Obx(() {
                   if (messageController.isLoading.value &&
                       messageController.chatList.isEmpty) {
-                    return const Center(child: CircularProgressIndicator());
+                    return Center(
+                        child: CustomLottieAnimation(
+                      child: Lottie.asset(
+                        Assets.lottieLottie,
+                      ),
+                    ));
                   }
 
                   if (messageController.chatList.isEmpty) {
@@ -122,8 +130,12 @@ class _MessageState extends State<Message> {
                           (messageController.isLoading.value ? 1 : 0),
                       itemBuilder: (context, index) {
                         if (index == messageController.chatList.length) {
-                          return const Center(
-                              child: CircularProgressIndicator());
+                          return Center(
+                              child: CustomLottieAnimation(
+                            child: Lottie.asset(
+                              Assets.lottieLottie,
+                            ),
+                          ));
                         }
                         final post = messageController.chatList[index];
                         return Padding(

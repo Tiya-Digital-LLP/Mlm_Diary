@@ -104,6 +104,16 @@ class _CommentDialogState extends State<CommentDialogPost> {
                 ));
               }
 
+              if (controller.getCommentList.isEmpty) {
+                return Center(
+                  child: Text(
+                    'No Any Comment Found',
+                    style:
+                        textStyleW700(size.width * 0.030, AppColors.blackText),
+                  ),
+                );
+              }
+
               return ListView.builder(
                 itemCount: controller.getCommentList.length +
                     (controller.isLoading.value ? 1 : 0),

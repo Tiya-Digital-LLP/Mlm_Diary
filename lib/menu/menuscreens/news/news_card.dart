@@ -4,6 +4,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:html_unescape/html_unescape.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/custom_news_comment.dart';
@@ -12,6 +13,7 @@ import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
+import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 
 class NewsCard extends StatefulWidget {
   final String userImage;
@@ -125,8 +127,11 @@ class _NewsCardState extends State<NewsCard> {
                     height: 60.0,
                     width: 60.0,
                     fit: BoxFit.cover,
-                    placeholder: (context, url) =>
-                        const CircularProgressIndicator(),
+                    placeholder: (context, url) => CustomLottieAnimation(
+                      child: Lottie.asset(
+                        Assets.lottieLottie,
+                      ),
+                    ),
                     errorWidget: (context, url, error) =>
                         const Icon(Icons.error),
                   ),
@@ -196,8 +201,11 @@ class _NewsCardState extends State<NewsCard> {
                 height: 97,
                 width: 105,
                 fit: BoxFit.fill,
-                placeholder: (context, url) =>
-                    const CircularProgressIndicator(),
+                placeholder: (context, url) => CustomLottieAnimation(
+                  child: Lottie.asset(
+                    Assets.lottieLottie,
+                  ),
+                ),
                 errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
             ),

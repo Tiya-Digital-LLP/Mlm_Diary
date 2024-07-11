@@ -31,7 +31,7 @@ class _MlmClassifiedState extends State<ManageClassified> {
 
   void deletePost(int index) async {
     int classifiedId = controller.classifiedList[index].id ?? 0;
-    await controller.deleteClassified(classifiedId, index);
+    await controller.deleteClassified(classifiedId, index, context);
   }
 
   Future<void> _refreshData() async {

@@ -210,10 +210,8 @@ class _AddClassifiedState extends State<AddClassified> {
                       textInputType: const [],
                       hint: "Website Url",
                       controller: controller.url.value,
-                      isError: controller.urlError.value,
                       byDefault: !controller.isUrlTyping.value,
                       onChanged: (value) {
-                        controller.urlValidation();
                         controller.isUrlTyping.value = true;
                       },
                       height: 60,
@@ -432,6 +430,11 @@ class _AddClassifiedState extends State<AddClassified> {
       // Perform address validation
       if (controller.addressValidationColor.value != AppColors.redText) {
         await controller.addClassifiedDetails(imageFile: file.value);
+        Get.back();
+        showToastverifedborder(
+            "Your Classified is Successfully Submitted",
+            // ignore: use_build_context_synchronously
+            context);
       } else {
         showToasterrorborder("Please enter a valid address.", context);
       }

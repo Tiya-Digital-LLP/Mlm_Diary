@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/classified/classified_like_list_content.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
-import 'package:mlmdiary/classified/custom_commment.dart';
+import 'package:mlmdiary/classified/custom/custom_commment.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
@@ -134,7 +134,11 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
                                       width: 60.0,
                                       fit: BoxFit.cover,
                                       placeholder: (context, url) =>
-                                          const CircularProgressIndicator(),
+                                          CustomLottieAnimation(
+                                        child: Lottie.asset(
+                                          Assets.lottieLottie,
+                                        ),
+                                      ),
                                       errorWidget: (context, url, error) =>
                                           const Icon(Icons.error),
                                     ),
@@ -191,9 +195,13 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
                                 height: 97,
                                 width: 105,
                                 fit: BoxFit.fill,
-                                placeholder: (context, url) => const Center(
+                                placeholder: (context, url) => Center(
                                     child: Center(
-                                        child: CircularProgressIndicator())),
+                                        child: CustomLottieAnimation(
+                                  child: Lottie.asset(
+                                    Assets.lottieLottie,
+                                  ),
+                                ))),
                                 errorWidget: (context, url, error) =>
                                     const Icon(Icons.error),
                               ),

@@ -162,9 +162,15 @@ class FollowersController extends GetxController {
 
           var getFollowerEntity = GetFollowersEntity.fromJson(data);
 
-          followers.assignAll(getFollowerEntity.data ?? []);
-          followersCount.value = getFollowerEntity.followersCount ?? 0;
-          followingCount.value = getFollowerEntity.followingCount ?? 0;
+          if (getFollowerEntity.data != null &&
+              getFollowerEntity.data!.isNotEmpty) {
+            followers.addAll(getFollowerEntity.data!);
+            followersCount.value = getFollowerEntity.followersCount ?? 0;
+            followingCount.value = getFollowerEntity.followingCount ?? 0;
+            isEndOfData(false); // More data is available
+          } else {
+            isEndOfData(true); // No more data available
+          }
 
           if (kDebugMode) {
             print('Followers: ${getFollowerEntity.data}');
@@ -229,7 +235,13 @@ class FollowersController extends GetxController {
 
           var getFollowingEntity = GetFollowingEntity.fromJson(data);
 
-          following.assignAll(getFollowingEntity.data ?? []);
+          if (getFollowingEntity.data != null &&
+              getFollowingEntity.data!.isNotEmpty) {
+            following.addAll(getFollowingEntity.data!);
+            isEndOfData(false); // More data is available
+          } else {
+            isEndOfData(true); // No more data available
+          }
 
           if (kDebugMode) {
             print('Following: ${getFollowingEntity.data}');

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:html/parser.dart' as htmlParser;
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/custom_company_comment.dart';
@@ -14,6 +15,7 @@ import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
+import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:text_link/text_link.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -111,8 +113,12 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
                                     height: 60.0,
                                     width: 60.0,
                                     fit: BoxFit.cover,
-                                    placeholder: (context, url) => const Center(
-                                        child: CircularProgressIndicator()),
+                                    placeholder: (context, url) => Center(
+                                        child: CustomLottieAnimation(
+                                      child: Lottie.asset(
+                                        Assets.lottieLottie,
+                                      ),
+                                    )),
                                     errorWidget: (context, url, error) =>
                                         const Icon(Icons.error),
                                   ),

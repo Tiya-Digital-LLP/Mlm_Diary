@@ -66,7 +66,11 @@ class Constants {
   static const String getcommentclassified = "/getclassified_comment";
   static const String addcommentreply = "/add_classified_comment";
   static const String deletecommment = "/deletecomment";
+  static const String deleteanswer = "/delete_answer";
+
   static const String editcommment = "/editComment";
+  static const String editanswer = "/updateAnswer";
+
   static const String boostontopclassified = "/classified/request_to_top";
   static const String boostontopclassifiedpremium =
       "/classified/request_for_paid_classified";

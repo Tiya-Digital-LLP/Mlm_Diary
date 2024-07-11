@@ -1,9 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
+import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 
 class UserCard extends StatefulWidget {
   final String userImage;
@@ -59,8 +61,11 @@ class _UserCardState extends State<UserCard> {
                     height: 60.0,
                     width: 60.0,
                     fit: BoxFit.cover,
-                    placeholder: (context, url) =>
-                        const CircularProgressIndicator(),
+                    placeholder: (context, url) => CustomLottieAnimation(
+                      child: Lottie.asset(
+                        Assets.lottieLottie,
+                      ),
+                    ),
                     errorWidget: (context, url, error) => Image.asset(
                       Assets.imagesIcon,
                       height: 60.0,

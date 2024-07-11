@@ -118,10 +118,9 @@ class LoginController extends GetxController {
   Future<void> saveFcm(context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String device = Platform.isAndroid ? 'android' : 'ios';
-    int? userId = prefs.getInt('user_id');
     String? fcmToken = prefs.getString('fcm_token');
     String? deviceToken = await generateDeviceToken();
-
+    String? apiToken = prefs.getString(Constants.accessToken);
     isLoading(true);
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
@@ -130,13 +129,13 @@ class LoginController extends GetxController {
         var uri = Uri.parse('${Constants.baseUrl}${Constants.savefcm}');
         var request = http.MultipartRequest('POST', uri);
 
-        request.fields['user_id'] = userId.toString();
+        request.fields['api_token'] = apiToken.toString();
         request.fields['device_id'] = deviceToken.toString();
         request.fields['device'] = device;
         request.fields['fcm_token'] = fcmToken.toString();
 
         if (kDebugMode) {
-          print('userId: $userId');
+          print('apiToken: $apiToken');
           print('deviceId: $deviceToken');
           print('device: $device');
           print('fcmtoken: $fcmToken');
@@ -146,6 +145,9 @@ class LoginController extends GetxController {
         final response = await http.Response.fromStream(streamedResponse);
 
         if (response.statusCode == 200) {
+          if (kDebugMode) {
+            print('Response body: ${response.body}');
+          }
         } else {
           if (kDebugMode) {
             print('Error: ${response.body}');

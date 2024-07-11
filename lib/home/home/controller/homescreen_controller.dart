@@ -40,6 +40,10 @@ class HomeController extends GetxController {
     'video',
   ];
 
+  void setSelectedType(String type) {
+    selectedType.value = type;
+  }
+
   late WebViewController webController;
   RxBool isload = true.obs;
   var isEndOfData = false.obs;

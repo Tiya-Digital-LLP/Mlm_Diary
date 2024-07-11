@@ -162,7 +162,11 @@ class _moreState extends State<MoreOptionScreen> {
                       10.sbw,
                       Obx(() {
                         if (controller.isLoading.value) {
-                          return const CircularProgressIndicator();
+                          return CustomLottieAnimation(
+                            child: Lottie.asset(
+                              Assets.lottieLottie,
+                            ),
+                          );
                         }
 
                         return Expanded(

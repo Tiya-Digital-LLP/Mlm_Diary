@@ -105,6 +105,7 @@ import 'package:mlmdiary/generated/resent_otp_register_entity.dart';
 import 'package:mlmdiary/generated/save_classified_entity.dart';
 import 'package:mlmdiary/generated/save_company_entity.dart';
 import 'package:mlmdiary/generated/termsand_condition_entity.dart';
+import 'package:mlmdiary/generated/update_answer_entity.dart';
 import 'package:mlmdiary/generated/update_blog_entity.dart';
 import 'package:mlmdiary/generated/update_classified_entity.dart';
 import 'package:mlmdiary/generated/update_news_entity.dart';
@@ -1048,6 +1049,14 @@ class JsonConvert {
       return data.map<TermsandConditionEntity>((Map<String, dynamic> e) =>
           TermsandConditionEntity.fromJson(e)).toList() as M;
     }
+    if (<UpdateAnswerEntity>[] is M) {
+      return data.map<UpdateAnswerEntity>((Map<String, dynamic> e) =>
+          UpdateAnswerEntity.fromJson(e)).toList() as M;
+    }
+    if (<UpdateAnswerAnswer>[] is M) {
+      return data.map<UpdateAnswerAnswer>((Map<String, dynamic> e) =>
+          UpdateAnswerAnswer.fromJson(e)).toList() as M;
+    }
     if (<UpdateBlogEntity>[] is M) {
       return data.map<UpdateBlogEntity>((Map<String, dynamic> e) =>
           UpdateBlogEntity.fromJson(e)).toList() as M;
@@ -1369,6 +1378,8 @@ class JsonConvertClassCollection {
     (SaveCompanyEntity).toString(): SaveCompanyEntity.fromJson,
     (SaveCompanyUserData).toString(): SaveCompanyUserData.fromJson,
     (TermsandConditionEntity).toString(): TermsandConditionEntity.fromJson,
+    (UpdateAnswerEntity).toString(): UpdateAnswerEntity.fromJson,
+    (UpdateAnswerAnswer).toString(): UpdateAnswerAnswer.fromJson,
     (UpdateBlogEntity).toString(): UpdateBlogEntity.fromJson,
     (UpdateBlogData).toString(): UpdateBlogData.fromJson,
     (UpdateClassifiedEntity).toString(): UpdateClassifiedEntity.fromJson,

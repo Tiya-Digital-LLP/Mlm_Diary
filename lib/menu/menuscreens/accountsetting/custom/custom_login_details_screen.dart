@@ -55,7 +55,7 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
   Future<void> fetchUserId() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      userId = prefs.getInt('userId');
+      userId = prefs.getInt('user_id');
     });
   }
 

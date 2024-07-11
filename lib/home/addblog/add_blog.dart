@@ -284,7 +284,7 @@ class _ManageBlogPlusIconState extends State<AddBlog> {
 
   Future<void> handleSaveButtonPressed() async {
     if (controller.title.value.text.isEmpty) {
-      showToasterrorborder("Please Enter Your Classified Title", context);
+      showToasterrorborder("Please Enter Your Blog Title", context);
     } else if (controller
         .getSelectedCategoryTextController()
         .value
@@ -305,6 +305,9 @@ class _ManageBlogPlusIconState extends State<AddBlog> {
     } else {
       try {
         await controller.addBlog(imageFile: file.value);
+        Get.back();
+        // ignore: use_build_context_synchronously
+        showToastverifedborder("Your Blog is Successfully Submitted", context);
       } catch (e) {
         if (kDebugMode) {
           print("Error submitting news: $e");

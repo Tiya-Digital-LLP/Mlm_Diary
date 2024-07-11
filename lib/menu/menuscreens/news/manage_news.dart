@@ -2,12 +2,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/manage_news_card.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
+import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:mlmdiary/widgets/remimaining_count_controller./remaining_count.dart';
 
 class ManageNews extends StatefulWidget {
@@ -55,7 +57,12 @@ class _MlmnewsState extends State<ManageNews> {
               print('myNewsList: ${controller.myNewsList.length}');
             }
             if (controller.isLoading.value && controller.myNewsList.isEmpty) {
-              return const Center(child: CircularProgressIndicator());
+              return Center(
+                  child: CustomLottieAnimation(
+                child: Lottie.asset(
+                  Assets.lottieLottie,
+                ),
+              ));
             }
 
             if (controller.myNewsList.isEmpty) {

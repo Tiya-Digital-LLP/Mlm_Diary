@@ -20,6 +20,14 @@ class _CustomSocialState extends State<CustomSocial> {
       Get.put(AccountSeetingController());
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.fetchUserProfile();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: MediaQuery.of(context).size.height,

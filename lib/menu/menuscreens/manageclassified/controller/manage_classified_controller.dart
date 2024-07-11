@@ -21,7 +21,6 @@ import 'package:mlmdiary/generated/get_company_entity.dart';
 import 'package:mlmdiary/generated/get_sub_category_entity.dart';
 import 'package:mlmdiary/generated/liked_user_entity.dart';
 import 'package:mlmdiary/generated/manage_classified_entity.dart';
-import 'package:mlmdiary/utils/common_toast.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -534,7 +533,6 @@ class ManageClasifiedController extends GetxController {
         request.fields['location'] = location.value.text;
         request.fields['city'] = city.value.text;
         request.fields['state'] = state.value.text;
-        request.fields['pincode'] = '382350';
         request.fields['lat'] = lat.value.text;
         request.fields['lng'] = lng.value.text;
         request.fields['country'] = country.value.text;
@@ -593,11 +591,11 @@ class ManageClasifiedController extends GetxController {
     }
   }
 
-  void titleValidation() {
+  void titleValidation(context) {
     String enteredTitle = title.value.text;
     if (enteredTitle.isEmpty || hasSpecialCharactersOrNumbers(enteredTitle)) {
       // Show toast message for invalid title
-      ToastUtils.showToast("Please Enter Title");
+      showToasterrorborder("Please Enter Your Classified Title", context);
       titleError.value = true;
     } else {
       titleError.value = false;
@@ -689,7 +687,7 @@ class ManageClasifiedController extends GetxController {
   }
 
   // Delete-Classified
-  Future<void> deleteClassified(int classifiedId, int index) async {
+  Future<void> deleteClassified(int classifiedId, int index, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
     String device = Platform.isAndroid ? 'android' : 'ios';
@@ -720,19 +718,12 @@ class ManageClasifiedController extends GetxController {
           var message = data['message'];
 
           if (status == 1) {
-            Fluttertoast.showToast(
-              msg: message,
-              toastLength: Toast.LENGTH_LONG,
-              gravity: ToastGravity.BOTTOM,
-            );
+            showToastverifedborder(message, context);
             // Remove the classified from the list if the deletion was successful
             classifiedList.removeAt(index);
           } else {
-            Fluttertoast.showToast(
-              msg: "Failed to delete classified: $message",
-              toastLength: Toast.LENGTH_LONG,
-              gravity: ToastGravity.BOTTOM,
-            );
+            showToasterrorborder(
+                "Failed to delete classified: $message", context);
             if (kDebugMode) {
               print('Failed to delete classified: $message');
             }
@@ -1057,23 +1048,15 @@ class ManageClasifiedController extends GetxController {
     }
   }
 
-  void discriptionValidation() {
+  void discriptionValidation(context) {
     String enteredDiscription = discription.value.text;
     if (enteredDiscription.isEmpty ||
         hasSpecialTextOrNumbers(enteredDiscription)) {
-      ToastUtils.showToast("Please Enter Discription");
+      showToasterrorborder(
+          "Please Enter Description Minimum 250 Characters", context);
       discriptionError.value = true;
     } else {
       discriptionError.value = false;
-    }
-  }
-
-  void urlValidation() {
-    String enteredUrl = url.value.text;
-    if (enteredUrl.isEmpty || hasSpecialTextOrNumbers(enteredUrl)) {
-      urlError.value = true;
-    } else {
-      urlError.value = false;
     }
   }
 

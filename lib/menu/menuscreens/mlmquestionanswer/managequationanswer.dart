@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/manage_quation_answer_card.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
+import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 
 class ManageQuationAnswer extends StatefulWidget {
   const ManageQuationAnswer({super.key});
@@ -47,7 +49,12 @@ class _ManageQuationAnswerState extends State<ManageQuationAnswer> {
               child: Obx(() {
                 if (controller.isLoading.value &&
                     controller.myquestionList.isEmpty) {
-                  return const Center(child: CircularProgressIndicator());
+                  return Center(
+                      child: CustomLottieAnimation(
+                    child: Lottie.asset(
+                      Assets.lottieLottie,
+                    ),
+                  ));
                 }
 
                 if (controller.myquestionList.isEmpty) {

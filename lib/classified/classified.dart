@@ -35,7 +35,7 @@ class _ClassifiedScreenState extends State<ClassifiedScreen> {
   }
 
   Future<void> _refreshData() async {
-    await controller.getClassified(1);
+    controller.resetSelections();
   }
 
   @override

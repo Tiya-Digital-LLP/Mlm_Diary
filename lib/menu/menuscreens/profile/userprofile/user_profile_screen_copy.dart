@@ -132,9 +132,13 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
     // Check if post is null before accessing its properties
     if (post == null) {
       // Handle case where post is null, for example, show a loading indicator
-      return const Scaffold(
+      return Scaffold(
         body: Center(
-          child: CircularProgressIndicator(),
+          child: CustomLottieAnimation(
+            child: Lottie.asset(
+              Assets.lottieLottie,
+            ),
+          ),
         ),
       );
     }
@@ -317,16 +321,18 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                           if (messageController.chatList.isNotEmpty) {
                             final post = messageController.chatList[0];
 
-                            await messageController
-                                .fetchMyChatDetail(post.chatId.toString());
                             Get.toNamed(Routes.messagedetailscreen,
                                 arguments: post);
                           } else {
-                            Get.snackbar(
-                              "No Chats",
-                              "There are no chats available.",
-                              snackPosition: SnackPosition.BOTTOM,
-                            );
+                            // If chat list is empty, navigate to screen with a dummy post or handle accordingly
+                            final dummyPost = {
+                              "chatId": null,
+                              "toid": post.id,
+                              "username": post.title,
+                              "imageUrl": post.imageUrl,
+                            };
+                            Get.toNamed(Routes.usermessagedetailscreen,
+                                arguments: dummyPost);
                           }
                         },
                         child: const SocialButton(

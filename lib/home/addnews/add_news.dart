@@ -285,7 +285,7 @@ class _ManageNewsPlusIconState extends State<AddNews> {
 
   Future<void> handleSaveButtonPressed() async {
     if (controller.title.value.text.isEmpty) {
-      showToasterrorborder("Please Enter Your Classified Title", context);
+      showToasterrorborder("Please Enter Your News Title", context);
     } else if (controller
         .getSelectedCategoryTextController()
         .value
@@ -306,6 +306,9 @@ class _ManageNewsPlusIconState extends State<AddNews> {
     } else {
       try {
         await controller.addNews(imageFile: file.value);
+        Get.back();
+        // ignore: use_build_context_synchronously
+        showToastverifedborder("Your News is Successfully Submitted ", context);
       } catch (e) {
         if (kDebugMode) {
           print("Error submitting news: $e");

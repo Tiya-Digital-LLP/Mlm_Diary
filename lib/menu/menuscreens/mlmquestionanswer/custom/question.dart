@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_answers_entity.dart';
@@ -15,6 +16,7 @@ import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
+import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:mlmdiary/widgets/logout_dialog/custom_logout_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:text_link/text_link.dart';
@@ -110,7 +112,11 @@ class _QuestionState extends State<Question> {
         future: getUserId(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
+            return CustomLottieAnimation(
+              child: Lottie.asset(
+                Assets.lottieLottie,
+              ),
+            );
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {
@@ -244,7 +250,7 @@ class _QuestionState extends State<Question> {
                                   TextButton(
                                     onPressed: () =>
                                         LogoutDialog.show(context, () async {
-                                      await controller.deleteComment(
+                                      await controller.deleteAnswers(
                                           post.id!, comment.id ?? 0, context);
                                     }),
                                     child: Text(
@@ -286,7 +292,11 @@ class _QuestionState extends State<Question> {
         future: getUserId(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
+            return CustomLottieAnimation(
+              child: Lottie.asset(
+                Assets.lottieLottie,
+              ),
+            );
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {
@@ -465,7 +475,11 @@ class _QuestionState extends State<Question> {
         future: getUserId(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
+            return CustomLottieAnimation(
+              child: Lottie.asset(
+                Assets.lottieLottie,
+              ),
+            );
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {
@@ -649,7 +663,11 @@ class _QuestionState extends State<Question> {
         future: getUserId(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
+            return CustomLottieAnimation(
+              child: Lottie.asset(
+                Assets.lottieLottie,
+              ),
+            );
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {
@@ -813,8 +831,8 @@ class _QuestionState extends State<Question> {
         });
   }
 
-  void _showEditComment(GetAnswersAnswers comment) {
-    _showEditDialog(comment, false);
+  void _showEditComment(GetAnswersAnswers answers) {
+    _showEditAnswerDialog(answers, false);
   }
 
   void _showEditCommentDialog(GetAnswersAnswersComments comment) {
@@ -1091,6 +1109,84 @@ class _QuestionState extends State<Question> {
     );
   }
 
+  void _showEditAnswerDialog(dynamic data, bool isReply) {
+    final TextEditingController editController =
+        TextEditingController(text: data.ansTitle ?? '');
+
+    editController.addListener(() {
+      // Update Rx controller with the latest value
+      controller.commment.value.text = editController.text;
+    });
+
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          height: 200,
+          decoration: BoxDecoration(
+            color: AppColors.white,
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.searchbar,
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 10),
+                    child: TextField(
+                      controller: editController,
+                      maxLines: 5,
+                      decoration: const InputDecoration(
+                        hintText: 'Edit your comment here',
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () async {
+                  String editedComment = editController.text;
+                  Navigator.of(context).pop();
+                  if (isReply) {
+                    await controller.editAnswer(
+                        post.id!, data.id ?? 0, editedComment, context);
+                  } else {
+                    await controller.editAnswer(
+                        post.id!, data.id ?? 0, editedComment, context);
+                  }
+                  await _refreshData();
+                },
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.primaryColor,
+                    boxShadow: [
+                      customBoxShadow(),
+                    ],
+                  ),
+                  child: const Icon(
+                    Icons.send_rounded,
+                    color: Colors.white,
+                    size: 22,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildHtmlContent(String htmlContent, Size size) {
     final parsedHtml = htmlParser.parse(htmlContent);
     final text = parsedHtml.body?.text ?? '';
@@ -1141,7 +1237,11 @@ class _QuestionState extends State<Question> {
                               width: 105,
                               fit: BoxFit.fill,
                               placeholder: (context, url) =>
-                                  const CircularProgressIndicator(),
+                                  CustomLottieAnimation(
+                                child: Lottie.asset(
+                                  Assets.lottieLottie,
+                                ),
+                              ),
                               errorWidget: (context, url, error) =>
                                   const Icon(Icons.error),
                             ),
@@ -1328,7 +1428,12 @@ class _QuestionState extends State<Question> {
                   Obx(() {
                     if (controller.isLoading.value &&
                         controller.answerList.isEmpty) {
-                      return const Center(child: CircularProgressIndicator());
+                      return Center(
+                          child: CustomLottieAnimation(
+                        child: Lottie.asset(
+                          Assets.lottieLottie,
+                        ),
+                      ));
                     }
 
                     return ListView.builder(
@@ -1351,8 +1456,12 @@ class _QuestionState extends State<Question> {
                             ),
                           );
                         } else {
-                          return const Center(
-                              child: CircularProgressIndicator());
+                          return Center(
+                              child: CustomLottieAnimation(
+                            child: Lottie.asset(
+                              Assets.lottieLottie,
+                            ),
+                          ));
                         }
                       },
                     );

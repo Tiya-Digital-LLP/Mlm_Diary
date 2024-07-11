@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/home/message/controller/message_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
-import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -14,10 +13,11 @@ class UserMessageDetailScreen extends StatefulWidget {
   const UserMessageDetailScreen({super.key});
 
   @override
-  State<UserMessageDetailScreen> createState() => _MessageDetailsScreenState();
+  State<UserMessageDetailScreen> createState() =>
+      _UserMessageDetailScreenState();
 }
 
-class _MessageDetailsScreenState extends State<UserMessageDetailScreen> {
+class _UserMessageDetailScreenState extends State<UserMessageDetailScreen> {
   final MessageController messageController = Get.put(MessageController());
   final UserProfileController userProfileController =
       Get.put(UserProfileController());
@@ -29,20 +29,19 @@ class _MessageDetailsScreenState extends State<UserMessageDetailScreen> {
   void initState() {
     super.initState();
     post = Get.arguments;
-    if (post != null && post.chatId != null) {
-      messageController.fetchMyChatDetail(post.chatId.toString());
-      postTimeFormatter = PostTimeFormatter();
+    postTimeFormatter = PostTimeFormatter();
 
-      // Scroll to the bottom when the chat details are fetched
-      messageController.chatdetailsList.listen((_) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (_scrollController.hasClients) {
-            _scrollController
-                .jumpTo(_scrollController.position.maxScrollExtent);
-          }
-        });
+    // Fetch chat details if chatId is not null
+    if (post != null && post['chatId'] != null) {}
+
+    // Scroll to the bottom when the chat details are fetched
+    messageController.chatdetailsList.listen((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_scrollController.hasClients) {
+          _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+        }
       });
-    }
+    });
   }
 
   @override
@@ -81,43 +80,30 @@ class _MessageDetailsScreenState extends State<UserMessageDetailScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              InkWell(
-                onTap: () async {
-                  await userProfileController.fetchUserAllPost(
-                    1,
-                    post.id ?? 0,
-                  );
-                  Get.toNamed(
-                    Routes.userprofilescreencopy,
-                    arguments: post,
-                  );
-                },
-                child: Row(
-                  children: [
-                    // Example of accessing userImage from post
-                    if (post != null && post.imageUrl != null) ...[
-                      ClipOval(
-                        child: Image.network(
-                          post.imageUrl,
-                          height: 30.0,
-                          width: 30.0,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) =>
-                              const Icon(Icons.error),
-                        ),
-                      ),
-                      10.sbw,
-                    ],
-                    Text(
-                      post.username ?? 'Unknown',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: size.width * 0.05,
-                        color: Colors.black,
+              Row(
+                children: [
+                  if (post != null && post['imageUrl'] != null) ...[
+                    ClipOval(
+                      child: Image.network(
+                        post['imageUrl'],
+                        height: 30.0,
+                        width: 30.0,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) =>
+                            const Icon(Icons.error),
                       ),
                     ),
+                    10.sbw,
                   ],
-                ),
+                  Text(
+                    post['username'] ?? 'Unknown',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: size.width * 0.05,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -141,7 +127,7 @@ class _MessageDetailsScreenState extends State<UserMessageDetailScreen> {
                     reverse: true,
                     itemBuilder: (context, index) {
                       final message = messageController.chatdetailsList[index];
-                      final isSender = message.fromid == post.fromid;
+                      final isSender = message.fromid == post['fromid'];
 
                       return Padding(
                         padding: const EdgeInsets.symmetric(
@@ -153,10 +139,10 @@ class _MessageDetailsScreenState extends State<UserMessageDetailScreen> {
                           children: [
                             if (!isSender &&
                                 post != null &&
-                                post.imageUrl != null) ...[
+                                post['imageUrl'] != null) ...[
                               ClipOval(
                                 child: Image.network(
-                                  post.imageUrl,
+                                  post['imageUrl'],
                                   height: 30.0,
                                   width: 30.0,
                                   fit: BoxFit.cover,
@@ -292,11 +278,9 @@ class _MessageDetailsScreenState extends State<UserMessageDetailScreen> {
                           Assets.svgSend,
                         ),
                         onPressed: () {
-                          messageController
-                              .fetchMyChatDetail(post.chatId.toString());
                           messageController.sendChat(
-                            toId: post.toid.toString(),
-                            chatId: post.chatId ?? '',
+                            toId: post['toid'].toString(),
+                            chatId: post['chatId'] ?? '',
                           );
 
                           // Scroll to the bottom after sending a message

@@ -422,40 +422,19 @@ class _FavouriteState extends State<Favourite> {
   Widget horiztallist() {
     return SizedBox(
         height: 50,
-        child: Obx(() {
-          if (controller.isLoading.value && controller.favouriteList.isEmpty) {
-            return Center(
-                child: CustomLottieAnimation(
-              child: Lottie.asset(
-                Assets.lottieLottie,
-              ),
-            ));
-          }
-
-          if (controller.favouriteList.isEmpty) {
-            return const Center(
-              child: Text(
-                'Data not found',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-            );
-          }
-          return ListView.builder(
-              shrinkWrap: false,
-              scrollDirection: Axis.horizontal,
-              itemCount: controller.types.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                  child: Wrap(
-                    spacing: 6.0,
-                    runSpacing: 6.0,
-                    children: [
-                      ChoiceChip(
+        child: ListView.builder(
+            shrinkWrap: false,
+            scrollDirection: Axis.horizontal,
+            itemCount: controller.types.length,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                child: Wrap(
+                  spacing: 6.0,
+                  runSpacing: 6.0,
+                  children: [
+                    Obx(
+                      () => ChoiceChip(
                         label: Text(
                           controller.types[index],
                         ),
@@ -482,10 +461,10 @@ class _FavouriteState extends State<Favourite> {
                         showCheckmark: false,
                         // checkmarkColor: AppColors.backgroundColor,
                       ),
-                    ],
-                  ),
-                );
-              });
-        }));
+                    ),
+                  ],
+                ),
+              );
+            }));
   }
 }

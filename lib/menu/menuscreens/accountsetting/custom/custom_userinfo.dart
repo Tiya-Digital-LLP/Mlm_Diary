@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/classified/custom/add_comapany_classfied.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_plan_list_entity.dart';
@@ -24,6 +25,7 @@ import 'package:mlmdiary/widgets/company_border_textfield.dart';
 import 'package:mlmdiary/widgets/custom_border_container.dart';
 import 'package:mlmdiary/widgets/custom_button.dart';
 import 'package:mlmdiary/widgets/discription_text_field.dart';
+import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:mlmdiary/widgets/normal_button.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -55,6 +57,9 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.fetchUserProfile();
+    });
   }
 
   @override
@@ -62,7 +67,12 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
     final Size size = MediaQuery.of(context).size;
     return Obx(() {
       if (controller.isLoading.value) {
-        return const Center(child: CircularProgressIndicator());
+        return Center(
+            child: CustomLottieAnimation(
+          child: Lottie.asset(
+            Assets.lottieLottie,
+          ),
+        ));
       } else {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -351,7 +361,7 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                       var place = await PlacesAutocomplete.show(
                         context: context,
                         apiKey: googleApikey,
-                        mode: Mode.overlay,
+                        mode: Mode.fullscreen,
                         types: ['geocode', 'establishment'],
                         strictbounds: false,
                         onError: (err) {},

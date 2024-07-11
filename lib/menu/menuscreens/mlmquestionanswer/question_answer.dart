@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/question_card.dart';
@@ -9,6 +10,7 @@ import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
 import 'package:mlmdiary/widgets/custon_test_app_bar.dart';
+import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 
 class QuationAnswer extends StatefulWidget {
   const QuationAnswer({super.key});
@@ -74,7 +76,12 @@ class _QuationAnswerState extends State<QuationAnswer> {
               child: Obx(() {
                 if (controller.isLoading.value &&
                     controller.questionList.isEmpty) {
-                  return const Center(child: CircularProgressIndicator());
+                  return Center(
+                      child: CustomLottieAnimation(
+                    child: Lottie.asset(
+                      Assets.lottieLottie,
+                    ),
+                  ));
                 }
 
                 if (controller.questionList.isEmpty) {
@@ -99,7 +106,12 @@ class _QuationAnswerState extends State<QuationAnswer> {
                       (controller.isLoading.value ? 1 : 0),
                   itemBuilder: (context, index) {
                     if (index == controller.questionList.length) {
-                      return const Center(child: CircularProgressIndicator());
+                      return Center(
+                          child: CustomLottieAnimation(
+                        child: Lottie.asset(
+                          Assets.lottieLottie,
+                        ),
+                      ));
                     }
                     final post = controller.questionList[index];
                     return Padding(

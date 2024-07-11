@@ -35,7 +35,7 @@ class _MlmNewsScreenState extends State<MlmNews> {
   }
 
   Future<void> _refreshData() async {
-    await controller.getNews(1);
+    controller.resetSelections();
   }
 
   @override
@@ -150,9 +150,6 @@ class _MlmNewsScreenState extends State<MlmNews> {
                             horizontal: 12, vertical: 8),
                         child: GestureDetector(
                           onTap: () async {
-                            await controller.getNews(
-                              post.id ?? 0,
-                            );
                             Get.toNamed(
                               Routes.newsdetails,
                               arguments: post,
