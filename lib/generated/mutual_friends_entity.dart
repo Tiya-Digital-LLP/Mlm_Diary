@@ -36,20 +36,20 @@ class MutualFriendsData {
 	String? name = '';
 	String? email = '';
 	String? mobile = '';
-	dynamic birthdate;
+	String? birthdate = '';
 	String? address = '';
 	String? country = '';
 	String? state = '';
 	String? city = '';
 	String? pincode = '';
-	dynamic employment;
+	String? employment = '';
 	String? userimage = '';
 	String? joindate = '';
 	String? ip = '';
 	String? lastip = '';
 	String? lastlogin = '';
-	dynamic aboutyou;
-	dynamic website;
+	String? aboutyou = '';
+	String? website = '';
 	@JSONField(name: "comp_website")
 	dynamic compWebsite;
 	String? company = '';
@@ -57,14 +57,14 @@ class MutualFriendsData {
 	int? status = 0;
 	int? points = 0;
 	int? views = 0;
-	String? emailvarify = '';
-	String? vemailcode = '';
-	String? vphonecode = '';
+	dynamic emailvarify;
+	dynamic vemailcode;
+	dynamic vphonecode;
 	dynamic stepno;
-	String? token = '';
+	dynamic token;
 	dynamic approve;
 	@JSONField(name: "verify_email")
-	dynamic verifyEmail;
+	String? verifyEmail = '';
 	String? blockeduser = '';
 	String? showindirctry = '';
 	dynamic blockdate;
@@ -73,25 +73,29 @@ class MutualFriendsData {
 	int? paidno = 0;
 	String? isapprove = '';
 	String? passtoken = '';
-	dynamic tokendate;
+	String? tokendate = '';
 	String? urlcomponent = '';
-	dynamic aboutcompany;
-	dynamic fblink;
-	dynamic instalink;
-	dynamic twiterlink;
-	dynamic lilink;
+	String? aboutcompany = '';
+	String? fblink = '';
+	String? instalink = '';
+	String? twiterlink = '';
+	String? lilink = '';
 	String? youlink = '';
-	dynamic wplink;
-	dynamic telink;
+	String? wplink = '';
+	String? telink = '';
 	String? proceedstatus = '';
-	String? device = '';
-	String? platform = '';
+	dynamic device;
+	dynamic platform;
 	String? proceeddate = '';
 	@JSONField(name: "is_approved")
 	int? isApproved = 0;
-	String? countrycode1 = '';
+	dynamic countrycode1;
+	dynamic lat;
+	dynamic lng;
 	@JSONField(name: "image_url")
 	String? imageUrl = '';
+	String? title = '';
+	int? pgcnt = 0;
 	@JSONField(name: "image_path")
 	String? imagePath = '';
 	@JSONField(name: "image_thum_path")

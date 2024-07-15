@@ -121,26 +121,26 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                           },
                           child: Row(
                             children: [
-                              CircleAvatar(
-                                backgroundColor: const Color(0XFFCCC9C9),
-                                radius: size.width * 0.07,
-                                child: ClipOval(
+                              if (post.userData!.imagePath.isNotEmpty &&
+                                  Uri.tryParse(post.userData!.imagePath)
+                                          ?.hasAbsolutePath ==
+                                      true)
+                                ClipOval(
                                   child: CachedNetworkImage(
                                     imageUrl: post.userData!.imagePath ?? '',
-                                    height: 97,
-                                    width: 105,
-                                    fit: BoxFit.fill,
-                                    placeholder: (context, url) => Center(
-                                        child: CustomLottieAnimation(
+                                    height: 60.0,
+                                    width: 60.0,
+                                    fit: BoxFit.cover,
+                                    placeholder: (context, url) =>
+                                        CustomLottieAnimation(
                                       child: Lottie.asset(
                                         Assets.lottieLottie,
                                       ),
-                                    )),
+                                    ),
                                     errorWidget: (context, url, error) =>
                                         const Icon(Icons.error),
                                   ),
                                 ),
-                              ),
                               const SizedBox(
                                 width: 10,
                               ),
@@ -174,32 +174,27 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                       SizedBox(
                         height: size.height * 0.012,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                        ),
-                        child: Container(
-                          height: size.height * 0.28,
-                          width: size.width,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
+                      if (post.imageUrl.isNotEmpty &&
+                          Uri.tryParse(post.imageUrl)?.hasAbsolutePath == true)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
                           ),
-                          child: CachedNetworkImage(
-                            imageUrl: post.imageUrl ?? '',
-                            height: 97,
-                            width: 105,
-                            fit: BoxFit.fill,
-                            placeholder: (context, url) => Center(
-                                child: CustomLottieAnimation(
-                              child: Lottie.asset(
-                                Assets.lottieLottie,
-                              ),
-                            )),
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
+                          child: Container(
+                            height: size.height * 0.28,
+                            width: size.width,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: Image.network(
+                              post.imageUrl,
+                              fit: BoxFit.fill,
+                              errorBuilder: (context, error, stackTrace) {
+                                return const SizedBox();
+                              },
+                            ),
                           ),
                         ),
-                      ),
                       SizedBox(
                         height: size.height * 0.01,
                       ),

@@ -11,6 +11,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/add_comment_news_entity.dart';
+import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/bookmark_news_entity.dart';
 import 'package:mlmdiary/generated/edit_comment_entity.dart';
 import 'package:mlmdiary/generated/get_category_entity.dart';
@@ -21,9 +22,11 @@ import 'package:mlmdiary/generated/liked_news_entity.dart';
 import 'package:mlmdiary/generated/my_news_entity.dart';
 import 'package:mlmdiary/generated/news_count_view_entity.dart';
 import 'package:mlmdiary/generated/news_like_list_entity.dart';
+import 'package:mlmdiary/utils/app_colors.dart';
 
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toastification/toastification.dart';
 
 class ManageNewsController extends GetxController {
   Rx<TextEditingController> title = TextEditingController().obs;
@@ -89,6 +92,9 @@ class ManageNewsController extends GetxController {
 
   //scrollercontroller
   final ScrollController scrollController = ScrollController();
+
+  var selectedCategoryId = 0.obs;
+  var selectedSubCategoryId = 0.obs;
 
   @override
   void onInit() {
@@ -496,26 +502,31 @@ class ManageNewsController extends GetxController {
   }
 
 // Category
-  void toggleCategorySelected(int index) {
-    isCategorySelectedList[index] = !isCategorySelectedList[index];
-
-    selectedCountCategory.value = isCategorySelectedList[index] ? 1 : 0;
-
-    if (isCategorySelectedList[index]) {
-      fetchSubCategoryList(categorylist[index].id!);
+  void toggleCategorySelected(int index, BuildContext context) {
+    // Unselect all categories
+    for (int i = 0; i < isCategorySelectedList.length; i++) {
+      isCategorySelectedList[i] = false;
     }
+
+    // Select the current category
+    isCategorySelectedList[index] = true;
+    selectedCountCategory.value = 1;
+    selectedCategoryId.value = categorylist[index].id!;
+
+    // Fetch subcategory list for the selected category
+    fetchSubCategoryList(categorylist[index].id!);
   }
 
   TextEditingController getSelectedCategoryTextController() {
-    List<String> selectedCategoryOptions = [];
+    List<String> selectedCategoryNames = [];
 
     for (int i = 0; i < isCategorySelectedList.length; i++) {
       if (isCategorySelectedList[i]) {
-        selectedCategoryOptions.add(categorylist[i].id.toString());
+        selectedCategoryNames.add(categorylist[i].name ?? '');
       }
     }
 
-    return TextEditingController(text: selectedCategoryOptions.join(', '));
+    return TextEditingController(text: selectedCategoryNames.join(', '));
   }
 
   void mlmCategoryValidation() {
@@ -527,25 +538,26 @@ class ManageNewsController extends GetxController {
   void toggleSubCategorySelected(int index) {
     bool isCurrentlySelected = isSubCategorySelectedList[index];
 
-    // Unselect all sub-categories first
+    // Unselect all subcategories
     for (int i = 0; i < isSubCategorySelectedList.length; i++) {
       isSubCategorySelectedList[i] = false;
     }
 
+    // Toggle the selected state of the current subcategory
     isSubCategorySelectedList[index] = !isCurrentlySelected;
-
     selectedCountSubCategory.value = isSubCategorySelectedList[index] ? 1 : 0;
+    selectedSubCategoryId.value = subcategoryList[index].id!;
   }
 
   TextEditingController getSelectedSubCategoryTextController() {
-    List<String> selectedSubCategoryOptions = [];
+    List<String> selectedSubCategoryNames = [];
     for (int i = 0; i < isSubCategorySelectedList.length; i++) {
       if (isSubCategorySelectedList[i]) {
-        selectedSubCategoryOptions.add(subcategoryList[i].id.toString());
+        selectedSubCategoryNames.add(subcategoryList[i].name ?? '');
       }
     }
 
-    return TextEditingController(text: selectedSubCategoryOptions.join(', '));
+    return TextEditingController(text: selectedSubCategoryNames.join(', '));
   }
 
   void mlmsubCategoryValidation() {
@@ -582,9 +594,8 @@ class ManageNewsController extends GetxController {
         request.fields['device'] = device;
         request.fields['title'] = title.value.text;
         request.fields['description'] = discription.value.text;
-        request.fields['category'] = getSelectedCategoryTextController().text;
-        request.fields['subcategory'] =
-            getSelectedSubCategoryTextController().text;
+        request.fields['category'] = selectedCategoryId.value.toString();
+        request.fields['subcategory'] = selectedSubCategoryId.value.toString();
         request.fields['website'] = url.value.text;
         request.fields['api_token'] = apiToken ?? '';
         request.fields['news_id'] = newsId.toString();
@@ -626,6 +637,22 @@ class ManageNewsController extends GetxController {
           if (jsonBody['success'] == true) {
             // All fields are true, navigate back
             Get.back();
+          } else if (jsonBody['status'] == 0) {
+            toastification.show(
+              context: context,
+              alignment: Alignment.bottomCenter,
+              backgroundColor: AppColors.white,
+              type: ToastificationType.error,
+              style: ToastificationStyle.flatColored,
+              showProgressBar: false,
+              autoCloseDuration: const Duration(seconds: 3),
+              icon: Image.asset(
+                Assets.imagesCancel,
+                height: 35,
+              ),
+              primaryColor: Colors.red,
+              title: Text('$jsonBody'),
+            );
           }
         } else {
           if (kDebugMode) {
@@ -832,9 +859,8 @@ class ManageNewsController extends GetxController {
         request.fields['device'] = device;
         request.fields['page'] = page.toString();
         request.fields['search'] = search.value.text;
-        request.fields['category'] = getSelectedCategoryTextController().text;
-        request.fields['subcategory'] =
-            getSelectedSubCategoryTextController().text;
+        request.fields['category'] = selectedCategoryId.value.toString();
+        request.fields['subcategory'] = selectedSubCategoryId.value.toString();
 
         final streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);

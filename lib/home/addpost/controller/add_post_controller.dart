@@ -7,8 +7,11 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:mlmdiary/data/constants.dart';
+import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toastification/toastification.dart';
 
 class AddPostController extends GetxController {
   Rx<TextEditingController> comments = TextEditingController().obs;
@@ -111,10 +114,30 @@ class AddPostController extends GetxController {
             }
 
             Get.back();
+          } else if (jsonBody['status'] == 0) {
+            toastification.show(
+              // ignore: use_build_context_synchronously
+              context: context,
+              alignment: Alignment.bottomCenter,
+              backgroundColor: AppColors.white,
+              type: ToastificationType.error,
+              style: ToastificationStyle.flatColored,
+              showProgressBar: false,
+              autoCloseDuration: const Duration(seconds: 3),
+              icon: Image.asset(
+                Assets.imagesCancel,
+                height: 35,
+              ),
+              primaryColor: Colors.red,
+              title: Text('$jsonBody'),
+            );
           } else {
             if (kDebugMode) {
               print("Failed to Add Post: ${jsonBody['message']}");
             }
+            showToasterrorborder(
+                'You cannot use Abusive words in Your Comment and Content and We Can’t Post It',
+                context);
           }
         } else {
           if (kDebugMode) {

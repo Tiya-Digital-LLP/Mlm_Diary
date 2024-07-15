@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/add_comment_entity.dart';
+import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/bookmark_user_entity.dart';
 import 'package:mlmdiary/generated/classified_count_view_entity.dart';
 import 'package:mlmdiary/generated/classified_like_list_entity.dart';
@@ -22,8 +23,10 @@ import 'package:mlmdiary/generated/get_sub_category_entity.dart';
 import 'package:mlmdiary/generated/get_user_profile_entity.dart';
 import 'package:mlmdiary/generated/liked_user_entity.dart';
 import 'package:http/http.dart' as http;
+import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toastification/toastification.dart';
 
 class ClasifiedController extends GetxController {
   RxList<TextEditingController> companyControllers =
@@ -116,6 +119,9 @@ class ClasifiedController extends GetxController {
   ];
 
   var userProfile = GetUserProfileEntity().obs;
+
+  var selectedCategoryId = 0.obs;
+  var selectedSubCategoryId = 0.obs;
 
   @override
   void onInit() {
@@ -316,34 +322,31 @@ class ClasifiedController extends GetxController {
     }
   }
 
-  void toggleCategorySelected(int index, context) {
-    // Deselect all categories first
+  void toggleCategorySelected(int index, BuildContext context) {
+    // Unselect all categories
     for (int i = 0; i < isCategorySelectedList.length; i++) {
       isCategorySelectedList[i] = false;
     }
 
     // Select the current category
     isCategorySelectedList[index] = true;
-
-    // Update the selected count
     selectedCountCategory.value = 1;
+    selectedCategoryId.value = categorylist[index].id!;
 
     // Fetch subcategory list for the selected category
-    fetchSubCategoryList(
-      categorylist[index].id!,
-    );
+    fetchSubCategoryList(categorylist[index].id!);
   }
 
   TextEditingController getSelectedCategoryTextController() {
-    List<String> selectedCategoryOptions = [];
+    List<String> selectedCategoryNames = [];
 
     for (int i = 0; i < isCategorySelectedList.length; i++) {
       if (isCategorySelectedList[i]) {
-        selectedCategoryOptions.add(categorylist[i].id.toString());
+        selectedCategoryNames.add(categorylist[i].name ?? '');
       }
     }
 
-    return TextEditingController(text: selectedCategoryOptions.join(', '));
+    return TextEditingController(text: selectedCategoryNames.join(', '));
   }
 
   void mlmCategoryValidation() {
@@ -409,27 +412,26 @@ class ClasifiedController extends GetxController {
   void toggleSubCategorySelected(int index) {
     bool isCurrentlySelected = isSubCategorySelectedList[index];
 
-    // Unselect all sub-categories first
+    // Unselect all subcategories
     for (int i = 0; i < isSubCategorySelectedList.length; i++) {
       isSubCategorySelectedList[i] = false;
     }
 
-    // Toggle the selected state of the current sub-category
+    // Toggle the selected state of the current subcategory
     isSubCategorySelectedList[index] = !isCurrentlySelected;
-
-    // Update the selected count
     selectedCountSubCategory.value = isSubCategorySelectedList[index] ? 1 : 0;
+    selectedSubCategoryId.value = subcategoryList[index].id!;
   }
 
   TextEditingController getSelectedSubCategoryTextController() {
-    List<String> selectedSubCategoryOptions = [];
+    List<String> selectedSubCategoryNames = [];
     for (int i = 0; i < isSubCategorySelectedList.length; i++) {
       if (isSubCategorySelectedList[i]) {
-        selectedSubCategoryOptions.add(subcategoryList[i].id.toString());
+        selectedSubCategoryNames.add(subcategoryList[i].name ?? '');
       }
     }
 
-    return TextEditingController(text: selectedSubCategoryOptions.join(', '));
+    return TextEditingController(text: selectedSubCategoryNames.join(', '));
   }
 
   void mlmsubCategoryValidation() {
@@ -465,10 +467,8 @@ class ClasifiedController extends GetxController {
         request.fields['device'] = device;
         request.fields['page'] = page.toString();
         request.fields['search'] = search.value.text;
-        request.fields['category'] =
-            getSelectedCategoryTextController().text.toString();
-        request.fields['subcategory'] =
-            getSelectedSubCategoryTextController().text.toString();
+        request.fields['category'] = selectedCategoryId.value.toString();
+        request.fields['subcategory'] = selectedSubCategoryId.value.toString();
 
         final streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);
@@ -635,36 +635,27 @@ class ClasifiedController extends GetxController {
   Future<void> addClassifiedDetails(
       {required File? imageFile, BuildContext? context}) async {
     isLoading(true);
-    String device = '';
-    if (Platform.isAndroid) {
-      device = 'android';
-    } else if (Platform.isIOS) {
-      device = 'ios';
-    }
-    if (kDebugMode) {
-      print('Device Name: $device');
-    }
+    String device = Platform.isAndroid ? 'android' : 'ios';
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
 
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
+
       // ignore: unrelated_type_equality_checks
       if (connectivityResult != ConnectivityResult.none) {
-        // Create a multipart request
         var request = http.MultipartRequest(
           'POST',
           Uri.parse('${Constants.baseUrl}${Constants.saveclassified}'),
         );
 
-        // Add fields
         request.fields['device'] = device;
         request.fields['company'] = companyName.value.text;
         request.fields['title'] = title.value.text;
         request.fields['description'] = discription.value.text;
-        request.fields['category'] = getSelectedCategoryTextController().text;
-        request.fields['subcategory'] =
-            getSelectedSubCategoryTextController().text;
+        request.fields['category'] = selectedCategoryId.value.toString();
+        request.fields['subcategory'] = selectedSubCategoryId.value.toString();
         request.fields['location'] = location.value.text;
         request.fields['city'] = city.value.text;
         request.fields['state'] = state.value.text;
@@ -675,7 +666,6 @@ class ClasifiedController extends GetxController {
         request.fields['website'] = url.value.text;
         request.fields['api_token'] = apiToken ?? '';
 
-        // Add image file if provided, or dummy image if not
         if (imageFile != null) {
           request.files.add(
             http.MultipartFile(
@@ -687,7 +677,6 @@ class ClasifiedController extends GetxController {
             ),
           );
         } else {
-          // Provide a dummy image or placeholder
           request.files.add(
             http.MultipartFile.fromString(
               'image',
@@ -698,7 +687,6 @@ class ClasifiedController extends GetxController {
           );
         }
 
-        // Send request
         var streamedResponse = await request.send();
         var response = await http.Response.fromStream(streamedResponse);
 
@@ -706,7 +694,28 @@ class ClasifiedController extends GetxController {
           final Map<String, dynamic> jsonBody = jsonDecode(response.body);
           if (kDebugMode) {
             print("Response body: $jsonBody");
-            clearFormFields();
+          }
+
+          if (jsonBody['status'] == 1) {
+            // All fields are true, navigate back
+            Get.back();
+          } else if (jsonBody['status'] == 0) {
+            toastification.show(
+              // ignore: use_build_context_synchronously
+              context: context,
+              alignment: Alignment.bottomCenter,
+              backgroundColor: AppColors.white,
+              type: ToastificationType.error,
+              style: ToastificationStyle.flatColored,
+              showProgressBar: false,
+              autoCloseDuration: const Duration(seconds: 3),
+              icon: Image.asset(
+                Assets.imagesCancel,
+                height: 35,
+              ),
+              primaryColor: Colors.red,
+              title: Text('$jsonBody'),
+            );
           }
         } else {
           if (kDebugMode) {
@@ -714,15 +723,29 @@ class ClasifiedController extends GetxController {
                 "HTTP error: Failed to save company details. Status code: ${response.statusCode}");
             print("Response body: ${response.body}");
           }
+          if (context != null) {
+            showToasterrorborder(
+                "Failed to save company details. Please try again.",
+                // ignore: use_build_context_synchronously
+                context);
+          }
         }
       } else {
-        // ignore: use_build_context_synchronously
-        showToasterrorborder("No internet connection", context!);
+        if (context != null) {
+          // ignore: use_build_context_synchronously
+          showToasterrorborder("No internet connection", context);
+        }
       }
     } catch (e) {
       if (kDebugMode) {
         print("An error occurred while saving company details: $e");
       }
+      if (context != null) {
+        // ignore: use_build_context_synchronously
+        showToasterrorborder("An error occurred. Please try again.", context);
+      }
+    } finally {
+      isLoading(false);
     }
   }
 

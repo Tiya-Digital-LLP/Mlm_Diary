@@ -59,6 +59,7 @@ class CustomTextField extends StatelessWidget {
           SizedBox(
             height: 12,
             child: TextField(
+              keyboardType: TextInputType.emailAddress,
               cursorHeight: 20,
               onChanged: (value) {
                 onChanged!();

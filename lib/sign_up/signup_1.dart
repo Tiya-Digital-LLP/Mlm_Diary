@@ -60,7 +60,7 @@ class _SignupPageState extends State<SignupPage> {
     final countryCode = selectedCountry.value?.callingCode ?? '';
 
     if (isDomesticPhoneNumber(mobileNumber)) {
-      controller.sendDomesticPhoneOtp(mobileNumber, userName, countryCode);
+      controller.sendDomesticPhoneOtp(mobileNumber, userName, '91', context);
     } else {
       controller.sendForeignPhoneOtp(mobileNumber, userName, countryCode);
     }
@@ -487,7 +487,8 @@ class _SignupPageState extends State<SignupPage> {
                                                             controller
                                                                 .sendEmailOtp(
                                                                     email,
-                                                                    userId);
+                                                                    userId,
+                                                                    context);
                                                             controller
                                                                 .timerValue
                                                                 .value = 30;
@@ -596,7 +597,7 @@ class _SignupPageState extends State<SignupPage> {
                                                   "Email OTP Sent Successfully",
                                                   context);
                                               controller.sendEmailOtp(
-                                                  email, userId);
+                                                  email, userId, context);
                                               controller.emailOtpSend.value =
                                                   true;
                                               controller.startTimer();
@@ -738,9 +739,9 @@ class _SignupPageState extends State<SignupPage> {
                                   log("Mobile OTP Sent Successfully");
                                   showToastverifedborder(
                                       "OTP Sent Successfully", context);
+                                  sendOtp();
                                   controller.mobileOtpSend.value = true;
                                   controller.startTimer();
-                                  sendOtp();
                                 }
                               },
                             ),

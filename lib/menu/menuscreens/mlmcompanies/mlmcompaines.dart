@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mlmdiary/firstscreen/home_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/mlmcompanies_card.dart';
@@ -9,7 +11,6 @@ import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
-import 'package:mlmdiary/widgets/custon_test_app_bar.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 
 class MlmCompanies extends StatefulWidget {
@@ -24,6 +25,8 @@ class _MlmCompaniesState extends State<MlmCompanies> {
   final TutorialVideoController videoController =
       Get.put(TutorialVideoController());
   static const String position = 'company';
+  final HomeScreenController homeScreenController =
+      Get.put(HomeScreenController());
   @override
   void initState() {
     super.initState();
@@ -37,12 +40,57 @@ class _MlmCompaniesState extends State<MlmCompanies> {
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: CustonTestAppBar(
-        size: MediaQuery.of(context).size,
-        titleText: 'MLM Companies',
-        position: position,
+      appBar: AppBar(
+        scrolledUnderElevation: 0,
+        centerTitle: true,
+        leading: Padding(
+          padding: EdgeInsets.all(size.height * 0.012),
+          child: Align(
+            alignment: Alignment.topLeft,
+            child: InkWell(
+              onTap: () {
+                Get.back();
+              },
+              customBorder: const CircleBorder(),
+              child: SvgPicture.asset(Assets.svgBack),
+            ),
+          ),
+        ),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: Text(
+          'MLM Companies',
+          style: TextStyle(
+            fontWeight: FontWeight.w700,
+            fontSize: size.width * 0.048,
+            color: Colors.black,
+            fontFamily: Assets.fontsSatoshiRegular,
+          ),
+        ),
+        actions: [
+          InkWell(
+            onTap: () async {
+              if (position.isEmpty) {
+                await videoController.fetchVideo('', context);
+                Get.toNamed(Routes.tutorialvideo, arguments: {'position': ''});
+              } else if (position == 'company') {
+                await videoController.fetchVideo('company', context);
+                Get.toNamed(Routes.tutorialvideo,
+                    arguments: {'position': 'company'});
+              }
+            },
+            child: SvgPicture.asset(
+              Assets.svgPlay,
+              height: size.width * 0.08,
+              width: size.width * 0.08,
+            ),
+          ),
+          const SizedBox(width: 18),
+        ],
       ),
       body: RefreshIndicator(
         backgroundColor: AppColors.primaryColor,

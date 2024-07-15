@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_category_entity.dart';
 import 'package:mlmdiary/generated/get_sub_category_entity.dart';
@@ -21,6 +22,7 @@ import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_border_container.dart';
 import 'package:mlmdiary/widgets/custom_button.dart';
 import 'package:mlmdiary/widgets/discription_text_field.dart';
+import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:mlmdiary/widgets/normal_button.dart';
 import 'dart:io' as io;
 
@@ -261,6 +263,7 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
                       handleSaveButtonPressed();
                     },
                     text: 'Submit',
+                    isLoading: controller.isLoading,
                   ),
                   20.sbh,
                   GestureDetector(
@@ -505,108 +508,135 @@ void showSelectCategory(
       borderRadius: BorderRadius.vertical(top: Radius.circular(30.0)),
     ),
     builder: (BuildContext context) {
-      return FractionallySizedBox(
-        heightFactor: 0.9,
-        child: Container(
-          padding: const EdgeInsets.all(16.0),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(30.0),
-              topRight: Radius.circular(30.0),
+      return Obx(() {
+        if (controller.isLoading.value && categorylist.isEmpty) {
+          return Center(
+            child: CustomLottieAnimation(
+              child: Lottie.asset(
+                Assets.lottieLottie,
+              ),
             ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: AppColors.grey,
+          );
+        }
+
+        if (categorylist.isEmpty) {
+          return const Center(
+            child: Text(
+              'Data not found',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+          );
+        }
+        return FractionallySizedBox(
+          heightFactor: 0.9,
+          child: Container(
+            padding: const EdgeInsets.all(16.0),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(30.0),
+                topRight: Radius.circular(30.0),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: AppColors.grey,
+                    ),
+                    width: 80,
+                    height: 5,
                   ),
-                  width: 80,
-                  height: 5,
                 ),
-              ),
-              5.sbh,
-              Center(
-                child: Text(
-                  'Select Category',
-                  style: textStyleW600(size.width * 0.045, AppColors.blackText),
+                5.sbh,
+                Center(
+                  child: Text(
+                    'Select Category',
+                    style:
+                        textStyleW600(size.width * 0.045, AppColors.blackText),
+                  ),
                 ),
-              ),
-              20.sbh,
-              Flexible(
-                child: ListView.builder(
-                    shrinkWrap: true,
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    itemCount: categorylist.length,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              controller.toggleCategorySelected(index);
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 16),
-                              child: Row(
-                                children: [
-                                  Obx(
-                                    () => GestureDetector(
-                                      onTap: () {
-                                        controller
-                                            .toggleCategorySelected(index);
-                                      },
-                                      child: Image.asset(
-                                        controller.isCategorySelectedList[index]
-                                            ? Assets.imagesTrueCircle
-                                            : Assets.imagesCircle,
+                20.sbh,
+                Flexible(
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      itemCount: categorylist.length,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                controller.toggleCategorySelected(
+                                    index, context);
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 16),
+                                child: Row(
+                                  children: [
+                                    Obx(
+                                      () => GestureDetector(
+                                        onTap: () {
+                                          controller.toggleCategorySelected(
+                                              index, context);
+                                        },
+                                        child: Image.asset(
+                                          controller
+                                                  .isCategorySelectedList[index]
+                                              ? Assets.imagesTrueCircle
+                                              : Assets.imagesCircle,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  15.sbw,
-                                  Text(
-                                    categorylist[index].name ?? '',
-                                    style: textStyleW500(size.width * 0.041,
-                                        AppColors.blackText),
-                                  ),
-                                ],
+                                    15.sbw,
+                                    Text(
+                                      categorylist[index].name ?? '',
+                                      style: textStyleW500(size.width * 0.041,
+                                          AppColors.blackText),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          20.sbh,
-                        ],
-                      );
-                    }),
-              ),
-              Center(
-                child: CustomButton(
-                  title: "Continue",
-                  btnColor: AppColors.primaryColor,
-                  titleColor: AppColors.white,
-                  onTap: () {
-                    if (controller.selectedCountCategory > 0) {
-                      Get.back();
-                    } else {
-                      Fluttertoast.showToast(
-                        msg: "Please select at least one field.",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        backgroundColor: Colors.red,
-                        textColor: Colors.white,
-                        fontSize: 16.0,
-                      );
-                    }
-                  },
+                            20.sbh,
+                          ],
+                        );
+                      }),
                 ),
-              ),
-            ],
+                Center(
+                  child: CustomButton(
+                    title: "Continue",
+                    btnColor: AppColors.primaryColor,
+                    titleColor: AppColors.white,
+                    onTap: () {
+                      if (controller.selectedCountCategory > 0) {
+                        Get.back();
+                      } else {
+                        Fluttertoast.showToast(
+                          msg: "Please select at least one field.",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          fontSize: 16.0,
+                        );
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-      );
+        );
+      });
     },
   );
 }
@@ -625,134 +655,160 @@ void showSelectSubCategory(
       borderRadius: BorderRadius.vertical(top: Radius.circular(30.0)),
     ),
     builder: (BuildContext context) {
-      return FractionallySizedBox(
-        heightFactor: 0.9,
-        child: Container(
-          padding: const EdgeInsets.all(16.0),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(30.0),
-              topRight: Radius.circular(30.0),
+      return Obx(() {
+        if (controller.isLoading.value && subcategoryList.isEmpty) {
+          return Center(
+            child: CustomLottieAnimation(
+              child: Lottie.asset(
+                Assets.lottieLottie,
+              ),
             ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: AppColors.grey,
+          );
+        }
+
+        if (subcategoryList.isEmpty) {
+          return const Center(
+            child: Text(
+              'Data not found',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+          );
+        }
+        return FractionallySizedBox(
+          heightFactor: 0.9,
+          child: Container(
+            padding: const EdgeInsets.all(16.0),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(30.0),
+                topRight: Radius.circular(30.0),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: AppColors.grey,
+                    ),
+                    width: 80,
+                    height: 5,
                   ),
-                  width: 80,
-                  height: 5,
                 ),
-              ),
-              5.sbh,
-              Center(
-                child: Text(
-                  'Select Sub Category',
-                  style: textStyleW600(size.width * 0.045, AppColors.blackText),
+                5.sbh,
+                Center(
+                  child: Text(
+                    'Select Sub Category',
+                    style:
+                        textStyleW600(size.width * 0.045, AppColors.blackText),
+                  ),
                 ),
-              ),
-              20.sbh,
-              Flexible(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  itemCount: subcategoryList.length,
-                  itemBuilder: (context, index) {
-                    return Column(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            if (!controller.isSubCategorySelectedList[index]) {
-                              controller.toggleSubCategorySelected(index);
-                            } else {
-                              Fluttertoast.showToast(
-                                msg: "Please select only one Sub category.",
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.BOTTOM,
-                                backgroundColor: Colors.red,
-                                textColor: Colors.white,
-                                fontSize: 16.0,
-                              );
-                            }
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 16),
-                            child: Row(
-                              children: [
-                                Obx(
-                                  () => GestureDetector(
-                                    onTap: () {
-                                      if (!controller
-                                          .isSubCategorySelectedList[index]) {
-                                        controller
-                                            .toggleSubCategorySelected(index);
-                                      } else {
-                                        Fluttertoast.showToast(
-                                          msg:
-                                              "Please select only one Sub category.",
-                                          toastLength: Toast.LENGTH_SHORT,
-                                          gravity: ToastGravity.BOTTOM,
-                                          backgroundColor: Colors.red,
-                                          textColor: Colors.white,
-                                          fontSize: 16.0,
-                                        );
-                                      }
-                                    },
-                                    child: Image.asset(
-                                      (controller
-                                              .isSubCategorySelectedList[index])
-                                          ? Assets.imagesTrueCircle
-                                          : Assets.imagesCircle,
+                20.sbh,
+                Flexible(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: subcategoryList.length,
+                    itemBuilder: (context, index) {
+                      return Column(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              if (!controller
+                                  .isSubCategorySelectedList[index]) {
+                                controller.toggleSubCategorySelected(index);
+                              } else {
+                                Fluttertoast.showToast(
+                                  msg: "Please select only one Sub category.",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  backgroundColor: Colors.red,
+                                  textColor: Colors.white,
+                                  fontSize: 16.0,
+                                );
+                              }
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 16),
+                              child: Row(
+                                children: [
+                                  Obx(
+                                    () => GestureDetector(
+                                      onTap: () {
+                                        if (!controller
+                                            .isSubCategorySelectedList[index]) {
+                                          controller
+                                              .toggleSubCategorySelected(index);
+                                        } else {
+                                          Fluttertoast.showToast(
+                                            msg:
+                                                "Please select only one Sub category.",
+                                            toastLength: Toast.LENGTH_SHORT,
+                                            gravity: ToastGravity.BOTTOM,
+                                            backgroundColor: Colors.red,
+                                            textColor: Colors.white,
+                                            fontSize: 16.0,
+                                          );
+                                        }
+                                      },
+                                      child: Image.asset(
+                                        (controller.isSubCategorySelectedList[
+                                                index])
+                                            ? Assets.imagesTrueCircle
+                                            : Assets.imagesCircle,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                15.sbw,
-                                Text(
-                                  subcategoryList[index].name ?? '',
-                                  style: textStyleW500(
-                                      size.width * 0.041, AppColors.blackText),
-                                ),
-                              ],
+                                  15.sbw,
+                                  Text(
+                                    subcategoryList[index].name ?? '',
+                                    style: textStyleW500(size.width * 0.041,
+                                        AppColors.blackText),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        20.sbh,
-                      ],
-                    );
-                  },
-                ),
-              ),
-              Center(
-                child: CustomButton(
-                  title: "Continue",
-                  btnColor: AppColors.primaryColor,
-                  titleColor: AppColors.white,
-                  onTap: () {
-                    if (controller.selectedCountSubCategory > 0) {
-                      Get.back();
-                    } else {
-                      Fluttertoast.showToast(
-                        msg: "Please select at least one field.",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        backgroundColor: Colors.red,
-                        textColor: Colors.white,
-                        fontSize: 16.0,
+                          20.sbh,
+                        ],
                       );
-                    }
-                  },
+                    },
+                  ),
                 ),
-              ),
-            ],
+                Center(
+                  child: CustomButton(
+                    title: "Continue",
+                    btnColor: AppColors.primaryColor,
+                    titleColor: AppColors.white,
+                    onTap: () {
+                      if (controller.selectedCountSubCategory > 0) {
+                        Get.back();
+                      } else {
+                        Fluttertoast.showToast(
+                          msg: "Please select at least one field.",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          fontSize: 16.0,
+                        );
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-      );
+        );
+      });
     },
   );
 }

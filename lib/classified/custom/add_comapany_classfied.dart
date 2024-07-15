@@ -186,6 +186,7 @@ class _AddCompanyClassifiedState extends State<AddCompanyClassified> {
               Get.back(result: selectedCompanies);
             },
             text: 'Submit',
+            isLoading: controller.isLoading,
           ),
         ),
       ),

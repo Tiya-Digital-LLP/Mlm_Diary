@@ -15,12 +15,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class CustomFloatingActionButtonController {
+class CustomFloatingActionButtonController extends GetxController {
   final BuildContext context;
 
   CustomFloatingActionButtonController(this.context);
 
+  var isLoading = false.obs;
+
   Future<void> handleTap(String selectedType) async {
+    isLoading.value = true;
     try {
       var result = await classifiedRemainingCount(selectedType);
 
@@ -35,6 +38,8 @@ class CustomFloatingActionButtonController {
       }
     } catch (e) {
       showErrorMessage("Error: $e");
+    } finally {
+      isLoading.value = false;
     }
   }
 
@@ -77,8 +82,6 @@ class CustomFloatingActionButtonController {
         print('Error: $e');
       }
       return null;
-    } finally {
-      // Perform any cleanup or finalization here if needed
     }
   }
 

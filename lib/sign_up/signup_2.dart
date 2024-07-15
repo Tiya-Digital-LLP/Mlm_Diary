@@ -311,7 +311,7 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                       var place = await PlacesAutocomplete.show(
                         context: context,
                         apiKey: googleApikey,
-                        mode: Mode.overlay,
+                        mode: Mode.fullscreen,
                         types: ['geocode', 'establishment'],
                         strictbounds: false,
                         onError: (err) {},

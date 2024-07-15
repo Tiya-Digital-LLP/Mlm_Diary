@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -31,6 +32,9 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
     post = Get.arguments;
     if (post != null && post.chatId != null) {
       messageController.fetchMyChatDetail(post.chatId.toString());
+      if (kDebugMode) {
+        print('chat: $post');
+      }
       postTimeFormatter = PostTimeFormatter();
 
       // Scroll to the bottom when the chat details are fetched

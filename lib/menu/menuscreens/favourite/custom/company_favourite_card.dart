@@ -136,6 +136,7 @@ class _CompanieFaviouriteCardState extends State<CompanieFaviouriteCard> {
         widget.questionAnswerController,
         widget.editpostController,
       );
+      widget.controller.fetchBookmark(1);
     });
   }
 

@@ -1,21 +1,34 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/menu/menuscreens/favourite/controller/favourite_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/video/controller/video_controller.dart';
+import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class VideoFavouriteCard extends StatelessWidget {
   final String postTitle;
   final String postVideo;
+  final VideoController videoController;
+  final FavouriteController controller;
 
   const VideoFavouriteCard({
     super.key,
     required this.postTitle,
     required this.postVideo,
+    required this.videoController,
+    required this.controller,
   });
 
   @override
   Widget build(BuildContext context) {
+    final videoItem = videoController.videoList[0];
+    final Size size = MediaQuery.of(context).size;
+
     return Card(
+      color: AppColors.white,
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: 16.0,
@@ -26,9 +39,29 @@ class VideoFavouriteCard extends StatelessWidget {
               width: double.infinity,
               child: VideoPlayerWidget(url: postVideo),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Html(data: postTitle),
+            Html(data: postTitle),
+            Align(
+              alignment: Alignment.topRight,
+              child: GestureDetector(
+                onTap: () {
+                  // Check if videoItem.id is not null before calling togglevideoBookMark
+                  if (videoItem.id != null) {
+                    videoController.togglevideoBookMark(videoItem.id!, context);
+                  } else {
+                    // Handle the case where videoItem.id is null
+                    if (kDebugMode) {
+                      print('Video ID is null');
+                    }
+                    controller.fetchBookmark(1);
+                  }
+                },
+                child: SvgPicture.asset(
+                  videoItem.isBookmark ?? false
+                      ? Assets.svgCheckBookmark
+                      : Assets.svgSavePost,
+                  height: size.height * 0.028,
+                ),
+              ),
             ),
           ],
         ),

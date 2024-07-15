@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mlmdiary/firstscreen/home_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/menu/menuscreens/tutorialvideo/controller/tutorial_video_controller.dart';
@@ -10,6 +11,7 @@ class CustonTestAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String titleText;
   final VoidCallback? onTap;
   final TutorialVideoController? videoController;
+  final HomeScreenController homeScreenController;
   final String position;
 
   const CustonTestAppBar({
@@ -19,6 +21,7 @@ class CustonTestAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.onTap,
     this.videoController,
     required this.position,
+    required this.homeScreenController,
   });
 
   @override
@@ -35,7 +38,8 @@ class CustonTestAppBar extends StatelessWidget implements PreferredSizeWidget {
           alignment: Alignment.topLeft,
           child: InkWell(
             onTap: () {
-              Get.back();
+              homeScreenController.newIndex.value = 0;
+              homeScreenController.tappedIndex.value = 0;
             },
             customBorder: const CircleBorder(),
             child: SvgPicture.asset(Assets.svgBack),

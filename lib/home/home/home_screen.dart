@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
@@ -20,6 +20,7 @@ import 'package:mlmdiary/home/home/custom/post_home_card.dart';
 import 'package:mlmdiary/home/home/custom/question_home_card.dart';
 import 'package:mlmdiary/home/home/custom/video_home_card.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/favourite/controller/favourite_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
@@ -47,6 +48,8 @@ class _HomeScreenState extends State<HomeScreen> {
   int backPressedCount = 0;
   final GlobalKey _popupMenuButtonKey = GlobalKey();
   final HomeController controller = Get.put(HomeController());
+  final FavouriteController favouriteController =
+      Get.put(FavouriteController());
 
   final ManageBlogController manageBlogController =
       Get.put(ManageBlogController());
@@ -201,12 +204,63 @@ class _HomeScreenState extends State<HomeScreen> {
       body: WillPopScope(
         onWillPop: () async {
           if (backPressedCount == 0) {
-            Fluttertoast.showToast(
-              msg: "Please Double Click to Close App",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-            );
             backPressedCount++;
+            showModalBottomSheet(
+              context: context,
+              builder: (context) {
+                return Container(
+                  padding: const EdgeInsets.all(16.0),
+                  height: 125.0,
+                  decoration: BoxDecoration(
+                      color: AppColors.white,
+                      borderRadius: BorderRadius.circular(12)),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          "MLM Diary",
+                          style: TextStyle(fontSize: 18.0),
+                        ),
+                      ),
+                      const Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          "Are you sure you want to exit the App?",
+                          style: TextStyle(fontSize: 12.0),
+                        ),
+                      ),
+                      const Spacer(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              Get.back();
+                            },
+                            child: Text(
+                              "Cancel",
+                              style: TextStyle(color: AppColors.primaryColor),
+                            ),
+                          ),
+                          8.sbw,
+                          TextButton(
+                            onPressed: () {
+                              SystemNavigator.pop();
+                            },
+                            child: Text(
+                              "Okay",
+                              style: TextStyle(color: AppColors.primaryColor),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
             return false;
           } else {
             return true;
@@ -270,14 +324,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                         Builder(builder: (context) {
                                           return InkWell(
                                             onTap: () async {
-                                              await databaseController
-                                                  .fetchUserPost(
-                                                      controller
-                                                              .mutualFriendList[
-                                                                  index]
-                                                              .id ??
-                                                          0,
-                                                      context);
+                                              Get.toNamed(
+                                                Routes.userprofilescreencopy,
+                                                arguments: controller
+                                                    .mutualFriendList[index],
+                                              );
                                               await userProfileController
                                                   .fetchUserAllPost(
                                                 1,
@@ -286,20 +337,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         .id ??
                                                     0,
                                               );
-                                              Get.toNamed(
-                                                Routes.userprofilescreen,
-                                                arguments: controller
-                                                    .mutualFriendList[index],
-                                              );
                                             },
                                             child: SuggetionUserCard(
+                                              postId: controller
+                                                      .mutualFriendList[index]
+                                                      .id ??
+                                                  0,
+                                              editpostcontroller:
+                                                  editPostController,
                                               userImage: controller
                                                       .mutualFriendList[index]
                                                       .imageUrl ??
                                                   '',
                                               name: controller
                                                       .mutualFriendList[index]
-                                                      .name ??
+                                                      .title ??
                                                   '',
                                               post: controller
                                                       .mutualFriendList[index]
@@ -498,6 +550,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 cardWidget = VideoHomeCard(
                                   postTitle: post.title ?? '',
                                   postVideo: post.image ?? '',
+                                  videoController: videoController,
+                                  controller: favouriteController,
                                 );
                                 break;
                               case 'database':

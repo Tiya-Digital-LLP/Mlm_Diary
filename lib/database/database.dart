@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/database/controller/database_controller.dart';
+import 'package:mlmdiary/firstscreen/home_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/tutorialvideo/controller/tutorial_video_controller.dart';
@@ -37,7 +38,8 @@ class _DatabaseState extends State<DatabaseScreen> {
   final TutorialVideoController videoController =
       Get.put(TutorialVideoController());
   static const String position = 'database';
-
+  final HomeScreenController homeScreenController =
+      Get.put(HomeScreenController());
   @override
   void initState() {
     super.initState();
@@ -58,6 +60,7 @@ class _DatabaseState extends State<DatabaseScreen> {
         titleText: 'MLM Database',
         onTap: () {},
         position: position,
+        homeScreenController: homeScreenController,
       ),
       body: RefreshIndicator(
         backgroundColor: AppColors.primaryColor,
@@ -282,16 +285,19 @@ class _DatabaseState extends State<DatabaseScreen> {
                               '${post.city ?? ''}, ${post.state ?? ''}, ${post.country ?? ''}';
                           return GestureDetector(
                             onTap: () async {
-                              await userProfileController.fetchUserAllPost(
-                                1,
-                                post.id ?? 0,
-                              );
                               Get.toNamed(
                                 Routes.userprofilescreencopy,
                                 arguments: post,
                               );
+                              await userProfileController.fetchUserAllPost(
+                                1,
+                                post.id ?? 0,
+                              );
                             },
                             child: UserCard(
+                              post: post,
+                              postid: post.id ?? 0,
+                              userprofilecontroller: userProfileController,
                               userImage: post.imagePath ?? '',
                               userName: post.name ?? '',
                               location: location,

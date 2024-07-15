@@ -133,6 +133,7 @@ class _FavouritrCardState extends State<QuestionFavouriteCard> {
         widget.questionAnswerController,
         widget.editpostController,
       );
+      widget.controller.fetchBookmark(1);
     });
   }
 
@@ -287,8 +288,8 @@ class _FavouritrCardState extends State<QuestionFavouriteCard> {
                           onTap: togleBookmark,
                           child: SvgPicture.asset(
                             isBookmarked
-                                ? Assets.svgSavePost
-                                : Assets.svgCheckBookmark,
+                                ? Assets.svgCheckBookmark
+                                : Assets.svgSavePost,
                             height: size.height * 0.032,
                           ),
                         ),

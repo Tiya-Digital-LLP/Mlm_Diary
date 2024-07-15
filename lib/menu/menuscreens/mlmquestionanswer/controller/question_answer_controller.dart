@@ -81,6 +81,9 @@ class QuestionAnswerController extends GetxController {
   //scrollercontroller
   final ScrollController scrollController = ScrollController();
 
+  var selectedCategoryId = 0.obs;
+  var selectedSubCategoryId = 0.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -871,26 +874,31 @@ class QuestionAnswerController extends GetxController {
   }
 
   // Category
-  void toggleCategorySelected(int index) {
-    isCategorySelectedList[index] = !isCategorySelectedList[index];
-
-    selectedCountCategory.value = isCategorySelectedList[index] ? 1 : 0;
-
-    if (isCategorySelectedList[index]) {
-      fetchSubCategoryList(categorylist[index].id!);
+  void toggleCategorySelected(int index, BuildContext context) {
+    // Unselect all categories
+    for (int i = 0; i < isCategorySelectedList.length; i++) {
+      isCategorySelectedList[i] = false;
     }
+
+    // Select the current category
+    isCategorySelectedList[index] = true;
+    selectedCountCategory.value = 1;
+    selectedCategoryId.value = categorylist[index].id!;
+
+    // Fetch subcategory list for the selected category
+    fetchSubCategoryList(categorylist[index].id!);
   }
 
   TextEditingController getSelectedCategoryTextController() {
-    List<String> selectedCategoryOptions = [];
+    List<String> selectedCategoryNames = [];
 
     for (int i = 0; i < isCategorySelectedList.length; i++) {
       if (isCategorySelectedList[i]) {
-        selectedCategoryOptions.add(categorylist[i].id.toString());
+        selectedCategoryNames.add(categorylist[i].name ?? '');
       }
     }
 
-    return TextEditingController(text: selectedCategoryOptions.join(', '));
+    return TextEditingController(text: selectedCategoryNames.join(', '));
   }
 
   void mlmCategoryValidation() {
@@ -902,25 +910,26 @@ class QuestionAnswerController extends GetxController {
   void toggleSubCategorySelected(int index) {
     bool isCurrentlySelected = isSubCategorySelectedList[index];
 
-    // Unselect all sub-categories first
+    // Unselect all subcategories
     for (int i = 0; i < isSubCategorySelectedList.length; i++) {
       isSubCategorySelectedList[i] = false;
     }
 
+    // Toggle the selected state of the current subcategory
     isSubCategorySelectedList[index] = !isCurrentlySelected;
-
     selectedCountSubCategory.value = isSubCategorySelectedList[index] ? 1 : 0;
+    selectedSubCategoryId.value = subcategoryList[index].id!;
   }
 
   TextEditingController getSelectedSubCategoryTextController() {
-    List<String> selectedSubCategoryOptions = [];
+    List<String> selectedSubCategoryNames = [];
     for (int i = 0; i < isSubCategorySelectedList.length; i++) {
       if (isSubCategorySelectedList[i]) {
-        selectedSubCategoryOptions.add(subcategoryList[i].id.toString());
+        selectedSubCategoryNames.add(subcategoryList[i].name ?? '');
       }
     }
 
-    return TextEditingController(text: selectedSubCategoryOptions.join(', '));
+    return TextEditingController(text: selectedSubCategoryNames.join(', '));
   }
 
   void mlmsubCategoryValidation() {
@@ -956,9 +965,8 @@ class QuestionAnswerController extends GetxController {
         request.fields['device'] = device;
         request.fields['title'] = title.value.text;
         request.fields['description'] = answer.value.text;
-        request.fields['category'] = getSelectedCategoryTextController().text;
-        request.fields['subcategory'] =
-            getSelectedSubCategoryTextController().text;
+        request.fields['category'] = selectedCategoryId.value.toString();
+        request.fields['subcategory'] = selectedSubCategoryId.value.toString();
         request.fields['api_token'] = apiToken ?? '';
 
         // Send request

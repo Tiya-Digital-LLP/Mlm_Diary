@@ -159,4 +159,9 @@ class Constants {
   static const String sendnewchat = "/chat/getnewmessages";
 
   static const String deleteChat = "/chat/deletechat";
+
+
+
+  static const String contactus = "/save_inquiry";
+
 }

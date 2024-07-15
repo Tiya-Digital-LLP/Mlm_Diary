@@ -314,11 +314,6 @@ class _AddPostState extends State<AddPost> {
         return;
       }
 
-      if (fileSizeInKB < 200) {
-        Fluttertoast.showToast(msg: 'Please Select an image above 200 KB');
-        return;
-      }
-
       io.File? processedFile = imageFile;
 
       if (fileSizeInKB > 250) {

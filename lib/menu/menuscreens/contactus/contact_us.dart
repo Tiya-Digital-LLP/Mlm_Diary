@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/contactus/controller/contactus_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/border_text_field.dart';
@@ -24,8 +25,6 @@ class ContactUs extends StatefulWidget {
 class _ContactUsState extends State<ContactUs> {
   final ContactusController controller = Get.put(ContactusController());
   final Rx<Country?> _selectedCountry = Rx<Country?>(null);
-  List listitem2 = ['Feedback/Suggestions', 'Advetiesment'];
-  final RxString _selectedItem = RxString('');
 
   @override
   void initState() {
@@ -83,7 +82,7 @@ class _ContactUsState extends State<ContactUs> {
                   Assets.svgContactUsBgImage,
                   height: 150,
                 ),
-                select_sub_dropdown(listitem2, 'Select Subject'),
+                select_sub_dropdown(controller.listitem2, 'Select Subject'),
                 SizedBox(
                   height: size.height * 0.010,
                 ),
@@ -201,8 +200,13 @@ class _ContactUsState extends State<ContactUs> {
                 ),
                 20.sbh,
                 NormalButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    await controller.contactus(context);
+                    // ignore: use_build_context_synchronously
+                    showToastverifedborder('inquiry save', context);
+                  },
                   text: 'Submit',
+                  isLoading: controller.isLoading,
                 ),
                 30.sbh,
                 Container(
@@ -348,8 +352,9 @@ class _ContactUsState extends State<ContactUs> {
       child: Obx(() => Padding(
             padding: const EdgeInsets.all(8.0),
             child: DropdownButton(
-              value:
-                  _selectedItem.value.isNotEmpty ? _selectedItem.value : null,
+              value: controller.selectedItem.isNotEmpty
+                  ? controller.selectedItem.value
+                  : null,
               hint: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Text(
@@ -376,7 +381,7 @@ class _ContactUsState extends State<ContactUs> {
                 );
               }).toList(),
               onChanged: (value) {
-                _selectedItem.value = value.toString();
+                controller.selectedItem.value = value.toString();
               },
               underline: const SizedBox.shrink(),
             ),

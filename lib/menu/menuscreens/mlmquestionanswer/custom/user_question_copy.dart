@@ -1233,15 +1233,16 @@ class _UserQuestionState extends State<UserQuestionCopy> {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CircleAvatar(
-                          backgroundColor: const Color(0XFFCCC9C9),
-                          radius: size.width * 0.07,
-                          child: ClipOval(
+                        if (post.userData!.imagePath.isNotEmpty &&
+                            Uri.tryParse(post.userData!.imagePath)
+                                    ?.hasAbsolutePath ==
+                                true)
+                          ClipOval(
                             child: CachedNetworkImage(
                               imageUrl: post.userData!.imagePath ?? '',
-                              height: 97,
-                              width: 105,
-                              fit: BoxFit.fill,
+                              height: 60.0,
+                              width: 60.0,
+                              fit: BoxFit.cover,
                               placeholder: (context, url) =>
                                   CustomLottieAnimation(
                                 child: Lottie.asset(
@@ -1252,7 +1253,6 @@ class _UserQuestionState extends State<UserQuestionCopy> {
                                   const Icon(Icons.error),
                             ),
                           ),
-                        ),
                         10.sbw,
                         Expanded(
                           child: Column(

@@ -111,6 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         controller.loginValidation(context);
                       },
                       text: 'Log in',
+                      isLoading: controller.isLoading,
                     ),
                   ),
                   Expanded(child: Container()),

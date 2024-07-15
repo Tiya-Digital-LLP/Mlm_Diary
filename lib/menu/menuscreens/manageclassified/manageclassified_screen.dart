@@ -25,7 +25,9 @@ class _MlmClassifiedState extends State<ManageClassified> {
   @override
   void initState() {
     super.initState();
-    controller.fetchClassifieds();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.fetchClassifieds();
+    });
     _refreshData();
   }
 

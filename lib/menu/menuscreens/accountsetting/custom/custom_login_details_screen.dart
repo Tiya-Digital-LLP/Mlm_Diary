@@ -242,6 +242,7 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                               context);
                                         },
                                         text: 'Verify',
+                                        isLoading: controller.isLoading,
                                       )
                                     ],
                                   );
@@ -262,6 +263,7 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                           context);
                                     },
                                     text: 'Send Otp',
+                                    isLoading: controller.isLoading,
                                   );
                                 } else {
                                   return const SizedBox();
@@ -377,6 +379,7 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                               context);
                                         },
                                         text: 'Verify',
+                                        isLoading: controller.isLoading,
                                       )
                                     ],
                                   );
@@ -393,6 +396,7 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                       controller.updateEmail();
                                     },
                                     text: 'Send Otp',
+                                    isLoading: controller.isLoading,
                                   );
                                 } else {
                                   return const SizedBox();
@@ -509,23 +513,25 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                               ),
                               16.sbh,
                               NormalButton(
-                                  onPressed: () {
-                                    // Check if passwords match
-                                    if (controller.password.value.text !=
-                                        controller.confirmPassword.value.text) {
-                                      showToasterrorborder(
-                                          "Both Passwords Should be the Same.",
-                                          context);
-                                    } else {
-                                      // Call the method to send the change password request
-                                      controller.sendChangePasswordRequest(
-                                        context,
-                                        userId!,
-                                        controller.password.value.text,
-                                      );
-                                    }
-                                  },
-                                  text: 'Change Password')
+                                onPressed: () {
+                                  // Check if passwords match
+                                  if (controller.password.value.text !=
+                                      controller.confirmPassword.value.text) {
+                                    showToasterrorborder(
+                                        "Both Passwords Should be the Same.",
+                                        context);
+                                  } else {
+                                    // Call the method to send the change password request
+                                    controller.sendChangePasswordRequest(
+                                      context,
+                                      userId!,
+                                      controller.password.value.text,
+                                    );
+                                  }
+                                },
+                                text: 'Change Password',
+                                isLoading: controller.isLoading,
+                              )
                             ],
                           );
                         } else {

@@ -4,7 +4,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
-import 'package:mlmdiary/widgets/normal_button.dart';
 import 'package:mlmdiary/widgets/outlined_button.dart';
 
 class Utility {
@@ -111,11 +110,6 @@ class Utility {
                         const SizedBox(
                           width: 15,
                         ),
-                        Expanded(
-                            child: NormalButton(
-                          onPressed: onPositivePressed,
-                          text: positiveButtonText,
-                        ))
                       ],
                     ).marginOnly(top: 20, bottom: 20)
                   ],

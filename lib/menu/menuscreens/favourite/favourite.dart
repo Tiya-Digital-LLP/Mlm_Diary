@@ -92,7 +92,7 @@ class _FavouriteState extends State<Favourite> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Favourite',
+              'Saved',
               style: textStyleW700(size.width * 0.048, AppColors.blackText),
             ),
           ],
@@ -257,6 +257,8 @@ class _FavouriteState extends State<Favourite> {
                         cardWidget = VideoFavouriteCard(
                           postTitle: post.title ?? '',
                           postVideo: post.image ?? '',
+                          videoController: videoController,
+                          controller: controller,
                         );
                         break;
                       case 'database':
@@ -391,13 +393,13 @@ class _FavouriteState extends State<Favourite> {
         if (kDebugMode) {
           print('database');
         }
-        await userProfileController.fetchUserAllPost(
-          1,
-          post.id ?? 0,
-        );
         Get.toNamed(
           Routes.userprofilescreencopy,
           arguments: post,
+        );
+        await userProfileController.fetchUserAllPost(
+          1,
+          post.id ?? 0,
         );
         break;
       case 'question':

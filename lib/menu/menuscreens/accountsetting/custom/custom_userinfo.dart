@@ -486,6 +486,7 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
               child: NormalButton(
                 onPressed: handleSaveButtonPressed,
                 text: 'Save',
+                isLoading: controller.isLoading,
               ),
             ),
           ],

@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/delete_notification_entity.dart';
 import 'package:mlmdiary/generated/get_notification_entity.dart';
+import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -34,7 +35,7 @@ class NotificationController extends GetxController {
       }
     });
   }
-  
+
   Future<void> fetchNotification(int page, String? type) async {
     if (kDebugMode) {
       print('fetchNotification called with page: $page, type: $type');
@@ -145,6 +146,11 @@ class NotificationController extends GetxController {
             print('No new notifications');
           }
         }
+      } else if (response.statusCode == 401) {
+        if (kDebugMode) {
+          print('Failed to fetch notifications, status code: 401');
+        }
+        Get.offAllNamed(Routes.login);
       } else {
         if (kDebugMode) {
           print(

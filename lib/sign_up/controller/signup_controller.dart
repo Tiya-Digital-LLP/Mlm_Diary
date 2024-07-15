@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/data/constants.dart';
+import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/domestic_phoneotp_entity.dart';
 import 'package:mlmdiary/generated/email_otp_entity.dart';
 import 'package:mlmdiary/generated/email_verify_entity.dart';
@@ -17,9 +18,11 @@ import 'package:mlmdiary/generated/resent_otp_register_entity.dart';
 import 'package:mlmdiary/generated/user_register_entity_entity.dart';
 import 'package:mlmdiary/generated/verify_phone_otp_entity.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
+import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/common_toast.dart';
 import 'package:mlmdiary/utils/email_validator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toastification/toastification.dart';
 
 class SignupController extends GetxController {
   RxList<GetUserTypeUsertype> userTypes = RxList<GetUserTypeUsertype>();
@@ -101,6 +104,8 @@ class SignupController extends GetxController {
   RxBool mobileReadOnly = false.obs;
   RxBool emailReadOnly = false.obs;
 
+  var selectedTypesId = 0.obs;
+
   Future<void> fetchUserTypes() async {
     try {
       // Function to execute HTTP request if there's an internet connection
@@ -153,7 +158,7 @@ class SignupController extends GetxController {
   }
 
   Future<void> sendDomesticPhoneOtp(
-      String mobile, String name, String countryCode) async {
+      String mobile, String name, String countryCode, context) async {
     String device = '';
     if (Platform.isAndroid) {
       device = 'android';
@@ -171,7 +176,7 @@ class SignupController extends GetxController {
           Uri.parse('${Constants.baseUrl}${Constants.domesticPhoneOtp}'),
           body: {
             'name': name,
-            'user_type': getSelectedOptionsTextController().text.toString(),
+            'user_type': selectedTypesId.value.toString(),
             'mobile': mobile,
             'countrycode': countryCode,
             'device': device,
@@ -187,6 +192,23 @@ class SignupController extends GetxController {
               print("Domestic OTP sent successfully: ${otpEntity.message}");
             }
             setDefaultUserId(otpEntity.userId);
+          } else if (jsonBody['status'] == 0) {
+            toastification.show(
+              // ignore: use_build_context_synchronously
+              context: context,
+              alignment: Alignment.bottomCenter,
+              backgroundColor: AppColors.white,
+              type: ToastificationType.error,
+              style: ToastificationStyle.flatColored,
+              showProgressBar: false,
+              autoCloseDuration: const Duration(seconds: 3),
+              icon: Image.asset(
+                Assets.imagesCancel,
+                height: 35,
+              ),
+              primaryColor: Colors.red,
+              title: Text('$jsonBody'),
+            );
           } else {
             if (kDebugMode) {
               print("Failed to send domestic OTP: ${otpEntity.message}");
@@ -397,7 +419,7 @@ class SignupController extends GetxController {
     }
   }
 
-  Future<void> sendEmailOtp(String email, int userId) async {
+  Future<void> sendEmailOtp(String email, int userId, context) async {
     String device = '';
     if (Platform.isAndroid) {
       device = 'android';
@@ -431,6 +453,23 @@ class SignupController extends GetxController {
                   "Email OTP sent successfully for email: ${emailOtpEntity.message}");
             }
             emailOtpSend.value = true;
+          } else if (jsonBody['status'] == 0) {
+            toastification.show(
+              // ignore: use_build_context_synchronously
+              context: context,
+              alignment: Alignment.bottomCenter,
+              backgroundColor: AppColors.white,
+              type: ToastificationType.error,
+              style: ToastificationStyle.flatColored,
+              showProgressBar: false,
+              autoCloseDuration: const Duration(seconds: 3),
+              icon: Image.asset(
+                Assets.imagesCancel,
+                height: 35,
+              ),
+              primaryColor: Colors.red,
+              title: Text('$jsonBody'),
+            );
           } else {
             if (kDebugMode) {
               print("Failed to send Email OTP: ${emailOtpEntity.message}");
@@ -495,7 +534,8 @@ class SignupController extends GetxController {
           ToastUtils.showToast("Registration successful");
           Get.offNamed(Routes.signUp2);
 
-          saveAccessToken(userRegisterEntity.apiToken);
+          saveAccessToken(
+              userRegisterEntity.apiToken, userRegisterEntity.userId);
           if (kDebugMode) {
             print('api_token: ${userRegisterEntity.apiToken}');
           }
@@ -516,9 +556,10 @@ class SignupController extends GetxController {
     }
   }
 
-  Future<void> saveAccessToken(String? token) async {
+  Future<void> saveAccessToken(String? token, int? userId) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(Constants.accessToken, token ?? '');
+    await prefs.setInt(Constants.userId, userId ?? 0);
   }
 
   Future<void> verifyEmail(
@@ -764,13 +805,14 @@ class SignupController extends GetxController {
     } else {
       selectedCount--;
     }
+    selectedTypesId.value = userTypes[index].id!;
   }
 
   TextEditingController getSelectedOptionsTextController() {
     List<String> selectedTypeOptions = [];
     for (int i = 0; i < isTypeSelectedList.length; i++) {
       if (isTypeSelectedList[i]) {
-        selectedTypeOptions.add(userTypes[i].id.toString());
+        selectedTypeOptions.add(userTypes[i].name.toString());
       }
     }
 

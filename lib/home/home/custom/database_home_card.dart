@@ -1,7 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/home/home/controller/homescreen_controller.dart';
@@ -13,7 +11,6 @@ import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controlle
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
-import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 
 class DatabaseHomeCard extends StatefulWidget {
   final String userImage;
@@ -116,28 +113,43 @@ class _FavouritrCardState extends State<DatabaseHomeCard> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(color: AppColors.grey, width: 2),
-                      borderRadius: BorderRadius.circular(100)),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(100),
-                    child: CachedNetworkImage(
-                      imageUrl: widget.postImage,
-                      height: 60,
-                      width: 60,
-                      fit: BoxFit.fill,
-                      placeholder: (context, url) => CustomLottieAnimation(
-                        child: Lottie.asset(
-                          Assets.lottieLottie,
-                        ),
+                if (widget.postImage.isNotEmpty &&
+                    Uri.tryParse(widget.postImage)?.hasAbsolutePath == true)
+                  Container(
+                    height: 60,
+                    width: 60,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: ClipOval(
+                      child: Image.network(
+                        widget.postImage,
+                        fit: BoxFit.fill,
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) {
+                            return child;
+                          }
+                          return Center(
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      (loadingProgress.expectedTotalBytes ?? 1)
+                                  : null,
+                            ),
+                          );
+                        },
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.asset(
+                            Assets.imagesIcon,
+                            fit: BoxFit.fill,
+                          );
+                        },
                       ),
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.error),
                     ),
                   ),
-                ),
                 10.sbw,
                 Expanded(
                   child: Column(

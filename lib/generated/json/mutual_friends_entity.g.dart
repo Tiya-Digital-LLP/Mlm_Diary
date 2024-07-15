@@ -97,7 +97,7 @@ MutualFriendsData $MutualFriendsDataFromJson(Map<String, dynamic> json) {
   if (mobile != null) {
     mutualFriendsData.mobile = mobile;
   }
-  final dynamic birthdate = json['birthdate'];
+  final String? birthdate = jsonConvert.convert<String>(json['birthdate']);
   if (birthdate != null) {
     mutualFriendsData.birthdate = birthdate;
   }
@@ -121,7 +121,7 @@ MutualFriendsData $MutualFriendsDataFromJson(Map<String, dynamic> json) {
   if (pincode != null) {
     mutualFriendsData.pincode = pincode;
   }
-  final dynamic employment = json['employment'];
+  final String? employment = jsonConvert.convert<String>(json['employment']);
   if (employment != null) {
     mutualFriendsData.employment = employment;
   }
@@ -145,11 +145,11 @@ MutualFriendsData $MutualFriendsDataFromJson(Map<String, dynamic> json) {
   if (lastlogin != null) {
     mutualFriendsData.lastlogin = lastlogin;
   }
-  final dynamic aboutyou = json['aboutyou'];
+  final String? aboutyou = jsonConvert.convert<String>(json['aboutyou']);
   if (aboutyou != null) {
     mutualFriendsData.aboutyou = aboutyou;
   }
-  final dynamic website = json['website'];
+  final String? website = jsonConvert.convert<String>(json['website']);
   if (website != null) {
     mutualFriendsData.website = website;
   }
@@ -177,15 +177,15 @@ MutualFriendsData $MutualFriendsDataFromJson(Map<String, dynamic> json) {
   if (views != null) {
     mutualFriendsData.views = views;
   }
-  final String? emailvarify = jsonConvert.convert<String>(json['emailvarify']);
+  final dynamic emailvarify = json['emailvarify'];
   if (emailvarify != null) {
     mutualFriendsData.emailvarify = emailvarify;
   }
-  final String? vemailcode = jsonConvert.convert<String>(json['vemailcode']);
+  final dynamic vemailcode = json['vemailcode'];
   if (vemailcode != null) {
     mutualFriendsData.vemailcode = vemailcode;
   }
-  final String? vphonecode = jsonConvert.convert<String>(json['vphonecode']);
+  final dynamic vphonecode = json['vphonecode'];
   if (vphonecode != null) {
     mutualFriendsData.vphonecode = vphonecode;
   }
@@ -193,7 +193,7 @@ MutualFriendsData $MutualFriendsDataFromJson(Map<String, dynamic> json) {
   if (stepno != null) {
     mutualFriendsData.stepno = stepno;
   }
-  final String? token = jsonConvert.convert<String>(json['token']);
+  final dynamic token = json['token'];
   if (token != null) {
     mutualFriendsData.token = token;
   }
@@ -201,7 +201,7 @@ MutualFriendsData $MutualFriendsDataFromJson(Map<String, dynamic> json) {
   if (approve != null) {
     mutualFriendsData.approve = approve;
   }
-  final dynamic verifyEmail = json['verify_email'];
+  final String? verifyEmail = jsonConvert.convert<String>(json['verify_email']);
   if (verifyEmail != null) {
     mutualFriendsData.verifyEmail = verifyEmail;
   }
@@ -238,7 +238,7 @@ MutualFriendsData $MutualFriendsDataFromJson(Map<String, dynamic> json) {
   if (passtoken != null) {
     mutualFriendsData.passtoken = passtoken;
   }
-  final dynamic tokendate = json['tokendate'];
+  final String? tokendate = jsonConvert.convert<String>(json['tokendate']);
   if (tokendate != null) {
     mutualFriendsData.tokendate = tokendate;
   }
@@ -247,23 +247,24 @@ MutualFriendsData $MutualFriendsDataFromJson(Map<String, dynamic> json) {
   if (urlcomponent != null) {
     mutualFriendsData.urlcomponent = urlcomponent;
   }
-  final dynamic aboutcompany = json['aboutcompany'];
+  final String? aboutcompany = jsonConvert.convert<String>(
+      json['aboutcompany']);
   if (aboutcompany != null) {
     mutualFriendsData.aboutcompany = aboutcompany;
   }
-  final dynamic fblink = json['fblink'];
+  final String? fblink = jsonConvert.convert<String>(json['fblink']);
   if (fblink != null) {
     mutualFriendsData.fblink = fblink;
   }
-  final dynamic instalink = json['instalink'];
+  final String? instalink = jsonConvert.convert<String>(json['instalink']);
   if (instalink != null) {
     mutualFriendsData.instalink = instalink;
   }
-  final dynamic twiterlink = json['twiterlink'];
+  final String? twiterlink = jsonConvert.convert<String>(json['twiterlink']);
   if (twiterlink != null) {
     mutualFriendsData.twiterlink = twiterlink;
   }
-  final dynamic lilink = json['lilink'];
+  final String? lilink = jsonConvert.convert<String>(json['lilink']);
   if (lilink != null) {
     mutualFriendsData.lilink = lilink;
   }
@@ -271,11 +272,11 @@ MutualFriendsData $MutualFriendsDataFromJson(Map<String, dynamic> json) {
   if (youlink != null) {
     mutualFriendsData.youlink = youlink;
   }
-  final dynamic wplink = json['wplink'];
+  final String? wplink = jsonConvert.convert<String>(json['wplink']);
   if (wplink != null) {
     mutualFriendsData.wplink = wplink;
   }
-  final dynamic telink = json['telink'];
+  final String? telink = jsonConvert.convert<String>(json['telink']);
   if (telink != null) {
     mutualFriendsData.telink = telink;
   }
@@ -284,11 +285,11 @@ MutualFriendsData $MutualFriendsDataFromJson(Map<String, dynamic> json) {
   if (proceedstatus != null) {
     mutualFriendsData.proceedstatus = proceedstatus;
   }
-  final String? device = jsonConvert.convert<String>(json['device']);
+  final dynamic device = json['device'];
   if (device != null) {
     mutualFriendsData.device = device;
   }
-  final String? platform = jsonConvert.convert<String>(json['platform']);
+  final dynamic platform = json['platform'];
   if (platform != null) {
     mutualFriendsData.platform = platform;
   }
@@ -300,14 +301,29 @@ MutualFriendsData $MutualFriendsDataFromJson(Map<String, dynamic> json) {
   if (isApproved != null) {
     mutualFriendsData.isApproved = isApproved;
   }
-  final String? countrycode1 = jsonConvert.convert<String>(
-      json['countrycode1']);
+  final dynamic countrycode1 = json['countrycode1'];
   if (countrycode1 != null) {
     mutualFriendsData.countrycode1 = countrycode1;
+  }
+  final dynamic lat = json['lat'];
+  if (lat != null) {
+    mutualFriendsData.lat = lat;
+  }
+  final dynamic lng = json['lng'];
+  if (lng != null) {
+    mutualFriendsData.lng = lng;
   }
   final String? imageUrl = jsonConvert.convert<String>(json['image_url']);
   if (imageUrl != null) {
     mutualFriendsData.imageUrl = imageUrl;
+  }
+  final String? title = jsonConvert.convert<String>(json['title']);
+  if (title != null) {
+    mutualFriendsData.title = title;
+  }
+  final int? pgcnt = jsonConvert.convert<int>(json['pgcnt']);
+  if (pgcnt != null) {
+    mutualFriendsData.pgcnt = pgcnt;
   }
   final String? imagePath = jsonConvert.convert<String>(json['image_path']);
   if (imagePath != null) {
@@ -382,7 +398,11 @@ Map<String, dynamic> $MutualFriendsDataToJson(MutualFriendsData entity) {
   data['proceeddate'] = entity.proceeddate;
   data['is_approved'] = entity.isApproved;
   data['countrycode1'] = entity.countrycode1;
+  data['lat'] = entity.lat;
+  data['lng'] = entity.lng;
   data['image_url'] = entity.imageUrl;
+  data['title'] = entity.title;
+  data['pgcnt'] = entity.pgcnt;
   data['image_path'] = entity.imagePath;
   data['image_thum_path'] = entity.imageThumPath;
   return data;
@@ -398,33 +418,33 @@ extension MutualFriendsDataExtension on MutualFriendsData {
     String? name,
     String? email,
     String? mobile,
-    dynamic birthdate,
+    String? birthdate,
     String? address,
     String? country,
     String? state,
     String? city,
     String? pincode,
-    dynamic employment,
+    String? employment,
     String? userimage,
     String? joindate,
     String? ip,
     String? lastip,
     String? lastlogin,
-    dynamic aboutyou,
-    dynamic website,
+    String? aboutyou,
+    String? website,
     dynamic compWebsite,
     String? company,
     String? newregi,
     int? status,
     int? points,
     int? views,
-    String? emailvarify,
-    String? vemailcode,
-    String? vphonecode,
+    dynamic emailvarify,
+    dynamic vemailcode,
+    dynamic vphonecode,
     dynamic stepno,
-    String? token,
+    dynamic token,
     dynamic approve,
-    dynamic verifyEmail,
+    String? verifyEmail,
     String? blockeduser,
     String? showindirctry,
     dynamic blockdate,
@@ -433,23 +453,27 @@ extension MutualFriendsDataExtension on MutualFriendsData {
     int? paidno,
     String? isapprove,
     String? passtoken,
-    dynamic tokendate,
+    String? tokendate,
     String? urlcomponent,
-    dynamic aboutcompany,
-    dynamic fblink,
-    dynamic instalink,
-    dynamic twiterlink,
-    dynamic lilink,
+    String? aboutcompany,
+    String? fblink,
+    String? instalink,
+    String? twiterlink,
+    String? lilink,
     String? youlink,
-    dynamic wplink,
-    dynamic telink,
+    String? wplink,
+    String? telink,
     String? proceedstatus,
-    String? device,
-    String? platform,
+    dynamic device,
+    dynamic platform,
     String? proceeddate,
     int? isApproved,
-    String? countrycode1,
+    dynamic countrycode1,
+    dynamic lat,
+    dynamic lng,
     String? imageUrl,
+    String? title,
+    int? pgcnt,
     String? imagePath,
     String? imageThumPath,
   }) {
@@ -513,7 +537,11 @@ extension MutualFriendsDataExtension on MutualFriendsData {
       ..proceeddate = proceeddate ?? this.proceeddate
       ..isApproved = isApproved ?? this.isApproved
       ..countrycode1 = countrycode1 ?? this.countrycode1
+      ..lat = lat ?? this.lat
+      ..lng = lng ?? this.lng
       ..imageUrl = imageUrl ?? this.imageUrl
+      ..title = title ?? this.title
+      ..pgcnt = pgcnt ?? this.pgcnt
       ..imagePath = imagePath ?? this.imagePath
       ..imageThumPath = imageThumPath ?? this.imageThumPath;
   }

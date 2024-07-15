@@ -252,13 +252,17 @@ class NewsController extends GetxController {
 
 // Category
   void toggleCategorySelected(int index) {
-    isCategorySelectedList[index] = !isCategorySelectedList[index];
-
-    selectedCountCategory.value = isCategorySelectedList[index] ? 1 : 0;
-
-    if (isCategorySelectedList[index]) {
-      fetchSubCategoryList(categorylist[index].id!);
+    for (int i = 0; i < isCategorySelectedList.length; i++) {
+      isCategorySelectedList[i] = false;
     }
+
+    isCategorySelectedList[index] = true;
+
+    selectedCountCategory.value = 1;
+
+    fetchSubCategoryList(
+      categorylist[index].id!,
+    );
   }
 
   TextEditingController getSelectedCategoryTextController() {

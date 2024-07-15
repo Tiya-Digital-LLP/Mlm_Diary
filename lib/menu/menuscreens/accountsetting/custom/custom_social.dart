@@ -75,13 +75,15 @@ class _CustomSocialState extends State<CustomSocial> {
                   ),
                   45.sbh,
                   NormalButton(
-                      onPressed: () async {
-                        if (kDebugMode) {
-                          print('tap');
-                        }
-                        await controller.updateSocialMedia(context);
-                      },
-                      text: 'Save & Update'),
+                    onPressed: () async {
+                      if (kDebugMode) {
+                        print('tap');
+                      }
+                      await controller.updateSocialMedia(context);
+                    },
+                    text: 'Save & Update',
+                    isLoading: controller.isLoading,
+                  ),
                 ],
               ),
             ),

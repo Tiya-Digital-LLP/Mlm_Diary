@@ -50,6 +50,8 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
       Get.put(ClasifiedController());
   final QuestionAnswerController questionAnswerController =
       Get.put(QuestionAnswerController());
+  final UserProfileController userProfileController =
+      Get.put(UserProfileController());
 
   late TabController _tabController;
 
@@ -116,9 +118,7 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
-
     super.initState();
-    // Fetch arguments once during initState
     post = Get.arguments;
     if (kDebugMode) {
       print('postargs: $post');
@@ -190,13 +190,12 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                       onTap: () {
                         _showFullScreenDialog(context);
                       },
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(60.0),
+                      child: ClipOval(
                         child: CachedNetworkImage(
                           imageUrl: post.imageUrl ?? Assets.imagesIcon,
                           fit: BoxFit.cover,
-                          height: 100,
-                          width: 100,
+                          height: 120,
+                          width: 120,
                           placeholder: (context, url) => Container(),
                           errorWidget: (context, url, error) =>
                               const Icon(Icons.error),
@@ -239,6 +238,7 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Obx(
                         () => SizedBox(

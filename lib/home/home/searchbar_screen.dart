@@ -15,6 +15,7 @@ import 'package:mlmdiary/home/home/custom/post_home_card.dart';
 import 'package:mlmdiary/home/home/custom/question_home_card.dart';
 import 'package:mlmdiary/home/home/custom/video_home_card.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/favourite/controller/favourite_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
@@ -53,6 +54,8 @@ class _SearchBarAppState extends State<SearchBarApp> {
   final DatabaseController databaseController = Get.put(DatabaseController());
   final UserProfileController userProfileController =
       Get.put(UserProfileController());
+  final FavouriteController favouriteController =
+      Get.put(FavouriteController());
   @override
   void initState() {
     super.initState();
@@ -271,6 +274,8 @@ class _SearchBarAppState extends State<SearchBarApp> {
                           cardWidget = VideoHomeCard(
                             postTitle: post.title ?? '',
                             postVideo: post.image ?? '',
+                            videoController: videoController,
+                            controller: favouriteController,
                           );
                           break;
                         case 'database':

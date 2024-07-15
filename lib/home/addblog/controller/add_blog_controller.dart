@@ -257,13 +257,21 @@ class AddBlogController extends GetxController {
 
 // Category
   void toggleCategorySelected(int index) {
-    isCategorySelectedList[index] = !isCategorySelectedList[index];
-
-    selectedCountCategory.value = isCategorySelectedList[index] ? 1 : 0;
-
-    if (isCategorySelectedList[index]) {
-      fetchSubCategoryList(categorylist[index].id!);
+    // Deselect all categories first
+    for (int i = 0; i < isCategorySelectedList.length; i++) {
+      isCategorySelectedList[i] = false;
     }
+
+    // Select the current category
+    isCategorySelectedList[index] = true;
+
+    // Update the selected count
+    selectedCountCategory.value = 1;
+
+    // Fetch subcategory list for the selected category
+    fetchSubCategoryList(
+      categorylist[index].id!,
+    );
   }
 
   TextEditingController getSelectedCategoryTextController() {

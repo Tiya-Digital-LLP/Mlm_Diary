@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mlmdiary/firstscreen/home_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/tutorialvideo/controller/tutorial_video_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
@@ -21,7 +22,8 @@ class TutorialVideo extends StatefulWidget {
 class _TutorialVideoState extends State<TutorialVideo> {
   final TutorialVideoController controller = Get.put(TutorialVideoController());
   String position = '';
-
+  final HomeScreenController homeScreenController =
+      Get.put(HomeScreenController());
   @override
   void initState() {
     super.initState();
@@ -48,6 +50,7 @@ class _TutorialVideoState extends State<TutorialVideo> {
         titleText: 'MLM Videos',
         videoController: controller,
         position: position,
+        homeScreenController: homeScreenController,
       ),
       body: Obx(
         () => Stack(

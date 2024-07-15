@@ -8,10 +8,12 @@ import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_blog_comment_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
+import 'package:mlmdiary/widgets/logout_dialog/custom_logout_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:text_link/text_link.dart';
 // ignore: library_prefixes
@@ -31,6 +33,8 @@ class _CommentDialogState extends State<CommentDialogBlog> {
   final ManageBlogController controller = Get.put(ManageBlogController());
   late ScrollController _scrollController;
   int? currentUserID;
+  bool isLimitExceeded = false;
+  static const int maxCharacters = 500;
 
   @override
   void initState() {
@@ -52,8 +56,7 @@ class _CommentDialogState extends State<CommentDialogBlog> {
 
   Future<void> _getUserId() async {
     currentUserID = await getUserId();
-    setState(
-        () {}); // Trigger a rebuild to use the currentUserID in the build method
+    setState(() {});
   }
 
   @override
@@ -183,80 +186,130 @@ class _CommentDialogState extends State<CommentDialogBlog> {
         ),
       ),
       bottomSheet: Container(
-        height: 100,
+        height: 160,
         color: AppColors.white,
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: 16,
             vertical: 8,
           ),
-          child: Row(
+          child: Column(
             children: [
+              Align(
+                alignment: Alignment.centerRight,
+                child: Obx(
+                  () => Text(
+                    '${maxCharacters - controller.commment.value.text.length} characters left',
+                    style: const TextStyle(
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+              ),
               Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.searchbar,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 10,
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: TextField(
-                              controller: controller.commment.value,
-                              maxLines: 5,
-                              decoration: const InputDecoration(
-                                hintText: 'Write your answer here',
-                                border: InputBorder.none,
-                              ),
-                            ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.searchbar,
+                          borderRadius: BorderRadius.circular(30),
+                          border: Border.all(
+                            color: isLimitExceeded
+                                ? Colors.red
+                                : Colors.transparent,
+                            width: 2.0,
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: GestureDetector(
-                            onTap: () async {
-                              if (controller.commment.value.text.isEmpty) {
-                                Fluttertoast.showToast(
-                                  msg: "Please enter your reply",
-                                  toastLength: Toast.LENGTH_LONG,
-                                  gravity: ToastGravity.BOTTOM,
-                                );
-                                return;
-                              }
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0,
+                            vertical: 10,
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16),
+                                  child: Obx(
+                                    () => TextField(
+                                      controller: controller.commment.value,
+                                      maxLines: 5,
+                                      maxLength: maxCharacters,
+                                      decoration: const InputDecoration(
+                                        hintText: 'Write your answer here',
+                                        border: InputBorder.none,
+                                        counterText:
+                                            '', // Hide the built-in counter
+                                      ),
+                                      onChanged: (text) {
+                                        controller.commment.refresh();
+                                        if (maxCharacters - text.length == 0) {
+                                          if (!isLimitExceeded) {
+                                            showToasterrorborder(
+                                                "Character limit exceed",
+                                                context);
+                                          }
+                                          setState(() {
+                                            isLimitExceeded = true;
+                                          });
+                                        } else {
+                                          setState(() {
+                                            isLimitExceeded = false;
+                                          });
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GestureDetector(
+                                  onTap: () async {
+                                    if (controller
+                                        .commment.value.text.isEmpty) {
+                                      Fluttertoast.showToast(
+                                        msg: "Please enter your reply",
+                                        toastLength: Toast.LENGTH_LONG,
+                                        gravity: ToastGravity.BOTTOM,
+                                      );
+                                      return;
+                                    }
 
-                              await controller.addReplyBlogComment(
-                                  widget.blogId, 0, context);
-                              controller.commment.value.clear();
-                            },
-                            child: Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: AppColors.primaryColor,
-                                boxShadow: [
-                                  customBoxShadow(),
-                                ],
+                                    await controller.addReplyBlogComment(
+                                        widget.blogId, 0, context);
+                                    controller.commment.value.clear();
+                                    setState(() {
+                                      isLimitExceeded = false;
+                                    });
+                                  },
+                                  child: Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: AppColors.primaryColor,
+                                      boxShadow: [
+                                        customBoxShadow(),
+                                      ],
+                                    ),
+                                    child: const Icon(
+                                      Icons.send_rounded,
+                                      color: Colors.white,
+                                      size: 22,
+                                    ),
+                                  ),
+                                ),
                               ),
-                              child: const Icon(
-                                Icons.send_rounded,
-                                color: Colors.white,
-                                size: 22,
-                              ),
-                            ),
+                            ],
                           ),
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ),
             ],
@@ -271,7 +324,7 @@ class _CommentDialogState extends State<CommentDialogBlog> {
 
     bool isCurrentNewsUserComment = comment.userid == currentUserID;
     if (kDebugMode) {
-      print('Current News User ID: $currentUserID');
+      print('Current Blog User ID: $currentUserID');
     }
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -349,10 +402,12 @@ class _CommentDialogState extends State<CommentDialogBlog> {
                           ),
                         if (isCurrentNewsUserComment)
                           TextButton(
-                            onPressed: () => _showDeleteConfirmation(
-                              context,
-                              comment.id ?? 0,
-                            ),
+                            onPressed: () =>
+                                LogoutDialog.show(context, () async {
+                              await controller.deleteComment(
+                                  widget.blogId, comment.id ?? 0, context);
+                              await _refreshData();
+                            }),
                             child: Text(
                               'Delete',
                               style: TextStyle(
@@ -375,105 +430,118 @@ class _CommentDialogState extends State<CommentDialogBlog> {
   }
 
   void _showEditDialog(dynamic data, bool isReply) {
-    final TextEditingController editController =
-        TextEditingController(text: data.comment ?? '');
+    Rx<TextEditingController> editController =
+        TextEditingController(text: data.comment ?? '').obs;
 
-    editController.addListener(() {
+    editController.value.addListener(() {
       // Update Rx controller with the latest value
-      controller.commment.value.text = editController.text;
+      controller.commment.value.text = editController.value.text;
     });
 
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       builder: (context) {
-        return Container(
-          height: 100,
-          decoration: BoxDecoration(
-            color: AppColors.searchbar,
-            borderRadius: BorderRadius.circular(30),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: TextField(
-                    controller: editController,
-                    maxLines: 5,
-                    decoration: const InputDecoration(
-                      hintText: 'Edit your comment here',
-                      border: InputBorder.none,
+        return FractionallySizedBox(
+          heightFactor: 0.2,
+          child: Container(
+            decoration: BoxDecoration(
+              color: AppColors.searchbar,
+              borderRadius: BorderRadius.circular(30),
+              border: Border.all(
+                color: isLimitExceeded ? Colors.red : Colors.transparent,
+                width: 2.0,
+              ),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            child: Column(
+              children: [
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Obx(
+                    () => Text(
+                      '${maxCharacters - editController.value.text.length} characters left',
+                      style: const TextStyle(
+                        color: Colors.grey,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              GestureDetector(
-                onTap: () async {
-                  String editedComment = editController.text;
-                  Navigator.of(context).pop();
-                  if (isReply) {
-                    await controller.editComment(widget.blogId, data.id ?? 0,
-                        editedComment, 'blog', context);
-                  } else {
-                    await controller.editComment(widget.blogId, data.id ?? 0,
-                        editedComment, 'blog', context);
-                  }
-                  await _refreshData();
-                },
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColors.primaryColor,
-                    boxShadow: [
-                      customBoxShadow(),
+                Expanded(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Obx(
+                            () => TextField(
+                              controller: editController.value,
+                              maxLines: 5,
+                              maxLength: maxCharacters,
+                              decoration: const InputDecoration(
+                                hintText: 'Edit your comment here',
+                                border: InputBorder.none,
+                              ),
+                              onChanged: (text) {
+                                editController.refresh();
+                                if (maxCharacters - text.length == 0) {
+                                  if (!isLimitExceeded) {
+                                    showToasterrorborder(
+                                        "Character limit exceed", context);
+                                  }
+                                  setState(() {
+                                    isLimitExceeded = true;
+                                  });
+                                } else {
+                                  setState(() {
+                                    isLimitExceeded = false;
+                                  });
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () async {
+                          String editedComment = editController.value.text;
+                          Navigator.of(context).pop();
+                          if (isReply) {
+                            await controller.editComment(widget.blogId,
+                                data.id ?? 0, editedComment, 'blog', context);
+                          } else {
+                            await controller.editComment(widget.blogId,
+                                data.id ?? 0, editedComment, 'blog', context);
+                          }
+                          await _refreshData();
+                        },
+                        child: Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: AppColors.primaryColor,
+                            boxShadow: [
+                              customBoxShadow(),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.send_rounded,
+                            color: Colors.white,
+                            size: 22,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
-                  child: const Icon(
-                    Icons.send_rounded,
-                    color: Colors.white,
-                    size: 22,
-                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
     );
-  }
-
-  Future<void> _showDeleteConfirmation(
-      BuildContext context, int commentId) async {
-    bool confirmed = await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Comment?'),
-        content: const Text('Are you sure you want to delete this comment?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () async {
-              Navigator.of(context).pop(true);
-              await controller.deleteComment(widget.blogId, commentId, context);
-              await _refreshData();
-            },
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmed) {
-      // Comment deleted, refresh data if needed
-      await _refreshData();
-    }
   }
 
   // Example usage:
@@ -569,8 +637,12 @@ class _CommentDialogState extends State<CommentDialogBlog> {
                             ),
                           if (isCurrentUserReply)
                             TextButton(
-                              onPressed: () => _showDeleteConfirmation(
-                                  context, reply.id ?? 0),
+                              onPressed: () =>
+                                  LogoutDialog.show(context, () async {
+                                await controller.deleteComment(
+                                    widget.blogId, reply.id ?? 0, context);
+                                await _refreshData();
+                              }),
                               child: Text(
                                 'Delete',
                                 style: TextStyle(
@@ -672,8 +744,12 @@ class _CommentDialogState extends State<CommentDialogBlog> {
                             ),
                           if (isCurrentUserReply)
                             TextButton(
-                              onPressed: () => _showDeleteConfirmation(
-                                  context, reply.id ?? 0),
+                              onPressed: () =>
+                                  LogoutDialog.show(context, () async {
+                                await controller.deleteComment(
+                                    widget.blogId, reply.id ?? 0, context);
+                                await _refreshData();
+                              }),
                               child: Text(
                                 'Delete',
                                 style: TextStyle(
@@ -701,82 +777,124 @@ class _CommentDialogState extends State<CommentDialogBlog> {
     int commentId,
     Size size,
   ) {
-    return Container(
-      height: 100,
-      color: AppColors.white,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 8,
+    return FractionallySizedBox(
+      heightFactor: 0.3,
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.searchbar,
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(
+            color: isLimitExceeded ? Colors.red : Colors.transparent,
+            width: 2.0,
+          ),
         ),
-        child: Row(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        child: Column(
           children: [
+            Align(
+              alignment: Alignment.centerRight,
+              child: Obx(
+                () => Text(
+                  '${maxCharacters - controller.commment.value.text.length} characters left',
+                  style: const TextStyle(
+                    color: Colors.grey,
+                  ),
+                ),
+              ),
+            ),
             Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: AppColors.searchbar,
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 10,
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: TextField(
-                            controller: controller.commment.value,
-                            maxLines: 5,
-                            decoration: const InputDecoration(
-                              hintText: 'Write your answer here',
-                              border: InputBorder.none,
-                            ),
-                          ),
-                        ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.searchbar,
+                        borderRadius: BorderRadius.circular(30),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: GestureDetector(
-                          onTap: () async {
-                            if (controller.commment.value.text.isEmpty) {
-                              Fluttertoast.showToast(
-                                msg: "Please enter your reply",
-                                toastLength: Toast.LENGTH_LONG,
-                                gravity: ToastGravity.BOTTOM,
-                              );
-                              return;
-                            }
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 10,
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                child: Obx(
+                                  () => TextField(
+                                    controller: controller.commment.value,
+                                    maxLines: 5,
+                                    maxLength: maxCharacters,
+                                    decoration: const InputDecoration(
+                                      hintText: 'Write your answer here',
+                                      border: InputBorder.none,
+                                    ),
+                                    onChanged: (text) {
+                                      controller.commment.refresh();
+                                      if (maxCharacters - text.length == 0) {
+                                        if (!isLimitExceeded) {
+                                          showToasterrorborder(
+                                              "Character limit exceed",
+                                              context);
+                                        }
+                                        setState(() {
+                                          isLimitExceeded = true;
+                                        });
+                                      } else {
+                                        setState(() {
+                                          isLimitExceeded = false;
+                                        });
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: GestureDetector(
+                                onTap: () async {
+                                  if (controller.commment.value.text.isEmpty) {
+                                    Fluttertoast.showToast(
+                                      msg: "Please enter your reply",
+                                      toastLength: Toast.LENGTH_LONG,
+                                      gravity: ToastGravity.BOTTOM,
+                                    );
+                                    return;
+                                  }
 
-                            await controller.addReplyBlogComment(
-                                widget.blogId, commentId, context);
-                            controller.commment.value.clear();
-                            Get.back();
-                          },
-                          child: Container(
-                            width: 40,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: AppColors.primaryColor,
-                              boxShadow: [
-                                customBoxShadow(),
-                              ],
+                                  await controller.addReplyBlogComment(
+                                      widget.blogId, commentId, context);
+                                  controller.commment.value.clear();
+                                  Get.back();
+                                },
+                                child: Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: AppColors.primaryColor,
+                                    boxShadow: [
+                                      customBoxShadow(),
+                                    ],
+                                  ),
+                                  child: const Icon(
+                                    Icons.send_rounded,
+                                    color: Colors.white,
+                                    size: 22,
+                                  ),
+                                ),
+                              ),
                             ),
-                            child: const Icon(
-                              Icons.send_rounded,
-                              color: Colors.white,
-                              size: 22,
-                            ),
-                          ),
+                          ],
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
           ],

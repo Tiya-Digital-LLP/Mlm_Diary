@@ -6,10 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:mlmdiary/database/controller/database_controller.dart';
 import 'package:mlmdiary/maincontroller/main_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
+import 'package:toastification/toastification.dart';
 import 'firebase_options.dart'; // Import the Firebase options file
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -44,7 +47,7 @@ void main() async {
   // Initialize GetX Controller
   Get.put(NavigationController());
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  runApp(const MyApp());
+  runApp(const ToastificationWrapper(child: MyApp()));
 }
 
 class MyApp extends StatefulWidget {
@@ -62,7 +65,10 @@ class _MyAppState extends State<MyApp> {
   static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   static FirebaseAnalyticsObserver observer =
       FirebaseAnalyticsObserver(analytics: analytics);
+  final UserProfileController userProfileController =
+      Get.put(UserProfileController());
 
+  final DatabaseController databaseController = Get.put(DatabaseController());
   @override
   void initState() {
     super.initState();
@@ -178,14 +184,61 @@ class _MyAppState extends State<MyApp> {
     }
     final data = payload != null ? jsonDecode(payload) : null;
 
-    Timer(const Duration(milliseconds: 500), () {
-      if (data != null &&
-          data['click_action'] == 'FLUTTER_NOTIFICATION_CLICK') {
-        navigateToScreen(Routes.aboutus);
-      } else if (data != null && data['action'] == 'some_specific_action') {
-        navigateToScreen('/specific_screen', arguments: data);
-      } else {
-        navigateToScreen('/details', arguments: data);
+    if (data == null) {
+      if (kDebugMode) {
+        print('Notification data is null');
+      }
+      return;
+    }
+
+    Timer(const Duration(milliseconds: 500), () async {
+      try {
+        String key = '';
+        Map<String, dynamic> arguments = data;
+
+        if (data['click_action'] == 'FLUTTER_NOTIFICATION_CLICK') {
+          key = 'FLUTTER_NOTIFICATION_CLICK';
+        } else if (data['action'] == 'some_specific_action') {
+          key = 'some_specific_action';
+        } else {
+          key = '${data['type']}';
+        }
+
+        switch (key) {
+          case 'FLUTTER_NOTIFICATION_CLICK':
+            navigateToScreen(Routes.aboutus);
+            break;
+          case 'some_specific_action':
+            navigateToScreen('/specific_screen', arguments: arguments);
+            break;
+          case 'Follow':
+            if (data['user_id'] == '5500270' &&
+                data['post_type'] == 'Profile' &&
+                (data['ntype'] == null || data['ntype'].isEmpty)) {
+              await databaseController.fetchUserPost(5500270, context);
+              navigateToScreen(Routes.userprofilescreen, arguments: arguments);
+              if (kDebugMode) {
+                print('1');
+              }
+            } else {
+              navigateToScreen(Routes.userprofilescreencopy,
+                  arguments: arguments);
+              if (kDebugMode) {
+                print('2');
+              }
+            }
+            break;
+          default:
+            navigateToScreen(Routes.userprofilescreencopy,
+                arguments: arguments);
+            if (kDebugMode) {
+              print('3');
+            }
+        }
+      } catch (e) {
+        if (kDebugMode) {
+          print('Error during navigation: $e');
+        }
       }
     });
   }

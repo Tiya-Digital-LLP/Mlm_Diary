@@ -1,10 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
-import 'package:lottie/lottie.dart';
+import 'package:get/get.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/classified/custom/custom_commment.dart';
 import 'package:mlmdiary/generated/assets.dart';
@@ -18,7 +15,6 @@ import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
-import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ClassifiedFavouriteCard extends StatefulWidget {
@@ -86,7 +82,6 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
     super.initState();
     postTimeFormatter = PostTimeFormatter();
     initializeLikes();
-
     isBookmarked = widget.controller.isItemBookmark(
       widget.type,
       widget.bookmarkId,
@@ -137,6 +132,7 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
         widget.questionAnswerController,
         widget.editpostController,
       );
+      widget.controller.fetchBookmark(1);
     });
   }
 
@@ -156,22 +152,24 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(100),
-                  child: CachedNetworkImage(
-                    imageUrl: widget.userImage,
+                if (widget.userImage.isNotEmpty &&
+                    Uri.tryParse(widget.userImage)?.hasAbsolutePath == true)
+                  Container(
                     height: 60,
                     width: 60,
-                    fit: BoxFit.fill,
-                    placeholder: (context, url) => CustomLottieAnimation(
-                      child: Lottie.asset(
-                        Assets.lottieLottie,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: ClipOval(
+                      child: Image.network(
+                        widget.userImage,
+                        fit: BoxFit.fill,
+                        errorBuilder: (context, error, stackTrace) {
+                          return const SizedBox();
+                        },
                       ),
                     ),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
                   ),
-                ),
                 10.sbw,
                 Expanded(
                   child: Column(
@@ -218,22 +216,39 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: CachedNetworkImage(
-                      imageUrl: widget.postImage,
+                  if (widget.postImage.isNotEmpty &&
+                      Uri.tryParse(widget.postImage)?.hasAbsolutePath == true)
+                    Container(
                       height: 105,
                       width: 105,
-                      fit: BoxFit.fill,
-                      placeholder: (context, url) => CustomLottieAnimation(
-                        child: Lottie.asset(
-                          Assets.lottieLottie,
-                        ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
                       ),
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.error),
+                      child: Image.network(
+                        widget.postImage,
+                        fit: BoxFit.fill,
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) {
+                            return child;
+                          }
+                          return Center(
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      (loadingProgress.expectedTotalBytes ?? 1)
+                                  : null,
+                            ),
+                          );
+                        },
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.asset(
+                            Assets.imagesIcon,
+                            fit: BoxFit.fill,
+                          );
+                        },
+                      ),
                     ),
-                  ),
                   10.sbw,
                   Expanded(
                     child: Column(
@@ -353,8 +368,8 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
                           onTap: togleBookmark,
                           child: SvgPicture.asset(
                             isBookmarked
-                                ? Assets.svgSavePost
-                                : Assets.svgCheckBookmark,
+                                ? Assets.svgCheckBookmark
+                                : Assets.svgSavePost,
                             height: size.height * 0.032,
                           ),
                         ),

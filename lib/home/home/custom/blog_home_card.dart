@@ -142,16 +142,24 @@ class _FavouritrCardState extends State<BlogHomeCard> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CircleAvatar(
-                  backgroundImage: widget.userImage.isNotEmpty &&
-                          Uri.tryParse(widget.userImage)?.hasAbsolutePath ==
-                              true
-                      ? NetworkImage(widget.userImage)
-                      : null,
-                  child: widget.userImage.isEmpty
-                      ? Image.asset(Assets.imagesIcon)
-                      : null,
-                ),
+                if (widget.userImage.isNotEmpty &&
+                    Uri.tryParse(widget.userImage)?.hasAbsolutePath == true)
+                  Container(
+                    height: 60,
+                    width: 60,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: ClipOval(
+                      child: Image.network(
+                        widget.userImage,
+                        fit: BoxFit.fill,
+                        errorBuilder: (context, error, stackTrace) {
+                          return const SizedBox();
+                        },
+                      ),
+                    ),
+                  ),
                 10.sbw,
                 Expanded(
                   child: Column(
@@ -213,16 +221,33 @@ class _FavouritrCardState extends State<BlogHomeCard> {
             if (widget.postImage.isNotEmpty &&
                 Uri.tryParse(widget.postImage)?.hasAbsolutePath == true)
               Container(
-                height: size.height * 0.28,
-                width: size.width,
+                height: 220,
+                width: double.infinity,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: Image.network(
                   widget.postImage,
                   fit: BoxFit.fill,
+                  loadingBuilder: (BuildContext context, Widget child,
+                      ImageChunkEvent? loadingProgress) {
+                    if (loadingProgress == null) {
+                      return child;
+                    }
+                    return Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                (loadingProgress.expectedTotalBytes ?? 1)
+                            : null,
+                      ),
+                    );
+                  },
                   errorBuilder: (context, error, stackTrace) {
-                    return const SizedBox();
+                    return Image.asset(
+                      Assets.imagesIcon,
+                      fit: BoxFit.fill,
+                    );
                   },
                 ),
               ),

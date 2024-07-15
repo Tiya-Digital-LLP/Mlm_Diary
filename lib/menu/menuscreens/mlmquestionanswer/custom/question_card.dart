@@ -1,9 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/question_like_list_content.dart';
@@ -11,7 +9,6 @@ import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
-import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 
 class QuestionCard extends StatefulWidget {
   final String userImage;
@@ -105,25 +102,42 @@ class _QuestionCardState extends State<QuestionCard> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(30.0),
-                    child: CircleAvatar(
-                      radius: 25,
-                      child: CachedNetworkImage(
-                        imageUrl: widget.userImage,
-                        height: 60,
-                        width: 60,
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) => CustomLottieAnimation(
-                          child: Lottie.asset(
-                            Assets.lottieLottie,
-                          ),
+                  if (widget.userImage.isNotEmpty &&
+                      Uri.tryParse(widget.userImage)?.hasAbsolutePath == true)
+                    Container(
+                      height: 40,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: ClipOval(
+                        child: Image.network(
+                          widget.userImage,
+                          fit: BoxFit.fill,
+                          loadingBuilder: (BuildContext context, Widget child,
+                              ImageChunkEvent? loadingProgress) {
+                            if (loadingProgress == null) {
+                              return child;
+                            }
+                            return Center(
+                              child: CircularProgressIndicator(
+                                value: loadingProgress.expectedTotalBytes !=
+                                        null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        (loadingProgress.expectedTotalBytes ??
+                                            1)
+                                    : null,
+                              ),
+                            );
+                          },
+                          errorBuilder: (context, error, stackTrace) {
+                            return Image.asset(
+                              Assets.imagesIcon,
+                              fit: BoxFit.fill,
+                            );
+                          },
                         ),
-                        errorWidget: (context, url, error) =>
-                            const Icon(Icons.error),
                       ),
                     ),
-                  ),
                   10.sbw,
                   Expanded(
                     child: Column(

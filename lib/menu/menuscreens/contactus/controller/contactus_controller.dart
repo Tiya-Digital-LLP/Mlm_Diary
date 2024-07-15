@@ -1,9 +1,16 @@
 import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
+import 'package:mlmdiary/data/constants.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/lists.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ContactusController extends GetxController {
   Rx<TextEditingController> name = TextEditingController().obs;
@@ -11,7 +18,8 @@ class ContactusController extends GetxController {
   Rx<TextEditingController> company = TextEditingController().obs;
   Rx<TextEditingController> message = TextEditingController().obs;
   Rx<TextEditingController> mobile = TextEditingController().obs;
-
+  List listitem2 = ['Feedback/Suggestions', 'Advetiesment'];
+  final RxString selectedItem = RxString('');
 // FIELDS ERROR
   RxBool mobileError = false.obs;
 
@@ -27,6 +35,70 @@ class ContactusController extends GetxController {
   // READ ONLY FIELDS
   RxBool titleReadOnly = false.obs;
   RxBool mobileReadOnly = false.obs;
+
+  var isLoading = false.obs;
+
+  Future<void> contactus(context) async {
+    isLoading(true);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        // Create a multipart request
+        var request = http.MultipartRequest(
+          'POST',
+          Uri.parse('${Constants.baseUrl}${Constants.contactus}'),
+        );
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['name'] = name.value.text;
+        request.fields['company'] = company.value.text;
+        request.fields['email'] = email.value.text;
+        request.fields['phone'] = mobile.value.text;
+        request.fields['subject'] = selectedItem.toString();
+        request.fields['comment'] = message.value.text;
+
+        if (kDebugMode) {
+          print('api_token: $apiToken');
+          print('name: ${name.value.text}');
+          print('company: ${company.value.text}');
+          print('email: ${email.value.text}');
+          print('phone: ${mobile.value.text}');
+          print('subject: $selectedItem');
+          print('comment: ${message.value.text}');
+        }
+
+        // Send request
+        var streamedResponse = await request.send();
+        var response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          final Map<String, dynamic> jsonBody = jsonDecode(response.body);
+          if (kDebugMode) {
+            print("Response body from ConatactUs: $jsonBody");
+          }
+          // Parse response and update UI as needed
+        } else {
+          if (kDebugMode) {
+            print(
+                "HTTP error: Failed to save inquiry. Status code: ${response.statusCode}");
+            print("Response body: ${response.body}");
+          }
+        }
+      } else {
+        showToasterrorborder("No internet connection", context);
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("An error occurred while saving company details: $e");
+      }
+    } finally {
+      isLoading(false);
+    }
+  }
 
   void mobileValidation() {
     if (mobile.value.text.isEmpty || mobile.value.text.length <= 6) {

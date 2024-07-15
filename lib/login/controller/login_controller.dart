@@ -66,52 +66,57 @@ class LoginController extends GetxController {
     } else if (password.value.text.length < 6) {
       showToasterrorborder("Password Must be 6 Character Long", context);
     } else {
-      login(context);
+      isLoading(true);
+      login(context).then((_) => isLoading(false));
     }
   }
 
   Future<void> login(BuildContext context) async {
-    final response = await http.post(
-      Uri.parse('${Constants.baseUrl}${Constants.login}'),
-      body: {
-        'email': email.value.text,
-        'password': password.value.text,
-      },
-    );
+    try {
+      final response = await http.post(
+        Uri.parse('${Constants.baseUrl}${Constants.login}'),
+        body: {
+          'email': email.value.text,
+          'password': password.value.text,
+        },
+      );
 
-    if (kDebugMode) {
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
-    }
+      if (kDebugMode) {
+        print('Response status: ${response.statusCode}');
+        print('Response body: ${response.body}');
+      }
 
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> responseData = json.decode(response.body);
-      LoginEntity loginEntity = LoginEntity.fromJson(responseData);
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        LoginEntity loginEntity = LoginEntity.fromJson(responseData);
 
-      if (loginEntity.result == 1) {
-        if (kDebugMode) {
-          print('Login successful! Full response: $responseData');
-        }
-        // ignore: use_build_context_synchronously
-        showToastverifedborder('Login successful!', context);
-        // ignore: use_build_context_synchronously
-        saveFcm(context);
+        if (loginEntity.result == 1) {
+          if (kDebugMode) {
+            print('Login successful! Full response: $responseData');
+          }
+          // ignore: use_build_context_synchronously
+          showToastverifedborder('Login successful!', context);
+          // ignore: use_build_context_synchronously
+          saveFcm(context);
 
-        await saveAccessToken(loginEntity.apiToken, loginEntity.userId);
+          await saveAccessToken(loginEntity.apiToken, loginEntity.userId);
 
-        if (responseData.containsKey('redirect_to_company') &&
-            responseData['redirect_to_company'] == true) {
-          Get.offAllNamed(Routes.signUp2);
+          if (responseData.containsKey('redirect_to_company') &&
+              responseData['redirect_to_company'] == true) {
+            Get.offAllNamed(Routes.signUp2);
+          } else {
+            Get.offAllNamed(Routes.mainscreen);
+          }
         } else {
-          Get.offAllNamed(Routes.mainscreen);
+          // ignore: use_build_context_synchronously
+          showToasterrorborder(loginEntity.message ?? "Login failed", context);
         }
       } else {
         // ignore: use_build_context_synchronously
-        showToasterrorborder(loginEntity.message ?? "Login failed", context);
+        showToasterrorborder("Login failed: ${response.reasonPhrase}", context);
       }
-    } else {
-      // ignore: use_build_context_synchronously
-      showToasterrorborder("Login failed: ${response.reasonPhrase}", context);
+    } finally {
+      isLoading(false); // Hide loader
     }
   }
 

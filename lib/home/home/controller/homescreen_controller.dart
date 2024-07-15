@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/data/constants.dart';
+import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_banner_entity.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:mlmdiary/generated/get_home_entity.dart';
@@ -16,6 +17,7 @@ import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_contro
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
+import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -54,6 +56,7 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    Future.delayed(Duration.zero, () => _showCustomDialog());
     mutualFriend(1);
     fetchNotificationCount(1, 'all');
     ever(isload, (_) {
@@ -70,6 +73,46 @@ class HomeController extends GetxController {
         getHome(nextPage);
       }
     });
+  }
+
+  void _showCustomDialog() {
+    Get.dialog(
+      Center(
+        child: Container(
+          width: Get.width * 0.8,
+          height: Get.height * 0.5,
+          padding: const EdgeInsets.all(16.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          child: Stack(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16.0),
+                child: Image.asset(
+                  Assets.imagesAdwithus1,
+                  width: double.infinity,
+                  height: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              Positioned(
+                right: 0,
+                top: 0,
+                child: IconButton(
+                  icon: const Icon(Icons.cancel, color: Colors.red),
+                  onPressed: () {
+                    Get.back();
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      barrierDismissible: false,
+    );
   }
 
   void toggleSearchBarVisibility() {
@@ -441,6 +484,11 @@ class HomeController extends GetxController {
         } else {
           isEndOfData.value = true;
         }
+      } else if (response.statusCode == 401) {
+        if (kDebugMode) {
+          print('Failed to fetch notifications, status code: 401');
+        }
+        Get.offAllNamed(Routes.login);
       }
     } catch (error) {
       // Handle general error case

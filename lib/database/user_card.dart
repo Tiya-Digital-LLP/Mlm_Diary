@@ -1,7 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/generated/get_mlm_database_entity.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
+import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -13,6 +17,10 @@ class UserCard extends StatefulWidget {
   final String location;
   final String designation;
   final String plan;
+  final GetMlmDatabaseData post;
+  final int postid;
+  final UserProfileController userprofilecontroller;
+
   const UserCard({
     super.key,
     required this.userImage,
@@ -20,6 +28,9 @@ class UserCard extends StatefulWidget {
     required this.location,
     required this.designation,
     required this.plan,
+    required this.post,
+    required this.postid,
+    required this.userprofilecontroller,
   });
 
   @override
@@ -110,7 +121,16 @@ class _UserCardState extends State<UserCard> {
             bottom: 0,
             right: 0,
             child: InkWell(
-              onTap: () {},
+              onTap: () async {
+                Get.toNamed(
+                  Routes.userprofilescreencopy,
+                  arguments: widget.post,
+                );
+                await widget.userprofilecontroller.fetchUserAllPost(
+                  1,
+                  widget.postid,
+                );
+              },
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [

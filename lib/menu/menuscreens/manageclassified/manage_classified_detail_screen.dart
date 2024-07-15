@@ -112,7 +112,7 @@ class _ClassidiedDetailsScreenState
                             radius: size.width * 0.07,
                             child: ClipOval(
                               child: Image.asset(
-                                Assets.imagesIcon,
+                                post.userData!.imagePath ?? '',
                                 height: 100,
                                 width: 100,
                                 fit: BoxFit.cover,

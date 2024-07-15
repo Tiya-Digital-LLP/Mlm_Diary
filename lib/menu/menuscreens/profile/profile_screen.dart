@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -102,23 +101,52 @@ class _ProfileScreenState extends State<ProfileScreen>
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    InkWell(
-                      onTap: () {
-                        _showFullScreenDialog(context);
-                      },
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(60.0),
-                        child: CachedNetworkImage(
-                          imageUrl: userProfile.imagePath ?? Assets.imagesIcon,
-                          fit: BoxFit.cover,
-                          height: 100,
-                          width: 100,
-                          placeholder: (context, url) => Container(),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
+                    if (userProfile.imagePath!.isNotEmpty &&
+                        Uri.tryParse(userProfile.imagePath!)?.hasAbsolutePath ==
+                            true)
+                      InkWell(
+                        onTap: () {
+                          _showFullScreenDialog(context);
+                        },
+                        child: Container(
+                          height: 120,
+                          width: 120,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: ClipOval(
+                            child: Image.network(
+                              '${userProfile.imagePath.toString()}?${DateTime.now().millisecondsSinceEpoch}',
+                              fit: BoxFit.fill,
+                              loadingBuilder: (BuildContext context,
+                                  Widget child,
+                                  ImageChunkEvent? loadingProgress) {
+                                if (loadingProgress == null) {
+                                  return child;
+                                }
+                                return Center(
+                                  child: CircularProgressIndicator(
+                                    value: loadingProgress.expectedTotalBytes !=
+                                            null
+                                        ? loadingProgress
+                                                .cumulativeBytesLoaded /
+                                            (loadingProgress
+                                                    .expectedTotalBytes ??
+                                                1)
+                                        : null,
+                                  ),
+                                );
+                              },
+                              errorBuilder: (context, error, stackTrace) {
+                                return Image.asset(
+                                  Assets.imagesIcon,
+                                  fit: BoxFit.fill,
+                                );
+                              },
+                            ),
+                          ),
                         ),
                       ),
-                    ),
                     30.sbw,
                     Expanded(
                       child: Column(
@@ -155,6 +183,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       SizedBox(
                         height: 30,
@@ -549,7 +578,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                 height: MediaQuery.of(context).size.height,
                 child: InteractiveViewer(
                   child: Image.network(
-                    '${userProfile.userimage.toString()}?${DateTime.now().millisecondsSinceEpoch}',
+                    '${userProfile.imagePath.toString()}?${DateTime.now().millisecondsSinceEpoch}',
                     fit: BoxFit.contain,
                     width: MediaQuery.of(context).size.width,
                   ),

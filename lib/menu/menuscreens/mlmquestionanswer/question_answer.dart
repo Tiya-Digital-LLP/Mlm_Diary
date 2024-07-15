@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mlmdiary/firstscreen/home_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/question_card.dart';
@@ -9,7 +10,6 @@ import 'package:mlmdiary/menu/menuscreens/tutorialvideo/controller/tutorial_vide
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
-import 'package:mlmdiary/widgets/custon_test_app_bar.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 
 class QuationAnswer extends StatefulWidget {
@@ -25,7 +25,8 @@ class _QuationAnswerState extends State<QuationAnswer> {
   final TutorialVideoController videoController =
       Get.put(TutorialVideoController());
   static const String position = 'questionanswer';
-
+  final HomeScreenController homeScreenController =
+      Get.put(HomeScreenController());
   @override
   void initState() {
     super.initState();
@@ -39,12 +40,57 @@ class _QuationAnswerState extends State<QuationAnswer> {
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: CustonTestAppBar(
-        size: MediaQuery.of(context).size,
-        titleText: 'Question Answer',
-        position: position,
+      appBar: AppBar(
+        scrolledUnderElevation: 0,
+        centerTitle: true,
+        leading: Padding(
+          padding: EdgeInsets.all(size.height * 0.012),
+          child: Align(
+            alignment: Alignment.topLeft,
+            child: InkWell(
+              onTap: () {
+                Get.back();
+              },
+              customBorder: const CircleBorder(),
+              child: SvgPicture.asset(Assets.svgBack),
+            ),
+          ),
+        ),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: Text(
+          'Question Answer',
+          style: TextStyle(
+            fontWeight: FontWeight.w700,
+            fontSize: size.width * 0.048,
+            color: Colors.black,
+            fontFamily: Assets.fontsSatoshiRegular,
+          ),
+        ),
+        actions: [
+          InkWell(
+            onTap: () async {
+              if (position.isEmpty) {
+                await videoController.fetchVideo('', context);
+                Get.toNamed(Routes.tutorialvideo, arguments: {'position': ''});
+              } else if (position == 'questionanswer') {
+                await videoController.fetchVideo('questionanswer', context);
+                Get.toNamed(Routes.tutorialvideo,
+                    arguments: {'position': 'questionanswer'});
+              }
+            },
+            child: SvgPicture.asset(
+              Assets.svgPlay,
+              height: size.width * 0.08,
+              width: size.width * 0.08,
+            ),
+          ),
+          const SizedBox(width: 18),
+        ],
       ),
       body: RefreshIndicator(
         backgroundColor: AppColors.primaryColor,
@@ -121,12 +167,12 @@ class _QuationAnswerState extends State<QuationAnswer> {
                         onTap: () {
                           Get.toNamed(
                             Routes.userquestioncopy,
-                            arguments: controller.questionList[index],
+                            arguments: post,
                           );
                         },
                         child: QuestionCard(
-                          userImage: post.userData!.imagePath ?? '',
-                          userName: post.userData!.name ?? '',
+                          userImage: post.userData?.imagePath ?? '',
+                          userName: post.userData?.name ?? '',
                           postCaption: post.title ?? '',
                           viewcounts: post.pgcnt ?? 0,
                           dateTime: post.creatdate ?? '',

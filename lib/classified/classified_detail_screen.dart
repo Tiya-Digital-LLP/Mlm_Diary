@@ -180,33 +180,28 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
                           SizedBox(
                             height: size.height * 0.012,
                           ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                            ),
-                            child: Container(
-                              height: size.height * 0.28,
-                              width: size.width,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
+                          if (post.imageUrl.isNotEmpty &&
+                              Uri.tryParse(post.imageUrl)?.hasAbsolutePath ==
+                                  true)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
                               ),
-                              child: CachedNetworkImage(
-                                imageUrl: post.imageUrl ?? '',
-                                height: 97,
-                                width: 105,
-                                fit: BoxFit.fill,
-                                placeholder: (context, url) => Center(
-                                    child: Center(
-                                        child: CustomLottieAnimation(
-                                  child: Lottie.asset(
-                                    Assets.lottieLottie,
-                                  ),
-                                ))),
-                                errorWidget: (context, url, error) =>
-                                    const Icon(Icons.error),
+                              child: Container(
+                                height: size.height * 0.28,
+                                width: size.width,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: Image.network(
+                                  post.imageUrl,
+                                  fit: BoxFit.fill,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return const SizedBox();
+                                  },
+                                ),
                               ),
                             ),
-                          ),
                           SizedBox(
                             height: size.height * 0.01,
                           ),
