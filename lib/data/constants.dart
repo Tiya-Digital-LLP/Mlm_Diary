@@ -37,6 +37,8 @@ class Constants {
 
   static const String updateCompany = "/updateUserCompany";
 
+  static const String mlmsocialmedia = "/getsitesetting";
+
   static const String savecompany = "/user/savecompany";
   static const String login = "/user/login";
   static const String forgotpassword = "/user/forgotpassword_otp";
@@ -160,8 +162,5 @@ class Constants {
 
   static const String deleteChat = "/chat/deletechat";
 
-
-
   static const String contactus = "/save_inquiry";
-
 }

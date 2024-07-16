@@ -485,7 +485,7 @@ void showBottomSheetFunc(
                     children: [
                       GestureDetector(
                         onTap: () {
-                          controller.toggleSelected(index);
+                          controller.toggleSelected(index, context);
                         },
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
@@ -495,7 +495,7 @@ void showBottomSheetFunc(
                               Obx(
                                 () => GestureDetector(
                                   onTap: () {
-                                    controller.toggleSelected(index);
+                                    controller.toggleSelected(index, context);
                                   },
                                   child: Image.asset(
                                     controller.isTypeSelectedList[index]

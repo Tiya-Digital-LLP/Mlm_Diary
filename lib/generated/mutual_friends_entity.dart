@@ -59,7 +59,7 @@ class MutualFriendsData {
 	int? views = 0;
 	dynamic emailvarify;
 	dynamic vemailcode;
-	dynamic vphonecode;
+	String? vphonecode = '';
 	dynamic stepno;
 	dynamic token;
 	dynamic approve;
@@ -89,13 +89,15 @@ class MutualFriendsData {
 	String? proceeddate = '';
 	@JSONField(name: "is_approved")
 	int? isApproved = 0;
-	dynamic countrycode1;
+	String? countrycode1 = '';
 	dynamic lat;
 	dynamic lng;
 	@JSONField(name: "image_url")
 	String? imageUrl = '';
 	String? title = '';
 	int? pgcnt = 0;
+	@JSONField(name: "is_following")
+	bool? isFollowing = false;
 	@JSONField(name: "image_path")
 	String? imagePath = '';
 	@JSONField(name: "image_thum_path")

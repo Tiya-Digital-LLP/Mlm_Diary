@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -30,6 +28,7 @@ import 'package:mlmdiary/menu/menuscreens/video/controller/video_controller.dart
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/home/suggestion_user_card.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
@@ -357,6 +356,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       .mutualFriendList[index]
                                                       .company ??
                                                   '',
+                                              isfollowing: controller
+                                                      .mutualFriendList[index]
+                                                      .isFollowing ??
+                                                  false,
                                             ),
                                           );
                                         }),
@@ -824,27 +827,13 @@ class _HomeScreenState extends State<HomeScreen> {
               final banner = banners[index];
               return GestureDetector(
                 onTap: () {
-                  if (kDebugMode) {
-                    print('Banner Web Link: ${banner.weblink}');
-                  }
-                  if (banner.weblink != null && banner.weblink!.isNotEmpty) {
-                    if (Platform.isAndroid) {
-                      // Android-specific behavior
-                      if (kDebugMode) {
-                        print('Android specific behavior');
-                      }
-                      launchURL(banner.weblink ?? '');
-                    } else if (Platform.isIOS) {
-                      // iOS-specific behavior
-                      if (kDebugMode) {
-                        print('iOS specific behavior');
-                      }
-                      launchURL(banner.weblink ?? '');
-                    }
+                  if (banner.weblink == null || banner.weblink!.isEmpty) {
+                    showToasterrorborder('No Any Url Found', context);
                   } else {
-                    if (kDebugMode) {
-                      print('Banner Web Link is either null or empty');
-                    }
+                    launchUrl(
+                      Uri.parse(banner.weblink.toString()),
+                      mode: LaunchMode.externalApplication,
+                    );
                   }
                 },
                 child: ClipRRect(

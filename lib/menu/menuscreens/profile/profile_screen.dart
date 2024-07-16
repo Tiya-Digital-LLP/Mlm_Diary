@@ -10,6 +10,7 @@ import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_user_profile_entity.dart';
 import 'package:mlmdiary/home/addpost/controller/add_post_controller.dart';
+import 'package:mlmdiary/menu/controller/profile_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/custom/about_me.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/custom/my_profile_card.dart';
@@ -53,7 +54,7 @@ class _ProfileScreenState extends State<ProfileScreen>
   Rx<io.File?> videoFile = Rx<io.File?>(null);
 
   RxBool isFollowing = false.obs;
-
+  final ProfileController profileController = Get.put(ProfileController());
   void deletePost(int index) async {
     int newsId = controller.myPostList[index].id ?? 0;
     await controller.deletePost(newsId, index, context);
@@ -68,6 +69,7 @@ class _ProfileScreenState extends State<ProfileScreen>
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
+    final user = profileController.userProfile.value.userProfile;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -260,9 +262,20 @@ class _ProfileScreenState extends State<ProfileScreen>
                     children: [
                       InkWell(
                         onTap: () {
-                          makePhoneCall(
-                            userProfile.mobile.toString(),
-                          );
+                          if (userProfile.mobile == null ||
+                              userProfile.mobile!.isEmpty) {
+                            showToasterrorborder('No Any Url Found', context);
+                            if (kDebugMode) {
+                              print('tap without number');
+                            }
+                          } else {
+                            final Uri phoneUri =
+                                Uri(scheme: 'tel', path: userProfile.mobile);
+                            launchUrl(phoneUri);
+                            if (kDebugMode) {
+                              print('tap with number');
+                            }
+                          }
                         },
                         child: const SocialButton(
                             icon: Assets.svgCalling, label: 'Call'),
@@ -276,8 +289,38 @@ class _ProfileScreenState extends State<ProfileScreen>
                             icon: Assets.svgChat, label: 'Message'),
                       ),
                       10.sbw,
-                      const SocialButton(
-                          icon: Assets.svgWhatsappIcon, label: 'WhatsApp'),
+                      InkWell(
+                        onTap: () async {
+                          if (userProfile.mobile != null) {
+                            final String phoneNumber = userProfile.mobile!;
+                            final String name = user!.name.toString();
+
+                            String message =
+                                "Hello, I am $name. I want to know regarding MLM Diary App.";
+                            final Uri whatsappUri = Uri.parse(
+                                "https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}");
+
+                            if (await canLaunchUrl(whatsappUri)) {
+                              await launchUrl(whatsappUri);
+                              if (kDebugMode) {
+                                print('URL: $whatsappUri');
+                              }
+                            } else {
+                              if (kDebugMode) {
+                                print('Could not launch $whatsappUri');
+                              }
+                              showToasterrorborder(
+                                  "Could not launch WhatsApp",
+                                  // ignore: use_build_context_synchronously
+                                  context);
+                            }
+                          } else {
+                            showToasterrorborder("No Any Url Found", context);
+                          }
+                        },
+                        child: const SocialButton(
+                            icon: Assets.svgWhatsappIcon, label: 'WhatsApp'),
+                      ),
                     ],
                   ),
                 ),

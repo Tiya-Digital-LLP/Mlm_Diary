@@ -288,6 +288,8 @@ class _AddClassifiedState extends State<AddClassified> {
                                 color: Colors.black,
                                 fontFamily: 'assets/fonts/Metropolis-Black.otf')
                             .copyWith(color: Colors.black45),
+                        filled: true,
+                        fillColor: AppColors.white,
                         enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
                                 width: 1,

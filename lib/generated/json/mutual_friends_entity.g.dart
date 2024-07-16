@@ -185,7 +185,7 @@ MutualFriendsData $MutualFriendsDataFromJson(Map<String, dynamic> json) {
   if (vemailcode != null) {
     mutualFriendsData.vemailcode = vemailcode;
   }
-  final dynamic vphonecode = json['vphonecode'];
+  final String? vphonecode = jsonConvert.convert<String>(json['vphonecode']);
   if (vphonecode != null) {
     mutualFriendsData.vphonecode = vphonecode;
   }
@@ -301,7 +301,8 @@ MutualFriendsData $MutualFriendsDataFromJson(Map<String, dynamic> json) {
   if (isApproved != null) {
     mutualFriendsData.isApproved = isApproved;
   }
-  final dynamic countrycode1 = json['countrycode1'];
+  final String? countrycode1 = jsonConvert.convert<String>(
+      json['countrycode1']);
   if (countrycode1 != null) {
     mutualFriendsData.countrycode1 = countrycode1;
   }
@@ -324,6 +325,10 @@ MutualFriendsData $MutualFriendsDataFromJson(Map<String, dynamic> json) {
   final int? pgcnt = jsonConvert.convert<int>(json['pgcnt']);
   if (pgcnt != null) {
     mutualFriendsData.pgcnt = pgcnt;
+  }
+  final bool? isFollowing = jsonConvert.convert<bool>(json['is_following']);
+  if (isFollowing != null) {
+    mutualFriendsData.isFollowing = isFollowing;
   }
   final String? imagePath = jsonConvert.convert<String>(json['image_path']);
   if (imagePath != null) {
@@ -403,6 +408,7 @@ Map<String, dynamic> $MutualFriendsDataToJson(MutualFriendsData entity) {
   data['image_url'] = entity.imageUrl;
   data['title'] = entity.title;
   data['pgcnt'] = entity.pgcnt;
+  data['is_following'] = entity.isFollowing;
   data['image_path'] = entity.imagePath;
   data['image_thum_path'] = entity.imageThumPath;
   return data;
@@ -440,7 +446,7 @@ extension MutualFriendsDataExtension on MutualFriendsData {
     int? views,
     dynamic emailvarify,
     dynamic vemailcode,
-    dynamic vphonecode,
+    String? vphonecode,
     dynamic stepno,
     dynamic token,
     dynamic approve,
@@ -468,12 +474,13 @@ extension MutualFriendsDataExtension on MutualFriendsData {
     dynamic platform,
     String? proceeddate,
     int? isApproved,
-    dynamic countrycode1,
+    String? countrycode1,
     dynamic lat,
     dynamic lng,
     String? imageUrl,
     String? title,
     int? pgcnt,
+    bool? isFollowing,
     String? imagePath,
     String? imageThumPath,
   }) {
@@ -542,6 +549,7 @@ extension MutualFriendsDataExtension on MutualFriendsData {
       ..imageUrl = imageUrl ?? this.imageUrl
       ..title = title ?? this.title
       ..pgcnt = pgcnt ?? this.pgcnt
+      ..isFollowing = isFollowing ?? this.isFollowing
       ..imagePath = imagePath ?? this.imagePath
       ..imageThumPath = imageThumPath ?? this.imageThumPath;
   }

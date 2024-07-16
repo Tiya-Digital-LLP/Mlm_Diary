@@ -267,9 +267,9 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                 Obx(
                   () => BorderContainer(
                     isError: controller.planTypeError.value,
-                    height: 60,
+                    height: 65,
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: TextField(
                         controller:
                             controller.getSelectedPlanOptionsTextController(),
@@ -297,103 +297,99 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                 SizedBox(
                   height: size.height * 0.015,
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(25.0, 5.0, 25.0, 5.0),
-                  child: TextFormField(
-                    controller: controller.location.value,
-                    readOnly: true,
-                    style: const TextStyle(
-                        fontSize: 15.0,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.black,
-                        fontFamily: 'assets/fonst/Metropolis-Black.otf'),
-                    onTap: () async {
-                      var place = await PlacesAutocomplete.show(
-                        context: context,
+                TextFormField(
+                  controller: controller.location.value,
+                  readOnly: true,
+                  style: const TextStyle(
+                      fontSize: 15.0,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.black,
+                      fontFamily: 'assets/fonst/Metropolis-Black.otf'),
+                  onTap: () async {
+                    var place = await PlacesAutocomplete.show(
+                      context: context,
+                      apiKey: googleApikey,
+                      mode: Mode.fullscreen,
+                      hint: 'Search and Save Location.',
+                      types: ['geocode', 'establishment'],
+                      strictbounds: false,
+                      onError: (err) {},
+                    );
+
+                    if (place != null) {
+                      setState(() {
+                        controller.location.value.text =
+                            place.description.toString();
+                        _loc.text = controller.location.value.text;
+                        _color5 = AppColors.greenBorder;
+                      });
+
+                      final plist = GoogleMapsPlaces(
                         apiKey: googleApikey,
-                        mode: Mode.fullscreen,
-                        types: ['geocode', 'establishment'],
-                        strictbounds: false,
-                        onError: (err) {},
+                        apiHeaders: await const GoogleApiHeaders().getHeaders(),
                       );
-
-                      if (place != null) {
-                        setState(() {
-                          controller.location.value.text =
-                              place.description.toString();
-                          _loc.text = controller.location.value.text;
-                          _color5 = AppColors.greenBorder;
-                        });
-
-                        final plist = GoogleMapsPlaces(
-                          apiKey: googleApikey,
-                          apiHeaders:
-                              await const GoogleApiHeaders().getHeaders(),
-                        );
-                        String placeid = place.placeId ?? "0";
-                        final detail = await plist.getDetailsByPlaceId(placeid);
-                        for (var component in detail.result.addressComponents) {
-                          for (var type in component.types) {
-                            if (type == "administrative_area_level_1") {
-                              controller.state.value.text = component.longName;
-                            } else if (type == "locality") {
-                              controller.city.value.text = component.longName;
-                            } else if (type == "country") {
-                              controller.country.value.text =
-                                  component.longName;
-                            }
+                      String placeid = place.placeId ?? "0";
+                      final detail = await plist.getDetailsByPlaceId(placeid);
+                      for (var component in detail.result.addressComponents) {
+                        for (var type in component.types) {
+                          if (type == "administrative_area_level_1") {
+                            controller.state.value.text = component.longName;
+                          } else if (type == "locality") {
+                            controller.city.value.text = component.longName;
+                          } else if (type == "country") {
+                            controller.country.value.text = component.longName;
                           }
                         }
+                      }
 
-                        final geometry = detail.result.geometry!;
-                        setState(() {
-                          lat = geometry.location.lat;
-                          log = geometry.location.lng;
-                        });
-                      }
-                    },
-                    decoration: InputDecoration(
-                      hintText: "Location/ Address / City *",
-                      hintStyle: const TextStyle(
-                              fontSize: 15.0,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black,
-                              fontFamily: 'assets/fonst/Metropolis-Black.otf')
-                          .copyWith(color: Colors.black45),
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(width: 1, color: _color5),
-                          borderRadius: BorderRadius.circular(10.0)),
-                      border: OutlineInputBorder(
-                          borderSide: BorderSide(width: 1, color: _color5),
-                          borderRadius: BorderRadius.circular(10.0)),
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(width: 1, color: _color5),
-                          borderRadius: BorderRadius.circular(10.0)),
-                    ),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        setState(() {
-                          _color5 = AppColors.redText;
-                        });
-                      } else {}
-                      return null;
-                    },
-                    onFieldSubmitted: (value) {
-                      if (value.isEmpty) {
-                        Fluttertoast.showToast(
-                            timeInSecForIosWeb: 2,
-                            msg:
-                                'Please Search and Save your Business Location');
-                        setState(() {
-                          _color5 = AppColors.redText;
-                        });
-                      } else if (value.isNotEmpty) {
-                        setState(() {
-                          _color5 = AppColors.greenBorder;
-                        });
-                      }
-                    },
+                      final geometry = detail.result.geometry!;
+                      setState(() {
+                        lat = geometry.location.lat;
+                        log = geometry.location.lng;
+                      });
+                    }
+                  },
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.all(18),
+                    hintText: "Location/ Address / City *",
+                    hintStyle: const TextStyle(
+                            fontSize: 15.0,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                            fontFamily: 'assets/fonst/Metropolis-Black.otf')
+                        .copyWith(color: Colors.black45),
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(width: 1, color: _color5),
+                        borderRadius: BorderRadius.circular(10.0)),
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide(width: 1, color: _color5),
+                        borderRadius: BorderRadius.circular(10.0)),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(width: 1, color: _color5),
+                        borderRadius: BorderRadius.circular(10.0)),
                   ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      setState(() {
+                        _color5 = AppColors.redText;
+                      });
+                    } else {}
+                    return null;
+                  },
+                  onFieldSubmitted: (value) {
+                    if (value.isEmpty) {
+                      Fluttertoast.showToast(
+                          timeInSecForIosWeb: 2,
+                          msg: 'Please Search and Save your Business Location');
+                      setState(() {
+                        _color5 = AppColors.redText;
+                      });
+                    } else if (value.isNotEmpty) {
+                      setState(() {
+                        _color5 = AppColors.greenBorder;
+                      });
+                    }
+                  },
                 ),
                 Expanded(
                   child: Container(),
@@ -425,10 +421,6 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                       }
                     }
                   },
-                ),
-                SizedBox(
-                  height: MediaQuery.of(context).padding.bottom +
-                      size.height * 0.015,
                 ),
               ],
             ),
@@ -609,11 +601,6 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
 
       if (fileSizeInKB > 5000) {
         Fluttertoast.showToast(msg: 'Please Select an image below 5 MB');
-        return;
-      }
-
-      if (fileSizeInKB < 200) {
-        Fluttertoast.showToast(msg: 'Please Select an image above 200 KB');
         return;
       }
 

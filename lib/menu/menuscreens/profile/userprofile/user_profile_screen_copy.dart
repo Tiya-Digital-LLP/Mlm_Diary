@@ -9,6 +9,7 @@ import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/database/controller/database_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/home/message/controller/message_controller.dart';
+import 'package:mlmdiary/menu/controller/profile_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
@@ -22,10 +23,12 @@ import 'package:mlmdiary/menu/menuscreens/profile/userprofile/custom/post_user_c
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/custom/question_user_card.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class UserProfileScreenCopy extends StatefulWidget {
   const UserProfileScreenCopy({super.key});
@@ -52,6 +55,7 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
       Get.put(QuestionAnswerController());
   final UserProfileController userProfileController =
       Get.put(UserProfileController());
+  final ProfileController profileController = Get.put(ProfileController());
 
   late TabController _tabController;
 
@@ -142,7 +146,7 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
         ),
       );
     }
-
+    final userProfile = profileController.userProfile.value.userProfile;
     // Build UI with post data
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -313,8 +317,25 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      const SocialButton(
-                          icon: Assets.svgCalling, label: 'Call'),
+                      InkWell(
+                        onTap: () {
+                          if (post.mobile == null || post.mobile!.isEmpty) {
+                            showToasterrorborder('No Any Url Found', context);
+                            if (kDebugMode) {
+                              print('tap without number');
+                            }
+                          } else {
+                            final Uri phoneUri =
+                                Uri(scheme: 'tel', path: post.mobile);
+                            launchUrl(phoneUri);
+                            if (kDebugMode) {
+                              print('tap with number');
+                            }
+                          }
+                        },
+                        child: const SocialButton(
+                            icon: Assets.svgCalling, label: 'Call'),
+                      ),
                       10.sbw,
                       InkWell(
                         onTap: () async {
@@ -341,8 +362,38 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                         ),
                       ),
                       10.sbw,
-                      const SocialButton(
-                          icon: Assets.svgWhatsappIcon, label: 'WhatsApp'),
+                      InkWell(
+                        onTap: () async {
+                          if (post!.mobile != null) {
+                            final String phoneNumber = post.mobile!;
+                            final String name = userProfile!.name.toString();
+
+                            String message =
+                                "Hello, I am $name. I want to know regarding MLM Diary App.";
+                            final Uri whatsappUri = Uri.parse(
+                                "https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}");
+
+                            if (await canLaunchUrl(whatsappUri)) {
+                              await launchUrl(whatsappUri);
+                              if (kDebugMode) {
+                                print('URL: $whatsappUri');
+                              }
+                            } else {
+                              if (kDebugMode) {
+                                print('Could not launch $whatsappUri');
+                              }
+                              showToasterrorborder(
+                                  "Could not launch WhatsApp",
+                                  // ignore: use_build_context_synchronously
+                                  context);
+                            }
+                          } else {
+                            showToasterrorborder("No Any Url Found", context);
+                          }
+                        },
+                        child: const SocialButton(
+                            icon: Assets.svgWhatsappIcon, label: 'WhatsApp'),
+                      ),
                     ],
                   ),
                 ),
@@ -596,18 +647,142 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                                   Row(
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
-                                      SvgPicture.asset(Assets.svgLogosFacebook),
-                                      12.sbw,
-                                      SvgPicture.asset(Assets.svgInstagram),
-                                      12.sbw,
-                                      SvgPicture.asset(
-                                          Assets.svgLogosLinkedinIcon),
-                                      12.sbw,
-                                      SvgPicture.asset(Assets.svgYoutube),
-                                      12.sbw,
-                                      SvgPicture.asset(Assets.svgTwitter),
-                                      12.sbw,
-                                      SvgPicture.asset(Assets.svgTelegram),
+                                      IconButton(
+                                        padding: EdgeInsets.zero,
+                                        onPressed: () {
+                                          if (post.wplink == null ||
+                                              post.wplink!.isEmpty) {
+                                            showToasterrorborder(
+                                                'No Any Url Found', context);
+                                          } else {
+                                            launchUrl(
+                                              Uri.parse(post.wplink.toString()),
+                                              mode: LaunchMode
+                                                  .externalApplication,
+                                            );
+                                          }
+                                        },
+                                        icon: SvgPicture.asset(
+                                          Assets.svgLogosWhatsappIcon,
+                                        ),
+                                      ),
+                                      IconButton(
+                                        padding: EdgeInsets.zero,
+                                        onPressed: () {
+                                          if (post.fblink == null ||
+                                              post.fblink!.isEmpty) {
+                                            showToasterrorborder(
+                                                'No Any Url Found', context);
+                                          } else {
+                                            launchUrl(
+                                              Uri.parse(post.fblink.toString()),
+                                              mode: LaunchMode
+                                                  .externalApplication,
+                                            );
+                                          }
+                                        },
+                                        icon: SvgPicture.asset(
+                                          Assets.svgLogosFacebook,
+                                        ),
+                                      ),
+                                      IconButton(
+                                        padding: EdgeInsets.zero,
+                                        onPressed: () {
+                                          if (post.instalink == null ||
+                                              post.instalink!.isEmpty) {
+                                            showToasterrorborder(
+                                                'No Any Url Found', context);
+                                          } else {
+                                            launchUrl(
+                                              Uri.parse(
+                                                  post.instalink.toString()),
+                                              mode: LaunchMode
+                                                  .externalApplication,
+                                            );
+                                          }
+                                        },
+                                        icon: SvgPicture.asset(
+                                          Assets.svgInstagram,
+                                        ),
+                                      ),
+                                      IconButton(
+                                        padding: EdgeInsets.zero,
+                                        onPressed: () {
+                                          if (post.lilink == null ||
+                                              post.lilink!.isEmpty) {
+                                            showToasterrorborder(
+                                                'No Any Url Found', context);
+                                          } else {
+                                            launchUrl(
+                                              Uri.parse(post.lilink.toString()),
+                                              mode: LaunchMode
+                                                  .externalApplication,
+                                            );
+                                          }
+                                        },
+                                        icon: SvgPicture.asset(
+                                          Assets.svgLogosLinkedinIcon,
+                                        ),
+                                      ),
+                                      IconButton(
+                                        padding: EdgeInsets.zero,
+                                        onPressed: () {
+                                          if (post.youlink == null ||
+                                              post.youlink!.isEmpty) {
+                                            showToasterrorborder(
+                                                'No Any Url Found', context);
+                                          } else {
+                                            launchUrl(
+                                              Uri.parse(
+                                                  post.youlink.toString()),
+                                              mode: LaunchMode
+                                                  .externalApplication,
+                                            );
+                                          }
+                                        },
+                                        icon: SvgPicture.asset(
+                                          Assets.svgYoutube,
+                                        ),
+                                      ),
+                                      IconButton(
+                                        padding: EdgeInsets.zero,
+                                        onPressed: () {
+                                          if (post.telink == null ||
+                                              post.telink!.isEmpty) {
+                                            showToasterrorborder(
+                                                'No Any Url Found', context);
+                                          } else {
+                                            launchUrl(
+                                              Uri.parse(post.telink.toString()),
+                                              mode: LaunchMode
+                                                  .externalApplication,
+                                            );
+                                          }
+                                        },
+                                        icon: SvgPicture.asset(
+                                          Assets.svgTelegram,
+                                        ),
+                                      ),
+                                      IconButton(
+                                        padding: EdgeInsets.zero,
+                                        onPressed: () {
+                                          if (post.twiterlink == null ||
+                                              post.twiterlink!.isEmpty) {
+                                            showToasterrorborder(
+                                                'No Any Url Found', context);
+                                          } else {
+                                            launchUrl(
+                                              Uri.parse(
+                                                  post.twiterlink.toString()),
+                                              mode: LaunchMode
+                                                  .externalApplication,
+                                            );
+                                          }
+                                        },
+                                        icon: SvgPicture.asset(
+                                          Assets.svgTwitter,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ],

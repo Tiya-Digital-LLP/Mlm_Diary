@@ -105,7 +105,7 @@ class _moreState extends State<MoreOptionScreen> {
         },
         child: Obx(() {
           final userProfile = controller.userProfile.value.userProfile;
-
+          final mlmSocial = controller.mlmSocial.value.sitesetting;
           if (controller.isLoading.value) {
             return Center(
                 child: CustomLottieAnimation(
@@ -550,14 +550,29 @@ class _moreState extends State<MoreOptionScreen> {
                     children: [
                       IconButton(
                         padding: EdgeInsets.zero,
-                        onPressed: () {
-                          if (userProfile.wplink != null) {
-                            _launchURL(userProfile.wplink.toString());
-                            if (kDebugMode) {
-                              print('URL: ${userProfile.wplink}');
+                        onPressed: () async {
+                          if (mlmSocial!.whatsapp != null) {
+                            final String phoneNumber = mlmSocial.whatsapp!;
+                            final String name = userProfile.name ?? 'N/A';
+                            String message =
+                                "Hello, I am $name. I want to know regarding MLM Diary App.";
+                            final Uri whatsappUri = Uri.parse(
+                                "https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}");
+
+                            if (await canLaunchUrl(whatsappUri)) {
+                              await launchUrl(whatsappUri);
+                              if (kDebugMode) {
+                                print('URL: $whatsappUri');
+                              }
+                            } else {
+                              if (kDebugMode) {
+                                print('Could not launch $whatsappUri');
+                              }
+                              showToasterrorborder(
+                                  "Could not launch WhatsApp", context);
                             }
                           } else {
-                            showToasterrorborder("No Any Url Fond", context);
+                            showToasterrorborder("No Any Url Found", context);
                           }
                         },
                         icon: SvgPicture.asset(Assets.svgLogosWhatsappIcon,
@@ -566,10 +581,10 @@ class _moreState extends State<MoreOptionScreen> {
                       IconButton(
                         padding: EdgeInsets.zero,
                         onPressed: () {
-                          if (userProfile.fblink != null) {
-                            _launchURL(userProfile.fblink.toString());
+                          if (mlmSocial!.facebookLink != null) {
+                            _launchURL(mlmSocial.facebookLink.toString());
                             if (kDebugMode) {
-                              print('URL: ${userProfile.fblink}');
+                              print('URL: ${mlmSocial.facebookLink}');
                             }
                           } else {
                             showToasterrorborder("No Any Url Fond", context);
@@ -581,10 +596,10 @@ class _moreState extends State<MoreOptionScreen> {
                       IconButton(
                         padding: EdgeInsets.zero,
                         onPressed: () {
-                          if (userProfile.instalink != null) {
-                            _launchURL(userProfile.instalink.toString());
+                          if (mlmSocial!.intagramLink != null) {
+                            _launchURL(mlmSocial.intagramLink.toString());
                             if (kDebugMode) {
-                              print('URL: ${userProfile.instalink}');
+                              print('URL: ${mlmSocial.intagramLink}');
                             }
                           } else {
                             showToasterrorborder("No Any Url Fond", context);
@@ -596,10 +611,10 @@ class _moreState extends State<MoreOptionScreen> {
                       IconButton(
                         padding: EdgeInsets.zero,
                         onPressed: () {
-                          if (userProfile.lilink != null) {
-                            _launchURL(userProfile.lilink.toString());
+                          if (mlmSocial!.linkedinLink != null) {
+                            _launchURL(mlmSocial.linkedinLink.toString());
                             if (kDebugMode) {
-                              print('URL: ${userProfile.lilink}');
+                              print('URL: ${mlmSocial.linkedinLink}');
                             }
                           } else {
                             showToasterrorborder("No Any Url Fond", context);
@@ -611,10 +626,10 @@ class _moreState extends State<MoreOptionScreen> {
                       IconButton(
                         padding: EdgeInsets.zero,
                         onPressed: () {
-                          if (userProfile.youlink != null) {
-                            _launchURL(userProfile.youlink.toString());
+                          if (mlmSocial!.youtubeLink != null) {
+                            _launchURL(mlmSocial.youtubeLink.toString());
                             if (kDebugMode) {
-                              print('URL: ${userProfile.youlink}');
+                              print('URL: ${mlmSocial.youtubeLink}');
                             }
                           } else {
                             showToasterrorborder("No Any Url Fond", context);
@@ -626,10 +641,10 @@ class _moreState extends State<MoreOptionScreen> {
                       IconButton(
                         padding: EdgeInsets.zero,
                         onPressed: () {
-                          if (userProfile.telink != null) {
-                            _launchURL(userProfile.telink.toString());
+                          if (mlmSocial!.telegramLink != null) {
+                            _launchURL(mlmSocial.telegramLink.toString());
                             if (kDebugMode) {
-                              print('URL: ${userProfile.telink}');
+                              print('URL: ${mlmSocial.telegramLink}');
                             }
                           } else {
                             showToasterrorborder("No Any Url Fond", context);
@@ -641,10 +656,10 @@ class _moreState extends State<MoreOptionScreen> {
                       IconButton(
                         padding: EdgeInsets.zero,
                         onPressed: () {
-                          if (userProfile.twiterlink != null) {
-                            _launchURL(userProfile.twiterlink.toString());
+                          if (mlmSocial!.twitterLink != null) {
+                            _launchURL(mlmSocial.twitterLink.toString());
                             if (kDebugMode) {
-                              print('URL: ${userProfile.twiterlink}');
+                              print('URL: ${mlmSocial.twitterLink}');
                             }
                           } else {
                             showToasterrorborder("No Any Url Fond", context);

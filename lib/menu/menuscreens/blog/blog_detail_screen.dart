@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
@@ -206,6 +207,21 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                           alignment: Alignment.topLeft,
                           child:
                               _buildHtmlContent(post.description ?? '', size),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Html(
+                          data: post.description ?? '',
+                          style: {
+                            "html": Style(
+                              maxLines: 1,
+                              fontFamily: fontFamily,
+                              fontWeight: FontWeight.w700,
+                              fontSize: FontSize.medium,
+                              color: AppColors.blackText,
+                            ),
+                          },
                         ),
                       ),
                       SizedBox(

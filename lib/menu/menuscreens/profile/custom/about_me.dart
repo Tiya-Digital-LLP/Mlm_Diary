@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -40,14 +39,16 @@ class AboutMeSection extends StatelessWidget {
                     Row(
                       children: [
                         IconButton(
+                          padding: EdgeInsets.zero,
                           onPressed: () {
-                            if (userProfile.wplink != null) {
-                              _launchURL(userProfile.wplink.toString());
-                              if (kDebugMode) {
-                                print('URL: ${userProfile.wplink}');
-                              }
+                            if (userProfile.wplink == null ||
+                                userProfile.wplink!.isEmpty) {
+                              showToasterrorborder('No Any Url Found', context);
                             } else {
-                              showToasterrorborder("No Any Url Fond", context);
+                              launchUrl(
+                                Uri.parse(userProfile.wplink.toString()),
+                                mode: LaunchMode.externalApplication,
+                              );
                             }
                           },
                           icon: SvgPicture.asset(
@@ -55,14 +56,16 @@ class AboutMeSection extends StatelessWidget {
                           ),
                         ),
                         IconButton(
+                          padding: EdgeInsets.zero,
                           onPressed: () {
-                            if (userProfile.fblink != null) {
-                              _launchURL(userProfile.fblink.toString());
-                              if (kDebugMode) {
-                                print('URL: ${userProfile.fblink}');
-                              }
+                            if (userProfile.fblink == null ||
+                                userProfile.fblink!.isEmpty) {
+                              showToasterrorborder('No Any Url Found', context);
                             } else {
-                              showToasterrorborder("No Any Url Fond", context);
+                              launchUrl(
+                                Uri.parse(userProfile.fblink.toString()),
+                                mode: LaunchMode.externalApplication,
+                              );
                             }
                           },
                           icon: SvgPicture.asset(
@@ -70,14 +73,16 @@ class AboutMeSection extends StatelessWidget {
                           ),
                         ),
                         IconButton(
+                          padding: EdgeInsets.zero,
                           onPressed: () {
-                            if (userProfile.instalink != null) {
-                              _launchURL(userProfile.instalink.toString());
-                              if (kDebugMode) {
-                                print('URL: ${userProfile.instalink}');
-                              }
+                            if (userProfile.instalink == null ||
+                                userProfile.instalink!.isEmpty) {
+                              showToasterrorborder('No Any Url Found', context);
                             } else {
-                              showToasterrorborder("No Any Url Fond", context);
+                              launchUrl(
+                                Uri.parse(userProfile.instalink.toString()),
+                                mode: LaunchMode.externalApplication,
+                              );
                             }
                           },
                           icon: SvgPicture.asset(
@@ -85,14 +90,16 @@ class AboutMeSection extends StatelessWidget {
                           ),
                         ),
                         IconButton(
+                          padding: EdgeInsets.zero,
                           onPressed: () {
-                            if (userProfile.lilink != null) {
-                              _launchURL(userProfile.lilink.toString());
-                              if (kDebugMode) {
-                                print('URL: ${userProfile.lilink}');
-                              }
+                            if (userProfile.lilink == null ||
+                                userProfile.lilink!.isEmpty) {
+                              showToasterrorborder('No Any Url Found', context);
                             } else {
-                              showToasterrorborder("No Any Url Fond", context);
+                              launchUrl(
+                                Uri.parse(userProfile.lilink.toString()),
+                                mode: LaunchMode.externalApplication,
+                              );
                             }
                           },
                           icon: SvgPicture.asset(
@@ -100,14 +107,16 @@ class AboutMeSection extends StatelessWidget {
                           ),
                         ),
                         IconButton(
+                          padding: EdgeInsets.zero,
                           onPressed: () {
-                            if (userProfile.youlink != null) {
-                              _launchURL(userProfile.youlink.toString());
-                              if (kDebugMode) {
-                                print('URL: ${userProfile.youlink}');
-                              }
+                            if (userProfile.youlink == null ||
+                                userProfile.youlink!.isEmpty) {
+                              showToasterrorborder('No Any Url Found', context);
                             } else {
-                              showToasterrorborder("No Any Url Fond", context);
+                              launchUrl(
+                                Uri.parse(userProfile.youlink.toString()),
+                                mode: LaunchMode.externalApplication,
+                              );
                             }
                           },
                           icon: SvgPicture.asset(
@@ -115,14 +124,16 @@ class AboutMeSection extends StatelessWidget {
                           ),
                         ),
                         IconButton(
+                          padding: EdgeInsets.zero,
                           onPressed: () {
-                            if (userProfile.telink != null) {
-                              _launchURL(userProfile.telink.toString());
-                              if (kDebugMode) {
-                                print('URL: ${userProfile.telink}');
-                              }
+                            if (userProfile.telink == null ||
+                                userProfile.telink!.isEmpty) {
+                              showToasterrorborder('No Any Url Found', context);
                             } else {
-                              showToasterrorborder("No Any Url Fond", context);
+                              launchUrl(
+                                Uri.parse(userProfile.telink.toString()),
+                                mode: LaunchMode.externalApplication,
+                              );
                             }
                           },
                           icon: SvgPicture.asset(
@@ -130,14 +141,16 @@ class AboutMeSection extends StatelessWidget {
                           ),
                         ),
                         IconButton(
+                          padding: EdgeInsets.zero,
                           onPressed: () {
-                            if (userProfile.twiterlink != null) {
-                              _launchURL(userProfile.twiterlink.toString());
-                              if (kDebugMode) {
-                                print('URL: ${userProfile.twiterlink}');
-                              }
+                            if (userProfile.twiterlink == null ||
+                                userProfile.twiterlink!.isEmpty) {
+                              showToasterrorborder('No Any Url Found', context);
                             } else {
-                              showToasterrorborder("No Any Url Fond", context);
+                              launchUrl(
+                                Uri.parse(userProfile.twiterlink.toString()),
+                                mode: LaunchMode.externalApplication,
+                              );
                             }
                           },
                           icon: SvgPicture.asset(
@@ -188,15 +201,5 @@ class AboutMeSection extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  void _launchURL(String url) async {
-    // ignore: deprecated_member_use
-    if (await canLaunch(url)) {
-      // ignore: deprecated_member_use
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
   }
 }

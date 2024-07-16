@@ -279,7 +279,7 @@ class AddBlogController extends GetxController {
 
     for (int i = 0; i < isCategorySelectedList.length; i++) {
       if (isCategorySelectedList[i]) {
-        selectedCategoryOptions.add(categorylist[i].id.toString());
+        selectedCategoryOptions.add(categorylist[i].name.toString());
       }
     }
 
@@ -309,7 +309,7 @@ class AddBlogController extends GetxController {
     List<String> selectedSubCategoryOptions = [];
     for (int i = 0; i < isSubCategorySelectedList.length; i++) {
       if (isSubCategorySelectedList[i]) {
-        selectedSubCategoryOptions.add(subcategoryList[i].id.toString());
+        selectedSubCategoryOptions.add(subcategoryList[i].name.toString());
       }
     }
 

@@ -19,7 +19,7 @@ import 'package:mlmdiary/generated/user_register_entity_entity.dart';
 import 'package:mlmdiary/generated/verify_phone_otp_entity.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
-import 'package:mlmdiary/utils/common_toast.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/email_validator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toastification/toastification.dart';
@@ -83,6 +83,7 @@ class SignupController extends GetxController {
 
   // ENABLED TYPING VALIDATION
   RxBool isNameTyping = false.obs;
+  RxBool isMlmTyping = false.obs;
   RxBool isCompanyNameTyping = false.obs;
   RxBool isLocationTyping = false.obs;
 
@@ -238,7 +239,7 @@ class SignupController extends GetxController {
   }
 
   Future<void> sendForeignPhoneOtp(
-      String mobile, String name, String countryCodee) async {
+      String mobile, String name, String countryCodee, context) async {
     String device = '';
     if (Platform.isAndroid) {
       device = 'android';
@@ -272,6 +273,23 @@ class SignupController extends GetxController {
               print("Foreign OTP sent successfully: ${otpEntity.message}");
             }
             setDefaultUserId(otpEntity.userId);
+          } else if (jsonBody['status'] == 0) {
+            toastification.show(
+              // ignore: use_build_context_synchronously
+              context: context,
+              alignment: Alignment.bottomCenter,
+              backgroundColor: AppColors.white,
+              type: ToastificationType.error,
+              style: ToastificationStyle.flatColored,
+              showProgressBar: false,
+              autoCloseDuration: const Duration(seconds: 3),
+              icon: Image.asset(
+                Assets.imagesCancel,
+                height: 35,
+              ),
+              primaryColor: Colors.red,
+              title: Text('$jsonBody'),
+            );
           } else {
             if (kDebugMode) {
               print("Failed to send foreign OTP: ${otpEntity.message}");
@@ -300,7 +318,7 @@ class SignupController extends GetxController {
     }
   }
 
-  Future<void> verifyOtp(int userid) async {
+  Future<void> verifyOtp(int userid, context) async {
     if (kDebugMode) {
       print("Verifying OTP for userId: $userid,");
     }
@@ -325,6 +343,23 @@ class SignupController extends GetxController {
             }
             // Handle successful OTP verification
             stopTimer();
+          } else if (jsonBody['status'] == 0) {
+            toastification.show(
+              // ignore: use_build_context_synchronously
+              context: context,
+              alignment: Alignment.bottomCenter,
+              backgroundColor: AppColors.white,
+              type: ToastificationType.error,
+              style: ToastificationStyle.flatColored,
+              showProgressBar: false,
+              autoCloseDuration: const Duration(seconds: 3),
+              icon: Image.asset(
+                Assets.imagesCancel,
+                height: 35,
+              ),
+              primaryColor: Colors.red,
+              title: Text('$jsonBody'),
+            );
           } else {
             if (kDebugMode) {
               print("Failed to verify OTP: ${resentOtpEntity.message}");
@@ -353,7 +388,7 @@ class SignupController extends GetxController {
     }
   }
 
-  Future<void> verifyPhoneOtp(int userId, String otp) async {
+  Future<void> verifyPhoneOtp(int userId, String otp, context) async {
     String device = '';
     if (Platform.isAndroid) {
       device = 'android';
@@ -388,6 +423,23 @@ class SignupController extends GetxController {
                   "Phone OTP verification successful: ${verifyPhoneOtpEntity.message}");
             }
             showEmailField.value = true;
+          } else if (jsonBody['status'] == 0) {
+            toastification.show(
+              // ignore: use_build_context_synchronously
+              context: context,
+              alignment: Alignment.bottomCenter,
+              backgroundColor: AppColors.white,
+              type: ToastificationType.error,
+              style: ToastificationStyle.flatColored,
+              showProgressBar: false,
+              autoCloseDuration: const Duration(seconds: 3),
+              icon: Image.asset(
+                Assets.imagesCancel,
+                height: 35,
+              ),
+              primaryColor: Colors.red,
+              title: Text('$jsonBody'),
+            );
           } else {
             if (kDebugMode) {
               print(
@@ -507,7 +559,7 @@ class SignupController extends GetxController {
     }
   }
 
-  Future<void> registerUser(int userId, String password) async {
+  Future<void> registerUser(int userId, String password, context) async {
     String device = '';
     if (Platform.isAndroid) {
       device = 'android';
@@ -531,14 +583,46 @@ class SignupController extends GetxController {
 
         if (userRegisterEntity.status == 1) {
           // Registration successful
-          ToastUtils.showToast("Registration successful");
+          toastification.show(
+            // ignore: use_build_context_synchronously
+            context: context,
+            alignment: Alignment.bottomCenter,
+            backgroundColor: AppColors.white,
+            type: ToastificationType.error,
+            style: ToastificationStyle.flatColored,
+            showProgressBar: false,
+            autoCloseDuration: const Duration(seconds: 3),
+            icon: Image.asset(
+              Assets.imagesCancel,
+              height: 35,
+            ),
+            primaryColor: Colors.red,
+            title: const Text('Registration Successfully'),
+          );
           Get.offNamed(Routes.signUp2);
 
           saveAccessToken(
-              userRegisterEntity.apiToken, userRegisterEntity.userId);
+              userRegisterEntity.apiToken, userRegisterEntity.userId, context);
           if (kDebugMode) {
             print('api_token: ${userRegisterEntity.apiToken}');
           }
+        } else if (jsonBody['status'] == 0) {
+          toastification.show(
+            // ignore: use_build_context_synchronously
+            context: context,
+            alignment: Alignment.bottomCenter,
+            backgroundColor: AppColors.white,
+            type: ToastificationType.error,
+            style: ToastificationStyle.flatColored,
+            showProgressBar: false,
+            autoCloseDuration: const Duration(seconds: 3),
+            icon: Image.asset(
+              Assets.imagesCancel,
+              height: 35,
+            ),
+            primaryColor: Colors.red,
+            title: Text('$jsonBody'),
+          );
         } else {
           // Registration failed
         }
@@ -556,17 +640,14 @@ class SignupController extends GetxController {
     }
   }
 
-  Future<void> saveAccessToken(String? token, int? userId) async {
+  Future<void> saveAccessToken(String? token, int? userId, context) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(Constants.accessToken, token ?? '');
     await prefs.setInt(Constants.userId, userId ?? 0);
   }
 
   Future<void> verifyEmail(
-    String email,
-    int userId,
-    String otp,
-  ) async {
+      String email, int userId, String otp, context) async {
     String device = '';
     if (Platform.isAndroid) {
       device = 'android';
@@ -600,6 +681,23 @@ class SignupController extends GetxController {
                   "Email verified successfully: ${emailVerifyEntity.message}");
             }
             showPasswordField.value = true;
+          } else if (jsonBody['status'] == 0) {
+            toastification.show(
+              // ignore: use_build_context_synchronously
+              context: context,
+              alignment: Alignment.bottomCenter,
+              backgroundColor: AppColors.white,
+              type: ToastificationType.error,
+              style: ToastificationStyle.flatColored,
+              showProgressBar: false,
+              autoCloseDuration: const Duration(seconds: 3),
+              icon: Image.asset(
+                Assets.imagesCancel,
+                height: 35,
+              ),
+              primaryColor: Colors.red,
+              title: Text('$jsonBody'),
+            );
           } else {
             if (kDebugMode) {
               print("Failed to verify email: ${emailVerifyEntity.message}");
@@ -709,14 +807,22 @@ class SignupController extends GetxController {
   void mlmCategoryValidation() {
     // ignore: unrelated_type_equality_checks
     mlmTypeError.value = selectedCount == 0;
+
+    if (mlmTypeError.value) {
+      isPasswordTyping.value = true;
+    }
   }
 
-  void nameValidation() {
+  void nameValidation(context) {
     String enteredName = name.value.text;
     if (enteredName.isEmpty || hasSpecialCharactersOrNumbers(enteredName)) {
       nameError.value = true;
     } else {
       nameError.value = false;
+    }
+
+    if (nameError.value) {
+      isNameTyping.value = true;
     }
   }
 
@@ -745,6 +851,9 @@ class SignupController extends GetxController {
       mobileError.value = true;
     } else {
       mobileError.value = false;
+    }
+    if (mobileError.value) {
+      isMobileTyping.value = true;
     }
   }
 
@@ -797,15 +906,31 @@ class SignupController extends GetxController {
     return specialCharOrNumber.hasMatch(text);
   }
 
-  void toggleSelected(int index) {
+  void toggleSelected(int index, context) {
+    // Check if the user is trying to select more than 3 items
+    if (selectedCount >= 3 && !isTypeSelectedList[index]) {
+      showToasterrorborder('You Can Select Maximum 3 Fields ', context);
+      return;
+    }
+
+    // Toggle the selection
     isTypeSelectedList[index] = !isTypeSelectedList[index];
 
+    // Update the selected count
     if (isTypeSelectedList[index]) {
       selectedCount++;
     } else {
       selectedCount--;
     }
+
+    // Update the selected type ID
     selectedTypesId.value = userTypes[index].id!;
+
+    // ignore: unrelated_type_equality_checks
+    mlmTypeError.value = selectedCount == 0;
+
+    // Update isMlmTyping to true when selection is changed
+    isMlmTyping.value = true;
   }
 
   TextEditingController getSelectedOptionsTextController() {

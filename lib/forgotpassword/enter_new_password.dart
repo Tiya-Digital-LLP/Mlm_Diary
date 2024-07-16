@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/forgotpassword/controller/forgot_password_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
@@ -21,19 +22,22 @@ class _EnterNewPasswordScreenState extends State<EnterNewPasswordScreen> {
   final ForgotPasswordController controller =
       Get.put(ForgotPasswordController());
 
-  int? userId;
+  int? currentUserID;
 
   @override
   void initState() {
     super.initState();
-    fetchUserId();
+    _getUserId();
   }
 
-  Future<void> fetchUserId() async {
+  Future<int?> getUserId() async {
     final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      userId = prefs.getInt('userId');
-    });
+    return prefs.getInt(Constants.userId);
+  }
+
+  Future<void> _getUserId() async {
+    currentUserID = await getUserId();
+    setState(() {});
   }
 
   @override
@@ -122,7 +126,7 @@ class _EnterNewPasswordScreenState extends State<EnterNewPasswordScreen> {
                   // Call the method to send the change password request
                   controller.sendChangePasswordRequest(
                     context,
-                    userId!,
+                    currentUserID = currentUserID ?? 0,
                     controller.password.value.text,
                   );
                 }

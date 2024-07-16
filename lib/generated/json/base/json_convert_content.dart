@@ -85,6 +85,7 @@ import 'package:mlmdiary/generated/liked_user_entity.dart';
 import 'package:mlmdiary/generated/login_entity.dart';
 import 'package:mlmdiary/generated/manage_classified_entity.dart';
 import 'package:mlmdiary/generated/mlm_like_company_entity.dart';
+import 'package:mlmdiary/generated/mlm_social_media_entity.dart';
 import 'package:mlmdiary/generated/mutual_friends_entity.dart';
 import 'package:mlmdiary/generated/my_blog_list_entity.dart';
 import 'package:mlmdiary/generated/my_news_entity.dart';
@@ -900,6 +901,14 @@ class JsonConvert {
       return data.map<MlmLikeCompanyEntity>((Map<String, dynamic> e) =>
           MlmLikeCompanyEntity.fromJson(e)).toList() as M;
     }
+    if (<MlmSocialMediaEntity>[] is M) {
+      return data.map<MlmSocialMediaEntity>((Map<String, dynamic> e) =>
+          MlmSocialMediaEntity.fromJson(e)).toList() as M;
+    }
+    if (<MlmSocialMediaSitesetting>[] is M) {
+      return data.map<MlmSocialMediaSitesetting>((Map<String, dynamic> e) =>
+          MlmSocialMediaSitesetting.fromJson(e)).toList() as M;
+    }
     if (<MutualFriendsEntity>[] is M) {
       return data.map<MutualFriendsEntity>((Map<String, dynamic> e) =>
           MutualFriendsEntity.fromJson(e)).toList() as M;
@@ -1338,6 +1347,8 @@ class JsonConvertClassCollection {
     (ManageClassifiedDataUserData).toString(): ManageClassifiedDataUserData
         .fromJson,
     (MlmLikeCompanyEntity).toString(): MlmLikeCompanyEntity.fromJson,
+    (MlmSocialMediaEntity).toString(): MlmSocialMediaEntity.fromJson,
+    (MlmSocialMediaSitesetting).toString(): MlmSocialMediaSitesetting.fromJson,
     (MutualFriendsEntity).toString(): MutualFriendsEntity.fromJson,
     (MutualFriendsData).toString(): MutualFriendsData.fromJson,
     (MyBlogListEntity).toString(): MyBlogListEntity.fromJson,

@@ -21,6 +21,7 @@ import 'package:mlmdiary/widgets/border_text_field.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
 import 'package:mlmdiary/widgets/custom_border_container.dart';
 import 'package:mlmdiary/widgets/custom_button.dart';
+import 'package:mlmdiary/widgets/custom_mobile_field.dart';
 import 'package:mlmdiary/widgets/password_border_text_field.dart';
 
 class SignupPage extends StatefulWidget {
@@ -62,7 +63,8 @@ class _SignupPageState extends State<SignupPage> {
     if (isDomesticPhoneNumber(mobileNumber)) {
       controller.sendDomesticPhoneOtp(mobileNumber, userName, '91', context);
     } else {
-      controller.sendForeignPhoneOtp(mobileNumber, userName, countryCode);
+      controller.sendForeignPhoneOtp(
+          mobileNumber, userName, countryCode, context);
     }
   }
 
@@ -103,7 +105,8 @@ class _SignupPageState extends State<SignupPage> {
                     Obx(
                       () => BorderContainer(
                         isError: controller.mlmTypeError.value,
-                        height: 60,
+                        byDefault: !controller.isMlmTyping.value,
+                        height: 65,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: TextField(
@@ -145,7 +148,7 @@ class _SignupPageState extends State<SignupPage> {
                         isError: controller.nameError.value,
                         byDefault: !controller.isNameTyping.value,
                         onChanged: (value) {
-                          controller.nameValidation();
+                          controller.nameValidation(context);
                           controller.isNameTyping.value = true;
                         },
                       ),
@@ -197,7 +200,7 @@ class _SignupPageState extends State<SignupPage> {
                           Expanded(
                             flex: 5,
                             child: Obx(
-                              () => BorderTextField(
+                              () => CustomMobileField(
                                 height: 65,
                                 hint: "Mobile Number",
                                 readOnly: controller.mobileReadOnly.value,
@@ -397,11 +400,12 @@ class _SignupPageState extends State<SignupPage> {
                                                       log("Signup Process Start");
 
                                                       controller.registerUser(
-                                                        controller.defaultUserId
-                                                            .value,
-                                                        controller.password
-                                                            .value.text,
-                                                      );
+                                                          controller
+                                                              .defaultUserId
+                                                              .value,
+                                                          controller.password
+                                                              .value.text,
+                                                          context);
                                                     }
                                                   },
                                                 ),
@@ -552,7 +556,10 @@ class _SignupPageState extends State<SignupPage> {
 
                                                       // Call the verifyEmail method from the controller
                                                       controller.verifyEmail(
-                                                          email, userId, otp);
+                                                          email,
+                                                          userId,
+                                                          otp,
+                                                          context);
                                                     }
                                                   },
                                                 ),
@@ -634,7 +641,8 @@ class _SignupPageState extends State<SignupPage> {
                                               try {
                                                 await controller.verifyOtp(
                                                     controller
-                                                        .defaultUserId.value);
+                                                        .defaultUserId.value,
+                                                    context);
                                                 controller.timerValue.value =
                                                     30;
                                                 controller.startTimer();
@@ -690,11 +698,11 @@ class _SignupPageState extends State<SignupPage> {
                                         } else {
                                           try {
                                             await controller.verifyPhoneOtp(
-                                              controller.defaultUserId
-                                                  .value, // Pass the user ID
-                                              controller.mobileOtp.value
-                                                  .text, // Pass the OTP entered by the user
-                                            );
+                                                controller.defaultUserId
+                                                    .value, // Pass the user ID
+                                                controller.mobileOtp.value.text,
+                                                context // Pass the OTP entered by the user
+                                                );
                                             controller.stopTimer();
                                           } catch (e) {
                                             showToasterrorborder(
@@ -716,6 +724,14 @@ class _SignupPageState extends State<SignupPage> {
                               btnColor: AppColors.primaryColor,
                               titleColor: AppColors.white,
                               onTap: () {
+                                controller.isMlmTyping.value = true;
+                                controller.isNameTyping.value = true;
+                                controller.isMobileTyping.value = true;
+
+                                controller.mlmCategoryValidation();
+                                controller.nameValidation(context);
+                                controller.mobileValidation();
+
                                 if (controller.selectedCount.value < 1) {
                                   showToasterrorborder(
                                       "Please Select At least One MLM Type",
@@ -737,6 +753,7 @@ class _SignupPageState extends State<SignupPage> {
                                       context);
                                 } else {
                                   log("Mobile OTP Sent Successfully");
+
                                   showToastverifedborder(
                                       "OTP Sent Successfully", context);
                                   sendOtp();
@@ -810,7 +827,7 @@ class _SignupPageState extends State<SignupPage> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            controller.toggleSelected(index);
+                            controller.toggleSelected(index, context);
                           },
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
@@ -820,7 +837,7 @@ class _SignupPageState extends State<SignupPage> {
                                 Obx(
                                   () => GestureDetector(
                                     onTap: () {
-                                      controller.toggleSelected(index);
+                                      controller.toggleSelected(index, context);
                                     },
                                     child: Image.asset(
                                       controller.isTypeSelectedList[index]
@@ -875,11 +892,32 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   void _onPressedShowBottomSheet() async {
-    final country = await showCountryPickerSheet(
-      context,
-    );
+    final country = await showCountryPickerSheet(context);
     if (country != null) {
       selectedCountry.value = country;
+      if (country.callingCode != '+91') {
+        _showNonIndiaPopup();
+      }
     }
+  }
+
+  void _showNonIndiaPopup() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Country Selection'),
+          content: const Text('You have selected a country other than India.'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/generated/get_user_profile_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/contactus/controller/contactus_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
@@ -25,6 +26,7 @@ class ContactUs extends StatefulWidget {
 class _ContactUsState extends State<ContactUs> {
   final ContactusController controller = Get.put(ContactusController());
   final Rx<Country?> _selectedCountry = Rx<Country?>(null);
+  final userProfile = Get.arguments as GetUserProfileUserProfile;
 
   @override
   void initState() {
@@ -265,7 +267,7 @@ class _ContactUsState extends State<ContactUs> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Text(
-                          'Follow Plastic4trade',
+                          'Follow MLM Diary',
                           style: textStyleW500(
                               size.width * 0.030, AppColors.blackText),
                         ),

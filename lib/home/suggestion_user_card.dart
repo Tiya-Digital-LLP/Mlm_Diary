@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
@@ -12,13 +11,15 @@ class SuggetionUserCard extends StatefulWidget {
   final String post;
   final int postId;
   final EditPostController editpostcontroller;
+  final bool isfollowing;
   const SuggetionUserCard(
       {super.key,
       required this.userImage,
       required this.name,
       required this.post,
       required this.postId,
-      required this.editpostcontroller});
+      required this.editpostcontroller,
+      required this.isfollowing});
 
   @override
   State<SuggetionUserCard> createState() => _SuggetionUserCardState();
@@ -26,44 +27,33 @@ class SuggetionUserCard extends StatefulWidget {
 
 class _SuggetionUserCardState extends State<SuggetionUserCard> {
   RxBool isFollowing = false.obs;
-  void _toggleFollow() async {
-    final userId = widget.postId;
 
-    try {
-      // Fetch current follow status
-      bool followStatus = await _fetchFollowStatus(userId);
-
-      // Defer the state update
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        isFollowing.value = !followStatus;
-      });
-
-      // Call the API to toggle the follow status
-      // ignore: use_build_context_synchronously
-      await widget.editpostcontroller.toggleProfileFollow(userId, context);
-    } catch (e) {
-      // Handle API errors
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
-    }
+  @override
+  void initState() {
+    super.initState();
+    initializeBookmarks();
   }
 
-  Future<bool> _fetchFollowStatus(int userId) async {
-    return false;
+  void initializeBookmarks() {
+    isFollowing = RxBool(widget.isfollowing);
+  }
+
+  void _toggleFollow() async {
+    bool newBookmarkedValue = !isFollowing.value;
+    isFollowing.value = newBookmarkedValue;
+
+    await widget.editpostcontroller.toggleProfileFollow(widget.postId, context);
   }
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return Container(
-      width: 220,
-      height: 300,
+      width: 200,
+      height: 280,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(12),
         color: AppColors.white,
       ),
       child: Column(
@@ -104,7 +94,7 @@ class _SuggetionUserCardState extends State<SuggetionUserCard> {
                 15.sbh,
                 Text(
                   widget.post,
-                  maxLines: 2,
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: textStyleW400(size.width * 0.037, AppColors.blackText),
                   textAlign: TextAlign.center,

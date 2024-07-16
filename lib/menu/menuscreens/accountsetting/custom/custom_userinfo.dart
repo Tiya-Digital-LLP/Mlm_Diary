@@ -211,34 +211,28 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                                     ? AppColors.primaryColor
                                     : AppColors.blackText.withOpacity(0.5),
                               ),
-                              (controller.isGenderToggle.value == true)
-                                  ? Positioned(
-                                      top: 3,
-                                      left: 3,
-                                      child: Image.asset(
-                                          Assets.imagesSelectedCircle))
-                                  : Container()
+                              if (controller.isGenderToggle.value == true)
+                                Positioned(
+                                  top: 3,
+                                  left: 3,
+                                  child:
+                                      Image.asset(Assets.imagesSelectedCircle),
+                                ),
                             ],
                           ),
-                          const SizedBox(
-                            width: 10,
-                          ),
+                          10.sbw,
                           Text(
                             "Male",
                             style: (controller.isGenderToggle.value == true)
                                 ? textStyleW500(
                                     size.width * 0.045, AppColors.primaryColor)
-                                : textStyleW400(
-                                    size.width * 0.045,
-                                    AppColors.blackText.withOpacity(0.5),
-                                  ),
+                                : textStyleW400(size.width * 0.045,
+                                    AppColors.blackText.withOpacity(0.5)),
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(
-                      width: 20,
-                    ),
+                    20.sbw,
                     InkWell(
                       onTap: () {
                         controller.isGenderToggle.value = false;
@@ -254,31 +248,27 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                                         ? AppColors.primaryColor
                                         : AppColors.blackText.withOpacity(0.5),
                               ),
-                              (controller.isGenderToggle.value == false)
-                                  ? Positioned(
-                                      top: 3,
-                                      left: 3,
-                                      child: Image.asset(
-                                          Assets.imagesSelectedCircle))
-                                  : Container()
+                              if (controller.isGenderToggle.value == false)
+                                Positioned(
+                                  top: 3,
+                                  left: 3,
+                                  child:
+                                      Image.asset(Assets.imagesSelectedCircle),
+                                ),
                             ],
                           ),
-                          const SizedBox(
-                            width: 10,
-                          ),
+                          10.sbw,
                           Text(
                             "Female",
                             style: (controller.isGenderToggle.value == false)
                                 ? textStyleW500(
                                     size.width * 0.045, AppColors.primaryColor)
-                                : textStyleW400(
-                                    size.width * 0.045,
-                                    AppColors.blackText.withOpacity(0.5),
-                                  ),
-                          )
+                                : textStyleW400(size.width * 0.045,
+                                    AppColors.blackText.withOpacity(0.5)),
+                          ),
                         ],
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -347,7 +337,7 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
             ),
             10.sbh,
             Padding(
-                padding: const EdgeInsets.fromLTRB(25.0, 5.0, 25.0, 5.0),
+                padding: const EdgeInsets.fromLTRB(16.0, 5.0, 16.0, 5.0),
                 child: Obx(
                   () => TextFormField(
                     controller: controller.location.value,
@@ -402,6 +392,8 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                       }
                     },
                     decoration: InputDecoration(
+                      filled: true,
+                      fillColor: AppColors.white,
                       hintText: "Location/ Address / City *",
                       hintStyle: const TextStyle(
                               fontSize: 15.0,
@@ -709,11 +701,6 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
 
       if (fileSizeInKB > 5000) {
         Fluttertoast.showToast(msg: 'Please select an image below 5 MB');
-        return;
-      }
-
-      if (fileSizeInKB < 200) {
-        Fluttertoast.showToast(msg: 'Please select an image above 200 KB');
         return;
       }
 

@@ -100,6 +100,8 @@ class AccountSeetingController extends GetxController {
   // READ ONLY FIELDS
   RxBool mobileReadOnly = false.obs;
 
+  var selectedTypesId = 0.obs;
+
   @override
   void onInit() {
     fetchUserTypes();
@@ -141,6 +143,12 @@ class AccountSeetingController extends GetxController {
         aboutcompany.value.text =
             userProfileEntity.userProfile?.aboutcompany ?? '';
         userImage.value = userProfileEntity.userProfile!.imagePath ?? '';
+        instat.value.text = userProfileEntity.userProfile!.instalink ?? '';
+        youtube.value.text = userProfileEntity.userProfile!.youlink ?? '';
+        facebook.value.text = userProfileEntity.userProfile!.fblink ?? '';
+        linkdn.value.text = userProfileEntity.userProfile!.lilink ?? '';
+        twitter.value.text = userProfileEntity.userProfile!.twiterlink ?? '';
+        telegram.value.text = userProfileEntity.userProfile!.telink ?? '';
 
         // Combine city, state, and country to form location
         location.value.text = _formatLocation(
@@ -169,6 +177,9 @@ class AccountSeetingController extends GetxController {
                   false;
           isPlanSelectedList.add(isSelected);
         }
+
+        // Update gender toggle based on fetched profile data
+        isGenderToggle.value = userProfileEntity.userProfile?.sex == 'Male';
 
         if (kDebugMode) {
           print('Account Settings Data: $responseData');
@@ -331,7 +342,7 @@ class AccountSeetingController extends GetxController {
           Uri.parse('${Constants.baseUrl}${Constants.updateuserprofile}'),
         );
 
-        request.fields['user_type'] = getSelectedOptionsTextController().text;
+        request.fields['user_type'] = selectedTypesId.value.toString();
         request.fields['name'] = name.value.text;
         request.fields['gender'] = isGenderToggle.value ? 'Male' : 'Female';
         request.fields['company'] = companyname.value.text;
@@ -570,6 +581,8 @@ class AccountSeetingController extends GetxController {
           if (kDebugMode) {
             print('Success: $updateSocialMediaEntity');
           }
+          showToastverifedborder(
+              'Social media link updated successfully', context);
         } else {
           if (kDebugMode) {
             print("Error: ${response.body}");
@@ -826,6 +839,7 @@ class AccountSeetingController extends GetxController {
     } else {
       selectedCount--;
     }
+    selectedTypesId.value = userTypes[index].id!;
   }
 
   void passwordValidation() {

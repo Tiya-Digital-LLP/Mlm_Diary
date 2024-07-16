@@ -45,6 +45,11 @@ class LoginController extends GetxController {
       emailError.value = true;
       mobileError.value = true;
     }
+
+    if (emailError.value || mobileError.value) {
+      isEmailTyping.value = true;
+      isMobileTyping.value = true;
+    }
   }
 
   void passwordValidation() {
@@ -53,9 +58,22 @@ class LoginController extends GetxController {
     } else {
       passwordError.value = false;
     }
+
+    if (passwordError.value) {
+      isPasswordTyping.value = true;
+    }
   }
 
   void loginValidation(BuildContext context) {
+    // Force typing state to true for validation display
+    isEmailTyping.value = true;
+    isMobileTyping.value = true;
+    isPasswordTyping.value = true;
+
+    // Perform validation
+    validateEmailOrMobile();
+    passwordValidation();
+
     if (email.value.text.isEmpty && password.value.text.isEmpty) {
       showToasterrorborder(
           "Please Enter Email or Mobile and \nPassword", context);
