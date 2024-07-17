@@ -164,7 +164,7 @@ class _DatabaseState extends State<DatabaseScreen> {
                               if (value!.isEmpty) {
                                 setState(() {
                                   controller.clasifiedController
-                                      .validateAddress();
+                                      .locationValidation();
                                 });
                               } else {}
                               return null;
@@ -177,12 +177,12 @@ class _DatabaseState extends State<DatabaseScreen> {
                                         'Please Search and Save your Business Location');
                                 setState(() {
                                   controller.clasifiedController
-                                      .validateAddress();
+                                      .locationValidation();
                                 });
                               } else if (value.isNotEmpty) {
                                 setState(() {
                                   controller.clasifiedController
-                                      .validateAddress();
+                                      .locationValidation();
                                 });
                               }
                             },

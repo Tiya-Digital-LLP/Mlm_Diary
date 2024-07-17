@@ -583,8 +583,25 @@ class ManageClasifiedController extends GetxController {
             print("Response body: $jsonBody");
           }
           // Check if all fields in the response are true (you may need to adjust this condition based on the actual response structure)
-          if (jsonBody['success'] == true) {
+          if (jsonBody['status'] == 1) {
             // All fields are true, navigate back
+            toastification.show(
+              context: context,
+              alignment: Alignment.bottomCenter,
+              backgroundColor: AppColors.white,
+              type: ToastificationType.success,
+              style: ToastificationStyle.flatColored,
+              showProgressBar: false,
+              autoCloseDuration: const Duration(seconds: 3),
+              icon: Image.asset(
+                Assets.imagesChecked,
+                height: 35,
+              ),
+              primaryColor: Colors.green,
+              title: const Text('Classified Updated Successfully'),
+            );
+
+            fetchClassifieds();
             Get.back();
           } else if (jsonBody['status'] == 0) {
             toastification.show(
@@ -617,6 +634,8 @@ class ManageClasifiedController extends GetxController {
       if (kDebugMode) {
         print("An error occurred while saving company details: $e");
       }
+    } finally {
+      isLoading(false);
     }
   }
 
@@ -628,6 +647,9 @@ class ManageClasifiedController extends GetxController {
       titleError.value = true;
     } else {
       titleError.value = false;
+    }
+    if (titleError.value) {
+      isTitleTyping.value = true;
     }
   }
 

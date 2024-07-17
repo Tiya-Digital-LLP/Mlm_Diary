@@ -42,10 +42,10 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
   final ClasifiedController clasifiedController =
       Get.put(ClasifiedController());
 
+  static List<io.File> imagesList = <io.File>[];
   final ImagePicker _picker = ImagePicker();
   Rx<io.File?> file = Rx<io.File?>(null);
   final TextEditingController _loc = TextEditingController();
-  Color _color5 = Colors.black26;
   late double lat = 0.0;
   late double log = 0.0;
   final RxList<String> selectedCompanies = <String>[].obs;
@@ -244,11 +244,16 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                     hint: "Company Name",
                     readOnly: controller.companyNameOnly.value,
                     controller: controller.companyName.value,
+                    isError: controller.comapnyNameError.value,
                     byDefault: !controller.isCompanyNameTyping.value,
                     onChanged: (value) {
                       clasifiedController.fetchCompanyNames(value.toString());
+                      controller.isCompanyNameTyping.value = true;
+                      controller.companyNameValidation();
                     },
                     onTap: () async {
+                      controller.isCompanyNameTyping.value = true;
+                      controller.companyNameValidation();
                       final result = await Get.to(() => AddCompanyClassified(
                             selectedCompanies: selectedCompanies,
                           ));
@@ -267,6 +272,7 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                 Obx(
                   () => BorderContainer(
                     isError: controller.planTypeError.value,
+                    byDefault: !controller.isPlanTyping.value,
                     height: 65,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -297,99 +303,117 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                 SizedBox(
                   height: size.height * 0.015,
                 ),
-                TextFormField(
-                  controller: controller.location.value,
-                  readOnly: true,
-                  style: const TextStyle(
+                Obx(
+                  () => TextFormField(
+                    controller: controller.location.value,
+                    readOnly: true,
+                    style: const TextStyle(
                       fontSize: 15.0,
                       fontWeight: FontWeight.w400,
                       color: Colors.black,
-                      fontFamily: 'assets/fonst/Metropolis-Black.otf'),
-                  onTap: () async {
-                    var place = await PlacesAutocomplete.show(
-                      context: context,
-                      apiKey: googleApikey,
-                      mode: Mode.fullscreen,
-                      hint: 'Search and Save Location.',
-                      types: ['geocode', 'establishment'],
-                      strictbounds: false,
-                      onError: (err) {},
-                    );
+                      fontFamily: 'assets/fonst/Metropolis-Black.otf',
+                    ),
+                    onTap: () async {
+                      var place = await PlacesAutocomplete.show(
+                        context: context,
+                        apiKey: googleApikey,
+                        mode: Mode.fullscreen,
+                        hint: 'Search and Save Location.',
+                        types: ['geocode', 'establishment'],
+                        strictbounds: false,
+                        onError: (err) {},
+                      );
 
-                    if (place != null) {
-                      setState(() {
+                      if (place != null) {
                         controller.location.value.text =
                             place.description.toString();
                         _loc.text = controller.location.value.text;
-                        _color5 = AppColors.greenBorder;
-                      });
+                        controller.isLocationTyping.value = true;
 
-                      final plist = GoogleMapsPlaces(
-                        apiKey: googleApikey,
-                        apiHeaders: await const GoogleApiHeaders().getHeaders(),
-                      );
-                      String placeid = place.placeId ?? "0";
-                      final detail = await plist.getDetailsByPlaceId(placeid);
-                      for (var component in detail.result.addressComponents) {
-                        for (var type in component.types) {
-                          if (type == "administrative_area_level_1") {
-                            controller.state.value.text = component.longName;
-                          } else if (type == "locality") {
-                            controller.city.value.text = component.longName;
-                          } else if (type == "country") {
-                            controller.country.value.text = component.longName;
+                        final plist = GoogleMapsPlaces(
+                          apiKey: googleApikey,
+                          apiHeaders:
+                              await const GoogleApiHeaders().getHeaders(),
+                        );
+                        String placeid = place.placeId ?? "0";
+                        final detail = await plist.getDetailsByPlaceId(placeid);
+                        for (var component in detail.result.addressComponents) {
+                          for (var type in component.types) {
+                            if (type == "administrative_area_level_1") {
+                              controller.state.value.text = component.longName;
+                            } else if (type == "locality") {
+                              controller.city.value.text = component.longName;
+                            } else if (type == "country") {
+                              controller.country.value.text =
+                                  component.longName;
+                            }
                           }
                         }
-                      }
 
-                      final geometry = detail.result.geometry!;
-                      setState(() {
-                        lat = geometry.location.lat;
-                        log = geometry.location.lng;
-                      });
-                    }
-                  },
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.all(18),
-                    hintText: "Location/ Address / City *",
-                    hintStyle: const TextStyle(
-                            fontSize: 15.0,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black,
-                            fontFamily: 'assets/fonst/Metropolis-Black.otf')
-                        .copyWith(color: Colors.black45),
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(width: 1, color: _color5),
-                        borderRadius: BorderRadius.circular(10.0)),
-                    border: OutlineInputBorder(
-                        borderSide: BorderSide(width: 1, color: _color5),
-                        borderRadius: BorderRadius.circular(10.0)),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(width: 1, color: _color5),
-                        borderRadius: BorderRadius.circular(10.0)),
-                  ),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      setState(() {
-                        _color5 = AppColors.redText;
-                      });
-                    } else {}
-                    return null;
-                  },
-                  onFieldSubmitted: (value) {
-                    if (value.isEmpty) {
-                      Fluttertoast.showToast(
+                        final geometry = detail.result.geometry!;
+                        setState(() {
+                          lat = geometry.location.lat;
+                          log = geometry.location.lng;
+                        });
+                      }
+                    },
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.all(18),
+                      hintText: "Location/ Address / City *",
+                      hintStyle: const TextStyle(
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black,
+                        fontFamily: 'assets/fonst/Metropolis-Black.otf',
+                      ).copyWith(color: Colors.black45),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 1,
+                          color: controller.isLocationTyping.value
+                              ? AppColors.greenBorder
+                              : AppColors.redText,
+                        ),
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 1,
+                          color: controller.isLocationTyping.value
+                              ? AppColors.greenBorder
+                              : AppColors.redText,
+                        ),
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 1,
+                          color: controller.isLocationTyping.value
+                              ? AppColors.greenBorder
+                              : AppColors.redText,
+                        ),
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        controller.isLocationTyping.value = false;
+                        return 'Please enter a location';
+                      }
+                      controller.isLocationTyping.value = true;
+                      return null;
+                    },
+                    onFieldSubmitted: (value) {
+                      if (value.isEmpty) {
+                        Fluttertoast.showToast(
                           timeInSecForIosWeb: 2,
-                          msg: 'Please Search and Save your Business Location');
-                      setState(() {
-                        _color5 = AppColors.redText;
-                      });
-                    } else if (value.isNotEmpty) {
-                      setState(() {
-                        _color5 = AppColors.greenBorder;
-                      });
-                    }
-                  },
+                          msg: 'Please Search and Save your Business Location',
+                        );
+                        controller.isLocationTyping.value = false;
+                      } else if (value.isNotEmpty) {
+                        controller.isLocationTyping.value = true;
+                      }
+                    },
+                  ),
                 ),
                 Expanded(
                   child: Container(),
@@ -399,6 +423,13 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                   btnColor: AppColors.primaryColor,
                   titleColor: AppColors.white,
                   onTap: () {
+                    controller.isCompanyNameTyping.value = true;
+                    controller.isPlanTyping.value = true;
+                    controller.isLocationTyping.value = true;
+
+                    controller.companyNameValidation();
+                    controller.planCategoryValidation();
+
                     if (file.value == null) {
                       showToasterrorborder("Please Upload Photo", context);
                     } else if (controller.companyName.value.text.isEmpty) {
@@ -421,6 +452,7 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                       }
                     }
                   },
+                  isLoading: controller.isLoading,
                 ),
               ],
             ),
@@ -536,6 +568,7 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                             "Please select at least one field.", context);
                       }
                     },
+                    isLoading: controller.isLoading,
                   ),
                 ),
               ],
@@ -587,10 +620,10 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
     );
   }
 
-  Future<void> takephoto(ImageSource imageSource) async {
+  void takephoto(ImageSource imageSource) async {
     final pickedfile =
         await _picker.pickImage(source: imageSource, imageQuality: 100);
-    if (pickedfile != null && pickedfile.path.isNotEmpty) {
+    if (pickedfile != null) {
       io.File imageFile = io.File(pickedfile.path);
       int fileSizeInBytes = imageFile.lengthSync();
       double fileSizeInKB = fileSizeInBytes / 1024;
@@ -606,32 +639,36 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
 
       io.File? processedFile = imageFile;
 
-      processedFile = await _cropImage(imageFile);
-      if (processedFile == null) {
-        Fluttertoast.showToast(msg: 'Image cropping failed');
-        return;
-      }
-
-      double processedFileSizeInKB = processedFile.lengthSync() / 1024;
-
-      if (processedFileSizeInKB > 250) {
-        processedFile = await _compressImage(processedFile);
+      if (fileSizeInKB > 250) {
+        processedFile = await _cropImage(imageFile);
         if (processedFile == null) {
-          Fluttertoast.showToast(msg: 'Image compression failed');
+          Fluttertoast.showToast(msg: 'Please select an image');
+          if (kDebugMode) {
+            print('failed to compress image');
+          }
           return;
         }
+        processedFile = await _compressImage(processedFile);
       }
 
-      double finalFileSizeInKB = processedFile.lengthSync() / 1024;
+      double processedFileSizeInKB = processedFile!.lengthSync() / 1024;
       if (kDebugMode) {
-        print('Final image size: $finalFileSizeInKB KB');
+        print('Processed image size: $processedFileSizeInKB KB');
       }
 
-      file.value = processedFile;
+      setState(() {
+        file.value = processedFile;
+      });
+
+      if (file.value != null) {
+        imagesList.add(file.value!);
+      }
 
       Get.back();
     } else {
-      Fluttertoast.showToast(msg: 'Please select an image');
+      // ignore: use_build_context_synchronously
+      showToasterrorborder('Please select an image', context);
+      return; // Exit function if no image is selected
     }
   }
 

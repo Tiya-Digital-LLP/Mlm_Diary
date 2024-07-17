@@ -21,6 +21,7 @@ class AddCompanyClassified extends StatefulWidget {
 
 class _AddCompanyClassifiedState extends State<AddCompanyClassified> {
   final ClasifiedController controller = Get.put(ClasifiedController());
+
   late RxList<String> selectedCompanies;
   final RxList<String> suggestions = <String>[].obs;
 
@@ -183,6 +184,7 @@ class _AddCompanyClassifiedState extends State<AddCompanyClassified> {
           child: NormalButton(
             onPressed: () {
               controller.companyName.value.clear();
+
               Get.back(result: selectedCompanies);
             },
             text: 'Submit',

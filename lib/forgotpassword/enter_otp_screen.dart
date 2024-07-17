@@ -23,6 +23,8 @@ class _EnterOTPScreenState extends State<EnterOTPScreen> {
   late int userId;
   String enteredOtp = '';
 
+  var isLoading = false.obs;
+
   @override
   void initState() {
     super.initState();
@@ -46,7 +48,6 @@ class _EnterOTPScreenState extends State<EnterOTPScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(
-        margin: EdgeInsets.symmetric(horizontal: size.width * 0.04),
         height: double.infinity,
         width: double.infinity,
         decoration: BoxDecoration(color: AppColors.white),
@@ -89,7 +90,8 @@ class _EnterOTPScreenState extends State<EnterOTPScreen> {
                 // Verify OTP
                 if (verificationCode == otp.toString()) {
                   // Navigate to reset password screen
-                  Get.offNamed(Routes.resetPassword);
+                  Get.offNamed(Routes.resetPassword,
+                      arguments: {'userId': userId});
                 } else {
                   // Show error message or handle invalid OTP
                   // For example:
@@ -138,55 +140,60 @@ class _EnterOTPScreenState extends State<EnterOTPScreen> {
             SizedBox(
               height: size.height * 0.03,
             ),
-            CustomButton(
-              title: "Verify",
-              btnColor: AppColors.primaryColor,
-              titleColor: AppColors.white,
-              onTap: () {
-                // Perform OTP validation
-                if (enteredOtp.length != 6) {
-                  // Show error message for invalid OTP length
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: const Text('Error'),
-                        content: const Text('Please enter a valid OTP.'),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Text('OK'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                } else if (enteredOtp != otp.toString()) {
-                  // Show error message for incorrect OTP
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: const Text('Error'),
-                        content: const Text('Invalid OTP. Please try again.'),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Text('OK'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                } else {
-                  // OTP is valid, navigate to the next screen (Reset Password Screen)
-                  Get.offNamed(Routes.resetPassword);
-                }
-              },
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: CustomButton(
+                title: "Verify",
+                btnColor: AppColors.primaryColor,
+                titleColor: AppColors.white,
+                onTap: () {
+                  // Perform OTP validation
+                  if (enteredOtp.length != 6) {
+                    // Show error message for invalid OTP length
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text('Error'),
+                          content: const Text('Please enter a valid OTP.'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  } else if (enteredOtp != otp.toString()) {
+                    // Show error message for incorrect OTP
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text('Error'),
+                          content: const Text('Invalid OTP. Please try again.'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  } else {
+                    // OTP is valid, navigate to the next screen (Reset Password Screen)
+                    Get.offNamed(Routes.resetPassword,
+                        arguments: {'userId': userId});
+                  }
+                },
+                isLoading: isLoading,
+              ),
             ),
           ],
         ),

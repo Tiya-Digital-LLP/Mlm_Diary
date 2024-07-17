@@ -78,10 +78,37 @@ class _AddPostState extends State<AddPost> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                TextField(
-                  maxLines: 10,
-                  controller: controller.comments.value,
-                ),
+                Obx(() => TextField(
+                      controller: controller.comments.value,
+                      maxLines: 10,
+                      decoration: InputDecoration(
+                        labelText: 'Comments',
+                        border: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: controller.postError.value
+                                ? Colors.red
+                                : Colors.green,
+                          ),
+                        ),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: controller.postError.value
+                                ? Colors.red
+                                : Colors.green,
+                          ),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: controller.postError.value
+                                ? Colors.red
+                                : Colors.green,
+                          ),
+                        ),
+                      ),
+                      onChanged: (value) {
+                        controller.validateComments(value);
+                      },
+                    )),
                 30.sbh,
                 ClipRRect(
                   borderRadius: BorderRadius.circular(13.05),
@@ -207,37 +234,47 @@ class _AddPostState extends State<AddPost> {
                       ),
                     ),
                     20.sbw,
-                    InkWell(
-                      onTap: () {
-                        if (file.value == null && videoFile.value == null) {
-                          _selectVideo();
-                        } else {
-                          showToasterrorborder(
-                              'Select only one image or video', context);
-                        }
-                      },
-                      child: SvgPicture.asset(
-                        Assets.svgVideo,
-                        height: 30,
-                      ),
-                    ),
+                    // InkWell(
+                    //   onTap: () {
+                    //     if (file.value == null && videoFile.value == null) {
+                    //       _selectVideo();
+                    //     } else {
+                    //       showToasterrorborder(
+                    //           'Select only one image or video', context);
+                    //     }
+                    //   },
+                    //   child: SvgPicture.asset(
+                    //     Assets.svgVideo,
+                    //     height: 30,
+                    //   ),
+                    // ),
                     const Spacer(),
-                    SizedBox(
-                      height: 40,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primaryColor,
-                        ),
-                        onPressed: () {
-                          controller.addPost(
-                            imageFile: file.value,
-                            videoFile: videoFile.value,
-                          );
-                        },
-                        child: Text(
-                          'Post Now',
-                          style: textStyleW700(
-                              size.width * 0.038, AppColors.white),
+                    Obx(
+                      () => SizedBox(
+                        height: 40,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primaryColor,
+                          ),
+                          onPressed: controller.isLoading.value
+                              ? null
+                              : () {
+                                  if (!controller.postError.value) {
+                                    controller.addPost(
+                                      imageFile: file.value,
+                                      videoFile: videoFile.value,
+                                    );
+                                  } else if (controller
+                                      .comments.value.text.isEmpty) {
+                                    showToasterrorborder(
+                                        'Comments Field Required', context);
+                                  }
+                                },
+                          child: Text(
+                            'Post Now',
+                            style: textStyleW700(
+                                size.width * 0.038, AppColors.white),
+                          ),
                         ),
                       ),
                     ),
@@ -413,28 +450,28 @@ class _AddPostState extends State<AddPost> {
     return compressedFile;
   }
 
-  void _selectVideo() async {
-    final pickedFile = await _picker.pickVideo(source: ImageSource.gallery);
+  // void _selectVideo() async {
+  //   final pickedFile = await _picker.pickVideo(source: ImageSource.gallery);
 
-    if (pickedFile != null) {
-      io.File video = io.File(pickedFile.path);
-      setState(() {
-        videoFile.value = video;
-        _videoPlayerController = VideoPlayerController.file(video)
-          ..initialize().then((_) {
-            // Play the video immediately after initialization
-            _videoPlayerController.play();
-            // Listen for video playback status changes
-            _videoPlayerController.addListener(() {
-              if (_videoPlayerController.value.position ==
-                  _videoPlayerController.value.duration) {
-                // If the video reaches the end, seek to the beginning and play again
-                _videoPlayerController.seekTo(Duration.zero);
-                _videoPlayerController.play();
-              }
-            });
-          });
-      });
-    }
-  }
+  //   if (pickedFile != null) {
+  //     io.File video = io.File(pickedFile.path);
+  //     setState(() {
+  //       videoFile.value = video;
+  //       _videoPlayerController = VideoPlayerController.file(video)
+  //         ..initialize().then((_) {
+  //           // Play the video immediately after initialization
+  //           _videoPlayerController.play();
+  //           // Listen for video playback status changes
+  //           _videoPlayerController.addListener(() {
+  //             if (_videoPlayerController.value.position ==
+  //                 _videoPlayerController.value.duration) {
+  //               // If the video reaches the end, seek to the beginning and play again
+  //               _videoPlayerController.seekTo(Duration.zero);
+  //               _videoPlayerController.play();
+  //             }
+  //           });
+  //         });
+  //     });
+  //   }
+  // }
 }

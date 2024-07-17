@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 
-class BorderTextField extends StatelessWidget {
+class CustomNameTextField extends StatelessWidget {
   final TextEditingController controller;
   final String hint;
   final bool isError;
@@ -13,9 +13,8 @@ class BorderTextField extends StatelessWidget {
   final TextInputType keyboard;
   final ValueChanged<String>? onChanged;
   final double height;
-  final int? maxLength; // Add this line
 
-  const BorderTextField({
+  const CustomNameTextField({
     super.key,
     required this.controller,
     required this.hint,
@@ -26,7 +25,6 @@ class BorderTextField extends StatelessWidget {
     required this.byDefault,
     this.onChanged,
     this.height = 80.0,
-    this.maxLength, // Add this line
   });
 
   @override
@@ -51,6 +49,7 @@ class BorderTextField extends StatelessWidget {
         ),
         child: Center(
           child: TextField(
+            maxLength: 25,
             cursorHeight: 20,
             autocorrect: false,
             readOnly: readOnly,
@@ -58,7 +57,6 @@ class BorderTextField extends StatelessWidget {
             inputFormatters: textInputType,
             onChanged: onChanged,
             controller: controller,
-            maxLength: maxLength, // Add this line
             style: textStyleW500(size.width * 0.04, AppColors.blackText),
             cursorColor: AppColors.blackText,
             decoration: InputDecoration(

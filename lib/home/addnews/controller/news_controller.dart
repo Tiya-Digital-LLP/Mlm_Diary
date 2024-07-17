@@ -9,11 +9,14 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:mlmdiary/data/constants.dart';
+import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_category_entity.dart';
 import 'package:mlmdiary/generated/get_sub_category_entity.dart';
+import 'package:mlmdiary/utils/app_colors.dart';
 
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toastification/toastification.dart';
 
 class NewsController extends GetxController {
   Rx<TextEditingController> title = TextEditingController().obs;
@@ -45,6 +48,8 @@ class NewsController extends GetxController {
   RxBool isUrlTyping = false.obs;
   RxBool isLocationTyping = false.obs;
   RxInt selectedCountCategory = 0.obs;
+  RxBool isCategoryTyping = false.obs;
+  RxBool isSubCategoryTyping = false.obs;
 
   RxInt selectedCountSubCategory = 0.obs;
 
@@ -126,7 +131,42 @@ class NewsController extends GetxController {
           final Map<String, dynamic> jsonBody = jsonDecode(response.body);
           if (kDebugMode) {
             print("Response body: $jsonBody");
+          }
+          if (jsonBody['status'] == 1) {
+            toastification.show(
+              context: context,
+              alignment: Alignment.bottomCenter,
+              backgroundColor: AppColors.white,
+              type: ToastificationType.success,
+              style: ToastificationStyle.flatColored,
+              showProgressBar: false,
+              autoCloseDuration: const Duration(seconds: 3),
+              icon: Image.asset(
+                Assets.imagesChecked,
+                height: 30,
+              ),
+              closeOnClick: true,
+              primaryColor: Colors.green,
+              title: const Text('Your Classified is Successfully Submitted'),
+            );
             Get.back();
+          } else if (jsonBody['status'] == 0) {
+            toastification.show(
+              // ignore: use_build_context_synchronously
+              context: context,
+              alignment: Alignment.bottomCenter,
+              backgroundColor: AppColors.white,
+              type: ToastificationType.error,
+              style: ToastificationStyle.flatColored,
+              showProgressBar: false,
+              autoCloseDuration: const Duration(seconds: 3),
+              icon: Image.asset(
+                Assets.imagesCancel,
+                height: 35,
+              ),
+              primaryColor: Colors.red,
+              title: Text('$jsonBody'),
+            );
           }
         } else {
           if (kDebugMode) {
@@ -263,6 +303,10 @@ class NewsController extends GetxController {
     fetchSubCategoryList(
       categorylist[index].id!,
     );
+
+    // ignore: unrelated_type_equality_checks
+    categoryError.value = selectedCountCategory == 0;
+    isCategoryTyping.value = true;
   }
 
   TextEditingController getSelectedCategoryTextController() {
@@ -280,6 +324,10 @@ class NewsController extends GetxController {
   void mlmCategoryValidation() {
     // ignore: unrelated_type_equality_checks
     categoryError.value = selectedCountCategory == 0;
+
+    if (categoryError.value) {
+      isCategoryTyping.value = true;
+    }
   }
 
   // sub Category
@@ -294,6 +342,10 @@ class NewsController extends GetxController {
     isSubCategorySelectedList[index] = !isCurrentlySelected;
 
     selectedCountSubCategory.value = isSubCategorySelectedList[index] ? 1 : 0;
+
+    // ignore: unrelated_type_equality_checks
+    subCategoryError.value = selectedCountSubCategory == 0;
+    isSubCategoryTyping.value = true;
   }
 
   TextEditingController getSelectedSubCategoryTextController() {
@@ -310,16 +362,21 @@ class NewsController extends GetxController {
   void mlmsubCategoryValidation() {
     // ignore: unrelated_type_equality_checks
     subCategoryError.value = selectedCountSubCategory == 0;
+
+    if (subCategoryError.value) {
+      isSubCategoryTyping.value = true;
+    }
   }
 
-  void titleValidation(context) {
+  void titleValidation() {
     String enteredTitle = title.value.text;
     if (enteredTitle.isEmpty || hasSpecialCharactersOrNumbers(enteredTitle)) {
-      // Show toast message for invalid title
-      showToasterrorborder("Please Enter Title", context);
       titleError.value = true;
     } else {
       titleError.value = false;
+    }
+    if (titleError.value) {
+      isTitleTyping.value = true;
     }
   }
 
@@ -338,14 +395,16 @@ class NewsController extends GetxController {
     } else {}
   }
 
-  void discriptionValidation(context) {
+  void discriptionValidation() {
     String enteredDiscription = discription.value.text;
     if (enteredDiscription.isEmpty ||
         hasSpecialTextOrNumbers(enteredDiscription)) {
-      showToasterrorborder("Please Enter Discription", context);
       discriptionError.value = true;
     } else {
       discriptionError.value = false;
+    }
+    if (discriptionError.value) {
+      isDiscriptionTyping.value = true;
     }
   }
 

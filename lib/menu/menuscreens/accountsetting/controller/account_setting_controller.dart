@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
 import 'package:mlmdiary/data/constants.dart';
+import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/change_email_entity.dart';
 import 'package:mlmdiary/generated/get_plan_list_entity.dart';
 import 'package:mlmdiary/generated/get_user_profile_entity.dart';
@@ -16,9 +17,11 @@ import 'package:mlmdiary/generated/get_user_type_entity.dart';
 import 'package:mlmdiary/generated/update_phone_no_entity.dart';
 import 'package:mlmdiary/generated/update_phone_verify_otp_entity.dart';
 import 'package:mlmdiary/generated/update_social_media_entity.dart';
+import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/common_toast.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toastification/toastification.dart';
 
 class AccountSeetingController extends GetxController {
   Rx<TextEditingController> name = TextEditingController().obs;
@@ -388,7 +391,43 @@ class AccountSeetingController extends GetxController {
           if (kDebugMode) {
             print("Response body from update Profile: $jsonBody");
           }
-          // Parse response and update UI as needed
+          // Check if all fields in the response are true (you may need to adjust this condition based on the actual response structure)
+          if (jsonBody['success'] == 1) {
+            toastification.show(
+              context: context,
+              alignment: Alignment.bottomCenter,
+              backgroundColor: AppColors.white,
+              type: ToastificationType.success,
+              style: ToastificationStyle.flatColored,
+              showProgressBar: false,
+              autoCloseDuration: const Duration(seconds: 3),
+              icon: Image.asset(
+                Assets.imagesChecked,
+                height: 35,
+              ),
+              primaryColor: Colors.green,
+              title: const Text('Your Details is Successfully Updated'),
+            );
+            fetchUserProfile();
+
+            Get.back();
+          } else if (jsonBody['status'] == 0) {
+            toastification.show(
+              context: context,
+              alignment: Alignment.bottomCenter,
+              backgroundColor: AppColors.white,
+              type: ToastificationType.error,
+              style: ToastificationStyle.flatColored,
+              showProgressBar: false,
+              autoCloseDuration: const Duration(seconds: 3),
+              icon: Image.asset(
+                Assets.imagesCancel,
+                height: 35,
+              ),
+              primaryColor: Colors.red,
+              title: Text('$jsonBody'),
+            );
+          }
         } else {
           if (kDebugMode) {
             print(

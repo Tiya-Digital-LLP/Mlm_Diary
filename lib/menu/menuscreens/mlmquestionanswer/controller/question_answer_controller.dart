@@ -10,6 +10,7 @@ import 'package:mlmdiary/generated/add_answer_comment_entity.dart';
 import 'package:mlmdiary/generated/add_answer_entity.dart';
 import 'package:mlmdiary/generated/add_faviourite_question_entity.dart';
 import 'package:mlmdiary/generated/answer_liked_entity.dart';
+import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/count_view_question_entity.dart';
 import 'package:mlmdiary/generated/edit_comment_entity.dart';
 import 'package:mlmdiary/generated/get_answers_entity.dart';
@@ -20,9 +21,11 @@ import 'package:mlmdiary/generated/my_question_entity.dart';
 import 'package:mlmdiary/generated/question_like_entity.dart';
 import 'package:mlmdiary/generated/question_like_list_entity.dart';
 import 'package:mlmdiary/generated/update_answer_entity.dart';
+import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toastification/toastification.dart';
 
 class QuestionAnswerController extends GetxController {
   Rx<TextEditingController> title = TextEditingController().obs;
@@ -57,6 +60,8 @@ class QuestionAnswerController extends GetxController {
   // ENABLED TYPING VALIDATION
   RxBool isTitleTyping = false.obs;
   RxBool isAnswerTyping = false.obs;
+  RxBool isCategoryTyping = false.obs;
+  RxBool isSubCategoryTyping = false.obs;
 
   //count
   RxInt selectedCountCategory = 0.obs;
@@ -887,6 +892,11 @@ class QuestionAnswerController extends GetxController {
 
     // Fetch subcategory list for the selected category
     fetchSubCategoryList(categorylist[index].id!);
+
+    // ignore: unrelated_type_equality_checks
+    categoryError.value = selectedCountCategory == 0;
+
+    isCategoryTyping.value = true;
   }
 
   TextEditingController getSelectedCategoryTextController() {
@@ -904,6 +914,10 @@ class QuestionAnswerController extends GetxController {
   void mlmCategoryValidation() {
     // ignore: unrelated_type_equality_checks
     categoryError.value = selectedCountCategory == 0;
+
+    if (categoryError.value) {
+      isCategoryTyping.value = true;
+    }
   }
 
   // sub Category
@@ -919,6 +933,11 @@ class QuestionAnswerController extends GetxController {
     isSubCategorySelectedList[index] = !isCurrentlySelected;
     selectedCountSubCategory.value = isSubCategorySelectedList[index] ? 1 : 0;
     selectedSubCategoryId.value = subcategoryList[index].id!;
+
+    // ignore: unrelated_type_equality_checks
+    subCategoryError.value = selectedCountSubCategory == 0;
+
+    isSubCategoryTyping.value = true;
   }
 
   TextEditingController getSelectedSubCategoryTextController() {
@@ -935,9 +954,13 @@ class QuestionAnswerController extends GetxController {
   void mlmsubCategoryValidation() {
     // ignore: unrelated_type_equality_checks
     subCategoryError.value = selectedCountSubCategory == 0;
+
+    if (subCategoryError.value) {
+      isSubCategoryTyping.value = true;
+    }
   }
 
-  Future<void> addClassifiedDetails({required File? imageFile, context}) async {
+  Future<void> addQuestion({required File? imageFile, context}) async {
     isLoading(true);
     String device = '';
     if (Platform.isAndroid) {
@@ -977,8 +1000,43 @@ class QuestionAnswerController extends GetxController {
           final Map<String, dynamic> jsonBody = jsonDecode(response.body);
           if (kDebugMode) {
             print("Response body: $jsonBody");
+          }
+          // Check if all fields in the response are true (you may need to adjust this condition based on the actual response structure)
+          if (jsonBody['success'] == true) {
+            toastification.show(
+              context: context,
+              alignment: Alignment.bottomCenter,
+              backgroundColor: AppColors.white,
+              type: ToastificationType.success,
+              style: ToastificationStyle.flatColored,
+              showProgressBar: false,
+              autoCloseDuration: const Duration(seconds: 3),
+              icon: Image.asset(
+                Assets.imagesChecked,
+                height: 35,
+              ),
+              primaryColor: Colors.green,
+              title: const Text('Your Question is Successfully Submitted'),
+            );
+            getQuestion(1);
             clearFormFields();
             Get.back();
+          } else if (jsonBody['status'] == 0) {
+            toastification.show(
+              context: context,
+              alignment: Alignment.bottomCenter,
+              backgroundColor: AppColors.white,
+              type: ToastificationType.error,
+              style: ToastificationStyle.flatColored,
+              showProgressBar: false,
+              autoCloseDuration: const Duration(seconds: 3),
+              icon: Image.asset(
+                Assets.imagesCancel,
+                height: 35,
+              ),
+              primaryColor: Colors.red,
+              title: Text('$jsonBody'),
+            );
           }
         } else {
           if (kDebugMode) {
@@ -1287,11 +1345,13 @@ class QuestionAnswerController extends GetxController {
   void titleValidation(context) {
     String enteredTitle = title.value.text;
     if (enteredTitle.isEmpty || hasSpecialCharactersOrNumbers(enteredTitle)) {
-      // Show toast message for invalid title
-      showToasterrorborder("Please Enter Title", context);
       titleError.value = true;
     } else {
       titleError.value = false;
+    }
+
+    if (titleError.value) {
+      isTitleTyping.value = true;
     }
   }
 

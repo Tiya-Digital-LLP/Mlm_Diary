@@ -446,7 +446,6 @@ class _ManageClassifiedPlusIconState extends State<ManageClassifiedPlusIcon> {
       // Perform address validation
       if (controller.addressValidationColor.value != AppColors.redText) {
         await controller.updateClassified(imageFile: file.value);
-        Get.back();
       } else {
         showToasterrorborder("Please enter a valid address.", context);
       }
@@ -755,6 +754,7 @@ void showSelectCategory(
                         );
                       }
                     },
+                    isLoading: controller.isLoading,
                   ),
                 ),
               ],
@@ -902,6 +902,7 @@ void showSelectSubCategory(
                         );
                       }
                     },
+                    isLoading: controller.isLoading,
                   ),
                 ),
               ],

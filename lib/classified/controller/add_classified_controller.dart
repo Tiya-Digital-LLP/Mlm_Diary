@@ -93,6 +93,8 @@ class ClasifiedController extends GetxController {
   RxBool isTitleTyping = false.obs;
   RxBool isDiscriptionTyping = false.obs;
   RxBool isCompanyNameTyping = false.obs;
+  RxBool isCategoryTyping = false.obs;
+  RxBool isSubCategoryTyping = false.obs;
 
   RxBool isUrlTyping = false.obs;
   RxBool isLocationTyping = false.obs;
@@ -199,12 +201,9 @@ class ClasifiedController extends GetxController {
 
   void resetSelections() {
     // Reset category and subcategory selections
-    for (int i = 0; i < isCategorySelectedList.length; i++) {
-      isCategorySelectedList[i] = false;
-    }
-    for (int i = 0; i < isSubCategorySelectedList.length; i++) {
-      isSubCategorySelectedList[i] = false;
-    }
+    selectedCategoryId.value = 0;
+    selectedSubCategoryId.value = 0;
+
     getClassified(1);
   }
 
@@ -335,6 +334,11 @@ class ClasifiedController extends GetxController {
 
     // Fetch subcategory list for the selected category
     fetchSubCategoryList(categorylist[index].id!);
+
+    // ignore: unrelated_type_equality_checks
+    categoryError.value = selectedCountCategory == 0;
+
+    isCategoryTyping.value = true;
   }
 
   TextEditingController getSelectedCategoryTextController() {
@@ -352,6 +356,10 @@ class ClasifiedController extends GetxController {
   void mlmCategoryValidation() {
     // ignore: unrelated_type_equality_checks
     categoryError.value = selectedCountCategory == 0;
+
+    if (categoryError.value) {
+      isCategoryTyping.value = true;
+    }
   }
 
   Future<void> fetchSubCategoryList(
@@ -421,6 +429,11 @@ class ClasifiedController extends GetxController {
     isSubCategorySelectedList[index] = !isCurrentlySelected;
     selectedCountSubCategory.value = isSubCategorySelectedList[index] ? 1 : 0;
     selectedSubCategoryId.value = subcategoryList[index].id!;
+
+    // ignore: unrelated_type_equality_checks
+    subCategoryError.value = selectedCountSubCategory == 0;
+
+    isSubCategoryTyping.value = true;
   }
 
   TextEditingController getSelectedSubCategoryTextController() {
@@ -437,6 +450,10 @@ class ClasifiedController extends GetxController {
   void mlmsubCategoryValidation() {
     // ignore: unrelated_type_equality_checks
     subCategoryError.value = selectedCountSubCategory == 0;
+
+    if (subCategoryError.value) {
+      isSubCategoryTyping.value = true;
+    }
   }
 
   Future<void> getClassified(
@@ -630,10 +647,12 @@ class ClasifiedController extends GetxController {
     } else {
       companyError.value = false;
     }
+    if (companyError.value) {
+      isCompanyNameTyping.value = true;
+    }
   }
 
-  Future<void> addClassifiedDetails(
-      {required File? imageFile, BuildContext? context}) async {
+  Future<void> addClassifiedDetails({required File? imageFile, context}) async {
     isLoading(true);
     String device = Platform.isAndroid ? 'android' : 'ios';
 
@@ -697,7 +716,23 @@ class ClasifiedController extends GetxController {
           }
 
           if (jsonBody['status'] == 1) {
-            // All fields are true, navigate back
+            toastification.show(
+              context: context,
+              alignment: Alignment.bottomCenter,
+              backgroundColor: AppColors.white,
+              type: ToastificationType.success,
+              style: ToastificationStyle.flatColored,
+              showProgressBar: false,
+              autoCloseDuration: const Duration(seconds: 3),
+              icon: Image.asset(
+                Assets.imagesChecked,
+                height: 30,
+              ),
+              closeOnClick: true,
+              primaryColor: Colors.green,
+              title: const Text('Your Classified is Successfully Submitted'),
+            );
+            resetSelections();
             Get.back();
           } else if (jsonBody['status'] == 0) {
             toastification.show(
@@ -893,14 +928,6 @@ class ClasifiedController extends GetxController {
       if (kDebugMode) {
         print('Finished fetchLikeListClassified method');
       }
-    }
-  }
-
-  void validateAddress() {
-    if (location.value.text.isEmpty) {
-      addressValidationColor.value = Colors.red;
-    } else {
-      addressValidationColor.value = Colors.green;
     }
   }
 
@@ -1175,14 +1202,15 @@ class ClasifiedController extends GetxController {
     }
   }
 
-  void titleValidation(context) {
+  void titleValidation() {
     String enteredTitle = title.value.text;
     if (enteredTitle.isEmpty || hasSpecialCharactersOrNumbers(enteredTitle)) {
-      // Show toast message for invalid title
-      showToasterrorborder("Please Enter Your Classified Title", context);
       titleError.value = true;
     } else {
       titleError.value = false;
+    }
+    if (titleError.value) {
+      isTitleTyping.value = true;
     }
   }
 
@@ -1212,11 +1240,12 @@ class ClasifiedController extends GetxController {
     String enteredDiscription = discription.value.text;
     if (enteredDiscription.isEmpty ||
         hasSpecialTextOrNumbers(enteredDiscription)) {
-      showToasterrorborder(
-          "Please Enter Description Minimum 250 Characters", context);
       discriptionError.value = true;
     } else {
       discriptionError.value = false;
+    }
+    if (discriptionError.value) {
+      isDiscriptionTyping.value = true;
     }
   }
 
@@ -1226,6 +1255,14 @@ class ClasifiedController extends GetxController {
       locationError.value = true;
     } else {
       locationError.value = false;
+    }
+    if (locationError.value) {
+      isLocationTyping.value = true;
+    }
+    if (location.value.text.isEmpty) {
+      addressValidationColor.value = Colors.red;
+    } else {
+      addressValidationColor.value = Colors.green;
     }
   }
 

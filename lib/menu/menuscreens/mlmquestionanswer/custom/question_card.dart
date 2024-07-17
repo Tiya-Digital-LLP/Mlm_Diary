@@ -106,13 +106,14 @@ class _QuestionCardState extends State<QuestionCard> {
                       Uri.tryParse(widget.userImage)?.hasAbsolutePath == true)
                     Container(
                       height: 40,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
+                      width: 40,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
                       ),
                       child: ClipOval(
                         child: Image.network(
                           widget.userImage,
-                          fit: BoxFit.fill,
+                          fit: BoxFit.cover,
                           loadingBuilder: (BuildContext context, Widget child,
                               ImageChunkEvent? loadingProgress) {
                             if (loadingProgress == null) {
@@ -132,7 +133,7 @@ class _QuestionCardState extends State<QuestionCard> {
                           errorBuilder: (context, error, stackTrace) {
                             return Image.asset(
                               Assets.imagesIcon,
-                              fit: BoxFit.fill,
+                              fit: BoxFit.cover,
                             );
                           },
                         ),

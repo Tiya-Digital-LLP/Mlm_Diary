@@ -9,7 +9,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_user_profile_entity.dart';
-import 'package:mlmdiary/home/addpost/controller/add_post_controller.dart';
 import 'package:mlmdiary/menu/controller/profile_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/custom/about_me.dart';
@@ -26,8 +25,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:io' as io;
 
-import 'package:video_player/video_player.dart';
-
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({
     super.key,
@@ -42,15 +39,14 @@ class _ProfileScreenState extends State<ProfileScreen>
   late TabController _tabController;
   final userProfile = Get.arguments as GetUserProfileUserProfile;
   final EditPostController controller = Get.put(EditPostController());
-  final AddPostController addPostController = Get.put(AddPostController());
   //image
   Rx<io.File?> file = Rx<io.File?>(null);
   static List<io.File> imagesList = <io.File>[];
   final ImagePicker _picker = ImagePicker();
 
   // video
-  late VideoPlayerController _videoPlayerController;
-  static List<io.File> videoList = <io.File>[];
+  // late VideoPlayerController _videoPlayerController;
+  // // static List<io.File> videoList = <io.File>[];
   Rx<io.File?> videoFile = Rx<io.File?>(null);
 
   RxBool isFollowing = false.obs;
@@ -366,8 +362,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                     style: TextStyle(
                                         color: AppColors.blackText,
                                         fontSize: 14),
-                                    controller:
-                                        addPostController.comments.value,
+                                    controller: controller.comments.value,
                                     textInputAction: TextInputAction.search,
                                     decoration: InputDecoration(
                                       contentPadding: const EdgeInsets.all(16),
@@ -438,69 +433,67 @@ class _ProfileScreenState extends State<ProfileScreen>
                                                       ],
                                                     ),
                                             ),
-                                            10.sbw,
+                                            // InkWell(
+                                            //   onTap: () {
+                                            //     if (file.value == null &&
+                                            //         videoFile.value == null) {
+                                            //       _selectVideo();
+                                            //     } else {
+                                            //       showToasterrorborder(
+                                            //           'Select only one image or video',
+                                            //           context);
+                                            //     }
+                                            //   },
+                                            //   child: videoFile.value == null
+                                            //       ? SvgPicture.asset(
+                                            //           Assets.svgVideo,
+                                            //           height: 30,
+                                            //         )
+                                            //       : Stack(
+                                            //           children: [
+                                            //             ClipRRect(
+                                            //               borderRadius:
+                                            //                   BorderRadius
+                                            //                       .circular(
+                                            //                           13.05),
+                                            //               child: AspectRatio(
+                                            //                 aspectRatio:
+                                            //                     _videoPlayerController
+                                            //                         .value
+                                            //                         .aspectRatio,
+                                            //                 child: VideoPlayer(
+                                            //                     _videoPlayerController),
+                                            //               ),
+                                            //             ),
+                                            //             Positioned(
+                                            //               top: -2,
+                                            //               right: 0,
+                                            //               child:
+                                            //                   GestureDetector(
+                                            //                 onTap: () {
+                                            //                   setState(() {
+                                            //                     videoList.remove(
+                                            //                         videoFile
+                                            //                             .value);
+                                            //                     videoFile
+                                            //                             .value =
+                                            //                         null;
+                                            //                   });
+                                            //                 },
+                                            //                 child: Icon(
+                                            //                   Icons.delete,
+                                            //                   color: AppColors
+                                            //                       .redText,
+                                            //                   size: 16,
+                                            //                 ),
+                                            //               ),
+                                            //             ),
+                                            //           ],
+                                            //         ),
+                                            // ),
                                             InkWell(
                                               onTap: () {
-                                                if (file.value == null &&
-                                                    videoFile.value == null) {
-                                                  _selectVideo();
-                                                } else {
-                                                  showToasterrorborder(
-                                                      'Select only one image or video',
-                                                      context);
-                                                }
-                                              },
-                                              child: videoFile.value == null
-                                                  ? SvgPicture.asset(
-                                                      Assets.svgVideo,
-                                                      height: 30,
-                                                    )
-                                                  : Stack(
-                                                      children: [
-                                                        ClipRRect(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      13.05),
-                                                          child: AspectRatio(
-                                                            aspectRatio:
-                                                                _videoPlayerController
-                                                                    .value
-                                                                    .aspectRatio,
-                                                            child: VideoPlayer(
-                                                                _videoPlayerController),
-                                                          ),
-                                                        ),
-                                                        Positioned(
-                                                          top: -2,
-                                                          right: 0,
-                                                          child:
-                                                              GestureDetector(
-                                                            onTap: () {
-                                                              setState(() {
-                                                                videoList.remove(
-                                                                    videoFile
-                                                                        .value);
-                                                                videoFile
-                                                                        .value =
-                                                                    null;
-                                                              });
-                                                            },
-                                                            child: Icon(
-                                                              Icons.delete,
-                                                              color: AppColors
-                                                                  .redText,
-                                                              size: 16,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                            ),
-                                            10.sbw,
-                                            InkWell(
-                                              onTap: () {
-                                                addPostController.addPost(
+                                                controller.addPost(
                                                   imageFile: file.value,
                                                   videoFile: videoFile.value,
                                                 );
@@ -728,11 +721,6 @@ class _ProfileScreenState extends State<ProfileScreen>
         return;
       }
 
-      if (fileSizeInKB < 200) {
-        Fluttertoast.showToast(msg: 'Please Select an image above 200 KB');
-        return;
-      }
-
       io.File? processedFile = imageFile;
 
       if (fileSizeInKB > 250) {
@@ -832,28 +820,28 @@ class _ProfileScreenState extends State<ProfileScreen>
     return compressedFile;
   }
 
-  void _selectVideo() async {
-    final pickedFile = await _picker.pickVideo(source: ImageSource.gallery);
+  // void _selectVideo() async {
+  //   final pickedFile = await _picker.pickVideo(source: ImageSource.gallery);
 
-    if (pickedFile != null) {
-      io.File video = io.File(pickedFile.path);
-      setState(() {
-        videoFile.value = video;
-        _videoPlayerController = VideoPlayerController.file(video)
-          ..initialize().then((_) {
-            // Play the video immediately after initialization
-            _videoPlayerController.play();
-            // Listen for video playback status changes
-            _videoPlayerController.addListener(() {
-              if (_videoPlayerController.value.position ==
-                  _videoPlayerController.value.duration) {
-                // If the video reaches the end, seek to the beginning and play again
-                _videoPlayerController.seekTo(Duration.zero);
-                _videoPlayerController.play();
-              }
-            });
-          });
-      });
-    }
-  }
+  //   if (pickedFile != null) {
+  //     io.File video = io.File(pickedFile.path);
+  //     setState(() {
+  //       videoFile.value = video;
+  //       _videoPlayerController = VideoPlayerController.file(video)
+  //         ..initialize().then((_) {
+  //           // Play the video immediately after initialization
+  //           _videoPlayerController.play();
+  //           // Listen for video playback status changes
+  //           _videoPlayerController.addListener(() {
+  //             if (_videoPlayerController.value.position ==
+  //                 _videoPlayerController.value.duration) {
+  //               // If the video reaches the end, seek to the beginning and play again
+  //               _videoPlayerController.seekTo(Duration.zero);
+  //               _videoPlayerController.play();
+  //             }
+  //           });
+  //         });
+  //     });
+  //   }
+  // }
 }

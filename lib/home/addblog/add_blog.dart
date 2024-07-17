@@ -77,16 +77,18 @@ class _ManageBlogPlusIconState extends State<AddBlog> {
                       isError: controller.titleError.value,
                       byDefault: !controller.isTitleTyping.value,
                       onChanged: (value) {
-                        controller.titleValidation(context);
+                        controller.titleValidation();
                         controller.isTitleTyping.value = true;
                       },
                       height: 65,
+                      maxLength: 100,
                     ),
                   ),
                   10.sbh,
                   Obx(
                     () => BorderContainer(
                       isError: controller.categoryError.value,
+                      byDefault: !controller.isCategoryTyping.value,
                       height: 60,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -124,6 +126,7 @@ class _ManageBlogPlusIconState extends State<AddBlog> {
                   Obx(
                     () => BorderContainer(
                       isError: controller.subCategoryError.value,
+                      byDefault: !controller.isSubCategoryTyping.value,
                       height: 60,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -169,7 +172,7 @@ class _ManageBlogPlusIconState extends State<AddBlog> {
                       isError: controller.discriptionError.value,
                       byDefault: !controller.isDiscriptionTyping.value,
                       onChanged: (value) {
-                        controller.discriptionValidation(context);
+                        controller.discriptionValidation();
                         controller.isDiscriptionTyping.value = true;
                       },
                     ),
@@ -179,7 +182,7 @@ class _ManageBlogPlusIconState extends State<AddBlog> {
                     () => BorderTextField(
                       keyboard: TextInputType.url,
                       textInputType: const [],
-                      hint: "Website Url",
+                      hint: "Website Url (Optional)",
                       controller: controller.url.value,
                       isError: controller.urlError.value,
                       byDefault: !controller.isUrlTyping.value,
@@ -286,6 +289,10 @@ class _ManageBlogPlusIconState extends State<AddBlog> {
   }
 
   Future<void> handleSaveButtonPressed() async {
+    controller.titleValidation();
+    controller.mlmCategoryValidation();
+    controller.mlmsubCategoryValidation();
+    controller.discriptionValidation();
     if (controller.title.value.text.isEmpty) {
       showToasterrorborder("Please Enter Your Blog Title", context);
     } else if (controller
@@ -308,9 +315,6 @@ class _ManageBlogPlusIconState extends State<AddBlog> {
     } else {
       try {
         await controller.addBlog(imageFile: file.value);
-        Get.back();
-        // ignore: use_build_context_synchronously
-        showToastverifedborder("Your Blog is Successfully Submitted", context);
       } catch (e) {
         if (kDebugMode) {
           print("Error submitting news: $e");
@@ -641,6 +645,7 @@ void showSelectCategory(
                         );
                       }
                     },
+                    isLoading: controller.isLoading,
                   ),
                 ),
               ],
@@ -813,6 +818,7 @@ void showSelectSubCategory(
                         );
                       }
                     },
+                    isLoading: controller.isLoading,
                   ),
                 ),
               ],

@@ -22,6 +22,7 @@ import 'package:mlmdiary/widgets/custom_back_button.dart';
 import 'package:mlmdiary/widgets/custom_border_container.dart';
 import 'package:mlmdiary/widgets/custom_button.dart';
 import 'package:mlmdiary/widgets/custom_mobile_field.dart';
+import 'package:mlmdiary/widgets/custom_name_text_field.dart';
 import 'package:mlmdiary/widgets/password_border_text_field.dart';
 
 class SignupPage extends StatefulWidget {
@@ -123,7 +124,7 @@ class _SignupPageState extends State<SignupPage> {
                                 size.width * 0.04, AppColors.blackText),
                             cursorColor: AppColors.blackText,
                             decoration: InputDecoration(
-                              hintText: "I am a MLM*",
+                              hintText: "I am a MLM",
                               border: InputBorder.none,
                               suffixIcon: Icon(
                                 Icons.arrow_drop_down,
@@ -138,7 +139,7 @@ class _SignupPageState extends State<SignupPage> {
                       height: size.height * 0.015,
                     ),
                     Obx(
-                      () => BorderTextField(
+                      () => CustomNameTextField(
                         height: 65,
                         keyboard: TextInputType.name,
                         textInputType: const [],
@@ -244,377 +245,427 @@ class _SignupPageState extends State<SignupPage> {
                                   SizedBox(
                                     height: size.height * 0.015,
                                   ),
-                                  Obx(() => (controller.emailOtpSend.value)
-                                      ? (controller.showPasswordField.value)
-                                          ? Column(
-                                              children: [
-                                                PasswordBorderTextField(
+                                  Obx(
+                                    () => (controller.emailOtpSend.value)
+                                        ? (controller.showPasswordField.value)
+                                            ? Column(
+                                                children: [
+                                                  PasswordBorderTextField(
+                                                      controller: controller
+                                                          .password.value,
+                                                      hint: "Your Password",
+                                                      textInputType: const [],
+                                                      keyboard:
+                                                          TextInputType.text,
+                                                      isError: controller
+                                                          .passwordError.value,
+                                                      byDefault: !controller
+                                                          .isPasswordTyping
+                                                          .value,
+                                                      onChanged: (value) {
+                                                        controller
+                                                            .passwordValidation();
+                                                        controller
+                                                            .isPasswordTyping
+                                                            .value = true;
+                                                      },
+                                                      maxLength: 18),
+                                                  SizedBox(
+                                                    height: size.height * 0.015,
+                                                  ),
+                                                  PasswordBorderTextField(
                                                     controller: controller
-                                                        .password.value,
-                                                    hint: "Your Password",
+                                                        .confirmPassword.value,
+                                                    hint:
+                                                        "Confirm Your Password",
                                                     textInputType: const [],
+                                                    isError: controller
+                                                        .confirmPasswordError
+                                                        .value,
                                                     keyboard:
                                                         TextInputType.text,
-                                                    isError: controller
-                                                        .passwordError.value,
                                                     byDefault: !controller
-                                                        .isPasswordTyping.value,
+                                                        .isConfirmPasswordTyping
+                                                        .value,
+                                                    maxLength: 18,
                                                     onChanged: (value) {
                                                       controller
-                                                          .passwordValidation();
+                                                          .confirmPasswordValidation();
+                                                      controller
+                                                          .isConfirmPasswordTyping
+                                                          .value = true;
+                                                    },
+                                                  ),
+                                                  SizedBox(
+                                                    height: size.height * 0.02,
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      SizedBox(
+                                                          height: size.height *
+                                                              0.030,
+                                                          width: size.height *
+                                                              0.030,
+                                                          child: Obx(
+                                                            () => InkWell(
+                                                              onTap: () {
+                                                                controller
+                                                                        .termsCondition
+                                                                        .value =
+                                                                    !controller
+                                                                        .termsCondition
+                                                                        .value;
+                                                              },
+                                                              child:
+                                                                  Image.asset(
+                                                                (controller
+                                                                        .termsCondition
+                                                                        .value)
+                                                                    ? Assets
+                                                                        .imagesCheck
+                                                                    : Assets
+                                                                        .imagesSquare,
+                                                                fit:
+                                                                    BoxFit.fill,
+                                                              ),
+                                                            ),
+                                                          )),
+                                                      SizedBox(
+                                                        width:
+                                                            size.width * 0.02,
+                                                      ),
+                                                      Text(
+                                                        "I agree with ",
+                                                        style: textStyleW400(
+                                                            size.width * 0.045,
+                                                            AppColors
+                                                                .blackText),
+                                                      ),
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          Get.toNamed(Routes
+                                                              .advertisewithus);
+                                                        },
+                                                        child: Text(
+                                                          "Terms & Conditions",
+                                                          style: textStyleW500(
+                                                              size.width *
+                                                                  0.045,
+                                                              const Color(
+                                                                  0XFF005C94)),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  SizedBox(
+                                                    height: size.height * 0.02,
+                                                  ),
+                                                  CustomButton(
+                                                    title: "Continue",
+                                                    btnColor:
+                                                        AppColors.primaryColor,
+                                                    titleColor: AppColors.white,
+                                                    onTap: () {
                                                       controller
                                                           .isPasswordTyping
                                                           .value = true;
-                                                    },
-                                                    maxLength: 18),
-                                                SizedBox(
-                                                  height: size.height * 0.015,
-                                                ),
-                                                PasswordBorderTextField(
-                                                  controller: controller
-                                                      .confirmPassword.value,
-                                                  hint: "Confirm Your Password",
-                                                  textInputType: const [],
-                                                  isError: controller
-                                                      .confirmPasswordError
-                                                      .value,
-                                                  keyboard: TextInputType.text,
-                                                  byDefault: !controller
-                                                      .isConfirmPasswordTyping
-                                                      .value,
-                                                  maxLength: 18,
-                                                  onChanged: (value) {
-                                                    controller
-                                                        .confirmPasswordValidation();
-                                                    controller
-                                                        .isConfirmPasswordTyping
-                                                        .value = true;
-                                                  },
-                                                ),
-                                                SizedBox(
-                                                  height: size.height * 0.02,
-                                                ),
-                                                Row(
-                                                  children: [
-                                                    SizedBox(
-                                                        height:
-                                                            size.height * 0.030,
-                                                        width:
-                                                            size.height * 0.030,
-                                                        child: Obx(
-                                                          () => InkWell(
-                                                            onTap: () {
-                                                              controller
-                                                                      .termsCondition
-                                                                      .value =
-                                                                  !controller
-                                                                      .termsCondition
-                                                                      .value;
-                                                            },
-                                                            child: Image.asset(
-                                                              (controller
-                                                                      .termsCondition
-                                                                      .value)
-                                                                  ? Assets
-                                                                      .imagesCheck
-                                                                  : Assets
-                                                                      .imagesSquare,
-                                                              fit: BoxFit.fill,
-                                                            ),
-                                                          ),
-                                                        )),
-                                                    SizedBox(
-                                                      width: size.width * 0.02,
-                                                    ),
-                                                    Text(
-                                                      "I agree with ",
-                                                      style: textStyleW400(
-                                                          size.width * 0.045,
-                                                          AppColors.blackText),
-                                                    ),
-                                                    GestureDetector(
-                                                      onTap: () {
-                                                        Get.toNamed(Routes
-                                                            .advertisewithus);
-                                                      },
-                                                      child: Text(
-                                                        "Terms & Conditions",
-                                                        style: textStyleW500(
-                                                            size.width * 0.045,
-                                                            const Color(
-                                                                0XFF005C94)),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                SizedBox(
-                                                  height: size.height * 0.02,
-                                                ),
-                                                CustomButton(
-                                                  title: "Continue",
-                                                  btnColor:
-                                                      AppColors.primaryColor,
-                                                  titleColor: AppColors.white,
-                                                  onTap: () {
-                                                    if (controller.password
-                                                        .value.text.isEmpty) {
-                                                      showToasterrorborder(
-                                                          "Please Enter Password",
-                                                          context);
-                                                    } else if (controller
-                                                            .password
-                                                            .value
-                                                            .text
-                                                            .length <
-                                                        6) {
-                                                      showToasterrorborder(
-                                                          "Password Have Must be 6 Character",
-                                                          context);
-                                                    } else if (controller
-                                                        .confirmPassword
-                                                        .value
-                                                        .text
-                                                        .isEmpty) {
-                                                      showToasterrorborder(
-                                                          "Please Enter Confirm Password",
-                                                          context);
-                                                    } else if (controller
-                                                            .password
-                                                            .value
-                                                            .text !=
-                                                        controller
-                                                            .confirmPassword
-                                                            .value
-                                                            .text) {
-                                                      showToasterrorborder(
-                                                          "Both Password Should be Same",
-                                                          context);
-                                                    } else if (controller
-                                                            .termsCondition
-                                                            .value ==
-                                                        false) {
-                                                      showToasterrorborder(
-                                                          "Please Agree Terms & Conditions",
-                                                          context);
-                                                    } else {
-                                                      log("Signup Process Start");
+                                                      controller
+                                                          .isConfirmPasswordTyping
+                                                          .value = true;
 
-                                                      controller.registerUser(
+                                                      controller
+                                                          .passwordValidation();
+                                                      controller
+                                                          .confirmPasswordValidation();
+
+                                                      if (controller.password
+                                                          .value.text.isEmpty) {
+                                                        showToasterrorborder(
+                                                            "Please Enter Password",
+                                                            context);
+                                                      } else if (controller
+                                                              .password
+                                                              .value
+                                                              .text
+                                                              .length <
+                                                          6) {
+                                                        showToasterrorborder(
+                                                            "Password Have Must be 6 Character",
+                                                            context);
+                                                      } else if (controller
+                                                          .confirmPassword
+                                                          .value
+                                                          .text
+                                                          .isEmpty) {
+                                                        showToasterrorborder(
+                                                            "Please Enter Confirm Password",
+                                                            context);
+                                                      } else if (controller
+                                                              .password
+                                                              .value
+                                                              .text !=
                                                           controller
-                                                              .defaultUserId
-                                                              .value,
-                                                          controller.password
-                                                              .value.text,
-                                                          context);
-                                                    }
-                                                  },
-                                                ),
-                                                SizedBox(
-                                                  height: size.height * 0.02,
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      "Already have account?  ",
-                                                      style: textStyleW400(
-                                                          size.width * 0.045,
-                                                          AppColors.blackText),
-                                                    ),
-                                                    GestureDetector(
-                                                      onTap: () {
-                                                        Get.toNamed(
-                                                            Routes.login);
-                                                      },
-                                                      child: Text(
-                                                        "Login",
-                                                        style: TextStyle(
-                                                          decoration:
-                                                              TextDecoration
-                                                                  .underline,
-                                                          fontSize: size.width *
-                                                              0.045,
-                                                          color:
-                                                              AppColors.redText,
-                                                        ),
+                                                              .confirmPassword
+                                                              .value
+                                                              .text) {
+                                                        showToasterrorborder(
+                                                            "Both Password Should be Same",
+                                                            context);
+                                                      } else if (controller
+                                                              .termsCondition
+                                                              .value ==
+                                                          false) {
+                                                        showToasterrorborder(
+                                                            "Please Agree Terms & Conditions",
+                                                            context);
+                                                      } else {
+                                                        log("Signup Process Start");
+
+                                                        controller.registerUser(
+                                                            controller
+                                                                .defaultUserId
+                                                                .value,
+                                                            controller.password
+                                                                .value.text,
+                                                            context);
+                                                      }
+                                                    },
+                                                    isLoading:
+                                                        controller.isLoading,
+                                                  ),
+                                                  SizedBox(
+                                                    height: size.height * 0.02,
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Text(
+                                                        "Already have account?  ",
+                                                        style: textStyleW400(
+                                                            size.width * 0.045,
+                                                            AppColors
+                                                                .blackText),
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                SizedBox(
-                                                  height: size.height * 0.02,
-                                                ),
-                                              ],
-                                            )
-                                          : Column(
-                                              children: [
-                                                BorderTextField(
-                                                  controller:
-                                                      controller.emailOtp.value,
-                                                  hint: "Enter OTP",
-                                                  textInputType: [
-                                                    FilteringTextInputFormatter
-                                                        .digitsOnly
-                                                  ],
-                                                  keyboard:
-                                                      TextInputType.number,
-                                                  isError: controller
-                                                      .emailOtpError.value,
-                                                  byDefault: !controller
-                                                      .isEmailOtpTyping.value,
-                                                  onChanged: (value) {
-                                                    controller
-                                                        .emailOtpValidation();
-                                                    controller.isEmailOtpTyping
-                                                        .value = true;
-                                                  },
-                                                ),
-                                                SizedBox(
-                                                  height: size.height * 0.015,
-                                                ),
-                                                (controller.timerValue.value ==
-                                                        0)
-                                                    ? GestureDetector(
+                                                      GestureDetector(
                                                         onTap: () {
-                                                          // Resend email OTP
-                                                          String email =
-                                                              controller.email
-                                                                  .value.text;
-                                                          int userId =
-                                                              controller
-                                                                  .defaultUserId
-                                                                  .value;
-                                                          if (email
-                                                                  .isNotEmpty &&
-                                                              userId != 0) {
-                                                            controller
-                                                                .sendEmailOtp(
-                                                                    email,
-                                                                    userId,
-                                                                    context);
-                                                            controller
-                                                                .timerValue
-                                                                .value = 30;
-                                                            controller
-                                                                .startTimer();
-                                                            showToastverifedborder(
-                                                                "Email OTP Resend Successfully",
-                                                                context);
-                                                          } else {
-                                                            showToasterrorborder(
-                                                                "Please enter a valid email",
-                                                                context);
-                                                          }
+                                                          Get.toNamed(
+                                                              Routes.login);
                                                         },
                                                         child: Text(
-                                                          "Resend OTP",
+                                                          "Login",
+                                                          style: TextStyle(
+                                                            decoration:
+                                                                TextDecoration
+                                                                    .underline,
+                                                            fontSize:
+                                                                size.width *
+                                                                    0.045,
+                                                            color: AppColors
+                                                                .redText,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  SizedBox(
+                                                    height: size.height * 0.02,
+                                                  ),
+                                                ],
+                                              )
+                                            : Column(
+                                                children: [
+                                                  BorderTextField(
+                                                    controller: controller
+                                                        .emailOtp.value,
+                                                    hint: "Enter OTP",
+                                                    textInputType: [
+                                                      FilteringTextInputFormatter
+                                                          .digitsOnly
+                                                    ],
+                                                    keyboard:
+                                                        TextInputType.number,
+                                                    isError: controller
+                                                        .emailOtpError.value,
+                                                    byDefault: !controller
+                                                        .isEmailOtpTyping.value,
+                                                    onChanged: (value) {
+                                                      controller
+                                                          .emailOtpValidation();
+                                                      controller
+                                                          .isEmailOtpTyping
+                                                          .value = true;
+                                                    },
+                                                  ),
+                                                  SizedBox(
+                                                    height: size.height * 0.015,
+                                                  ),
+                                                  (controller.timerValue
+                                                              .value ==
+                                                          0)
+                                                      ? GestureDetector(
+                                                          onTap: () {
+                                                            // Resend email OTP
+                                                            String email =
+                                                                controller.email
+                                                                    .value.text;
+                                                            int userId =
+                                                                controller
+                                                                    .defaultUserId
+                                                                    .value;
+                                                            if (email
+                                                                    .isNotEmpty &&
+                                                                userId != 0) {
+                                                              controller
+                                                                  .sendEmailOtp(
+                                                                      email,
+                                                                      userId,
+                                                                      context);
+                                                              controller
+                                                                  .timerValue
+                                                                  .value = 30;
+                                                              controller
+                                                                  .startTimer();
+                                                              showToastverifedborder(
+                                                                  "Email OTP Resend Successfully",
+                                                                  context);
+                                                            } else {
+                                                              showToasterrorborder(
+                                                                  "Please enter a valid email",
+                                                                  context);
+                                                            }
+                                                          },
+                                                          child: Text(
+                                                            "Resend OTP",
+                                                            style: textStyleW500(
+                                                                size.width *
+                                                                    0.042,
+                                                                AppColors
+                                                                    .primaryColor),
+                                                          ),
+                                                        )
+                                                      : Text(
+                                                          'Resent OTP ${controller.timerValue.value} seconds',
                                                           style: textStyleW500(
                                                               size.width *
                                                                   0.042,
                                                               AppColors
-                                                                  .primaryColor),
+                                                                  .blackText),
                                                         ),
-                                                      )
-                                                    : Text(
-                                                        'Resent OTP ${controller.timerValue.value} seconds',
-                                                        style: textStyleW500(
-                                                            size.width * 0.042,
-                                                            AppColors
-                                                                .blackText),
-                                                      ),
-                                                SizedBox(
-                                                  height: size.height * 0.015,
-                                                ),
-                                                CustomButton(
-                                                  title: "Verify",
-                                                  btnColor:
-                                                      AppColors.primaryColor,
-                                                  titleColor: AppColors.white,
-                                                  onTap: () {
-                                                    if (controller.emailOtp
-                                                        .value.text.isEmpty) {
-                                                      showToasterrorborder(
-                                                          "Please Enter Email OTP",
-                                                          context);
-                                                    } else if (controller
+                                                  SizedBox(
+                                                    height: size.height * 0.015,
+                                                  ),
+                                                  CustomButton(
+                                                    title: "Verify",
+                                                    btnColor:
+                                                        AppColors.primaryColor,
+                                                    titleColor: AppColors.white,
+                                                    onTap: () {
+                                                      controller
+                                                          .isEmailOtpTyping
+                                                          .value = true;
+
+                                                      controller
+                                                          .emailOtpValidation();
+
+                                                      if (controller.emailOtp
+                                                          .value.text.isEmpty) {
+                                                        showToasterrorborder(
+                                                            "Please Enter Email OTP",
+                                                            context);
+                                                      } else if (controller
+                                                              .emailOtp
+                                                              .value
+                                                              .text
+                                                              .length <
+                                                          6) {
+                                                        showToasterrorborder(
+                                                            "OTP Must be 6 Digits",
+                                                            context);
+                                                      } else {
+                                                        String email =
+                                                            controller.email
+                                                                .value.text;
+                                                        int userId = controller
+                                                            .defaultUserId
+                                                            .value;
+                                                        String otp = controller
                                                             .emailOtp
                                                             .value
-                                                            .text
-                                                            .length <
-                                                        6) {
-                                                      showToasterrorborder(
-                                                          "OTP Must be 6 Digits",
-                                                          context);
-                                                    } else {
-                                                      String email = controller
-                                                          .email.value.text;
-                                                      int userId = controller
-                                                          .defaultUserId.value;
-                                                      String otp = controller
-                                                          .emailOtp.value.text;
+                                                            .text;
 
-                                                      // Call the verifyEmail method from the controller
-                                                      controller.verifyEmail(
-                                                          email,
-                                                          userId,
-                                                          otp,
-                                                          context);
-                                                    }
-                                                  },
-                                                ),
-                                                SizedBox(
-                                                  height: size.height * 0.015,
-                                                ),
-                                                Text(
-                                                  "Please check your email, and enter verification code below. You may need to check your Spam or Junk folder as well.",
-                                                  maxLines: 2,
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      fontSize:
-                                                          size.width * 0.042),
-                                                )
-                                              ],
-                                            )
-                                      : CustomButton(
-                                          // SEND EMAIL OTP
-                                          title: "Send OTP",
-                                          btnColor: AppColors.primaryColor,
-                                          titleColor: AppColors.white,
-                                          onTap: () {
-                                            String email =
-                                                controller.email.value.text;
-                                            int userId =
-                                                controller.defaultUserId.value;
-                                            if (controller
-                                                .email.value.text.isEmpty) {
-                                              showToasterrorborder(
-                                                  "Please Enter Email",
-                                                  context);
-                                            } else if (controller
-                                                    .emailError.value ==
-                                                true) {
-                                              showToasterrorborder(
-                                                  "Please Enter Valid Email",
-                                                  context);
-                                            } else {
-                                              showToastverifedborder(
-                                                  "Email OTP Sent Successfully",
-                                                  context);
-                                              controller.sendEmailOtp(
-                                                  email, userId, context);
-                                              controller.emailOtpSend.value =
+                                                        // Call the verifyEmail method from the controller
+                                                        controller.verifyEmail(
+                                                            email,
+                                                            userId,
+                                                            otp,
+                                                            context);
+                                                      }
+                                                    },
+                                                    isLoading:
+                                                        controller.isLoading,
+                                                  ),
+                                                  SizedBox(
+                                                    height: size.height * 0.015,
+                                                  ),
+                                                  Text(
+                                                    "Please check your email, and enter verification code below. You may need to check your Spam or Junk folder as well.",
+                                                    maxLines: 2,
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        fontSize:
+                                                            size.width * 0.042),
+                                                  )
+                                                ],
+                                              )
+                                        : CustomButton(
+                                            // SEND EMAIL OTP
+                                            title: "Send OTP",
+                                            btnColor: AppColors.primaryColor,
+                                            titleColor: AppColors.white,
+                                            onTap: () {
+                                              controller.isEmailTyping.value =
                                                   true;
-                                              controller.startTimer();
-                                            }
-                                          },
-                                        ))
+
+                                              controller.emailValidation();
+
+                                              String email =
+                                                  controller.email.value.text;
+                                              int userId = controller
+                                                  .defaultUserId.value;
+                                              if (controller
+                                                  .email.value.text.isEmpty) {
+                                                showToasterrorborder(
+                                                    "Please Enter Email",
+                                                    context);
+                                              } else if (controller
+                                                      .emailError.value ==
+                                                  true) {
+                                                showToasterrorborder(
+                                                    "Please Enter Valid Email",
+                                                    context);
+                                              } else {
+                                                showToastverifedborder(
+                                                    "Email OTP Sent Successfully",
+                                                    context);
+                                                controller.sendEmailOtp(
+                                                    email, userId, context);
+                                                controller.emailOtpSend.value =
+                                                    true;
+                                                controller.startTimer();
+                                              }
+                                            },
+                                            isLoading: controller.isLoading,
+                                          ),
+                                  )
                                 ])
                               : Column(
                                   children: [
                                     // ENTER MOBILE OTP
+
                                     BorderTextField(
                                       controller: controller.mobileOtp.value,
                                       hint: "Enter OTP",
@@ -684,6 +735,11 @@ class _SignupPageState extends State<SignupPage> {
                                       btnColor: AppColors.primaryColor,
                                       titleColor: AppColors.white,
                                       onTap: () async {
+                                        controller.isMobileOtpTyping.value =
+                                            true;
+
+                                        controller.mobileOtpValidation();
+
                                         if (controller
                                             .mobileOtp.value.text.isEmpty) {
                                           showToasterrorborder(
@@ -715,6 +771,7 @@ class _SignupPageState extends State<SignupPage> {
                                           }
                                         }
                                       },
+                                      isLoading: controller.isLoading,
                                     ),
                                   ],
                                 )
@@ -732,13 +789,17 @@ class _SignupPageState extends State<SignupPage> {
                                 controller.nameValidation(context);
                                 controller.mobileValidation();
 
-                                if (controller.selectedCount.value < 1) {
+                                if (controller.selectedCount.value == 0 &&
+                                    controller.name.value.text.isEmpty &&
+                                    controller.mobile.value.text.isEmpty) {
                                   showToasterrorborder(
-                                      "Please Select At least One MLM Type",
-                                      context);
+                                      "This Field is Required", context);
+                                } else if (controller.selectedCount.value < 1) {
+                                  showToasterrorborder(
+                                      "Please Select I am a MLM", context);
                                 } else if (controller.name.value.text.isEmpty) {
-                                  showToasterrorborder(
-                                      "Please Enter Name", context);
+                                  // showToasterrorborder(
+                                  //     "Please Enter Name", context);
                                 } else if (controller
                                     .mobile.value.text.isEmpty) {
                                   showToasterrorborder(
@@ -752,15 +813,12 @@ class _SignupPageState extends State<SignupPage> {
                                       "Please Enter Valid Mobile Number",
                                       context);
                                 } else {
-                                  log("Mobile OTP Sent Successfully");
-
-                                  showToastverifedborder(
-                                      "OTP Sent Successfully", context);
                                   sendOtp();
                                   controller.mobileOtpSend.value = true;
                                   controller.startTimer();
                                 }
                               },
+                              isLoading: controller.isLoading,
                             ),
                     ),
                   ],
@@ -812,7 +870,7 @@ class _SignupPageState extends State<SignupPage> {
                 5.sbh,
                 Center(
                   child: Text(
-                    'I am a MLM*',
+                    'I am a MLM',
                     style:
                         textStyleW600(size.width * 0.045, AppColors.blackText),
                   ),
@@ -881,6 +939,7 @@ class _SignupPageState extends State<SignupPage> {
                         );
                       }
                     },
+                    isLoading: controller.isLoading,
                   ),
                 ),
               ],
@@ -912,6 +971,7 @@ class _SignupPageState extends State<SignupPage> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
+                selectedCountry.refresh();
               },
               child: const Text('OK'),
             ),

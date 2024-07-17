@@ -48,6 +48,8 @@ class SignupController extends GetxController {
     defaultUserId.value = userId ?? 0;
   }
 
+  var isLoading = false.obs;
+
   @override
   void onInit() {
     fetchUserTypes();
@@ -65,6 +67,7 @@ class SignupController extends GetxController {
   RxBool emailOtpSend = false.obs;
   RxBool showEmailField = false.obs;
   RxBool showPasswordField = false.obs;
+  RxBool showMobileotpField = false.obs;
 
 // FIELDS ERROR
   RxBool mlmTypeError = false.obs;
@@ -160,6 +163,7 @@ class SignupController extends GetxController {
 
   Future<void> sendDomesticPhoneOtp(
       String mobile, String name, String countryCode, context) async {
+    isLoading(true);
     String device = '';
     if (Platform.isAndroid) {
       device = 'android';
@@ -192,6 +196,24 @@ class SignupController extends GetxController {
             if (kDebugMode) {
               print("Domestic OTP sent successfully: ${otpEntity.message}");
             }
+            toastification.show(
+              // ignore: use_build_context_synchronously
+              context: context,
+              alignment: Alignment.bottomCenter,
+              backgroundColor: AppColors.white,
+              type: ToastificationType.success,
+              style: ToastificationStyle.flatColored,
+              showProgressBar: false,
+              autoCloseDuration: const Duration(seconds: 3),
+              icon: Image.asset(
+                Assets.imagesChecked,
+                height: 35,
+              ),
+              primaryColor: Colors.green,
+              title: const Text('OTP Sent Successfully'),
+            );
+            showMobileotpField.value = true;
+
             setDefaultUserId(otpEntity.userId);
           } else if (jsonBody['status'] == 0) {
             toastification.show(
@@ -210,6 +232,7 @@ class SignupController extends GetxController {
               primaryColor: Colors.red,
               title: Text('$jsonBody'),
             );
+            showMobileotpField.value = false;
           } else {
             if (kDebugMode) {
               print("Failed to send domestic OTP: ${otpEntity.message}");
@@ -225,6 +248,8 @@ class SignupController extends GetxController {
         if (kDebugMode) {
           print("An error occurred: $e");
         }
+      } finally {
+        isLoading(false);
       }
     }
 
@@ -337,11 +362,26 @@ class SignupController extends GetxController {
           final Map<String, dynamic> jsonBody = jsonDecode(response.body);
           final resentOtpEntity = ResentOtpRegisterEntity.fromJson(jsonBody);
 
-          if (resentOtpEntity.status == 1) {
+          if (jsonBody['status'] == 1) {
             if (kDebugMode) {
               print("OTP verification successful: ${resentOtpEntity.message}");
             }
-            // Handle successful OTP verification
+            toastification.show(
+              // ignore: use_build_context_synchronously
+              context: context,
+              alignment: Alignment.bottomCenter,
+              backgroundColor: AppColors.white,
+              type: ToastificationType.success,
+              style: ToastificationStyle.flatColored,
+              showProgressBar: false,
+              autoCloseDuration: const Duration(seconds: 3),
+              icon: Image.asset(
+                Assets.imagesChecked,
+                height: 35,
+              ),
+              primaryColor: Colors.green,
+              title: const Text('OTP Resent Successfully'),
+            );
             stopTimer();
           } else if (jsonBody['status'] == 0) {
             toastification.show(
@@ -389,6 +429,7 @@ class SignupController extends GetxController {
   }
 
   Future<void> verifyPhoneOtp(int userId, String otp, context) async {
+    isLoading(true);
     String device = '';
     if (Platform.isAndroid) {
       device = 'android';
@@ -458,6 +499,8 @@ class SignupController extends GetxController {
         if (kDebugMode) {
           print("An error occurred: $e");
         }
+      } finally {
+        isLoading(false);
       }
     }
 
@@ -472,6 +515,8 @@ class SignupController extends GetxController {
   }
 
   Future<void> sendEmailOtp(String email, int userId, context) async {
+    isLoading(true);
+
     String device = '';
     if (Platform.isAndroid) {
       device = 'android';
@@ -545,6 +590,8 @@ class SignupController extends GetxController {
         }
 
         emailOtpSend.value = false;
+      } finally {
+        isLoading(false);
       }
     }
 
@@ -560,6 +607,7 @@ class SignupController extends GetxController {
   }
 
   Future<void> registerUser(int userId, String password, context) async {
+    isLoading(true);
     String device = '';
     if (Platform.isAndroid) {
       device = 'android';
@@ -588,15 +636,15 @@ class SignupController extends GetxController {
             context: context,
             alignment: Alignment.bottomCenter,
             backgroundColor: AppColors.white,
-            type: ToastificationType.error,
+            type: ToastificationType.success,
             style: ToastificationStyle.flatColored,
             showProgressBar: false,
             autoCloseDuration: const Duration(seconds: 3),
             icon: Image.asset(
-              Assets.imagesCancel,
+              Assets.imagesChecked,
               height: 35,
             ),
-            primaryColor: Colors.red,
+            primaryColor: Colors.green,
             title: const Text('Registration Successfully'),
           );
           Get.offNamed(Routes.signUp2);
@@ -620,7 +668,7 @@ class SignupController extends GetxController {
               Assets.imagesCancel,
               height: 35,
             ),
-            primaryColor: Colors.red,
+            primaryColor: Colors.green,
             title: Text('$jsonBody'),
           );
         } else {
@@ -637,6 +685,8 @@ class SignupController extends GetxController {
       if (kDebugMode) {
         print('Error: $e');
       }
+    } finally {
+      isLoading(false);
     }
   }
 
@@ -648,6 +698,7 @@ class SignupController extends GetxController {
 
   Future<void> verifyEmail(
       String email, int userId, String otp, context) async {
+    isLoading(true);
     String device = '';
     if (Platform.isAndroid) {
       device = 'android';
@@ -716,6 +767,8 @@ class SignupController extends GetxController {
           print("An error occurred: $e");
         }
         showPasswordField.value = false;
+      } finally {
+        isLoading(false);
       }
     }
 
@@ -815,7 +868,11 @@ class SignupController extends GetxController {
 
   void nameValidation(context) {
     String enteredName = name.value.text;
-    if (enteredName.isEmpty || hasSpecialCharactersOrNumbers(enteredName)) {
+    if (enteredName.isEmpty ||
+        hasSpecialCharactersOrNumbers(enteredName) ||
+        !isFirstLetterCapital(enteredName)) {
+      showToasterrorborder(
+          'Required First Capital Character For Name', context);
       nameError.value = true;
     } else {
       nameError.value = false;
@@ -824,6 +881,12 @@ class SignupController extends GetxController {
     if (nameError.value) {
       isNameTyping.value = true;
     }
+  }
+
+  bool isFirstLetterCapital(String text) {
+    if (text.isEmpty) return false;
+    String firstLetter = text[0];
+    return firstLetter == firstLetter.toUpperCase();
   }
 
   void companyNameValidation() {
@@ -863,6 +926,9 @@ class SignupController extends GetxController {
     } else {
       mobileOtpError.value = false;
     }
+    if (mobileOtpError.value) {
+      isMobileOtpTyping.value = true;
+    }
   }
 
   void emailValidation() {
@@ -873,6 +939,9 @@ class SignupController extends GetxController {
     } else {
       emailError.value = false;
     }
+    if (emailError.value) {
+      isEmailTyping.value = true;
+    }
   }
 
   void emailOtpValidation() {
@@ -881,6 +950,9 @@ class SignupController extends GetxController {
     } else {
       emailOtpError.value = false;
     }
+    if (emailOtpError.value) {
+      isEmailOtpTyping.value = true;
+    }
   }
 
   void passwordValidation() {
@@ -888,6 +960,9 @@ class SignupController extends GetxController {
       passwordError.value = true;
     } else {
       passwordError.value = false;
+    }
+    if (passwordError.value) {
+      isPasswordTyping.value = true;
     }
   }
 
@@ -898,6 +973,9 @@ class SignupController extends GetxController {
       confirmPasswordError.value = true;
     } else {
       confirmPasswordError.value = false;
+    }
+    if (confirmPasswordError.value) {
+      isConfirmPasswordTyping.value = true;
     }
   }
 

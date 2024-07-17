@@ -31,6 +31,7 @@ class Signup2Controller extends GetxController {
 
   RxBool isCompanyNameTyping = false.obs;
   RxBool isLocationTyping = false.obs;
+  RxBool isPlanTyping = false.obs;
 
   RxBool companyNameOnly = false.obs;
 
@@ -104,6 +105,11 @@ class Signup2Controller extends GetxController {
     } else {
       selectedCountPlan--;
     }
+
+    // ignore: unrelated_type_equality_checks
+    planTypeError.value = selectedCountPlan == 0;
+
+    isPlanTyping.value = true;
   }
 
   TextEditingController getSelectedPlanOptionsTextController() {
@@ -120,6 +126,10 @@ class Signup2Controller extends GetxController {
   void planCategoryValidation() {
     // ignore: unrelated_type_equality_checks
     planTypeError.value = selectedCountPlan == 0;
+
+    if (planTypeError.value) {
+      isPlanTyping.value = true;
+    }
   }
 
   void companyNameValidation() {
@@ -129,6 +139,10 @@ class Signup2Controller extends GetxController {
       comapnyNameError.value = true;
     } else {
       comapnyNameError.value = false;
+    }
+
+    if (comapnyNameError.value) {
+      isCompanyNameTyping.value = true;
     }
   }
 

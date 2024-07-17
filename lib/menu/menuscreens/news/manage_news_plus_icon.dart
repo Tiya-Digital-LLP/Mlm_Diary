@@ -630,6 +630,7 @@ void showSelectCategory(
                         );
                       }
                     },
+                    isLoading: controller.isLoading,
                   ),
                 ),
               ],
@@ -802,6 +803,7 @@ void showSelectSubCategory(
                         );
                       }
                     },
+                    isLoading: controller.isLoading,
                   ),
                 ),
               ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 
@@ -7,19 +8,25 @@ class CustomButton extends StatelessWidget {
   final Color btnColor;
   final Color titleColor;
   final Function onTap;
-  const CustomButton(
-      {super.key,
-      required this.title,
-      required this.btnColor,
-      required this.titleColor,
-      required this.onTap});
+  final RxBool isLoading;
+
+  const CustomButton({
+    super.key,
+    required this.title,
+    required this.btnColor,
+    required this.titleColor,
+    required this.onTap,
+    required this.isLoading,
+  });
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () {
-        onTap();
+        if (!isLoading.value) {
+          onTap();
+        }
       },
       child: Container(
         width: size.width,
@@ -29,13 +36,21 @@ class CustomButton extends StatelessWidget {
           color: btnColor,
           borderRadius: BorderRadius.circular(50),
         ),
-        child: Text(title,
-            style: textStyleW600(
-              size.width * 0.044,
-              titleColor,
-            ).copyWith(
-              fontFamily: Assets.fontsSatoshiRegular,
-            )),
+        child: Obx(() {
+          return isLoading.value
+              ? CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(titleColor),
+                )
+              : Text(
+                  title,
+                  style: textStyleW600(
+                    size.width * 0.044,
+                    titleColor,
+                  ).copyWith(
+                    fontFamily: Assets.fontsSatoshiRegular,
+                  ),
+                );
+        }),
       ),
     );
   }

@@ -18,12 +18,17 @@ class ForgotPasswordController extends GetxController {
   RxBool isPasswordTyping = false.obs;
   RxBool isConfirmPasswordTyping = false.obs;
   RxBool isEmailTyping = false.obs;
+  var isLoading = false.obs;
 
   void emailValidation() {
     String emailPattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
     RegExp regex = RegExp(emailPattern);
     emailError.value =
         email.value.text.isEmpty || !regex.hasMatch(email.value.text);
+
+    if (emailError.value) {
+      isEmailTyping.value = true;
+    }
   }
 
   void forgotValidation(BuildContext context) {
@@ -35,6 +40,7 @@ class ForgotPasswordController extends GetxController {
   }
 
   Future<void> sendForgotPasswordRequest(BuildContext context) async {
+    isLoading(true);
     try {
       final response = await http.post(
         Uri.parse('${Constants.baseUrl}${Constants.forgotpassword}'),
@@ -91,6 +97,8 @@ class ForgotPasswordController extends GetxController {
       if (kDebugMode) {
         print('Error: $e');
       }
+    } finally {
+      isLoading(false);
     }
   }
 

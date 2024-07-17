@@ -356,6 +356,7 @@ class _PlanandCompanyState extends State<PlanandCompany> {
                 }
               }
             },
+            isLoading: controller.isLoading,
           ),
         ),
       ),

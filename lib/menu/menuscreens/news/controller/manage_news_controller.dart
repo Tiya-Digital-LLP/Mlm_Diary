@@ -72,6 +72,8 @@ class ManageNewsController extends GetxController {
   RxBool subCategoryError = false.obs;
 
   // ENABLED TYPING VALIDATION
+  RxBool isCategoryTyping = false.obs;
+  RxBool isSubCategoryTyping = false.obs;
   RxBool isTitleTyping = false.obs;
   RxBool isDiscriptionTyping = false.obs;
   RxBool isUrlTyping = false.obs;
@@ -515,6 +517,10 @@ class ManageNewsController extends GetxController {
 
     // Fetch subcategory list for the selected category
     fetchSubCategoryList(categorylist[index].id!);
+
+    // ignore: unrelated_type_equality_checks
+    categoryError.value = selectedCountCategory == 0;
+    isCategoryTyping.value = true;
   }
 
   TextEditingController getSelectedCategoryTextController() {
@@ -532,6 +538,10 @@ class ManageNewsController extends GetxController {
   void mlmCategoryValidation() {
     // ignore: unrelated_type_equality_checks
     categoryError.value = selectedCountCategory == 0;
+
+    if (categoryError.value) {
+      isCategoryTyping.value = true;
+    }
   }
 
   // sub Category
@@ -547,6 +557,10 @@ class ManageNewsController extends GetxController {
     isSubCategorySelectedList[index] = !isCurrentlySelected;
     selectedCountSubCategory.value = isSubCategorySelectedList[index] ? 1 : 0;
     selectedSubCategoryId.value = subcategoryList[index].id!;
+
+    // ignore: unrelated_type_equality_checks
+    subCategoryError.value = selectedCountSubCategory == 0;
+    isSubCategoryTyping.value = true;
   }
 
   TextEditingController getSelectedSubCategoryTextController() {
@@ -563,6 +577,10 @@ class ManageNewsController extends GetxController {
   void mlmsubCategoryValidation() {
     // ignore: unrelated_type_equality_checks
     subCategoryError.value = selectedCountSubCategory == 0;
+
+    if (subCategoryError.value) {
+      isSubCategoryTyping.value = true;
+    }
   }
 
   //updateclassified
@@ -635,7 +653,22 @@ class ManageNewsController extends GetxController {
           }
           // Check if all fields in the response are true (you may need to adjust this condition based on the actual response structure)
           if (jsonBody['success'] == true) {
-            // All fields are true, navigate back
+            toastification.show(
+              context: context,
+              alignment: Alignment.bottomCenter,
+              backgroundColor: AppColors.white,
+              type: ToastificationType.success,
+              style: ToastificationStyle.flatColored,
+              showProgressBar: false,
+              autoCloseDuration: const Duration(seconds: 3),
+              icon: Image.asset(
+                Assets.imagesChecked,
+                height: 35,
+              ),
+              primaryColor: Colors.green,
+              title: const Text('News Updated Successfully'),
+            );
+            fetchMyNews();
             Get.back();
           } else if (jsonBody['status'] == 0) {
             toastification.show(

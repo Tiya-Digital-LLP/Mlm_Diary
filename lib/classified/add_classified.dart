@@ -85,7 +85,7 @@ class _AddClassifiedState extends State<AddClassified> {
                       isError: controller.titleError.value,
                       byDefault: !controller.isTitleTyping.value,
                       onChanged: (value) {
-                        controller.titleValidation(context);
+                        controller.titleValidation();
                         controller.isTitleTyping.value = true;
                       },
                       height: 60,
@@ -95,6 +95,7 @@ class _AddClassifiedState extends State<AddClassified> {
                   Obx(
                     () => BorderContainer(
                       isError: controller.categoryError.value,
+                      byDefault: !controller.isCategoryTyping.value,
                       height: 60,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -132,6 +133,7 @@ class _AddClassifiedState extends State<AddClassified> {
                   Obx(
                     () => BorderContainer(
                       isError: controller.subCategoryError.value,
+                      byDefault: !controller.isSubCategoryTyping.value,
                       height: 60,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -178,6 +180,7 @@ class _AddClassifiedState extends State<AddClassified> {
                         controller.fetchCompanyNames(value.toString());
                       },
                       onTap: () async {
+                        controller.companyNameValidation();
                         final result = await Get.to(() => AddCompanyClassified(
                               selectedCompanies: selectedCompanies,
                             ));
@@ -210,7 +213,7 @@ class _AddClassifiedState extends State<AddClassified> {
                     () => BorderTextField(
                       keyboard: TextInputType.url,
                       textInputType: const [],
-                      hint: "Website Url",
+                      hint: "Website Url (Optional)",
                       controller: controller.url.value,
                       byDefault: !controller.isUrlTyping.value,
                       onChanged: (value) {
@@ -246,7 +249,8 @@ class _AddClassifiedState extends State<AddClassified> {
                             controller.location.value.text =
                                 place.description.toString();
                             _loc.text = controller.location.value.text;
-                            controller.validateAddress();
+                            controller.isLocationTyping.value = true;
+                            controller.locationValidation();
                           });
                           final plist = GoogleMapsPlaces(
                             apiKey: googleApikey,
@@ -309,7 +313,7 @@ class _AddClassifiedState extends State<AddClassified> {
                       validator: (value) {
                         if (value!.isEmpty) {
                           setState(() {
-                            controller.validateAddress();
+                            controller.locationValidation();
                           });
                         } else {}
                         return null;
@@ -321,11 +325,11 @@ class _AddClassifiedState extends State<AddClassified> {
                               msg:
                                   'Please Search and Save your Business Location');
                           setState(() {
-                            controller.validateAddress();
+                            controller.locationValidation();
                           });
                         } else if (value.isNotEmpty) {
                           setState(() {
-                            controller.validateAddress();
+                            controller.locationValidation();
                           });
                         }
                       },
@@ -408,6 +412,13 @@ class _AddClassifiedState extends State<AddClassified> {
   }
 
   Future<void> handleSaveButtonPressed() async {
+    controller.titleValidation();
+    controller.discriptionValidation(context);
+    controller.mlmCategoryValidation();
+    controller.mlmsubCategoryValidation();
+    controller.locationValidation();
+    controller.companyNameValidation();
+
     if (controller.title.value.text.isEmpty) {
       showToasterrorborder("Please Enter Your Classified Title", context);
     } else if (controller
@@ -434,11 +445,9 @@ class _AddClassifiedState extends State<AddClassified> {
     } else if (controller.isCategorySelectedList.contains(true)) {
       // Perform address validation
       if (controller.addressValidationColor.value != AppColors.redText) {
-        await controller.addClassifiedDetails(imageFile: file.value);
-        showToastverifedborder(
-            "Your Classified is Successfully Submitted",
-            // ignore: use_build_context_synchronously
-            context);
+        await controller.addClassifiedDetails(
+          imageFile: file.value,
+        );
       } else {
         showToasterrorborder("Please enter a valid address.", context);
       }
@@ -747,6 +756,7 @@ void showSelectCategory(
                         );
                       }
                     },
+                    isLoading: controller.isLoading,
                   ),
                 ),
               ],
@@ -919,6 +929,7 @@ void showSelectSubCategory(
                         );
                       }
                     },
+                    isLoading: controller.isLoading,
                   ),
                 ),
               ],

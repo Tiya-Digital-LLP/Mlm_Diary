@@ -422,6 +422,7 @@ void showBottomSheetFuncPlan(
                       );
                     }
                   },
+                  isLoading: controller.isLoading,
                 ),
               ),
             ],
@@ -539,6 +540,7 @@ void showBottomSheetFunc(
                       );
                     }
                   },
+                  isLoading: controller.isLoading,
                 ),
               ),
             ],

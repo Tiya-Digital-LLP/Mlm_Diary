@@ -64,6 +64,7 @@ class _AddClassifiedState extends State<AddQuestionAnswer> {
                   Obx(
                     () => BorderTextField(
                       keyboard: TextInputType.name,
+                      maxLength: 100,
                       textInputType: const [],
                       hint: "Enter Title",
                       controller: controller.title.value,
@@ -81,7 +82,7 @@ class _AddClassifiedState extends State<AddQuestionAnswer> {
                     () => DiscriptionTextField(
                       keyboard: TextInputType.multiline,
                       textInputType: const [],
-                      hint: " Enter answer",
+                      hint: "Enter answer",
                       controller: controller.answer.value,
                       isError: controller.answerError.value,
                       byDefault: !controller.isAnswerTyping.value,
@@ -95,6 +96,7 @@ class _AddClassifiedState extends State<AddQuestionAnswer> {
                   Obx(
                     () => BorderContainer(
                       isError: controller.categoryError.value,
+                      byDefault: !controller.isCategoryTyping.value,
                       height: 60,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -132,6 +134,7 @@ class _AddClassifiedState extends State<AddQuestionAnswer> {
                   Obx(
                     () => BorderContainer(
                       isError: controller.subCategoryError.value,
+                      byDefault: !controller.isSubCategoryTyping.value,
                       height: 60,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -187,11 +190,12 @@ class _AddClassifiedState extends State<AddQuestionAnswer> {
   }
 
   Future<void> handleSaveButtonPressed() async {
+    controller.titleValidation(context);
+    controller.mlmCategoryValidation();
+    controller.mlmsubCategoryValidation();
+
     if (controller.title.value.text.isEmpty) {
       showToasterrorborder("Please Enter Your Question", context);
-    } else if (controller.answer.value.text.isEmpty) {
-      showToasterrorborder(
-          "Please Enter Description Minimum 250 Characters", context);
     } else if (controller
         .getSelectedCategoryTextController()
         .value
@@ -205,10 +209,7 @@ class _AddClassifiedState extends State<AddQuestionAnswer> {
         .isEmpty) {
       showToasterrorborder("Please Select Sub Category", context);
     } else if (controller.isCategorySelectedList.contains(true)) {
-      await controller.addClassifiedDetails(imageFile: file.value);
-      Get.back();
-      // ignore: use_build_context_synchronously
-      showToastverifedborder("Your Question is Successfully Posted", context);
+      await controller.addQuestion(imageFile: file.value);
     } else {
       //
     }
@@ -352,6 +353,7 @@ class _AddClassifiedState extends State<AddQuestionAnswer> {
                           );
                         }
                       },
+                      isLoading: controller.isLoading,
                     ),
                   ),
                 ],
@@ -526,6 +528,7 @@ class _AddClassifiedState extends State<AddQuestionAnswer> {
                           );
                         }
                       },
+                      isLoading: controller.isLoading,
                     ),
                   ),
                 ],

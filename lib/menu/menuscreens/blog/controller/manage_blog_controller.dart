@@ -734,7 +734,22 @@ class ManageBlogController extends GetxController {
           }
           // Check if all fields in the response are true (you may need to adjust this condition based on the actual response structure)
           if (jsonBody['success'] == true) {
-            // All fields are true, navigate back
+            toastification.show(
+              context: context,
+              alignment: Alignment.bottomCenter,
+              backgroundColor: AppColors.white,
+              type: ToastificationType.success,
+              style: ToastificationStyle.flatColored,
+              showProgressBar: false,
+              autoCloseDuration: const Duration(seconds: 3),
+              icon: Image.asset(
+                Assets.imagesChecked,
+                height: 35,
+              ),
+              primaryColor: Colors.green,
+              title: const Text('Blog Updated Successfully'),
+            );
+            fetchMyBlog();
             Get.back();
           } else if (jsonBody['status'] == 0) {
             toastification.show(

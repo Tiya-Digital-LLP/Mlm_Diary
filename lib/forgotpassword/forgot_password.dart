@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:mlmdiary/forgotpassword/controller/forgot_password_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/border_text_field.dart';
@@ -81,10 +82,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   titleColor: AppColors.white,
                   onTap: () {
                     controller.emailValidation();
-                    if (!controller.emailError.value) {
-                      controller.forgotValidation(context);
+                    if (controller.email.value.text.isEmpty) {
+                      showToasterrorborder("Please Enter Email", context);
+                    } else {
+                      controller.sendForgotPasswordRequest(context);
                     }
                   },
+                  isLoading: controller.isLoading,
                 ),
               ),
             ],

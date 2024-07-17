@@ -16,6 +16,16 @@ import 'package:toastification/toastification.dart';
 class AddPostController extends GetxController {
   Rx<TextEditingController> comments = TextEditingController().obs;
   var isLoading = false.obs;
+  RxBool postError = false.obs;
+  RxBool isPostTyping = false.obs;
+
+  void validateComments(String text) {
+    if (text.isEmpty) {
+      postError(true);
+    } else {
+      postError(false);
+    }
+  }
 
   Future<void> addPost(
       {required File? imageFile, required File? videoFile, context}) async {
@@ -39,7 +49,6 @@ class AddPostController extends GetxController {
         request.fields['api_token'] = apiToken ?? '';
         request.fields['comments'] = comments.value.text;
 
-        // Determine comtype and attachment based on image and video files
         if (imageFile != null && videoFile != null) {
           request.fields['comtype'] = 'Photo';
           request.fields['attachment'] = 'Photo';
@@ -84,39 +93,25 @@ class AddPostController extends GetxController {
         if (response.statusCode == 200) {
           final Map<String, dynamic> jsonBody = jsonDecode(response.body);
           if (jsonBody['status'] == 1) {
-            final Map<String, dynamic> userPost = jsonBody['userpost'];
-            if (kDebugMode) {
-              print("Post Added Successfully");
-            }
-            if (kDebugMode) {
-              print("UserID: ${userPost['userid']}");
-            }
-            if (kDebugMode) {
-              print("PostID: ${userPost['postid']}");
-            }
-            if (kDebugMode) {
-              print("CreateDate: ${userPost['createdate']}");
-            }
-            if (kDebugMode) {
-              print("Comments: ${userPost['comments']}");
-            }
-            if (kDebugMode) {
-              print("ComType: ${userPost['comtype']}");
-            }
-            if (kDebugMode) {
-              print("Attachment: ${userPost['attachment']}");
-            }
-            if (kDebugMode) {
-              print("ID: ${userPost['id']}");
-            }
-            if (kDebugMode) {
-              print("AttachmentPath: ${userPost['attachment_path']}");
-            }
+            toastification.show(
+              context: context,
+              alignment: Alignment.bottomCenter,
+              backgroundColor: AppColors.white,
+              type: ToastificationType.success,
+              style: ToastificationStyle.flatColored,
+              showProgressBar: false,
+              autoCloseDuration: const Duration(seconds: 3),
+              icon: Image.asset(
+                Assets.imagesChecked,
+                height: 35,
+              ),
+              primaryColor: Colors.green,
+              title: Text('$jsonBody'),
+            );
 
             Get.back();
           } else if (jsonBody['status'] == 0) {
             toastification.show(
-              // ignore: use_build_context_synchronously
               context: context,
               alignment: Alignment.bottomCenter,
               backgroundColor: AppColors.white,
@@ -132,17 +127,16 @@ class AddPostController extends GetxController {
               title: Text('$jsonBody'),
             );
           } else {
-            if (kDebugMode) {
-              print("Failed to Add Post: ${jsonBody['message']}");
-            }
             showToasterrorborder(
-                'You cannot use Abusive words in Your Comment and Content and We Can’t Post It',
-                context);
+              'You cannot use Abusive words in Your Comment and Content and We Can’t Post It',
+              context,
+            );
           }
         } else {
           if (kDebugMode) {
             print(
-                "HTTP error: Failed to Add Post. Status code: ${response.statusCode}");
+              "HTTP error: Failed to Add Post. Status code: ${response.statusCode}",
+            );
           }
           if (kDebugMode) {
             print("Response body: ${response.body}");
