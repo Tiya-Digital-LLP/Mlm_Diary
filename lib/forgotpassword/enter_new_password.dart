@@ -118,11 +118,18 @@ class _EnterNewPasswordScreenState extends State<EnterNewPasswordScreen> {
                 btnColor: AppColors.primaryColor,
                 titleColor: AppColors.white,
                 onTap: () {
-                  // Check if passwords match
-                  if (controller.password.value.text !=
+                  if (controller.password.value.text.isEmpty) {
+                    showToasterrorborder("Please Enter Password", context);
+                  } else if (controller.confirmPassword.value.text.isEmpty) {
+                    showToasterrorborder(
+                        "Please Enter Confirm Password", context);
+                  } else if (controller.password.value.text.length < 6) {
+                    showToasterrorborder(
+                        "Your Password Requires Minimum 6 Characters", context);
+                  } else if (controller.password.value.text !=
                       controller.confirmPassword.value.text) {
                     showToasterrorborder(
-                        "Both Passwords Should be the Same.", context);
+                        "Password and Confirm Password Doesn't Match", context);
                   } else {
                     // Call the method to send the change password request
                     controller.sendChangePasswordRequest(
@@ -130,6 +137,9 @@ class _EnterNewPasswordScreenState extends State<EnterNewPasswordScreen> {
                       userId,
                       controller.password.value.text,
                     );
+                    showToastverifedborder(
+                        "Your Password Changed Successfully. Please Use the App.",
+                        context);
                   }
                 },
                 isLoading: controller.isLoading,

@@ -60,401 +60,400 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      body: SafeArea(
-        child: Container(
-          margin: EdgeInsets.symmetric(horizontal: size.width * 0.04),
-          height: double.infinity,
-          width: double.infinity,
-          decoration: BoxDecoration(color: AppColors.white),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: Column(
-              children: [
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.white,
+        body: SafeArea(
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: size.width * 0.04),
+              decoration: BoxDecoration(color: AppColors.white),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: Column(
                   children: [
-                    CustomBackButton(),
-                  ],
-                ),
-                CommonHeader(
-                  onBackTap: () {},
-                ),
-                SizedBox(
-                  height: size.height * 0.01,
-                ),
-                Obx(
-                  () => ClipRRect(
-                    borderRadius: BorderRadius.circular(13.05),
-                    child: Stack(
+                    const SizedBox(height: 10),
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        CircleAvatar(
-                          radius: 60.0,
-                          child: GestureDetector(
-                            child: ClipOval(
-                              child: file.value != null
-                                  ? Image.file(
-                                      file.value!,
-                                      height: 120,
-                                      width: 120,
-                                      fit: BoxFit.cover,
-                                    )
-                                  : Image.asset(
-                                      Assets.imagesIcon,
-                                    ),
+                        CustomBackButton(),
+                      ],
+                    ),
+                    CommonHeader(
+                      onBackTap: () {},
+                    ),
+                    const SizedBox(height: 10),
+                    Obx(
+                      () => ClipRRect(
+                        borderRadius: BorderRadius.circular(13.05),
+                        child: Stack(
+                          children: [
+                            CircleAvatar(
+                              radius: 60.0,
+                              child: GestureDetector(
+                                child: ClipOval(
+                                  child: file.value != null
+                                      ? Image.file(
+                                          file.value!,
+                                          height: 120,
+                                          width: 120,
+                                          fit: BoxFit.cover,
+                                        )
+                                      : Image.asset(
+                                          Assets.imagesIcon,
+                                        ),
+                                ),
+                                onTap: () {
+                                  if (file.value == null) {
+                                    showModalBottomSheet(
+                                      backgroundColor: Colors.white,
+                                      context: context,
+                                      builder: (context) =>
+                                          bottomsheet(context),
+                                    );
+                                  }
+                                },
+                              ),
                             ),
-                            onTap: () {
-                              if (file.value == null) {
-                                showModalBottomSheet(
-                                  backgroundColor: Colors.white,
-                                  context: context,
-                                  builder: (context) => bottomsheet(context),
-                                );
-                              }
-                            },
+                            Positioned(
+                              bottom: 3.0,
+                              right: 5.0,
+                              child: SizedBox(
+                                width: 40,
+                                height: 33,
+                                child: Image.asset(Assets.imagesCamera),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        "Gender",
+                        style: textStyleW400(size.width * 0.045,
+                            AppColors.blackText.withOpacity(0.5)),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            controller.isGenderToggle.value = true;
+                          },
+                          child: Row(
+                            children: [
+                              Stack(
+                                children: [
+                                  Image.asset(
+                                    Assets.imagesCircle,
+                                    color: (controller.isGenderToggle.value ==
+                                            true)
+                                        ? AppColors.primaryColor
+                                        : AppColors.blackText.withOpacity(0.5),
+                                  ),
+                                  if (controller.isGenderToggle.value == true)
+                                    Positioned(
+                                      top: 3,
+                                      left: 3,
+                                      child: Image.asset(
+                                        Assets.imagesSelectedCircle,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                "Male",
+                                style: (controller.isGenderToggle.value == true)
+                                    ? textStyleW500(size.width * 0.045,
+                                        AppColors.primaryColor)
+                                    : textStyleW400(
+                                        size.width * 0.045,
+                                        AppColors.blackText.withOpacity(0.5),
+                                      ),
+                              ),
+                            ],
                           ),
                         ),
-                        Positioned(
-                          bottom: 3.0,
-                          right: 5.0,
-                          child: SizedBox(
-                            width: 40,
-                            height: 33,
-                            child: Image.asset(Assets.imagesCamera),
+                        const SizedBox(width: 20),
+                        InkWell(
+                          onTap: () {
+                            controller.isGenderToggle.value = false;
+                          },
+                          child: Row(
+                            children: [
+                              Stack(
+                                children: [
+                                  Image.asset(
+                                    Assets.imagesCircle,
+                                    color: (controller.isGenderToggle.value ==
+                                            false)
+                                        ? AppColors.primaryColor
+                                        : AppColors.blackText.withOpacity(0.5),
+                                  ),
+                                  if (controller.isGenderToggle.value == false)
+                                    Positioned(
+                                      top: 3,
+                                      left: 3,
+                                      child: Image.asset(
+                                        Assets.imagesSelectedCircle,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                "Female",
+                                style: (controller.isGenderToggle.value ==
+                                        false)
+                                    ? textStyleW500(size.width * 0.045,
+                                        AppColors.primaryColor)
+                                    : textStyleW400(
+                                        size.width * 0.045,
+                                        AppColors.blackText.withOpacity(0.5),
+                                      ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
-                  ),
-                ),
-                SizedBox(
-                  height: size.height * 0.015,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Gender",
-                      style: textStyleW400(size.width * 0.045,
-                          AppColors.blackText.withOpacity(0.5)),
+                    const SizedBox(height: 10),
+                    Obx(
+                      () => CompanyBorderTextfield(
+                        height: 65,
+                        keyboard: TextInputType.name,
+                        textInputType: const [],
+                        hint: "Company Name",
+                        readOnly: !controller.companyNameOnly.value,
+                        controller: controller.companyName.value,
+                        isError: controller.comapnyNameError.value,
+                        byDefault: !controller.isCompanyNameTyping.value,
+                        onChanged: (value) {
+                          clasifiedController
+                              .fetchCompanyNames(value.toString());
+                          controller.isCompanyNameTyping.value = true;
+                        },
+                        onTap: () async {
+                          controller.isCompanyNameTyping.value = true;
+                          final result =
+                              await Get.to(() => AddCompanyClassified(
+                                    selectedCompanies: selectedCompanies,
+                                  ));
+                          if (result != null && result is List<String>) {
+                            selectedCompanies.clear();
+                            selectedCompanies.addAll(result);
+                            controller.companyName.value.text =
+                                selectedCompanies.join(", ");
+                          }
+                          // Ensure the field is editable after returning from AddCompanyClassified
+                          controller.companyNameOnly.value = false;
+                        },
+                      ),
                     ),
-                  ],
-                ),
-                SizedBox(
-                  height: size.height * 0.015,
-                ),
-                Obx(
-                  () => Row(
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          controller.isGenderToggle.value = true;
-                        },
-                        child: Row(
-                          children: [
-                            Stack(
-                              children: [
-                                Image.asset(
-                                  Assets.imagesCircle,
-                                  color: (controller.isGenderToggle.value ==
-                                          true)
-                                      ? AppColors.primaryColor
-                                      : AppColors.blackText.withOpacity(0.5),
-                                ),
-                                (controller.isGenderToggle.value == true)
-                                    ? Positioned(
-                                        top: 3,
-                                        left: 3,
-                                        child: Image.asset(
-                                            Assets.imagesSelectedCircle))
-                                    : Container()
-                              ],
+                    const SizedBox(height: 10),
+                    Obx(
+                      () => BorderContainer(
+                        isError: controller.planTypeError.value,
+                        byDefault: !controller.isPlanTyping.value,
+                        height: 65,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: TextField(
+                            controller: controller
+                                .getSelectedPlanOptionsTextController(),
+                            readOnly: true,
+                            onTap: () {
+                              showBottomSheetFunc(context, size, controller,
+                                  controller.planList);
+                              controller.planCategoryValidation();
+                            },
+                            style: textStyleW500(
+                                size.width * 0.04, AppColors.blackText),
+                            cursorColor: AppColors.blackText,
+                            decoration: InputDecoration(
+                              hintText: "Select Plan",
+                              border: InputBorder.none,
+                              suffixIcon: Icon(
+                                Icons.arrow_drop_down,
+                                color: AppColors.blackText,
+                              ),
                             ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Text(
-                              "Male",
-                              style: (controller.isGenderToggle.value == true)
-                                  ? textStyleW500(size.width * 0.045,
-                                      AppColors.primaryColor)
-                                  : textStyleW400(
-                                      size.width * 0.045,
-                                      AppColors.blackText.withOpacity(0.5),
-                                    ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      InkWell(
-                        onTap: () {
-                          controller.isGenderToggle.value = false;
-                        },
-                        child: Row(
-                          children: [
-                            Stack(
-                              children: [
-                                Image.asset(
-                                  Assets.imagesCircle,
-                                  color: (controller.isGenderToggle.value ==
-                                          false)
-                                      ? AppColors.primaryColor
-                                      : AppColors.blackText.withOpacity(0.5),
-                                ),
-                                (controller.isGenderToggle.value == false)
-                                    ? Positioned(
-                                        top: 3,
-                                        left: 3,
-                                        child: Image.asset(
-                                            Assets.imagesSelectedCircle))
-                                    : Container()
-                              ],
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Text(
-                              "Female",
-                              style: (controller.isGenderToggle.value == false)
-                                  ? textStyleW500(size.width * 0.045,
-                                      AppColors.primaryColor)
-                                  : textStyleW400(
-                                      size.width * 0.045,
-                                      AppColors.blackText.withOpacity(0.5),
-                                    ),
-                            )
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: size.height * 0.015,
-                ),
-                Obx(
-                  () => CompanyBorderTextfield(
-                    height: 65,
-                    keyboard: TextInputType.multiline,
-                    textInputType: const [],
-                    hint: "Company Name",
-                    readOnly: controller.companyNameOnly.value,
-                    controller: controller.companyName.value,
-                    isError: controller.comapnyNameError.value,
-                    byDefault: !controller.isCompanyNameTyping.value,
-                    onChanged: (value) {
-                      clasifiedController.fetchCompanyNames(value.toString());
-                      controller.isCompanyNameTyping.value = true;
-                      controller.companyNameValidation();
-                    },
-                    onTap: () async {
-                      controller.isCompanyNameTyping.value = true;
-                      controller.companyNameValidation();
-                      final result = await Get.to(() => AddCompanyClassified(
-                            selectedCompanies: selectedCompanies,
-                          ));
-                      if (result != null && result is List<String>) {
-                        selectedCompanies.clear();
-                        selectedCompanies.addAll(result);
-                        controller.companyName.value.text =
-                            selectedCompanies.join(", ");
-                      }
-                    },
-                  ),
-                ),
-                SizedBox(
-                  height: size.height * 0.015,
-                ),
-                Obx(
-                  () => BorderContainer(
-                    isError: controller.planTypeError.value,
-                    byDefault: !controller.isPlanTyping.value,
-                    height: 65,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: TextField(
-                        controller:
-                            controller.getSelectedPlanOptionsTextController(),
-                        readOnly: true,
-                        onTap: () {
-                          showBottomSheetFunc(
-                              context, size, controller, controller.planList);
-                          controller.planCategoryValidation();
-                        },
-                        style: textStyleW500(
-                            size.width * 0.04, AppColors.blackText),
-                        cursorColor: AppColors.blackText,
-                        decoration: InputDecoration(
-                          hintText: "Select Plan",
-                          border: InputBorder.none,
-                          suffixIcon: Icon(
-                            Icons.arrow_drop_down,
-                            color: AppColors.blackText,
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ),
-                SizedBox(
-                  height: size.height * 0.015,
-                ),
-                Obx(
-                  () => TextFormField(
-                    controller: controller.location.value,
-                    readOnly: true,
-                    style: const TextStyle(
-                      fontSize: 15.0,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.black,
-                      fontFamily: 'assets/fonst/Metropolis-Black.otf',
+                    const SizedBox(height: 10),
+                    Obx(
+                      () => TextFormField(
+                        controller: controller.location.value,
+                        readOnly: true,
+                        style: const TextStyle(
+                          fontSize: 15.0,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black,
+                          fontFamily: 'assets/fonst/Metropolis-Black.otf',
+                        ),
+                        onTap: () async {
+                          var place = await PlacesAutocomplete.show(
+                            context: context,
+                            apiKey: googleApikey,
+                            mode: Mode.fullscreen,
+                            hint: 'Search and Save Location.',
+                            types: ['geocode', 'establishment'],
+                            strictbounds: false,
+                            onError: (err) {},
+                          );
+
+                          if (place != null) {
+                            controller.location.value.text =
+                                place.description.toString();
+                            _loc.text = controller.location.value.text;
+                            controller.isLocationTyping.value = true;
+
+                            final plist = GoogleMapsPlaces(
+                              apiKey: googleApikey,
+                              apiHeaders:
+                                  await const GoogleApiHeaders().getHeaders(),
+                            );
+                            String placeid = place.placeId ?? "0";
+                            final detail =
+                                await plist.getDetailsByPlaceId(placeid);
+                            for (var component
+                                in detail.result.addressComponents) {
+                              for (var type in component.types) {
+                                if (type == "administrative_area_level_1") {
+                                  controller.state.value.text =
+                                      component.longName;
+                                } else if (type == "locality") {
+                                  controller.city.value.text =
+                                      component.longName;
+                                } else if (type == "country") {
+                                  controller.country.value.text =
+                                      component.longName;
+                                }
+                              }
+                            }
+
+                            final geometry = detail.result.geometry!;
+                            setState(() {
+                              lat = geometry.location.lat;
+                              log = geometry.location.lng;
+                            });
+                          }
+                        },
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.all(18),
+                          hintText: "Location/ Address / City *",
+                          hintStyle: const TextStyle(
+                            fontSize: 15.0,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                            fontFamily: 'assets/fonst/Metropolis-Black.otf',
+                          ).copyWith(color: Colors.black45),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              width: 1,
+                              color: controller.isLocationTyping.value
+                                  ? AppColors.greenBorder
+                                  : AppColors.redText,
+                            ),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              width: 1,
+                              color: controller.isLocationTyping.value
+                                  ? AppColors.greenBorder
+                                  : AppColors.redText,
+                            ),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              width: 1,
+                              color: controller.isLocationTyping.value
+                                  ? AppColors.greenBorder
+                                  : AppColors.redText,
+                            ),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            controller.isLocationTyping.value = false;
+                            return 'Please enter a location';
+                          }
+                          controller.isLocationTyping.value = true;
+                          return null;
+                        },
+                        onFieldSubmitted: (value) {
+                          if (value.isEmpty) {
+                            Fluttertoast.showToast(
+                              timeInSecForIosWeb: 2,
+                              msg:
+                                  'Please Search and Save your Business Location',
+                            );
+                            controller.isLocationTyping.value = false;
+                          } else if (value.isNotEmpty) {
+                            controller.isLocationTyping.value = true;
+                          }
+                        },
+                      ),
                     ),
-                    onTap: () async {
-                      var place = await PlacesAutocomplete.show(
-                        context: context,
-                        apiKey: googleApikey,
-                        mode: Mode.fullscreen,
-                        hint: 'Search and Save Location.',
-                        types: ['geocode', 'establishment'],
-                        strictbounds: false,
-                        onError: (err) {},
-                      );
+                    100.sbh,
+                    Align(
+                      alignment: Alignment.center,
+                      child: CustomButton(
+                        title: "Submit",
+                        btnColor: AppColors.primaryColor,
+                        titleColor: AppColors.white,
+                        onTap: () {
+                          controller.isCompanyNameTyping.value = true;
+                          controller.isPlanTyping.value = true;
+                          controller.isLocationTyping.value = true;
 
-                      if (place != null) {
-                        controller.location.value.text =
-                            place.description.toString();
-                        _loc.text = controller.location.value.text;
-                        controller.isLocationTyping.value = true;
+                          controller.planCategoryValidation();
 
-                        final plist = GoogleMapsPlaces(
-                          apiKey: googleApikey,
-                          apiHeaders:
-                              await const GoogleApiHeaders().getHeaders(),
-                        );
-                        String placeid = place.placeId ?? "0";
-                        final detail = await plist.getDetailsByPlaceId(placeid);
-                        for (var component in detail.result.addressComponents) {
-                          for (var type in component.types) {
-                            if (type == "administrative_area_level_1") {
-                              controller.state.value.text = component.longName;
-                            } else if (type == "locality") {
-                              controller.city.value.text = component.longName;
-                            } else if (type == "country") {
-                              controller.country.value.text =
-                                  component.longName;
+                          if (file.value == null) {
+                            showToasterrorborder(
+                                "Please Upload Photo", context);
+                          } else if (controller
+                              .companyName.value.text.isEmpty) {
+                            showToasterrorborder(
+                                "Please Enter Company Name", context);
+                          } else {
+                            if (controller.selectedCountPlan > 0) {
+                              // Retrieve city information from the location text field
+                              if (controller.city.value.text.isEmpty) {
+                                showToasterrorborder(
+                                    "Please select a valid location.", context);
+                              } else {
+                                controller.saveCompanyDetails(
+                                  imageFile: file.value,
+                                );
+                              }
+                            } else {
+                              showToasterrorborder(
+                                  "Please select at least one plan.", context);
                             }
                           }
-                        }
-
-                        final geometry = detail.result.geometry!;
-                        setState(() {
-                          lat = geometry.location.lat;
-                          log = geometry.location.lng;
-                        });
-                      }
-                    },
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.all(18),
-                      hintText: "Location/ Address / City *",
-                      hintStyle: const TextStyle(
-                        fontSize: 15.0,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.black,
-                        fontFamily: 'assets/fonst/Metropolis-Black.otf',
-                      ).copyWith(color: Colors.black45),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: 1,
-                          color: controller.isLocationTyping.value
-                              ? AppColors.greenBorder
-                              : AppColors.redText,
-                        ),
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: 1,
-                          color: controller.isLocationTyping.value
-                              ? AppColors.greenBorder
-                              : AppColors.redText,
-                        ),
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: 1,
-                          color: controller.isLocationTyping.value
-                              ? AppColors.greenBorder
-                              : AppColors.redText,
-                        ),
-                        borderRadius: BorderRadius.circular(10.0),
+                        },
+                        isLoading: controller.isLoading,
                       ),
                     ),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        controller.isLocationTyping.value = false;
-                        return 'Please enter a location';
-                      }
-                      controller.isLocationTyping.value = true;
-                      return null;
-                    },
-                    onFieldSubmitted: (value) {
-                      if (value.isEmpty) {
-                        Fluttertoast.showToast(
-                          timeInSecForIosWeb: 2,
-                          msg: 'Please Search and Save your Business Location',
-                        );
-                        controller.isLocationTyping.value = false;
-                      } else if (value.isNotEmpty) {
-                        controller.isLocationTyping.value = true;
-                      }
-                    },
-                  ),
+                    const SizedBox(height: 10),
+                  ],
                 ),
-                Expanded(
-                  child: Container(),
-                ),
-                CustomButton(
-                  title: "Submit",
-                  btnColor: AppColors.primaryColor,
-                  titleColor: AppColors.white,
-                  onTap: () {
-                    controller.isCompanyNameTyping.value = true;
-                    controller.isPlanTyping.value = true;
-                    controller.isLocationTyping.value = true;
-
-                    controller.companyNameValidation();
-                    controller.planCategoryValidation();
-
-                    if (file.value == null) {
-                      showToasterrorborder("Please Upload Photo", context);
-                    } else if (controller.companyName.value.text.isEmpty) {
-                      showToasterrorborder(
-                          "Please Enter Company Name", context);
-                    } else {
-                      if (controller.selectedCountPlan > 0) {
-                        // Retrieve city information from the location text field
-                        if (controller.city.value.text.isEmpty) {
-                          showToasterrorborder(
-                              "Please select a valid location.", context);
-                        } else {
-                          controller.saveCompanyDetails(
-                            imageFile: file.value,
-                          );
-                        }
-                      } else {
-                        showToasterrorborder(
-                            "Please select at least one plan.", context);
-                      }
-                    }
-                  },
-                  isLoading: controller.isLoading,
-                ),
-              ],
+              ),
             ),
           ),
         ),

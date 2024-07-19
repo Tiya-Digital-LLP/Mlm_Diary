@@ -332,6 +332,29 @@ class HomeController extends GetxController {
     }
   }
 
+  void toggleLikeList(
+    String type,
+    int homeId,
+    context,
+    ManageBlogController manageBlogController,
+    ManageNewsController manageNewsController,
+    ClasifiedController classifiedController,
+    QuestionAnswerController questionAnswerController,
+    EditPostController editpostController,
+  ) {
+    if (type == 'blog') {
+      manageBlogController.fetchLikeListBlog(homeId, context);
+    } else if (type == 'news') {
+      manageNewsController.fetchLikeListNews(homeId, context);
+    } else if (type == 'classified') {
+      classifiedController.fetchLikeListClassified(homeId, context);
+    } else if (type == 'question') {
+      questionAnswerController.fetchLikeListQuestion(homeId, context);
+    } else if (type == 'post') {
+      editpostController.fetchLikeListPost(homeId, context);
+    }
+  }
+
   // BookMark
 
   bool isItemBookmark(

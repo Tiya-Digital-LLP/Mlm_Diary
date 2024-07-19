@@ -198,10 +198,17 @@ class MessageController extends GetxController {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonBody = json.decode(response.body);
-        if (jsonBody.containsKey('success')) {
+        if (jsonBody.containsKey('status') && jsonBody['status'] == 1) {
           if (kDebugMode) {
             print('Chat sent successfully');
           }
+          // Fetch the updated chat details
+          final String updatedChatId =
+              jsonBody['record']['chat_id']?.toString() ?? '';
+          await fetchMyChatDetail(updatedChatId);
+
+          // Clear the message input field after sending the message
+          msg.value.clear();
         } else if (jsonBody.containsKey('error')) {
           if (kDebugMode) {
             print('Failed to send chat: ${jsonBody['error']}');

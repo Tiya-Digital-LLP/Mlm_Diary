@@ -3,15 +3,20 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:mlmdiary/classified/classified_like_list_content.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/classified/custom/custom_commment.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/home/home/controller/homescreen_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/blog/blog_liked_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/question_like_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/news/news_like_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/custom/post_like_list_content.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -134,6 +139,42 @@ class _FavouritrCardState extends State<ClassifiedHomeCard> {
       widget.questionAnswerController,
       widget.editpostController,
     );
+  }
+
+  void showLikeList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        widget.controller.toggleLikeList(
+          widget.type,
+          widget.bookmarkId,
+          context,
+          widget.manageBlogController,
+          widget.manageNewsController,
+          widget.clasifiedController,
+          widget.questionAnswerController,
+          widget.editpostController,
+        );
+        return getLikeListContent(widget.type);
+      },
+    );
+  }
+
+  Widget getLikeListContent(String type) {
+    switch (type) {
+      case 'classified':
+        return const ClassifiedLikedListContent();
+      case 'news':
+        return const NewsLikeListContent();
+      case 'post':
+        return const PostLikeListContent();
+      case 'question':
+        return const QuestionLikeListContent();
+      case 'blog':
+        return const BlogLikedListContent();
+      default:
+        return const SizedBox();
+    }
   }
 
   @override
@@ -321,7 +362,9 @@ class _FavouritrCardState extends State<ClassifiedHomeCard> {
                         likeCount.value == 0
                             ? const SizedBox.shrink()
                             : InkWell(
-                                onTap: () {},
+                                onTap: () {
+                                  showLikeList(context);
+                                },
                                 child: Text(
                                   '${likeCount.value}',
                                   style: textStyleW600(

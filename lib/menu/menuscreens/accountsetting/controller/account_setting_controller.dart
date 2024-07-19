@@ -103,7 +103,7 @@ class AccountSeetingController extends GetxController {
   // READ ONLY FIELDS
   RxBool mobileReadOnly = false.obs;
 
-  var selectedTypesId = 0.obs;
+  var selectedTypesId = <RxInt>[].obs;
 
   @override
   void onInit() {
@@ -345,7 +345,8 @@ class AccountSeetingController extends GetxController {
           Uri.parse('${Constants.baseUrl}${Constants.updateuserprofile}'),
         );
 
-        request.fields['user_type'] = selectedTypesId.value.toString();
+        request.fields['user_type'] =
+            selectedTypesId.map((type) => type.value.toString()).join(',');
         request.fields['name'] = name.value.text;
         request.fields['gender'] = isGenderToggle.value ? 'Male' : 'Female';
         request.fields['company'] = companyname.value.text;
@@ -358,6 +359,11 @@ class AccountSeetingController extends GetxController {
         request.fields['api_token'] = apiToken ?? '';
         request.fields['aboutyou'] = aboutyou.value.text;
         request.fields['aboutcompany'] = aboutcompany.value.text;
+
+        if (kDebugMode) {
+          print(
+              'usertype: ${selectedTypesId.map((type) => type.value.toString()).join(',')}');
+        }
 
         // Add image file if provided, or dummy image if not
         if (imageFile != null) {
@@ -870,15 +876,24 @@ class AccountSeetingController extends GetxController {
     }
   }
 
-  void toggleSelected(int index) {
+  void toggleSelected(int index, context) {
+    // Check if the user is trying to select more than 3 items
+    if (selectedCount >= 3 && !isTypeSelectedList[index]) {
+      showToasterrorborder('You Can Select Maximum 3 Fields ', context);
+      return;
+    }
+
+    // Toggle the selection
     isTypeSelectedList[index] = !isTypeSelectedList[index];
 
     if (isTypeSelectedList[index]) {
       selectedCount++;
+      selectedTypesId.add(userTypes[index].id!.obs); // Add the selected ID
     } else {
       selectedCount--;
+      selectedTypesId
+          .remove(userTypes[index].id!.obs); // Remove the deselected ID
     }
-    selectedTypesId.value = userTypes[index].id!;
   }
 
   void passwordValidation() {

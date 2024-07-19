@@ -32,7 +32,9 @@ class _UserMessageDetailScreenState extends State<UserMessageDetailScreen> {
     postTimeFormatter = PostTimeFormatter();
 
     // Fetch chat details if chatId is not null
-    if (post != null && post['chatId'] != null) {}
+    if (post != null && post['chatId'] != null) {
+      messageController.fetchMyChatDetail(post['chatId'].toString());
+    }
 
     // Scroll to the bottom when the chat details are fetched
     messageController.chatdetailsList.listen((_) {
@@ -226,78 +228,79 @@ class _UserMessageDetailScreenState extends State<UserMessageDetailScreen> {
           Container(
             height: 100,
             color: AppColors.white,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.primaryColor.withOpacity(0.4),
-                              spreadRadius: 2,
-                              blurRadius: 5,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: SvgPicture.asset(
-                          Assets.svgPlusIcon,
-                          height: 40,
-                        ),
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primaryColor.withOpacity(0.4),
+                            spreadRadius: 2,
+                            blurRadius: 5,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
                       ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: AppColors.searchbar,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16.0),
-                              child: TextField(
-                                controller: messageController.msg.value,
-                                decoration: const InputDecoration(
-                                  hintText: 'Write your answer here',
-                                  border: InputBorder.none,
-                                ),
-                                onChanged: (value) {},
+                      child: SvgPicture.asset(
+                        Assets.svgPlusIcon,
+                        height: 40,
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: AppColors.searchbar,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: TextField(
+                              controller: messageController.msg.value,
+                              decoration: const InputDecoration(
+                                hintText: 'Write your answer here',
+                                border: InputBorder.none,
                               ),
+                              onChanged: (value) {},
                             ),
                           ),
                         ),
                       ),
-                      IconButton(
+                    ),
+                    8.sbw,
+                    Obx(() {
+                      return IconButton(
                         icon: SvgPicture.asset(
                           Assets.svgSend,
+                          // ignore: deprecated_member_use
+                          color: AppColors.primaryColor,
+                          height: size.width * 0.07,
                         ),
-                        onPressed: () {
-                          messageController.sendChat(
-                            toId: post['toid'].toString(),
-                            chatId: post['chatId'] ?? '',
-                          );
+                        onPressed: messageController.isLoading.value
+                            ? null
+                            : () async {
+                                await messageController.sendChat(
+                                  toId: post['toid'].toString(),
+                                  chatId: post['chatId']?.toString(),
+                                );
 
-                          // Scroll to the bottom after sending a message
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            if (_scrollController.hasClients) {
-                              _scrollController.jumpTo(
-                                _scrollController.position.maxScrollExtent,
-                              );
-                            }
-                          });
-                        },
-                      ),
-                    ],
-                  ),
+                                // Clear the message input field after sending the message
+                                messageController.msg.value.clear();
+                              },
+                      );
+                    }),
+                    12.sbw,
+                  ],
                 ),
-              ],
-            ),
+              )
+            ]),
           ),
         ],
       ),

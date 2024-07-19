@@ -1,6 +1,10 @@
 import 'dart:async';
+import 'package:facebook_app_events/facebook_app_events.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:gtm/gtm.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/maincontroller/main_controller.dart';
@@ -20,11 +24,45 @@ class _SplashScreenState extends State<SplashScreen> {
   final VersionController _versionController = Get.put(VersionController());
   final NavigationController _navigationController =
       Get.find<NavigationController>();
+  final FacebookAppEvents facebookAppEvents = FacebookAppEvents();
 
   @override
   void initState() {
     super.initState();
     _checkVersionAndNavigate();
+    initGtm();
+    facebookAppEvents.logEvent(name: 'SplashScreenView');
+    if (kDebugMode) {
+      print("Logging Facebook event: SplashScreenView");
+    }
+  }
+
+  Future<void> initGtm() async {
+    try {
+      final gtm = Gtm.instance;
+      gtm.setCustomTagTypes([
+        CustomTagType(
+          'amplitude',
+          handler: (eventName, parameters) {
+            if (kDebugMode) {
+              print('amplitude!');
+              print(eventName);
+              print(parameters);
+            }
+          },
+        ),
+      ]);
+      gtm.push(
+        'splash_screen_view',
+        parameters: {
+          'screen_name': 'SplashScreen',
+        },
+      );
+    } on PlatformException {
+      if (kDebugMode) {
+        print('exception occurred!');
+      }
+    }
   }
 
   Future<void> _checkVersionAndNavigate() async {

@@ -620,7 +620,7 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            controller.toggleSelected(index);
+                            controller.toggleSelected(index, context);
                           },
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
@@ -630,7 +630,7 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                                 Obx(
                                   () => GestureDetector(
                                     onTap: () {
-                                      controller.toggleSelected(index);
+                                      controller.toggleSelected(index, context);
                                     },
                                     child: Image.asset(
                                       controller.isTypeSelectedList[index]

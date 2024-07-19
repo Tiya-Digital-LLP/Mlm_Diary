@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
 import 'package:mlmdiary/widgets/custom_button.dart';
@@ -89,29 +90,12 @@ class _EnterOTPScreenState extends State<EnterOTPScreen> {
               onSubmit: (String verificationCode) {
                 // Verify OTP
                 if (verificationCode == otp.toString()) {
-                  // Navigate to reset password screen
+                  showToastverifedborder(
+                      'OTP is Verified Please Set Password', context);
                   Get.offNamed(Routes.resetPassword,
                       arguments: {'userId': userId});
                 } else {
-                  // Show error message or handle invalid OTP
-                  // For example:
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: const Text('Error'),
-                        content: const Text('Invalid OTP. Please try again.'),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Get.back();
-                            },
-                            child: const Text('OK'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
+                  showToasterrorborder('OTP is Incrorrect', context);
                 }
               },
             ),
@@ -150,23 +134,7 @@ class _EnterOTPScreenState extends State<EnterOTPScreen> {
                   // Perform OTP validation
                   if (enteredOtp.length != 6) {
                     // Show error message for invalid OTP length
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: const Text('Error'),
-                          content: const Text('Please enter a valid OTP.'),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Text('OK'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
+                    showToasterrorborder('OTP is Incrorrect', context);
                   } else if (enteredOtp != otp.toString()) {
                     // Show error message for incorrect OTP
                     showDialog(
@@ -187,7 +155,8 @@ class _EnterOTPScreenState extends State<EnterOTPScreen> {
                       },
                     );
                   } else {
-                    // OTP is valid, navigate to the next screen (Reset Password Screen)
+                    showToastverifedborder(
+                        'OTP is Verified Please Set Password', context);
                     Get.offNamed(Routes.resetPassword,
                         arguments: {'userId': userId});
                   }

@@ -204,30 +204,48 @@ class _ProfileScreenState extends State<ProfileScreen>
                         children: [
                           Column(
                             children: [
-                              Text(
-                                userProfile.followersCount.toString(),
-                                style: textStyleW700(
-                                    size.width * 0.045, AppColors.blackText),
-                              ),
-                              Text(
-                                'Followers',
-                                style: textStyleW500(
-                                    size.width * 0.035, AppColors.blackText),
+                              InkWell(
+                                onTap: () {
+                                  Get.toNamed(Routes.followers);
+                                },
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      userProfile.followersCount.toString(),
+                                      style: textStyleW700(size.width * 0.045,
+                                          AppColors.blackText),
+                                    ),
+                                    Text(
+                                      'Followers',
+                                      style: textStyleW500(size.width * 0.035,
+                                          AppColors.blackText),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
                           20.sbw,
                           Column(
                             children: [
-                              Text(
-                                userProfile.followingCount.toString(),
-                                style: textStyleW700(
-                                    size.width * 0.045, AppColors.blackText),
-                              ),
-                              Text(
-                                'Following',
-                                style: textStyleW500(
-                                    size.width * 0.035, AppColors.blackText),
+                              InkWell(
+                                onTap: () {
+                                  Get.toNamed(Routes.followers);
+                                },
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      userProfile.followingCount.toString(),
+                                      style: textStyleW700(size.width * 0.045,
+                                          AppColors.blackText),
+                                    ),
+                                    Text(
+                                      'Following',
+                                      style: textStyleW500(size.width * 0.035,
+                                          AppColors.blackText),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),

@@ -108,7 +108,7 @@ class SignupController extends GetxController {
   RxBool mobileReadOnly = false.obs;
   RxBool emailReadOnly = false.obs;
 
-  var selectedTypesId = 0.obs;
+  var selectedTypesId = <RxInt>[].obs;
 
   Future<void> fetchUserTypes() async {
     try {
@@ -181,12 +181,22 @@ class SignupController extends GetxController {
           Uri.parse('${Constants.baseUrl}${Constants.domesticPhoneOtp}'),
           body: {
             'name': name,
-            'user_type': selectedTypesId.value.toString(),
+            'user_type':
+                selectedTypesId.map((type) => type.value.toString()).join(','),
             'mobile': mobile,
             'countrycode': countryCode,
             'device': device,
           },
         );
+
+        if (kDebugMode) {
+          print('name: $name');
+          print(
+              'usertype: ${selectedTypesId.map((type) => type.value.toString()).join(',')}');
+          print('mobile: $mobile');
+          print('countrycode: $countryCode');
+          print('device: $device');
+        }
 
         if (response.statusCode == 200) {
           final Map<String, dynamic> jsonBody = jsonDecode(response.body);
@@ -871,8 +881,6 @@ class SignupController extends GetxController {
     if (enteredName.isEmpty ||
         hasSpecialCharactersOrNumbers(enteredName) ||
         !isFirstLetterCapital(enteredName)) {
-      showToasterrorborder(
-          'Required First Capital Character For Name', context);
       nameError.value = true;
     } else {
       nameError.value = false;
@@ -994,15 +1002,14 @@ class SignupController extends GetxController {
     // Toggle the selection
     isTypeSelectedList[index] = !isTypeSelectedList[index];
 
-    // Update the selected count
     if (isTypeSelectedList[index]) {
       selectedCount++;
+      selectedTypesId.add(userTypes[index].id!.obs); // Add the selected ID
     } else {
       selectedCount--;
+      selectedTypesId
+          .remove(userTypes[index].id!.obs); // Remove the deselected ID
     }
-
-    // Update the selected type ID
-    selectedTypesId.value = userTypes[index].id!;
 
     // ignore: unrelated_type_equality_checks
     mlmTypeError.value = selectedCount == 0;
@@ -1015,7 +1022,7 @@ class SignupController extends GetxController {
     List<String> selectedTypeOptions = [];
     for (int i = 0; i < isTypeSelectedList.length; i++) {
       if (isTypeSelectedList[i]) {
-        selectedTypeOptions.add(userTypes[i].name.toString());
+        selectedTypeOptions.add(userTypes[i].name ?? '');
       }
     }
 

@@ -10,6 +10,7 @@ import 'package:http_parser/http_parser.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/get_plan_list_entity.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Signup2Controller extends GetxController {
@@ -152,9 +153,7 @@ class Signup2Controller extends GetxController {
   }
 
   // Save company details with the stored API token
-  Future<void> saveCompanyDetails({
-    required File? imageFile,
-  }) async {
+  Future<void> saveCompanyDetails({required File? imageFile, context}) async {
     isLoading(true);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
@@ -212,7 +211,7 @@ class Signup2Controller extends GetxController {
             print("Response body: $jsonBody");
           }
           Get.offAllNamed(Routes.mainscreen);
-          // Parse response and update UI as needed
+          showToasterrorborder('Business Profile is Added', context);
         } else {
           if (kDebugMode) {
             print(

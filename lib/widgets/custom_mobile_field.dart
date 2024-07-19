@@ -57,6 +57,7 @@ class CustomMobileField extends StatelessWidget {
             inputFormatters: textInputType,
             onChanged: onChanged,
             controller: controller,
+            textInputAction: TextInputAction.next,
             style: textStyleW500(size.width * 0.04, AppColors.blackText),
             cursorColor: AppColors.blackText,
             decoration: InputDecoration(

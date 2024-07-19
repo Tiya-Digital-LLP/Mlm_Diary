@@ -778,13 +778,14 @@ class _HomeScreenState extends State<HomeScreen> {
         if (kDebugMode) {
           print('database');
         }
-        await userProfileController.fetchUserAllPost(
-          1,
-          post.id ?? 0,
-        );
+
         Get.toNamed(
           Routes.userprofilescreencopy,
           arguments: post,
+        );
+        await userProfileController.fetchUserAllPost(
+          1,
+          post.id ?? 0,
         );
         break;
       case 'question':

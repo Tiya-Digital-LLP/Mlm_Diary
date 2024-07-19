@@ -185,6 +185,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.5"
+  facebook_app_events:
+    dependency: "direct main"
+    description:
+      name: facebook_app_events
+      sha256: "01c4f3ea5ec3e4bf492c8d782e569ca2251f2b67d34504efba24887e63dd42da"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.19.2"
   fake_async:
     dependency: transitive
     description:
@@ -544,6 +552,38 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.3"
+  gtm:
+    dependency: "direct main"
+    description:
+      name: gtm
+      sha256: d625eebbf5e1c614d44576df90b40225bb8eeef53824b3d0a45bc44bb2f0e824
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.6"
+  gtm_android:
+    dependency: transitive
+    description:
+      name: gtm_android
+      sha256: "9d6b8827a0cdd8beae4f31a5e61d8e7e12045430075893752d6d48a2ceff7e18"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.2"
+  gtm_ios:
+    dependency: transitive
+    description:
+      name: gtm_ios
+      sha256: f054b2a08814e75eb57496349c06a5a7ff0f26e7686b1105b694ca8ef9f877fe
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.1"
+  gtm_platform_interface:
+    dependency: transitive
+    description:
+      name: gtm_platform_interface
+      sha256: "65b7f3a2b1ba61f4ffbfa3282ce2095daa7cd8c430b635d532c19ffa509630bb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.0"
   html:
     dependency: "direct main"
     description:
@@ -620,10 +660,10 @@ packages:
     dependency: transitive
     description:
       name: image_picker_android
-      sha256: ff39a10ab4f48f4ac70776d0494a97bf073cd2570892cd46bc8a5cac162c25db
+      sha256: "9e32a194887720d6bc40bbae6035511bdd6cd0f03ea7af92166387504471f147"
       url: "https://pub.dev"
     source: hosted
-    version: "0.8.12+4"
+    version: "0.8.12+5"
   image_picker_for_web:
     dependency: transitive
     description:
@@ -1145,10 +1185,10 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_android
-      sha256: ceb2625f0c24ade6ef6778d1de0b2e44f2db71fded235eb52295247feba8c5cf
+      sha256: eac82dc8e5f48818054f46021e9e5f34c239f8d301e7e29165b977c8d1189fed
       url: "https://pub.dev"
     source: hosted
-    version: "6.3.3"
+    version: "6.3.4"
   url_launcher_ios:
     dependency: transitive
     description:

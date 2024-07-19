@@ -55,6 +55,7 @@ class CustomNameTextField extends StatelessWidget {
             readOnly: readOnly,
             keyboardType: keyboard,
             inputFormatters: textInputType,
+            textInputAction: TextInputAction.next,
             onChanged: onChanged,
             controller: controller,
             style: textStyleW500(size.width * 0.04, AppColors.blackText),

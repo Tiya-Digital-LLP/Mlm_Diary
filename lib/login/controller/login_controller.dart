@@ -28,30 +28,6 @@ class LoginController extends GetxController {
 
   var isLoading = false.obs;
 
-  void validateEmailOrMobile() {
-    String emailPattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
-    RegExp emailRegex = RegExp(emailPattern);
-
-    String mobilePattern = r'^[0-9]{10}$';
-    RegExp mobileRegex = RegExp(mobilePattern);
-
-    if (email.value.text.isNotEmpty) {
-      emailError.value = !emailRegex.hasMatch(email.value.text);
-      mobileError.value = false;
-    } else if (mobile.value.text.isNotEmpty) {
-      mobileError.value = !mobileRegex.hasMatch(mobile.value.text);
-      emailError.value = false;
-    } else {
-      emailError.value = true;
-      mobileError.value = true;
-    }
-
-    if (emailError.value || mobileError.value) {
-      isEmailTyping.value = true;
-      isMobileTyping.value = true;
-    }
-  }
-
   void passwordValidation() {
     if (password.value.text.isEmpty || password.value.text.length < 6) {
       passwordError.value = true;
@@ -64,21 +40,38 @@ class LoginController extends GetxController {
     }
   }
 
-  void loginValidation(BuildContext context) {
+  bool validateInput(String value) {
+    if (value.length == 10 && int.tryParse(value) != null) {
+      return true;
+    } else if (_isValidEmail(value)) {
+      return true;
+    }
+    return false;
+  }
+
+  bool _isValidEmail(String value) {
+    // Email validation regex
+    String emailPattern = r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$';
+    RegExp regex = RegExp(emailPattern);
+    return regex.hasMatch(value);
+  }
+
+  void loginValidation(BuildContext context, String value) {
     // Force typing state to true for validation display
     isEmailTyping.value = true;
     isMobileTyping.value = true;
     isPasswordTyping.value = true;
 
     // Perform validation
-    validateEmailOrMobile();
+    validateInput(value);
     passwordValidation();
 
     if (email.value.text.isEmpty && password.value.text.isEmpty) {
       showToasterrorborder(
           "Please Enter Email or Mobile and \nPassword", context);
     } else if (email.value.text.isEmpty && mobile.value.text.isEmpty) {
-      showToasterrorborder("Please Enter Email or Mobile", context);
+      showToasterrorborder(
+          "Please Enter Your Registered Email Or Phone Number ", context);
     } else if (password.value.text.isEmpty) {
       showToasterrorborder("Please Enter Password", context);
     } else if (password.value.text.length < 6) {

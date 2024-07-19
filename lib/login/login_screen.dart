@@ -23,7 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: AppColors.white,
       resizeToAvoidBottomInset: true,
@@ -58,22 +58,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         textStyleW500(size.width * 0.05, AppColors.blackText),
                   ),
                   25.sbh,
-                  Obx(
-                    () => Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 22),
-                      child: CustomTextField(
-                        controller: controller.email.value,
-                        title: "Enter Your Email / Mobile",
-                        isError: controller.emailError.value ||
-                            controller.mobileError.value,
-                        byDefault: !controller.isEmailTyping.value &&
-                            !controller.isMobileTyping.value,
-                        onChanged: () {
-                          controller.isEmailTyping.value = true;
-                          controller.isMobileTyping.value = true;
-                          controller.validateEmailOrMobile();
-                        },
-                      ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 22),
+                    child: MobileEmailField(
+                      byDefault: controller.isMobileTyping.value,
                     ),
                   ),
                   15.sbh,
@@ -108,7 +96,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: NormalButton(
                       onPressed: () {
-                        controller.loginValidation(context);
+                        controller.loginValidation(
+                            context, controller.email.value.text);
                       },
                       text: 'Log in',
                       isLoading: controller.isLoading,

@@ -134,8 +134,6 @@ class ForgotPasswordController extends GetxController {
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
         if (responseData['result'] == 1) {
-          // ignore: use_build_context_synchronously
-          showToastverifedborder("Password changed successfully!", context);
           Get.toNamed(
             Routes.login,
           );
