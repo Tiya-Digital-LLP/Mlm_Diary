@@ -495,167 +495,186 @@ class _SignupPageState extends State<SignupPage> {
                                                     ),
                                                   ],
                                                 )
-                                              : Column(
-                                                  children: [
-                                                    BorderTextField(
-                                                      controller: controller
-                                                          .emailOtp.value,
-                                                      hint: "Enter OTP",
-                                                      textInputType: [
-                                                        FilteringTextInputFormatter
-                                                            .digitsOnly
-                                                      ],
-                                                      keyboard:
-                                                          TextInputType.number,
-                                                      isError: controller
-                                                          .emailOtpError.value,
-                                                      byDefault: !controller
-                                                          .isEmailOtpTyping
-                                                          .value,
-                                                      onChanged: (value) {
-                                                        controller
-                                                            .emailOtpValidation();
-                                                        controller
-                                                            .isEmailOtpTyping
-                                                            .value = true;
-                                                      },
-                                                    ),
-                                                    SizedBox(
-                                                      height:
-                                                          size.height * 0.015,
-                                                    ),
-                                                    (controller.timerValue
-                                                                .value ==
-                                                            0)
-                                                        ? GestureDetector(
-                                                            onTap: () {
-                                                              // Resend email OTP
-                                                              String email =
+                                              : Obx(() {
+                                                  return controller
+                                                          .isEmailOtpScreenVisible
+                                                          .value
+                                                      ? Column(
+                                                          children: [
+                                                            BorderTextField(
+                                                              controller:
                                                                   controller
-                                                                      .email
-                                                                      .value
-                                                                      .text;
-                                                              int userId =
-                                                                  controller
-                                                                      .defaultUserId
-                                                                      .value;
-                                                              if (email
-                                                                      .isNotEmpty &&
-                                                                  userId != 0) {
+                                                                      .emailOtp
+                                                                      .value,
+                                                              hint: "Enter OTP",
+                                                              textInputType: [
+                                                                FilteringTextInputFormatter
+                                                                    .digitsOnly
+                                                              ],
+                                                              keyboard:
+                                                                  TextInputType
+                                                                      .number,
+                                                              isError: controller
+                                                                  .emailOtpError
+                                                                  .value,
+                                                              byDefault: !controller
+                                                                  .isEmailOtpTyping
+                                                                  .value,
+                                                              onChanged:
+                                                                  (value) {
                                                                 controller
-                                                                    .sendEmailOtp(
-                                                                        email,
-                                                                        userId,
-                                                                        context);
+                                                                    .emailOtpValidation();
                                                                 controller
-                                                                    .timerValue
-                                                                    .value = 30;
-                                                                controller
-                                                                    .startTimer();
-                                                                showToastverifedborder(
-                                                                    "Email OTP Resend Successfully",
-                                                                    context);
-                                                              } else {
-                                                                showToasterrorborder(
-                                                                    "Please enter a valid email",
-                                                                    context);
-                                                              }
-                                                            },
-                                                            child: Text(
-                                                              "Resend OTP",
-                                                              style: textStyleW500(
-                                                                  size.width *
-                                                                      0.042,
-                                                                  AppColors
-                                                                      .primaryColor),
+                                                                    .isEmailOtpTyping
+                                                                    .value = true;
+                                                              },
                                                             ),
-                                                          )
-                                                        : Text(
-                                                            'Resent OTP ${controller.timerValue.value} seconds',
-                                                            style: textStyleW500(
-                                                                size.width *
-                                                                    0.042,
-                                                                AppColors
-                                                                    .blackText),
-                                                          ),
-                                                    SizedBox(
-                                                      height:
-                                                          size.height * 0.015,
-                                                    ),
-                                                    CustomButton(
-                                                      title: "Verify",
-                                                      btnColor: AppColors
-                                                          .primaryColor,
-                                                      titleColor:
-                                                          AppColors.white,
-                                                      onTap: () {
-                                                        controller
-                                                            .isEmailOtpTyping
-                                                            .value = true;
+                                                            SizedBox(
+                                                              height:
+                                                                  size.height *
+                                                                      0.015,
+                                                            ),
+                                                            (controller.timerValue
+                                                                        .value ==
+                                                                    0)
+                                                                ? GestureDetector(
+                                                                    onTap: () {
+                                                                      // Resend email OTP
+                                                                      String email = controller
+                                                                          .email
+                                                                          .value
+                                                                          .text;
+                                                                      int userId = controller
+                                                                          .defaultUserId
+                                                                          .value;
+                                                                      if (email
+                                                                              .isNotEmpty &&
+                                                                          userId !=
+                                                                              0) {
+                                                                        controller.sendEmailOtp(
+                                                                            email,
+                                                                            userId,
+                                                                            context);
+                                                                        controller
+                                                                            .timerValue
+                                                                            .value = 30;
+                                                                        controller
+                                                                            .startTimer();
+                                                                        showToastverifedborder(
+                                                                            "Email OTP Resend Successfully",
+                                                                            context);
+                                                                      } else {
+                                                                        showToasterrorborder(
+                                                                            "Please enter a valid email",
+                                                                            context);
+                                                                      }
+                                                                    },
+                                                                    child: Text(
+                                                                      "Resend OTP",
+                                                                      style: textStyleW500(
+                                                                          size.width *
+                                                                              0.042,
+                                                                          AppColors
+                                                                              .primaryColor),
+                                                                    ),
+                                                                  )
+                                                                : Text(
+                                                                    'Resent OTP ${controller.timerValue.value} seconds',
+                                                                    style: textStyleW500(
+                                                                        size.width *
+                                                                            0.042,
+                                                                        AppColors
+                                                                            .blackText),
+                                                                  ),
+                                                            SizedBox(
+                                                              height:
+                                                                  size.height *
+                                                                      0.015,
+                                                            ),
+                                                            CustomButton(
+                                                              title: "Verify",
+                                                              btnColor: AppColors
+                                                                  .primaryColor,
+                                                              titleColor:
+                                                                  AppColors
+                                                                      .white,
+                                                              onTap: () {
+                                                                controller
+                                                                    .isEmailOtpTyping
+                                                                    .value = true;
 
-                                                        controller
-                                                            .emailOtpValidation();
+                                                                controller
+                                                                    .emailOtpValidation();
 
-                                                        if (controller
-                                                            .emailOtp
-                                                            .value
-                                                            .text
-                                                            .isEmpty) {
-                                                          showToasterrorborder(
-                                                              "Please Enter Email OTP",
-                                                              context);
-                                                        } else if (controller
-                                                                .emailOtp
-                                                                .value
-                                                                .text
-                                                                .length <
-                                                            6) {
-                                                          showToasterrorborder(
-                                                              "OTP Must be 6 Digits",
-                                                              context);
-                                                        } else {
-                                                          String email =
-                                                              controller.email
-                                                                  .value.text;
-                                                          int userId =
-                                                              controller
-                                                                  .defaultUserId
-                                                                  .value;
-                                                          String otp =
-                                                              controller
-                                                                  .emailOtp
-                                                                  .value
-                                                                  .text;
+                                                                if (controller
+                                                                    .emailOtp
+                                                                    .value
+                                                                    .text
+                                                                    .isEmpty) {
+                                                                  showToasterrorborder(
+                                                                      "Please Enter Email OTP",
+                                                                      context);
+                                                                } else if (controller
+                                                                        .emailOtp
+                                                                        .value
+                                                                        .text
+                                                                        .length <
+                                                                    6) {
+                                                                  showToasterrorborder(
+                                                                      "OTP Must be 6 Digits",
+                                                                      context);
+                                                                } else {
+                                                                  String email =
+                                                                      controller
+                                                                          .email
+                                                                          .value
+                                                                          .text;
+                                                                  int userId =
+                                                                      controller
+                                                                          .defaultUserId
+                                                                          .value;
+                                                                  String otp =
+                                                                      controller
+                                                                          .emailOtp
+                                                                          .value
+                                                                          .text;
 
-                                                          // Call the verifyEmail method from the controller
-                                                          controller
-                                                              .verifyEmail(
-                                                                  email,
-                                                                  userId,
-                                                                  otp,
-                                                                  context);
-                                                        }
-                                                      },
-                                                      isLoading:
-                                                          controller.isLoading,
-                                                    ),
-                                                    SizedBox(
-                                                      height:
-                                                          size.height * 0.015,
-                                                    ),
-                                                    Text(
-                                                      "Please check your email, and enter verification code below. You may need to check your Spam or Junk folder as well.",
-                                                      maxLines: 2,
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          fontSize: size.width *
-                                                              0.042),
-                                                    )
-                                                  ],
-                                                )
+                                                                  // Call the verifyEmail method from the controller
+                                                                  controller
+                                                                      .verifyEmail(
+                                                                          email,
+                                                                          userId,
+                                                                          otp,
+                                                                          context);
+                                                                }
+                                                              },
+                                                              isLoading:
+                                                                  controller
+                                                                      .isLoading,
+                                                            ),
+                                                            SizedBox(
+                                                              height:
+                                                                  size.height *
+                                                                      0.015,
+                                                            ),
+                                                            Text(
+                                                              "Please check your email, and enter verification code below. You may need to check your Spam or Junk folder as well.",
+                                                              maxLines: 2,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
+                                                              style: TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400,
+                                                                  fontSize: size
+                                                                          .width *
+                                                                      0.042),
+                                                            )
+                                                          ],
+                                                        )
+                                                      : const SizedBox.shrink();
+                                                })
                                           : CustomButton(
                                               // SEND EMAIL OTP
                                               title: "Send OTP",
@@ -697,122 +716,141 @@ class _SignupPageState extends State<SignupPage> {
                                             ),
                                     )
                                   ])
-                                : Column(
-                                    children: [
-                                      // ENTER MOBILE OTP
-
-                                      BorderTextField(
-                                        controller: controller.mobileOtp.value,
-                                        hint: "Enter OTP",
-                                        textInputType: [
-                                          FilteringTextInputFormatter.digitsOnly
-                                        ],
-                                        keyboard: TextInputType.number,
-                                        isError:
-                                            controller.mobileOtpError.value,
-                                        byDefault:
-                                            !controller.isMobileOtpTyping.value,
-                                        onChanged: (value) {
-                                          controller.mobileOtpValidation();
-                                          controller.isMobileOtpTyping.value =
-                                              true;
-                                        },
-                                      ),
-                                      SizedBox(
-                                        height: size.height * 0.015,
-                                      ),
-                                      // OTP Timer
-                                      (controller.timerValue.value == 0)
-                                          ? GestureDetector(
-                                              onTap: () async {
-                                                try {
-                                                  await controller.verifyOtp(
-                                                      controller
-                                                          .defaultUserId.value,
-                                                      context);
-                                                  controller.timerValue.value =
-                                                      30;
-                                                  controller.startTimer();
-                                                  showToastverifedborder(
-                                                      "OTP Resent Successfully",
-                                                      // ignore: use_build_context_synchronously
-                                                      context);
-                                                } catch (e) {
-                                                  showToasterrorborder(
-                                                      "Failed to Resend OTP",
-                                                      // ignore: use_build_context_synchronously
-                                                      context);
-                                                  if (kDebugMode) {
-                                                    print(
-                                                        "Error resending OTP: $e");
-                                                  }
-                                                }
-                                              },
-                                              child: Text(
-                                                "Resend OTP",
-                                                style: textStyleW500(
-                                                  size.width * 0.042,
-                                                  AppColors.primaryColor,
-                                                ),
-                                              ),
-                                            )
-                                          : Text(
-                                              'Resent OTP ${controller.timerValue.value} seconds',
-                                              style: textStyleW500(
-                                                  size.width * 0.042,
-                                                  AppColors.blackText),
-                                            ),
-                                      SizedBox(
-                                        height: size.height * 0.015,
-                                      ),
-                                      CustomButton(
-                                        // Mobile OTP VERIFICATION
-                                        title: "Verify",
-                                        btnColor: AppColors.primaryColor,
-                                        titleColor: AppColors.white,
-                                        onTap: () async {
-                                          controller.isMobileOtpTyping.value =
-                                              true;
-
-                                          controller.mobileOtpValidation();
-
-                                          if (controller
-                                              .mobileOtp.value.text.isEmpty) {
-                                            showToasterrorborder(
-                                                "Please Enter Mobile OTP",
-                                                context);
-                                          } else if (controller
-                                                  .mobileOtp.value.text.length <
-                                              6) {
-                                            showToasterrorborder(
-                                                "Mobile OTP Must be 6 Digits",
-                                                context);
-                                          } else {
-                                            try {
-                                              await controller.verifyPhoneOtp(
-                                                  controller.defaultUserId
-                                                      .value, // Pass the user ID
+                                : Obx(() {
+                                    return controller
+                                            .isMobileOtpScreenVisible.value
+                                        ? Column(
+                                            children: [
+                                              // ENTER MOBILE OTP
+                                              BorderTextField(
+                                                controller:
+                                                    controller.mobileOtp.value,
+                                                hint: "Enter OTP",
+                                                textInputType: [
+                                                  FilteringTextInputFormatter
+                                                      .digitsOnly
+                                                ],
+                                                keyboard: TextInputType.number,
+                                                isError: controller
+                                                    .mobileOtpError.value,
+                                                byDefault: !controller
+                                                    .isMobileOtpTyping.value,
+                                                onChanged: (value) {
                                                   controller
-                                                      .mobileOtp.value.text,
-                                                  context // Pass the OTP entered by the user
-                                                  );
-                                              controller.stopTimer();
-                                            } catch (e) {
-                                              showToasterrorborder(
-                                                  "Failed to Verify Mobile OTP",
-                                                  // ignore: use_build_context_synchronously
-                                                  context);
-                                              if (kDebugMode) {
-                                                print(
-                                                    "Error verifying OTP: $e");
-                                              }
-                                            }
-                                          }
-                                        },
-                                        isLoading: controller.isLoading,
-                                      ),
-                                    ],
-                                  )
+                                                      .mobileOtpValidation();
+                                                  controller.isMobileOtpTyping
+                                                      .value = true;
+                                                },
+                                              ),
+                                              SizedBox(
+                                                height: size.height * 0.015,
+                                              ),
+                                              // OTP Timer
+                                              (controller.timerValue.value == 0)
+                                                  ? GestureDetector(
+                                                      onTap: () async {
+                                                        try {
+                                                          await controller
+                                                              .verifyOtp(
+                                                                  controller
+                                                                      .defaultUserId
+                                                                      .value,
+                                                                  context);
+                                                          controller.timerValue
+                                                              .value = 30;
+                                                          controller
+                                                              .startTimer();
+                                                          showToastverifedborder(
+                                                              "OTP Resent Successfully",
+                                                              // ignore: use_build_context_synchronously
+                                                              context);
+                                                        } catch (e) {
+                                                          showToasterrorborder(
+                                                              "Failed to Resend OTP",
+                                                              // ignore: use_build_context_synchronously
+                                                              context);
+                                                          if (kDebugMode) {
+                                                            print(
+                                                                "Error resending OTP: $e");
+                                                          }
+                                                        }
+                                                      },
+                                                      child: Text(
+                                                        "Resend OTP",
+                                                        style: textStyleW500(
+                                                          size.width * 0.042,
+                                                          AppColors
+                                                              .primaryColor,
+                                                        ),
+                                                      ),
+                                                    )
+                                                  : Text(
+                                                      'Resent OTP ${controller.timerValue.value} seconds',
+                                                      style: textStyleW500(
+                                                          size.width * 0.042,
+                                                          AppColors.blackText),
+                                                    ),
+                                              SizedBox(
+                                                height: size.height * 0.015,
+                                              ),
+                                              CustomButton(
+                                                // Mobile OTP VERIFICATION
+                                                title: "Verify",
+                                                btnColor:
+                                                    AppColors.primaryColor,
+                                                titleColor: AppColors.white,
+                                                onTap: () async {
+                                                  controller.isMobileOtpTyping
+                                                      .value = true;
+
+                                                  controller
+                                                      .mobileOtpValidation();
+
+                                                  if (controller.mobileOtp.value
+                                                      .text.isEmpty) {
+                                                    showToasterrorborder(
+                                                        "Please Enter Mobile OTP",
+                                                        context);
+                                                  } else if (controller
+                                                          .mobileOtp
+                                                          .value
+                                                          .text
+                                                          .length <
+                                                      6) {
+                                                    showToasterrorborder(
+                                                        "Mobile OTP Must be 6 Digits",
+                                                        context);
+                                                  } else {
+                                                    try {
+                                                      await controller
+                                                          .verifyPhoneOtp(
+                                                              controller
+                                                                  .defaultUserId
+                                                                  .value,
+                                                              controller
+                                                                  .mobileOtp
+                                                                  .value
+                                                                  .text,
+                                                              context);
+                                                      controller.stopTimer();
+                                                    } catch (e) {
+                                                      showToasterrorborder(
+                                                          "Failed to Verify Mobile OTP",
+                                                          // ignore: use_build_context_synchronously
+                                                          context);
+                                                      if (kDebugMode) {
+                                                        print(
+                                                            "Error verifying OTP: $e");
+                                                      }
+                                                    }
+                                                  }
+                                                },
+                                                isLoading: controller.isLoading,
+                                              ),
+                                            ],
+                                          )
+                                        : const SizedBox.shrink();
+                                  })
                             : CustomButton(
                                 // SEND MOBILE OTP
                                 title: "Send OTP",
@@ -840,8 +878,7 @@ class _SignupPageState extends State<SignupPage> {
                                           .name.value.text.isEmpty ||
                                       controller.nameError.value == true) {
                                     showToasterrorborder(
-                                        "Please Enter Name, First letter Capital",
-                                        context);
+                                        "Please Enter Your Name", context);
                                   } else if (controller
                                       .mobile.value.text.isEmpty) {
                                     showToasterrorborder(

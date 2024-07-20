@@ -10,6 +10,8 @@ import 'package:mlmdiary/utils/custom_toast.dart';
 
 class ForgotPasswordController extends GetxController {
   Rx<TextEditingController> email = TextEditingController().obs;
+  Rx<TextEditingController> mobile = TextEditingController().obs;
+
   Rx<TextEditingController> password = TextEditingController().obs;
   Rx<TextEditingController> confirmPassword = TextEditingController().obs;
   RxBool emailError = false.obs;
@@ -18,6 +20,10 @@ class ForgotPasswordController extends GetxController {
   RxBool isPasswordTyping = false.obs;
   RxBool isConfirmPasswordTyping = false.obs;
   RxBool isEmailTyping = false.obs;
+
+  RxBool mobileReadOnly = false.obs;
+  RxBool isMobileTyping = false.obs;
+  RxBool mobileError = false.obs;
   var isLoading = false.obs;
 
   void emailValidation() {
@@ -31,21 +37,27 @@ class ForgotPasswordController extends GetxController {
     }
   }
 
-  void forgotValidation(BuildContext context) {
-    if (email.value.text.isEmpty) {
-      showToasterrorborder("Please Enter Email", context);
+  void mobileValidation() {
+    if (mobile.value.text.isEmpty || mobile.value.text.length <= 6) {
+      mobileError.value = true;
     } else {
-      sendForgotPasswordRequest(context);
+      mobileError.value = false;
+    }
+    if (mobileError.value) {
+      isMobileTyping.value = true;
     }
   }
 
-  Future<void> sendForgotPasswordRequest(BuildContext context) async {
+  Future<void> sendForgotPasswordRequest(
+      BuildContext context, String countryCode) async {
     isLoading(true);
     try {
       final response = await http.post(
         Uri.parse('${Constants.baseUrl}${Constants.forgotpassword}'),
         body: {
           'email': email.value.text,
+          'mobile': mobile.value.text,
+          'countrycode': countryCode,
         },
       );
 
@@ -63,7 +75,7 @@ class ForgotPasswordController extends GetxController {
         if (forgotPasswordEntity.result == 1) {
           // ignore: use_build_context_synchronously
           showToastverifedborder(
-              "Password reset email sent successfully!",
+              "Password reset sent successfully!",
               // ignore: use_build_context_synchronously
               context);
           if (forgotPasswordEntity.userId != null) {

@@ -12,6 +12,7 @@ import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/border_text_field.dart';
 import 'package:mlmdiary/widgets/custom_border_container.dart';
+import 'package:mlmdiary/widgets/logout_dialog/custom_logout_dialog.dart';
 import 'package:mlmdiary/widgets/normal_button.dart';
 import 'package:mlmdiary/widgets/password_border_text_field.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -545,6 +546,21 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
             ),
           ],
         ),
+        Column(
+          children: [
+            InkWell(
+                onTap: () {
+                  LogoutDialog.show(context, () {});
+                },
+                child: Text(
+                  'Delete Account',
+                  style: textStyleW700(
+                    size.width * 0.032,
+                    AppColors.redText,
+                  ),
+                ))
+          ],
+        )
       ],
     );
   }

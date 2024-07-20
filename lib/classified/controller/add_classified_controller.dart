@@ -150,7 +150,9 @@ class ClasifiedController extends GetxController {
 
     if (apiToken == null || apiToken.isEmpty) {
       isLoading(false);
-      Get.snackbar('Error', 'No API token found');
+      if (kDebugMode) {
+        print('No API token found');
+      }
       return;
     }
 

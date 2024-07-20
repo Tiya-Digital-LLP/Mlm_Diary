@@ -58,6 +58,7 @@ class LoginController extends GetxController {
 
   void loginValidation(BuildContext context, String value) {
     // Force typing state to true for validation display
+    FocusScope.of(context).unfocus();
     isEmailTyping.value = true;
     isMobileTyping.value = true;
     isPasswordTyping.value = true;

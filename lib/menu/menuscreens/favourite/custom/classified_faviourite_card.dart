@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:mlmdiary/classified/classified_like_list_content.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/classified/custom/custom_commment.dart';
 import 'package:mlmdiary/generated/assets.dart';
@@ -308,7 +309,9 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
                         likeCount.value == 0
                             ? const SizedBox.shrink()
                             : InkWell(
-                                onTap: () {},
+                                onTap: () {
+                                  showLikeList(context);
+                                },
                                 child: Text(
                                   '${likeCount.value}',
                                   style: textStyleW600(
@@ -398,5 +401,20 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
         ),
       ),
     );
+  }
+
+  void showLikeList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        fetchLikeList();
+        return const ClassifiedLikedListContent();
+      },
+    );
+  }
+
+  void fetchLikeList() async {
+    await widget.clasifiedController
+        .fetchLikeListClassified(widget.bookmarkId, context);
   }
 }

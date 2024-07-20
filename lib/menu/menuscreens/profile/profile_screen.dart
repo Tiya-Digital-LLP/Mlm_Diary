@@ -65,7 +65,6 @@ class _ProfileScreenState extends State<ProfileScreen>
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    final user = profileController.userProfile.value.userProfile;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -265,75 +264,6 @@ class _ProfileScreenState extends State<ProfileScreen>
                             ],
                           ),
                         ],
-                      ),
-                    ],
-                  ),
-                ),
-                20.sbh,
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          if (userProfile.mobile == null ||
-                              userProfile.mobile!.isEmpty) {
-                            showToasterrorborder('No Any Url Found', context);
-                            if (kDebugMode) {
-                              print('tap without number');
-                            }
-                          } else {
-                            final Uri phoneUri =
-                                Uri(scheme: 'tel', path: userProfile.mobile);
-                            launchUrl(phoneUri);
-                            if (kDebugMode) {
-                              print('tap with number');
-                            }
-                          }
-                        },
-                        child: const SocialButton(
-                            icon: Assets.svgCalling, label: 'Call'),
-                      ),
-                      10.sbw,
-                      InkWell(
-                        onTap: () {
-                          Get.toNamed(Routes.messagescreen);
-                        },
-                        child: const SocialButton(
-                            icon: Assets.svgChat, label: 'Message'),
-                      ),
-                      10.sbw,
-                      InkWell(
-                        onTap: () async {
-                          if (userProfile.mobile != null) {
-                            final String phoneNumber = userProfile.mobile!;
-                            final String name = user!.name.toString();
-
-                            String message =
-                                "Hello, I am $name. I want to know regarding MLM Diary App.";
-                            final Uri whatsappUri = Uri.parse(
-                                "https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}");
-
-                            if (await canLaunchUrl(whatsappUri)) {
-                              await launchUrl(whatsappUri);
-                              if (kDebugMode) {
-                                print('URL: $whatsappUri');
-                              }
-                            } else {
-                              if (kDebugMode) {
-                                print('Could not launch $whatsappUri');
-                              }
-                              showToasterrorborder(
-                                  "Could not launch WhatsApp",
-                                  // ignore: use_build_context_synchronously
-                                  context);
-                            }
-                          } else {
-                            showToasterrorborder("No Any Url Found", context);
-                          }
-                        },
-                        child: const SocialButton(
-                            icon: Assets.svgWhatsappIcon, label: 'WhatsApp'),
                       ),
                     ],
                   ),
@@ -615,6 +545,17 @@ class _ProfileScreenState extends State<ProfileScreen>
             ),
           ),
         ],
+      ),
+      floatingActionButton: Container(
+        decoration: BoxDecoration(
+            color: AppColors.white, borderRadius: BorderRadius.circular(30)),
+        width: 150,
+        child: InkWell(
+          onTap: () {
+            Get.toNamed(Routes.messagescreen);
+          },
+          child: const SocialButton(icon: Assets.svgChat, label: 'Message'),
+        ),
       ),
     );
   }

@@ -11,6 +11,7 @@ import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller
 import 'package:mlmdiary/menu/menuscreens/favourite/controller/favourite_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/question_like_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
@@ -252,7 +253,9 @@ class _FavouritrCardState extends State<QuestionFavouriteCard> {
                         likeCount.value == 0
                             ? const SizedBox.shrink()
                             : InkWell(
-                                onTap: () {},
+                                onTap: () {
+                                  showLikeList(context);
+                                },
                                 child: Text(
                                   '${likeCount.value}',
                                   style: textStyleW600(
@@ -321,5 +324,20 @@ class _FavouritrCardState extends State<QuestionFavouriteCard> {
         ),
       ),
     );
+  }
+
+  void showLikeList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        fetchLikeList();
+        return const QuestionLikeListContent();
+      },
+    );
+  }
+
+  void fetchLikeList() async {
+    await widget.questionAnswerController
+        .fetchLikeListQuestion(widget.bookmarkId, context);
   }
 }

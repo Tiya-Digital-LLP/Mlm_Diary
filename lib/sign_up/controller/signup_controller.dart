@@ -110,6 +110,9 @@ class SignupController extends GetxController {
 
   var selectedTypesId = <RxInt>[].obs;
 
+  RxBool isMobileOtpScreenVisible = true.obs;
+  RxBool isEmailOtpScreenVisible = true.obs;
+
   Future<void> fetchUserTypes() async {
     try {
       // Function to execute HTTP request if there's an internet connection
@@ -161,8 +164,8 @@ class SignupController extends GetxController {
     }
   }
 
-  Future<void> sendDomesticPhoneOtp(
-      String mobile, String name, String countryCode, context) async {
+  Future<void> sendDomesticPhoneOtp(String mobile, String name,
+      String countryCode, BuildContext context) async {
     isLoading(true);
     String device = '';
     if (Platform.isAndroid) {
@@ -226,23 +229,29 @@ class SignupController extends GetxController {
 
             setDefaultUserId(otpEntity.userId);
           } else if (jsonBody['status'] == 0) {
-            toastification.show(
+            // Show a popup and navigate to the login screen
+            showDialog(
               // ignore: use_build_context_synchronously
               context: context,
-              alignment: Alignment.bottomCenter,
-              backgroundColor: AppColors.white,
-              type: ToastificationType.error,
-              style: ToastificationStyle.flatColored,
-              showProgressBar: false,
-              autoCloseDuration: const Duration(seconds: 3),
-              icon: Image.asset(
-                Assets.imagesCancel,
-                height: 35,
-              ),
-              primaryColor: Colors.red,
-              title: Text('$jsonBody'),
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text('Error'),
+                  content: Text('${jsonBody['message']}'),
+                  actions: <Widget>[
+                    TextButton(
+                      child: const Text('Okay'),
+                      onPressed: () {
+                        Get.back();
+                        Get.toNamed(
+                            Routes.login); // Navigate to the login screen
+                      },
+                    ),
+                  ],
+                );
+              },
             );
             showMobileotpField.value = false;
+            isMobileOtpScreenVisible.value = false; // Hide the OTP entry column
           } else {
             if (kDebugMode) {
               print("Failed to send domestic OTP: ${otpEntity.message}");
@@ -263,13 +272,15 @@ class SignupController extends GetxController {
       }
     }
 
-    // Check for network connectivity before executing the request
-    var connectivityResult = await Connectivity().checkConnectivity();
+    // Check for internet connection and execute the request
+    final isConnected = await Connectivity().checkConnectivity();
     // ignore: unrelated_type_equality_checks
-    if (connectivityResult != ConnectivityResult.none) {
+    if (isConnected != ConnectivityResult.none) {
       await executeRequest();
     } else {
-      //
+      if (kDebugMode) {
+        print("No internet connection");
+      }
     }
   }
 
@@ -561,22 +572,26 @@ class SignupController extends GetxController {
             }
             emailOtpSend.value = true;
           } else if (jsonBody['status'] == 0) {
-            toastification.show(
+            showDialog(
               // ignore: use_build_context_synchronously
               context: context,
-              alignment: Alignment.bottomCenter,
-              backgroundColor: AppColors.white,
-              type: ToastificationType.error,
-              style: ToastificationStyle.flatColored,
-              showProgressBar: false,
-              autoCloseDuration: const Duration(seconds: 3),
-              icon: Image.asset(
-                Assets.imagesCancel,
-                height: 35,
-              ),
-              primaryColor: Colors.red,
-              title: Text('$jsonBody'),
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text('Error'),
+                  content: Text('${jsonBody['message']}'),
+                  actions: <Widget>[
+                    TextButton(
+                      child: const Text('Okay'),
+                      onPressed: () {
+                        Get.back();
+                        Get.toNamed(Routes.login);
+                      },
+                    ),
+                  ],
+                );
+              },
             );
+            isEmailOtpScreenVisible.value = false;
           } else {
             if (kDebugMode) {
               print("Failed to send Email OTP: ${emailOtpEntity.message}");
@@ -878,6 +893,18 @@ class SignupController extends GetxController {
 
   void nameValidation(context) {
     String enteredName = name.value.text;
+
+    // Capitalize the first letter of each word
+    String capitalized = enteredName
+        .split(' ')
+        .map((word) => word.isNotEmpty
+            ? '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}'
+            : '')
+        .join(' ');
+
+    // Update the controller with the capitalized text
+    name.value.text = capitalized;
+
     if (enteredName.isEmpty ||
         hasSpecialCharactersOrNumbers(enteredName) ||
         !isFirstLetterCapital(enteredName)) {

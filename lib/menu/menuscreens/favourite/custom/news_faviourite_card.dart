@@ -11,6 +11,7 @@ import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_contro
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/custom_news_comment.dart';
+import 'package:mlmdiary/menu/menuscreens/news/news_like_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
@@ -291,7 +292,9 @@ class _FavouritrCardState extends State<NewsFaviouriteCard> {
                         likeCount.value == 0
                             ? const SizedBox.shrink()
                             : InkWell(
-                                onTap: () {},
+                                onTap: () {
+                                  showLikeList(context);
+                                },
                                 child: Text(
                                   '${likeCount.value}',
                                   style: textStyleW600(
@@ -381,5 +384,20 @@ class _FavouritrCardState extends State<NewsFaviouriteCard> {
         ),
       ),
     );
+  }
+
+  void showLikeList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        fetchLikeList();
+        return const NewsLikeListContent();
+      },
+    );
+  }
+
+  void fetchLikeList() async {
+    await widget.manageNewsController
+        .fetchLikeListNews(widget.bookmarkId, context);
   }
 }

@@ -121,7 +121,7 @@ class AccountSeetingController extends GetxController {
 
     if (apiToken == null || apiToken.isEmpty) {
       isLoading(false);
-      Get.snackbar('Error', 'No API token found');
+
       return;
     }
 
@@ -160,25 +160,34 @@ class AccountSeetingController extends GetxController {
           country.value.text,
         );
 
-        // Update isTypeSelectedList based on user's selected MLM types
-        isTypeSelectedList.clear(); // Clear existing selections
+        // Update isTypeSelectedList and selectedCount
+        isTypeSelectedList.clear();
+        selectedCount.value = 0;
+        selectedTypesId.clear();
+
         for (var type in userTypes) {
-          // Check if the user has selected the current type
           bool isSelected =
               userProfileEntity.userProfile?.immlm?.contains(type.name ?? '') ??
                   false;
           isTypeSelectedList.add(isSelected);
+          if (isSelected) {
+            selectedCount.value++;
+            selectedTypesId.add(RxInt(type.id ?? 0));
+          }
         }
 
         //Update isplanselected
 
-        isPlanSelectedList.clear(); // Clear existing selections
+        isPlanSelectedList.clear();
+        selectedCountPlan.value = 0; // Reset selected count for plans
         for (var type in planList) {
-          // Check if the user has selected the current type
           bool isSelected =
               userProfileEntity.userProfile?.plan?.contains(type.name ?? '') ??
                   false;
           isPlanSelectedList.add(isSelected);
+          if (isSelected) {
+            selectedCountPlan.value++;
+          }
         }
 
         // Update gender toggle based on fetched profile data
@@ -877,22 +886,21 @@ class AccountSeetingController extends GetxController {
   }
 
   void toggleSelected(int index, context) {
-    // Check if the user is trying to select more than 3 items
-    if (selectedCount >= 3 && !isTypeSelectedList[index]) {
+    if (selectedCount.value >= 3 && !isTypeSelectedList[index]) {
       showToasterrorborder('You Can Select Maximum 3 Fields ', context);
       return;
     }
 
-    // Toggle the selection
     isTypeSelectedList[index] = !isTypeSelectedList[index];
 
     if (isTypeSelectedList[index]) {
-      selectedCount++;
-      selectedTypesId.add(userTypes[index].id!.obs); // Add the selected ID
-    } else {
-      selectedCount--;
+      selectedCount.value++;
       selectedTypesId
-          .remove(userTypes[index].id!.obs); // Remove the deselected ID
+          .add(RxInt(userTypes[index].id ?? 0)); // Convert int to RxInt
+    } else {
+      selectedCount.value--;
+      selectedTypesId
+          .remove(RxInt(userTypes[index].id ?? 0)); // Convert int to RxInt
     }
   }
 

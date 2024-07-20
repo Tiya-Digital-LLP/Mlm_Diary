@@ -24,14 +24,24 @@ class _SplashScreenState extends State<SplashScreen> {
   final VersionController _versionController = Get.put(VersionController());
   final NavigationController _navigationController =
       Get.find<NavigationController>();
-  final FacebookAppEvents facebookAppEvents = FacebookAppEvents();
 
   @override
   void initState() {
     super.initState();
     _checkVersionAndNavigate();
     initGtm();
-    facebookAppEvents.logEvent(name: 'SplashScreenView');
+    logSplashScreenEvent();
+  }
+
+  void logSplashScreenEvent() {
+    final facebookAppEvents = FacebookAppEvents();
+
+    // Log the event
+    facebookAppEvents.logEvent(
+      name: 'SplashScreenView',
+    );
+
+    // Print debug message
     if (kDebugMode) {
       print("Logging Facebook event: SplashScreenView");
     }

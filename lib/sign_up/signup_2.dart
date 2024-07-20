@@ -142,89 +142,95 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            controller.isGenderToggle.value = true;
-                          },
-                          child: Row(
-                            children: [
-                              Stack(
-                                children: [
-                                  Image.asset(
-                                    Assets.imagesCircle,
-                                    color: (controller.isGenderToggle.value ==
-                                            true)
-                                        ? AppColors.primaryColor
-                                        : AppColors.blackText.withOpacity(0.5),
-                                  ),
-                                  if (controller.isGenderToggle.value == true)
-                                    Positioned(
-                                      top: 3,
-                                      left: 3,
-                                      child: Image.asset(
-                                        Assets.imagesSelectedCircle,
-                                      ),
+                    Obx(
+                      () => Row(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              controller.isGenderToggle.value = true;
+                            },
+                            child: Row(
+                              children: [
+                                Stack(
+                                  children: [
+                                    Image.asset(
+                                      Assets.imagesCircle,
+                                      color: (controller.isGenderToggle.value ==
+                                              true)
+                                          ? AppColors.primaryColor
+                                          : AppColors.blackText
+                                              .withOpacity(0.5),
                                     ),
-                                ],
-                              ),
-                              const SizedBox(width: 10),
-                              Text(
-                                "Male",
-                                style: (controller.isGenderToggle.value == true)
-                                    ? textStyleW500(size.width * 0.045,
-                                        AppColors.primaryColor)
-                                    : textStyleW400(
-                                        size.width * 0.045,
-                                        AppColors.blackText.withOpacity(0.5),
+                                    if (controller.isGenderToggle.value == true)
+                                      Positioned(
+                                        top: 3,
+                                        left: 3,
+                                        child: Image.asset(
+                                          Assets.imagesSelectedCircle,
+                                        ),
                                       ),
-                              ),
-                            ],
+                                  ],
+                                ),
+                                const SizedBox(width: 10),
+                                Text(
+                                  "Male",
+                                  style: (controller.isGenderToggle.value ==
+                                          true)
+                                      ? textStyleW500(size.width * 0.045,
+                                          AppColors.primaryColor)
+                                      : textStyleW400(
+                                          size.width * 0.045,
+                                          AppColors.blackText.withOpacity(0.5),
+                                        ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 20),
-                        InkWell(
-                          onTap: () {
-                            controller.isGenderToggle.value = false;
-                          },
-                          child: Row(
-                            children: [
-                              Stack(
-                                children: [
-                                  Image.asset(
-                                    Assets.imagesCircle,
-                                    color: (controller.isGenderToggle.value ==
-                                            false)
-                                        ? AppColors.primaryColor
-                                        : AppColors.blackText.withOpacity(0.5),
-                                  ),
-                                  if (controller.isGenderToggle.value == false)
-                                    Positioned(
-                                      top: 3,
-                                      left: 3,
-                                      child: Image.asset(
-                                        Assets.imagesSelectedCircle,
-                                      ),
+                          const SizedBox(width: 20),
+                          InkWell(
+                            onTap: () {
+                              controller.isGenderToggle.value = false;
+                            },
+                            child: Row(
+                              children: [
+                                Stack(
+                                  children: [
+                                    Image.asset(
+                                      Assets.imagesCircle,
+                                      color: (controller.isGenderToggle.value ==
+                                              false)
+                                          ? AppColors.primaryColor
+                                          : AppColors.blackText
+                                              .withOpacity(0.5),
                                     ),
-                                ],
-                              ),
-                              const SizedBox(width: 10),
-                              Text(
-                                "Female",
-                                style: (controller.isGenderToggle.value ==
+                                    if (controller.isGenderToggle.value ==
                                         false)
-                                    ? textStyleW500(size.width * 0.045,
-                                        AppColors.primaryColor)
-                                    : textStyleW400(
-                                        size.width * 0.045,
-                                        AppColors.blackText.withOpacity(0.5),
+                                      Positioned(
+                                        top: 3,
+                                        left: 3,
+                                        child: Image.asset(
+                                          Assets.imagesSelectedCircle,
+                                        ),
                                       ),
-                              ),
-                            ],
+                                  ],
+                                ),
+                                const SizedBox(width: 10),
+                                Text(
+                                  "Female",
+                                  style: (controller.isGenderToggle.value ==
+                                          false)
+                                      ? textStyleW500(size.width * 0.045,
+                                          AppColors.primaryColor)
+                                      : textStyleW400(
+                                          size.width * 0.045,
+                                          AppColors.blackText.withOpacity(0.5),
+                                        ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 10),
                     Obx(

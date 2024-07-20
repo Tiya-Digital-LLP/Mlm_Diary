@@ -660,7 +660,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       floatingActionButton: PopupMenuButton(
-        padding: const EdgeInsets.only(top: 260),
         elevation: 9,
         color: AppColors.white,
         key: _popupMenuButtonKey,

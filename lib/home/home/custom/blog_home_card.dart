@@ -132,25 +132,6 @@ class _FavouritrCardState extends State<BlogHomeCard> {
     );
   }
 
-  void showLikeList(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        widget.controller.toggleLikeList(
-          widget.type,
-          widget.bookmarkId,
-          context,
-          widget.manageBlogController,
-          widget.manageNewsController,
-          widget.clasifiedController,
-          widget.questionAnswerController,
-          widget.editpostController,
-        );
-        return getLikeListContent(widget.type);
-      },
-    );
-  }
-
   Widget getLikeListContent(String type) {
     switch (type) {
       case 'classified':
@@ -412,5 +393,20 @@ class _FavouritrCardState extends State<BlogHomeCard> {
         ),
       ),
     );
+  }
+
+  void showLikeList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        fetchLikeList();
+        return const BlogLikedListContent();
+      },
+    );
+  }
+
+  void fetchLikeList() async {
+    await widget.manageBlogController
+        .fetchLikeListBlog(widget.bookmarkId, context);
   }
 }

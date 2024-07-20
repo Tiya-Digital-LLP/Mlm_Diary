@@ -65,6 +65,7 @@ class CustomNameTextField extends StatelessWidget {
               hintText: hint,
               border: InputBorder.none,
             ),
+            enableInteractiveSelection: false,
           ),
         ),
       ),

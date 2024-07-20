@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert'; // Import for JSON encoding
+import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -47,6 +48,12 @@ void main() async {
   // Initialize GetX Controller
   Get.put(NavigationController());
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  final facebookAppEvents = FacebookAppEvents();
+
+  facebookAppEvents.logEvent(name: 'AppStarted');
+  if (kDebugMode) {
+    print('appstartedbyfacebook');
+  }
   runApp(const ToastificationWrapper(child: MyApp()));
 }
 
