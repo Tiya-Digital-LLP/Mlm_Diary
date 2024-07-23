@@ -18,10 +18,15 @@ class ContactusController extends GetxController {
   Rx<TextEditingController> company = TextEditingController().obs;
   Rx<TextEditingController> message = TextEditingController().obs;
   Rx<TextEditingController> mobile = TextEditingController().obs;
-  List listitem2 = ['Feedback/Suggestions', 'Advetiesment'];
+  List listitem2 = ['Feedback/Suggestions', 'Advetiesment', 'Feature Request'];
   final RxString selectedItem = RxString('');
 // FIELDS ERROR
   RxBool mobileError = false.obs;
+  RxBool emailError = false.obs;
+  RxBool companyError = false.obs;
+  RxBool messageError = false.obs;
+
+  RxBool nameError = false.obs;
 
   // ENABLED TYPING VALIDATION
   RxBool isNameTyping = false.obs;
@@ -98,6 +103,44 @@ class ContactusController extends GetxController {
     } finally {
       isLoading(false);
     }
+  }
+
+  void nameValidation(context) {
+    String enteredName = name.value.text;
+
+    // Capitalize the first letter of each word
+    String capitalized = enteredName
+        .split(' ')
+        .map((word) => word.isNotEmpty
+            ? '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}'
+            : '')
+        .join(' ');
+
+    // Update the controller with the capitalized text
+    name.value.text = capitalized;
+
+    if (enteredName.isEmpty ||
+        hasSpecialCharactersOrNumbers(enteredName) ||
+        !isFirstLetterCapital(enteredName)) {
+      nameError.value = true;
+    } else {
+      nameError.value = false;
+    }
+
+    if (nameError.value) {
+      isNameTyping.value = true;
+    }
+  }
+
+  bool isFirstLetterCapital(String text) {
+    if (text.isEmpty) return false;
+    String firstLetter = text[0];
+    return firstLetter == firstLetter.toUpperCase();
+  }
+
+  bool hasSpecialCharactersOrNumbers(String text) {
+    RegExp specialCharOrNumber = RegExp(r'[!@#\$&*()]|[0-9]');
+    return specialCharOrNumber.hasMatch(text);
   }
 
   void mobileValidation() {

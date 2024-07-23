@@ -222,12 +222,10 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
                                       fit: BoxFit.cover,
                                     ),
                           onTap: () {
-                            if (file.value == null) {
-                              showModalBottomSheet(
-                                  backgroundColor: Colors.white,
-                                  context: context,
-                                  builder: (context) => bottomsheet());
-                            }
+                            showModalBottomSheet(
+                                backgroundColor: Colors.white,
+                                context: context,
+                                builder: (context) => bottomsheet(context));
                           },
                         ),
                         Visibility(
@@ -330,7 +328,7 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
     }
   }
 
-  Widget bottomsheet() {
+  Widget bottomsheet(BuildContext context) {
     return Container(
       height: 100.0,
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -347,84 +345,70 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               TextButton.icon(
-                  onPressed: () {
-                    takephoto(ImageSource.camera);
-                  },
-                  icon: Icon(Icons.camera, color: AppColors.primaryColor),
-                  label: Text(
-                    'Camera',
-                    style: TextStyle(color: AppColors.primaryColor),
-                  )),
+                onPressed: () {
+                  _pickImage(ImageSource.camera);
+                },
+                icon: Icon(Icons.camera, color: AppColors.primaryColor),
+                label: Text(
+                  'Camera',
+                  style: TextStyle(color: AppColors.primaryColor),
+                ),
+              ),
               TextButton.icon(
-                  onPressed: () {
-                    takephoto(ImageSource.gallery);
-                  },
-                  icon: Icon(Icons.image, color: AppColors.primaryColor),
-                  label: Text(
-                    'Gallery',
-                    style: TextStyle(color: AppColors.primaryColor),
-                  )),
+                onPressed: () {
+                  _pickImage(ImageSource.gallery);
+                },
+                icon: Icon(Icons.image, color: AppColors.primaryColor),
+                label: Text(
+                  'Gallery',
+                  style: TextStyle(color: AppColors.primaryColor),
+                ),
+              ),
             ],
-          )
+          ),
         ],
       ),
     );
   }
 
-  void takephoto(ImageSource imageSource) async {
-    final pickedfile =
-        await _picker.pickImage(source: imageSource, imageQuality: 100);
-    if (pickedfile != null) {
-      io.File imageFile = io.File(pickedfile.path);
+  Future<void> _pickImage(ImageSource source) async {
+    final pickedFile =
+        await _picker.pickImage(source: source, imageQuality: 100);
+    if (pickedFile != null) {
+      io.File imageFile = io.File(pickedFile.path);
       int fileSizeInBytes = imageFile.lengthSync();
       double fileSizeInKB = fileSizeInBytes / 1024;
 
-      if (kDebugMode) {
-        print('Original image size: $fileSizeInKB KB');
-      }
-
       if (fileSizeInKB > 5000) {
-        Fluttertoast.showToast(msg: 'Please Select an image below 5 MB');
+        Fluttertoast.showToast(msg: 'Please select an image below 5 MB');
         return;
       }
 
-      if (fileSizeInKB < 200) {
-        Fluttertoast.showToast(msg: 'Please Select an image above 200 KB');
-        return;
-      }
+      io.File? croppedFile = await _cropImage(imageFile);
+      if (croppedFile != null) {
+        double croppedFileSizeInKB = croppedFile.lengthSync() / 1024;
 
-      io.File? processedFile = imageFile;
-
-      if (fileSizeInKB > 250) {
-        processedFile = await _cropImage(imageFile);
-        if (processedFile == null) {
-          Fluttertoast.showToast(msg: 'Please select an image');
-          if (kDebugMode) {
-            print('failed to compress image');
+        if (croppedFileSizeInKB > 250) {
+          croppedFile = await _compressImage(croppedFile);
+          if (croppedFile == null) {
+            Fluttertoast.showToast(msg: 'Image compression failed');
+            return;
           }
-          return;
         }
-        processedFile = await _compressImage(processedFile);
+
+        // Save to a different directory if necessary
+        final tempDir = await getTemporaryDirectory();
+        final tempFile = io.File(
+            '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg');
+        await croppedFile.copy(tempFile.path);
+
+        file.value = tempFile; // Update file observable with new file
+        Get.back();
+      } else {
+        Fluttertoast.showToast(msg: 'Image cropping failed');
       }
-
-      double processedFileSizeInKB = processedFile!.lengthSync() / 1024;
-      if (kDebugMode) {
-        print('Processed image size: $processedFileSizeInKB KB');
-      }
-
-      setState(() {
-        file.value = processedFile;
-      });
-
-      if (file.value != null) {
-        imagesList.add(file.value!);
-      }
-
-      Get.back();
     } else {
-      // ignore: use_build_context_synchronously
-      showToasterrorborder('Please select an image', context);
-      return; // Exit function if no image is selected
+      Fluttertoast.showToast(msg: 'Please select an image');
     }
   }
 
@@ -446,18 +430,12 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
         ),
       ],
     );
-
-    if (croppedFile != null) {
-      return io.File(croppedFile.path);
-    } else {
-      return null;
-    }
+    return croppedFile != null ? io.File(croppedFile.path) : null;
   }
 
   Future<io.File?> _compressImage(io.File imageFile) async {
     final dir = await getTemporaryDirectory();
     final targetPath = '${dir.path}/temp.jpg';
-
     int quality = 90;
     io.File? compressedFile;
     while (true) {
@@ -478,17 +456,11 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
         break;
       }
 
-      if (fileSizeInKB < 200) {
-        quality += 5;
-      } else {
-        quality -= 5;
-      }
-
+      quality = fileSizeInKB < 200 ? quality + 5 : quality - 5;
       if (quality <= 0 || quality > 100) {
         break;
       }
     }
-
     return compressedFile;
   }
 }

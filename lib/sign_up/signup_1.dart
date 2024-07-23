@@ -57,6 +57,7 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   void sendOtp() {
+    FocusScope.of(context).unfocus();
     final mobileNumber = controller.mobile.value.text;
     final userName = controller.name.value.text;
     final countryCode = selectedCountry.value?.callingCode ?? '';
@@ -220,6 +221,12 @@ class _SignupPageState extends State<SignupPage> {
                                     controller.mobileValidation();
                                     controller.isMobileTyping.value = true;
                                   },
+                                  suffixIcon: controller.mobileReadOnly.value
+                                      ? Icon(
+                                          Icons.check_circle,
+                                          color: AppColors.greenBorder,
+                                        )
+                                      : null,
                                 ),
                               ),
                             ),
@@ -246,6 +253,12 @@ class _SignupPageState extends State<SignupPage> {
                                         controller.emailValidation();
                                         controller.isEmailTyping.value = true;
                                       },
+                                      suffixIcon: controller.emailReadOnly.value
+                                          ? Icon(
+                                              Icons.check_circle,
+                                              color: AppColors.greenBorder,
+                                            )
+                                          : null,
                                     ),
                                     SizedBox(
                                       height: size.height * 0.015,
@@ -379,6 +392,8 @@ class _SignupPageState extends State<SignupPage> {
                                                       titleColor:
                                                           AppColors.white,
                                                       onTap: () {
+                                                        FocusScope.of(context)
+                                                            .unfocus();
                                                         controller
                                                             .isPasswordTyping
                                                             .value = true;
@@ -539,6 +554,9 @@ class _SignupPageState extends State<SignupPage> {
                                                                     0)
                                                                 ? GestureDetector(
                                                                     onTap: () {
+                                                                      FocusScope.of(
+                                                                              context)
+                                                                          .unfocus();
                                                                       // Resend email OTP
                                                                       String email = controller
                                                                           .email
@@ -599,6 +617,9 @@ class _SignupPageState extends State<SignupPage> {
                                                                   AppColors
                                                                       .white,
                                                               onTap: () {
+                                                                FocusScope.of(
+                                                                        context)
+                                                                    .unfocus();
                                                                 controller
                                                                     .isEmailOtpTyping
                                                                     .value = true;
@@ -681,6 +702,8 @@ class _SignupPageState extends State<SignupPage> {
                                               btnColor: AppColors.primaryColor,
                                               titleColor: AppColors.white,
                                               onTap: () {
+                                                FocusScope.of(context)
+                                                    .unfocus();
                                                 controller.isEmailTyping.value =
                                                     true;
 
@@ -749,6 +772,8 @@ class _SignupPageState extends State<SignupPage> {
                                               (controller.timerValue.value == 0)
                                                   ? GestureDetector(
                                                       onTap: () async {
+                                                        FocusScope.of(context)
+                                                            .unfocus();
                                                         try {
                                                           await controller
                                                               .verifyOtp(
@@ -760,10 +785,6 @@ class _SignupPageState extends State<SignupPage> {
                                                               .value = 30;
                                                           controller
                                                               .startTimer();
-                                                          showToastverifedborder(
-                                                              "OTP Resent Successfully",
-                                                              // ignore: use_build_context_synchronously
-                                                              context);
                                                         } catch (e) {
                                                           showToasterrorborder(
                                                               "Failed to Resend OTP",
@@ -800,6 +821,8 @@ class _SignupPageState extends State<SignupPage> {
                                                     AppColors.primaryColor,
                                                 titleColor: AppColors.white,
                                                 onTap: () async {
+                                                  FocusScope.of(context)
+                                                      .unfocus();
                                                   controller.isMobileOtpTyping
                                                       .value = true;
 
@@ -822,6 +845,8 @@ class _SignupPageState extends State<SignupPage> {
                                                         context);
                                                   } else {
                                                     try {
+                                                      FocusScope.of(context)
+                                                          .unfocus();
                                                       await controller
                                                           .verifyPhoneOtp(
                                                               controller
@@ -857,6 +882,8 @@ class _SignupPageState extends State<SignupPage> {
                                 btnColor: AppColors.primaryColor,
                                 titleColor: AppColors.white,
                                 onTap: () {
+                                  FocusScope.of(context).unfocus();
+
                                   controller.isMlmTyping.value = true;
                                   controller.isNameTyping.value = true;
                                   controller.isMobileTyping.value = true;

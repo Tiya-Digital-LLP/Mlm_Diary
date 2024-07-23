@@ -1,6 +1,5 @@
 import 'dart:io' as io;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
 import 'package:flutter_google_places_hoc081098/google_maps_webservice_places.dart';
@@ -42,7 +41,6 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
   final ClasifiedController clasifiedController =
       Get.put(ClasifiedController());
 
-  static List<io.File> imagesList = <io.File>[];
   final ImagePicker _picker = ImagePicker();
   Rx<io.File?> file = Rx<io.File?>(null);
   final TextEditingController _loc = TextEditingController();
@@ -108,14 +106,11 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                                         ),
                                 ),
                                 onTap: () {
-                                  if (file.value == null) {
-                                    showModalBottomSheet(
-                                      backgroundColor: Colors.white,
-                                      context: context,
-                                      builder: (context) =>
-                                          bottomsheet(context),
-                                    );
-                                  }
+                                  showModalBottomSheet(
+                                    backgroundColor: Colors.white,
+                                    context: context,
+                                    builder: (context) => bottomsheet(context),
+                                  );
                                 },
                               ),
                             ),
@@ -246,10 +241,8 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                         onChanged: (value) {
                           clasifiedController
                               .fetchCompanyNames(value.toString());
-                          controller.isCompanyNameTyping.value = true;
                         },
                         onTap: () async {
-                          controller.isCompanyNameTyping.value = true;
                           final result =
                               await Get.to(() => AddCompanyClassified(
                                     selectedCompanies: selectedCompanies,
@@ -303,28 +296,30 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                         controller: controller.location.value,
                         readOnly: true,
                         style: const TextStyle(
-                          fontSize: 15.0,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black,
-                          fontFamily: 'assets/fonst/Metropolis-Black.otf',
-                        ),
+                            fontSize: 15.0,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                            fontFamily: 'assets/fonts/Metropolis-Black.otf'),
                         onTap: () async {
                           var place = await PlacesAutocomplete.show(
                             context: context,
                             apiKey: googleApikey,
                             mode: Mode.fullscreen,
                             hint: 'Search and Save Location.',
+                            cursorColor: AppColors.primaryColor,
                             types: ['geocode', 'establishment'],
                             strictbounds: false,
                             onError: (err) {},
                           );
 
                           if (place != null) {
-                            controller.location.value.text =
-                                place.description.toString();
-                            _loc.text = controller.location.value.text;
-                            controller.isLocationTyping.value = true;
-
+                            setState(() {
+                              controller.location.value.text =
+                                  place.description.toString();
+                              _loc.text = controller.location.value.text;
+                              controller.isLocationTyping.value = true;
+                              controller.locationValidation();
+                            });
                             final plist = GoogleMapsPlaces(
                               apiKey: googleApikey,
                               apiHeaders:
@@ -357,60 +352,56 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                           }
                         },
                         decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.all(18),
                           hintText: "Location/ Address / City *",
                           hintStyle: const TextStyle(
-                            fontSize: 15.0,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black,
-                            fontFamily: 'assets/fonst/Metropolis-Black.otf',
-                          ).copyWith(color: Colors.black45),
+                                  fontSize: 15.0,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.black,
+                                  fontFamily:
+                                      'assets/fonts/Metropolis-Black.otf')
+                              .copyWith(color: Colors.black45),
+                          filled: true,
+                          fillColor: AppColors.white,
                           enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              width: 1,
-                              color: controller.isLocationTyping.value
-                                  ? AppColors.greenBorder
-                                  : AppColors.redText,
-                            ),
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
+                              borderSide: BorderSide(
+                                  width: 1,
+                                  color:
+                                      controller.addressValidationColor.value),
+                              borderRadius: BorderRadius.circular(10.0)),
                           border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              width: 1,
-                              color: controller.isLocationTyping.value
-                                  ? AppColors.greenBorder
-                                  : AppColors.redText,
-                            ),
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
+                              borderSide: BorderSide(
+                                  width: 1,
+                                  color:
+                                      controller.addressValidationColor.value),
+                              borderRadius: BorderRadius.circular(10.0)),
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              width: 1,
-                              color: controller.isLocationTyping.value
-                                  ? AppColors.greenBorder
-                                  : AppColors.redText,
-                            ),
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
+                              borderSide: BorderSide(
+                                  width: 1,
+                                  color:
+                                      controller.addressValidationColor.value),
+                              borderRadius: BorderRadius.circular(10.0)),
                         ),
                         validator: (value) {
                           if (value!.isEmpty) {
-                            controller.isLocationTyping.value = false;
-                            return 'Please enter a location';
-                          }
-                          controller.isLocationTyping.value = true;
+                            setState(() {
+                              controller.locationValidation();
+                            });
+                          } else {}
                           return null;
                         },
                         onFieldSubmitted: (value) {
                           if (value.isEmpty) {
                             Fluttertoast.showToast(
-                              timeInSecForIosWeb: 2,
-                              msg:
-                                  'Please Search and Save your Business Location',
-                            );
-                            controller.isLocationTyping.value = false;
+                                timeInSecForIosWeb: 2,
+                                msg:
+                                    'Please Search and Save your Business Location');
+                            setState(() {
+                              controller.locationValidation();
+                            });
                           } else if (value.isNotEmpty) {
-                            controller.isLocationTyping.value = true;
+                            setState(() {
+                              controller.locationValidation();
+                            });
                           }
                         },
                       ),
@@ -423,11 +414,12 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                         btnColor: AppColors.primaryColor,
                         titleColor: AppColors.white,
                         onTap: () {
-                          controller.isCompanyNameTyping.value = true;
+                          FocusScope.of(context).unfocus();
                           controller.isPlanTyping.value = true;
                           controller.isLocationTyping.value = true;
 
                           controller.planCategoryValidation();
+                          controller.locationValidation();
 
                           if (file.value == null) {
                             showToasterrorborder(
@@ -601,79 +593,70 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               TextButton.icon(
-                  onPressed: () {
-                    takephoto(ImageSource.camera);
-                  },
-                  icon: Icon(Icons.camera, color: AppColors.primaryColor),
-                  label: Text(
-                    'Camera',
-                    style: TextStyle(color: AppColors.primaryColor),
-                  )),
+                onPressed: () {
+                  _pickImage(ImageSource.camera);
+                },
+                icon: Icon(Icons.camera, color: AppColors.primaryColor),
+                label: Text(
+                  'Camera',
+                  style: TextStyle(color: AppColors.primaryColor),
+                ),
+              ),
               TextButton.icon(
-                  onPressed: () {
-                    takephoto(ImageSource.gallery);
-                  },
-                  icon: Icon(Icons.image, color: AppColors.primaryColor),
-                  label: Text(
-                    'Gallery',
-                    style: TextStyle(color: AppColors.primaryColor),
-                  )),
+                onPressed: () {
+                  _pickImage(ImageSource.gallery);
+                },
+                icon: Icon(Icons.image, color: AppColors.primaryColor),
+                label: Text(
+                  'Gallery',
+                  style: TextStyle(color: AppColors.primaryColor),
+                ),
+              ),
             ],
-          )
+          ),
         ],
       ),
     );
   }
 
-  void takephoto(ImageSource imageSource) async {
-    final pickedfile =
-        await _picker.pickImage(source: imageSource, imageQuality: 100);
-    if (pickedfile != null) {
-      io.File imageFile = io.File(pickedfile.path);
+  Future<void> _pickImage(ImageSource source) async {
+    final pickedFile =
+        await _picker.pickImage(source: source, imageQuality: 100);
+    if (pickedFile != null) {
+      io.File imageFile = io.File(pickedFile.path);
       int fileSizeInBytes = imageFile.lengthSync();
       double fileSizeInKB = fileSizeInBytes / 1024;
 
-      if (kDebugMode) {
-        print('Original image size: $fileSizeInKB KB');
-      }
-
       if (fileSizeInKB > 5000) {
-        Fluttertoast.showToast(msg: 'Please Select an image below 5 MB');
+        Fluttertoast.showToast(msg: 'Please select an image below 5 MB');
         return;
       }
 
-      io.File? processedFile = imageFile;
+      io.File? croppedFile = await _cropImage(imageFile);
+      if (croppedFile != null) {
+        double croppedFileSizeInKB = croppedFile.lengthSync() / 1024;
 
-      if (fileSizeInKB > 250) {
-        processedFile = await _cropImage(imageFile);
-        if (processedFile == null) {
-          Fluttertoast.showToast(msg: 'Please select an image');
-          if (kDebugMode) {
-            print('failed to compress image');
+        if (croppedFileSizeInKB > 250) {
+          croppedFile = await _compressImage(croppedFile);
+          if (croppedFile == null) {
+            Fluttertoast.showToast(msg: 'Image compression failed');
+            return;
           }
-          return;
         }
-        processedFile = await _compressImage(processedFile);
+
+        // Save to a different directory if necessary
+        final tempDir = await getTemporaryDirectory();
+        final tempFile = io.File(
+            '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg');
+        await croppedFile.copy(tempFile.path);
+
+        file.value = tempFile; // Update file observable with new file
+        Get.back();
+      } else {
+        Fluttertoast.showToast(msg: 'Image cropping failed');
       }
-
-      double processedFileSizeInKB = processedFile!.lengthSync() / 1024;
-      if (kDebugMode) {
-        print('Processed image size: $processedFileSizeInKB KB');
-      }
-
-      setState(() {
-        file.value = processedFile;
-      });
-
-      if (file.value != null) {
-        imagesList.add(file.value!);
-      }
-
-      Get.back();
     } else {
-      // ignore: use_build_context_synchronously
-      showToasterrorborder('Please select an image', context);
-      return; // Exit function if no image is selected
+      Fluttertoast.showToast(msg: 'Please select an image');
     }
   }
 
@@ -695,18 +678,12 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
         ),
       ],
     );
-
-    if (croppedFile != null) {
-      return io.File(croppedFile.path);
-    } else {
-      return null;
-    }
+    return croppedFile != null ? io.File(croppedFile.path) : null;
   }
 
   Future<io.File?> _compressImage(io.File imageFile) async {
     final dir = await getTemporaryDirectory();
     final targetPath = '${dir.path}/temp.jpg';
-
     int quality = 90;
     io.File? compressedFile;
     while (true) {
@@ -727,17 +704,11 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
         break;
       }
 
-      if (fileSizeInKB < 200) {
-        quality += 5;
-      } else {
-        quality -= 5;
-      }
-
+      quality = fileSizeInKB < 200 ? quality + 5 : quality - 5;
       if (quality <= 0 || quality > 100) {
         break;
       }
     }
-
     return compressedFile;
   }
 }

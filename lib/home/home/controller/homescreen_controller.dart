@@ -463,10 +463,15 @@ class HomeController extends GetxController {
     }
 
     String? apiToken = prefs.getString(Constants.accessToken);
-    if (apiToken == null) {
-      isLoading.value = false;
-      return;
-    }
+
+    // Prepare query parameters
+    Map<String, String> queryParams = {
+      if (apiToken != null) 'api_token': apiToken,
+      'device': device,
+      'page': page.toString(),
+      'search': search.value.text,
+      'type': selectedType.value == 'All' ? '' : selectedType.value,
+    };
 
     try {
       var connectivityResult = await (Connectivity().checkConnectivity());
@@ -475,14 +480,6 @@ class HomeController extends GetxController {
         isLoading.value = false;
         return;
       }
-
-      Map<String, String> queryParams = {
-        'api_token': apiToken,
-        'device': device,
-        'page': page.toString(),
-        'search': search.value.text,
-        'type': selectedType.value == 'All' ? '' : selectedType.value,
-      };
 
       Uri uri = Uri.parse(Constants.baseUrl + Constants.gethome)
           .replace(queryParameters: queryParams);

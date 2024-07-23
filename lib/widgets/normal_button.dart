@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
+import 'package:mlmdiary/widgets/loader/custom_three_dot_animation.dart';
 
 class NormalButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -55,14 +57,10 @@ class NormalButton extends StatelessWidget {
               height: height,
               alignment: Alignment.center,
               child: isLoading.value
-                  ? const SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
-                      ),
-                    )
+                  ? CustomThreeDotAnimation(
+                      child: Lottie.asset(
+                      Assets.lottieDotsanimation,
+                    ))
                   : icon == null
                       ? Text(
                           text,

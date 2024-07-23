@@ -13,7 +13,8 @@ class BorderTextField extends StatelessWidget {
   final TextInputType keyboard;
   final ValueChanged<String>? onChanged;
   final double height;
-  final int? maxLength; // Add this line
+  final int? maxLength;
+  final Widget? suffixIcon; // Add this line
 
   const BorderTextField({
     super.key,
@@ -26,7 +27,8 @@ class BorderTextField extends StatelessWidget {
     required this.byDefault,
     this.onChanged,
     this.height = 80.0,
-    this.maxLength, // Add this line
+    this.maxLength,
+    this.suffixIcon, // Add this line
   });
 
   @override
@@ -45,29 +47,38 @@ class BorderTextField extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         color: AppColors.white,
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-        ),
-        child: Center(
-          child: TextField(
-            cursorHeight: 20,
-            autocorrect: false,
-            readOnly: readOnly,
-            keyboardType: keyboard,
-            inputFormatters: textInputType,
-            onChanged: onChanged,
-            controller: controller,
-            maxLength: maxLength, // Add this line
-            style: textStyleW500(size.width * 0.04, AppColors.blackText),
-            cursorColor: AppColors.blackText,
-            decoration: InputDecoration(
-              counterText: "",
-              hintText: hint,
-              border: InputBorder.none,
+      child: Row(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Center(
+                child: TextField(
+                  cursorHeight: 20,
+                  autocorrect: false,
+                  readOnly: readOnly,
+                  keyboardType: keyboard,
+                  inputFormatters: textInputType,
+                  onChanged: onChanged,
+                  controller: controller,
+                  maxLength: maxLength,
+                  style: textStyleW500(size.width * 0.04, AppColors.blackText),
+                  cursorColor: AppColors.blackText,
+                  decoration: InputDecoration(
+                    counterText: "",
+                    hintText: hint,
+                    border: InputBorder.none,
+                  ),
+                ),
+              ),
             ),
           ),
-        ),
+          if (suffixIcon != null)
+            Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: suffixIcon,
+            ),
+        ],
       ),
     );
   }

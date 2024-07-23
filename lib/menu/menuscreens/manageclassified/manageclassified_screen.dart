@@ -85,6 +85,8 @@ class _MlmClassifiedState extends State<ManageClassified> {
               itemCount: controller.classifiedList.length,
               itemBuilder: (context, index) {
                 final post = controller.classifiedList[index];
+                final image =
+                    '${post.imagePath.toString()}?${DateTime.now().millisecondsSinceEpoch}';
                 return Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -97,7 +99,7 @@ class _MlmClassifiedState extends State<ManageClassified> {
                     },
                     child: ManageClassifiedCard(
                       onDelete: () => deletePost(index),
-                      userImage: post.imagePath ?? '',
+                      userImage: image,
                       userName: post.creatby ?? '',
                       postTitle: post.title ?? '',
                       dateTime: post.datecreated ?? '',

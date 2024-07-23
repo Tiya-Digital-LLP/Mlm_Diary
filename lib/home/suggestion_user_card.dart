@@ -86,7 +86,7 @@ class _SuggetionUserCardState extends State<SuggetionUserCard> {
                 10.sbh,
                 Text(
                   widget.name,
-                  maxLines: 2,
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: textStyleW700(size.width * 0.043, AppColors.blackText),
                   textAlign: TextAlign.center,

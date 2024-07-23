@@ -110,8 +110,10 @@ class _MlmBlogState extends State<MlmBlog> {
                       child: CustomSearchInput(
                         controller: controller.search,
                         onSubmitted: (value) {
+                          FocusScope.of(context).unfocus();
                           WidgetsBinding.instance.focusManager.primaryFocus
                               ?.unfocus();
+
                           _refreshData();
                         },
                         onChanged: (value) {

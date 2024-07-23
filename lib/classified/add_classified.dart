@@ -172,7 +172,7 @@ class _AddClassifiedState extends State<AddClassified> {
                       keyboard: TextInputType.multiline,
                       textInputType: const [],
                       hint: "Company Name",
-                      readOnly: controller.companyNameOnly.value,
+                      readOnly: !controller.companyNameOnly.value,
                       controller: controller.companyName.value,
                       isError: controller.companyError.value,
                       byDefault: !controller.isCompanyNameTyping.value,
@@ -180,7 +180,6 @@ class _AddClassifiedState extends State<AddClassified> {
                         controller.fetchCompanyNames(value.toString());
                       },
                       onTap: () async {
-                        controller.companyNameValidation();
                         final result = await Get.to(() => AddCompanyClassified(
                               selectedCompanies: selectedCompanies,
                             ));
@@ -190,6 +189,7 @@ class _AddClassifiedState extends State<AddClassified> {
                           controller.companyName.value.text =
                               selectedCompanies.join(", ");
                         }
+                        controller.companyNameOnly.value = false;
                       },
                     ),
                   ),
@@ -412,12 +412,12 @@ class _AddClassifiedState extends State<AddClassified> {
   }
 
   Future<void> handleSaveButtonPressed() async {
+    FocusScope.of(context).unfocus();
     controller.titleValidation();
     controller.discriptionValidation(context);
     controller.mlmCategoryValidation();
     controller.mlmsubCategoryValidation();
     controller.locationValidation();
-    controller.companyNameValidation();
 
     if (controller.title.value.text.isEmpty) {
       showToasterrorborder("Please Enter Your Classified Title", context);

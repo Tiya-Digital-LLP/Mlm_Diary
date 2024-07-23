@@ -112,7 +112,7 @@ class _ClassidiedDetailsScreenState
                             radius: size.width * 0.07,
                             child: ClipOval(
                               child: Image.asset(
-                                post.userData!.imagePath ?? '',
+                                '${post.userData!.imagePath.toString()}?${DateTime.now().millisecondsSinceEpoch}',
                                 height: 100,
                                 width: 100,
                                 fit: BoxFit.cover,
@@ -164,7 +164,8 @@ class _ClassidiedDetailsScreenState
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: CachedNetworkImage(
-                          imageUrl: post.imagePath ?? '',
+                          imageUrl:
+                              '${post.imagePath.toString()}?${DateTime.now().millisecondsSinceEpoch}',
                           height: 97,
                           width: 105,
                           fit: BoxFit.fill,

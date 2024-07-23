@@ -230,6 +230,7 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                       16.sbh,
                                       NormalButton(
                                         onPressed: () {
+                                          FocusScope.of(context).unfocus();
                                           // Access the TextEditingController instance and then get its text
                                           final mobileOtpText =
                                               controller.mobileOtp.value.text;
@@ -257,6 +258,7 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                 if (!controller.showPhoneOtpField.value) {
                                   return NormalButton(
                                     onPressed: () {
+                                      FocusScope.of(context).unfocus();
                                       // Call your API function here
                                       controller.sendPhoneOtp(
                                           controller.mobile.value.text,
@@ -375,6 +377,7 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                       16.sbh,
                                       NormalButton(
                                         onPressed: () {
+                                          FocusScope.of(context).unfocus();
                                           controller.updateVerifyEmailOtp(
                                               controller.emailOtp.value.text,
                                               context);
@@ -393,6 +396,7 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                 if (!controller.showEmailOtpField.value) {
                                   return NormalButton(
                                     onPressed: () {
+                                      FocusScope.of(context).unfocus();
                                       // Call your API function here
                                       controller.updateEmail();
                                     },
@@ -515,6 +519,7 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                               16.sbh,
                               NormalButton(
                                 onPressed: () {
+                                  FocusScope.of(context).unfocus();
                                   // Check if passwords match
                                   if (controller.password.value.text !=
                                       controller.confirmPassword.value.text) {
@@ -550,7 +555,9 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
           children: [
             InkWell(
                 onTap: () {
-                  LogoutDialog.show(context, () {});
+                  LogoutDialog.show(context, () {
+                    controller.deleteAccount(context);
+                  });
                 },
                 child: Text(
                   'Delete Account',

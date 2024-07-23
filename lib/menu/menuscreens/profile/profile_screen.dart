@@ -441,6 +441,8 @@ class _ProfileScreenState extends State<ProfileScreen>
                                             // ),
                                             InkWell(
                                               onTap: () {
+                                                FocusScope.of(context)
+                                                    .unfocus();
                                                 controller.addPost(
                                                   imageFile: file.value,
                                                   videoFile: videoFile.value,

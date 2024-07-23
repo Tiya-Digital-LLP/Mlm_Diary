@@ -4,6 +4,7 @@ import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/home/notification/card/all_notification_card.dart';
 import 'package:mlmdiary/home/notification/controller/notification_controller.dart';
+import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 
@@ -73,14 +74,27 @@ class _AllNotificationState extends State<AllNotification> {
                         horizontal: 12,
                         vertical: 8,
                       ),
-                      child: AllNotificationCard(
-                        key: ValueKey(post.id),
-                        image: post.userimage ?? '',
-                        dateTime: post.creatdate ?? '',
-                        classifiedId: post.id ?? 0,
-                        userName: post.name ?? '',
-                        controller: controller,
-                        type: 'all',
+                      child: GestureDetector(
+                        onTap: () {
+                          if (post.type == 'Favorite' &&
+                              post.postType == 'News') {
+                            Get.toNamed(Routes.newsdetails);
+                          } else if (post.type == 'all' &&
+                              post.postType == 'Classified') {
+                            Get.toNamed(Routes.mlmclassifieddetail);
+                          } else {
+                            Get.toNamed('/default_detail');
+                          }
+                        },
+                        child: AllNotificationCard(
+                          key: ValueKey(post.id),
+                          image: post.userimage ?? '',
+                          dateTime: post.creatdate ?? '',
+                          classifiedId: post.id ?? 0,
+                          userName: post.name ?? '',
+                          controller: controller,
+                          type: 'all',
+                        ),
                       ),
                     );
                   },

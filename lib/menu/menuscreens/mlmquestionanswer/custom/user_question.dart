@@ -609,6 +609,7 @@ class _UserQuestionState extends State<UserQuestion> {
               ),
               GestureDetector(
                 onTap: () async {
+                  FocusScope.of(context).unfocus();
                   String editedComment = editController.text;
                   Navigator.of(context).pop();
                   if (isReply) {

@@ -76,6 +76,7 @@ class _CustomSocialState extends State<CustomSocial> {
                   45.sbh,
                   NormalButton(
                     onPressed: () async {
+                      FocusScope.of(context).unfocus();
                       if (kDebugMode) {
                         print('tap');
                       }

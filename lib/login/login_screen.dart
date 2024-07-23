@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/home/home/controller/homescreen_controller.dart';
 import 'package:mlmdiary/login/controller/login_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
@@ -22,6 +23,8 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final LoginController controller = Get.put(LoginController());
+
+  final HomeController homeController = Get.put(HomeController());
 
   @override
   Widget build(BuildContext context) {
@@ -65,9 +68,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     25.sbh,
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 22),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 22,
+                      ),
                       child: MobileEmailField(
                         byDefault: controller.isMobileTyping.value,
+                        hint: 'Enter Your Email / Mobile',
                       ),
                     ),
                     15.sbh,
@@ -83,10 +89,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             controller.isPasswordTyping.value = true;
                             controller.passwordValidation();
                           },
+                          hint: 'Enter Your Password',
                         ),
                       ),
                     ),
-                    25.sbh,
+                    15.sbh,
                     InkWell(
                       onTap: () {
                         Get.toNamed(Routes.forgotPassword);
@@ -111,10 +118,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     Expanded(child: Container()),
                     if (Platform.isIOS)
-                      Text(
-                        'Skip',
-                        style: textStyleW500(
-                            size.width * 0.036, AppColors.primaryColor),
+                      InkWell(
+                        onTap: () async {
+                          Get.offAllNamed(Routes.mainscreen);
+                        },
+                        child: Text(
+                          'Skip',
+                          style: textStyleW500(
+                              size.width * 0.036, AppColors.primaryColor),
+                        ),
                       ),
                     Expanded(child: Container()),
                     Row(

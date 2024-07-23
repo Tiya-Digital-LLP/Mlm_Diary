@@ -164,6 +164,19 @@ class SignupController extends GetxController {
     }
   }
 
+  void resetFields() {
+    // Reset all RxInt values in the list to 0
+    for (var type in selectedTypesId) {
+      type.value = 0;
+    }
+    showMobileotpField.value = true;
+    isMobileOtpScreenVisible.value = true;
+    isLoading.value = false;
+    selectedTypesId.clear();
+    name.value.clear();
+    mobile.value.clear();
+  }
+
   Future<void> sendDomesticPhoneOtp(String mobile, String name,
       String countryCode, BuildContext context) async {
     isLoading(true);
@@ -319,6 +332,9 @@ class SignupController extends GetxController {
               print("Foreign OTP sent successfully: ${otpEntity.message}");
             }
             setDefaultUserId(otpEntity.userId);
+            isMobileOtpScreenVisible.value = false;
+            showEmailField.value = true;
+            mobileReadOnly.value = true;
           } else if (jsonBody['status'] == 0) {
             toastification.show(
               // ignore: use_build_context_synchronously
@@ -484,7 +500,9 @@ class SignupController extends GetxController {
               print(
                   "Phone OTP verification successful: ${verifyPhoneOtpEntity.message}");
             }
+
             showEmailField.value = true;
+            mobileReadOnly.value = true;
           } else if (jsonBody['status'] == 0) {
             toastification.show(
               // ignore: use_build_context_synchronously
@@ -756,6 +774,7 @@ class SignupController extends GetxController {
               print(
                   "Email verified successfully: ${emailVerifyEntity.message}");
             }
+            emailReadOnly.value = true;
             showPasswordField.value = true;
           } else if (jsonBody['status'] == 0) {
             toastification.show(

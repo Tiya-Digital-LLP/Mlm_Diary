@@ -163,7 +163,13 @@ class _MyAppState extends State<MyApp> {
     );
 
     const DarwinNotificationDetails iOSPlatformChannelSpecifics =
-        DarwinNotificationDetails();
+        DarwinNotificationDetails(
+      sound: 'default',
+      badgeNumber: 1,
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
 
     const NotificationDetails platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
@@ -177,6 +183,9 @@ class _MyAppState extends State<MyApp> {
       platformChannelSpecifics,
       payload: jsonEncode(message.data),
     );
+    if (kDebugMode) {
+      print("Notification sent");
+    }
   }
 
   void navigateToScreen(String routeName, {dynamic arguments}) {

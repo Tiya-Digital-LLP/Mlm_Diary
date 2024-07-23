@@ -51,6 +51,8 @@ class Constants {
   static const String updatesocialmedia = "/updateSocialMedia";
   static const String updateemail = "/changeemailRequest";
   static const String updateemailphoneotp = "/updateEmailVerify";
+  static const String deleteaccount = "/deleteaccount";
+
   static const String getbanner = "/getbanner";
   static const String getvideolist = "/videolist";
   static const String getcategorylist = "/getcategory";

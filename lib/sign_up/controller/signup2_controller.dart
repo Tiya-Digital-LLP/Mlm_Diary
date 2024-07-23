@@ -22,6 +22,8 @@ class Signup2Controller extends GetxController {
   Rx<TextEditingController> pincode = TextEditingController().obs;
   Rx<TextEditingController> country = TextEditingController().obs;
   String? apiToken;
+  Rx<Color> addressValidationColor = Colors.black45.obs;
+
   Rx<TextEditingController> companyName = TextEditingController().obs;
   var isLoading = false.obs;
 
@@ -29,6 +31,7 @@ class Signup2Controller extends GetxController {
 
   RxBool comapnyNameError = false.obs;
   RxBool planTypeError = false.obs;
+  RxBool locationError = false.obs;
 
   RxBool isCompanyNameTyping = false.obs;
   RxBool isLocationTyping = false.obs;
@@ -229,5 +232,27 @@ class Signup2Controller extends GetxController {
         print("An error occurred while saving company details: $e");
       }
     }
+  }
+
+  void locationValidation() {
+    String enteredLocation = location.value.text;
+    if (enteredLocation.isEmpty || hasSpecialTextOrNumbers(enteredLocation)) {
+      locationError.value = true;
+    } else {
+      locationError.value = false;
+    }
+    if (locationError.value) {
+      isLocationTyping.value = true;
+    }
+    if (location.value.text.isEmpty) {
+      addressValidationColor.value = Colors.red;
+    } else {
+      addressValidationColor.value = Colors.green;
+    }
+  }
+
+  bool hasSpecialTextOrNumbers(String text) {
+    RegExp alphanumericRegex = RegExp(r'[a-zA-Z0-9]');
+    return !alphanumericRegex.hasMatch(text);
   }
 }

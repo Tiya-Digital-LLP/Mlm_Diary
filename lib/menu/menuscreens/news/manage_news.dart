@@ -84,6 +84,8 @@ class _MlmnewsState extends State<ManageNews> {
                 itemCount: controller.myNewsList.length,
                 itemBuilder: (context, index) {
                   final post = controller.myNewsList[index];
+                  final image =
+                      '${post.imagePath.toString()}?${DateTime.now().millisecondsSinceEpoch}';
                   return Padding(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -96,7 +98,7 @@ class _MlmnewsState extends State<ManageNews> {
                       },
                       child: ManageNewsCard(
                         onDelete: () => deletePost(index),
-                        userImage: post.imagePath ?? '',
+                        userImage: image,
                         userName: post.userData!.name ?? '',
                         postTitle: post.title ?? '',
                         postCaption: post.description ?? '',

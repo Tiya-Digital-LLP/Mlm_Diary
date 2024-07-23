@@ -79,13 +79,11 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
           children: [
             GestureDetector(
               onTap: () {
-                if (file.value == null) {
-                  showModalBottomSheet(
-                    backgroundColor: Colors.white,
-                    context: context,
-                    builder: (context) => bottomsheet(context),
-                  );
-                }
+                showModalBottomSheet(
+                  backgroundColor: Colors.white,
+                  context: context,
+                  builder: (context) => bottomsheet(context),
+                );
               },
               child: Padding(
                 padding: const EdgeInsets.only(top: 20),
@@ -489,6 +487,7 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
 
   // Method to handle save button pressed
   Future<void> handleSaveButtonPressed() async {
+    FocusScope.of(context).unfocus();
     if (file.value == null && controller.userImage.value.isEmpty) {
       showToasterrorborder("Please Upload Photo", context);
     } else if (controller
@@ -542,152 +541,29 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               TextButton.icon(
-                  onPressed: () {
-                    _pickImage(ImageSource.camera);
-                  },
-                  icon: Icon(Icons.camera, color: AppColors.primaryColor),
-                  label: Text(
-                    'Camera',
-                    style: TextStyle(color: AppColors.primaryColor),
-                  )),
+                onPressed: () {
+                  _pickImage(ImageSource.camera);
+                },
+                icon: Icon(Icons.camera, color: AppColors.primaryColor),
+                label: Text(
+                  'Camera',
+                  style: TextStyle(color: AppColors.primaryColor),
+                ),
+              ),
               TextButton.icon(
-                  onPressed: () {
-                    _pickImage(ImageSource.gallery);
-                  },
-                  icon: Icon(Icons.image, color: AppColors.primaryColor),
-                  label: Text(
-                    'Gallery',
-                    style: TextStyle(color: AppColors.primaryColor),
-                  )),
+                onPressed: () {
+                  _pickImage(ImageSource.gallery);
+                },
+                icon: Icon(Icons.image, color: AppColors.primaryColor),
+                label: Text(
+                  'Gallery',
+                  style: TextStyle(color: AppColors.primaryColor),
+                ),
+              ),
             ],
-          )
+          ),
         ],
       ),
-    );
-  }
-
-  void showBottomSheetFunc(
-    BuildContext context,
-    Size size,
-    AccountSeetingController controller,
-    List<GetUserTypeUsertype> userTypes,
-  ) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(30.0)),
-      ),
-      builder: (BuildContext context) {
-        return SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.all(16.0),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(30.0),
-                topRight: Radius.circular(30.0),
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: AppColors.grey,
-                    ),
-                    width: 80,
-                    height: 5,
-                  ),
-                ),
-                5.sbh,
-                Center(
-                  child: Text(
-                    'I am a MLM*',
-                    style:
-                        textStyleW600(size.width * 0.045, AppColors.blackText),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  itemCount: userTypes.length,
-                  itemBuilder: (context, index) {
-                    return Column(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            controller.toggleSelected(index, context);
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 16),
-                            child: Row(
-                              children: [
-                                Obx(
-                                  () => GestureDetector(
-                                    onTap: () {
-                                      controller.toggleSelected(index, context);
-                                    },
-                                    child: Image.asset(
-                                      controller.isTypeSelectedList[index]
-                                          ? Assets.imagesTrueCircle
-                                          : Assets.imagesCircle,
-                                    ),
-                                  ),
-                                ),
-                                15.sbw,
-                                Text(
-                                  userTypes[index].name ?? '',
-                                  style: textStyleW500(
-                                    size.width * 0.041,
-                                    controller.isTypeSelectedList[
-                                            index] // Highlight selected MLM type
-                                        ? AppColors
-                                            .primaryColor // Apply highlight color
-                                        : AppColors
-                                            .blackText, // Apply default color
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        20.sbh,
-                      ],
-                    );
-                  },
-                ),
-                Center(
-                  child: CustomButton(
-                    title: "Continue",
-                    btnColor: AppColors.primaryColor,
-                    titleColor: AppColors.white,
-                    onTap: () {
-                      if (controller.isTypeSelectedList.contains(true)) {
-                        Get.back();
-                      } else {
-                        Fluttertoast.showToast(
-                          msg: "Please select at least one field.",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white,
-                          fontSize: 16.0,
-                        );
-                      }
-                    },
-                    isLoading: controller.isLoading,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
     );
   }
 
@@ -716,7 +592,13 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
           }
         }
 
-        file.value = croppedFile;
+        // Save to a different directory if necessary
+        final tempDir = await getTemporaryDirectory();
+        final tempFile = io.File(
+            '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg');
+        await croppedFile.copy(tempFile.path);
+
+        file.value = tempFile; // Update file observable with new file
         Get.back();
       } else {
         Fluttertoast.showToast(msg: 'Image cropping failed');
@@ -777,125 +659,248 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
     }
     return compressedFile;
   }
+}
 
-  void showBottomSheetFuncPlan(
-    BuildContext context,
-    Size size,
-    AccountSeetingController controller,
-    List<GetPlanListPlan> planList,
-  ) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(30.0)),
-      ),
-      builder: (BuildContext context) {
-        return FractionallySizedBox(
-          heightFactor: 0.9,
-          child: Container(
-            padding: const EdgeInsets.all(16.0),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(30.0),
-                topRight: Radius.circular(30.0),
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: AppColors.grey,
-                    ),
-                    width: 80,
-                    height: 5,
-                  ),
-                ),
-                5.sbh,
-                Center(
-                  child: Text(
-                    'Select Plan',
-                    style:
-                        textStyleW600(size.width * 0.045, AppColors.blackText),
-                  ),
-                ),
-                20.sbh,
-                Flexible(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    itemCount: planList.length,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              controller.togglePlanSelected(index);
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 16),
-                              child: Row(
-                                children: [
-                                  Obx(
-                                    () => GestureDetector(
-                                      onTap: () {
-                                        controller.togglePlanSelected(index);
-                                      },
-                                      child: Image.asset(
-                                        (controller.isPlanSelectedList[index])
-                                            ? Assets.imagesTrueCircle
-                                            : Assets.imagesCircle,
-                                      ),
-                                    ),
-                                  ),
-                                  15.sbw,
-                                  Text(
-                                    planList[index].name ?? '',
-                                    style: textStyleW500(size.width * 0.041,
-                                        AppColors.blackText),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          20.sbh,
-                        ],
-                      );
-                    },
-                  ),
-                ),
-                Center(
-                  child: CustomButton(
-                    title: "Continue",
-                    btnColor: AppColors.primaryColor,
-                    titleColor: AppColors.white,
-                    onTap: () {
-                      if (controller.selectedCountPlan > 0) {
-                        Get.back();
-                      } else {
-                        Fluttertoast.showToast(
-                          msg: "Please select at least one field.",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white,
-                          fontSize: 16.0,
-                        );
-                      }
-                    },
-                    isLoading: controller.isLoading,
-                  ),
-                ),
-              ],
+void showBottomSheetFunc(
+  BuildContext context,
+  Size size,
+  AccountSeetingController controller,
+  List<GetUserTypeUsertype> userTypes,
+) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(30.0)),
+    ),
+    builder: (BuildContext context) {
+      return SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.all(16.0),
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(30.0),
+              topRight: Radius.circular(30.0),
             ),
           ),
-        );
-      },
-    );
-  }
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: AppColors.grey,
+                  ),
+                  width: 80,
+                  height: 5,
+                ),
+              ),
+              5.sbh,
+              Center(
+                child: Text(
+                  'I am a MLM*',
+                  style: textStyleW600(size.width * 0.045, AppColors.blackText),
+                ),
+              ),
+              const SizedBox(height: 20),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const AlwaysScrollableScrollPhysics(),
+                itemCount: userTypes.length,
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          controller.toggleSelected(index, context);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8, horizontal: 16),
+                          child: Row(
+                            children: [
+                              Obx(
+                                () => GestureDetector(
+                                  onTap: () {
+                                    controller.toggleSelected(index, context);
+                                  },
+                                  child: Image.asset(
+                                    controller.isTypeSelectedList[index]
+                                        ? Assets.imagesTrueCircle
+                                        : Assets.imagesCircle,
+                                  ),
+                                ),
+                              ),
+                              15.sbw,
+                              Text(
+                                userTypes[index].name ?? '',
+                                style: textStyleW500(
+                                  size.width * 0.041,
+                                  controller.isTypeSelectedList[
+                                          index] // Highlight selected MLM type
+                                      ? AppColors
+                                          .primaryColor // Apply highlight color
+                                      : AppColors
+                                          .blackText, // Apply default color
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      20.sbh,
+                    ],
+                  );
+                },
+              ),
+              Center(
+                child: CustomButton(
+                  title: "Continue",
+                  btnColor: AppColors.primaryColor,
+                  titleColor: AppColors.white,
+                  onTap: () {
+                    if (controller.isTypeSelectedList.contains(true)) {
+                      Get.back();
+                    } else {
+                      Fluttertoast.showToast(
+                        msg: "Please select at least one field.",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        fontSize: 16.0,
+                      );
+                    }
+                  },
+                  isLoading: controller.isLoading,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
+void showBottomSheetFuncPlan(
+  BuildContext context,
+  Size size,
+  AccountSeetingController controller,
+  List<GetPlanListPlan> planList,
+) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(30.0)),
+    ),
+    builder: (BuildContext context) {
+      return FractionallySizedBox(
+        heightFactor: 0.9,
+        child: Container(
+          padding: const EdgeInsets.all(16.0),
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(30.0),
+              topRight: Radius.circular(30.0),
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: AppColors.grey,
+                  ),
+                  width: 80,
+                  height: 5,
+                ),
+              ),
+              5.sbh,
+              Center(
+                child: Text(
+                  'Select Plan',
+                  style: textStyleW600(size.width * 0.045, AppColors.blackText),
+                ),
+              ),
+              20.sbh,
+              Flexible(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  itemCount: planList.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            controller.togglePlanSelected(index);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 16),
+                            child: Row(
+                              children: [
+                                Obx(
+                                  () => GestureDetector(
+                                    onTap: () {
+                                      controller.togglePlanSelected(index);
+                                    },
+                                    child: Image.asset(
+                                      (controller.isPlanSelectedList[index])
+                                          ? Assets.imagesTrueCircle
+                                          : Assets.imagesCircle,
+                                    ),
+                                  ),
+                                ),
+                                15.sbw,
+                                Text(
+                                  planList[index].name ?? '',
+                                  style: textStyleW500(
+                                      size.width * 0.041, AppColors.blackText),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        20.sbh,
+                      ],
+                    );
+                  },
+                ),
+              ),
+              Center(
+                child: CustomButton(
+                  title: "Continue",
+                  btnColor: AppColors.primaryColor,
+                  titleColor: AppColors.white,
+                  onTap: () {
+                    if (controller.selectedCountPlan > 0) {
+                      Get.back();
+                    } else {
+                      Fluttertoast.showToast(
+                        msg: "Please select at least one field.",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        fontSize: 16.0,
+                      );
+                    }
+                  },
+                  isLoading: controller.isLoading,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }

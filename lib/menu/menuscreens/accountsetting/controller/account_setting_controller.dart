@@ -11,12 +11,14 @@ import 'package:http_parser/http_parser.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/change_email_entity.dart';
+import 'package:mlmdiary/generated/delete_account_entity.dart';
 import 'package:mlmdiary/generated/get_plan_list_entity.dart';
 import 'package:mlmdiary/generated/get_user_profile_entity.dart';
 import 'package:mlmdiary/generated/get_user_type_entity.dart';
 import 'package:mlmdiary/generated/update_phone_no_entity.dart';
 import 'package:mlmdiary/generated/update_phone_verify_otp_entity.dart';
 import 'package:mlmdiary/generated/update_social_media_entity.dart';
+import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/common_toast.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
@@ -765,6 +767,84 @@ class AccountSeetingController extends GetxController {
           if (kDebugMode) {
             print(
                 "HTTP error: Failed to verify Email OTP. Status code: ${response.statusCode}");
+          }
+        }
+      } catch (e) {
+        if (kDebugMode) {
+          print("An error occurred: $e");
+        }
+      }
+    }
+
+    // Check for network connectivity before executing the request
+    var connectivityResult = await Connectivity().checkConnectivity();
+    // ignore: unrelated_type_equality_checks
+    if (connectivityResult != ConnectivityResult.none) {
+      await executeRequest();
+    } else {
+      showToasterrorborder("No internet connection", context);
+    }
+  }
+
+  Future<void> deleteAccount(context) async {
+    String device = '';
+    if (Platform.isAndroid) {
+      device = 'android';
+    } else if (Platform.isIOS) {
+      device = 'ios';
+    }
+    if (kDebugMode) {
+      print('Device Name: $device');
+    }
+
+    final prefs = await SharedPreferences.getInstance();
+    final apiToken = prefs.getString(Constants.accessToken);
+
+    Future<void> executeRequest() async {
+      try {
+        final response = await http.post(
+          Uri.parse('${Constants.baseUrl}${Constants.deleteaccount}'),
+          body: {
+            'api_token': apiToken,
+          },
+        );
+        if (response.statusCode == 200) {
+          final Map<String, dynamic> jsonBody = jsonDecode(response.body);
+          final deleteAccountEntity = DeleteAccountEntity.fromJson(jsonBody);
+
+          if (deleteAccountEntity.status == 1) {
+            if (kDebugMode) {
+              print(
+                  "Account deleted successfully: ${deleteAccountEntity.message}");
+            }
+            showToastverifedborder("Account deleted successfully!", context);
+            Get.offAllNamed(Routes.login);
+          } else if (deleteAccountEntity.status == 0) {
+            toastification.show(
+              context: context,
+              alignment: Alignment.bottomCenter,
+              backgroundColor: AppColors.white,
+              type: ToastificationType.error,
+              style: ToastificationStyle.flatColored,
+              showProgressBar: false,
+              autoCloseDuration: const Duration(seconds: 3),
+              icon: Image.asset(
+                Assets.imagesCancel,
+                height: 35,
+              ),
+              primaryColor: Colors.red,
+              title: Text('$jsonBody'),
+            );
+          } else {
+            if (kDebugMode) {
+              print(
+                  "Failed to Account deleted: ${deleteAccountEntity.message}");
+            }
+          }
+        } else {
+          if (kDebugMode) {
+            print(
+                "HTTP error: Failed to Account deleted. Status code: ${response.statusCode}");
           }
         }
       } catch (e) {

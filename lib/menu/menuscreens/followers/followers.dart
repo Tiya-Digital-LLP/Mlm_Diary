@@ -123,6 +123,7 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
           child: CustomSearchInput(
             controller: controller.search,
             onSubmitted: (value) {
+              FocusScope.of(context).unfocus();
               WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
               _refreshFollowers();
             },
@@ -247,6 +248,7 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
           child: CustomSearchInput(
             controller: controller.search,
             onSubmitted: (value) {
+              FocusScope.of(context).unfocus();
               WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
               _refreshFollowing();
             },

@@ -28,6 +28,7 @@ class _AddCompanyClassifiedState extends State<AddCompanyClassified> {
   @override
   void initState() {
     super.initState();
+    controller.fetchCompanyNames('');
     selectedCompanies = RxList<String>(widget.selectedCompanies ?? []);
   }
 

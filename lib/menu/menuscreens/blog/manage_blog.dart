@@ -80,6 +80,8 @@ class _ManageBlogState extends State<ManageBlog> {
               itemCount: controller.myBlogList.length,
               itemBuilder: (context, index) {
                 final post = controller.myBlogList[index];
+                final image =
+                    '${post.imagePath.toString()}?${DateTime.now().millisecondsSinceEpoch}';
                 return Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -96,7 +98,7 @@ class _ManageBlogState extends State<ManageBlog> {
                       userName: post.userData?.name ?? '',
                       postTitle: post.title ?? '',
                       postCaption: post.description ?? '',
-                      postImage: post.imagePath ?? '',
+                      postImage: image,
                       dateTime: post.createdDate ?? '',
                       viewcounts: post.pgcnt ?? 0,
                       controller: controller,

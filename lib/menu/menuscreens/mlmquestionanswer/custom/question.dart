@@ -1074,6 +1074,7 @@ class _QuestionState extends State<Question> {
               ),
               GestureDetector(
                 onTap: () async {
+                  FocusScope.of(context).unfocus();
                   String editedComment = editController.text;
                   Navigator.of(context).pop();
                   if (isReply) {
@@ -1152,6 +1153,7 @@ class _QuestionState extends State<Question> {
               ),
               GestureDetector(
                 onTap: () async {
+                  FocusScope.of(context).unfocus();
                   String editedComment = editController.text;
                   Navigator.of(context).pop();
                   if (isReply) {
@@ -1521,6 +1523,7 @@ class _QuestionState extends State<Question> {
                                 ),
                                 child: GestureDetector(
                                   onTap: () {
+                                    FocusScope.of(context).unfocus();
                                     final String answerText =
                                         controller.answer.value.text;
                                     if (answerText.isNotEmpty) {

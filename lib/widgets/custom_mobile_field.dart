@@ -13,6 +13,7 @@ class CustomMobileField extends StatelessWidget {
   final TextInputType keyboard;
   final ValueChanged<String>? onChanged;
   final double height;
+  final Widget? suffixIcon; // Add this line
 
   const CustomMobileField({
     super.key,
@@ -25,6 +26,7 @@ class CustomMobileField extends StatelessWidget {
     required this.byDefault,
     this.onChanged,
     this.height = 80.0,
+    this.suffixIcon, // Add this line
   });
 
   @override
@@ -44,28 +46,33 @@ class CustomMobileField extends StatelessWidget {
         color: AppColors.white,
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-        ),
-        child: Center(
-          child: TextField(
-            cursorHeight: 20,
-            maxLength: 12,
-            autocorrect: false,
-            readOnly: readOnly,
-            keyboardType: keyboard,
-            inputFormatters: textInputType,
-            onChanged: onChanged,
-            controller: controller,
-            textInputAction: TextInputAction.next,
-            style: textStyleW500(size.width * 0.04, AppColors.blackText),
-            cursorColor: AppColors.blackText,
-            decoration: InputDecoration(
-              counterText: "",
-              hintText: hint,
-              border: InputBorder.none,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Row(
+          children: [
+            Expanded(
+              child: Center(
+                child: TextField(
+                  cursorHeight: 20,
+                  maxLength: 12,
+                  autocorrect: false,
+                  readOnly: readOnly,
+                  keyboardType: keyboard,
+                  inputFormatters: textInputType,
+                  onChanged: onChanged,
+                  controller: controller,
+                  textInputAction: TextInputAction.next,
+                  style: textStyleW500(size.width * 0.04, AppColors.blackText),
+                  cursorColor: AppColors.blackText,
+                  decoration: InputDecoration(
+                    counterText: "",
+                    hintText: hint,
+                    border: InputBorder.none,
+                  ),
+                ),
+              ),
             ),
-          ),
+            if (suffixIcon != null) suffixIcon!,
+          ],
         ),
       ),
     );

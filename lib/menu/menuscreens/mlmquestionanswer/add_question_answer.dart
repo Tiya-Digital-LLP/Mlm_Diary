@@ -190,6 +190,7 @@ class _AddClassifiedState extends State<AddQuestionAnswer> {
   }
 
   Future<void> handleSaveButtonPressed() async {
+    FocusScope.of(context).unfocus();
     controller.titleValidation(context);
     controller.mlmCategoryValidation();
     controller.mlmsubCategoryValidation();

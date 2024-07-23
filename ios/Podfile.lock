@@ -224,6 +224,7 @@ DEPENDENCIES:
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - facebook_app_events (from `.symlinks/plugins/facebook_app_events/ios`)
   - Firebase/Analytics
+  - Firebase/Core
   - Firebase/Messaging
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
@@ -376,6 +377,6 @@ SPEC CHECKSUMS:
   video_player_avfoundation: 7c6c11d8470e1675df7397027218274b6d2360b3
   webview_flutter_wkwebview: 2a23822e9039b7b1bc52e5add778e5d89ad488d1
 
-PODFILE CHECKSUM: 3acb9462a5532128d07bf23c9caa33168aa3b369
+PODFILE CHECKSUM: 83b6ac9ebdb5ce6ffdcd8fd4d68f5fb401dbf1cc
 
 COCOAPODS: 1.15.2

@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
+import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/database/controller/database_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_banner_entity.dart';
@@ -33,6 +34,7 @@ import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:mlmdiary/widgets/remimaining_count_controller./remaining_count.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -742,12 +744,20 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _navigateToDetails(post) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+
+    if (apiToken == null) {
+      // ignore: use_build_context_synchronously
+      _showSignupDialog(context);
+      return;
+    }
+
     switch (post.type) {
       case 'classified':
         if (kDebugMode) {
           print('classified');
         }
-
         Get.toNamed(Routes.mlmclassifieddetail, arguments: post);
         break;
       case 'company':
@@ -777,34 +787,125 @@ class _HomeScreenState extends State<HomeScreen> {
         if (kDebugMode) {
           print('database');
         }
-
-        Get.toNamed(
-          Routes.userprofilescreencopy,
-          arguments: post,
-        );
-        await userProfileController.fetchUserAllPost(
-          1,
-          post.id ?? 0,
-        );
+        Get.toNamed(Routes.userprofilescreencopy, arguments: post);
+        await userProfileController.fetchUserAllPost(1, post.id ?? 0);
         break;
       case 'question':
         if (kDebugMode) {
           print('question');
         }
-
         Get.toNamed(Routes.userquestion, arguments: post);
         break;
       case 'post':
         if (kDebugMode) {
           print('post');
         }
-
         Get.toNamed(Routes.postdetail, arguments: post);
         break;
       default:
         Get.toNamed(Routes.mainscreen, arguments: post);
         break;
     }
+  }
+
+  void _showSignupDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        final Size size = MediaQuery.of(context).size;
+
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          contentPadding: EdgeInsets.zero,
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: double.infinity,
+                height: 100,
+                decoration: BoxDecoration(
+                  color: AppColors.primaryColor,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(12),
+                    topRight: Radius.circular(12),
+                  ),
+                ),
+                child: Center(
+                  child: Image.asset(
+                    Assets.imagesLogoutCheck,
+                    height: 50,
+                  ),
+                ),
+              ),
+              16.sbh,
+              Column(
+                children: [
+                  Text(
+                    'Please Sign Up First',
+                    style: textStyleW700(
+                      size.width * 0.040,
+                      AppColors.blackText,
+                    ),
+                  ),
+                  5.sbh,
+                  Center(
+                    child: Text(
+                      'If you need any adjustments or additional details, feel free to let me know!',
+                      style: textStyleW400(
+                        size.width * 0.035,
+                        AppColors.blackText,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                            child: TextButton(
+                                style: ElevatedButton.styleFrom(),
+                                onPressed: () {
+                                  Get.back();
+                                },
+                                child: Text(
+                                  'Cancel',
+                                  style: textStyleW700(
+                                      size.width * 0.035, AppColors.blackText),
+                                ))),
+                        5.sbw,
+                        Expanded(
+                            child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.primaryColor,
+                                  shadowColor: AppColors.primaryColor,
+                                  elevation: 3,
+                                ),
+                                onPressed: () async {
+                                  Get.offAllNamed(Routes.login);
+                                },
+                                child: Text(
+                                  'SignUp',
+                                  style: textStyleW700(
+                                      size.width * 0.035, AppColors.white),
+                                ))),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   Widget sliderHome(List<GetBannerData> banners, context) {

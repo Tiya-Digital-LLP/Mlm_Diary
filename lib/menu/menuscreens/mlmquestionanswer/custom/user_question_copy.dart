@@ -1080,6 +1080,7 @@ class _UserQuestionState extends State<UserQuestionCopy> {
               ),
               GestureDetector(
                 onTap: () async {
+                  FocusScope.of(context).unfocus();
                   String editedComment = editController.text;
                   Navigator.of(context).pop();
                   if (isReply) {
@@ -1158,6 +1159,7 @@ class _UserQuestionState extends State<UserQuestionCopy> {
               ),
               GestureDetector(
                 onTap: () async {
+                  FocusScope.of(context).unfocus();
                   String editedComment = editController.text;
                   Navigator.of(context).pop();
                   if (isReply) {

@@ -68,8 +68,7 @@ class LoginController extends GetxController {
     passwordValidation();
 
     if (email.value.text.isEmpty && password.value.text.isEmpty) {
-      showToasterrorborder(
-          "Please Enter Email or Mobile and \nPassword", context);
+      showToasterrorborder("This Field Is Required", context);
     } else if (email.value.text.isEmpty && mobile.value.text.isEmpty) {
       showToasterrorborder(
           "Please Enter Your Registered Email Or Phone Number ", context);

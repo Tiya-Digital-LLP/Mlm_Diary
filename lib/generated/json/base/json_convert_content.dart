@@ -33,6 +33,7 @@ import 'package:mlmdiary/generated/classified_like_list_entity.dart';
 import 'package:mlmdiary/generated/company_count_view_entity.dart';
 import 'package:mlmdiary/generated/count_view_question_entity.dart';
 import 'package:mlmdiary/generated/database_detail_entity.dart';
+import 'package:mlmdiary/generated/delete_account_entity.dart';
 import 'package:mlmdiary/generated/delete_classified_entity.dart';
 import 'package:mlmdiary/generated/delete_comment_entity.dart';
 import 'package:mlmdiary/generated/delete_entity.dart';
@@ -436,6 +437,10 @@ class JsonConvert {
     if (<DatabaseDetailData>[] is M) {
       return data.map<DatabaseDetailData>((Map<String, dynamic> e) =>
           DatabaseDetailData.fromJson(e)).toList() as M;
+    }
+    if (<DeleteAccountEntity>[] is M) {
+      return data.map<DeleteAccountEntity>((Map<String, dynamic> e) =>
+          DeleteAccountEntity.fromJson(e)).toList() as M;
     }
     if (<DeleteClassifiedEntity>[] is M) {
       return data.map<DeleteClassifiedEntity>((Map<String, dynamic> e) =>
@@ -1209,6 +1214,7 @@ class JsonConvertClassCollection {
     (CountViewQuestionEntity).toString(): CountViewQuestionEntity.fromJson,
     (DatabaseDetailEntity).toString(): DatabaseDetailEntity.fromJson,
     (DatabaseDetailData).toString(): DatabaseDetailData.fromJson,
+    (DeleteAccountEntity).toString(): DeleteAccountEntity.fromJson,
     (DeleteClassifiedEntity).toString(): DeleteClassifiedEntity.fromJson,
     (DeleteCommentEntity).toString(): DeleteCommentEntity.fromJson,
     (DeleteEntity).toString(): DeleteEntity.fromJson,

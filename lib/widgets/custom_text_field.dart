@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/login/controller/login_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
-import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 
 class MobileEmailField extends StatefulWidget {
   final bool byDefault;
-  const MobileEmailField({super.key, required this.byDefault});
+  final String hint;
+
+  const MobileEmailField(
+      {super.key, required this.byDefault, required this.hint});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -26,7 +28,7 @@ class _MobileEmailFieldState extends State<MobileEmailField> {
     return Obx(
       () => Container(
         width: size.width,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 8),
         decoration: BoxDecoration(
           border: Border.all(
             color: controller.isEmailTyping.value
@@ -40,42 +42,35 @@ class _MobileEmailFieldState extends State<MobileEmailField> {
           boxShadow: [
             BoxShadow(
               color: AppColors.blackText.withOpacity(0.12),
-              offset: const Offset(
-                5.0,
-                5.0,
-              ),
+              offset: const Offset(5.0, 5.0),
               blurRadius: 10.0,
               spreadRadius: 2.0,
             ),
           ],
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Enter Your Email / Mobile',
-              style: textStyleW500(
-                  size.width * 0.033, AppColors.blackText.withOpacity(0.5)),
-            ),
-            8.sbh,
-            SizedBox(
-              height: 12,
-              child: TextField(
-                cursorHeight: 20,
-                cursorColor: AppColors.blackText,
-                controller: controller.email.value,
-                onChanged: (value) {
-                  setState(() {
-                    controller.isEmailTyping.value = true;
-                    isValid.value = controller.validateInput(value);
-                  });
-                },
-                decoration: const InputDecoration(
-                  border: InputBorder.none,
-                ),
+        child: SizedBox(
+          height: 75,
+          child: TextFormField(
+            cursorHeight: 20,
+            style: textStyleW400(size.width * 0.038, AppColors.blackText),
+            cursorColor: AppColors.blackText,
+            controller: controller.email.value,
+            onChanged: (value) {
+              setState(() {
+                controller.isEmailTyping.value = true;
+                isValid.value = controller.validateInput(value);
+              });
+            },
+            decoration: InputDecoration(
+              counterText: "",
+              labelText: widget.hint,
+              labelStyle: TextStyle(
+                color: Colors.grey[600],
               ),
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.only(top: 16, left: 8, right: 8),
             ),
-          ],
+          ),
         ),
       ),
     );

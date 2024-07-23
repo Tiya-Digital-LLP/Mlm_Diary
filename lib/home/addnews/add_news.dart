@@ -289,6 +289,7 @@ class _ManageNewsPlusIconState extends State<AddNews> {
   }
 
   Future<void> handleSaveButtonPressed() async {
+    FocusScope.of(context).unfocus();
     controller.titleValidation();
     controller.mlmCategoryValidation();
     controller.mlmsubCategoryValidation();

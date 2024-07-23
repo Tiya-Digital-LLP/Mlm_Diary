@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/utils/text_style.dart';
+import 'package:mlmdiary/widgets/loader/custom_three_dot_animation.dart';
 
 class CustomButton extends StatelessWidget {
   final String title;
@@ -38,9 +40,10 @@ class CustomButton extends StatelessWidget {
         ),
         child: Obx(() {
           return isLoading.value
-              ? CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(titleColor),
-                )
+              ? CustomThreeDotAnimation(
+                  child: Lottie.asset(
+                  Assets.lottieDotsanimation,
+                ))
               : Text(
                   title,
                   style: textStyleW600(

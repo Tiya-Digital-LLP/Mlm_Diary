@@ -93,7 +93,10 @@ class _ContactUsState extends State<ContactUs> {
                     hint: "Your Name*",
                     controller: controller.name.value,
                     byDefault: !controller.isNameTyping.value,
-                    onChanged: (value) {},
+                    onChanged: (value) {
+                      controller.nameValidation(context);
+                      controller.isNameTyping.value = true;
+                    },
                     height: 70,
                   ),
                 ),
@@ -201,9 +204,35 @@ class _ContactUsState extends State<ContactUs> {
                 20.sbh,
                 NormalButton(
                   onPressed: () async {
-                    await controller.contactus(context);
-                    // ignore: use_build_context_synchronously
-                    showToastverifedborder('inquiry save', context);
+                    FocusScope.of(context).unfocus();
+                    if (controller.nameError.value) {
+                      showToasterrorborder(
+                        "Please enter a valid name. It should start with a capital letter and contain only alphabets.",
+                        context,
+                      );
+                    } else if (controller.emailError.value) {
+                      showToasterrorborder(
+                        "Please enter a valid email address.",
+                        context,
+                      );
+                    } else if (controller.companyError.value) {
+                      showToasterrorborder(
+                        "Please enter your company name.",
+                        context,
+                      );
+                    } else if (controller.messageError.value) {
+                      showToasterrorborder(
+                        "Please enter your message.",
+                        context,
+                      );
+                    } else if (controller.mobileError.value) {
+                      showToasterrorborder(
+                        "Please enter a valid 10-digit mobile number.",
+                        context,
+                      );
+                    } else {
+                      controller.contactus(context);
+                    }
                   },
                   text: 'Submit',
                   isLoading: controller.isLoading,

@@ -289,6 +289,8 @@ class _ManageBlogPlusIconState extends State<AddBlog> {
   }
 
   Future<void> handleSaveButtonPressed() async {
+    FocusScope.of(context).unfocus();
+
     controller.titleValidation();
     controller.mlmCategoryValidation();
     controller.mlmsubCategoryValidation();

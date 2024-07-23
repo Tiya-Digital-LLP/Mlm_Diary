@@ -260,6 +260,7 @@ class _AddPostState extends State<AddPost> {
                               ? null
                               : () {
                                   if (!controller.postError.value) {
+                                    FocusScope.of(context).unfocus();
                                     controller.addPost(
                                       imageFile: file.value,
                                       videoFile: videoFile.value,
