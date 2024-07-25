@@ -78,7 +78,7 @@ class _UserCardState extends State<UserCard> {
                       ),
                     ),
                     errorWidget: (context, url, error) => Image.asset(
-                      Assets.imagesIcon,
+                      Assets.imagesAdminlogo,
                       height: 60.0,
                       width: 60.0,
                       fit: BoxFit.cover,

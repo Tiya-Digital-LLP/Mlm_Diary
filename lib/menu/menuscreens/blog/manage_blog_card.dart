@@ -145,7 +145,8 @@ class _ManageBlogCardState extends State<ManageBlogCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CachedNetworkImage(
-                  imageUrl: widget.postImage,
+                  imageUrl:
+                      '${widget.postImage.toString()}?${DateTime.now().millisecondsSinceEpoch}',
                   height: 97,
                   width: 105,
                   fit: BoxFit.fill,

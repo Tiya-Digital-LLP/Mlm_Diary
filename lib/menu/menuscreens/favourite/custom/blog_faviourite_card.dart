@@ -255,7 +255,7 @@ class _FavouritrCardState extends State<BlogFaviouriteCard> {
                   },
                   errorBuilder: (context, error, stackTrace) {
                     return Image.asset(
-                      Assets.imagesIcon,
+                      Assets.imagesLogo,
                       fit: BoxFit.fill,
                     );
                   },

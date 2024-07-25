@@ -114,7 +114,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                           child: ClipOval(
                             child: Image.network(
                               '${userProfile.imagePath.toString()}?${DateTime.now().millisecondsSinceEpoch}',
-                              fit: BoxFit.fill,
+                              fit: BoxFit.cover,
                               loadingBuilder: (BuildContext context,
                                   Widget child,
                                   ImageChunkEvent? loadingProgress) {
@@ -136,8 +136,9 @@ class _ProfileScreenState extends State<ProfileScreen>
                               },
                               errorBuilder: (context, error, stackTrace) {
                                 return Image.asset(
-                                  Assets.imagesIcon,
-                                  fit: BoxFit.fill,
+                                  Assets.imagesAdminlogo,
+                                  fit: BoxFit
+                                      .cover, // Ensure the error image also uses BoxFit.cover
                                 );
                               },
                             ),

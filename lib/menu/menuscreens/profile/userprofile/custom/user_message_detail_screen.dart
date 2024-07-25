@@ -210,7 +210,7 @@ class _UserMessageDetailScreenState extends State<UserMessageDetailScreen> {
                               10.sbw,
                               ClipOval(
                                 child: Image.asset(
-                                  Assets.imagesIcon,
+                                  Assets.imagesAdminlogo,
                                   height: 30,
                                 ),
                               ),

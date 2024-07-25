@@ -214,7 +214,7 @@ class _ManageBlogPlusIconState extends State<ManageBlogPlusIcon> {
                                       fit: BoxFit.cover,
                                     )
                                   : Image.asset(
-                                      Assets.imagesIcon,
+                                      Assets.imagesAdminlogo,
                                       height: 120,
                                       width: double.infinity,
                                       fit: BoxFit.cover,

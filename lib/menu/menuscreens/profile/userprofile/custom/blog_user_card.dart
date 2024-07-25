@@ -144,7 +144,7 @@ class _FavouritrCardState extends State<BlogUserCard> {
                       ? NetworkImage(widget.userImage)
                       : null,
                   child: widget.userImage.isEmpty
-                      ? Image.asset(Assets.imagesIcon)
+                      ? Image.asset(Assets.imagesAdminlogo)
                       : null,
                 ),
                 10.sbw,

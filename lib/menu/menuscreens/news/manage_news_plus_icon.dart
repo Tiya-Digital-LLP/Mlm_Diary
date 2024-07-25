@@ -216,7 +216,7 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
                                       fit: BoxFit.cover,
                                     )
                                   : Image.asset(
-                                      Assets.imagesIcon,
+                                      Assets.imagesAdminlogo,
                                       height: 100,
                                       width: double.infinity,
                                       fit: BoxFit.cover,

@@ -164,7 +164,7 @@ class _moreState extends State<MoreOptionScreen> {
                             child: ClipOval(
                               child: Image.network(
                                 '${userProfile.imagePath.toString()}?${DateTime.now().millisecondsSinceEpoch}',
-                                fit: BoxFit.fill,
+                                fit: BoxFit.cover,
                                 loadingBuilder: (BuildContext context,
                                     Widget child,
                                     ImageChunkEvent? loadingProgress) {
@@ -187,7 +187,7 @@ class _moreState extends State<MoreOptionScreen> {
                                 },
                                 errorBuilder: (context, error, stackTrace) {
                                   return Image.asset(
-                                    Assets.imagesIcon,
+                                    Assets.imagesAdminlogo,
                                     fit: BoxFit.fill,
                                   );
                                 },

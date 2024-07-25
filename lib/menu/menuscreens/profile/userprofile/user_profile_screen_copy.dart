@@ -196,13 +196,16 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                       },
                       child: ClipOval(
                         child: CachedNetworkImage(
-                          imageUrl: post.imageUrl ?? Assets.imagesIcon,
+                          imageUrl: post.imageUrl ?? Assets.imagesAdminlogo,
                           fit: BoxFit.cover,
                           height: 120,
                           width: 120,
                           placeholder: (context, url) => Container(),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
+                          errorWidget: (context, url, error) => Image.asset(
+                            Assets.imagesAdminlogo,
+                            fit: BoxFit
+                                .cover, // Ensure the error image also uses BoxFit.cover
+                          ),
                         ),
                       ),
                     ),

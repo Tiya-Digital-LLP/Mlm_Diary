@@ -132,7 +132,7 @@ class _QuestionCardState extends State<QuestionCard> {
                           },
                           errorBuilder: (context, error, stackTrace) {
                             return Image.asset(
-                              Assets.imagesIcon,
+                              Assets.imagesAdminlogo,
                               fit: BoxFit.cover,
                             );
                           },

@@ -257,6 +257,11 @@ class ManageBlogController extends GetxController {
           myBlogList.addAll(myBlogData);
         }
 
+        // Save the articleId to SharedPreferences
+        if (articleId != null) {
+          await prefs.setInt('saved_article_id', articleId);
+        }
+
         // Update UI with appropriate blog data
         if (articleId != null) {
           // Find the selected blog by articleId
@@ -679,7 +684,7 @@ class ManageBlogController extends GetxController {
     }
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
-    String? blogId = prefs.getString('lastBlogid');
+    int? blogId = prefs.getInt('saved_article_id');
 
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
@@ -733,7 +738,7 @@ class ManageBlogController extends GetxController {
             print("Response body: $jsonBody");
           }
           // Check if all fields in the response are true (you may need to adjust this condition based on the actual response structure)
-          if (jsonBody['success'] == true) {
+          if (jsonBody['status'] == 1) {
             toastification.show(
               context: context,
               alignment: Alignment.bottomCenter,

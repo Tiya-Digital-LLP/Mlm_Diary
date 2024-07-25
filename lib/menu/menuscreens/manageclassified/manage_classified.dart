@@ -358,7 +358,7 @@ class _ManageClassifiedPlusIconState extends State<ManageClassifiedPlusIcon> {
                                       )
                                     : ClipOval(
                                         child: Image.asset(
-                                          Assets.imagesIcon,
+                                          Assets.imagesLogo,
                                           height: 100,
                                           width: double.infinity,
                                           fit: BoxFit.cover,

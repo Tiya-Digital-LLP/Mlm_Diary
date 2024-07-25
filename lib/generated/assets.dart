@@ -14,7 +14,6 @@ class Assets {
   static const String imagesCheck = 'assets/images/check.png';
   static const String imagesChecked = 'assets/images/checked.png';
   static const String imagesCircle = 'assets/images/circle.png';
-  static const String imagesIcon = 'assets/images/icon.png';
   static const String imagesLock = 'assets/images/lock.png';
   static const String imagesLogo = 'assets/images/logo.png';
   static const String imagesLogoutCheck = 'assets/images/logout_check.png';

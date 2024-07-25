@@ -1,7 +1,4 @@
 import 'package:mlmdiary/generated/assets.dart';
-import 'package:mlmdiary/modal_class/mlmcompany_class.dart';
-import 'package:mlmdiary/modal_class/people_may_know_details.dart';
-import 'package:mlmdiary/modal_class/user_class.dart';
 
 List<String> mlmList = [
   "Leader",
@@ -74,32 +71,32 @@ List<String> bottomBarTexts = [
   'Menu',
 ];
 
-List suggestedAUserList = [
-  UserSuggestionDetails(
-      userImage: Assets.imagesIcon,
-      name: "Rutvik Korat",
-      post: "Flutter Developer"),
-  UserSuggestionDetails(
-      userImage: Assets.imagesIcon,
-      name: "Rutvik Korat",
-      post: "Flutter Developer"),
-  UserSuggestionDetails(
-      userImage: Assets.imagesIcon,
-      name: "Rutvik Korat",
-      post: "Flutter Developer"),
-  UserSuggestionDetails(
-      userImage: Assets.imagesIcon,
-      name: "Rutvik Korat",
-      post: "Flutter Developer"),
-  UserSuggestionDetails(
-      userImage: Assets.imagesIcon,
-      name: "Rutvik Korat",
-      post: "Flutter Developer"),
-  UserSuggestionDetails(
-      userImage: Assets.imagesIcon,
-      name: "Rutvik Korat",
-      post: "Flutter Developer"),
-];
+// List suggestedAUserList = [
+//   UserSuggestionDetails(
+//       userImage: Assets.imagesIcon,
+//       name: "Rutvik Korat",
+//       post: "Flutter Developer"),
+//   UserSuggestionDetails(
+//       userImage: Assets.imagesIcon,
+//       name: "Rutvik Korat",
+//       post: "Flutter Developer"),
+//   UserSuggestionDetails(
+//       userImage: Assets.imagesIcon,
+//       name: "Rutvik Korat",
+//       post: "Flutter Developer"),
+//   UserSuggestionDetails(
+//       userImage: Assets.imagesIcon,
+//       name: "Rutvik Korat",
+//       post: "Flutter Developer"),
+//   UserSuggestionDetails(
+//       userImage: Assets.imagesIcon,
+//       name: "Rutvik Korat",
+//       post: "Flutter Developer"),
+//   UserSuggestionDetails(
+//       userImage: Assets.imagesIcon,
+//       name: "Rutvik Korat",
+//       post: "Flutter Developer"),
+// ];
 
 // List postList = [
 //   PostClass(
@@ -248,106 +245,106 @@ List suggestedAUserList = [
 //   ),
 // ];
 
-List companyListData = [
-  MlmCompanyList(
-    userImage: Assets.imagesIcon,
-    postTitle: "Seacret Direct LLC",
-    location: "Dhanbad, Jharkhand",
-    postCaption:
-        "A multi-level marketing business with headquarters in the United States called Seacret (Seacret Spa International/Seacret Direct) distributes cosmetics and other personal care items derived from Dead Sea minerals, mud, and nutrients.",
-  ),
-  MlmCompanyList(
-    userImage: Assets.imagesIcon,
-    postTitle: "Jio",
-    postCaption:
-        "A multi-level marketing business with headquarters in the United States called Seacret (Seacret Spa International/Seacret Direct) distributes cosmetics and other personal care items derived from Dead Sea minerals, mud, and nutrients.",
-    location: 'Mumbai, Maharashtra ',
-  ),
-  MlmCompanyList(
-    userImage: Assets.imagesIcon,
-    postTitle: "Pepsi",
-    postCaption:
-        "A multi-level marketing business with headquarters in the United States called Seacret (Seacret Spa International/Seacret Direct) distributes cosmetics and other personal care items derived from Dead Sea minerals, mud, and nutrients.",
-    location: 'Dhanbad, Jharkhand',
-  ),
-  MlmCompanyList(
-    userImage: Assets.imagesIcon,
-    postTitle: "Har Impex",
-    postCaption:
-        "A multi-level marketing business with headquarters in the United States called Seacret (Seacret Spa International/Seacret Direct) distributes cosmetics and other personal care items derived from Dead Sea minerals, mud, and nutrients.",
-    location: 'Ahmedabad , SouthBopal',
-  ),
-  MlmCompanyList(
-    userImage: Assets.imagesIcon,
-    postTitle: "Google",
-    postCaption:
-        "A multi-level marketing business with headquarters in the United States called Seacret (Seacret Spa International/Seacret Direct) distributes cosmetics and other personal care items derived from Dead Sea minerals, mud, and nutrients.",
-    location: 'Gandhinagar',
-  ),
-];
+// List companyListData = [
+//   MlmCompanyList(
+//     userImage: Assets.imagesIcon,
+//     postTitle: "Seacret Direct LLC",
+//     location: "Dhanbad, Jharkhand",
+//     postCaption:
+//         "A multi-level marketing business with headquarters in the United States called Seacret (Seacret Spa International/Seacret Direct) distributes cosmetics and other personal care items derived from Dead Sea minerals, mud, and nutrients.",
+//   ),
+//   MlmCompanyList(
+//     userImage: Assets.imagesIcon,
+//     postTitle: "Jio",
+//     postCaption:
+//         "A multi-level marketing business with headquarters in the United States called Seacret (Seacret Spa International/Seacret Direct) distributes cosmetics and other personal care items derived from Dead Sea minerals, mud, and nutrients.",
+//     location: 'Mumbai, Maharashtra ',
+//   ),
+//   MlmCompanyList(
+//     userImage: Assets.imagesIcon,
+//     postTitle: "Pepsi",
+//     postCaption:
+//         "A multi-level marketing business with headquarters in the United States called Seacret (Seacret Spa International/Seacret Direct) distributes cosmetics and other personal care items derived from Dead Sea minerals, mud, and nutrients.",
+//     location: 'Dhanbad, Jharkhand',
+//   ),
+//   MlmCompanyList(
+//     userImage: Assets.imagesIcon,
+//     postTitle: "Har Impex",
+//     postCaption:
+//         "A multi-level marketing business with headquarters in the United States called Seacret (Seacret Spa International/Seacret Direct) distributes cosmetics and other personal care items derived from Dead Sea minerals, mud, and nutrients.",
+//     location: 'Ahmedabad , SouthBopal',
+//   ),
+//   MlmCompanyList(
+//     userImage: Assets.imagesIcon,
+//     postTitle: "Google",
+//     postCaption:
+//         "A multi-level marketing business with headquarters in the United States called Seacret (Seacret Spa International/Seacret Direct) distributes cosmetics and other personal care items derived from Dead Sea minerals, mud, and nutrients.",
+//     location: 'Gandhinagar',
+//   ),
+// ];
 
-List userList = [
-  UserClass(
-    userImage: Assets.imagesIcon,
-    userName: "Rutvik Korat",
-    location: "Surat, India",
-    designation: "Flutter Developer",
-    plan: "Silver",
-  ),
-  UserClass(
-    userImage: Assets.imagesIcon,
-    userName: "Rutvik Korat",
-    location: "Surat, India",
-    designation: "Flutter Developer",
-    plan: "Silver",
-  ),
-  UserClass(
-    userImage: Assets.imagesIcon,
-    userName: "Rutvik Korat",
-    location: "Surat, India",
-    designation: "Flutter Developer",
-    plan: "Silver",
-  ),
-  UserClass(
-    userImage: Assets.imagesIcon,
-    userName: "Rutvik Korat",
-    location: "Surat, India",
-    designation: "Flutter Developer",
-    plan: "Silver",
-  ),
-  UserClass(
-    userImage: Assets.imagesIcon,
-    userName: "Rutvik Korat",
-    location: "Surat, India",
-    designation: "Flutter Developer",
-    plan: "Silver",
-  ),
-  UserClass(
-    userImage: Assets.imagesIcon,
-    userName: "Rutvik Korat",
-    location: "Surat, India",
-    designation: "Flutter Developer",
-    plan: "Silver",
-  ),
-  UserClass(
-    userImage: Assets.imagesIcon,
-    userName: "Rutvik Korat",
-    location: "Surat, India",
-    designation: "Flutter Developer",
-    plan: "Silver",
-  ),
-  UserClass(
-    userImage: Assets.imagesIcon,
-    userName: "Rutvik Korat",
-    location: "Surat, India",
-    designation: "Flutter Developer",
-    plan: "Silver",
-  ),
-  UserClass(
-    userImage: Assets.imagesIcon,
-    userName: "Rutvik Korat",
-    location: "Surat, India",
-    designation: "Flutter Developer",
-    plan: "Silver",
-  ),
-];
+// List userList = [
+//   UserClass(
+//     userImage: Assets.imagesIcon,
+//     userName: "Rutvik Korat",
+//     location: "Surat, India",
+//     designation: "Flutter Developer",
+//     plan: "Silver",
+//   ),
+//   UserClass(
+//     userImage: Assets.imagesIcon,
+//     userName: "Rutvik Korat",
+//     location: "Surat, India",
+//     designation: "Flutter Developer",
+//     plan: "Silver",
+//   ),
+//   UserClass(
+//     userImage: Assets.imagesIcon,
+//     userName: "Rutvik Korat",
+//     location: "Surat, India",
+//     designation: "Flutter Developer",
+//     plan: "Silver",
+//   ),
+//   UserClass(
+//     userImage: Assets.imagesIcon,
+//     userName: "Rutvik Korat",
+//     location: "Surat, India",
+//     designation: "Flutter Developer",
+//     plan: "Silver",
+//   ),
+//   UserClass(
+//     userImage: Assets.imagesIcon,
+//     userName: "Rutvik Korat",
+//     location: "Surat, India",
+//     designation: "Flutter Developer",
+//     plan: "Silver",
+//   ),
+//   UserClass(
+//     userImage: Assets.imagesIcon,
+//     userName: "Rutvik Korat",
+//     location: "Surat, India",
+//     designation: "Flutter Developer",
+//     plan: "Silver",
+//   ),
+//   UserClass(
+//     userImage: Assets.imagesIcon,
+//     userName: "Rutvik Korat",
+//     location: "Surat, India",
+//     designation: "Flutter Developer",
+//     plan: "Silver",
+//   ),
+//   UserClass(
+//     userImage: Assets.imagesIcon,
+//     userName: "Rutvik Korat",
+//     location: "Surat, India",
+//     designation: "Flutter Developer",
+//     plan: "Silver",
+//   ),
+//   UserClass(
+//     userImage: Assets.imagesIcon,
+//     userName: "Rutvik Korat",
+//     location: "Surat, India",
+//     designation: "Flutter Developer",
+//     plan: "Silver",
+//   ),
+// ];

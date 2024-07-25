@@ -186,8 +186,8 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
                               },
                               child: ClipOval(
                                 child: CachedNetworkImage(
-                                  imageUrl:
-                                      follower.imageUrl ?? Assets.imagesIcon,
+                                  imageUrl: follower.imageUrl ??
+                                      Assets.imagesAdminlogo,
                                   fit: BoxFit.cover,
                                   height: 50,
                                   width: 50,
@@ -314,8 +314,8 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
                               },
                               child: ClipOval(
                                 child: CachedNetworkImage(
-                                  imageUrl:
-                                      following.imageUrl ?? Assets.imagesIcon,
+                                  imageUrl: following.imageUrl ??
+                                      Assets.imagesAdminlogo,
                                   fit: BoxFit.cover,
                                   height: 50,
                                   width: 50,

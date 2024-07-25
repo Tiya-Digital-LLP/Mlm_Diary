@@ -71,6 +71,7 @@ class AccountSeetingController extends GetxController {
   RxBool confirmPasswordError = false.obs;
   RxBool mobileOtpError = false.obs;
   RxBool emailOtpError = false.obs;
+  RxBool companyNameOnly = false.obs;
 
   // ENABLED TYPING VALIDATION
 

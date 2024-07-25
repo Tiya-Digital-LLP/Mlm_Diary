@@ -93,6 +93,7 @@ class _ContactUsState extends State<ContactUs> {
                     hint: "Your Name*",
                     controller: controller.name.value,
                     byDefault: !controller.isNameTyping.value,
+                    isError: controller.nameError.value,
                     onChanged: (value) {
                       controller.nameValidation(context);
                       controller.isNameTyping.value = true;
@@ -107,8 +108,12 @@ class _ContactUsState extends State<ContactUs> {
                     textInputType: const [],
                     hint: "Email Address*",
                     controller: controller.email.value,
+                    isError: controller.emailError.value,
                     byDefault: !controller.isEmailTyping.value,
-                    onChanged: (value) {},
+                    onChanged: (value) {
+                      controller.emailValidation();
+                      controller.isEmailTyping.value = true;
+                    },
                     height: 70,
                   ),
                 ),
@@ -159,7 +164,7 @@ class _ContactUsState extends State<ContactUs> {
                       child: Obx(
                         () => BorderTextField(
                           height: 70,
-                          hint: " Mobile Number",
+                          hint: "Mobile Number",
                           readOnly: controller.mobileReadOnly.value,
                           controller: controller.mobile.value,
                           textInputType: [
@@ -197,7 +202,11 @@ class _ContactUsState extends State<ContactUs> {
                     hint: "Message*",
                     controller: controller.message.value,
                     byDefault: !controller.isMessageTyping.value,
-                    onChanged: (value) {},
+                    isError: controller.messageError.value,
+                    onChanged: (value) {
+                      controller.messageValidation();
+                      controller.isMessageTyping.value = true;
+                    },
                     height: 100,
                   ),
                 ),
@@ -205,7 +214,31 @@ class _ContactUsState extends State<ContactUs> {
                 NormalButton(
                   onPressed: () async {
                     FocusScope.of(context).unfocus();
-                    if (controller.nameError.value) {
+                    controller.nameValidation(context);
+                    controller.emailValidation();
+                    controller.mobileValidation();
+                    controller.messageValidation();
+                    if (controller.name.value.text.isEmpty) {
+                      showToasterrorborder(
+                        "Name field cannot be empty.",
+                        context,
+                      );
+                    } else if (controller.email.value.text.isEmpty) {
+                      showToasterrorborder(
+                        "Email field cannot be empty.",
+                        context,
+                      );
+                    } else if (controller.message.value.text.isEmpty) {
+                      showToasterrorborder(
+                        "Message field cannot be empty.",
+                        context,
+                      );
+                    } else if (controller.mobile.value.text.isEmpty) {
+                      showToasterrorborder(
+                        "Mobile Number field cannot be empty.",
+                        context,
+                      );
+                    } else if (controller.nameError.value) {
                       showToasterrorborder(
                         "Please enter a valid name. It should start with a capital letter and contain only alphabets.",
                         context,
@@ -215,19 +248,14 @@ class _ContactUsState extends State<ContactUs> {
                         "Please enter a valid email address.",
                         context,
                       );
-                    } else if (controller.companyError.value) {
+                    } else if (controller.mobileError.value) {
                       showToasterrorborder(
-                        "Please enter your company name.",
+                        "Please enter a valid 10-digit mobile number.",
                         context,
                       );
                     } else if (controller.messageError.value) {
                       showToasterrorborder(
-                        "Please enter your message.",
-                        context,
-                      );
-                    } else if (controller.mobileError.value) {
-                      showToasterrorborder(
-                        "Please enter a valid 10-digit mobile number.",
+                        "Please enter a Purpose Message.",
                         context,
                       );
                     } else {

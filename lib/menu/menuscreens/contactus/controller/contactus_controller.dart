@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
+import 'package:mlmdiary/utils/email_validator.dart';
 import 'package:mlmdiary/utils/lists.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -148,6 +149,33 @@ class ContactusController extends GetxController {
       mobileError.value = true;
     } else {
       mobileError.value = false;
+    }
+    if (mobileError.value) {
+      isMobileTyping.value = true;
+    }
+  }
+
+  void messageValidation() {
+    if (message.value.text.isEmpty) {
+      messageError.value = true;
+    } else {
+      messageError.value = false;
+    }
+    if (messageError.value) {
+      isMessageTyping.value = true;
+    }
+  }
+
+  void emailValidation() {
+    final bool isValid = EmailValidator.validate(email.value.text);
+
+    if (isValid == false) {
+      emailError.value = true;
+    } else {
+      emailError.value = false;
+    }
+    if (emailError.value) {
+      isEmailTyping.value = true;
     }
   }
 

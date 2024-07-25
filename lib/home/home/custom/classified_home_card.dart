@@ -278,7 +278,7 @@ class _FavouritrCardState extends State<ClassifiedHomeCard> {
                         },
                         errorBuilder: (context, error, stackTrace) {
                           return Image.asset(
-                            Assets.imagesIcon,
+                            Assets.imagesLogo,
                             fit: BoxFit.fill,
                           );
                         },
