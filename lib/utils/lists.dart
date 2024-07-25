@@ -1,10 +1,6 @@
 import 'package:mlmdiary/generated/assets.dart';
-import 'package:mlmdiary/modal_class/classfied_class.dart';
-import 'package:mlmdiary/modal_class/manage_quation_class.dart';
 import 'package:mlmdiary/modal_class/mlmcompany_class.dart';
-import 'package:mlmdiary/modal_class/news_class.dart';
 import 'package:mlmdiary/modal_class/people_may_know_details.dart';
-import 'package:mlmdiary/modal_class/post_class.dart';
 import 'package:mlmdiary/modal_class/user_class.dart';
 
 List<String> mlmList = [
@@ -67,7 +63,7 @@ List<String> bottomBarImages = [
   Assets.svgClassified,
   Assets.svgDatabase,
   Assets.svgBannerAd,
-  Assets.svgHome,
+  Assets.svgIcons8Menu,
 ];
 
 List<String> bottomBarTexts = [
@@ -105,152 +101,152 @@ List suggestedAUserList = [
       post: "Flutter Developer"),
 ];
 
-List postList = [
-  PostClass(
-      userImage: Assets.imagesIcon,
-      userName: "Rutvik Korat",
-      postCaption:
-          "Look my collection, i really want to share about my last trip to bail.",
-      postImage: Assets.imagesPostImage),
-  PostClass(
-      userImage: Assets.imagesIcon,
-      userName: "Vijay Makwana",
-      postCaption: "Look my collection!",
-      postImage: Assets.imagesPostImage),
-  PostClass(
-      userImage: Assets.imagesIcon,
-      userName: "Rutvik Korat",
-      postCaption:
-          "Look my collection, i really want to share about my last trip to bail. Please check guys!",
-      postImage: Assets.imagesPostImage),
-  PostClass(
-      userImage: Assets.imagesIcon,
-      userName: "Rutvik Korat",
-      postCaption:
-          "Look my collection, i really want to share about my last trip to bail. Please check guys!",
-      postImage: Assets.imagesPostImage),
-  PostClass(
-      userImage: Assets.imagesIcon,
-      userName: "Rutvik Korat",
-      postCaption:
-          "Look my collection, i really want to share about my last trip to bail. Please check guys!",
-      postImage: Assets.imagesPostImage),
-];
+// List postList = [
+//   PostClass(
+//       userImage: Assets.imagesIcon,
+//       userName: "Rutvik Korat",
+//       postCaption:
+//           "Look my collection, i really want to share about my last trip to bail.",
+//       postImage: Assets.imagesPostImage),
+//   PostClass(
+//       userImage: Assets.imagesIcon,
+//       userName: "Vijay Makwana",
+//       postCaption: "Look my collection!",
+//       postImage: Assets.imagesPostImage),
+//   PostClass(
+//       userImage: Assets.imagesIcon,
+//       userName: "Rutvik Korat",
+//       postCaption:
+//           "Look my collection, i really want to share about my last trip to bail. Please check guys!",
+//       postImage: Assets.imagesPostImage),
+//   PostClass(
+//       userImage: Assets.imagesIcon,
+//       userName: "Rutvik Korat",
+//       postCaption:
+//           "Look my collection, i really want to share about my last trip to bail. Please check guys!",
+//       postImage: Assets.imagesPostImage),
+//   PostClass(
+//       userImage: Assets.imagesIcon,
+//       userName: "Rutvik Korat",
+//       postCaption:
+//           "Look my collection, i really want to share about my last trip to bail. Please check guys!",
+//       postImage: Assets.imagesPostImage),
+// ];
 
-List newsListclassifiedList = [
-  ClassifiedList(
-      userImage: Assets.imagesIcon,
-      userName: "Aman Talaviya",
-      postTitle: "Hello all here we are selling",
-      postCaption:
-          "Look my collection, i really want to share about my last trip to bail. Please check guys!",
-      postImage: Assets.imagesProductImage),
-  ClassifiedList(
-      userImage: Assets.imagesIcon,
-      userName: "Vijay Makwana",
-      postTitle: "Hello all here we are selling",
-      postCaption:
-          "Look my collection, i really want to share about my last trip to bail. Please check guys!",
-      postImage: Assets.imagesProductImage),
-  ClassifiedList(
-      userImage: Assets.imagesIcon,
-      userName: "Rutvik Korat",
-      postTitle: "Hello all here we are selling",
-      postCaption:
-          "Look my collection, i really want to share about my last trip to bail. Please check guys!",
-      postImage: Assets.imagesProductImage),
-  ClassifiedList(
-      userImage: Assets.imagesIcon,
-      userName: "Rutvik Korat",
-      postTitle: "Hello all here we are selling",
-      postCaption:
-          "Look my collection, i really want to share about my last trip to bail. Please check guys!",
-      postImage: Assets.imagesProductImage),
-  ClassifiedList(
-      userImage: Assets.imagesIcon,
-      userName: "Rutvik Korat",
-      postTitle: "Hello all here we are selling",
-      postCaption:
-          "Look my collection, i really want to share about my last trip to bail. Please check guys!",
-      postImage: Assets.imagesProductImage),
-];
+// List newsListclassifiedList = [
+//   ClassifiedList(
+//       userImage: Assets.imagesIcon,
+//       userName: "Aman Talaviya",
+//       postTitle: "Hello all here we are selling",
+//       postCaption:
+//           "Look my collection, i really want to share about my last trip to bail. Please check guys!",
+//       postImage: Assets.imagesProductImage),
+//   ClassifiedList(
+//       userImage: Assets.imagesIcon,
+//       userName: "Vijay Makwana",
+//       postTitle: "Hello all here we are selling",
+//       postCaption:
+//           "Look my collection, i really want to share about my last trip to bail. Please check guys!",
+//       postImage: Assets.imagesProductImage),
+//   ClassifiedList(
+//       userImage: Assets.imagesIcon,
+//       userName: "Rutvik Korat",
+//       postTitle: "Hello all here we are selling",
+//       postCaption:
+//           "Look my collection, i really want to share about my last trip to bail. Please check guys!",
+//       postImage: Assets.imagesProductImage),
+//   ClassifiedList(
+//       userImage: Assets.imagesIcon,
+//       userName: "Rutvik Korat",
+//       postTitle: "Hello all here we are selling",
+//       postCaption:
+//           "Look my collection, i really want to share about my last trip to bail. Please check guys!",
+//       postImage: Assets.imagesProductImage),
+//   ClassifiedList(
+//       userImage: Assets.imagesIcon,
+//       userName: "Rutvik Korat",
+//       postTitle: "Hello all here we are selling",
+//       postCaption:
+//           "Look my collection, i really want to share about my last trip to bail. Please check guys!",
+//       postImage: Assets.imagesProductImage),
+// ];
 
-List newsList = [
-  NewsClassList(
-      userImage: Assets.imagesIcon,
-      userName: "Aman Talaviya",
-      postTitle: "Hello all here we are selling",
-      postCaption:
-          "Look my collection, i really want to share about my last trip to bail. Please check guys!",
-      postImage: Assets.imagesProductImage),
-  NewsClassList(
-      userImage: Assets.imagesIcon,
-      userName: "Vijay Makwana",
-      postTitle: "Hello all here we are selling",
-      postCaption:
-          "Look my collection, i really want to share about my last trip to bail. Please check guys!",
-      postImage: Assets.imagesProductImage),
-  NewsClassList(
-      userImage: Assets.imagesIcon,
-      userName: "Shubham Khatari",
-      postTitle: "Hello all here we are selling",
-      postCaption:
-          "Look my collection, i really want to share about my last trip to bail. Please check guys!",
-      postImage: Assets.imagesProductImage),
-  NewsClassList(
-      userImage: Assets.imagesIcon,
-      userName: "Nisarg",
-      postTitle: "Hello all here we are selling",
-      postCaption:
-          "Look my collection, i really want to share about my last trip to bail. Please check guys!",
-      postImage: Assets.imagesProductImage),
-  NewsClassList(
-      userImage: Assets.imagesIcon,
-      userName: "Ajay Pate;",
-      postTitle: "Hello all here we are selling",
-      postCaption:
-          "Look my collection, i really want to share about my last trip to bail. Please check guys!",
-      postImage: Assets.imagesProductImage),
-];
+// List newsList = [
+//   NewsClassList(
+//       userImage: Assets.imagesIcon,
+//       userName: "Aman Talaviya",
+//       postTitle: "Hello all here we are selling",
+//       postCaption:
+//           "Look my collection, i really want to share about my last trip to bail. Please check guys!",
+//       postImage: Assets.imagesProductImage),
+//   NewsClassList(
+//       userImage: Assets.imagesIcon,
+//       userName: "Vijay Makwana",
+//       postTitle: "Hello all here we are selling",
+//       postCaption:
+//           "Look my collection, i really want to share about my last trip to bail. Please check guys!",
+//       postImage: Assets.imagesProductImage),
+//   NewsClassList(
+//       userImage: Assets.imagesIcon,
+//       userName: "Shubham Khatari",
+//       postTitle: "Hello all here we are selling",
+//       postCaption:
+//           "Look my collection, i really want to share about my last trip to bail. Please check guys!",
+//       postImage: Assets.imagesProductImage),
+//   NewsClassList(
+//       userImage: Assets.imagesIcon,
+//       userName: "Nisarg",
+//       postTitle: "Hello all here we are selling",
+//       postCaption:
+//           "Look my collection, i really want to share about my last trip to bail. Please check guys!",
+//       postImage: Assets.imagesProductImage),
+//   NewsClassList(
+//       userImage: Assets.imagesIcon,
+//       userName: "Ajay Pate;",
+//       postTitle: "Hello all here we are selling",
+//       postCaption:
+//           "Look my collection, i really want to share about my last trip to bail. Please check guys!",
+//       postImage: Assets.imagesProductImage),
+// ];
 
-List manageQuationAnswerList = [
-  ManageQuation(
-    userImage: Assets.imagesEllipse,
-    userName: "Ralph Edwards",
-    postCaption:
-        "What role does brand positioning and reputation play in pricing strategies on Amazon?",
-  ),
-  ManageQuation(
-    userImage: Assets.imagesEllipse,
-    userName: "Ralph Edwards",
-    postCaption:
-        "What role does brand positioning and reputation play in pricing strategies on Amazon?",
-  ),
-  ManageQuation(
-    userImage: Assets.imagesEllipse,
-    userName: "Ralph Edwards",
-    postCaption:
-        "What role does brand positioning and reputation play in pricing strategies on Amazon?",
-  ),
-  ManageQuation(
-    userImage: Assets.imagesEllipse,
-    userName: "Ralph Edwards",
-    postCaption:
-        "What role does brand positioning and reputation play in pricing strategies on Amazon?",
-  ),
-  ManageQuation(
-    userImage: Assets.imagesEllipse,
-    userName: "Ralph Edwards",
-    postCaption:
-        "What role does brand positioning and reputation play in pricing strategies on Amazon?",
-  ),
-  ManageQuation(
-    userImage: Assets.imagesEllipse,
-    userName: "Ralph Edwards",
-    postCaption:
-        "What role does brand positioning and reputation play in pricing strategies on Amazon?",
-  ),
-];
+// List manageQuationAnswerList = [
+//   ManageQuation(
+//     userImage: Assets.imagesEllipse,
+//     userName: "Ralph Edwards",
+//     postCaption:
+//         "What role does brand positioning and reputation play in pricing strategies on Amazon?",
+//   ),
+//   ManageQuation(
+//     userImage: Assets.imagesEllipse,
+//     userName: "Ralph Edwards",
+//     postCaption:
+//         "What role does brand positioning and reputation play in pricing strategies on Amazon?",
+//   ),
+//   ManageQuation(
+//     userImage: Assets.imagesEllipse,
+//     userName: "Ralph Edwards",
+//     postCaption:
+//         "What role does brand positioning and reputation play in pricing strategies on Amazon?",
+//   ),
+//   ManageQuation(
+//     userImage: Assets.imagesEllipse,
+//     userName: "Ralph Edwards",
+//     postCaption:
+//         "What role does brand positioning and reputation play in pricing strategies on Amazon?",
+//   ),
+//   ManageQuation(
+//     userImage: Assets.imagesEllipse,
+//     userName: "Ralph Edwards",
+//     postCaption:
+//         "What role does brand positioning and reputation play in pricing strategies on Amazon?",
+//   ),
+//   ManageQuation(
+//     userImage: Assets.imagesEllipse,
+//     userName: "Ralph Edwards",
+//     postCaption:
+//         "What role does brand positioning and reputation play in pricing strategies on Amazon?",
+//   ),
+// ];
 
 List companyListData = [
   MlmCompanyList(

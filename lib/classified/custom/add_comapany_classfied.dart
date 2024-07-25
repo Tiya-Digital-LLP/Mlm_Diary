@@ -28,7 +28,9 @@ class _AddCompanyClassifiedState extends State<AddCompanyClassified> {
   @override
   void initState() {
     super.initState();
-    controller.fetchCompanyNames('');
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.fetchCompanyNames('');
+    });
     selectedCompanies = RxList<String>(widget.selectedCompanies ?? []);
   }
 

@@ -428,7 +428,7 @@ class AccountSeetingController extends GetxController {
             fetchUserProfile();
 
             Get.back();
-          } else if (jsonBody['status'] == 0) {
+          } else if (jsonBody['success'] == 0) {
             toastification.show(
               context: context,
               alignment: Alignment.bottomCenter,
@@ -442,7 +442,7 @@ class AccountSeetingController extends GetxController {
                 height: 35,
               ),
               primaryColor: Colors.red,
-              title: Text('$jsonBody'),
+              title: Text('${jsonBody['message']}'),
             );
           }
         } else {
@@ -833,7 +833,7 @@ class AccountSeetingController extends GetxController {
                 height: 35,
               ),
               primaryColor: Colors.red,
-              title: Text('$jsonBody'),
+              title: Text('${jsonBody['message']}'),
             );
           } else {
             if (kDebugMode) {

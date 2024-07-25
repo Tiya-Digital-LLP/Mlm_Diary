@@ -40,8 +40,10 @@ class _CommentDialogState extends State<CommentDialog> {
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    _refreshData();
-    _getUserId();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _refreshData();
+      _getUserId();
+    });
     _scrollController.addListener(_scrollListener);
   }
 

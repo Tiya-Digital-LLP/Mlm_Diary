@@ -175,9 +175,8 @@ class _UserMessageDetailScreenState extends State<UserMessageDetailScreen> {
                                     children: [
                                       Text(
                                         message.msg ?? '',
-                                        style: TextStyle(
-                                          color: AppColors.white,
-                                        ),
+                                        style:
+                                            TextStyle(color: AppColors.white),
                                       ),
                                       5.sbh,
                                       Row(
@@ -221,7 +220,7 @@ class _UserMessageDetailScreenState extends State<UserMessageDetailScreen> {
                       );
                     },
                   ),
-                ),
+                )
               ],
             ),
           ),

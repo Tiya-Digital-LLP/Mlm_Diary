@@ -1035,7 +1035,7 @@ class QuestionAnswerController extends GetxController {
                 height: 35,
               ),
               primaryColor: Colors.red,
-              title: Text('$jsonBody'),
+              title: Text('${jsonBody['message']}'),
             );
           }
         } else {

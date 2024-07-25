@@ -44,7 +44,9 @@ class _ManageBlogPlusIconState extends State<ManageBlogPlusIcon> {
   @override
   void initState() {
     super.initState();
-    controller.fetchMyBlog();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.fetchMyBlog();
+    });
   }
 
   @override

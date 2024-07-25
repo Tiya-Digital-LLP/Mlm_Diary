@@ -350,7 +350,7 @@ class SignupController extends GetxController {
                 height: 35,
               ),
               primaryColor: Colors.red,
-              title: Text('$jsonBody'),
+              title: Text('${jsonBody['message']}'),
             );
           } else {
             if (kDebugMode) {
@@ -435,7 +435,7 @@ class SignupController extends GetxController {
                 height: 35,
               ),
               primaryColor: Colors.red,
-              title: Text('$jsonBody'),
+              title: Text('${jsonBody['message']}'),
             );
           } else {
             if (kDebugMode) {
@@ -518,7 +518,7 @@ class SignupController extends GetxController {
                 height: 35,
               ),
               primaryColor: Colors.red,
-              title: Text('$jsonBody'),
+              title: Text('${jsonBody['message']}'),
             );
           } else {
             if (kDebugMode) {
@@ -711,8 +711,8 @@ class SignupController extends GetxController {
               Assets.imagesCancel,
               height: 35,
             ),
-            primaryColor: Colors.green,
-            title: Text('$jsonBody'),
+            primaryColor: Colors.red,
+            title: Text('${jsonBody['message']}'),
           );
         } else {
           // Registration failed
@@ -791,7 +791,7 @@ class SignupController extends GetxController {
                 height: 35,
               ),
               primaryColor: Colors.red,
-              title: Text('$jsonBody'),
+              title: Text('${jsonBody['message']}'),
             );
           } else {
             if (kDebugMode) {

@@ -106,7 +106,7 @@ class AddPostController extends GetxController {
                 height: 35,
               ),
               primaryColor: Colors.green,
-              title: Text('$jsonBody'),
+              title: Text('${jsonBody['message']}'),
             );
 
             Get.back();
@@ -124,7 +124,7 @@ class AddPostController extends GetxController {
                 height: 35,
               ),
               primaryColor: Colors.red,
-              title: Text('$jsonBody'),
+              title: Text('${jsonBody['message']}'),
             );
           } else {
             showToasterrorborder(

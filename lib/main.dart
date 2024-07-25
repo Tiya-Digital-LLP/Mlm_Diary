@@ -198,6 +198,7 @@ class _MyAppState extends State<MyApp> {
     if (kDebugMode) {
       print('Handling notification click with payload: $payload');
     }
+
     final data = payload != null ? jsonDecode(payload) : null;
 
     if (data == null) {
@@ -207,48 +208,32 @@ class _MyAppState extends State<MyApp> {
       return;
     }
 
+    // Ensure only specified keys are included
+    final filteredData = {
+      'user_id': data['user_id'],
+      'type': data['type'],
+      'post_id': data['post_id'],
+    };
+
     Timer(const Duration(milliseconds: 500), () async {
       try {
-        String key = '';
-        Map<String, dynamic> arguments = data;
-
-        if (data['click_action'] == 'FLUTTER_NOTIFICATION_CLICK') {
-          key = 'FLUTTER_NOTIFICATION_CLICK';
-        } else if (data['action'] == 'some_specific_action') {
-          key = 'some_specific_action';
-        } else {
-          key = '${data['type']}';
-        }
+        String key = '${data['type']}';
+        Map<String, dynamic> arguments = filteredData;
 
         switch (key) {
-          case 'FLUTTER_NOTIFICATION_CLICK':
-            navigateToScreen(Routes.aboutus);
-            break;
-          case 'some_specific_action':
-            navigateToScreen('/specific_screen', arguments: arguments);
-            break;
-          case 'Follow':
-            if (data['user_id'] == '5500270' &&
-                data['post_type'] == 'Profile' &&
-                (data['ntype'] == null || data['ntype'].isEmpty)) {
-              await databaseController.fetchUserPost(5500270, context);
-              navigateToScreen(Routes.userprofilescreen, arguments: arguments);
-              if (kDebugMode) {
-                print('1');
-              }
-            } else {
-              navigateToScreen(Routes.userprofilescreencopy,
-                  arguments: arguments);
-              if (kDebugMode) {
-                print('2');
-              }
+          case 'classified':
+            await databaseController.fetchUserPost(
+                int.parse(data['user_id']), context);
+            navigateToScreen(Routes.userprofilescreen, arguments: arguments);
+            if (kDebugMode) {
+              print('Navigated to userprofilescreen with filtered data');
             }
             break;
           default:
             navigateToScreen(Routes.userprofilescreencopy,
                 arguments: arguments);
             if (kDebugMode) {
-              print('3');
+              print('Navigated to default screen with filtered data');
             }
         }
       } catch (e) {

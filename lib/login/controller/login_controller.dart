@@ -41,7 +41,7 @@ class LoginController extends GetxController {
   }
 
   bool validateInput(String value) {
-    if (value.length == 10 && int.tryParse(value) != null) {
+    if (int.tryParse(value) != null) {
       return true;
     } else if (_isValidEmail(value)) {
       return true;
