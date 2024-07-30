@@ -380,7 +380,7 @@ class SignupController extends GetxController {
     }
   }
 
-  Future<void> verifyOtp(int userid, context) async {
+  Future<void> verifyOtp(int userid, String countrycode, context) async {
     if (kDebugMode) {
       print("Verifying OTP for userId: $userid,");
     }
@@ -392,6 +392,8 @@ class SignupController extends GetxController {
           Uri.parse('${Constants.baseUrl}${Constants.resentOtp}'),
           body: {
             'user_id': userid.toString(),
+            'countrycode': countrycode,
+            'mobile': mobile.value.text,
           },
         );
 

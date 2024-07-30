@@ -44,7 +44,9 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
   @override
   void initState() {
     super.initState();
-    controller.fetchMyNews();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.fetchMyNews();
+    });
   }
 
   @override
@@ -184,7 +186,7 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
                     () => BorderTextField(
                       keyboard: TextInputType.url,
                       textInputType: const [],
-                      hint: "Website Url",
+                      hint: "Website Url (Optional)",
                       controller: controller.url.value,
                       isError: controller.urlError.value,
                       byDefault: !controller.isUrlTyping.value,
@@ -200,33 +202,35 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
                     borderRadius: BorderRadius.circular(13.05),
                     child: Stack(
                       children: [
-                        GestureDetector(
-                          child: file.value != null
-                              ? Image.file(
-                                  file.value!,
-                                  height: 100,
-                                  width: double.infinity,
-                                  fit: BoxFit.cover,
-                                )
-                              : controller.userImage.value.isNotEmpty
-                                  ? Image.network(
-                                      controller.userImage.value,
-                                      height: 100,
-                                      width: double.infinity,
-                                      fit: BoxFit.cover,
-                                    )
-                                  : Image.asset(
-                                      Assets.imagesAdminlogo,
-                                      height: 100,
-                                      width: double.infinity,
-                                      fit: BoxFit.cover,
-                                    ),
-                          onTap: () {
-                            showModalBottomSheet(
-                                backgroundColor: Colors.white,
-                                context: context,
-                                builder: (context) => bottomsheet(context));
-                          },
+                        Obx(
+                          () => GestureDetector(
+                            child: file.value != null
+                                ? Image.file(
+                                    file.value!,
+                                    height: 100,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                  )
+                                : controller.userImage.value.isNotEmpty
+                                    ? Image.network(
+                                        controller.userImage.value,
+                                        height: 100,
+                                        width: double.infinity,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : Image.asset(
+                                        Assets.imagesLogo,
+                                        height: 100,
+                                        width: double.infinity,
+                                        fit: BoxFit.cover,
+                                      ),
+                            onTap: () {
+                              showModalBottomSheet(
+                                  backgroundColor: Colors.white,
+                                  context: context,
+                                  builder: (context) => bottomsheet(context));
+                            },
+                          ),
                         ),
                         Visibility(
                           visible: file.value == null ? false : true,

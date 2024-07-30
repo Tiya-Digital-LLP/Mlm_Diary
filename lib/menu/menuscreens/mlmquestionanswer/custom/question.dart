@@ -46,7 +46,9 @@ class _QuestionState extends State<Question> {
   @override
   void initState() {
     super.initState();
-    _refreshData();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _refreshData();
+    });
     initializeLikes();
     initializeBookmarks();
     WidgetsBinding.instance.addPostFrameCallback((_) {

@@ -54,6 +54,8 @@ class Constants {
   static const String deleteaccount = "/deleteaccount";
 
   static const String getbanner = "/getbanner";
+  static const String popupbanner = "/getpopupbanner";
+
   static const String getvideolist = "/videolist";
   static const String getcategorylist = "/getcategory";
   static const String getsubcategorylist = "/getsubcategory";
@@ -147,6 +149,7 @@ class Constants {
   static const String likedquestion = "/addlikequestion";
   static const String likedanswer = "/addlikeanswer";
   static const String addcommentanswerreply = "/add_answer_comment";
+  static const String editquestion = "/editquestion";
 
   static const String allbookmark = "/getallbookmarked";
   static const String getnotification = "/getnotification";

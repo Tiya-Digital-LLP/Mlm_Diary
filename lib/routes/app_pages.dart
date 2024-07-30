@@ -38,6 +38,7 @@ import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/add_question_answer.
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/user_question.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/question.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/user_question_copy.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/edit_question_answer.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/question_answer.dart';
 import 'package:mlmdiary/menu/menuscreens/news/manage_news_plus_icon.dart';
 import 'package:mlmdiary/menu/menuscreens/news/manage_news.dart';
@@ -198,6 +199,10 @@ class AppPages {
     GetPage(
       name: Routes.question,
       page: () => const Question(),
+    ),
+    GetPage(
+      name: Routes.editquestion,
+      page: () => const EditQuestionAnswer(),
     ),
     GetPage(
       name: Routes.favourite,

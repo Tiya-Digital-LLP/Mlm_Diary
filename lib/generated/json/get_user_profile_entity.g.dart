@@ -47,7 +47,7 @@ GetUserProfileUserProfile $GetUserProfileUserProfileFromJson(
   if (id != null) {
     getUserProfileUserProfile.id = id;
   }
-  final dynamic immlm = json['immlm'];
+  final String? immlm = jsonConvert.convert<String>(json['immlm']);
   if (immlm != null) {
     getUserProfileUserProfile.immlm = immlm;
   }
@@ -123,7 +123,7 @@ GetUserProfileUserProfile $GetUserProfileUserProfileFromJson(
   if (lastlogin != null) {
     getUserProfileUserProfile.lastlogin = lastlogin;
   }
-  final String? aboutyou = jsonConvert.convert<String>(json['aboutyou']);
+  final dynamic aboutyou = json['aboutyou'];
   if (aboutyou != null) {
     getUserProfileUserProfile.aboutyou = aboutyou;
   }
@@ -225,8 +225,7 @@ GetUserProfileUserProfile $GetUserProfileUserProfileFromJson(
   if (urlcomponent != null) {
     getUserProfileUserProfile.urlcomponent = urlcomponent;
   }
-  final String? aboutcompany = jsonConvert.convert<String>(
-      json['aboutcompany']);
+  final dynamic aboutcompany = json['aboutcompany'];
   if (aboutcompany != null) {
     getUserProfileUserProfile.aboutcompany = aboutcompany;
   }
@@ -234,7 +233,7 @@ GetUserProfileUserProfile $GetUserProfileUserProfileFromJson(
   if (fblink != null) {
     getUserProfileUserProfile.fblink = fblink;
   }
-  final String? instalink = jsonConvert.convert<String>(json['instalink']);
+  final dynamic instalink = json['instalink'];
   if (instalink != null) {
     getUserProfileUserProfile.instalink = instalink;
   }
@@ -271,7 +270,7 @@ GetUserProfileUserProfile $GetUserProfileUserProfileFromJson(
   if (platform != null) {
     getUserProfileUserProfile.platform = platform;
   }
-  final String? proceeddate = jsonConvert.convert<String>(json['proceeddate']);
+  final dynamic proceeddate = json['proceeddate'];
   if (proceeddate != null) {
     getUserProfileUserProfile.proceeddate = proceeddate;
   }
@@ -284,6 +283,14 @@ GetUserProfileUserProfile $GetUserProfileUserProfileFromJson(
   if (countrycode1 != null) {
     getUserProfileUserProfile.countrycode1 = countrycode1;
   }
+  final dynamic lat = json['lat'];
+  if (lat != null) {
+    getUserProfileUserProfile.lat = lat;
+  }
+  final dynamic lng = json['lng'];
+  if (lng != null) {
+    getUserProfileUserProfile.lng = lng;
+  }
   final int? followersCount = jsonConvert.convert<int>(json['followers_count']);
   if (followersCount != null) {
     getUserProfileUserProfile.followersCount = followersCount;
@@ -291,6 +298,10 @@ GetUserProfileUserProfile $GetUserProfileUserProfileFromJson(
   final int? followingCount = jsonConvert.convert<int>(json['following_count']);
   if (followingCount != null) {
     getUserProfileUserProfile.followingCount = followingCount;
+  }
+  final int? totalPost = jsonConvert.convert<int>(json['total_post']);
+  if (totalPost != null) {
+    getUserProfileUserProfile.totalPost = totalPost;
   }
   final String? imagePath = jsonConvert.convert<String>(json['image_path']);
   if (imagePath != null) {
@@ -366,8 +377,11 @@ Map<String, dynamic> $GetUserProfileUserProfileToJson(
   data['proceeddate'] = entity.proceeddate;
   data['is_approved'] = entity.isApproved;
   data['countrycode1'] = entity.countrycode1;
+  data['lat'] = entity.lat;
+  data['lng'] = entity.lng;
   data['followers_count'] = entity.followersCount;
   data['following_count'] = entity.followingCount;
+  data['total_post'] = entity.totalPost;
   data['image_path'] = entity.imagePath;
   data['image_thum_path'] = entity.imageThumPath;
   return data;
@@ -376,7 +390,7 @@ Map<String, dynamic> $GetUserProfileUserProfileToJson(
 extension GetUserProfileUserProfileExtension on GetUserProfileUserProfile {
   GetUserProfileUserProfile copyWith({
     int? id,
-    dynamic immlm,
+    String? immlm,
     String? username,
     String? password,
     String? sex,
@@ -395,7 +409,7 @@ extension GetUserProfileUserProfileExtension on GetUserProfileUserProfile {
     String? ip,
     String? lastip,
     String? lastlogin,
-    String? aboutyou,
+    dynamic aboutyou,
     dynamic website,
     dynamic compWebsite,
     String? company,
@@ -420,9 +434,9 @@ extension GetUserProfileUserProfileExtension on GetUserProfileUserProfile {
     String? passtoken,
     dynamic tokendate,
     String? urlcomponent,
-    String? aboutcompany,
+    dynamic aboutcompany,
     dynamic fblink,
-    String? instalink,
+    dynamic instalink,
     dynamic twiterlink,
     dynamic lilink,
     dynamic youlink,
@@ -431,11 +445,14 @@ extension GetUserProfileUserProfileExtension on GetUserProfileUserProfile {
     String? proceedstatus,
     String? device,
     String? platform,
-    String? proceeddate,
+    dynamic proceeddate,
     int? isApproved,
     String? countrycode1,
+    dynamic lat,
+    dynamic lng,
     int? followersCount,
     int? followingCount,
+    int? totalPost,
     String? imagePath,
     String? imageThumPath,
   }) {
@@ -499,8 +516,11 @@ extension GetUserProfileUserProfileExtension on GetUserProfileUserProfile {
       ..proceeddate = proceeddate ?? this.proceeddate
       ..isApproved = isApproved ?? this.isApproved
       ..countrycode1 = countrycode1 ?? this.countrycode1
+      ..lat = lat ?? this.lat
+      ..lng = lng ?? this.lng
       ..followersCount = followersCount ?? this.followersCount
       ..followingCount = followingCount ?? this.followingCount
+      ..totalPost = totalPost ?? this.totalPost
       ..imagePath = imagePath ?? this.imagePath
       ..imageThumPath = imageThumPath ?? this.imageThumPath;
   }

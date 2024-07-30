@@ -71,6 +71,7 @@ import 'package:mlmdiary/generated/get_news_list_entity.dart';
 import 'package:mlmdiary/generated/get_notification_entity.dart';
 import 'package:mlmdiary/generated/get_plan_list_entity.dart';
 import 'package:mlmdiary/generated/get_plan_with_selected_entity.dart';
+import 'package:mlmdiary/generated/get_pop_up_banner_entity.dart';
 import 'package:mlmdiary/generated/get_post_entity.dart';
 import 'package:mlmdiary/generated/get_question_list_entity.dart';
 import 'package:mlmdiary/generated/get_sub_category_entity.dart';
@@ -778,6 +779,14 @@ class JsonConvert {
       return data.map<GetPlanWithSelectedPlan>((Map<String, dynamic> e) =>
           GetPlanWithSelectedPlan.fromJson(e)).toList() as M;
     }
+    if (<GetPopUpBannerEntity>[] is M) {
+      return data.map<GetPopUpBannerEntity>((Map<String, dynamic> e) =>
+          GetPopUpBannerEntity.fromJson(e)).toList() as M;
+    }
+    if (<GetPopUpBannerData>[] is M) {
+      return data.map<GetPopUpBannerData>((Map<String, dynamic> e) =>
+          GetPopUpBannerData.fromJson(e)).toList() as M;
+    }
     if (<GetPostEntity>[] is M) {
       return data.map<GetPostEntity>((Map<String, dynamic> e) =>
           GetPostEntity.fromJson(e)).toList() as M;
@@ -1316,6 +1325,8 @@ class JsonConvertClassCollection {
     (GetPlanListPlan).toString(): GetPlanListPlan.fromJson,
     (GetPlanWithSelectedEntity).toString(): GetPlanWithSelectedEntity.fromJson,
     (GetPlanWithSelectedPlan).toString(): GetPlanWithSelectedPlan.fromJson,
+    (GetPopUpBannerEntity).toString(): GetPopUpBannerEntity.fromJson,
+    (GetPopUpBannerData).toString(): GetPopUpBannerData.fromJson,
     (GetPostEntity).toString(): GetPostEntity.fromJson,
     (GetPostData).toString(): GetPostData.fromJson,
     (GetPostDataUserData).toString(): GetPostDataUserData.fromJson,

@@ -6,7 +6,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/version_check_entity.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 
 class VersionController extends GetxController {
   Future<VersionCheckEntity?> checkVersion() async {
@@ -20,7 +19,6 @@ class VersionController extends GetxController {
       if (kDebugMode) {
         print('Step 2: No internet connection detected.');
       }
-      Get.snackbar('Error', 'No internet connection');
       return null;
     }
 
@@ -31,11 +29,6 @@ class VersionController extends GetxController {
       if (kDebugMode) {
         print('Step 3: Retrieving package information...');
       }
-      final packageInfo = await PackageInfo.fromPlatform();
-      final version = packageInfo.version;
-      if (kDebugMode) {
-        print('Step 4: Current app version: $version');
-      }
 
       if (kDebugMode) {
         print('Step 5: Sending version check request to server...');
@@ -43,7 +36,7 @@ class VersionController extends GetxController {
       final response = await http.post(
         Uri.parse(Constants.baseUrl + Constants.versioncheck),
         body: {
-          'version': version,
+          'version': '1.0',
         },
       );
 
@@ -59,16 +52,14 @@ class VersionController extends GetxController {
       } else {
         if (kDebugMode) {
           print(
-            'Step 7: Failed to check version. Server responded with status code: ${response.statusCode}');
+              'Step 7: Failed to check version. Server responded with status code: ${response.statusCode}');
         }
-        Get.snackbar('Error', 'Failed to check version');
         return null;
       }
     } catch (e) {
       if (kDebugMode) {
         print('Step 8: An error occurred: $e');
       }
-      Get.snackbar('Error', 'An error occurred: $e');
       return null;
     }
   }

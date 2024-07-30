@@ -82,10 +82,11 @@ class _HomeScreenState extends State<HomeScreen> {
       controller.homeList.clear();
       await controller.getHome(1);
       controller.fetchBanners();
+      controller.fetchPopUpBanners();
       controller.fetchNotificationCount(1, 'all');
     } catch (error) {
       if (kDebugMode) {
-        print('Error fetching bookmark data: $error');
+        print('Error fetching Home data: $error');
       }
     }
   }
@@ -954,25 +955,26 @@ class _HomeScreenState extends State<HomeScreen> {
             right: 16,
             child: SizedBox(
               height: 8,
-              child: ListView.builder(
-                itemCount: banners.length,
-                scrollDirection: Axis.horizontal,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  return Container(
-                    width: 7,
-                    height: 7,
-                    margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      borderRadius: BorderRadius.circular(3.5),
-                      color: index == 0
-                          ? AppColors.primaryColor
-                          : const Color(0xFFD9D9D9),
-                    ),
-                  );
-                },
-              ),
+              child: Obx(() {
+                return ListView.builder(
+                  itemCount: banners.length,
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      width: 7,
+                      height: 7,
+                      margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: pageController.page?.round() == index
+                            ? AppColors.primaryColor // Active indicator
+                            : const Color(0xFFD9D9D9), // Inactive indicator
+                      ),
+                    );
+                  },
+                );
+              }),
             ),
           ),
         ],

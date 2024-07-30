@@ -105,6 +105,103 @@ class QuestionAnswerController extends GetxController {
     });
   }
 
+  //update-Blog
+  Future<void> updateQuestion({context}) async {
+    isLoading(true);
+    String device = '';
+    if (Platform.isAndroid) {
+      device = 'android';
+    } else if (Platform.isIOS) {
+      device = 'ios';
+    }
+    if (kDebugMode) {
+      print('Device Name: $device');
+    }
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? questionId = prefs.getInt('lastquestionId');
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var request = http.MultipartRequest(
+          'POST',
+          Uri.parse('${Constants.baseUrl}${Constants.editquestion}'),
+        );
+
+        request.fields['device'] = device;
+        request.fields['question_id'] = questionId.toString();
+        request.fields['title'] = title.value.text;
+        request.fields['category'] = selectedCategoryId.value.toString();
+        request.fields['subcategory'] = selectedSubCategoryId.value.toString();
+
+        if (kDebugMode) {
+          print('Question id  $questionId');
+        }
+
+        var streamedResponse = await request.send();
+        var response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          final Map<String, dynamic> jsonBody = jsonDecode(response.body);
+          if (kDebugMode) {
+            print("Response body: $jsonBody");
+          }
+          // Check if all fields in the response are true (you may need to adjust this condition based on the actual response structure)
+          if (jsonBody['status'] == 1) {
+            toastification.show(
+              context: context,
+              alignment: Alignment.bottomCenter,
+              backgroundColor: AppColors.white,
+              type: ToastificationType.success,
+              style: ToastificationStyle.flatColored,
+              showProgressBar: false,
+              autoCloseDuration: const Duration(seconds: 3),
+              icon: Image.asset(
+                Assets.imagesChecked,
+                height: 35,
+              ),
+              primaryColor: Colors.green,
+              title: const Text('Question Updated Successfully'),
+            );
+            fetchMyQuestion();
+            Get.back();
+          } else if (jsonBody['status'] == 0) {
+            toastification.show(
+              context: context,
+              alignment: Alignment.bottomCenter,
+              backgroundColor: AppColors.white,
+              type: ToastificationType.error,
+              style: ToastificationStyle.flatColored,
+              showProgressBar: false,
+              autoCloseDuration: const Duration(seconds: 3),
+              icon: Image.asset(
+                Assets.imagesCancel,
+                height: 35,
+              ),
+              primaryColor: Colors.red,
+              title: Text('${jsonBody['message']}'),
+            );
+          }
+        } else {
+          if (kDebugMode) {
+            print(
+                "HTTP error: Failed to Update Blog details. Status code: ${response.statusCode}");
+            print("Response body: ${response.body}");
+          }
+        }
+      } else {
+        showToasterrorborder("No internet connection", context);
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("An error occurred while saving Blog details: $e");
+      }
+    } finally {
+      isLoading(false);
+    }
+  }
+
   Future<void> getQuestion(int page) async {
     isLoading(true);
 
@@ -697,7 +794,11 @@ class QuestionAnswerController extends GetxController {
   }
 
   // Method to fetch data from API
-  Future<void> fetchMyQuestion({int page = 1, context}) async {
+  Future<void> fetchMyQuestion({
+    int page = 1,
+    BuildContext? context,
+    int? questionId,
+  }) async {
     isLoading.value = true;
     String device = '';
     if (Platform.isAndroid) {
@@ -705,73 +806,134 @@ class QuestionAnswerController extends GetxController {
     } else if (Platform.isIOS) {
       device = 'ios';
     }
+
     if (kDebugMode) {
       print('Device Name: $device');
     }
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
 
     try {
-      // Check internet connection
-      var connectivityResult = await (Connectivity().checkConnectivity());
+      var connectivityResult = await Connectivity().checkConnectivity();
       // ignore: unrelated_type_equality_checks
       if (connectivityResult == ConnectivityResult.none) {
-        showToasterrorborder("No internet connection", context);
+        if (context != null) {
+          // ignore: use_build_context_synchronously
+          showToasterrorborder("No internet connection", context);
+        }
         isLoading.value = false;
         return;
       }
 
-      // Prepare query parameters
-      Map<String, String> queryParams = {
+      Map<String, String> formData = {
         'api_token': apiToken ?? '',
         'device': device,
         'page': page.toString(),
       };
 
-      // Build URL
-      Uri uri = Uri.parse(Constants.baseUrl + Constants.myqusetionanswer)
-          .replace(queryParameters: queryParams);
+      // If articleId is provided, add it to formData
+      if (questionId != null) {
+        formData['id'] = questionId.toString();
+      }
 
-      // Make HTTP GET request
-      final response = await http.post(uri);
+      Uri uri = Uri.parse(Constants.baseUrl + Constants.myqusetionanswer);
+      final response = await http.post(uri, body: formData);
 
       if (response.statusCode == 200) {
-        // Parse JSON data
         final Map<String, dynamic> responseData = json.decode(response.body);
-        final MyQuestionEntity myQuestionEntity =
+        final MyQuestionEntity myBlogEntity =
             MyQuestionEntity.fromJson(responseData);
 
         if (kDebugMode) {
-          print('manage Question data: $responseData');
+          print('Manage Blog data: $responseData');
         }
 
-        // Store ID using SharedPreferences
-        final List<MyQuestionQuestions> mynewsData =
-            myQuestionEntity.questions ?? [];
-        if (mynewsData.isNotEmpty) {
-          final MyQuestionQuestions firstQuestion = mynewsData[0];
-          final String questionId = firstQuestion.id.toString();
-          await prefs.setString('lastquestion Id', questionId);
-          if (kDebugMode) {
-            print('last question ID stored: $questionId');
+        final List<MyQuestionQuestions> myQuestionData =
+            myBlogEntity.questions ?? [];
+
+        // Assign or add data to myBlogList based on the page number
+        if (page == 1) {
+          myquestionList.assignAll(myQuestionData);
+        } else {
+          myquestionList.addAll(myQuestionData);
+        }
+
+        // Save the articleId to SharedPreferences
+        if (questionId != null) {
+          await prefs.setInt('lastquestionId', questionId);
+        }
+
+        // Update UI with appropriate blog data
+        if (questionId != null) {
+          // Find the selected blog by articleId
+          MyQuestionQuestions? selectedBlog;
+          for (var blog in myQuestionData) {
+            if (blog.id == questionId) {
+              selectedBlog = blog;
+              break;
+            }
+          }
+
+          if (selectedBlog != null) {
+            updateUIWithQuestionData(selectedBlog);
+          } else {
+            // Show error message if blog with articleId is not found
+            if (context != null) {
+              showToasterrorborder(
+                  "Question with ID $questionId not found",
+                  // ignore: use_build_context_synchronously
+                  context);
+            }
+          }
+        } else {
+          // If articleId is not provided, update UI with the first news
+          if (myQuestionData.isNotEmpty) {
+            updateUIWithQuestionData(myQuestionData[0]);
+          } else {
+            // Show error message if no data found
+            if (context != null) {
+              // ignore: use_build_context_synchronously
+              showToasterrorborder("No data found", context);
+            }
           }
         }
-
-        // Update state with fetched data
-        if (page == 1) {
-          myquestionList.assignAll(myQuestionEntity.questions ?? []);
-        } else {
-          myquestionList.addAll(myQuestionEntity.questions ?? []);
-        }
       } else {
-        // Handle error response
-        showToasterrorborder("Failed to fetch data", context);
+        // Show error message if response status code is not 200
+        if (context != null) {
+          // ignore: use_build_context_synchronously
+          if (kDebugMode) {
+            print("Error: ${response.body}");
+          }
+        }
       }
     } catch (error) {
-      // Handle network or parsing errors
-      showToasterrorborder("An error occurred: $error", context);
+      // Show error message for any caught exception
+      if (context != null) {
+        // ignore: use_build_context_synchronously
+        if (kDebugMode) {
+          print("Error: $error");
+        }
+      }
     } finally {
+      // Set isLoading to false after completing fetch operation
       isLoading.value = false;
+    }
+  }
+
+  void updateUIWithQuestionData(MyQuestionQuestions blogData) {
+    title.value.text = blogData.title ?? '';
+
+    isCategorySelectedList.clear();
+    for (var category in categorylist) {
+      bool isSelected = blogData.category == (category.id.toString());
+      isCategorySelectedList.add(isSelected);
+    }
+
+    isSubCategorySelectedList.clear();
+    for (var subcategory in subcategoryList) {
+      bool isSelected = blogData.subcategory == (subcategory.id.toString());
+      isSubCategorySelectedList.add(isSelected);
     }
   }
 

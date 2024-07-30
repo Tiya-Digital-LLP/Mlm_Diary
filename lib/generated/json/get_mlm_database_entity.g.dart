@@ -285,6 +285,14 @@ GetMlmDatabaseData $GetMlmDatabaseDataFromJson(Map<String, dynamic> json) {
   if (countrycode1 != null) {
     getMlmDatabaseData.countrycode1 = countrycode1;
   }
+  final String? lat = jsonConvert.convert<String>(json['lat']);
+  if (lat != null) {
+    getMlmDatabaseData.lat = lat;
+  }
+  final String? lng = jsonConvert.convert<String>(json['lng']);
+  if (lng != null) {
+    getMlmDatabaseData.lng = lng;
+  }
   final bool? favStatus = jsonConvert.convert<bool>(json['fav_status']);
   if (favStatus != null) {
     getMlmDatabaseData.favStatus = favStatus;
@@ -301,9 +309,21 @@ GetMlmDatabaseData $GetMlmDatabaseDataFromJson(Map<String, dynamic> json) {
   if (title != null) {
     getMlmDatabaseData.title = title;
   }
-  final dynamic pgcnt = json['pgcnt'];
+  final int? pgcnt = jsonConvert.convert<int>(json['pgcnt']);
   if (pgcnt != null) {
     getMlmDatabaseData.pgcnt = pgcnt;
+  }
+  final int? totalPost = jsonConvert.convert<int>(json['total_post']);
+  if (totalPost != null) {
+    getMlmDatabaseData.totalPost = totalPost;
+  }
+  final int? followersCount = jsonConvert.convert<int>(json['followers_count']);
+  if (followersCount != null) {
+    getMlmDatabaseData.followersCount = followersCount;
+  }
+  final int? followingCount = jsonConvert.convert<int>(json['following_count']);
+  if (followingCount != null) {
+    getMlmDatabaseData.followingCount = followingCount;
   }
   final String? imagePath = jsonConvert.convert<String>(json['image_path']);
   if (imagePath != null) {
@@ -378,11 +398,16 @@ Map<String, dynamic> $GetMlmDatabaseDataToJson(GetMlmDatabaseData entity) {
   data['proceeddate'] = entity.proceeddate;
   data['is_approved'] = entity.isApproved;
   data['countrycode1'] = entity.countrycode1;
+  data['lat'] = entity.lat;
+  data['lng'] = entity.lng;
   data['fav_status'] = entity.favStatus;
   data['follow_status'] = entity.followStatus;
   data['image_url'] = entity.imageUrl;
   data['title'] = entity.title;
   data['pgcnt'] = entity.pgcnt;
+  data['total_post'] = entity.totalPost;
+  data['followers_count'] = entity.followersCount;
+  data['following_count'] = entity.followingCount;
   data['image_path'] = entity.imagePath;
   data['image_thum_path'] = entity.imageThumPath;
   return data;
@@ -449,11 +474,16 @@ extension GetMlmDatabaseDataExtension on GetMlmDatabaseData {
     String? proceeddate,
     int? isApproved,
     String? countrycode1,
+    String? lat,
+    String? lng,
     bool? favStatus,
     bool? followStatus,
     String? imageUrl,
     String? title,
-    dynamic pgcnt,
+    int? pgcnt,
+    int? totalPost,
+    int? followersCount,
+    int? followingCount,
     String? imagePath,
     String? imageThumPath,
   }) {
@@ -517,11 +547,16 @@ extension GetMlmDatabaseDataExtension on GetMlmDatabaseData {
       ..proceeddate = proceeddate ?? this.proceeddate
       ..isApproved = isApproved ?? this.isApproved
       ..countrycode1 = countrycode1 ?? this.countrycode1
+      ..lat = lat ?? this.lat
+      ..lng = lng ?? this.lng
       ..favStatus = favStatus ?? this.favStatus
       ..followStatus = followStatus ?? this.followStatus
       ..imageUrl = imageUrl ?? this.imageUrl
       ..title = title ?? this.title
       ..pgcnt = pgcnt ?? this.pgcnt
+      ..totalPost = totalPost ?? this.totalPost
+      ..followersCount = followersCount ?? this.followersCount
+      ..followingCount = followingCount ?? this.followingCount
       ..imagePath = imagePath ?? this.imagePath
       ..imageThumPath = imageThumPath ?? this.imageThumPath;
   }

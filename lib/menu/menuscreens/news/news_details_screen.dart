@@ -10,7 +10,6 @@ import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller
 import 'package:mlmdiary/menu/menuscreens/news/custom_news_comment.dart';
 import 'package:mlmdiary/menu/menuscreens/news/news_like_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
-import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -114,14 +113,14 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen> {
                           horizontal: 16, vertical: 8),
                       child: InkWell(
                         onTap: () async {
-                          await userProfileController.fetchUserAllPost(
-                            1,
-                            post.id ?? 0,
-                          );
-                          Get.toNamed(
-                            Routes.userprofilescreencopy,
-                            arguments: post,
-                          );
+                          // Get.toNamed(
+                          //   Routes.userprofilescreencopy,
+                          //   arguments: post,
+                          // );
+                          // await userProfileController.fetchUserAllPost(
+                          //   1,
+                          //   post.id ?? 0,
+                          // );
                         },
                         child: Row(
                           children: [

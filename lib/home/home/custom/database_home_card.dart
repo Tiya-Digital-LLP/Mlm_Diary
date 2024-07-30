@@ -143,7 +143,7 @@ class _FavouritrCardState extends State<DatabaseHomeCard> {
                         },
                         errorBuilder: (context, error, stackTrace) {
                           return Image.asset(
-                            Assets.imagesLogo,
+                            Assets.imagesAdminlogo,
                             fit: BoxFit.fill,
                           );
                         },

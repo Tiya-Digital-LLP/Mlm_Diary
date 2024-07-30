@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -86,7 +87,8 @@ class _SplashScreenState extends State<SplashScreen> {
           }
         });
       } else if (versionCheck.success == 2) {
-        _showUpdatePopup(versionCheck.message ?? 'Please update the app.');
+        // ignore: use_build_context_synchronously
+        _showUpdateDialog(context);
       }
     } else {
       Timer(const Duration(milliseconds: 200), () {
@@ -111,24 +113,103 @@ class _SplashScreenState extends State<SplashScreen> {
     _navigationController.setNavigating(false);
   }
 
-  void _showUpdatePopup(String message) {
+  void _showUpdateDialog(context) {
     showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Update Available'),
-          content: Text(message),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Update'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Dialog(
+            backgroundColor: AppColors.white,
+            insetPadding: const EdgeInsets.all(22.0),
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Image.asset(
+                      Assets.imagesLogo,
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                  const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Update Available!',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                              fontSize: 22),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Align(
+                        alignment: Alignment.center,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          child: Text(
+                            'A new version of the app is available. Please update to continue.',
+                            style:
+                                TextStyle(color: Colors.black45, fontSize: 16),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 40),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      SizedBox(
+                        width: 140,
+                        child: OutlinedButton(
+                          onPressed: () {
+                            Get.back();
+                            exit(0);
+                          },
+                          child: const Text(
+                            'Cancel',
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        width: 140,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50.0),
+                            color: AppColors.primaryColor),
+                        child: TextButton(
+                          onPressed: () {
+                            if (Platform.isAndroid) {
+                              // _openGooglePlayStore();
+                            } else if (Platform.isIOS) {
+                              // _launchAppStore();
+                            }
+                          },
+                          child: const Text(
+                            'Update',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ],
-        );
-      },
-    );
+          );
+        });
   }
 
   @override

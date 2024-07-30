@@ -65,6 +65,8 @@ abstract class Routes {
   static const search = '/search';
 
   static const addquestionanswer = '/addQuestionAnswer';
+  static const editquestion = '/editQuestion';
+
   static const managequationanswer = '/manageQuationAnswer';
   static const quationanswer = '/quationAnswer';
   static const question = '/question';

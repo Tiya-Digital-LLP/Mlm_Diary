@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/question_like_list_content.dart';
+import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -258,6 +258,23 @@ class _ManageQuestionCardState extends State<ManageQuestionCard> {
                 ),
                 Row(
                   children: [
+                    Material(
+                      child: InkWell(
+                        onTap: () async {
+                          await widget.controller
+                              .fetchMyQuestion(questionId: widget.questionId);
+                          Get.toNamed(
+                            Routes.editquestion,
+                          );
+                        },
+                        child: Ink(
+                          height: size.height * 0.030,
+                          width: size.height * 0.030,
+                          child: SvgPicture.asset(Assets.svgPostEdit),
+                        ),
+                      ),
+                    ),
+                    10.sbw,
                     Obx(
                       () => SizedBox(
                         height: size.height * 0.028,

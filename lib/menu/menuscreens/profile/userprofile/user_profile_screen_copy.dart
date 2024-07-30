@@ -56,6 +56,7 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
   final UserProfileController userProfileController =
       Get.put(UserProfileController());
   final ProfileController profileController = Get.put(ProfileController());
+  RxBool isExpanded = true.obs;
 
   late TabController _tabController;
 
@@ -231,10 +232,17 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                             style: textStyleW500(
                                 size.width * 0.035, AppColors.blackText),
                           ),
-                          Text(
-                            post.plan ?? 'N/A',
-                            style: textStyleW500(
-                                size.width * 0.035, AppColors.blackText),
+                          GestureDetector(
+                            onTap: () {
+                              isExpanded.value = !isExpanded.value;
+                            },
+                            child: Obx(() => Text(
+                                  post.plan ?? 'N/A',
+                                  style: textStyleW500(
+                                      size.width * 0.035, AppColors.blackText),
+                                  maxLines: isExpanded.value ? null : 10,
+                                  overflow: TextOverflow.ellipsis,
+                                )),
                           ),
                         ],
                       ),
@@ -268,11 +276,11 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                         children: [
                           Column(
                             children: [
-                              // Text(
-                              //   post.followersCount.toString(),
-                              //   style: textStyleW700(
-                              //       size.width * 0.045, AppColors.blackText),
-                              // ),
+                              Text(
+                                post.followersCount.toString(),
+                                style: textStyleW700(
+                                    size.width * 0.045, AppColors.blackText),
+                              ),
                               Text(
                                 'Followers',
                                 style: textStyleW500(
@@ -283,11 +291,11 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                           20.sbw,
                           Column(
                             children: [
-                              // Text(
-                              //   post.followingCount.toString(),
-                              //   style: textStyleW700(
-                              //       size.width * 0.045, AppColors.blackText),
-                              // ),
+                              Text(
+                                post.followingCount.toString(),
+                                style: textStyleW700(
+                                    size.width * 0.045, AppColors.blackText),
+                              ),
                               Text(
                                 'Following',
                                 style: textStyleW500(
@@ -412,9 +420,9 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
               indicatorColor: AppColors.primaryColor,
               indicatorWeight: 1.5,
               labelColor: AppColors.primaryColor,
-              tabs: const [
-                Tab(text: 'Posts (22)'),
-                Tab(text: 'About Me'),
+              tabs: [
+                Tab(text: 'Posts (${post.followersCount})'),
+                const Tab(text: 'About Me'),
               ],
             ),
           ),

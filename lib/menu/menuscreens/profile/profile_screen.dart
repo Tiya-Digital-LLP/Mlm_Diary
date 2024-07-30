@@ -281,9 +281,9 @@ class _ProfileScreenState extends State<ProfileScreen>
               indicatorColor: AppColors.primaryColor,
               indicatorWeight: 1.5,
               labelColor: AppColors.primaryColor,
-              tabs: const [
-                Tab(text: 'Posts (22)'),
-                Tab(text: 'About Me'),
+              tabs: [
+                Tab(text: 'Posts (${userProfile.totalPost})'),
+                const Tab(text: 'About Me'),
               ],
             ),
           ),

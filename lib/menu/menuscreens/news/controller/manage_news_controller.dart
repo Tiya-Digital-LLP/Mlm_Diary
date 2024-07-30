@@ -237,6 +237,10 @@ class ManageNewsController extends GetxController {
 
         final List<MyNewsData> myNewsData = myNewsEntity.data ?? [];
 
+        if (newsId != null) {
+          await prefs.setInt('saved_news_id', newsId);
+        }
+
         // Assign or add data to myBlogList based on the page number
         if (page == 1) {
           myNewsList.assignAll(myNewsData);
@@ -598,7 +602,7 @@ class ManageNewsController extends GetxController {
     }
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
-    String? newsId = prefs.getString('lastnewsid');
+    int? newsId = prefs.getInt('saved_news_id');
 
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
@@ -619,7 +623,7 @@ class ManageNewsController extends GetxController {
         request.fields['news_id'] = newsId.toString();
 
         if (kDebugMode) {
-          print('news id ; $newsId');
+          print('News id ; $newsId');
         }
 
         if (imageFile != null) {
@@ -652,7 +656,7 @@ class ManageNewsController extends GetxController {
             print("Response body: $jsonBody");
           }
           // Check if all fields in the response are true (you may need to adjust this condition based on the actual response structure)
-          if (jsonBody['success'] == true) {
+          if (jsonBody['status'] == 1) {
             toastification.show(
               context: context,
               alignment: Alignment.bottomCenter,

@@ -198,39 +198,41 @@ class _ManageBlogPlusIconState extends State<ManageBlogPlusIcon> {
                     borderRadius: BorderRadius.circular(13.05),
                     child: Stack(
                       children: [
-                        GestureDetector(
-                          child: file.value != null
-                              ? Image.file(
-                                  file.value!,
-                                  height: 100,
-                                  width: double.infinity,
-                                  fit: BoxFit.cover,
-                                )
-                              : controller.userImage.value.isNotEmpty
-                                  ? Image.network(
-                                      controller.userImage.value,
-                                      height: 100,
-                                      width: double.infinity,
-                                      fit: BoxFit.cover,
-                                    )
-                                  : Image.asset(
-                                      Assets.imagesAdminlogo,
-                                      height: 120,
-                                      width: double.infinity,
-                                      fit: BoxFit.cover,
-                                    ),
-                          onTap: () {
-                            showModalBottomSheet(
-                                backgroundColor: Colors.white,
-                                context: context,
-                                builder: (context) => bottomsheet(context));
-                          },
+                        Obx(
+                          () => GestureDetector(
+                            child: file.value != null
+                                ? Image.file(
+                                    file.value!,
+                                    height: 100,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                  )
+                                : controller.userImage.value.isNotEmpty
+                                    ? Image.network(
+                                        controller.userImage.value,
+                                        height: 100,
+                                        width: double.infinity,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : Image.asset(
+                                        Assets.imagesLogo,
+                                        height: 100,
+                                        width: double.infinity,
+                                        fit: BoxFit.cover,
+                                      ),
+                            onTap: () {
+                              showModalBottomSheet(
+                                  backgroundColor: Colors.white,
+                                  context: context,
+                                  builder: (context) => bottomsheet(context));
+                            },
+                          ),
                         ),
                         Visibility(
                           visible: file.value == null ? false : true,
                           child: Positioned(
-                              bottom: -5,
-                              left: 0,
+                              top: 10,
+                              left: 320,
                               right: 0,
                               child: Container(
                                 width: 40,

@@ -8,7 +8,6 @@ import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/custom/custom_post_comment.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
-import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -116,14 +115,14 @@ class _PostDetailsScreenState extends State<PostDetailScreen> {
                           horizontal: 16, vertical: 8),
                       child: InkWell(
                         onTap: () async {
-                          await userProfileController.fetchUserAllPost(
-                            1,
-                            post.id ?? 0,
-                          );
-                          Get.toNamed(
-                            Routes.userprofilescreencopy,
-                            arguments: post,
-                          );
+                          // Get.toNamed(
+                          //   Routes.userprofilescreencopy,
+                          //   arguments: post,
+                          // );
+                          // await userProfileController.fetchUserAllPost(
+                          //   1,
+                          //   post.id ?? 0,
+                          // );
                         },
                         child: Row(
                           children: [
@@ -140,7 +139,7 @@ class _PostDetailsScreenState extends State<PostDetailScreen> {
                                   ),
                                 ),
                                 errorWidget: (context, url, error) =>
-                                    const Icon(Icons.error),
+                                    Image.asset(Assets.imagesAdminlogo),
                               ),
                             ),
                             const SizedBox(
@@ -201,7 +200,7 @@ class _PostDetailsScreenState extends State<PostDetailScreen> {
                             ),
                           ))),
                           errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
+                              Image.asset(Assets.imagesLogo),
                         ),
                       ),
                     ),

@@ -217,7 +217,7 @@ class _FavouritrCardState extends State<BlogUserCard> {
                   widget.postImage,
                   fit: BoxFit.fill,
                   errorBuilder: (context, error, stackTrace) {
-                    return const SizedBox();
+                    return Image.asset(Assets.imagesLogo);
                   },
                 ),
               ),

@@ -30,7 +30,9 @@ class _QuationAnswerState extends State<QuationAnswer> {
   @override
   void initState() {
     super.initState();
-    _refreshData();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _refreshData();
+    });
     videoController.fetchVideo(position, context);
   }
 

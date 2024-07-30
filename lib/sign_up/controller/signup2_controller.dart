@@ -176,7 +176,6 @@ class Signup2Controller extends GetxController {
         request.fields['city'] = city.value.text;
         request.fields['state'] = state.value.text;
         request.fields['country'] = country.value.text;
-        request.fields['postcode'] = '360022';
         request.fields['sex'] = isGenderToggle.value ? 'Male' : 'Female';
         request.fields['location'] = location.value.text;
         request.fields['api_token'] = apiToken ?? '';

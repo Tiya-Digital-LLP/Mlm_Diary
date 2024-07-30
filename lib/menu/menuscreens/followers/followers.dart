@@ -175,13 +175,13 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
                           children: [
                             InkWell(
                               onTap: () async {
-                                await userProfileController.fetchUserAllPost(
-                                  1,
-                                  follower.id ?? 0,
-                                );
                                 Get.toNamed(
                                   Routes.userprofilescreencopy,
                                   arguments: follower,
+                                );
+                                await userProfileController.fetchUserAllPost(
+                                  1,
+                                  follower.id ?? 0,
                                 );
                               },
                               child: ClipOval(

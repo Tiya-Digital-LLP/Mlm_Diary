@@ -168,7 +168,7 @@ class _FavouritrCardState extends State<PostHomeCard> {
                       ),
                     ),
                     errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
+                        Image.asset(Assets.imagesAdminlogo),
                   ),
                 ),
                 10.sbw,
@@ -246,7 +246,8 @@ class _FavouritrCardState extends State<PostHomeCard> {
                       Assets.lottieLottie,
                     ),
                   ),
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                  errorWidget: (context, url, error) =>
+                      Image.asset(Assets.imagesLogo),
                 ),
               ),
             ),

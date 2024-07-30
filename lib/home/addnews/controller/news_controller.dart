@@ -147,7 +147,7 @@ class NewsController extends GetxController {
               ),
               closeOnClick: true,
               primaryColor: Colors.green,
-              title: const Text('Your Classified is Successfully Submitted'),
+              title: const Text('Your News is Successfully Submitted'),
             );
             Get.back();
           } else if (jsonBody['status'] == 0) {

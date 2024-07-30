@@ -25,7 +25,7 @@ class GetUserProfileEntity {
 @JsonSerializable()
 class GetUserProfileUserProfile {
 	int? id = 0;
-	dynamic immlm;
+	String? immlm = '';
 	String? username = '';
 	String? password = '';
 	String? sex = '';
@@ -44,7 +44,7 @@ class GetUserProfileUserProfile {
 	String? ip = '';
 	String? lastip = '';
 	String? lastlogin = '';
-	String? aboutyou = '';
+	dynamic aboutyou;
 	dynamic website;
 	@JSONField(name: "comp_website")
 	dynamic compWebsite;
@@ -71,9 +71,9 @@ class GetUserProfileUserProfile {
 	String? passtoken = '';
 	dynamic tokendate;
 	String? urlcomponent = '';
-	String? aboutcompany = '';
+	dynamic aboutcompany;
 	dynamic fblink;
-	String? instalink = '';
+	dynamic instalink;
 	dynamic twiterlink;
 	dynamic lilink;
 	dynamic youlink;
@@ -82,14 +82,18 @@ class GetUserProfileUserProfile {
 	String? proceedstatus = '';
 	String? device = '';
 	String? platform = '';
-	String? proceeddate = '';
+	dynamic proceeddate;
 	@JSONField(name: "is_approved")
 	int? isApproved = 0;
 	String? countrycode1 = '';
+	dynamic lat;
+	dynamic lng;
 	@JSONField(name: "followers_count")
 	int? followersCount = 0;
 	@JSONField(name: "following_count")
 	int? followingCount = 0;
+	@JSONField(name: "total_post")
+	int? totalPost = 0;
 	@JSONField(name: "image_path")
 	String? imagePath = '';
 	@JSONField(name: "image_thum_path")

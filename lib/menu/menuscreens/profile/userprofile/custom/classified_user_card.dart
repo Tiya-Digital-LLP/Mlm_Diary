@@ -166,7 +166,7 @@ class _FavouritrCardState extends State<ClassifiedUserCard> {
                       ),
                     ),
                     errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
+                        Image.asset(Assets.imagesAdminlogo),
                   ),
                 ),
                 10.sbw,
@@ -227,18 +227,17 @@ class _FavouritrCardState extends State<ClassifiedUserCard> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(16),
                     child: CachedNetworkImage(
-                      imageUrl: widget.postImage,
-                      height: 105,
-                      width: 105,
-                      fit: BoxFit.fill,
-                      placeholder: (context, url) => CustomLottieAnimation(
-                        child: Lottie.asset(
-                          Assets.lottieLottie,
-                        ),
-                      ),
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.error),
-                    ),
+                        imageUrl: widget.postImage,
+                        height: 105,
+                        width: 105,
+                        fit: BoxFit.fill,
+                        placeholder: (context, url) => CustomLottieAnimation(
+                              child: Lottie.asset(
+                                Assets.lottieLottie,
+                              ),
+                            ),
+                        errorWidget: (context, url, error) =>
+                            Image.asset(Assets.imagesLogo)),
                   ),
                   10.sbw,
                   Expanded(

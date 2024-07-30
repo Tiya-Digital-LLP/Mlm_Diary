@@ -182,7 +182,7 @@ class _ManageNewsPlusIconState extends State<AddNews> {
                     () => BorderTextField(
                       keyboard: TextInputType.url,
                       textInputType: const [],
-                      hint: "Website Url",
+                      hint: "Website Url (Optional)",
                       controller: controller.url.value,
                       isError: controller.urlError.value,
                       byDefault: !controller.isUrlTyping.value,

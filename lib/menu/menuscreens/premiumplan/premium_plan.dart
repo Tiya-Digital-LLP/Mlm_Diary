@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
-import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
@@ -19,62 +18,12 @@ class _PremiumPlanState extends State<PremiumPlan> {
   @override
   void initState() {
     super.initState();
-    _razorpay = Razorpay();
-    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
   }
 
   @override
   void dispose() {
     super.dispose();
-    _razorpay.clear(); // Removes all listeners
-  }
-
-  void _handlePaymentSuccess(PaymentSuccessResponse response) {
-    if (kDebugMode) {
-      print("Payment Successful: ${response.paymentId}");
-    }
-    showToastverifedborder('Payment Successful', context);
-    // Implement further success logic here
-  }
-
-  void _handlePaymentError(PaymentFailureResponse response) {
-    if (kDebugMode) {
-      print("Payment Error: ${response.code} - ${response.message}");
-    }
-    showToasterrorborder('Payment Failed', context);
-    // Implement further error logic here
-  }
-
-  void _handleExternalWallet(ExternalWalletResponse response) {
-    if (kDebugMode) {
-      print("External Wallet: ${response.walletName}");
-    }
-  }
-
-  void openCheckout() {
-    var options = {
-      'key': 'YOUR_RAZORPAY_TEST_KEY', // Replace with your Test Key ID
-      'amount': 10, // Amount in paise
-      'name': 'Your Company Name',
-      'description': 'Premium Plan',
-      'prefill': {'contact': '8888888888', 'email': 'test@razorpay.com'},
-      'external': {
-        'wallets': ['paytm']
-      }
-    };
-
-    try {
-      if (kDebugMode) {
-        print("Opening Razorpay Checkout");
-      }
-      _razorpay.open(options);
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error: $e');
-      }
-    }
+    _razorpay.clear();
   }
 
   @override
@@ -106,11 +55,88 @@ class _PremiumPlanState extends State<PremiumPlan> {
         ),
       ),
       body: Center(
-        child: ElevatedButton(
-          onPressed: openCheckout,
-          child: const Text('Buy Premium Plan'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text(
+              'Pay with Razorpay',
+            ),
+            ElevatedButton(
+                onPressed: () {
+                  if (kDebugMode) {
+                    print('tap');
+                  }
+                  Razorpay razorpay = Razorpay();
+                  var options = {
+                    'key': 'rzp_live_foyJnC4PMTEx8U',
+                    'amount': 10,
+                    'name': 'Aman Talaviya.',
+                    'description': 'Fine T-Shirt',
+                    'retry': {'enabled': true, 'max_count': 1},
+                    'send_sms_hash': true,
+                    'prefill': {
+                      'contact': '9274529956',
+                      'email': 'amantalaviya29@gmail.com'
+                    },
+                    'external': {
+                      'wallets': ['paytm']
+                    }
+                  };
+                  razorpay.on(
+                      Razorpay.EVENT_PAYMENT_ERROR, handlePaymentErrorResponse);
+                  razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS,
+                      handlePaymentSuccessResponse);
+                  razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET,
+                      handleExternalWalletSelected);
+                  razorpay.open(options);
+                },
+                child: const Text("Pay with Razorpay")),
+          ],
         ),
       ),
+    );
+  }
+
+  void handlePaymentErrorResponse(PaymentFailureResponse response) {
+    /*
+    * PaymentFailureResponse contains three values:
+    * 1. Error Code
+    * 2. Error Description
+    * 3. Metadata
+    * */
+    showAlertDialog(context, "Payment Failed",
+        "Code: ${response.code}\nDescription: ${response.message}\nMetadata:${response.error.toString()}");
+  }
+
+  void handlePaymentSuccessResponse(PaymentSuccessResponse response) {
+    /*
+    * Payment Success Response contains three values:
+    * 1. Order ID
+    * 2. Payment ID
+    * 3. Signature
+    * */
+    showAlertDialog(
+        context, "Payment Successful", "Payment ID: ${response.paymentId}");
+  }
+
+  void handleExternalWalletSelected(ExternalWalletResponse response) {
+    showAlertDialog(
+        context, "External Wallet Selected", "${response.walletName}");
+  }
+
+  void showAlertDialog(BuildContext context, String title, String message) {
+    // set up the buttons
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(title),
+      content: Text(message),
+    );
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 }

@@ -6,10 +6,10 @@ import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/data/constants.dart';
-import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_banner_entity.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:mlmdiary/generated/get_home_entity.dart';
+import 'package:mlmdiary/generated/get_pop_up_banner_entity.dart';
 import 'package:mlmdiary/generated/mutual_friends_entity.dart';
 import 'package:mlmdiary/generated/notification_count_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
@@ -18,12 +18,18 @@ import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
+import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
+import 'package:mlmdiary/utils/text_style.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class HomeController extends GetxController {
   RxBool isSearchBarVisible = false.obs;
   RxList<GetBannerData> banners = RxList<GetBannerData>();
+  RxList<GetPopUpBannerData> popupbanners = RxList<GetPopUpBannerData>();
+
   RxList<GetHomeData> homeList = RxList<GetHomeData>();
   RxList<MutualFriendsData> mutualFriendList = RxList<MutualFriendsData>();
 
@@ -56,7 +62,13 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    Future.delayed(Duration.zero, () => _showCustomDialog());
+    Future.delayed(Duration.zero, () async {
+      final popupbanners = await fetchPopUpBanners();
+      if (popupbanners.isNotEmpty) {
+        _showCustomDialog(popupbanners, Get.context);
+      }
+    });
+
     mutualFriend(1);
     fetchNotificationCount(1, 'all');
     ever(isload, (_) {
@@ -75,7 +87,12 @@ class HomeController extends GetxController {
     });
   }
 
-  void _showCustomDialog() {
+  void _showCustomDialog(List<GetPopUpBannerData> popupbanners, context) {
+    PageController pageController = PageController(
+      initialPage: 0,
+      viewportFraction: 1,
+    );
+
     Get.dialog(
       Center(
         child: Container(
@@ -88,14 +105,44 @@ class HomeController extends GetxController {
           ),
           child: Stack(
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(16.0),
-                child: Image.asset(
-                  Assets.imagesAdwithus1,
-                  width: double.infinity,
-                  height: double.infinity,
-                  fit: BoxFit.cover,
-                ),
+              PageView.builder(
+                controller: pageController,
+                itemCount: popupbanners.length,
+                itemBuilder: (context, index) {
+                  final banner = popupbanners[index];
+                  return GestureDetector(
+                    onTap: () {
+                      if (banner.weblink == null || banner.weblink!.isEmpty) {
+                        showToasterrorborder('No Any Url Found', context);
+                      } else {
+                        launchUrl(
+                          Uri.parse(banner.weblink.toString()),
+                          mode: LaunchMode.externalApplication,
+                        );
+                      }
+                    },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10.0),
+                      child: banner.weblink == null || banner.weblink!.isEmpty
+                          ? Center(
+                              child: Text(
+                                'Banner not available',
+                                style: textStyleW700(
+                                  MediaQuery.of(context).size.width * 0.048,
+                                  AppColors.blackText,
+                                ).copyWith(
+                                  decoration: TextDecoration.none,
+                                ),
+                              ),
+                            )
+                          : Image.network(
+                              banner.image ?? '',
+                              fit: BoxFit.fill,
+                            ),
+                    ),
+                  );
+                },
+                onPageChanged: (index) {},
               ),
               Positioned(
                 right: 0,
@@ -107,6 +154,35 @@ class HomeController extends GetxController {
                   },
                 ),
               ),
+              if (popupbanners.length > 1)
+                Positioned(
+                  bottom: 10,
+                  right: 16,
+                  child: SizedBox(
+                    height: 8,
+                    child: Obx(() {
+                      return ListView.builder(
+                        itemCount: popupbanners.length,
+                        scrollDirection: Axis.horizontal,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return Container(
+                            width: 7,
+                            height: 7,
+                            margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: pageController.page?.round() == index
+                                  ? AppColors.primaryColor // Active indicator
+                                  : const Color(
+                                      0xFFD9D9D9), // Inactive indicator
+                            ),
+                          );
+                        },
+                      );
+                    }),
+                  ),
+                ),
             ],
           ),
         ),
@@ -167,6 +243,61 @@ class HomeController extends GetxController {
       if (kDebugMode) {
         print('Error loading banners: $e');
       }
+    }
+  }
+
+  Future<List<GetPopUpBannerData>> fetchPopUpBanners() async {
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult == ConnectivityResult.none) {
+        return [];
+      }
+
+      final response = await http.get(
+        Uri.parse('${Constants.baseUrl}${Constants.popupbanner}'),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody =
+            jsonDecode(response.body) as Map<String, dynamic>;
+
+        if (responseBody['status'] == '1') {
+          final List<dynamic> jsonData = responseBody['data'];
+          final List<GetPopUpBannerData> popUpBannerDataList =
+              jsonData.map((data) {
+            return GetPopUpBannerData.fromJson(data as Map<String, dynamic>);
+          }).toList();
+
+          popupbanners.assignAll(popUpBannerDataList);
+
+          for (var banner in banners) {
+            if (kDebugMode) {
+              print('Pop Up Banner ID: ${banner.id}');
+              print('Title: ${banner.title}');
+              print('Web Link: ${banner.weblink}');
+            }
+          }
+
+          webController = WebViewController();
+          return popUpBannerDataList;
+        } else {
+          if (kDebugMode) {
+            print('Failed to load banners: ${response.statusCode}');
+          }
+          return [];
+        }
+      } else {
+        if (kDebugMode) {
+          print('Failed to load banners: ${response.statusCode}');
+        }
+        return [];
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error loading banners: $e');
+      }
+      return [];
     }
   }
 

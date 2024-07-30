@@ -154,7 +154,7 @@ class _FavouritrCardState extends State<QuestionUserCard> {
                       ),
                     ),
                     errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
+                        Image.asset(Assets.imagesAdminlogo),
                   ),
                 ),
                 10.sbw,

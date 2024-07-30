@@ -366,7 +366,6 @@ class AccountSeetingController extends GetxController {
         request.fields['city'] = city.value.text;
         request.fields['state'] = state.value.text;
         request.fields['country'] = country.value.text;
-        request.fields['pincode'] = '360022';
         request.fields['address'] = location.value.text;
         request.fields['api_token'] = apiToken ?? '';
         request.fields['aboutyou'] = aboutyou.value.text;
