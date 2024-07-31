@@ -8,6 +8,7 @@ import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/classified/custom/custom_commment.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
+import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -115,14 +116,14 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
                                 horizontal: 16, vertical: 8),
                             child: InkWell(
                               onTap: () async {
-                                // Get.toNamed(
-                                //   Routes.userprofilescreencopy,
-                                //   arguments: post,
-                                // );
-                                // await userProfileController.fetchUserAllPost(
-                                //   1,
-                                //   post.id ?? 0,
-                                // );
+                                Get.toNamed(Routes.userprofilescreen,
+                                    arguments: {
+                                      'user_id': post.userId,
+                                    });
+                                await userProfileController.fetchUserAllPost(
+                                  1,
+                                  post.userId.toString(),
+                                );
                               },
                               child: Row(
                                 children: [

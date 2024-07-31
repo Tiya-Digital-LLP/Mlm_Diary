@@ -90,14 +90,20 @@ class MutualFriendsData {
 	@JSONField(name: "is_approved")
 	int? isApproved = 0;
 	String? countrycode1 = '';
-	dynamic lat;
-	dynamic lng;
+	String? lat = '';
+	String? lng = '';
 	@JSONField(name: "image_url")
 	String? imageUrl = '';
 	String? title = '';
 	int? pgcnt = 0;
 	@JSONField(name: "is_following")
 	bool? isFollowing = false;
+	@JSONField(name: "followers_count")
+	int? followersCount = 0;
+	@JSONField(name: "following_count")
+	int? followingCount = 0;
+	@JSONField(name: "total_post")
+	int? totalPost = 0;
 	@JSONField(name: "image_path")
 	String? imagePath = '';
 	@JSONField(name: "image_thum_path")

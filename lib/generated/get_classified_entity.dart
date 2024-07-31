@@ -33,7 +33,7 @@ class GetClassifiedData {
 	String? datemodified = '';
 	String? createdate = '';
 	String? category = '';
-	String? creatby = '';
+	int? creatby = 0;
 	String? subcategory = '';
 	String? popular = '';
 	String? website = '';
@@ -57,6 +57,8 @@ class GetClassifiedData {
 	String? fullUrl = '';
 	@JSONField(name: "image_url")
 	String? imageUrl = '';
+	@JSONField(name: "user_id")
+	int? userId = 0;
 	@JSONField(name: "image_path")
 	String? imagePath = '';
 	@JSONField(name: "image_thum_path")

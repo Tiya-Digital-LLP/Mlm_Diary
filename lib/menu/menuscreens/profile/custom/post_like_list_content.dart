@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
+import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -17,6 +19,8 @@ class PostLikeListContent extends StatefulWidget {
 
 class _PostLikedListContentState extends State<PostLikeListContent> {
   final EditPostController controller = Get.put(EditPostController());
+  final UserProfileController userProfileController =
+      Get.put(UserProfileController());
 
   @override
   void initState() {
@@ -68,21 +72,33 @@ class _PostLikedListContentState extends State<PostLikeListContent> {
                           return Padding(
                             padding: const EdgeInsets.symmetric(
                                 vertical: 8.0, horizontal: 16.0),
-                            child: Row(
-                              children: [
-                                CircleAvatar(
-                                  backgroundImage: NetworkImage(
-                                      item.userData?.imagePath ?? ''),
-                                ),
-                                8.sbw,
-                                Expanded(
-                                  child: Text(
-                                    item.userData?.name ?? 'Unknown',
-                                    style: textStyleW500(size.width * 0.032,
-                                        AppColors.blackText),
+                            child: InkWell(
+                              onTap: () async {
+                                Get.toNamed(Routes.userprofilescreen,
+                                    arguments: {
+                                      'user_id': item.userid ?? 0,
+                                    });
+                                await userProfileController.fetchUserAllPost(
+                                  1,
+                                  item.userid.toString(),
+                                );
+                              },
+                              child: Row(
+                                children: [
+                                  CircleAvatar(
+                                    backgroundImage: NetworkImage(
+                                        item.userData?.imagePath ?? ''),
                                   ),
-                                )
-                              ],
+                                  8.sbw,
+                                  Expanded(
+                                    child: Text(
+                                      item.userData?.name ?? 'Unknown',
+                                      style: textStyleW500(size.width * 0.032,
+                                          AppColors.blackText),
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
                           );
                         },

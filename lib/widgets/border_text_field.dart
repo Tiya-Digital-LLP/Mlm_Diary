@@ -26,7 +26,7 @@ class BorderTextField extends StatelessWidget {
     required this.keyboard,
     required this.byDefault,
     this.onChanged,
-    this.height = 80.0,
+    this.height = 65.0,
     this.maxLength,
     this.suffixIcon, // Add this line
   });

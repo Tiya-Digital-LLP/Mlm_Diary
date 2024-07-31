@@ -185,13 +185,8 @@ class _MyAppState extends State<MyApp> {
     );
     if (kDebugMode) {
       print("Notification sent");
+      print("Notification sent: ${message.data}");
     }
-  }
-
-  void navigateToScreen(String routeName, {dynamic arguments}) {
-    Future.delayed(const Duration(milliseconds: 200), () {
-      Get.toNamed(routeName, arguments: arguments);
-    });
   }
 
   void _handleNotificationClick(String? payload) {
@@ -209,29 +204,29 @@ class _MyAppState extends State<MyApp> {
     }
 
     // Ensure only specified keys are included
-    final filteredData = {
-      'user_id': data['user_id'],
-      'type': data['type'],
-      'post_id': data['post_id'],
-    };
 
     Timer(const Duration(milliseconds: 500), () async {
       try {
         String key = '${data['type']}';
-        Map<String, dynamic> arguments = filteredData;
 
         switch (key) {
           case 'classified':
             await databaseController.fetchUserPost(
                 int.parse(data['user_id']), context);
-            navigateToScreen(Routes.userprofilescreen, arguments: arguments);
+
+            if (kDebugMode) {
+              print('Navigated to userprofilescreen with filtered data');
+            }
+            break;
+          case 'follow_user':
+            Get.toNamed(Routes.userprofilescreen, arguments: {
+              'user_id': data['user_id'],
+            });
             if (kDebugMode) {
               print('Navigated to userprofilescreen with filtered data');
             }
             break;
           default:
-            navigateToScreen(Routes.userprofilescreencopy,
-                arguments: arguments);
             if (kDebugMode) {
               print('Navigated to default screen with filtered data');
             }

@@ -30,7 +30,7 @@ class GetNewsListData {
 	int? pgcnt = 0;
 	String? createdate = '';
 	String? category = '';
-	String? creatby = '';
+	int? creatby = 0;
 	int? status = 0;
 	String? subcategory = '';
 	String? website = '';
@@ -46,6 +46,8 @@ class GetNewsListData {
 	GetNewsListDataUserData? userData;
 	@JSONField(name: "image_url")
 	String? imageUrl = '';
+	@JSONField(name: "user_id")
+	int? userId = 0;
 	@JSONField(name: "image_path")
 	String? imagePath = '';
 

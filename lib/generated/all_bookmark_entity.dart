@@ -31,20 +31,20 @@ class AllBookmarkData {
 	String? subcategory = '';
 	String? description = '';
 	String? website = '';
-	String? email = '';
-	String? phone = '';
+	dynamic email;
+	dynamic phone;
 	String? createdate = '';
 	int? pgcnt = 0;
 	String? location = '';
 	String? image = '';
 	@JSONField(name: "user_id")
-	String? userId = '';
+	int? userId = 0;
 	String? type = '';
 	dynamic immlm;
 	String? plan = '';
-	dynamic city;
-	dynamic state;
-	dynamic country;
+	String? city = '';
+	String? state = '';
+	String? country = '';
 	@JSONField(name: "bookmark_date")
 	String? bookmarkDate = '';
 	int? totallike = 0;
@@ -74,8 +74,8 @@ class AllBookmarkDataUserData {
 	String? name = '';
 	String? email = '';
 	String? userimage = '';
-	String? countrycode1 = '';
-	String? mobile = '';
+	dynamic countrycode1;
+	dynamic mobile;
 	@JSONField(name: "image_path")
 	String? imagePath = '';
 	@JSONField(name: "image_thum_path")

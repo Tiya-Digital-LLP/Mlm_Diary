@@ -72,7 +72,7 @@ GetNewsListData $GetNewsListDataFromJson(Map<String, dynamic> json) {
   if (category != null) {
     getNewsListData.category = category;
   }
-  final String? creatby = jsonConvert.convert<String>(json['creatby']);
+  final int? creatby = jsonConvert.convert<int>(json['creatby']);
   if (creatby != null) {
     getNewsListData.creatby = creatby;
   }
@@ -123,6 +123,10 @@ GetNewsListData $GetNewsListDataFromJson(Map<String, dynamic> json) {
   if (imageUrl != null) {
     getNewsListData.imageUrl = imageUrl;
   }
+  final int? userId = jsonConvert.convert<int>(json['user_id']);
+  if (userId != null) {
+    getNewsListData.userId = userId;
+  }
   final String? imagePath = jsonConvert.convert<String>(json['image_path']);
   if (imagePath != null) {
     getNewsListData.imagePath = imagePath;
@@ -151,6 +155,7 @@ Map<String, dynamic> $GetNewsListDataToJson(GetNewsListData entity) {
   data['bookmarked_by_user'] = entity.bookmarkedByUser;
   data['user_data'] = entity.userData?.toJson();
   data['image_url'] = entity.imageUrl;
+  data['user_id'] = entity.userId;
   data['image_path'] = entity.imagePath;
   return data;
 }
@@ -164,7 +169,7 @@ extension GetNewsListDataExtension on GetNewsListData {
     int? pgcnt,
     String? createdate,
     String? category,
-    String? creatby,
+    int? creatby,
     int? status,
     String? subcategory,
     String? website,
@@ -176,6 +181,7 @@ extension GetNewsListDataExtension on GetNewsListData {
     bool? bookmarkedByUser,
     GetNewsListDataUserData? userData,
     String? imageUrl,
+    int? userId,
     String? imagePath,
   }) {
     return GetNewsListData()
@@ -198,6 +204,7 @@ extension GetNewsListDataExtension on GetNewsListData {
       ..bookmarkedByUser = bookmarkedByUser ?? this.bookmarkedByUser
       ..userData = userData ?? this.userData
       ..imageUrl = imageUrl ?? this.imageUrl
+      ..userId = userId ?? this.userId
       ..imagePath = imagePath ?? this.imagePath;
   }
 }

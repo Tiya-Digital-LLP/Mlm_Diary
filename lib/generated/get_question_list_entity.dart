@@ -29,7 +29,7 @@ class GetQuestionListQuestions {
 	String? subcategory = '';
 	String? creatdate = '';
 	@JSONField(name: "user_id")
-	String? userId = '';
+	int? userId = 0;
 	int? pgcnt = 0;
 	int? totallike = 0;
 	int? totalbookmark = 0;

@@ -42,14 +42,14 @@ class GetHomeData {
 	String? location = '';
 	String? image = '';
 	@JSONField(name: "user_id")
-	String? userId = '';
+	int? userId = 0;
 	String? type = '';
-	dynamic immlm;
-	dynamic plan;
-	dynamic city;
-	dynamic state;
-	dynamic country;
-	dynamic posttype;
+	String? immlm = '';
+	String? plan = '';
+	String? city = '';
+	String? state = '';
+	String? country = '';
+	String? posttype = '';
 	int? totallike = 0;
 	int? totalcomment = 0;
 	@JSONField(name: "is_popular_classified")

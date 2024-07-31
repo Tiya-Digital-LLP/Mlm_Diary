@@ -128,7 +128,7 @@ class _UserCardState extends State<UserCard> {
                 );
                 await widget.userprofilecontroller.fetchUserAllPost(
                   1,
-                  widget.postid,
+                  widget.postid.toString(),
                 );
               },
               child: Row(

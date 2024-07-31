@@ -7,6 +7,8 @@ import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_comment_news_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
+import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
@@ -32,6 +34,8 @@ class CommentDialogNews extends StatefulWidget {
 class _CommentDialogState extends State<CommentDialogNews> {
   final PostTimeFormatter postTimeFormatter = PostTimeFormatter();
   final ManageNewsController controller = Get.put(ManageNewsController());
+  final UserProfileController userProfileController =
+      Get.put(UserProfileController());
   late ScrollController _scrollController;
   int? currentUserID;
   static const int maxCharacters = 500;
@@ -335,9 +339,20 @@ class _CommentDialogState extends State<CommentDialogNews> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CircleAvatar(
-                backgroundImage: NetworkImage(comment.userimage ?? ''),
-                radius: 20,
+              InkWell(
+                onTap: () async {
+                  Get.toNamed(Routes.userprofilescreen, arguments: {
+                    'user_id': comment.userid ?? 0,
+                  });
+                  await userProfileController.fetchUserAllPost(
+                    1,
+                    comment.userid.toString(),
+                  );
+                },
+                child: CircleAvatar(
+                  backgroundImage: NetworkImage(comment.userimage ?? ''),
+                  radius: 20,
+                ),
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -573,9 +588,20 @@ class _CommentDialogState extends State<CommentDialogNews> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CircleAvatar(
-              backgroundImage: NetworkImage(reply.userimage ?? ''),
-              radius: 16,
+            InkWell(
+              onTap: () async {
+                Get.toNamed(Routes.userprofilescreen, arguments: {
+                  'user_id': reply.userid ?? 0,
+                });
+                await userProfileController.fetchUserAllPost(
+                  1,
+                  reply.userid.toString(),
+                );
+              },
+              child: CircleAvatar(
+                backgroundImage: NetworkImage(reply.userimage ?? ''),
+                radius: 16,
+              ),
             ),
             const SizedBox(width: 10),
             Expanded(
@@ -683,9 +709,20 @@ class _CommentDialogState extends State<CommentDialogNews> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Adjust layout as needed for nested replies
-            CircleAvatar(
-              backgroundImage: NetworkImage(reply.userimage ?? ''),
-              radius: 16,
+            InkWell(
+              onTap: () async {
+                Get.toNamed(Routes.userprofilescreen, arguments: {
+                  'user_id': reply.userid ?? 0,
+                });
+                await userProfileController.fetchUserAllPost(
+                  1,
+                  reply.userid.toString(),
+                );
+              },
+              child: CircleAvatar(
+                backgroundImage: NetworkImage(reply.userimage ?? ''),
+                radius: 16,
+              ),
             ),
             const SizedBox(width: 10),
             Expanded(

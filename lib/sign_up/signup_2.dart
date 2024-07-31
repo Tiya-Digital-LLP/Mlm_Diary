@@ -6,14 +6,12 @@ import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.
 import 'package:flutter_google_places_hoc081098/google_maps_webservice_places.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
 import 'package:get/get.dart';
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/classified/custom/add_comapany_classfied.dart';
-
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_plan_list_entity.dart';
 import 'package:mlmdiary/sign_up/controller/signup2_controller.dart';
@@ -25,7 +23,7 @@ import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/company_border_textfield.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
 import 'package:mlmdiary/widgets/custom_border_container.dart';
-import 'package:mlmdiary/widgets/custom_button.dart';
+import 'package:mlmdiary/widgets/normal_button.dart';
 import 'package:path_provider/path_provider.dart';
 
 class AddMoreDetails extends StatefulWidget {
@@ -266,7 +264,7 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                       () => BorderContainer(
                         isError: controller.planTypeError.value,
                         byDefault: !controller.isPlanTyping.value,
-                        height: 65,
+                        height: 60,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8),
                           child: TextField(
@@ -412,11 +410,9 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                     100.sbh,
                     Align(
                       alignment: Alignment.center,
-                      child: CustomButton(
-                        title: "Submit",
-                        btnColor: AppColors.primaryColor,
-                        titleColor: AppColors.white,
-                        onTap: () {
+                      child: NormalButton(
+                        text: "Submit",
+                        onPressed: () {
                           FocusScope.of(context).unfocus();
                           controller.isPlanTyping.value = true;
                           controller.isLocationTyping.value = true;
@@ -556,11 +552,9 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                   ),
                 ),
                 Center(
-                  child: CustomButton(
-                    title: "Continue",
-                    btnColor: AppColors.primaryColor,
-                    titleColor: AppColors.white,
-                    onTap: () {
+                  child: NormalButton(
+                    text: "Continue",
+                    onPressed: () {
                       if (controller.selectedCountPlan > 0) {
                         Get.back();
                       } else {

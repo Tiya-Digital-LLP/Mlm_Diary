@@ -512,7 +512,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                     onTap: () {
                                       Get.toNamed(
                                         Routes.mypostdetails,
-                                        arguments: controller.myPostList[index],
+                                        arguments: post,
                                       );
                                     },
                                     child: MyProfileCard(

@@ -34,7 +34,7 @@ class BlogUserCard extends StatefulWidget {
   final QuestionAnswerController questionAnswerController;
   final bool likedbyuser;
   final int commentcount;
-  final UserProfileController controller;
+  final UserProfileController userProfileController;
   final int likedCount;
   final bool bookmarkedbyuser;
 
@@ -46,7 +46,6 @@ class BlogUserCard extends StatefulWidget {
     required this.postCaption,
     required this.postImage,
     required this.dateTime,
-    required this.controller,
     required this.viewcounts,
     required this.bookmarkId,
     required this.url,
@@ -60,6 +59,7 @@ class BlogUserCard extends StatefulWidget {
     required this.commentcount,
     required this.likedCount,
     required this.bookmarkedbyuser,
+    required this.userProfileController,
   });
 
   @override
@@ -93,7 +93,7 @@ class _FavouritrCardState extends State<BlogUserCard> {
     bool newLikedValue = !isLiked.value;
     isLiked.value = newLikedValue;
     likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
-    widget.controller.toggleLike(
+    widget.userProfileController.toggleLike(
       widget.type,
       widget.bookmarkId,
       context,
@@ -109,7 +109,7 @@ class _FavouritrCardState extends State<BlogUserCard> {
     bool newBookmarkedValue = !isBookmarked.value;
     isBookmarked.value = newBookmarkedValue;
 
-    widget.controller.toggleBookmark(
+    widget.userProfileController.toggleBookmark(
       widget.type,
       widget.bookmarkId,
       context,

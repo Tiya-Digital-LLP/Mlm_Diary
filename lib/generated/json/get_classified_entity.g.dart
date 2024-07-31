@@ -84,7 +84,7 @@ GetClassifiedData $GetClassifiedDataFromJson(Map<String, dynamic> json) {
   if (category != null) {
     getClassifiedData.category = category;
   }
-  final String? creatby = jsonConvert.convert<String>(json['creatby']);
+  final int? creatby = jsonConvert.convert<int>(json['creatby']);
   if (creatby != null) {
     getClassifiedData.creatby = creatby;
   }
@@ -163,6 +163,10 @@ GetClassifiedData $GetClassifiedDataFromJson(Map<String, dynamic> json) {
   if (imageUrl != null) {
     getClassifiedData.imageUrl = imageUrl;
   }
+  final int? userId = jsonConvert.convert<int>(json['user_id']);
+  if (userId != null) {
+    getClassifiedData.userId = userId;
+  }
   final String? imagePath = jsonConvert.convert<String>(json['image_path']);
   if (imagePath != null) {
     getClassifiedData.imagePath = imagePath;
@@ -207,6 +211,7 @@ Map<String, dynamic> $GetClassifiedDataToJson(GetClassifiedData entity) {
   data['user_data'] = entity.userData?.toJson();
   data['full_url'] = entity.fullUrl;
   data['image_url'] = entity.imageUrl;
+  data['user_id'] = entity.userId;
   data['image_path'] = entity.imagePath;
   data['image_thum_path'] = entity.imageThumPath;
   return data;
@@ -225,7 +230,7 @@ extension GetClassifiedDataExtension on GetClassifiedData {
     String? datemodified,
     String? createdate,
     String? category,
-    String? creatby,
+    int? creatby,
     String? subcategory,
     String? popular,
     String? website,
@@ -244,6 +249,7 @@ extension GetClassifiedDataExtension on GetClassifiedData {
     GetClassifiedDataUserData? userData,
     String? fullUrl,
     String? imageUrl,
+    int? userId,
     String? imagePath,
     String? imageThumPath,
   }) {
@@ -278,6 +284,7 @@ extension GetClassifiedDataExtension on GetClassifiedData {
       ..userData = userData ?? this.userData
       ..fullUrl = fullUrl ?? this.fullUrl
       ..imageUrl = imageUrl ?? this.imageUrl
+      ..userId = userId ?? this.userId
       ..imagePath = imagePath ?? this.imagePath
       ..imageThumPath = imageThumPath ?? this.imageThumPath;
   }

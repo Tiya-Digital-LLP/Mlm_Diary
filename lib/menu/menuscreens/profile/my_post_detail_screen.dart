@@ -161,7 +161,7 @@ class _NewsDetailScreenState extends State<MyPostDetailScreen> {
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: CachedNetworkImage(
-                          imageUrl: post.userData!.imagePath ?? '',
+                          imageUrl: post.attachmentPath ?? '',
                           height: 97,
                           width: 105,
                           fit: BoxFit.fill,

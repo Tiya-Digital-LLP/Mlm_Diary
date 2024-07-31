@@ -10,6 +10,8 @@ import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_answers_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/question_like_list_content.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
+import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -35,6 +37,8 @@ class _UserQuestionState extends State<UserQuestionCopy> {
   dynamic post;
   PostTimeFormatter postTimeFormatter = PostTimeFormatter();
   late ScrollController _scrollController;
+  final UserProfileController userProfileController =
+      Get.put(UserProfileController());
 
   late RxBool isLiked;
   late RxBool isBookmarked;
@@ -138,9 +142,21 @@ class _UserQuestionState extends State<UserQuestionCopy> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CircleAvatar(
-                        backgroundImage: NetworkImage(comment.userimage ?? ''),
-                        radius: 20,
+                      InkWell(
+                        onTap: () async {
+                          Get.toNamed(Routes.userprofilescreen, arguments: {
+                            'user_id': comment.userId ?? 0,
+                          });
+                          await userProfileController.fetchUserAllPost(
+                            1,
+                            comment.userId.toString(),
+                          );
+                        },
+                        child: CircleAvatar(
+                          backgroundImage:
+                              NetworkImage(comment.userimage ?? ''),
+                          radius: 20,
+                        ),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
@@ -318,10 +334,21 @@ class _UserQuestionState extends State<UserQuestionCopy> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CircleAvatar(
-                        backgroundImage:
-                            NetworkImage(commentData.userimage ?? ''),
-                        radius: 16,
+                      InkWell(
+                        onTap: () async {
+                          Get.toNamed(Routes.userprofilescreen, arguments: {
+                            'user_id': commentData.userid ?? 0,
+                          });
+                          await userProfileController.fetchUserAllPost(
+                            1,
+                            commentData.userid.toString(),
+                          );
+                        },
+                        child: CircleAvatar(
+                          backgroundImage:
+                              NetworkImage(commentData.userimage ?? ''),
+                          radius: 16,
+                        ),
                       ),
                       const SizedBox(width: 8),
                       Expanded(
@@ -502,10 +529,21 @@ class _UserQuestionState extends State<UserQuestionCopy> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CircleAvatar(
-                        backgroundImage:
-                            NetworkImage(replytoreplyData.userimage ?? ''),
-                        radius: 16,
+                      InkWell(
+                        onTap: () async {
+                          Get.toNamed(Routes.userprofilescreen, arguments: {
+                            'user_id': replytoreplyData.userid ?? 0,
+                          });
+                          await userProfileController.fetchUserAllPost(
+                            1,
+                            replytoreplyData.userid.toString(),
+                          );
+                        },
+                        child: CircleAvatar(
+                          backgroundImage:
+                              NetworkImage(replytoreplyData.userimage ?? ''),
+                          radius: 16,
+                        ),
                       ),
                       const SizedBox(width: 8),
                       Expanded(
@@ -689,10 +727,21 @@ class _UserQuestionState extends State<UserQuestionCopy> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CircleAvatar(
-                        backgroundImage:
-                            NetworkImage(replytoreplyData.userimage ?? ''),
-                        radius: 16,
+                      InkWell(
+                        onTap: () async {
+                          Get.toNamed(Routes.userprofilescreen, arguments: {
+                            'user_id': replytoreplyData.userid ?? 0,
+                          });
+                          await userProfileController.fetchUserAllPost(
+                            1,
+                            replytoreplyData.userid.toString(),
+                          );
+                        },
+                        child: CircleAvatar(
+                          backgroundImage:
+                              NetworkImage(replytoreplyData.userimage ?? ''),
+                          radius: 16,
+                        ),
                       ),
                       const SizedBox(width: 8),
                       Expanded(
@@ -1232,59 +1281,70 @@ class _UserQuestionState extends State<UserQuestionCopy> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (post.userData!.imagePath.isNotEmpty &&
-                            Uri.tryParse(post.userData!.imagePath)
-                                    ?.hasAbsolutePath ==
-                                true)
-                          ClipOval(
-                            child: CachedNetworkImage(
-                              imageUrl: post.userData!.imagePath ?? '',
-                              height: 60.0,
-                              width: 60.0,
-                              fit: BoxFit.cover,
-                              placeholder: (context, url) =>
-                                  CustomLottieAnimation(
-                                child: Lottie.asset(
-                                  Assets.lottieLottie,
+                    child: InkWell(
+                      onTap: () async {
+                        Get.toNamed(Routes.userprofilescreen, arguments: {
+                          'user_id': post.userId ?? 0,
+                        });
+                        await userProfileController.fetchUserAllPost(
+                          1,
+                          post.userId.toString(),
+                        );
+                      },
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (post.userData!.imagePath.isNotEmpty &&
+                              Uri.tryParse(post.userData!.imagePath)
+                                      ?.hasAbsolutePath ==
+                                  true)
+                            ClipOval(
+                              child: CachedNetworkImage(
+                                imageUrl: post.userData!.imagePath ?? '',
+                                height: 60.0,
+                                width: 60.0,
+                                fit: BoxFit.cover,
+                                placeholder: (context, url) =>
+                                    CustomLottieAnimation(
+                                  child: Lottie.asset(
+                                    Assets.lottieLottie,
+                                  ),
                                 ),
+                                errorWidget: (context, url, error) =>
+                                    const Icon(Icons.error),
                               ),
-                              errorWidget: (context, url, error) =>
-                                  const Icon(Icons.error),
+                            ),
+                          10.sbw,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  post.userData!.name ?? '',
+                                  style: textStyleW700(
+                                      size.width * 0.036, AppColors.blackText),
+                                ),
+                                Row(
+                                  children: [
+                                    // Text(
+                                    //   postTimeFormatter
+                                    //       .formatPostTime(post.creatdate ?? ''),
+                                    //   style: textStyleW400(size.width * 0.028,
+                                    //       AppColors.blackText.withOpacity(0.8)),
+                                    // ),
+                                    8.sbw,
+                                    Text(
+                                      'asked a question',
+                                      style: textStyleW400(size.width * 0.032,
+                                          AppColors.blackText.withOpacity(0.8)),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
-                        10.sbw,
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                post.userData!.name ?? '',
-                                style: textStyleW700(
-                                    size.width * 0.036, AppColors.blackText),
-                              ),
-                              Row(
-                                children: [
-                                  // Text(
-                                  //   postTimeFormatter
-                                  //       .formatPostTime(post.creatdate ?? ''),
-                                  //   style: textStyleW400(size.width * 0.028,
-                                  //       AppColors.blackText.withOpacity(0.8)),
-                                  // ),
-                                  8.sbw,
-                                  Text(
-                                    'asked a question',
-                                    style: textStyleW400(size.width * 0.032,
-                                        AppColors.blackText.withOpacity(0.8)),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                   10.sbh,

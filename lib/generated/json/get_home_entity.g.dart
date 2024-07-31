@@ -112,7 +112,7 @@ GetHomeData $GetHomeDataFromJson(Map<String, dynamic> json) {
   if (image != null) {
     getHomeData.image = image;
   }
-  final String? userId = jsonConvert.convert<String>(json['user_id']);
+  final int? userId = jsonConvert.convert<int>(json['user_id']);
   if (userId != null) {
     getHomeData.userId = userId;
   }
@@ -120,27 +120,27 @@ GetHomeData $GetHomeDataFromJson(Map<String, dynamic> json) {
   if (type != null) {
     getHomeData.type = type;
   }
-  final dynamic immlm = json['immlm'];
+  final String? immlm = jsonConvert.convert<String>(json['immlm']);
   if (immlm != null) {
     getHomeData.immlm = immlm;
   }
-  final dynamic plan = json['plan'];
+  final String? plan = jsonConvert.convert<String>(json['plan']);
   if (plan != null) {
     getHomeData.plan = plan;
   }
-  final dynamic city = json['city'];
+  final String? city = jsonConvert.convert<String>(json['city']);
   if (city != null) {
     getHomeData.city = city;
   }
-  final dynamic state = json['state'];
+  final String? state = jsonConvert.convert<String>(json['state']);
   if (state != null) {
     getHomeData.state = state;
   }
-  final dynamic country = json['country'];
+  final String? country = jsonConvert.convert<String>(json['country']);
   if (country != null) {
     getHomeData.country = country;
   }
-  final dynamic posttype = json['posttype'];
+  final String? posttype = jsonConvert.convert<String>(json['posttype']);
   if (posttype != null) {
     getHomeData.posttype = posttype;
   }
@@ -234,14 +234,14 @@ extension GetHomeDataExtension on GetHomeData {
     int? pgcnt,
     String? location,
     String? image,
-    String? userId,
+    int? userId,
     String? type,
-    dynamic immlm,
-    dynamic plan,
-    dynamic city,
-    dynamic state,
-    dynamic country,
-    dynamic posttype,
+    String? immlm,
+    String? plan,
+    String? city,
+    String? state,
+    String? country,
+    String? posttype,
     int? totallike,
     int? totalcomment,
     int? isPopularClassified,

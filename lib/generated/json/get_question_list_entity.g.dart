@@ -68,7 +68,7 @@ GetQuestionListQuestions $GetQuestionListQuestionsFromJson(
   if (creatdate != null) {
     getQuestionListQuestions.creatdate = creatdate;
   }
-  final String? userId = jsonConvert.convert<String>(json['user_id']);
+  final int? userId = jsonConvert.convert<int>(json['user_id']);
   if (userId != null) {
     getQuestionListQuestions.userId = userId;
   }
@@ -132,7 +132,7 @@ extension GetQuestionListQuestionsExtension on GetQuestionListQuestions {
     String? category,
     String? subcategory,
     String? creatdate,
-    String? userId,
+    int? userId,
     int? pgcnt,
     int? totallike,
     int? totalbookmark,

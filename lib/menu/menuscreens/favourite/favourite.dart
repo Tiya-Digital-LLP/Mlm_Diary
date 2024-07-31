@@ -393,13 +393,12 @@ class _FavouriteState extends State<Favourite> {
         if (kDebugMode) {
           print('database');
         }
-        Get.toNamed(
-          Routes.userprofilescreencopy,
-          arguments: post,
-        );
+        Get.toNamed(Routes.userprofilescreen, arguments: {
+          'user_id': post.userId ?? 0,
+        });
         await userProfileController.fetchUserAllPost(
           1,
-          post.id ?? 0,
+          post.userId.toString(),
         );
         break;
       case 'question':

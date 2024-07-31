@@ -291,11 +291,11 @@ class _MyProfileCardState extends State<MyProfileCard> {
                         width: size.height * 0.028,
                         child: GestureDetector(
                           onTap: () => toggleBookmark(),
-                          child: Icon(
+                          child: SvgPicture.asset(
                             isBookmarked.value
-                                ? Icons.bookmark
-                                : Icons.bookmark_border,
-                            size: size.height * 0.032,
+                                ? Assets.svgCheckBookmark
+                                : Assets.svgSavePost,
+                            height: size.height * 0.032,
                           ),
                         ),
                       ),

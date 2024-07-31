@@ -43,7 +43,7 @@ class ClassifiedUserCard extends StatefulWidget {
   final int commentcount;
   final bool bookmarkedbyuser;
 
-  final UserProfileController controller;
+  final UserProfileController userProfileController;
   final bool isPopular;
 
   const ClassifiedUserCard({
@@ -54,7 +54,6 @@ class ClassifiedUserCard extends StatefulWidget {
     required this.postCaption,
     required this.postImage,
     required this.dateTime,
-    required this.controller,
     required this.viewcounts,
     required this.bookmarkId,
     required this.url,
@@ -70,6 +69,7 @@ class ClassifiedUserCard extends StatefulWidget {
     required this.commentcount,
     required this.bookmarkedbyuser,
     required this.isPopular,
+    required this.userProfileController,
   });
 
   @override
@@ -104,7 +104,7 @@ class _FavouritrCardState extends State<ClassifiedUserCard> {
     bool newLikedValue = !isLiked.value;
     isLiked.value = newLikedValue;
     likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
-    widget.controller.toggleLike(
+    widget.userProfileController.toggleLike(
       widget.type,
       widget.bookmarkId,
       context,
@@ -120,7 +120,7 @@ class _FavouritrCardState extends State<ClassifiedUserCard> {
     bool newBookmarkedValue = !isBookmarked.value;
     isBookmarked.value = newBookmarkedValue;
 
-    widget.controller.toggleBookmark(
+    widget.userProfileController.toggleBookmark(
       widget.type,
       widget.bookmarkId,
       context,

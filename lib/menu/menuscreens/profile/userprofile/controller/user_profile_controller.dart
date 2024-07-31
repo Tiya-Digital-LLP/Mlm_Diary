@@ -162,7 +162,7 @@ class UserProfileController extends GetxController {
     }
   }
 
-  Future<void> fetchUserAllPost(int page, int userId) async {
+  Future<void> fetchUserAllPost(int page, String userId) async {
     isLoading.value = true;
 
     String device = Platform.isAndroid

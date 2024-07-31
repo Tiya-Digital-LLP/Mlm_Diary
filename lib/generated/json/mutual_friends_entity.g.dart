@@ -306,11 +306,11 @@ MutualFriendsData $MutualFriendsDataFromJson(Map<String, dynamic> json) {
   if (countrycode1 != null) {
     mutualFriendsData.countrycode1 = countrycode1;
   }
-  final dynamic lat = json['lat'];
+  final String? lat = jsonConvert.convert<String>(json['lat']);
   if (lat != null) {
     mutualFriendsData.lat = lat;
   }
-  final dynamic lng = json['lng'];
+  final String? lng = jsonConvert.convert<String>(json['lng']);
   if (lng != null) {
     mutualFriendsData.lng = lng;
   }
@@ -329,6 +329,18 @@ MutualFriendsData $MutualFriendsDataFromJson(Map<String, dynamic> json) {
   final bool? isFollowing = jsonConvert.convert<bool>(json['is_following']);
   if (isFollowing != null) {
     mutualFriendsData.isFollowing = isFollowing;
+  }
+  final int? followersCount = jsonConvert.convert<int>(json['followers_count']);
+  if (followersCount != null) {
+    mutualFriendsData.followersCount = followersCount;
+  }
+  final int? followingCount = jsonConvert.convert<int>(json['following_count']);
+  if (followingCount != null) {
+    mutualFriendsData.followingCount = followingCount;
+  }
+  final int? totalPost = jsonConvert.convert<int>(json['total_post']);
+  if (totalPost != null) {
+    mutualFriendsData.totalPost = totalPost;
   }
   final String? imagePath = jsonConvert.convert<String>(json['image_path']);
   if (imagePath != null) {
@@ -409,6 +421,9 @@ Map<String, dynamic> $MutualFriendsDataToJson(MutualFriendsData entity) {
   data['title'] = entity.title;
   data['pgcnt'] = entity.pgcnt;
   data['is_following'] = entity.isFollowing;
+  data['followers_count'] = entity.followersCount;
+  data['following_count'] = entity.followingCount;
+  data['total_post'] = entity.totalPost;
   data['image_path'] = entity.imagePath;
   data['image_thum_path'] = entity.imageThumPath;
   return data;
@@ -475,12 +490,15 @@ extension MutualFriendsDataExtension on MutualFriendsData {
     String? proceeddate,
     int? isApproved,
     String? countrycode1,
-    dynamic lat,
-    dynamic lng,
+    String? lat,
+    String? lng,
     String? imageUrl,
     String? title,
     int? pgcnt,
     bool? isFollowing,
+    int? followersCount,
+    int? followingCount,
+    int? totalPost,
     String? imagePath,
     String? imageThumPath,
   }) {
@@ -550,6 +568,9 @@ extension MutualFriendsDataExtension on MutualFriendsData {
       ..title = title ?? this.title
       ..pgcnt = pgcnt ?? this.pgcnt
       ..isFollowing = isFollowing ?? this.isFollowing
+      ..followersCount = followersCount ?? this.followersCount
+      ..followingCount = followingCount ?? this.followingCount
+      ..totalPost = totalPost ?? this.totalPost
       ..imagePath = imagePath ?? this.imagePath
       ..imageThumPath = imageThumPath ?? this.imageThumPath;
   }

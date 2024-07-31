@@ -327,17 +327,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                           return InkWell(
                                             onTap: () async {
                                               Get.toNamed(
-                                                Routes.userprofilescreencopy,
-                                                arguments: controller
-                                                    .mutualFriendList[index],
-                                              );
+                                                  Routes.userprofilescreen,
+                                                  arguments: {
+                                                    'user_id': controller
+                                                        .mutualFriendList[index]
+                                                        .id,
+                                                  });
+
                                               await userProfileController
                                                   .fetchUserAllPost(
                                                 1,
                                                 controller
-                                                        .mutualFriendList[index]
-                                                        .id ??
-                                                    0,
+                                                    .mutualFriendList[index].id
+                                                    .toString(),
                                               );
                                             },
                                             child: SuggetionUserCard(
@@ -788,9 +790,10 @@ class _HomeScreenState extends State<HomeScreen> {
         if (kDebugMode) {
           print('database');
         }
-        Get.toNamed(Routes.userprofilescreencopy, arguments: post);
+        Get.toNamed(Routes.userprofilescreen, arguments: {'user_id': post.id});
         await userProfileController.fetchUserAllPost(1, post.id ?? 0);
         break;
+
       case 'question':
         if (kDebugMode) {
           print('question');

@@ -41,7 +41,8 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
     with SingleTickerProviderStateMixin {
   dynamic post;
   final EditPostController editPostController = Get.put(EditPostController());
-  final UserProfileController controller = Get.put(UserProfileController());
+  final UserProfileController userProfileController =
+      Get.put(UserProfileController());
 
   final DatabaseController databaseController = Get.put(DatabaseController());
   final MessageController messageController = Get.put(MessageController());
@@ -53,8 +54,7 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
       Get.put(ClasifiedController());
   final QuestionAnswerController questionAnswerController =
       Get.put(QuestionAnswerController());
-  final UserProfileController userProfileController =
-      Get.put(UserProfileController());
+
   final ProfileController profileController = Get.put(ProfileController());
   RxBool isExpanded = true.obs;
 
@@ -435,8 +435,8 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                   child: CustomScrollView(
                     slivers: [
                       Obx(() {
-                        if (controller.isLoading.value &&
-                            controller.postallList.isEmpty) {
+                        if (userProfileController.isLoading.value &&
+                            userProfileController.postallList.isEmpty) {
                           return SliverToBoxAdapter(
                             child: Center(
                               child: CustomLottieAnimation(
@@ -447,7 +447,7 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                             ),
                           );
                         }
-                        if (controller.postallList.isEmpty) {
+                        if (userProfileController.postallList.isEmpty) {
                           return const SliverToBoxAdapter(
                             child: Center(
                               child: Text(
@@ -464,7 +464,8 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                         return SliverList(
                           delegate: SliverChildBuilderDelegate(
                             (context, index) {
-                              if (index == controller.postallList.length) {
+                              if (index ==
+                                  userProfileController.postallList.length) {
                                 return Center(
                                   child: CustomLottieAnimation(
                                     child: Lottie.asset(
@@ -473,7 +474,8 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                                   ),
                                 );
                               }
-                              final post = controller.postallList[index];
+                              final post =
+                                  userProfileController.postallList[index];
                               Widget cardWidget;
                               switch (post.type) {
                                 case 'classified':
@@ -485,7 +487,8 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                                     postImage: post.imageUrl ?? '',
                                     dateTime: post.createdate ?? '',
                                     viewcounts: post.pgcnt ?? 0,
-                                    controller: controller,
+                                    userProfileController:
+                                        userProfileController,
                                     bookmarkId: post.id ?? 0,
                                     url: post.urlcomponent ?? '',
                                     type: post.type ?? '',
@@ -514,7 +517,8 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                                     postImage: post.imageUrl ?? '',
                                     dateTime: post.createdate ?? '',
                                     viewcounts: post.pgcnt ?? 0,
-                                    controller: controller,
+                                    userProfileController:
+                                        userProfileController,
                                     bookmarkId: post.id ?? 0,
                                     url: post.urlcomponent ?? '',
                                     type: post.type ?? '',
@@ -540,7 +544,8 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                                     postImage: post.imageUrl ?? '',
                                     dateTime: post.createdate ?? '',
                                     viewcounts: post.pgcnt ?? 0,
-                                    controller: controller,
+                                    userProfileController:
+                                        userProfileController,
                                     bookmarkId: post.id ?? 0,
                                     url: post.urlcomponent ?? '',
                                     type: post.type ?? '',
@@ -567,7 +572,8 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                                     postImage: post.imageUrl ?? '',
                                     dateTime: post.createdate ?? '',
                                     viewcounts: post.pgcnt ?? 0,
-                                    controller: controller,
+                                    userProfileController:
+                                        userProfileController,
                                     bookmarkId: post.id ?? 0,
                                     url: post.urlcomponent ?? '',
                                     type: post.type ?? '',
@@ -592,7 +598,8 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                                     postImage: post.imageUrl ?? '',
                                     dateTime: post.createdate ?? '',
                                     viewcounts: post.pgcnt ?? 0,
-                                    controller: controller,
+                                    userProfileController:
+                                        userProfileController,
                                     bookmarkId: post.id ?? 0,
                                     url: post.urlcomponent ?? '',
                                     type: post.type ?? '',
@@ -624,8 +631,9 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                                 ),
                               );
                             },
-                            childCount: controller.postallList.length +
-                                (controller.isLoading.value ? 1 : 0),
+                            childCount: userProfileController
+                                    .postallList.length +
+                                (userProfileController.isLoading.value ? 1 : 0),
                           ),
                         );
                       }),

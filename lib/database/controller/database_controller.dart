@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +12,6 @@ import 'package:mlmdiary/sign_up/controller/signup_controller.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-
 import '../../generated/database_detail_entity.dart';
 
 class DatabaseController extends GetxController {
@@ -24,7 +22,6 @@ class DatabaseController extends GetxController {
   RxList<GetMlmDatabaseData> mlmDatabaseList = <GetMlmDatabaseData>[].obs;
   RxList<DatabaseDetailData> mlmDetailsDatabaseList =
       <DatabaseDetailData>[].obs;
-
   final search = TextEditingController();
   final AccountSeetingController accountSeetingController =
       Get.put(AccountSeetingController());
@@ -124,20 +121,6 @@ class DatabaseController extends GetxController {
     }
   }
 
-  void clearFields() {
-    for (int i = 0; i < signupController.isTypeSelectedList.length; i++) {
-      signupController.isTypeSelectedList[i] = false;
-    }
-    for (int i = 0;
-        i < accountSeetingController.isPlanSelectedList.length;
-        i++) {
-      accountSeetingController.isPlanSelectedList[i] = false;
-    }
-    clasifiedController.companyName.value.clear();
-    clasifiedController.location.value.clear();
-    getMlmDatabase(1);
-  }
-
   Future<void> fetchUserPost(int userId, dynamic context) async {
     if (kDebugMode) {
       print('fetchUserPost started');
@@ -205,8 +188,7 @@ class DatabaseController extends GetxController {
         }
 
         if (firstPost != null) {
-          // Do not save any IDs
-          // Add the fetched post to the list
+          mlmDetailsDatabaseList.clear(); // Clear previous data
           mlmDetailsDatabaseList.add(firstPost);
         } else {
           showToasterrorborder("No data found", context);
@@ -233,5 +215,19 @@ class DatabaseController extends GetxController {
         print('fetchUserPost ended');
       }
     }
+  }
+
+  void clearFields() {
+    for (int i = 0; i < signupController.isTypeSelectedList.length; i++) {
+      signupController.isTypeSelectedList[i] = false;
+    }
+    for (int i = 0;
+        i < accountSeetingController.isPlanSelectedList.length;
+        i++) {
+      accountSeetingController.isPlanSelectedList[i] = false;
+    }
+    clasifiedController.companyName.value.clear();
+    clasifiedController.location.value.clear();
+    getMlmDatabase(1);
   }
 }

@@ -106,6 +106,8 @@ class SignupController extends GetxController {
   RxBool nameReadOnly = false.obs;
   RxBool companyNameOnly = false.obs;
   RxBool mobileReadOnly = false.obs;
+  RxBool countryCodeReadOnly = false.obs;
+
   RxBool emailReadOnly = false.obs;
 
   var selectedTypesId = <RxInt>[].obs;
@@ -335,6 +337,7 @@ class SignupController extends GetxController {
             isMobileOtpScreenVisible.value = false;
             showEmailField.value = true;
             mobileReadOnly.value = true;
+            countryCodeReadOnly.value = true;
           } else if (jsonBody['status'] == 0) {
             toastification.show(
               // ignore: use_build_context_synchronously
@@ -505,6 +508,7 @@ class SignupController extends GetxController {
 
             showEmailField.value = true;
             mobileReadOnly.value = true;
+            countryCodeReadOnly.value = true;
           } else if (jsonBody['status'] == 0) {
             toastification.show(
               // ignore: use_build_context_synchronously

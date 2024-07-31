@@ -20,9 +20,9 @@ import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/border_text_field.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
 import 'package:mlmdiary/widgets/custom_border_container.dart';
-import 'package:mlmdiary/widgets/custom_button.dart';
 import 'package:mlmdiary/widgets/custom_mobile_field.dart';
 import 'package:mlmdiary/widgets/custom_name_text_field.dart';
+import 'package:mlmdiary/widgets/normal_button.dart';
 import 'package:mlmdiary/widgets/password_border_text_field.dart';
 
 class SignupPage extends StatefulWidget {
@@ -385,13 +385,9 @@ class _SignupPageState extends State<SignupPage> {
                                                       height:
                                                           size.height * 0.02,
                                                     ),
-                                                    CustomButton(
-                                                      title: "Continue",
-                                                      btnColor: AppColors
-                                                          .primaryColor,
-                                                      titleColor:
-                                                          AppColors.white,
-                                                      onTap: () {
+                                                    NormalButton(
+                                                      text: "Continue",
+                                                      onPressed: () {
                                                         FocusScope.of(context)
                                                             .unfocus();
                                                         controller
@@ -609,14 +605,9 @@ class _SignupPageState extends State<SignupPage> {
                                                                   size.height *
                                                                       0.015,
                                                             ),
-                                                            CustomButton(
-                                                              title: "Verify",
-                                                              btnColor: AppColors
-                                                                  .primaryColor,
-                                                              titleColor:
-                                                                  AppColors
-                                                                      .white,
-                                                              onTap: () {
+                                                            NormalButton(
+                                                              text: "Verify",
+                                                              onPressed: () {
                                                                 FocusScope.of(
                                                                         context)
                                                                     .unfocus();
@@ -696,12 +687,10 @@ class _SignupPageState extends State<SignupPage> {
                                                         )
                                                       : const SizedBox.shrink();
                                                 })
-                                          : CustomButton(
+                                          : NormalButton(
                                               // SEND EMAIL OTP
-                                              title: "Send OTP",
-                                              btnColor: AppColors.primaryColor,
-                                              titleColor: AppColors.white,
-                                              onTap: () {
+                                              text: "Send OTP",
+                                              onPressed: () {
                                                 FocusScope.of(context)
                                                     .unfocus();
                                                 controller.isEmailTyping.value =
@@ -815,13 +804,11 @@ class _SignupPageState extends State<SignupPage> {
                                               SizedBox(
                                                 height: size.height * 0.015,
                                               ),
-                                              CustomButton(
+                                              NormalButton(
                                                 // Mobile OTP VERIFICATION
-                                                title: "Verify",
-                                                btnColor:
-                                                    AppColors.primaryColor,
-                                                titleColor: AppColors.white,
-                                                onTap: () async {
+                                                text: "Verify",
+
+                                                onPressed: () async {
                                                   FocusScope.of(context)
                                                       .unfocus();
                                                   controller.isMobileOtpTyping
@@ -877,12 +864,10 @@ class _SignupPageState extends State<SignupPage> {
                                           )
                                         : const SizedBox.shrink();
                                   })
-                            : CustomButton(
+                            : NormalButton(
                                 // SEND MOBILE OTP
-                                title: "Send OTP",
-                                btnColor: AppColors.primaryColor,
-                                titleColor: AppColors.white,
-                                onTap: () {
+                                text: "Send OTP",
+                                onPressed: () {
                                   FocusScope.of(context).unfocus();
 
                                   controller.isMlmTyping.value = true;
@@ -1031,11 +1016,9 @@ class _SignupPageState extends State<SignupPage> {
                 ),
                 const SizedBox(height: 100),
                 Center(
-                  child: CustomButton(
-                    title: "Continue",
-                    btnColor: AppColors.primaryColor,
-                    titleColor: AppColors.white,
-                    onTap: () {
+                  child: NormalButton(
+                    text: "Continue",
+                    onPressed: () {
                       if (controller.selectedCount > 0) {
                         Get.back();
                       } else {
@@ -1060,12 +1043,14 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 
-  void _onPressedShowBottomSheet() async {
-    final country = await showCountryPickerSheet(context);
-    if (country != null) {
-      selectedCountry.value = country;
-      if (country.callingCode != '+91') {
-        _showNonIndiaPopup();
+  Future<void> _onPressedShowBottomSheet() async {
+    if (!controller.countryCodeReadOnly.value) {
+      final country = await showCountryPickerSheet(Get.context!);
+      if (country != null) {
+        selectedCountry.value = country;
+        if (country.callingCode != '+91') {
+          _showNonIndiaPopup();
+        }
       }
     }
   }
