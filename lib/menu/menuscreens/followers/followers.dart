@@ -29,17 +29,35 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
     _refreshFollowers();
     _refreshFollowing();
+    _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(_handleTabChange);
+  }
+
+  void _handleTabChange() {
+    if (_tabController.index == 0) {
+      _refreshFollowers();
+    } else if (_tabController.index == 1) {
+      _refreshFollowing();
+    }
   }
 
   Future<void> _refreshFollowers() async {
+    controller.followers.clear();
     await controller.getFollowers(1);
   }
 
   Future<void> _refreshFollowing() async {
+    controller.following.clear();
     await controller.getFollowing(1);
+  }
+
+  @override
+  void dispose() {
+    _tabController.removeListener(_handleTabChange);
+    _tabController.dispose();
+    super.dispose();
   }
 
   @override
@@ -204,25 +222,33 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
                               ),
                             ),
                             Expanded(
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: follower.isFollowing ?? false
-                                      ? AppColors.primaryColor
-                                      : Colors.grey,
-                                ),
-                                onPressed: () {
-                                  controller.toggleProfileFollow(
-                                      follower.id ?? 0, context);
-                                },
-                                child: Text(
-                                  follower.isFollowing ?? false
-                                      ? 'Following'
-                                      : 'Follow',
-                                  style: textStyleW700(
-                                      size.width * 0.030, AppColors.white),
-                                ),
-                              ),
-                            ),
+                              child: Obx(() {
+                                // Use controller.followProfileStatusMap to determine the follow status
+                                bool? isFollowing = controller
+                                        .followProfileStatusMap[follower.id] ??
+                                    follower.isFollowing;
+
+                                return ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: isFollowing!
+                                        ? AppColors.primaryColor
+                                        : Colors.grey,
+                                  ),
+                                  onPressed: () {
+                                    // Toggle the follow status and update the map
+                                    controller.toggleProfileFollow(
+                                        follower.id ?? 0, context);
+                                  },
+                                  child: Text(
+                                    isFollowing ? 'Following' : 'Follow',
+                                    style: textStyleW700(
+                                      MediaQuery.of(context).size.width * 0.030,
+                                      AppColors.white,
+                                    ),
+                                  ),
+                                );
+                              }),
+                            )
                           ],
                         ),
                       ),
@@ -330,26 +356,34 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
                               ),
                             ),
                             Expanded(
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor:
-                                      following.isFollowing ?? false
-                                          ? AppColors.primaryColor
-                                          : Colors.grey,
-                                ),
-                                onPressed: () {
-                                  controller.toggleProfileFollow(
-                                      following.id ?? 0, context);
-                                },
-                                child: Text(
-                                  following.isFollowing ?? false
-                                      ? 'Following'
-                                      : 'Follow',
-                                  style: textStyleW700(
-                                      size.width * 0.030, AppColors.white),
-                                ),
-                              ),
-                            ),
+                              child: Obx(() {
+                                // Use controller.followProfileStatusMap to determine the follow status
+                                bool? isFollowing = controller
+                                        .followProfileStatusMap[following.id] ??
+                                    following.isFollowing;
+
+                                return ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: isFollowing!
+                                        ? AppColors.primaryColor
+                                        : Colors.grey,
+                                  ),
+                                  onPressed: () {
+                                    // Toggle the follow status and update the map
+                                    controller.toggleProfileFollow(
+                                        following.id ?? 0, context);
+                                    _refreshFollowing();
+                                  },
+                                  child: Text(
+                                    isFollowing ? 'Following' : 'Follow',
+                                    style: textStyleW700(
+                                      MediaQuery.of(context).size.width * 0.030,
+                                      AppColors.white,
+                                    ),
+                                  ),
+                                );
+                              }),
+                            )
                           ],
                         ),
                       ),
@@ -362,11 +396,5 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
         ),
       ],
     );
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
   }
 }

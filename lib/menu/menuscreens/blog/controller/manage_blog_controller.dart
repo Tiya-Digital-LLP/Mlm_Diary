@@ -121,9 +121,7 @@ class ManageBlogController extends GetxController {
     getBlog(1);
   }
 
-  Future<void> getBlog(
-    int page,
-  ) async {
+  Future<void> getBlog(int page, {int? blogid}) async {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -151,6 +149,7 @@ class ManageBlogController extends GetxController {
         request.fields['search'] = search.value.text;
         request.fields['category'] = selectedCategoryId.value.toString();
         request.fields['subcategory'] = selectedSubCategoryId.value.toString();
+        request.fields['blog_id'] = blogid?.toString() ?? '';
 
         final streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);
@@ -165,9 +164,19 @@ class ManageBlogController extends GetxController {
 
           if (getBlogEntity.data != null && getBlogEntity.data!.isNotEmpty) {
             if (page == 1) {
-              blogList.value = getBlogEntity.data!;
+              if (blogid == null) {
+                blogList.value = getBlogEntity.data!;
+              } else {
+                blogList.value = [getBlogEntity.data!.first];
+              }
             } else {
-              blogList.addAll(getBlogEntity.data!);
+              if (blogid == null) {
+                blogList.addAll(getBlogEntity.data!);
+              } else {
+                if (getBlogEntity.data!.isNotEmpty) {
+                  blogList.add(getBlogEntity.data!.first);
+                }
+              }
             }
             isEndOfData(false);
           } else {

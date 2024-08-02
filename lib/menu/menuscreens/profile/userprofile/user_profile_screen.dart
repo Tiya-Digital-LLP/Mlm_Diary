@@ -59,7 +59,6 @@ class _UserProfileScreenState extends State<UserProfileScreen>
 
   late TabController _tabController;
 
-  RxBool isFollowing = false.obs;
   RxBool isBookmarked = false.obs;
 
   @override
@@ -268,48 +267,28 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                Obx(
-                                  () => SizedBox(
+                                Obx(() {
+                                  bool isFollowing = editPostController
+                                          .followProfileStatusMap[post.id] ??
+                                      false;
+                                  return SizedBox(
                                     height: 30,
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: AppColors.primaryColor,
                                       ),
-                                      onPressed: () async {
-                                        final userId = post.id ?? 0;
-
-                                        try {
-                                          bool followStatus =
-                                              await _fetchFollowStatus(userId);
-
-                                          WidgetsBinding.instance
-                                              .addPostFrameCallback((_) {
-                                            isFollowing.value = !followStatus;
-                                          });
-
-                                          await editPostController
-                                              .toggleProfileFollow(
-                                                  userId,
-                                                  // ignore: use_build_context_synchronously
-                                                  context);
-                                        } catch (e) {
-                                          Fluttertoast.showToast(
-                                            msg: "Error: $e",
-                                            toastLength: Toast.LENGTH_LONG,
-                                            gravity: ToastGravity.BOTTOM,
-                                          );
-                                        }
+                                      onPressed: () {
+                                        editPostController.toggleProfileFollow(
+                                            post.id ?? 0, context);
                                       },
                                       child: Text(
-                                        isFollowing.value
-                                            ? 'Unfollow'
-                                            : 'Follow',
+                                        isFollowing ? 'Unfollow' : 'Follow',
                                         style: textStyleW700(size.width * 0.030,
                                             AppColors.white),
                                       ),
                                     ),
-                                  ),
-                                ),
+                                  );
+                                }),
                                 20.sbw,
                                 Row(
                                   children: [
@@ -950,11 +929,12 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                             style: textStyleW400(
                                                 size.width * 0.035,
                                                 AppColors.grey)),
-                                        // Text(
-                                        //   post.aboutyou ?? 'N/A',
-                                        //   style: textStyleW500(
-                                        //       size.width * 0.035, AppColors.blackText),
-                                        // ),
+                                        Text(
+                                          post.aboutyou ?? 'N/A',
+                                          style: textStyleW500(
+                                              size.width * 0.035,
+                                              AppColors.blackText),
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -972,11 +952,12 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                             style: textStyleW400(
                                                 size.width * 0.035,
                                                 AppColors.grey)),
-                                        // Text(
-                                        //   post.aboutcompany ?? 'N/A',
-                                        //   style: textStyleW500(
-                                        //       size.width * 0.035, AppColors.blackText),
-                                        // ),
+                                        Text(
+                                          post.aboutcompany ?? 'N/A',
+                                          style: textStyleW500(
+                                              size.width * 0.035,
+                                              AppColors.blackText),
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -997,10 +978,6 @@ class _UserProfileScreenState extends State<UserProfileScreen>
   }
 
   Future<bool> _fetchBookmarkStatus(int userId) async {
-    return false;
-  }
-
-  Future<bool> _fetchFollowStatus(int userId) async {
     return false;
   }
 

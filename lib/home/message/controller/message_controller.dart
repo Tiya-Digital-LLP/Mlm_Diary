@@ -19,6 +19,7 @@ class MessageController extends GetxController {
   Rx<TextEditingController> msg = TextEditingController().obs;
 
   TextEditingController get searchController => _search;
+  var chatId = ''.obs;
 
   Future<void> fetchMyChat() async {
     isLoading(true);
@@ -205,6 +206,8 @@ class MessageController extends GetxController {
           // Fetch the updated chat details
           final String updatedChatId =
               jsonBody['record']['chat_id']?.toString() ?? '';
+          this.chatId.value = updatedChatId; // Store the updated chatId
+
           await fetchMyChatDetail(updatedChatId);
 
           // Clear the message input field after sending the message

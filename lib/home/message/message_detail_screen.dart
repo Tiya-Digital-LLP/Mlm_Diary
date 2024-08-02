@@ -31,7 +31,9 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
     super.initState();
     post = Get.arguments;
     if (post != null && post.chatId != null) {
-      messageController.fetchMyChatDetail(post.chatId.toString());
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        messageController.fetchMyChatDetail(post.chatId.toString());
+      });
       if (kDebugMode) {
         print('chat: $post');
       }

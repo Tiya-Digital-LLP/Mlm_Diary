@@ -32,6 +32,7 @@ class _MlmNewsScreenState extends State<MlmNews> {
   @override
   void initState() {
     super.initState();
+
     _refreshData();
     videoController.fetchVideo(position, context);
   }
@@ -200,7 +201,7 @@ class _MlmNewsScreenState extends State<MlmNews> {
                             );
                           },
                           child: NewsCard(
-                            image: post.imageUrl ?? '',
+                            image: post.userData?.imagePath ?? '',
                             dateTime: post.createdate ?? '',
                             newsId: post.id ?? 0,
                             userImage: post.imagePath ?? '',

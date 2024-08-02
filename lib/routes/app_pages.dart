@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/classified/add_classified.dart';
 import 'package:mlmdiary/classified/classified_detail_screen.dart';
+import 'package:mlmdiary/classified/classified_detail_notification.dart';
 import 'package:mlmdiary/classified/custom/add_comapany_classfied.dart';
 import 'package:mlmdiary/database/database.dart';
 import 'package:mlmdiary/firstscreen/first_screen.dart';
@@ -18,6 +19,7 @@ import 'package:mlmdiary/login/login_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/aboutus/about_us.dart';
 import 'package:mlmdiary/menu/menuscreens/accountsetting/account_setting_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/advertising/advertising.dart';
+import 'package:mlmdiary/menu/menuscreens/blog/blog_detail_notification.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/blog_detail_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/my_blog_detail_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/manage_blog_plus_icon.dart';
@@ -44,12 +46,14 @@ import 'package:mlmdiary/menu/menuscreens/news/manage_news_plus_icon.dart';
 import 'package:mlmdiary/menu/menuscreens/news/manage_news.dart';
 import 'package:mlmdiary/menu/menuscreens/news/mlm_news.dart';
 import 'package:mlmdiary/menu/menuscreens/news/my_news_detail_screen.dart';
+import 'package:mlmdiary/menu/menuscreens/news/news_details_notification.dart';
 import 'package:mlmdiary/menu/menuscreens/news/news_details_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/plan&companyintrest/custom/add_company.dart';
 import 'package:mlmdiary/menu/menuscreens/plan&companyintrest/planandcompanyintrest.dart';
 import 'package:mlmdiary/menu/menuscreens/premiumplan/premium_plan.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/edit_post.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/my_post_detail_screen.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/post_detail_notification.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/post_detail_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/profile_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/managequationanswer.dart';
@@ -121,6 +125,12 @@ class AppPages {
     GetPage(
       name: Routes.mlmclassifieddetail,
       page: () => ClassidiedDetailsScreen(
+        key: UniqueKey(),
+      ),
+    ),
+    GetPage(
+      name: Routes.mlmclassifieddetailcopy,
+      page: () => ClassifiedDetailNotification(
         key: UniqueKey(),
       ),
     ),
@@ -237,6 +247,12 @@ class AppPages {
       ),
     ),
     GetPage(
+      name: Routes.newsdetailsnotification,
+      page: () => NewsDetailsNotification(
+        key: UniqueKey(),
+      ),
+    ),
+    GetPage(
       name: Routes.manageblog,
       page: () => const ManageBlog(),
     ),
@@ -261,6 +277,12 @@ class AppPages {
     GetPage(
       name: Routes.blogdetails,
       page: () => BlogDetailScreen(
+        key: UniqueKey(),
+      ),
+    ),
+    GetPage(
+      name: Routes.blogdetailsnotification,
+      page: () => BlogDetailNotification(
         key: UniqueKey(),
       ),
     ),
@@ -329,6 +351,10 @@ class AppPages {
     GetPage(
       name: Routes.postdetail,
       page: () => const PostDetailScreen(),
+    ),
+    GetPage(
+      name: Routes.postdetailnotification,
+      page: () => const PostDetailNotification(),
     ),
     GetPage(
       name: Routes.mypostdetails,

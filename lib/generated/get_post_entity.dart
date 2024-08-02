@@ -26,6 +26,7 @@ class GetPostData {
 	int? id = 0;
 	String? comments = '';
 	String? attachment = '';
+	int? pgcnt = 0;
 	String? createdate = '';
 	String? comtype = '';
 	String? userid = '';
@@ -36,10 +37,12 @@ class GetPostData {
 	bool? likedByUser = false;
 	@JSONField(name: "bookmarked_by_user")
 	bool? bookmarkedByUser = false;
+	@JSONField(name: "full_url")
+	dynamic fullUrl;
 	@JSONField(name: "user_data")
 	GetPostDataUserData? userData;
 	@JSONField(name: "attachment_path")
-	String? attachmentPath = '';
+	dynamic attachmentPath;
 
 	GetPostData();
 
@@ -63,12 +66,12 @@ class GetPostDataUserData {
 	String? name = '';
 	String? email = '';
 	String? mobile = '';
-	dynamic birthdate;
+	String? birthdate = '';
 	String? address = '';
 	String? country = '';
 	String? state = '';
 	String? city = '';
-	String? pincode = '';
+	dynamic pincode;
 	dynamic employment;
 	String? userimage = '';
 	String? joindate = '';
@@ -76,7 +79,7 @@ class GetPostDataUserData {
 	String? lastip = '';
 	String? lastlogin = '';
 	String? aboutyou = '';
-	dynamic website;
+	String? website = '';
 	@JSONField(name: "comp_website")
 	dynamic compWebsite;
 	String? company = '';
@@ -84,14 +87,14 @@ class GetPostDataUserData {
 	int? status = 0;
 	int? points = 0;
 	int? views = 0;
-	String? emailvarify = '';
-	String? vemailcode = '';
+	dynamic emailvarify;
+	dynamic vemailcode;
 	String? vphonecode = '';
 	dynamic stepno;
-	String? token = '';
+	dynamic token;
 	dynamic approve;
 	@JSONField(name: "verify_email")
-	dynamic verifyEmail;
+	String? verifyEmail = '';
 	String? blockeduser = '';
 	String? showindirctry = '';
 	dynamic blockdate;
@@ -103,20 +106,22 @@ class GetPostDataUserData {
 	dynamic tokendate;
 	String? urlcomponent = '';
 	String? aboutcompany = '';
-	dynamic fblink;
+	String? fblink = '';
 	String? instalink = '';
-	dynamic twiterlink;
-	dynamic lilink;
-	dynamic youlink;
-	dynamic wplink;
-	dynamic telink;
+	String? twiterlink = '';
+	String? lilink = '';
+	String? youlink = '';
+	String? wplink = '';
+	String? telink = '';
 	String? proceedstatus = '';
-	String? device = '';
-	String? platform = '';
-	String? proceeddate = '';
+	dynamic device;
+	dynamic platform;
+	dynamic proceeddate;
 	@JSONField(name: "is_approved")
 	int? isApproved = 0;
 	String? countrycode1 = '';
+	dynamic lat;
+	dynamic lng;
 	@JSONField(name: "image_path")
 	String? imagePath = '';
 	@JSONField(name: "image_thum_path")

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/home/notification/card/user_notification_card.dart';
 import 'package:mlmdiary/home/notification/controller/notification_controller.dart';
@@ -17,6 +18,8 @@ class UserNotification extends StatefulWidget {
 
 class _AllNotificationState extends State<UserNotification> {
   final NotificationController controller = Get.put(NotificationController());
+  final ClasifiedController clasifiedController =
+      Get.put(ClasifiedController());
 
   @override
   void initState() {
@@ -78,9 +81,13 @@ class _AllNotificationState extends State<UserNotification> {
                           horizontal: 12, vertical: 8),
                       child: GestureDetector(
                         onTap: () {
-                          if (post.type == 'Favorite' &&
-                              post.postType == 'News') {
-                            Get.toNamed(Routes.newsdetails);
+                          if (post.type == 'classified') {
+                            Get.toNamed(Routes.mlmclassifieddetailcopy,
+                                arguments: {
+                                  'id': post,
+                                });
+                            clasifiedController.fetchClassifiedDetail(
+                                post.postid ?? 0, context);
                           } else if (post.type == 'admin' &&
                               post.postType == 'important') {
                             Get.toNamed('/admin_detail');

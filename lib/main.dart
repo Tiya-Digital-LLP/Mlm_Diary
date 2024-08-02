@@ -7,9 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:mlmdiary/database/controller/database_controller.dart';
+import 'package:mlmdiary/classified/custom/custom_commment.dart';
 import 'package:mlmdiary/maincontroller/main_controller.dart';
-import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/blog/custom_blog_comment.dart';
+import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/news/custom_news_comment.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/custom/custom_post_comment.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
@@ -72,10 +77,13 @@ class _MyAppState extends State<MyApp> {
   static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   static FirebaseAnalyticsObserver observer =
       FirebaseAnalyticsObserver(analytics: analytics);
-  final UserProfileController userProfileController =
-      Get.put(UserProfileController());
 
-  final DatabaseController databaseController = Get.put(DatabaseController());
+  final ManageNewsController manageNewsController =
+      Get.put(ManageNewsController());
+  final ManageBlogController manageBlogController =
+      Get.put(ManageBlogController());
+  final EditPostController editPostController = Get.put(EditPostController());
+
   @override
   void initState() {
     super.initState();
@@ -194,7 +202,8 @@ class _MyAppState extends State<MyApp> {
       print('Handling notification click with payload: $payload');
     }
 
-    final data = payload != null ? jsonDecode(payload) : null;
+    final data =
+        payload != null ? jsonDecode(payload) as Map<String, dynamic>? : null;
 
     if (data == null) {
       if (kDebugMode) {
@@ -203,7 +212,19 @@ class _MyAppState extends State<MyApp> {
       return;
     }
 
-    // Ensure only specified keys are included
+    if (kDebugMode) {
+      print('Notification data: $data');
+    }
+
+    // Ensure proper conversion and structure
+    final int postId = int.tryParse(data['post_id'].toString()) ?? 0;
+    final int userId = int.tryParse(data['user_id'].toString()) ?? 0;
+
+    if (kDebugMode) {
+      print('Notification type: ${data['type']}');
+      print('Post ID: $postId');
+      print('User ID: $userId');
+    }
 
     Timer(const Duration(milliseconds: 500), () async {
       try {
@@ -211,29 +232,111 @@ class _MyAppState extends State<MyApp> {
 
         switch (key) {
           case 'classified':
-            await databaseController.fetchUserPost(
-                int.parse(data['user_id']), context);
-
+          case 'classified_like':
             if (kDebugMode) {
-              print('Navigated to userprofilescreen with filtered data');
+              print('Navigating to classified with post_id: $postId');
             }
-            break;
-          case 'follow_user':
-            Get.toNamed(Routes.userprofilescreen, arguments: {
-              'user_id': data['user_id'],
+            Get.toNamed(Routes.mlmclassifieddetailcopy, arguments: {
+              'id': postId,
             });
+            break;
+
+          case 'news':
+          case 'news_like':
             if (kDebugMode) {
-              print('Navigated to userprofilescreen with filtered data');
+              print('Navigating to news with post_id: $postId');
+            }
+
+            await manageNewsController.getNews(1, newsId: postId);
+            Get.toNamed(Routes.newsdetailsnotification, arguments: {
+              'id': postId,
+            });
+            break;
+
+          case 'blog':
+          case 'blog_like':
+            if (kDebugMode) {
+              print('Navigating to blog with post_id: $postId');
+            }
+            await manageBlogController.getBlog(1, blogid: postId);
+            Get.toNamed(Routes.blogdetailsnotification, arguments: {
+              'id': postId,
+            });
+            break;
+
+          case 'user_post':
+          case 'user_post_like':
+            if (kDebugMode) {
+              print('Navigating to post with post_id: $postId');
+            }
+
+            Get.toNamed(Routes.postdetailnotification, arguments: {
+              'id': postId,
+            });
+            await editPostController.fetchPost(1, postId: postId);
+            break;
+
+          // Follow
+          case 'follow_user':
+            if (kDebugMode) {
+              print('Navigating to follow_user with user_id: $userId');
+            }
+            Get.toNamed(Routes.userprofilescreen, arguments: {
+              'user_id': userId,
+            });
+            break;
+
+          // Comment
+          case 'classified_comment':
+            final context = Get.context;
+            if (context != null) {
+              showFullScreenDialog(context, postId);
+            } else {
+              if (kDebugMode) {
+                print('Error: Context is null');
+              }
             }
             break;
+          case 'news_comment':
+            final context = Get.context;
+            if (context != null) {
+              showFullScreenDialogNews(context, postId);
+            } else {
+              if (kDebugMode) {
+                print('Error: Context is null');
+              }
+            }
+            break;
+          case 'blog_comment':
+            final context = Get.context;
+            if (context != null) {
+              showFullScreenDialogBlog(context, postId);
+            } else {
+              if (kDebugMode) {
+                print('Error: Context is null');
+              }
+            }
+            break;
+          case 'post_comment':
+            final context = Get.context;
+            if (context != null) {
+              showFullScreenDialogPost(context, postId);
+            } else {
+              if (kDebugMode) {
+                print('Error: Context is null');
+              }
+            }
+            break;
+
           default:
             if (kDebugMode) {
-              print('Navigated to default screen with filtered data');
+              print('Navigated to default screen with data: $data');
             }
         }
-      } catch (e) {
+      } catch (e, stackTrace) {
         if (kDebugMode) {
           print('Error during navigation: $e');
+          print('Stack trace: $stackTrace');
         }
       }
     });

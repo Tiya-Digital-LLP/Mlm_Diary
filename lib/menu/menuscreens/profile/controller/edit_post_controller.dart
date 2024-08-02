@@ -51,8 +51,8 @@ class EditPostController extends GetxController {
   var bookmarkProfileCountMap = <int, int>{};
 
   //bookmarkProfile
-  var followProfileStatusMap = <int, bool>{};
-  var followProfileCountMap = <int, int>{};
+  var followProfileStatusMap = <int, bool>{}.obs;
+  var followProfileCountMap = <int, int>{}.obs;
 
   @override
   void onInit() {
@@ -213,6 +213,7 @@ class EditPostController extends GetxController {
         request.fields['api_token'] = apiToken ?? '';
         request.fields['device'] = device;
         request.fields['page'] = page.toString();
+        request.fields['post_id'] = postId?.toString() ?? '';
 
         final streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);
@@ -238,9 +239,19 @@ class EditPostController extends GetxController {
 
           if (getNewsEntity.data != null && getNewsEntity.data!.isNotEmpty) {
             if (page == 1) {
-              getpostList.value = getNewsEntity.data!;
+              if (postId == null) {
+                getpostList.value = getNewsEntity.data!;
+              } else {
+                getpostList.value = [getNewsEntity.data!.first];
+              }
             } else {
-              getpostList.addAll(getNewsEntity.data!);
+              if (postId == null) {
+                getpostList.addAll(getNewsEntity.data!);
+              } else {
+                if (getNewsEntity.data!.isNotEmpty) {
+                  getpostList.add(getNewsEntity.data!.first);
+                }
+              }
             }
             isEndOfData(false);
           } else {

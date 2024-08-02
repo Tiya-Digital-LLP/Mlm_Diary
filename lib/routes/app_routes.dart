@@ -15,6 +15,8 @@ abstract class Routes {
   static const addclassified = '/addClassified';
   static const manageClassifiedplusicon = '/manageClassifiedplusicon';
   static const mlmclassifieddetail = '/mlmClassifiedDetailScreen';
+  static const mlmclassifieddetailcopy = '/mlmClassifiedDetailScreenCopy';
+
   static const messagescreen = '/messageScreen';
   static const messagedetailscreen = '/messageDetailScreen';
   static const usermessagedetailscreen = '/userMessageDetailScreen';
@@ -40,6 +42,7 @@ abstract class Routes {
   static const managenews = '/manageNews';
   static const mlmnews = '/mlmNews';
   static const newsdetails = '/NewsDetails';
+  static const newsdetailsnotification = '/NewsDetailsNotification';
 
   static const mynewsdetails = '/myNewsDetails';
   static const newsplusicon = '/newsPlusIcon';
@@ -52,6 +55,7 @@ abstract class Routes {
 
   static const myblogdetails = '/myBlogDetails';
   static const blogdetails = '/BlogDetails';
+  static const blogdetailsnotification = '/BlogDetailsNotification';
 
   static const blogplusicon = '/blogPlusIcon';
   static const addblog = '/addBlog';
@@ -77,5 +81,7 @@ abstract class Routes {
   static const addcompany = '/addCompany';
   static const addcompanyclassified = '/addCompanyClassified';
   static const postdetail = '/postDetail';
+  static const postdetailnotification = '/postDetailNotification';
+
   static const mypostdetails = '/myPostDetails';
 }

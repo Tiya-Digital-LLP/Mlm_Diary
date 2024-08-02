@@ -876,6 +876,7 @@ class ManageNewsController extends GetxController {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
     String device = '';
+
     if (Platform.isAndroid) {
       device = 'android';
     } else if (Platform.isIOS) {
@@ -898,19 +899,23 @@ class ManageNewsController extends GetxController {
         request.fields['search'] = search.value.text;
         request.fields['category'] = selectedCategoryId.value.toString();
         request.fields['subcategory'] = selectedSubCategoryId.value.toString();
+        request.fields['news_id'] = newsId?.toString() ?? '';
+
+        if (kDebugMode) {
+          print('Request URL: ${request.url}');
+          print('Request Fields: ${request.fields}');
+        }
 
         final streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);
 
         if (response.statusCode == 200) {
-          // Print the raw response body
           if (kDebugMode) {
             print('Raw Response Body: ${response.body}');
           }
 
           var data = jsonDecode(response.body);
 
-          // Print the parsed JSON data
           if (kDebugMode) {
             print('Parsed JSON Data: $data');
           }
@@ -923,9 +928,19 @@ class ManageNewsController extends GetxController {
 
           if (getNewsEntity.data != null && getNewsEntity.data!.isNotEmpty) {
             if (page == 1) {
-              newsList.value = getNewsEntity.data!;
+              if (newsId == null) {
+                newsList.value = getNewsEntity.data!;
+              } else {
+                newsList.value = [getNewsEntity.data!.first];
+              }
             } else {
-              newsList.addAll(getNewsEntity.data!);
+              if (newsId == null) {
+                newsList.addAll(getNewsEntity.data!);
+              } else {
+                if (getNewsEntity.data!.isNotEmpty) {
+                  newsList.add(getNewsEntity.data!.first);
+                }
+              }
             }
             isEndOfData(false);
           } else {
@@ -940,7 +955,7 @@ class ManageNewsController extends GetxController {
           }
         }
       } else {
-        //
+        // Handle connectivity issues
       }
     } catch (e) {
       if (kDebugMode) {

@@ -15,8 +15,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class FollowersController extends GetxController {
   // Bookmark profile
-  var followProfileStatusMap = <int, bool>{};
-  var followProfileCountMap = <int, int>{};
+  var followProfileStatusMap = <int, bool>{}.obs;
+  var followProfileCountMap = <int, int>{}.obs;
   var isEndOfData = false.obs;
 
   var followers = <GetFollowersData>[].obs;

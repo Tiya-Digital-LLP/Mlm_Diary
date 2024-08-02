@@ -106,19 +106,18 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
                             radius: size.width * 0.07,
                             child: ClipOval(
                               child: CachedNetworkImage(
-                                imageUrl: post.userData!.imagePath ?? '',
-                                height: 97,
-                                width: 105,
-                                fit: BoxFit.fill,
-                                placeholder: (context, url) => Center(
-                                    child: CustomLottieAnimation(
-                                  child: Lottie.asset(
-                                    Assets.lottieLottie,
-                                  ),
-                                )),
-                                errorWidget: (context, url, error) =>
-                                    const Icon(Icons.error),
-                              ),
+                                  imageUrl: post.userData!.imagePath ?? '',
+                                  height: 97,
+                                  width: 105,
+                                  fit: BoxFit.fill,
+                                  placeholder: (context, url) => Center(
+                                          child: CustomLottieAnimation(
+                                        child: Lottie.asset(
+                                          Assets.lottieLottie,
+                                        ),
+                                      )),
+                                  errorWidget: (context, url, error) =>
+                                      Image.asset(Assets.imagesAdminlogo)),
                             ),
                           ),
                           const SizedBox(

@@ -54,6 +54,10 @@ GetPostData $GetPostDataFromJson(Map<String, dynamic> json) {
   if (attachment != null) {
     getPostData.attachment = attachment;
   }
+  final int? pgcnt = jsonConvert.convert<int>(json['pgcnt']);
+  if (pgcnt != null) {
+    getPostData.pgcnt = pgcnt;
+  }
   final String? createdate = jsonConvert.convert<String>(json['createdate']);
   if (createdate != null) {
     getPostData.createdate = createdate;
@@ -87,13 +91,16 @@ GetPostData $GetPostDataFromJson(Map<String, dynamic> json) {
   if (bookmarkedByUser != null) {
     getPostData.bookmarkedByUser = bookmarkedByUser;
   }
+  final dynamic fullUrl = json['full_url'];
+  if (fullUrl != null) {
+    getPostData.fullUrl = fullUrl;
+  }
   final GetPostDataUserData? userData = jsonConvert.convert<
       GetPostDataUserData>(json['user_data']);
   if (userData != null) {
     getPostData.userData = userData;
   }
-  final String? attachmentPath = jsonConvert.convert<String>(
-      json['attachment_path']);
+  final dynamic attachmentPath = json['attachment_path'];
   if (attachmentPath != null) {
     getPostData.attachmentPath = attachmentPath;
   }
@@ -105,6 +112,7 @@ Map<String, dynamic> $GetPostDataToJson(GetPostData entity) {
   data['id'] = entity.id;
   data['comments'] = entity.comments;
   data['attachment'] = entity.attachment;
+  data['pgcnt'] = entity.pgcnt;
   data['createdate'] = entity.createdate;
   data['comtype'] = entity.comtype;
   data['userid'] = entity.userid;
@@ -113,6 +121,7 @@ Map<String, dynamic> $GetPostDataToJson(GetPostData entity) {
   data['totalcomment'] = entity.totalcomment;
   data['liked_by_user'] = entity.likedByUser;
   data['bookmarked_by_user'] = entity.bookmarkedByUser;
+  data['full_url'] = entity.fullUrl;
   data['user_data'] = entity.userData?.toJson();
   data['attachment_path'] = entity.attachmentPath;
   return data;
@@ -123,6 +132,7 @@ extension GetPostDataExtension on GetPostData {
     int? id,
     String? comments,
     String? attachment,
+    int? pgcnt,
     String? createdate,
     String? comtype,
     String? userid,
@@ -131,13 +141,15 @@ extension GetPostDataExtension on GetPostData {
     int? totalcomment,
     bool? likedByUser,
     bool? bookmarkedByUser,
+    dynamic fullUrl,
     GetPostDataUserData? userData,
-    String? attachmentPath,
+    dynamic attachmentPath,
   }) {
     return GetPostData()
       ..id = id ?? this.id
       ..comments = comments ?? this.comments
       ..attachment = attachment ?? this.attachment
+      ..pgcnt = pgcnt ?? this.pgcnt
       ..createdate = createdate ?? this.createdate
       ..comtype = comtype ?? this.comtype
       ..userid = userid ?? this.userid
@@ -146,6 +158,7 @@ extension GetPostDataExtension on GetPostData {
       ..totalcomment = totalcomment ?? this.totalcomment
       ..likedByUser = likedByUser ?? this.likedByUser
       ..bookmarkedByUser = bookmarkedByUser ?? this.bookmarkedByUser
+      ..fullUrl = fullUrl ?? this.fullUrl
       ..userData = userData ?? this.userData
       ..attachmentPath = attachmentPath ?? this.attachmentPath;
   }
@@ -185,7 +198,7 @@ GetPostDataUserData $GetPostDataUserDataFromJson(Map<String, dynamic> json) {
   if (mobile != null) {
     getPostDataUserData.mobile = mobile;
   }
-  final dynamic birthdate = json['birthdate'];
+  final String? birthdate = jsonConvert.convert<String>(json['birthdate']);
   if (birthdate != null) {
     getPostDataUserData.birthdate = birthdate;
   }
@@ -205,7 +218,7 @@ GetPostDataUserData $GetPostDataUserDataFromJson(Map<String, dynamic> json) {
   if (city != null) {
     getPostDataUserData.city = city;
   }
-  final String? pincode = jsonConvert.convert<String>(json['pincode']);
+  final dynamic pincode = json['pincode'];
   if (pincode != null) {
     getPostDataUserData.pincode = pincode;
   }
@@ -237,7 +250,7 @@ GetPostDataUserData $GetPostDataUserDataFromJson(Map<String, dynamic> json) {
   if (aboutyou != null) {
     getPostDataUserData.aboutyou = aboutyou;
   }
-  final dynamic website = json['website'];
+  final String? website = jsonConvert.convert<String>(json['website']);
   if (website != null) {
     getPostDataUserData.website = website;
   }
@@ -265,11 +278,11 @@ GetPostDataUserData $GetPostDataUserDataFromJson(Map<String, dynamic> json) {
   if (views != null) {
     getPostDataUserData.views = views;
   }
-  final String? emailvarify = jsonConvert.convert<String>(json['emailvarify']);
+  final dynamic emailvarify = json['emailvarify'];
   if (emailvarify != null) {
     getPostDataUserData.emailvarify = emailvarify;
   }
-  final String? vemailcode = jsonConvert.convert<String>(json['vemailcode']);
+  final dynamic vemailcode = json['vemailcode'];
   if (vemailcode != null) {
     getPostDataUserData.vemailcode = vemailcode;
   }
@@ -281,7 +294,7 @@ GetPostDataUserData $GetPostDataUserDataFromJson(Map<String, dynamic> json) {
   if (stepno != null) {
     getPostDataUserData.stepno = stepno;
   }
-  final String? token = jsonConvert.convert<String>(json['token']);
+  final dynamic token = json['token'];
   if (token != null) {
     getPostDataUserData.token = token;
   }
@@ -289,7 +302,7 @@ GetPostDataUserData $GetPostDataUserDataFromJson(Map<String, dynamic> json) {
   if (approve != null) {
     getPostDataUserData.approve = approve;
   }
-  final dynamic verifyEmail = json['verify_email'];
+  final String? verifyEmail = jsonConvert.convert<String>(json['verify_email']);
   if (verifyEmail != null) {
     getPostDataUserData.verifyEmail = verifyEmail;
   }
@@ -340,7 +353,7 @@ GetPostDataUserData $GetPostDataUserDataFromJson(Map<String, dynamic> json) {
   if (aboutcompany != null) {
     getPostDataUserData.aboutcompany = aboutcompany;
   }
-  final dynamic fblink = json['fblink'];
+  final String? fblink = jsonConvert.convert<String>(json['fblink']);
   if (fblink != null) {
     getPostDataUserData.fblink = fblink;
   }
@@ -348,23 +361,23 @@ GetPostDataUserData $GetPostDataUserDataFromJson(Map<String, dynamic> json) {
   if (instalink != null) {
     getPostDataUserData.instalink = instalink;
   }
-  final dynamic twiterlink = json['twiterlink'];
+  final String? twiterlink = jsonConvert.convert<String>(json['twiterlink']);
   if (twiterlink != null) {
     getPostDataUserData.twiterlink = twiterlink;
   }
-  final dynamic lilink = json['lilink'];
+  final String? lilink = jsonConvert.convert<String>(json['lilink']);
   if (lilink != null) {
     getPostDataUserData.lilink = lilink;
   }
-  final dynamic youlink = json['youlink'];
+  final String? youlink = jsonConvert.convert<String>(json['youlink']);
   if (youlink != null) {
     getPostDataUserData.youlink = youlink;
   }
-  final dynamic wplink = json['wplink'];
+  final String? wplink = jsonConvert.convert<String>(json['wplink']);
   if (wplink != null) {
     getPostDataUserData.wplink = wplink;
   }
-  final dynamic telink = json['telink'];
+  final String? telink = jsonConvert.convert<String>(json['telink']);
   if (telink != null) {
     getPostDataUserData.telink = telink;
   }
@@ -373,15 +386,15 @@ GetPostDataUserData $GetPostDataUserDataFromJson(Map<String, dynamic> json) {
   if (proceedstatus != null) {
     getPostDataUserData.proceedstatus = proceedstatus;
   }
-  final String? device = jsonConvert.convert<String>(json['device']);
+  final dynamic device = json['device'];
   if (device != null) {
     getPostDataUserData.device = device;
   }
-  final String? platform = jsonConvert.convert<String>(json['platform']);
+  final dynamic platform = json['platform'];
   if (platform != null) {
     getPostDataUserData.platform = platform;
   }
-  final String? proceeddate = jsonConvert.convert<String>(json['proceeddate']);
+  final dynamic proceeddate = json['proceeddate'];
   if (proceeddate != null) {
     getPostDataUserData.proceeddate = proceeddate;
   }
@@ -393,6 +406,14 @@ GetPostDataUserData $GetPostDataUserDataFromJson(Map<String, dynamic> json) {
       json['countrycode1']);
   if (countrycode1 != null) {
     getPostDataUserData.countrycode1 = countrycode1;
+  }
+  final dynamic lat = json['lat'];
+  if (lat != null) {
+    getPostDataUserData.lat = lat;
+  }
+  final dynamic lng = json['lng'];
+  if (lng != null) {
+    getPostDataUserData.lng = lng;
   }
   final String? imagePath = jsonConvert.convert<String>(json['image_path']);
   if (imagePath != null) {
@@ -467,6 +488,8 @@ Map<String, dynamic> $GetPostDataUserDataToJson(GetPostDataUserData entity) {
   data['proceeddate'] = entity.proceeddate;
   data['is_approved'] = entity.isApproved;
   data['countrycode1'] = entity.countrycode1;
+  data['lat'] = entity.lat;
+  data['lng'] = entity.lng;
   data['image_path'] = entity.imagePath;
   data['image_thum_path'] = entity.imageThumPath;
   return data;
@@ -482,12 +505,12 @@ extension GetPostDataUserDataExtension on GetPostDataUserData {
     String? name,
     String? email,
     String? mobile,
-    dynamic birthdate,
+    String? birthdate,
     String? address,
     String? country,
     String? state,
     String? city,
-    String? pincode,
+    dynamic pincode,
     dynamic employment,
     String? userimage,
     String? joindate,
@@ -495,20 +518,20 @@ extension GetPostDataUserDataExtension on GetPostDataUserData {
     String? lastip,
     String? lastlogin,
     String? aboutyou,
-    dynamic website,
+    String? website,
     dynamic compWebsite,
     String? company,
     String? newregi,
     int? status,
     int? points,
     int? views,
-    String? emailvarify,
-    String? vemailcode,
+    dynamic emailvarify,
+    dynamic vemailcode,
     String? vphonecode,
     dynamic stepno,
-    String? token,
+    dynamic token,
     dynamic approve,
-    dynamic verifyEmail,
+    String? verifyEmail,
     String? blockeduser,
     String? showindirctry,
     dynamic blockdate,
@@ -520,19 +543,21 @@ extension GetPostDataUserDataExtension on GetPostDataUserData {
     dynamic tokendate,
     String? urlcomponent,
     String? aboutcompany,
-    dynamic fblink,
+    String? fblink,
     String? instalink,
-    dynamic twiterlink,
-    dynamic lilink,
-    dynamic youlink,
-    dynamic wplink,
-    dynamic telink,
+    String? twiterlink,
+    String? lilink,
+    String? youlink,
+    String? wplink,
+    String? telink,
     String? proceedstatus,
-    String? device,
-    String? platform,
-    String? proceeddate,
+    dynamic device,
+    dynamic platform,
+    dynamic proceeddate,
     int? isApproved,
     String? countrycode1,
+    dynamic lat,
+    dynamic lng,
     String? imagePath,
     String? imageThumPath,
   }) {
@@ -596,6 +621,8 @@ extension GetPostDataUserDataExtension on GetPostDataUserData {
       ..proceeddate = proceeddate ?? this.proceeddate
       ..isApproved = isApproved ?? this.isApproved
       ..countrycode1 = countrycode1 ?? this.countrycode1
+      ..lat = lat ?? this.lat
+      ..lng = lng ?? this.lng
       ..imagePath = imagePath ?? this.imagePath
       ..imageThumPath = imageThumPath ?? this.imageThumPath;
   }

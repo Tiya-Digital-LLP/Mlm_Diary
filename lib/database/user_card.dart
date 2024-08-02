@@ -122,10 +122,9 @@ class _UserCardState extends State<UserCard> {
             right: 0,
             child: InkWell(
               onTap: () async {
-                Get.toNamed(
-                  Routes.userprofilescreencopy,
-                  arguments: widget.post,
-                );
+                Get.toNamed(Routes.userprofilescreen, arguments: {
+                  'user_id': widget.postid,
+                });
                 await widget.userprofilecontroller.fetchUserAllPost(
                   1,
                   widget.postid.toString(),

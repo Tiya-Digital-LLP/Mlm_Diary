@@ -1,13 +1,15 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/home/message/controller/message_controller.dart';
-import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserMessageDetailScreen extends StatefulWidget {
   const UserMessageDetailScreen({super.key});
@@ -19,24 +21,37 @@ class UserMessageDetailScreen extends StatefulWidget {
 
 class _UserMessageDetailScreenState extends State<UserMessageDetailScreen> {
   final MessageController messageController = Get.put(MessageController());
-  final UserProfileController userProfileController =
-      Get.put(UserProfileController());
   late PostTimeFormatter postTimeFormatter;
   dynamic post;
   final ScrollController _scrollController = ScrollController();
+  int? currentUserID;
+
+  Future<int?> getUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt(Constants.userId);
+  }
+
+  Future<void> _getUserId() async {
+    currentUserID = await getUserId();
+    if (kDebugMode) {
+      print('current_user_id: $currentUserID');
+    }
+    setState(() {});
+  }
 
   @override
   void initState() {
     super.initState();
     post = Get.arguments;
     postTimeFormatter = PostTimeFormatter();
-
+    _getUserId(); // Fetch the current user ID
     // Fetch chat details if chatId is not null
     if (post != null && post['chatId'] != null) {
+      messageController.chatId.value = post['chatId'].toString();
       messageController.fetchMyChatDetail(post['chatId'].toString());
     }
 
-    // Scroll to the bottom when the chat details are fetched
+    // Listen for chat details updates and scroll to bottom
     messageController.chatdetailsList.listen((_) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (_scrollController.hasClients) {
@@ -82,30 +97,33 @@ class _UserMessageDetailScreenState extends State<UserMessageDetailScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  if (post != null && post['imageUrl'] != null) ...[
-                    ClipOval(
-                      child: Image.network(
-                        post['imageUrl'],
-                        height: 30.0,
-                        width: 30.0,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) =>
-                            const Icon(Icons.error),
+              InkWell(
+                onTap: () async {},
+                child: Row(
+                  children: [
+                    if (post != null && post['imageUrl'] != null) ...[
+                      ClipOval(
+                        child: Image.network(
+                          post['imageUrl'],
+                          height: 30.0,
+                          width: 30.0,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) =>
+                              const Icon(Icons.error),
+                        ),
+                      ),
+                      10.sbw,
+                    ],
+                    Text(
+                      post['username'] ?? 'Unknown',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: size.width * 0.05,
+                        color: Colors.black,
                       ),
                     ),
-                    10.sbw,
                   ],
-                  Text(
-                    post['username'] ?? 'Unknown',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: size.width * 0.05,
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
+                ),
               ),
             ],
           ),
@@ -129,7 +147,7 @@ class _UserMessageDetailScreenState extends State<UserMessageDetailScreen> {
                     reverse: true,
                     itemBuilder: (context, index) {
                       final message = messageController.chatdetailsList[index];
-                      final isSender = message.fromid == post['fromid'];
+                      final isSender = message.fromid == currentUserID;
 
                       return Padding(
                         padding: const EdgeInsets.symmetric(
@@ -175,8 +193,9 @@ class _UserMessageDetailScreenState extends State<UserMessageDetailScreen> {
                                     children: [
                                       Text(
                                         message.msg ?? '',
-                                        style:
-                                            TextStyle(color: AppColors.white),
+                                        style: TextStyle(
+                                          color: AppColors.white,
+                                        ),
                                       ),
                                       5.sbh,
                                       Row(
@@ -206,12 +225,18 @@ class _UserMessageDetailScreenState extends State<UserMessageDetailScreen> {
                                 ),
                               ],
                             ),
-                            if (isSender) ...[
+                            if (isSender &&
+                                post != null &&
+                                post['profile_pic'] != null) ...[
                               10.sbw,
                               ClipOval(
-                                child: Image.asset(
-                                  Assets.imagesAdminlogo,
-                                  height: 30,
+                                child: Image.network(
+                                  post['profile_pic'],
+                                  height: 30.0,
+                                  width: 30.0,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      const Icon(Icons.error),
                                 ),
                               ),
                             ],
@@ -220,86 +245,47 @@ class _UserMessageDetailScreenState extends State<UserMessageDetailScreen> {
                       );
                     },
                   ),
-                )
+                ),
               ],
             ),
           ),
-          Container(
-            height: 100,
-            color: AppColors.white,
-            child:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.primaryColor.withOpacity(0.4),
-                            spreadRadius: 2,
-                            blurRadius: 5,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: SvgPicture.asset(
-                        Assets.svgPlusIcon,
-                        height: 40,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: messageController.msg.value,
+                    decoration: InputDecoration(
+                      hintText: 'Type your message...',
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide.none,
                       ),
                     ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: AppColors.searchbar,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: TextField(
-                              controller: messageController.msg.value,
-                              decoration: const InputDecoration(
-                                hintText: 'Write your answer here',
-                                border: InputBorder.none,
-                              ),
-                              onChanged: (value) {},
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    8.sbw,
-                    Obx(() {
-                      return IconButton(
-                        icon: SvgPicture.asset(
-                          Assets.svgSend,
-                          // ignore: deprecated_member_use
-                          color: AppColors.primaryColor,
-                          height: size.width * 0.07,
-                        ),
-                        onPressed: messageController.isLoading.value
-                            ? null
-                            : () async {
-                                await messageController.sendChat(
-                                  toId: post['toid'].toString(),
-                                  chatId: post['chatId']?.toString(),
-                                );
-
-                                // Clear the message input field after sending the message
-                                messageController.msg.value.clear();
-                              },
-                      );
-                    }),
-                    12.sbw,
-                  ],
+                  ),
                 ),
-              )
-            ]),
+                IconButton(
+                  icon: Icon(Icons.send, color: AppColors.primaryColor),
+                  onPressed: () async {
+                    await messageController.sendChat(
+                      toId: post['toid'].toString(),
+                      chatId: messageController
+                          .chatId.value, // Use the stored chatId
+                    );
+                    // Scroll to the bottom after sending a message
+                    if (_scrollController.hasClients) {
+                      _scrollController
+                          .jumpTo(_scrollController.position.maxScrollExtent);
+                    }
+                  },
+                ),
+              ],
+            ),
           ),
         ],
       ),

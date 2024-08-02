@@ -254,7 +254,8 @@ class ClasifiedController extends GetxController {
 
         final GetClassifiedDetailData? firstPost = classifiedDetailEntity.data;
         if (firstPost != null) {
-          // Add the fetched post to the list
+          // Replace old data with the fetched post
+          classifiedDetailList.clear(); // Ensure old data is cleared
           classifiedDetailList.add(firstPost);
         }
       } else {

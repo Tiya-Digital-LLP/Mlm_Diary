@@ -18,12 +18,16 @@ class _PremiumPlanState extends State<PremiumPlan> {
   @override
   void initState() {
     super.initState();
+    _razorpay = Razorpay();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, handlePaymentErrorResponse);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, handlePaymentSuccessResponse);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, handleExternalWalletSelected);
   }
 
   @override
   void dispose() {
-    super.dispose();
     _razorpay.clear();
+    super.dispose();
   }
 
   @override
@@ -66,10 +70,9 @@ class _PremiumPlanState extends State<PremiumPlan> {
                   if (kDebugMode) {
                     print('tap');
                   }
-                  Razorpay razorpay = Razorpay();
                   var options = {
                     'key': 'rzp_live_foyJnC4PMTEx8U',
-                    'amount': 10,
+                    'amount': 1000,
                     'name': 'Aman Talaviya.',
                     'description': 'Fine T-Shirt',
                     'retry': {'enabled': true, 'max_count': 1},
@@ -82,13 +85,7 @@ class _PremiumPlanState extends State<PremiumPlan> {
                       'wallets': ['paytm']
                     }
                   };
-                  razorpay.on(
-                      Razorpay.EVENT_PAYMENT_ERROR, handlePaymentErrorResponse);
-                  razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS,
-                      handlePaymentSuccessResponse);
-                  razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET,
-                      handleExternalWalletSelected);
-                  razorpay.open(options);
+                  _razorpay.open(options);
                 },
                 child: const Text("Pay with Razorpay")),
           ],
@@ -98,23 +95,15 @@ class _PremiumPlanState extends State<PremiumPlan> {
   }
 
   void handlePaymentErrorResponse(PaymentFailureResponse response) {
-    /*
-    * PaymentFailureResponse contains three values:
-    * 1. Error Code
-    * 2. Error Description
-    * 3. Metadata
-    * */
     showAlertDialog(context, "Payment Failed",
         "Code: ${response.code}\nDescription: ${response.message}\nMetadata:${response.error.toString()}");
+    if (kDebugMode) {
+      print(
+          "Code: ${response.code}\nDescription: ${response.message}\nMetadata:${response.error.toString()}");
+    }
   }
 
   void handlePaymentSuccessResponse(PaymentSuccessResponse response) {
-    /*
-    * Payment Success Response contains three values:
-    * 1. Order ID
-    * 2. Payment ID
-    * 3. Signature
-    * */
     showAlertDialog(
         context, "Payment Successful", "Payment ID: ${response.paymentId}");
   }
@@ -125,8 +114,6 @@ class _PremiumPlanState extends State<PremiumPlan> {
   }
 
   void showAlertDialog(BuildContext context, String title, String message) {
-    // set up the buttons
-    // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       title: Text(title),
       content: Text(message),
