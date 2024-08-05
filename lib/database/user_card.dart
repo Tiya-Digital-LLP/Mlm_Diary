@@ -2,14 +2,17 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_mlm_database_entity.dart';
+import 'package:mlmdiary/home/home/custom/sign_up_dialog.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserCard extends StatefulWidget {
   final String userImage;
@@ -122,6 +125,14 @@ class _UserCardState extends State<UserCard> {
             right: 0,
             child: InkWell(
               onTap: () async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                String? apiToken = prefs.getString(Constants.accessToken);
+
+                if (apiToken == null) {
+                  // ignore: use_build_context_synchronously
+                  showSignupDialog(context);
+                  return;
+                }
                 Get.toNamed(Routes.userprofilescreen, arguments: {
                   'user_id': widget.postid,
                 });
@@ -151,4 +162,13 @@ class _UserCardState extends State<UserCard> {
       ),
     );
   }
+}
+
+void showSignupDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return const SignupDialog();
+    },
+  );
 }

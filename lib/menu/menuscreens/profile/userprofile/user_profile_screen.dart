@@ -77,7 +77,6 @@ class _UserProfileScreenState extends State<UserProfileScreen>
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     final userProfile = profileController.userProfile.value.userProfile;
-    final bookmark = controller.mlmDatabaseList[0];
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -109,6 +108,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                   height: size.height * 0.028,
                 ),
                 onPressed: () async {
+                  final bookmark = controller.mlmDetailsDatabaseList[0];
                   final userId = bookmark.id ?? 0;
 
                   try {

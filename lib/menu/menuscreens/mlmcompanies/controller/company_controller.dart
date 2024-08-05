@@ -58,7 +58,7 @@ class CompanyController extends GetxController {
     });
   }
 
-  Future<void> getAdminCompany(int page) async {
+  Future<void> getAdminCompany(int page, {int? companyId}) async {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -84,6 +84,7 @@ class CompanyController extends GetxController {
         request.fields['device'] = device;
         request.fields['page'] = page.toString();
         request.fields['search'] = search.value.text;
+        request.fields['company_id'] = companyId?.toString() ?? '';
 
         final streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);
@@ -99,10 +100,21 @@ class CompanyController extends GetxController {
           if (getAdminCompanyEnity.data != null &&
               getAdminCompanyEnity.data!.isNotEmpty) {
             if (page == 1) {
-              companyAdminList.value = getAdminCompanyEnity.data!;
+              if (companyId == null) {
+                companyAdminList.value = getAdminCompanyEnity.data!;
+              } else {
+                companyAdminList.value = [getAdminCompanyEnity.data!.first];
+              }
             } else {
-              companyAdminList.addAll(getAdminCompanyEnity.data!);
+              if (companyId == null) {
+                companyAdminList.addAll(getAdminCompanyEnity.data!);
+              } else {
+                if (getAdminCompanyEnity.data!.isNotEmpty) {
+                  companyAdminList.add(getAdminCompanyEnity.data!.first);
+                }
+              }
             }
+            isEndOfData(false);
           } else {
             if (page == 1) {
               companyAdminList.clear();

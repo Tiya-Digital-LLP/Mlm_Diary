@@ -1,4 +1,4 @@
-package com.example.mlmdiary
+package com.mlm.mlmdiary
 
 import io.flutter.embedding.android.FlutterActivity
 

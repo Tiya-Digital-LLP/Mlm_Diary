@@ -141,42 +141,23 @@ class _MessageState extends State<Message> {
                         return Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 6),
-                          child: Dismissible(
-                            direction: DismissDirection.endToStart,
-                            resizeDuration: const Duration(seconds: 1),
-                            key: UniqueKey(),
-                            background: Container(
-                              color: Colors.red,
-                              alignment: Alignment.centerRight,
-                              child: const Padding(
-                                padding: EdgeInsets.all(10),
-                                child: Icon(
-                                  Icons.delete,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                            onDismissed: (direction) {
-                              messageController.chatList.removeAt(index);
-                            },
-                            child: GestureDetector(
-                              onTap: () async {
-                                final post = messageController.chatList[index];
+                          child: GestureDetector(
+                            onTap: () async {
+                              final post = messageController.chatList[index];
 
-                                Get.toNamed(Routes.messagedetailscreen,
-                                    arguments: post);
-                                await messageController
-                                    .fetchMyChatDetail(post.chatId.toString());
-                              },
-                              child: ChatCard(
-                                userImage: post.imageUrl ?? '',
-                                userName: post.username ?? 'Unknown',
-                                postCaption: post.msg ?? '',
-                                chatId: post.chatId.toString(),
-                                controller: messageController,
-                                datetime: post.createdAt ?? '',
-                                readStatus: post.readStatus ?? 0,
-                              ),
+                              Get.toNamed(Routes.messagedetailscreen,
+                                  arguments: post);
+                              await messageController
+                                  .fetchMyChatDetail(post.chatId.toString());
+                            },
+                            child: ChatCard(
+                              userImage: post.imageUrl ?? '',
+                              userName: post.username ?? 'Unknown',
+                              postCaption: post.msg ?? '',
+                              chatId: post.chatId.toString(),
+                              controller: messageController,
+                              datetime: post.createdAt ?? '',
+                              readStatus: post.readStatus ?? 0,
                             ),
                           ),
                         );

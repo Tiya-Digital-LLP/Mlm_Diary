@@ -28,33 +28,41 @@ class _BottomNavBarState extends State<BottomNavBar> {
         children: List.generate(
           bottomBarImages.length,
           (index) => Obx(
-            () => GestureDetector(
-              onTap: () {
-                widget.onTap(index);
-              },
-              child: SizedBox(
-                height: size.height * 0.07,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SvgPicture.asset(
-                      bottomBarImages[index],
-                      // ignore: deprecated_member_use
-                      color: (controller.tappedIndex.value == index)
-                          ? AppColors.primaryColor
-                          : AppColors.bottomIcon,
-                      height: 26,
-                    ),
-                    Text(
-                      bottomBarTexts[index],
-                      style: TextStyle(
-                        fontSize: 10,
+            () => Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  widget.onTap(index);
+                },
+                borderRadius: BorderRadius.circular(50),
+                splashColor: AppColors.primaryColor.withOpacity(0.3),
+                highlightColor: AppColors.primaryColor.withOpacity(0.1),
+                child: Container(
+                  height: size.height * 0.07,
+                  width: size.height * 0.07,
+                  alignment: Alignment.center,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset(
+                        bottomBarImages[index],
+                        // ignore: deprecated_member_use
                         color: (controller.tappedIndex.value == index)
                             ? AppColors.primaryColor
                             : AppColors.bottomIcon,
+                        height: 26,
                       ),
-                    ),
-                  ],
+                      Text(
+                        bottomBarTexts[index],
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: (controller.tappedIndex.value == index)
+                              ? AppColors.primaryColor
+                              : AppColors.bottomIcon,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

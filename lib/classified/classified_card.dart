@@ -4,13 +4,16 @@ import 'package:get/get.dart';
 import 'package:mlmdiary/classified/classified_like_list_content.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/classified/custom/custom_commment.dart';
+import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/home/home/custom/sign_up_dialog.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:html_unescape/html_unescape.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ClassifiedCard extends StatefulWidget {
   final String userImage;
@@ -77,18 +80,45 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
     bookmarkCount = RxInt(widget.bookmarkCount);
   }
 
+  void showSignupDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const SignupDialog();
+      },
+    );
+  }
+
   void toggleLike() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+
+    if (apiToken == null) {
+      // ignore: use_build_context_synchronously
+      showSignupDialog(context);
+      return;
+    }
     bool newLikedValue = !isLiked.value;
     isLiked.value = newLikedValue;
     likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
+    // ignore: use_build_context_synchronously
     await widget.controller.toggleLike(widget.classifiedId, context);
   }
 
   void toggleBookmark() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+
+    if (apiToken == null) {
+      // ignore: use_build_context_synchronously
+      showSignupDialog(context);
+      return;
+    }
     bool newBookmarkedValue = !isBookmarked.value;
     isBookmarked.value = newBookmarkedValue;
     bookmarkCount.value =
         newBookmarkedValue ? bookmarkCount.value + 1 : bookmarkCount.value - 1;
+    // ignore: use_build_context_synchronously
     await widget.controller.toggleBookMark(widget.classifiedId, context);
   }
 
@@ -231,10 +261,23 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
                     Row(
                       children: [
                         GestureDetector(
-                          onTap: () => showFullScreenDialog(
-                            context,
-                            widget.classifiedId,
-                          ),
+                          onTap: () async {
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            String? apiToken =
+                                prefs.getString(Constants.accessToken);
+
+                            if (apiToken == null) {
+                              // ignore: use_build_context_synchronously
+                              showSignupDialog(context);
+                              return;
+                            }
+                            showFullScreenDialog(
+                              // ignore: use_build_context_synchronously
+                              context,
+                              widget.classifiedId,
+                            );
+                          },
                           child: SizedBox(
                             height: size.height * 0.028,
                             width: size.height * 0.028,

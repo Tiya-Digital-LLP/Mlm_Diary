@@ -6,8 +6,10 @@ import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
+import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/home/home/controller/homescreen_controller.dart';
+import 'package:mlmdiary/home/home/custom/sign_up_dialog.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/custom_company_comment.dart';
@@ -20,6 +22,7 @@ import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CompanyHomeCard extends StatefulWidget {
   final String userName;
@@ -101,13 +104,31 @@ class _CompanieFaviouriteCardState extends State<CompanyHomeCard> {
     likeCount = RxInt(widget.likedCount);
   }
 
+  void showSignupDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const SignupDialog();
+      },
+    );
+  }
+
   void toggleLike() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+
+    if (apiToken == null) {
+      // ignore: use_build_context_synchronously
+      showSignupDialog(context);
+      return;
+    }
     bool newLikedValue = !isLiked.value;
     isLiked.value = newLikedValue;
     likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
     widget.controller.toggleLike(
       widget.type,
       widget.bookmarkId,
+      // ignore: use_build_context_synchronously
       context,
       widget.manageBlogController,
       widget.manageNewsController,
@@ -119,12 +140,21 @@ class _CompanieFaviouriteCardState extends State<CompanyHomeCard> {
   }
 
   void toggleBookmark() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+
+    if (apiToken == null) {
+      // ignore: use_build_context_synchronously
+      showSignupDialog(context);
+      return;
+    }
     bool newBookmarkedValue = !isBookmarked.value;
     isBookmarked.value = newBookmarkedValue;
 
     widget.controller.toggleBookmark(
       widget.type,
       widget.bookmarkId,
+      // ignore: use_build_context_synchronously
       context,
       widget.manageBlogController,
       widget.manageNewsController,

@@ -17,6 +17,7 @@ import 'package:mlmdiary/home/home/custom/database_home_card.dart';
 import 'package:mlmdiary/home/home/custom/news_home_card.dart';
 import 'package:mlmdiary/home/home/custom/post_home_card.dart';
 import 'package:mlmdiary/home/home/custom/question_home_card.dart';
+import 'package:mlmdiary/home/home/custom/sign_up_dialog.dart';
 import 'package:mlmdiary/home/home/custom/video_home_card.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/favourite/controller/favourite_controller.dart';
@@ -80,7 +81,9 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       controller.isEndOfData.value = false;
       controller.homeList.clear();
-      await controller.getHome(1);
+      await controller.getHome(
+        1,
+      );
       controller.fetchBanners();
       controller.fetchPopUpBanners();
       controller.fetchNotificationCount(1, 'all');
@@ -113,7 +116,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   // SEARCH ICON
                   GestureDetector(
-                    onTap: () {
+                    onTap: () async {
+                      SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                      String? apiToken = prefs.getString(Constants.accessToken);
+
+                      if (apiToken == null) {
+                        // ignore: use_build_context_synchronously
+                        showSignupDialog(context);
+                        return;
+                      }
                       Get.toNamed(Routes.search);
                     },
                     child: Padding(
@@ -127,7 +139,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   // BUILDING ICON
                   GestureDetector(
-                    onTap: () {
+                    onTap: () async {
+                      SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                      String? apiToken = prefs.getString(Constants.accessToken);
+
+                      if (apiToken == null) {
+                        // ignore: use_build_context_synchronously
+                        showSignupDialog(context);
+                        return;
+                      }
                       Get.toNamed(Routes.mlmcompanies);
                     },
                     child: Padding(
@@ -141,7 +162,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   // MESSAGE ICON
                   GestureDetector(
-                    onTap: () {
+                    onTap: () async {
+                      SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                      String? apiToken = prefs.getString(Constants.accessToken);
+
+                      if (apiToken == null) {
+                        // ignore: use_build_context_synchronously
+                        showSignupDialog(context);
+                        return;
+                      }
                       Get.toNamed(Routes.messagescreen);
                     },
                     child: Padding(
@@ -155,7 +185,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   // NOTIFICATION ICON
                   GestureDetector(
-                    onTap: () {
+                    onTap: () async {
+                      SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                      String? apiToken = prefs.getString(Constants.accessToken);
+
+                      if (apiToken == null) {
+                        // ignore: use_build_context_synchronously
+                        showSignupDialog(context);
+                        return;
+                      }
                       Get.toNamed(Routes.notification);
                     },
                     child: Stack(
@@ -372,7 +411,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   10.sbw,
                                   InkWell(
-                                    onTap: () {
+                                    onTap: () async {
+                                      SharedPreferences prefs =
+                                          await SharedPreferences.getInstance();
+                                      String? apiToken = prefs
+                                          .getString(Constants.accessToken);
+
+                                      if (apiToken == null) {
+                                        // ignore: use_build_context_synchronously
+                                        showSignupDialog(context);
+                                        return;
+                                      }
                                       Get.toNamed(Routes.databasescreen);
                                     },
                                     child: Row(
@@ -671,7 +720,15 @@ class _HomeScreenState extends State<HomeScreen> {
         itemBuilder: (_) => <PopupMenuEntry>[
           PopupMenuItem(
             value: 1,
-            onTap: () {
+            onTap: () async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              String? apiToken = prefs.getString(Constants.accessToken);
+
+              if (apiToken == null) {
+                // ignore: use_build_context_synchronously
+                showSignupDialog(context);
+                return;
+              }
               Get.toNamed(Routes.addpost);
             },
             child: Row(
@@ -685,6 +742,15 @@ class _HomeScreenState extends State<HomeScreen> {
           PopupMenuItem(
             value: 2,
             onTap: () async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              String? apiToken = prefs.getString(Constants.accessToken);
+
+              if (apiToken == null) {
+                // ignore: use_build_context_synchronously
+                showSignupDialog(context);
+                return;
+              }
+              // ignore: use_build_context_synchronously
               var controller = CustomFloatingActionButtonController(context);
               String selectedType = 'classified';
               await controller.handleTap(selectedType);
@@ -699,7 +765,15 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           PopupMenuItem(
             value: 3,
-            onTap: () {
+            onTap: () async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              String? apiToken = prefs.getString(Constants.accessToken);
+
+              if (apiToken == null) {
+                // ignore: use_build_context_synchronously
+                showSignupDialog(context);
+                return;
+              }
               Get.toNamed(Routes.addquestionanswer);
             },
             child: Row(
@@ -713,6 +787,15 @@ class _HomeScreenState extends State<HomeScreen> {
           PopupMenuItem(
             value: 4,
             onTap: () async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              String? apiToken = prefs.getString(Constants.accessToken);
+
+              if (apiToken == null) {
+                // ignore: use_build_context_synchronously
+                showSignupDialog(context);
+                return;
+              }
+              // ignore: use_build_context_synchronously
               var controller = CustomFloatingActionButtonController(context);
               String selectedType = 'blog';
               await controller.handleTap(selectedType);
@@ -728,6 +811,15 @@ class _HomeScreenState extends State<HomeScreen> {
           PopupMenuItem(
             value: 5,
             onTap: () async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              String? apiToken = prefs.getString(Constants.accessToken);
+
+              if (apiToken == null) {
+                // ignore: use_build_context_synchronously
+                showSignupDialog(context);
+                return;
+              }
+              // ignore: use_build_context_synchronously
               var controller = CustomFloatingActionButtonController(context);
               String selectedType = 'news';
               await controller.handleTap(selectedType);
@@ -752,7 +844,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (apiToken == null) {
       // ignore: use_build_context_synchronously
-      _showSignupDialog(context);
+      showSignupDialog(context);
       return;
     }
 
@@ -812,102 +904,11 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void _showSignupDialog(BuildContext context) {
+  void showSignupDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        final Size size = MediaQuery.of(context).size;
-
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-          contentPadding: EdgeInsets.zero,
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: double.infinity,
-                height: 100,
-                decoration: BoxDecoration(
-                  color: AppColors.primaryColor,
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(12),
-                    topRight: Radius.circular(12),
-                  ),
-                ),
-                child: Center(
-                  child: Image.asset(
-                    Assets.imagesLogoutCheck,
-                    height: 50,
-                  ),
-                ),
-              ),
-              16.sbh,
-              Column(
-                children: [
-                  Text(
-                    'Please Sign Up First',
-                    style: textStyleW700(
-                      size.width * 0.040,
-                      AppColors.blackText,
-                    ),
-                  ),
-                  5.sbh,
-                  Center(
-                    child: Text(
-                      'If you need any adjustments or additional details, feel free to let me know!',
-                      style: textStyleW400(
-                        size.width * 0.035,
-                        AppColors.blackText,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                            child: TextButton(
-                                style: ElevatedButton.styleFrom(),
-                                onPressed: () {
-                                  Get.back();
-                                },
-                                child: Text(
-                                  'Cancel',
-                                  style: textStyleW700(
-                                      size.width * 0.035, AppColors.blackText),
-                                ))),
-                        5.sbw,
-                        Expanded(
-                            child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.primaryColor,
-                                  shadowColor: AppColors.primaryColor,
-                                  elevation: 3,
-                                ),
-                                onPressed: () async {
-                                  Get.offAllNamed(Routes.login);
-                                },
-                                child: Text(
-                                  'SignUp',
-                                  style: textStyleW700(
-                                      size.width * 0.035, AppColors.white),
-                                ))),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
+        return const SignupDialog();
       },
     );
   }
@@ -952,33 +953,6 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             },
             onPageChanged: (index) {},
-          ),
-          Positioned(
-            bottom: 10,
-            right: 16,
-            child: SizedBox(
-              height: 8,
-              child: Obx(() {
-                return ListView.builder(
-                  itemCount: banners.length,
-                  scrollDirection: Axis.horizontal,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      width: 7,
-                      height: 7,
-                      margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: pageController.page?.round() == index
-                            ? AppColors.primaryColor // Active indicator
-                            : const Color(0xFFD9D9D9), // Inactive indicator
-                      ),
-                    );
-                  },
-                );
-              }),
-            ),
           ),
         ],
       ),

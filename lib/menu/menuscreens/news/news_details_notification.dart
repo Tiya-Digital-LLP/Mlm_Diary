@@ -370,7 +370,13 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
       }),
       bottomNavigationBar: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(
+            child: CustomLottieAnimation(
+              child: Lottie.asset(
+                Assets.lottieLottie,
+              ),
+            ),
+          );
         } else if (controller.newsList.isEmpty) {
           return const Center(child: Text('No data available.'));
         } else {

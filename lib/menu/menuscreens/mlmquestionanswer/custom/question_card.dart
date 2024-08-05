@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/home/home/custom/sign_up_dialog.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/question_like_list_content.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class QuestionCard extends StatefulWidget {
   final String userImage;
@@ -59,16 +62,34 @@ class _QuestionCardState extends State<QuestionCard> {
     initializeBookmarks();
   }
 
+  void showSignupDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const SignupDialog();
+      },
+    );
+  }
+
   void initializeLikes() {
     isLiked = RxBool(widget.likedbyuser);
     likeCount = RxInt(widget.likedCount);
   }
 
   void toggleLike() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+
+    if (apiToken == null) {
+      // ignore: use_build_context_synchronously
+      showSignupDialog(context);
+      return;
+    }
     bool newLikedValue = !isLiked.value;
     isLiked.value = newLikedValue;
     likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
 
+    // ignore: use_build_context_synchronously
     await widget.controller.toggleLike(widget.questionId, context);
   }
 
@@ -78,11 +99,20 @@ class _QuestionCardState extends State<QuestionCard> {
   }
 
   void toggleBookmark() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+
+    if (apiToken == null) {
+      // ignore: use_build_context_synchronously
+      showSignupDialog(context);
+      return;
+    }
     bool newBookmarkedValue = !isBookmarked.value;
     isBookmarked.value = newBookmarkedValue;
     bookmarkCount.value =
         newBookmarkedValue ? bookmarkCount.value + 1 : bookmarkCount.value - 1;
 
+    // ignore: use_build_context_synchronously
     await widget.controller.toggleBookMark(widget.questionId, context);
   }
 

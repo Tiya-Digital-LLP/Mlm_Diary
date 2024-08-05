@@ -8,6 +8,7 @@ import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_answers_entity.dart';
+import 'package:mlmdiary/generated/get_question_list_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/question_like_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
@@ -79,22 +80,29 @@ class _UserQuestionState extends State<UserQuestionCopy> {
     _refreshData();
     initializeLikes();
     initializeBookmarks();
-    post = Get.arguments;
-    if (post != null && post.id != null) {
-      controller.getAnswers(
-        1,
-        post.id ?? 0,
-      );
+
+    final arguments = Get.arguments as Map<String, dynamic>?;
+    if (arguments != null) {
+      post = GetQuestionListQuestions.fromJson(arguments);
+      if (post != null) {
+        final int postId = post!.id ?? 0;
+        if (postId != 0) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            controller.getAnswers(1, post.id!);
+            controller.getQuestion(1);
+
+            controller.countViewQuestion(post.id ?? 0, context);
+          });
+        }
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          controller.getAnswers(1, post.id!);
+          controller.getQuestion(1);
+
+          controller.countViewQuestion(post.id ?? 0, context);
+        });
+      }
     }
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.getAnswers(1, post.id!);
-    });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.getQuestion(1);
-    });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.countViewQuestion(post.id ?? 0, context);
-    });
+
     _scrollController = ScrollController();
     _scrollController.addListener(_scrollListener);
   }
@@ -1271,265 +1279,247 @@ class _UserQuestionState extends State<UserQuestionCopy> {
         size: MediaQuery.of(context).size,
         titleText: 'Question',
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Column(
+      body: Obx(() {
+        if (controller.questionList.isEmpty) {
+          return const Center(child: Text('No data available.'));
+        } else {
+          final data = controller.questionList.first;
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: InkWell(
-                      onTap: () async {
-                        Get.toNamed(Routes.userprofilescreen, arguments: {
-                          'user_id': post.userId ?? 0,
-                        });
-                        await userProfileController.fetchUserAllPost(
-                          1,
-                          post.userId.toString(),
-                        );
-                      },
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (post.userData!.imagePath.isNotEmpty &&
-                              Uri.tryParse(post.userData!.imagePath)
-                                      ?.hasAbsolutePath ==
-                                  true)
-                            ClipOval(
-                              child: CachedNetworkImage(
-                                imageUrl: post.userData!.imagePath ?? '',
-                                height: 60.0,
-                                width: 60.0,
-                                fit: BoxFit.cover,
-                                placeholder: (context, url) =>
-                                    CustomLottieAnimation(
-                                  child: Lottie.asset(
-                                    Assets.lottieLottie,
+                  Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: InkWell(
+                          onTap: () async {
+                            Get.toNamed(Routes.userprofilescreen, arguments: {
+                              'user_id': data.userId ?? 0,
+                            });
+                            await userProfileController.fetchUserAllPost(
+                              1,
+                              data.userId.toString(),
+                            );
+                          },
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (data.userData!.imagePath!.isNotEmpty &&
+                                  Uri.tryParse(data.userData!.imagePath!)
+                                          ?.hasAbsolutePath ==
+                                      true)
+                                ClipOval(
+                                  child: CachedNetworkImage(
+                                    imageUrl: data.userData!.imagePath ?? '',
+                                    height: 60.0,
+                                    width: 60.0,
+                                    fit: BoxFit.cover,
+                                    placeholder: (context, url) =>
+                                        CustomLottieAnimation(
+                                      child: Lottie.asset(
+                                        Assets.lottieLottie,
+                                      ),
+                                    ),
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(Icons.error),
                                   ),
                                 ),
-                                errorWidget: (context, url, error) =>
-                                    const Icon(Icons.error),
-                              ),
-                            ),
-                          10.sbw,
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  post.userData!.name ?? '',
-                                  style: textStyleW700(
-                                      size.width * 0.036, AppColors.blackText),
-                                ),
-                                Row(
+                              10.sbw,
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    // Text(
-                                    //   postTimeFormatter
-                                    //       .formatPostTime(post.creatdate ?? ''),
-                                    //   style: textStyleW400(size.width * 0.028,
-                                    //       AppColors.blackText.withOpacity(0.8)),
-                                    // ),
-                                    8.sbw,
                                     Text(
-                                      'asked a question',
-                                      style: textStyleW400(size.width * 0.032,
-                                          AppColors.blackText.withOpacity(0.8)),
+                                      data.userData!.name ?? '',
+                                      style: textStyleW700(size.width * 0.036,
+                                          AppColors.blackText),
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          postTimeFormatter.formatPostTime(
+                                              data.creatdate ?? ''),
+                                          style: textStyleW400(
+                                              size.width * 0.028,
+                                              AppColors.blackText
+                                                  .withOpacity(0.8)),
+                                        ),
+                                        8.sbw,
+                                        Text(
+                                          'asked a question',
+                                          style: textStyleW400(
+                                              size.width * 0.032,
+                                              AppColors.blackText
+                                                  .withOpacity(0.8)),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  10.sbh,
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Column(
-                      children: [
-                        Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            post.title ?? '',
-                            style: textStyleW700(
-                                size.width * 0.035, AppColors.blackText),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                  20.sbh,
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
+                      ),
+                      10.sbh,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Column(
                           children: [
-                            const SizedBox(width: 10),
-                            GestureDetector(
-                              onTap: () {},
-                              child: Row(
-                                children: [
-                                  Obx(
-                                    () => SizedBox(
-                                      height: size.height * 0.028,
-                                      width: size.height * 0.028,
-                                      child: GestureDetector(
-                                        onTap: toggleLike,
-                                        child: Icon(
-                                          // Observe like status
-                                          isLiked.value
-                                              ? Icons.thumb_up_off_alt_sharp
-                                              : Icons.thumb_up_off_alt_outlined,
-                                          color: isLiked.value
-                                              ? AppColors.primaryColor
-                                              : null,
-                                          size: size.height * 0.032,
+                            Align(
+                              alignment: Alignment.topLeft,
+                              child: Text(
+                                data.title ?? '',
+                                style: textStyleW700(
+                                    size.width * 0.035, AppColors.blackText),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      20.sbh,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                const SizedBox(width: 10),
+                                GestureDetector(
+                                  onTap: () {},
+                                  child: Row(
+                                    children: [
+                                      Obx(
+                                        () => SizedBox(
+                                          height: size.height * 0.028,
+                                          width: size.height * 0.028,
+                                          child: GestureDetector(
+                                            onTap: toggleLike,
+                                            child: Icon(
+                                              // Observe like status
+                                              isLiked.value
+                                                  ? Icons.thumb_up_off_alt_sharp
+                                                  : Icons
+                                                      .thumb_up_off_alt_outlined,
+                                              color: isLiked.value
+                                                  ? AppColors.primaryColor
+                                                  : null,
+                                              size: size.height * 0.032,
+                                            ),
+                                          ),
                                         ),
+                                      ),
+                                      const SizedBox(
+                                        width: 7,
+                                      ),
+                                      // ignore: unrelated_type_equality_checks
+                                      likeCount.value == 0
+                                          ? const SizedBox.shrink()
+                                          : InkWell(
+                                              onTap: () {
+                                                showLikeList(context);
+                                              },
+                                              child: Text(
+                                                '${likeCount.value}',
+                                                style: textStyleW600(
+                                                    size.width * 0.038,
+                                                    AppColors.blackText),
+                                              ),
+                                            ),
+                                      const SizedBox(
+                                        width: 15,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(width: 15),
+                                SizedBox(
+                                  height: size.height * 0.028,
+                                  width: size.height * 0.028,
+                                  child: SvgPicture.asset(Assets.svgReply),
+                                ),
+                                const SizedBox(width: 7),
+                                Text(
+                                  "12",
+                                  style: TextStyle(
+                                    fontFamily: "Metropolis",
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: size.width * 0.045,
+                                  ),
+                                ),
+                                const SizedBox(width: 15),
+                                SizedBox(
+                                  height: size.height * 0.028,
+                                  width: size.height * 0.028,
+                                  child: SvgPicture.asset(Assets.svgView),
+                                ),
+                                const SizedBox(width: 7),
+                                Text(
+                                  data.pgcnt.toString(),
+                                  style: TextStyle(
+                                    fontFamily: "Metropolis",
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: size.width * 0.045,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Obx(
+                                  () => SizedBox(
+                                    height: size.height * 0.028,
+                                    width: size.height * 0.028,
+                                    child: GestureDetector(
+                                      onTap: () => toggleBookmark(),
+                                      child: SvgPicture.asset(
+                                        isBookmarked.value
+                                            ? Assets.svgCheckBookmark
+                                            : Assets.svgSavePost,
+                                        height: size.height * 0.032,
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(
-                                    width: 7,
-                                  ),
-                                  // ignore: unrelated_type_equality_checks
-                                  likeCount.value == 0
-                                      ? const SizedBox.shrink()
-                                      : InkWell(
-                                          onTap: () {
-                                            showLikeList(context);
-                                          },
-                                          child: Text(
-                                            '${likeCount.value}',
-                                            style: textStyleW600(
-                                                size.width * 0.038,
-                                                AppColors.blackText),
-                                          ),
-                                        ),
-                                  const SizedBox(
-                                    width: 15,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(width: 15),
-                            SizedBox(
-                              height: size.height * 0.028,
-                              width: size.height * 0.028,
-                              child: SvgPicture.asset(Assets.svgReply),
-                            ),
-                            const SizedBox(width: 7),
-                            Text(
-                              "12",
-                              style: TextStyle(
-                                fontFamily: "Metropolis",
-                                fontWeight: FontWeight.w600,
-                                fontSize: size.width * 0.045,
-                              ),
-                            ),
-                            const SizedBox(width: 15),
-                            SizedBox(
-                              height: size.height * 0.028,
-                              width: size.height * 0.028,
-                              child: SvgPicture.asset(Assets.svgView),
-                            ),
-                            const SizedBox(width: 7),
-                            Text(
-                              post.pgcnt.toString(),
-                              style: TextStyle(
-                                fontFamily: "Metropolis",
-                                fontWeight: FontWeight.w600,
-                                fontSize: size.width * 0.045,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Obx(
-                              () => SizedBox(
-                                height: size.height * 0.028,
-                                width: size.height * 0.028,
-                                child: GestureDetector(
-                                  onTap: () => toggleBookmark(),
-                                  child: SvgPicture.asset(
-                                    isBookmarked.value
-                                        ? Assets.svgCheckBookmark
-                                        : Assets.svgSavePost,
-                                    height: size.height * 0.032,
-                                  ),
                                 ),
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            SizedBox(
-                              height: size.height * 0.028,
-                              width: size.height * 0.028,
-                              child: SvgPicture.asset(Assets.svgSend),
-                            ),
-                            const SizedBox(width: 10),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  20.sbh,
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(14),
-                      color: AppColors.white,
-                      border: const Border(
-                        bottom: BorderSide(color: Colors.grey),
-                      ),
-                    ),
-                  ),
-                  20.sbh,
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      'Answer',
-                      style: textStyleW700(
-                          size.width * 0.038, AppColors.blackText),
-                    ),
-                  ),
-                  10.sbh,
-                  Obx(() {
-                    if (controller.isLoading.value &&
-                        controller.answerList.isEmpty) {
-                      return Center(
-                          child: CustomLottieAnimation(
-                        child: Lottie.asset(
-                          Assets.lottieLottie,
-                        ),
-                      ));
-                    }
-
-                    return ListView.builder(
-                      itemCount: controller.answerList.length +
-                          (controller.isLoading.value ? 1 : 0),
-                      controller: _scrollController,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        if (index < controller.answerList.length) {
-                          final comment = controller.answerList[index];
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 8),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _buildComment(comment, size),
+                                const SizedBox(width: 10),
+                                SizedBox(
+                                  height: size.height * 0.028,
+                                  width: size.height * 0.028,
+                                  child: SvgPicture.asset(Assets.svgSend),
+                                ),
+                                const SizedBox(width: 10),
                               ],
                             ),
-                          );
-                        } else {
+                          ],
+                        ),
+                      ),
+                      20.sbh,
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          color: AppColors.white,
+                          border: const Border(
+                            bottom: BorderSide(color: Colors.grey),
+                          ),
+                        ),
+                      ),
+                      20.sbh,
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          'Answer',
+                          style: textStyleW700(
+                              size.width * 0.038, AppColors.blackText),
+                        ),
+                      ),
+                      10.sbh,
+                      Obx(() {
+                        if (controller.isLoading.value &&
+                            controller.answerList.isEmpty) {
                           return Center(
                               child: CustomLottieAnimation(
                             child: Lottie.asset(
@@ -1537,93 +1527,139 @@ class _UserQuestionState extends State<UserQuestionCopy> {
                             ),
                           ));
                         }
-                      },
-                    );
-                  }),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-      bottomNavigationBar: Container(
-        height: 200,
-        color: AppColors.white,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: AppColors.searchbar,
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16.0, vertical: 10),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                child: TextField(
-                                  maxLines: 5,
-                                  controller: controller.answer.value,
-                                  decoration: const InputDecoration(
-                                    hintText: 'Write your answer here',
-                                    border: InputBorder.none,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: AppColors.primaryColor,
-                                  boxShadow: [
-                                    customBoxShadow(),
+
+                        return ListView.builder(
+                          itemCount: controller.answerList.length +
+                              (controller.isLoading.value ? 1 : 0),
+                          controller: _scrollController,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            if (index < controller.answerList.length) {
+                              final comment = controller.answerList[index];
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    _buildComment(comment, size),
                                   ],
                                 ),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    final String answerText =
-                                        controller.answer.value.text;
-                                    if (answerText.isNotEmpty) {
-                                      controller.answerValidation(context);
-                                      if (!controller.answerError.value) {
-                                        controller.addAnswers(
-                                            post.id ?? 0, context);
-                                      }
-                                    }
-                                  },
-                                  child: const Icon(
-                                    Icons.send_rounded,
-                                    color: Colors.white,
-                                    size: 22,
-                                  ),
+                              );
+                            } else {
+                              return Center(
+                                  child: CustomLottieAnimation(
+                                child: Lottie.asset(
+                                  Assets.lottieLottie,
                                 ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                              ));
+                            }
+                          },
+                        );
+                      }),
+                    ],
                   ),
                 ],
               ),
             ),
-          ],
-        ),
-      ),
+          );
+        }
+      }),
+      bottomNavigationBar: Obx(() {
+        if (controller.isLoading.value) {
+          return Center(
+            child: CustomLottieAnimation(
+              child: Lottie.asset(
+                Assets.lottieLottie,
+              ),
+            ),
+          );
+        } else if (controller.questionList.isEmpty) {
+          return const Center(child: Text('No data available.'));
+        } else {
+          final data = controller.questionList.first;
+          return Container(
+            height: 200,
+            color: AppColors.white,
+            child: Column(
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: AppColors.searchbar,
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16.0, vertical: 10),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16),
+                                    child: TextField(
+                                      maxLines: 5,
+                                      controller: controller.answer.value,
+                                      decoration: const InputDecoration(
+                                        hintText: 'Write your answer here',
+                                        border: InputBorder.none,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: AppColors.primaryColor,
+                                      boxShadow: [
+                                        customBoxShadow(),
+                                      ],
+                                    ),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        final String answerText =
+                                            controller.answer.value.text;
+                                        if (answerText.isNotEmpty) {
+                                          controller.answerValidation(context);
+                                          if (!controller.answerError.value) {
+                                            controller.addAnswers(
+                                                data.id ?? 0, context);
+                                          }
+                                        }
+                                      },
+                                      child: const Icon(
+                                        Icons.send_rounded,
+                                        color: Colors.white,
+                                        size: 22,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+      }),
     );
   }
 

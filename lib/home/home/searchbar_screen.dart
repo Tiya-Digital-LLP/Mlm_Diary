@@ -68,7 +68,9 @@ class _SearchBarAppState extends State<SearchBarApp> {
     try {
       controller.isEndOfData.value = false;
       controller.homeList.clear();
-      await controller.getHome(1);
+      await controller.getHome(
+        1,
+      );
     } catch (error) {
       if (kDebugMode) {
         print('Error fetching bookmark data: $error');
@@ -457,7 +459,9 @@ class _SearchBarAppState extends State<SearchBarApp> {
                     onSelected: (bool selected) {
                       controller.selectedType.value =
                           selected ? controller.types[index] : 'All';
-                      controller.getHome(1);
+                      controller.getHome(
+                        1,
+                      );
                     },
                     backgroundColor: AppColors.grey.withOpacity(0.3),
                     side: BorderSide.none,

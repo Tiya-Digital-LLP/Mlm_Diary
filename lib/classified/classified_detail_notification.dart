@@ -54,8 +54,10 @@ class _ClassidiedDetailsScreenCopyState
       if (post != null) {
         final int postId = post!.id ?? 0;
         if (postId != 0) {
-          controller.fetchClassifiedDetail(postId, context);
-          controller.countViewClassified(postId, context);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            controller.fetchClassifiedDetail(postId, context);
+            controller.countViewClassified(postId, context);
+          });
         }
       }
     }
@@ -415,7 +417,13 @@ class _ClassidiedDetailsScreenCopyState
       }),
       bottomNavigationBar: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(
+            child: CustomLottieAnimation(
+              child: Lottie.asset(
+                Assets.lottieLottie,
+              ),
+            ),
+          );
         } else if (controller.classifiedDetailList.isEmpty) {
           return const Center(child: Text('No data available.'));
         } else {

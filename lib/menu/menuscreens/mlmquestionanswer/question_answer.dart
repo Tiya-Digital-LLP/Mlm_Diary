@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/firstscreen/home_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/home/home/custom/sign_up_dialog.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/question_card.dart';
 import 'package:mlmdiary/menu/menuscreens/tutorialvideo/controller/tutorial_video_controller.dart';
@@ -11,6 +13,7 @@ import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class QuationAnswer extends StatefulWidget {
   const QuationAnswer({super.key});
@@ -166,9 +169,19 @@ class _QuationAnswerState extends State<QuationAnswer> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 12, vertical: 8),
                       child: GestureDetector(
-                        onTap: () {
+                        onTap: () async {
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          String? apiToken =
+                              prefs.getString(Constants.accessToken);
+
+                          if (apiToken == null) {
+                            // ignore: use_build_context_synchronously
+                            showSignupDialog(context);
+                            return;
+                          }
                           Get.toNamed(
-                            Routes.userquestioncopy,
+                            Routes.userquestion,
                             arguments: post,
                           );
                         },
@@ -196,6 +209,14 @@ class _QuationAnswerState extends State<QuationAnswer> {
       ),
       floatingActionButton: InkWell(
         onTap: () async {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          String? apiToken = prefs.getString(Constants.accessToken);
+
+          if (apiToken == null) {
+            // ignore: use_build_context_synchronously
+            showSignupDialog(context);
+            return;
+          }
           Get.toNamed(Routes.addquestionanswer);
         },
         child: Ink(
@@ -213,4 +234,13 @@ class _QuationAnswerState extends State<QuationAnswer> {
       ),
     );
   }
+}
+
+void showSignupDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return const SignupDialog();
+    },
+  );
 }

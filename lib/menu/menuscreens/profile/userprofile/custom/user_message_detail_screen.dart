@@ -249,40 +249,72 @@ class _UserMessageDetailScreenState extends State<UserMessageDetailScreen> {
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
+          Container(
+            height: 80,
+            color: AppColors.white,
+            child: Column(
               children: [
-                Expanded(
-                  child: TextField(
-                    controller: messageController.msg.value,
-                    decoration: InputDecoration(
-                      hintText: 'Type your message...',
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide.none,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.primaryColor.withOpacity(0.4),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: SvgPicture.asset(
+                          Assets.svgPlusIcon,
+                          height: 40,
+                        ),
                       ),
-                    ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: AppColors.searchbar,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16.0),
+                              child: TextField(
+                                controller: messageController.msg.value,
+                                decoration: const InputDecoration(
+                                  hintText: 'Write your answer here',
+                                  border: InputBorder.none,
+                                ),
+                                onChanged: (value) {},
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.send, color: AppColors.primaryColor),
+                        onPressed: () async {
+                          await messageController.sendChat(
+                            toId: post['toid'].toString(),
+                            chatId: messageController
+                                .chatId.value, // Use the stored chatId
+                          );
+                          // Scroll to the bottom after sending a message
+                          if (_scrollController.hasClients) {
+                            _scrollController.jumpTo(
+                                _scrollController.position.maxScrollExtent);
+                          }
+                        },
+                      ),
+                    ],
                   ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.send, color: AppColors.primaryColor),
-                  onPressed: () async {
-                    await messageController.sendChat(
-                      toId: post['toid'].toString(),
-                      chatId: messageController
-                          .chatId.value, // Use the stored chatId
-                    );
-                    // Scroll to the bottom after sending a message
-                    if (_scrollController.hasClients) {
-                      _scrollController
-                          .jumpTo(_scrollController.position.maxScrollExtent);
-                    }
-                  },
                 ),
               ],
             ),

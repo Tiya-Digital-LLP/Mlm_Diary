@@ -1,13 +1,11 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/home/message/controller/message_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
-import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
+import 'package:mlmdiary/widgets/logout_dialog/custom_logout_dialog.dart';
 
 class ChatCard extends StatefulWidget {
   final String userImage;
@@ -45,94 +43,109 @@ class _ChatCardState extends State<ChatCard> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    return Dismissible(
-      key: Key(widget.chatId.toString()),
-      direction: DismissDirection.endToStart,
-      background: Container(
-        color: Colors.red,
-        alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: 20.0),
-        child: const Icon(Icons.delete, color: Colors.white),
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: size.width * 0.035,
+        vertical: size.height * 0.01,
       ),
-      onDismissed: (direction) {
-        // Perform delete operation
-        widget.controller.deleteChat(chatId: widget.chatId);
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: size.width * 0.035,
-          vertical: size.height * 0.01,
-        ),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
-          color: AppColors.white,
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ClipOval(
-              child: CachedNetworkImage(
-                imageUrl: widget.userImage,
-                height: 60.0,
-                width: 60.0,
-                fit: BoxFit.cover,
-                placeholder: (context, url) => CustomLottieAnimation(
-                  child: Lottie.asset(
-                    Assets.lottieLottie,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(14),
+        color: AppColors.white,
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipOval(
+            child: Image.network(
+              '${widget.userImage.toString()}?${DateTime.now().millisecondsSinceEpoch}',
+              height: 60.0,
+              width: 60.0,
+              fit: BoxFit.cover,
+              loadingBuilder: (BuildContext context, Widget child,
+                  ImageChunkEvent? loadingProgress) {
+                if (loadingProgress == null) {
+                  return child;
+                }
+                return Center(
+                  child: CircularProgressIndicator(
+                    value: loadingProgress.expectedTotalBytes != null
+                        ? loadingProgress.cumulativeBytesLoaded /
+                            (loadingProgress.expectedTotalBytes ?? 1)
+                        : null,
                   ),
-                ),
-                errorWidget: (context, url, error) => const Icon(Icons.error),
-              ),
+                );
+              },
+              errorBuilder: (context, error, stackTrace) {
+                return Image.asset(
+                  Assets.imagesAdminlogo,
+                  fit: BoxFit.fill,
+                );
+              },
             ),
-            10.sbw,
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          widget.userName,
-                          style: textStyleW700(
-                              size.width * 0.035, AppColors.blackText),
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              postTimeFormatter.formatPostTime(widget.datetime),
-                              style: textStyleW400(size.width * 0.035,
-                                  AppColors.blackText.withOpacity(0.5)),
-                            ),
-                            3.sbw,
-                            Icon(
-                              Icons.arrow_forward_ios,
-                              size: 12,
-                              color: AppColors.grey,
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                    3.sbh,
-                    Text(
-                      widget.postCaption,
-                      maxLines: 2,
-                      style: textStyleW700(
-                        size.width * 0.035,
-                        widget.readStatus == 0
-                            ? AppColors.blackText
-                            : AppColors.blackText.withOpacity(0.5),
+          ),
+          10.sbw,
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        widget.userName,
+                        style: textStyleW700(
+                            size.width * 0.035, AppColors.blackText),
                       ),
-                    ),
-                  ],
-                ),
+                      Row(
+                        children: [
+                          Text(
+                            postTimeFormatter.formatPostTime(widget.datetime),
+                            style: textStyleW400(size.width * 0.035,
+                                AppColors.blackText.withOpacity(0.5)),
+                          ),
+                          3.sbw,
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            size: 12,
+                            color: AppColors.grey,
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                  3.sbh,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        widget.postCaption,
+                        maxLines: 2,
+                        style: textStyleW700(
+                          size.width * 0.035,
+                          widget.readStatus == 0
+                              ? AppColors.blackText
+                              : AppColors.blackText.withOpacity(0.5),
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          Icons.delete,
+                          color: AppColors.redText,
+                        ),
+                        onPressed: () => LogoutDialog.show(context, () async {
+                          widget.controller.deleteChat(chatId: widget.chatId);
+                          widget.controller.fetchMyChat();
+                        }),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -816,7 +816,11 @@ class EditPostController extends GetxController {
 
         request.fields['api_token'] = apiToken ?? '';
         request.fields['device'] = device;
-        request.fields['databse_id'] = databaseId.toString();
+        request.fields['database_id'] = databaseId.toString();
+
+        if (kDebugMode) {
+          print('databaseid: $databaseId');
+        }
 
         final streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);

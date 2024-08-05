@@ -7,14 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:mlmdiary/classified/custom/custom_commment.dart';
 import 'package:mlmdiary/maincontroller/main_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
-import 'package:mlmdiary/menu/menuscreens/blog/custom_blog_comment.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
-import 'package:mlmdiary/menu/menuscreens/news/custom_news_comment.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
-import 'package:mlmdiary/menu/menuscreens/profile/custom/custom_post_comment.dart';
+import 'package:mlmdiary/notificationhandle/notification_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
@@ -84,6 +81,9 @@ class _MyAppState extends State<MyApp> {
       Get.put(ManageBlogController());
   final EditPostController editPostController = Get.put(EditPostController());
 
+  final NotificationHandler notificationHandler =
+      Get.put(NotificationHandler());
+
   @override
   void initState() {
     super.initState();
@@ -99,7 +99,7 @@ class _MyAppState extends State<MyApp> {
       requestBadgePermission: true,
       requestSoundPermission: true,
       onDidReceiveLocalNotification: (id, title, body, payload) async {
-        _handleNotificationClick(payload);
+        notificationHandler.handleNotificationClick(payload);
       },
     );
 
@@ -112,7 +112,7 @@ class _MyAppState extends State<MyApp> {
     flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onDidReceiveNotificationResponse:
             (NotificationResponse response) async {
-      _handleNotificationClick(response.payload);
+      notificationHandler.handleNotificationClick(response.payload);
     });
 
     _requestAPNSToken();
@@ -122,7 +122,7 @@ class _MyAppState extends State<MyApp> {
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      _handleNotificationClick(jsonEncode(message.data));
+      notificationHandler.handleNotificationClick(jsonEncode(message.data));
     });
 
     _checkInitialMessage();
@@ -133,7 +133,8 @@ class _MyAppState extends State<MyApp> {
         await FirebaseMessaging.instance.getInitialMessage();
 
     if (initialMessage != null) {
-      _handleNotificationClick(jsonEncode(initialMessage.data));
+      notificationHandler
+          .handleNotificationClick(jsonEncode(initialMessage.data));
     }
   }
 
@@ -143,9 +144,11 @@ class _MyAppState extends State<MyApp> {
       String? apnsToken = await _firebaseMessaging.getAPNSToken();
       if (apnsToken != null) {
         _getToken();
+        _subscribeToTopic('mlm');
       }
     } else {
       _getToken();
+      _subscribeToTopic('mlm');
     }
   }
 
@@ -157,6 +160,13 @@ class _MyAppState extends State<MyApp> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('fcm_token', token ?? '');
     });
+  }
+
+  Future<void> _subscribeToTopic(String topic) async {
+    await _firebaseMessaging.subscribeToTopic(topic);
+    if (kDebugMode) {
+      print("Subscribed to topic: $topic");
+    }
   }
 
   void _showNotification(RemoteMessage message) async {
@@ -193,153 +203,8 @@ class _MyAppState extends State<MyApp> {
     );
     if (kDebugMode) {
       print("Notification sent");
-      print("Notification sent: ${message.data}");
+      print("Notification sent: ${message.notification?.title}");
     }
-  }
-
-  void _handleNotificationClick(String? payload) {
-    if (kDebugMode) {
-      print('Handling notification click with payload: $payload');
-    }
-
-    final data =
-        payload != null ? jsonDecode(payload) as Map<String, dynamic>? : null;
-
-    if (data == null) {
-      if (kDebugMode) {
-        print('Notification data is null');
-      }
-      return;
-    }
-
-    if (kDebugMode) {
-      print('Notification data: $data');
-    }
-
-    // Ensure proper conversion and structure
-    final int postId = int.tryParse(data['post_id'].toString()) ?? 0;
-    final int userId = int.tryParse(data['user_id'].toString()) ?? 0;
-
-    if (kDebugMode) {
-      print('Notification type: ${data['type']}');
-      print('Post ID: $postId');
-      print('User ID: $userId');
-    }
-
-    Timer(const Duration(milliseconds: 500), () async {
-      try {
-        String key = '${data['type']}';
-
-        switch (key) {
-          case 'classified':
-          case 'classified_like':
-            if (kDebugMode) {
-              print('Navigating to classified with post_id: $postId');
-            }
-            Get.toNamed(Routes.mlmclassifieddetailcopy, arguments: {
-              'id': postId,
-            });
-            break;
-
-          case 'news':
-          case 'news_like':
-            if (kDebugMode) {
-              print('Navigating to news with post_id: $postId');
-            }
-
-            await manageNewsController.getNews(1, newsId: postId);
-            Get.toNamed(Routes.newsdetailsnotification, arguments: {
-              'id': postId,
-            });
-            break;
-
-          case 'blog':
-          case 'blog_like':
-            if (kDebugMode) {
-              print('Navigating to blog with post_id: $postId');
-            }
-            await manageBlogController.getBlog(1, blogid: postId);
-            Get.toNamed(Routes.blogdetailsnotification, arguments: {
-              'id': postId,
-            });
-            break;
-
-          case 'user_post':
-          case 'user_post_like':
-            if (kDebugMode) {
-              print('Navigating to post with post_id: $postId');
-            }
-
-            Get.toNamed(Routes.postdetailnotification, arguments: {
-              'id': postId,
-            });
-            await editPostController.fetchPost(1, postId: postId);
-            break;
-
-          // Follow
-          case 'follow_user':
-            if (kDebugMode) {
-              print('Navigating to follow_user with user_id: $userId');
-            }
-            Get.toNamed(Routes.userprofilescreen, arguments: {
-              'user_id': userId,
-            });
-            break;
-
-          // Comment
-          case 'classified_comment':
-            final context = Get.context;
-            if (context != null) {
-              showFullScreenDialog(context, postId);
-            } else {
-              if (kDebugMode) {
-                print('Error: Context is null');
-              }
-            }
-            break;
-          case 'news_comment':
-            final context = Get.context;
-            if (context != null) {
-              showFullScreenDialogNews(context, postId);
-            } else {
-              if (kDebugMode) {
-                print('Error: Context is null');
-              }
-            }
-            break;
-          case 'blog_comment':
-            final context = Get.context;
-            if (context != null) {
-              showFullScreenDialogBlog(context, postId);
-            } else {
-              if (kDebugMode) {
-                print('Error: Context is null');
-              }
-            }
-            break;
-          case 'post_comment':
-            final context = Get.context;
-            if (context != null) {
-              showFullScreenDialogPost(context, postId);
-            } else {
-              if (kDebugMode) {
-                print('Error: Context is null');
-              }
-            }
-            break;
-
-          default:
-            if (kDebugMode) {
-              print('Navigated to default screen with data: $data');
-            }
-        }
-      } catch (e, stackTrace) {
-        if (kDebugMode) {
-          print('Error during navigation: $e');
-          print('Stack trace: $stackTrace');
-        }
-      }
-    });
   }
 
   @override

@@ -395,7 +395,13 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
       }),
       bottomNavigationBar: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(
+            child: CustomLottieAnimation(
+              child: Lottie.asset(
+                Assets.lottieLottie,
+              ),
+            ),
+          );
         } else if (controller.blogList.isEmpty) {
           return const Center(child: Text('No data available.'));
         } else {

@@ -59,11 +59,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyC3G5O1TgW9dBeXYPmF54jWbeLMSkyCPDA',
-    appId: '1:756619884404:ios:708d81bfac1eece11ade21',
+    appId: '1:756619884404:ios:1086997fccd0eb381ade21',
     messagingSenderId: '756619884404',
     projectId: 'mlm-diary',
     storageBucket: 'mlm-diary.appspot.com',
-    iosBundleId: 'com.example.mlmdiary',
+    iosBundleId: 'com.mlm.mlmdiary',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -72,7 +72,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '756619884404',
     projectId: 'mlm-diary',
     storageBucket: 'mlm-diary.appspot.com',
-    iosBundleId: 'com.example.mlmdiary',
+    iosBundleId: 'com.mlm.mlmdiary',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(

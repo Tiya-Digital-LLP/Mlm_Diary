@@ -295,9 +295,7 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
                         ),
                       ),
                       IconButton(
-                        icon: SvgPicture.asset(
-                          Assets.svgSend,
-                        ),
+                        icon: Icon(Icons.send, color: AppColors.primaryColor),
                         onPressed: () {
                           messageController
                               .fetchMyChatDetail(post.chatId.toString());

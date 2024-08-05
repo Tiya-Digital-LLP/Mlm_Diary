@@ -6,9 +6,11 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/database/controller/database_controller.dart';
 import 'package:mlmdiary/firstscreen/home_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/home/home/custom/sign_up_dialog.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/tutorialvideo/controller/tutorial_video_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
@@ -18,6 +20,7 @@ import 'package:mlmdiary/widgets/custom_search_input.dart';
 import 'package:mlmdiary/database/user_card.dart';
 import 'package:mlmdiary/widgets/custon_test_app_bar.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DatabaseScreen extends StatefulWidget {
   const DatabaseScreen({super.key});
@@ -285,8 +288,19 @@ class _DatabaseState extends State<DatabaseScreen> {
                               '${post.city ?? ''}, ${post.state ?? ''}, ${post.country ?? ''}';
                           return GestureDetector(
                             onTap: () async {
+                              SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              String? apiToken =
+                                  prefs.getString(Constants.accessToken);
+
+                              if (apiToken == null) {
+                                // ignore: use_build_context_synchronously
+                                showSignupDialog(context);
+                                return;
+                              }
                               Get.toNamed(Routes.userprofilescreen,
                                   arguments: {'user_id': post.id});
+
                               await userProfileController.fetchUserAllPost(
                                   1, post.id.toString());
                             },
@@ -311,4 +325,13 @@ class _DatabaseState extends State<DatabaseScreen> {
       ),
     );
   }
+}
+
+void showSignupDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return const SignupDialog();
+    },
+  );
 }

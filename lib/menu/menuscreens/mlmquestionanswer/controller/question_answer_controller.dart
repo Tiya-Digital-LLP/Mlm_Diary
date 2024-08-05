@@ -202,7 +202,7 @@ class QuestionAnswerController extends GetxController {
     }
   }
 
-  Future<void> getQuestion(int page) async {
+  Future<void> getQuestion(int page, {int? questionid}) async {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -228,6 +228,7 @@ class QuestionAnswerController extends GetxController {
         request.fields['device'] = device;
         request.fields['page'] = page.toString();
         request.fields['search'] = search.value.text;
+        request.fields['question_id'] = questionid?.toString() ?? '';
 
         final streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);
@@ -243,9 +244,19 @@ class QuestionAnswerController extends GetxController {
           if (getQuestionEntity.questions != null &&
               getQuestionEntity.questions!.isNotEmpty) {
             if (page == 1) {
-              questionList.value = getQuestionEntity.questions!;
+              if (questionid == null) {
+                questionList.value = getQuestionEntity.questions!;
+              } else {
+                questionList.value = [getQuestionEntity.questions!.first];
+              }
             } else {
-              questionList.addAll(getQuestionEntity.questions!);
+              if (questionid == null) {
+                questionList.addAll(getQuestionEntity.questions!);
+              } else {
+                if (getQuestionEntity.questions!.isNotEmpty) {
+                  questionList.add(getQuestionEntity.questions!.first);
+                }
+              }
             }
             isEndOfData(false);
           } else {

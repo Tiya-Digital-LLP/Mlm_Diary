@@ -5,8 +5,10 @@ import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/classified/classified_card.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/classified/custom_filter_screen.dart';
+import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/firstscreen/home_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/home/home/custom/sign_up_dialog.dart';
 import 'package:mlmdiary/menu/menuscreens/tutorialvideo/controller/tutorial_video_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
@@ -15,6 +17,7 @@ import 'package:mlmdiary/widgets/custom_search_input.dart';
 import 'package:mlmdiary/widgets/custon_test_app_bar.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:mlmdiary/widgets/remimaining_count_controller./remaining_count.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ClassifiedScreen extends StatefulWidget {
   const ClassifiedScreen({super.key});
@@ -158,6 +161,16 @@ class _ClassifiedScreenState extends State<ClassifiedScreen> {
                               horizontal: 12, vertical: 8),
                           child: GestureDetector(
                             onTap: () async {
+                              SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              String? apiToken =
+                                  prefs.getString(Constants.accessToken);
+
+                              if (apiToken == null) {
+                                // ignore: use_build_context_synchronously
+                                showSignupDialog(context);
+                                return;
+                              }
                               Get.toNamed(
                                 Routes.mlmclassifieddetail,
                                 arguments: post,
@@ -195,6 +208,14 @@ class _ClassifiedScreenState extends State<ClassifiedScreen> {
         init: CustomFloatingActionButtonController(context),
         builder: (controller) => InkWell(
           onTap: () async {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            String? apiToken = prefs.getString(Constants.accessToken);
+
+            if (apiToken == null) {
+              // ignore: use_build_context_synchronously
+              showSignupDialog(context);
+              return;
+            }
             String selectedType = 'classified';
             await controller.handleTap(selectedType);
           },
@@ -225,4 +246,13 @@ class _ClassifiedScreenState extends State<ClassifiedScreen> {
       ),
     );
   }
+}
+
+void showSignupDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return const SignupDialog();
+    },
+  );
 }

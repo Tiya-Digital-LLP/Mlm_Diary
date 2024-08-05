@@ -36,6 +36,7 @@ import 'package:mlmdiary/menu/menuscreens/manageclassified/manage_classified_det
 import 'package:mlmdiary/menu/menuscreens/manageclassified/manageclassified_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/mlmcompaines.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/mlmcompanies_details_screen.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmcompanies/mlmcompany_notification_detail.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/add_question_answer.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/user_question.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/question.dart';
@@ -177,6 +178,10 @@ class AppPages {
     GetPage(
       name: Routes.mlmcompaniesdetails,
       page: () => const MlmCompaniesDetails(),
+    ),
+    GetPage(
+      name: Routes.mlmcompaniesnotificationdetails,
+      page: () => const MlmcompanyNotificationDetail(),
     ),
     GetPage(
       name: Routes.profilescreen,

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
+import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/home/home/controller/homescreen_controller.dart';
+import 'package:mlmdiary/home/home/custom/sign_up_dialog.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
@@ -11,6 +13,7 @@ import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controlle
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DatabaseHomeCard extends StatefulWidget {
   final String userImage;
@@ -80,7 +83,24 @@ class _FavouritrCardState extends State<DatabaseHomeCard> {
     );
   }
 
-  void togleBookmark() {
+  void showSignupDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const SignupDialog();
+      },
+    );
+  }
+
+  Future<void> togleBookmark() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+
+    if (apiToken == null) {
+      // ignore: use_build_context_synchronously
+      showSignupDialog(context);
+      return;
+    }
     setState(() {
       isBookmarked = !isBookmarked;
       widget.controller.toggleBookmark(

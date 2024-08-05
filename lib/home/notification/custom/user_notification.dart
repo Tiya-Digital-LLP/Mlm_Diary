@@ -81,18 +81,25 @@ class _AllNotificationState extends State<UserNotification> {
                           horizontal: 12, vertical: 8),
                       child: GestureDetector(
                         onTap: () {
-                          if (post.type == 'classified') {
-                            Get.toNamed(Routes.mlmclassifieddetailcopy,
-                                arguments: {
-                                  'id': post,
-                                });
-                            clasifiedController.fetchClassifiedDetail(
-                                post.postid ?? 0, context);
-                          } else if (post.type == 'admin' &&
-                              post.postType == 'important') {
-                            Get.toNamed('/admin_detail');
-                          } else {
-                            Get.toNamed('/default_detail');
+                          switch (post.type) {
+                            case 'classified':
+                              Get.toNamed(Routes.mlmclassifieddetailcopy,
+                                  arguments: {
+                                    'id': post.id,
+                                  });
+                              clasifiedController.fetchClassifiedDetail(
+                                  post.postid ?? 0, context);
+                              break;
+                            case 'admin':
+                              if (post.postType == 'important') {
+                                Get.toNamed('/admin_detail');
+                              } else {
+                                Get.toNamed('/default_detail');
+                              }
+                              break;
+                            default:
+                              Get.toNamed('/default_detail');
+                              break;
                           }
                         },
                         child: UserNotificationCard(
@@ -100,9 +107,9 @@ class _AllNotificationState extends State<UserNotification> {
                           image: post.userimage ?? '',
                           dateTime: post.creatdate ?? '',
                           classifiedId: post.id ?? 0,
-                          userName: post.type ?? '',
+                          userName: post.title ?? '',
                           controller: controller,
-                          userNametype: post.postType ?? '',
+                          userNametype: post.message ?? '',
                           type: 'user',
                         ),
                       ),

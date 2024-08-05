@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/firstscreen/home_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/home/home/custom/sign_up_dialog.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/news_bottomsheet_content.dart';
 import 'package:mlmdiary/menu/menuscreens/news/news_card.dart';
@@ -14,6 +16,7 @@ import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:mlmdiary/widgets/remimaining_count_controller./remaining_count.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MlmNews extends StatefulWidget {
   const MlmNews({super.key});
@@ -195,6 +198,16 @@ class _MlmNewsScreenState extends State<MlmNews> {
                             horizontal: 12, vertical: 8),
                         child: GestureDetector(
                           onTap: () async {
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            String? apiToken =
+                                prefs.getString(Constants.accessToken);
+
+                            if (apiToken == null) {
+                              // ignore: use_build_context_synchronously
+                              showSignupDialog(context);
+                              return;
+                            }
                             Get.toNamed(
                               Routes.newsdetails,
                               arguments: post,
@@ -229,6 +242,14 @@ class _MlmNewsScreenState extends State<MlmNews> {
         init: CustomFloatingActionButtonController(context),
         builder: (controller) => InkWell(
           onTap: () async {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            String? apiToken = prefs.getString(Constants.accessToken);
+
+            if (apiToken == null) {
+              // ignore: use_build_context_synchronously
+              showSignupDialog(context);
+              return;
+            }
             String selectedType = 'news';
             await controller.handleTap(selectedType);
           },
@@ -259,4 +280,13 @@ class _MlmNewsScreenState extends State<MlmNews> {
       ),
     );
   }
+}
+
+void showSignupDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return const SignupDialog();
+    },
+  );
 }
