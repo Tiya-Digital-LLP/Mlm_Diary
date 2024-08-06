@@ -88,389 +88,50 @@ class _ProfileScreenState extends State<ProfileScreen>
           ],
         ),
       ),
-      body: Column(
-        children: [
-          Container(
-            color: AppColors.white,
-            padding: const EdgeInsets.all(16.0),
+      body: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
             child: Column(
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    if (userProfile.imagePath!.isNotEmpty &&
-                        Uri.tryParse(userProfile.imagePath!)?.hasAbsolutePath ==
-                            true)
-                      InkWell(
-                        onTap: () {
-                          _showFullScreenDialog(context);
-                        },
-                        child: Container(
-                          height: 120,
-                          width: 120,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: ClipOval(
-                            child: Image.network(
-                              '${userProfile.imagePath.toString()}?${DateTime.now().millisecondsSinceEpoch}',
-                              fit: BoxFit.cover,
-                              loadingBuilder: (BuildContext context,
-                                  Widget child,
-                                  ImageChunkEvent? loadingProgress) {
-                                if (loadingProgress == null) {
-                                  return child;
-                                }
-                                return Center(
-                                  child: CircularProgressIndicator(
-                                    value: loadingProgress.expectedTotalBytes !=
-                                            null
-                                        ? loadingProgress
-                                                .cumulativeBytesLoaded /
-                                            (loadingProgress
-                                                    .expectedTotalBytes ??
-                                                1)
-                                        : null,
-                                  ),
-                                );
-                              },
-                              errorBuilder: (context, error, stackTrace) {
-                                return Image.asset(
-                                  Assets.imagesAdminlogo,
-                                  fit: BoxFit
-                                      .cover, // Ensure the error image also uses BoxFit.cover
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                      ),
-                    30.sbw,
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            userProfile.name ?? 'N/A',
-                            style: textStyleW700(
-                                size.width * 0.045, AppColors.blackText),
-                          ),
-                          Text(
-                            '${userProfile.city ?? 'N/A'}, ${userProfile.state ?? 'N/A'}, ${userProfile.country ?? 'N/A'}',
-                            style: textStyleW500(
-                              size.width * 0.035,
-                              AppColors.blackText,
-                            ),
-                          ),
-                          Text(
-                            userProfile.company ?? 'N/A',
-                            style: textStyleW500(
-                                size.width * 0.035, AppColors.blackText),
-                          ),
-                          Text(
-                            userProfile.plan ?? 'N/A',
-                            style: textStyleW500(
-                                size.width * 0.035, AppColors.blackText),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                20.sbh,
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                Container(
+                  color: AppColors.white,
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
                     children: [
-                      SizedBox(
-                        height: 30,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primaryColor,
-                          ),
-                          onPressed: () {
-                            Get.toNamed(Routes.accountsettingscreen);
-                          },
-                          child: Text(
-                            'Edit Profile',
-                            style: textStyleW700(
-                                size.width * 0.030, AppColors.white),
-                          ),
-                        ),
-                      ),
-                      20.sbw,
-                      Row(
-                        children: [
-                          Column(
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  Get.toNamed(Routes.followers);
-                                },
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      userProfile.followersCount.toString(),
-                                      style: textStyleW700(size.width * 0.045,
-                                          AppColors.blackText),
-                                    ),
-                                    Text(
-                                      'Followers',
-                                      style: textStyleW500(size.width * 0.035,
-                                          AppColors.blackText),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          20.sbw,
-                          Column(
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  Get.toNamed(Routes.followers);
-                                },
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      userProfile.followingCount.toString(),
-                                      style: textStyleW700(size.width * 0.045,
-                                          AppColors.blackText),
-                                    ),
-                                    Text(
-                                      'Following',
-                                      style: textStyleW500(size.width * 0.035,
-                                          AppColors.blackText),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          20.sbw,
-                          Column(
-                            children: [
-                              Text(
-                                userProfile.views.toString(),
-                                style: textStyleW700(
-                                    size.width * 0.045, AppColors.blackText),
-                              ),
-                              Text(
-                                'Profile Visits',
-                                style: textStyleW500(
-                                    size.width * 0.035, AppColors.blackText),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                      personlaInfo(),
+                      20.sbh,
+                      axisScroll(),
                     ],
                   ),
                 ),
+                const Divider(color: Colors.black26, height: 2.0),
               ],
             ),
           ),
-          const Divider(color: Colors.black26, height: 2.0),
-          Container(
-            color: AppColors.white,
-            child: TabBar(
-              indicatorSize: TabBarIndicatorSize.tab,
-              controller: _tabController,
-              indicatorColor: AppColors.primaryColor,
-              indicatorWeight: 1.5,
-              labelColor: AppColors.primaryColor,
-              tabs: [
-                Tab(text: 'Posts (${userProfile.totalPost})'),
-                const Tab(text: 'About Me'),
-              ],
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: _SliverAppBarDelegate(
+              TabBar(
+                indicatorSize: TabBarIndicatorSize.tab,
+                controller: _tabController,
+                indicatorColor: AppColors.primaryColor,
+                indicatorWeight: 1.5,
+                labelColor: AppColors.primaryColor,
+                tabs: [
+                  Tab(text: 'Posts (${userProfile.totalPost})'),
+                  const Tab(text: 'About Me'),
+                ],
+              ),
             ),
           ),
-          Expanded(
+          SliverFillRemaining(
             child: TabBarView(
               controller: _tabController,
               children: [
                 SingleChildScrollView(
                   child: Column(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12.0),
-                              color: AppColors.white,
-                            ),
-                            height: 65,
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: TextField(
-                                    style: TextStyle(
-                                        color: AppColors.blackText,
-                                        fontSize: 14),
-                                    controller: controller.comments.value,
-                                    textInputAction: TextInputAction.search,
-                                    decoration: InputDecoration(
-                                      contentPadding: const EdgeInsets.all(16),
-                                      border: InputBorder.none,
-                                      suffixIcon: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 16),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            InkWell(
-                                              onTap: () {
-                                                if (file.value == null &&
-                                                    videoFile.value == null) {
-                                                  showModalBottomSheet(
-                                                    backgroundColor:
-                                                        Colors.white,
-                                                    context: context,
-                                                    builder: (context) =>
-                                                        bottomsheet(),
-                                                  );
-                                                } else {
-                                                  showToasterrorborder(
-                                                      'Select only one image or video',
-                                                      context);
-                                                }
-                                              },
-                                              child: file.value == null
-                                                  ? SvgPicture.asset(
-                                                      Assets.svgImage,
-                                                      height: 30,
-                                                    )
-                                                  : Stack(
-                                                      children: [
-                                                        ClipRRect(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(10),
-                                                          child: Image.file(
-                                                            file.value!,
-                                                            width: 30,
-                                                            height: 30,
-                                                            fit: BoxFit.cover,
-                                                          ),
-                                                        ),
-                                                        Positioned(
-                                                          top: -2,
-                                                          right: 0,
-                                                          child:
-                                                              GestureDetector(
-                                                            onTap: () {
-                                                              setState(() {
-                                                                imagesList
-                                                                    .remove(file
-                                                                        .value);
-                                                                file.value =
-                                                                    null;
-                                                              });
-                                                            },
-                                                            child: Icon(
-                                                              Icons.delete,
-                                                              color: AppColors
-                                                                  .redText,
-                                                              size: 16,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                            ),
-                                            // InkWell(
-                                            //   onTap: () {
-                                            //     if (file.value == null &&
-                                            //         videoFile.value == null) {
-                                            //       _selectVideo();
-                                            //     } else {
-                                            //       showToasterrorborder(
-                                            //           'Select only one image or video',
-                                            //           context);
-                                            //     }
-                                            //   },
-                                            //   child: videoFile.value == null
-                                            //       ? SvgPicture.asset(
-                                            //           Assets.svgVideo,
-                                            //           height: 30,
-                                            //         )
-                                            //       : Stack(
-                                            //           children: [
-                                            //             ClipRRect(
-                                            //               borderRadius:
-                                            //                   BorderRadius
-                                            //                       .circular(
-                                            //                           13.05),
-                                            //               child: AspectRatio(
-                                            //                 aspectRatio:
-                                            //                     _videoPlayerController
-                                            //                         .value
-                                            //                         .aspectRatio,
-                                            //                 child: VideoPlayer(
-                                            //                     _videoPlayerController),
-                                            //               ),
-                                            //             ),
-                                            //             Positioned(
-                                            //               top: -2,
-                                            //               right: 0,
-                                            //               child:
-                                            //                   GestureDetector(
-                                            //                 onTap: () {
-                                            //                   setState(() {
-                                            //                     videoList.remove(
-                                            //                         videoFile
-                                            //                             .value);
-                                            //                     videoFile
-                                            //                             .value =
-                                            //                         null;
-                                            //                   });
-                                            //                 },
-                                            //                 child: Icon(
-                                            //                   Icons.delete,
-                                            //                   color: AppColors
-                                            //                       .redText,
-                                            //                   size: 16,
-                                            //                 ),
-                                            //               ),
-                                            //             ),
-                                            //           ],
-                                            //         ),
-                                            // ),
-                                            InkWell(
-                                              onTap: () {
-                                                FocusScope.of(context)
-                                                    .unfocus();
-                                                controller.addPost(
-                                                  imageFile: file.value,
-                                                  videoFile: videoFile.value,
-                                                );
-                                              },
-                                              child: const Icon(
-                                                Icons.arrow_right_rounded,
-                                                size: 50,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      hintText: 'Write Something',
-                                      hintStyle: TextStyle(
-                                        fontSize: 14.0,
-                                        fontWeight: FontWeight.w500,
-                                        color: AppColors.blackText,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
+                      posts(),
                       Container(
                         color: AppColors.background,
                         child: Obx(() {
@@ -563,6 +224,250 @@ class _ProfileScreenState extends State<ProfileScreen>
     );
   }
 
+  Widget posts() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: SizedBox(
+        width: double.infinity,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12.0),
+            color: AppColors.white,
+          ),
+          height: 65,
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  style: TextStyle(color: AppColors.blackText, fontSize: 14),
+                  controller: controller.comments.value,
+                  textInputAction: TextInputAction.search,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.all(16),
+                    border: InputBorder.none,
+                    suffixIcon: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              if (file.value == null &&
+                                  videoFile.value == null) {
+                                showModalBottomSheet(
+                                  backgroundColor: Colors.white,
+                                  context: context,
+                                  builder: (context) => bottomsheet(),
+                                );
+                              } else {
+                                showToasterrorborder(
+                                    'Select only one image or video', context);
+                              }
+                            },
+                            child: file.value == null
+                                ? SvgPicture.asset(
+                                    Assets.svgImage,
+                                    height: 30,
+                                  )
+                                : Stack(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: Image.file(
+                                          file.value!,
+                                          width: 30,
+                                          height: 30,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      Positioned(
+                                        top: -2,
+                                        right: 0,
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              imagesList.remove(file.value);
+                                              file.value = null;
+                                            });
+                                          },
+                                          child: Icon(
+                                            Icons.delete,
+                                            color: AppColors.redText,
+                                            size: 16,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                          ),
+                          // InkWell(
+                          //   onTap: () {
+                          //     if (file.value == null &&
+                          //         videoFile.value == null) {
+                          //       _selectVideo();
+                          //     } else {
+                          //       showToasterrorborder(
+                          //           'Select only one image or video',
+                          //           context);
+                          //     }
+                          //   },
+                          //   child: videoFile.value == null
+                          //       ? SvgPicture.asset(
+                          //           Assets.svgVideo,
+                          //           height: 30,
+                          //         )
+                          //       : Stack(
+                          //           children: [
+                          //             ClipRRect(
+                          //               borderRadius:
+                          //                   BorderRadius
+                          //                       .circular(
+                          //                           13.05),
+                          //               child: AspectRatio(
+                          //                 aspectRatio:
+                          //                     _videoPlayerController
+                          //                         .value
+                          //                         .aspectRatio,
+                          //                 child: VideoPlayer(
+                          //                     _videoPlayerController),
+                          //               ),
+                          //             ),
+                          //             Positioned(
+                          //               top: -2,
+                          //               right: 0,
+                          //               child:
+                          //                   GestureDetector(
+                          //                 onTap: () {
+                          //                   setState(() {
+                          //                     videoList.remove(
+                          //                         videoFile
+                          //                             .value);
+                          //                     videoFile
+                          //                             .value =
+                          //                         null;
+                          //                   });
+                          //                 },
+                          //                 child: Icon(
+                          //                   Icons.delete,
+                          //                   color: AppColors
+                          //                       .redText,
+                          //                   size: 16,
+                          //                 ),
+                          //               ),
+                          //             ),
+                          //           ],
+                          //         ),
+                          // ),
+                          InkWell(
+                            onTap: () {
+                              FocusScope.of(context).unfocus();
+                              controller.addPost(
+                                imageFile: file.value,
+                                videoFile: videoFile.value,
+                              );
+                            },
+                            child: const Icon(
+                              Icons.arrow_right_rounded,
+                              size: 50,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    hintText: 'Write Something',
+                    hintStyle: TextStyle(
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.blackText,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget personlaInfo() {
+    final Size size = MediaQuery.of(context).size;
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        if (userProfile.imagePath!.isNotEmpty &&
+            Uri.tryParse(userProfile.imagePath!)?.hasAbsolutePath == true)
+          InkWell(
+            onTap: () {
+              _showFullScreenDialog(context);
+            },
+            child: Container(
+              height: 120,
+              width: 120,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: ClipOval(
+                child: Image.network(
+                  '${userProfile.imagePath.toString()}?${DateTime.now().millisecondsSinceEpoch}',
+                  fit: BoxFit.cover,
+                  loadingBuilder: (BuildContext context, Widget child,
+                      ImageChunkEvent? loadingProgress) {
+                    if (loadingProgress == null) {
+                      return child;
+                    }
+                    return Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                (loadingProgress.expectedTotalBytes ?? 1)
+                            : null,
+                      ),
+                    );
+                  },
+                  errorBuilder: (context, error, stackTrace) {
+                    return Image.asset(
+                      Assets.imagesAdminlogo,
+                      fit: BoxFit
+                          .cover, // Ensure the error image also uses BoxFit.cover
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+        30.sbw,
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                userProfile.name ?? 'N/A',
+                style: textStyleW700(size.width * 0.045, AppColors.blackText),
+              ),
+              Text(
+                '${userProfile.city ?? 'N/A'}, ${userProfile.state ?? 'N/A'}, ${userProfile.country ?? 'N/A'}',
+                style: textStyleW500(
+                  size.width * 0.035,
+                  AppColors.blackText,
+                ),
+              ),
+              Text(
+                userProfile.company ?? 'N/A',
+                style: textStyleW500(size.width * 0.035, AppColors.blackText),
+              ),
+              Text(
+                userProfile.plan ?? 'N/A',
+                style: textStyleW500(size.width * 0.035, AppColors.blackText),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
   void _showFullScreenDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -596,6 +501,101 @@ class _ProfileScreenState extends State<ProfileScreen>
           ),
         );
       },
+    );
+  }
+
+  Widget axisScroll() {
+    final Size size = MediaQuery.of(context).size;
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          SizedBox(
+            height: 30,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primaryColor,
+              ),
+              onPressed: () {
+                Get.toNamed(Routes.accountsettingscreen);
+              },
+              child: Text(
+                'Edit Profile',
+                style: textStyleW700(size.width * 0.030, AppColors.white),
+              ),
+            ),
+          ),
+          20.sbw,
+          Row(
+            children: [
+              Column(
+                children: [
+                  InkWell(
+                    onTap: () {
+                      Get.toNamed(Routes.followers);
+                    },
+                    child: Column(
+                      children: [
+                        Text(
+                          userProfile.followersCount.toString(),
+                          style: textStyleW700(
+                              size.width * 0.045, AppColors.blackText),
+                        ),
+                        Text(
+                          'Followers',
+                          style: textStyleW500(
+                              size.width * 0.035, AppColors.blackText),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              20.sbw,
+              Column(
+                children: [
+                  InkWell(
+                    onTap: () {
+                      Get.toNamed(Routes.followers);
+                    },
+                    child: Column(
+                      children: [
+                        Text(
+                          userProfile.followingCount.toString(),
+                          style: textStyleW700(
+                              size.width * 0.045, AppColors.blackText),
+                        ),
+                        Text(
+                          'Following',
+                          style: textStyleW500(
+                              size.width * 0.035, AppColors.blackText),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              20.sbw,
+              Column(
+                children: [
+                  Text(
+                    userProfile.views.toString(),
+                    style:
+                        textStyleW700(size.width * 0.045, AppColors.blackText),
+                  ),
+                  Text(
+                    'Profile Visits',
+                    style:
+                        textStyleW500(size.width * 0.035, AppColors.blackText),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -806,4 +806,29 @@ class _ProfileScreenState extends State<ProfileScreen>
   //     });
   //   }
   // }
+}
+
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  _SliverAppBarDelegate(this._tabBar);
+
+  final TabBar _tabBar;
+
+  @override
+  double get minExtent => _tabBar.preferredSize.height;
+  @override
+  double get maxExtent => _tabBar.preferredSize.height;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Container(
+      color: Colors.white,
+      child: _tabBar,
+    );
+  }
+
+  @override
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
+    return false;
+  }
 }

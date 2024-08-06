@@ -13,6 +13,8 @@ class AdminNotificationCard extends StatefulWidget {
   final String dateTime;
   final int classifiedId;
   final NotificationController controller;
+  final String userNametype;
+
   final String type;
 
   const AdminNotificationCard({
@@ -23,6 +25,7 @@ class AdminNotificationCard extends StatefulWidget {
     required this.classifiedId,
     required this.controller,
     required this.type,
+    required this.userNametype,
   });
 
   @override
@@ -72,13 +75,13 @@ class _ClassifiedCardState extends State<AdminNotificationCard> {
                   Text(
                     widget.userName,
                     style:
-                        textStyleW700(size.width * 0.036, AppColors.blackText),
+                        textStyleW700(size.width * 0.034, AppColors.blackText),
                   ),
                   2.sbh,
                   Text(
                     postTimeFormatter.formatPostTime(widget.dateTime),
                     style:
-                        textStyleW500(size.width * 0.032, AppColors.blackText),
+                        textStyleW500(size.width * 0.030, AppColors.blackText),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

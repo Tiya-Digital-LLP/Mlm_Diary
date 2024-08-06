@@ -932,14 +932,26 @@ class _HomeScreenState extends State<HomeScreen> {
             itemBuilder: (context, index) {
               final banner = banners[index];
               return GestureDetector(
-                onTap: () {
+                onTap: () async {
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  String? apiToken = prefs.getString(Constants.accessToken);
+
+                  if (apiToken == null) {
+                    // ignore: use_build_context_synchronously
+                    showSignupDialog(context);
+                    return;
+                  }
                   if (banner.weblink == null || banner.weblink!.isEmpty) {
+                    // ignore: use_build_context_synchronously
                     showToasterrorborder('No Any Url Found', context);
                   } else {
                     launchUrl(
                       Uri.parse(banner.weblink.toString()),
                       mode: LaunchMode.externalApplication,
                     );
+                    // ignore: use_build_context_synchronously
+                    controller.bannerClick(banner.id ?? 0, context);
                   }
                 },
                 child: ClipRRect(

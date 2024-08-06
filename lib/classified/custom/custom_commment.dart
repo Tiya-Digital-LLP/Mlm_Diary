@@ -278,42 +278,55 @@ class _CommentDialogState extends State<CommentDialog> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: GestureDetector(
-                                      onTap: () async {
-                                        if (controller
-                                            .commment.value.text.isEmpty) {
-                                          Fluttertoast.showToast(
-                                            msg: "Please enter your reply",
-                                            toastLength: Toast.LENGTH_LONG,
-                                            gravity: ToastGravity.BOTTOM,
-                                          );
-                                          return;
-                                        }
+                                    child: Stack(children: [
+                                      GestureDetector(
+                                        onTap: () async {
+                                          if (controller
+                                              .commment.value.text.isEmpty) {
+                                            Fluttertoast.showToast(
+                                              msg: "Please enter your reply",
+                                              toastLength: Toast.LENGTH_LONG,
+                                              gravity: ToastGravity.BOTTOM,
+                                            );
+                                            return;
+                                          }
 
-                                        await controller.addReplyComment(
-                                            widget.classifiedId, 0, context);
-                                        controller.commment.value.clear();
-                                        setState(() {
+                                          controller.isLoading.value = true;
+
+                                          await controller.addReplyComment(
+                                              widget.classifiedId, 0, context);
+
+                                          controller.isLoading.value = false;
+
+                                          controller.commment.value.clear();
                                           isLimitExceeded = false;
-                                        });
-                                      },
-                                      child: Container(
-                                        width: 40,
-                                        height: 40,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: AppColors.primaryColor,
-                                          boxShadow: [
-                                            customBoxShadow(),
-                                          ],
-                                        ),
-                                        child: const Icon(
-                                          Icons.send_rounded,
-                                          color: Colors.white,
-                                          size: 22,
-                                        ),
+                                        },
+                                        child: Obx(() => Container(
+                                              width: 40,
+                                              height: 40,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: AppColors.primaryColor,
+                                                boxShadow: [
+                                                  customBoxShadow(),
+                                                ],
+                                              ),
+                                              child: controller.isLoading.value
+                                                  ? const CircularProgressIndicator(
+                                                      valueColor:
+                                                          AlwaysStoppedAnimation<
+                                                              Color>(
+                                                        Colors.white,
+                                                      ),
+                                                    )
+                                                  : const Icon(
+                                                      Icons.send_rounded,
+                                                      color: Colors.white,
+                                                      size: 22,
+                                                    ),
+                                            )),
                                       ),
-                                    ),
+                                    ]),
                                   ),
                                 ],
                               ),
@@ -550,22 +563,28 @@ class _CommentDialogState extends State<CommentDialog> {
                           }
                           await _refreshData();
                         },
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: AppColors.primaryColor,
-                            boxShadow: [
-                              customBoxShadow(),
-                            ],
-                          ),
-                          child: const Icon(
-                            Icons.send_rounded,
-                            color: Colors.white,
-                            size: 22,
-                          ),
-                        ),
+                        child: Obx(() => Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: AppColors.primaryColor,
+                                boxShadow: [
+                                  customBoxShadow(),
+                                ],
+                              ),
+                              child: controller.isLoading.value
+                                  ? const CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white,
+                                      ),
+                                    )
+                                  : const Icon(
+                                      Icons.send_rounded,
+                                      color: Colors.white,
+                                      size: 22,
+                                    ),
+                            )),
                       ),
                     ],
                   ),
@@ -938,22 +957,29 @@ class _CommentDialogState extends State<CommentDialog> {
                                   controller.commment.value.clear();
                                   Get.back();
                                 },
-                                child: Container(
-                                  width: 40,
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: AppColors.primaryColor,
-                                    boxShadow: [
-                                      customBoxShadow(),
-                                    ],
-                                  ),
-                                  child: const Icon(
-                                    Icons.send_rounded,
-                                    color: Colors.white,
-                                    size: 22,
-                                  ),
-                                ),
+                                child: Obx(() => Container(
+                                      width: 40,
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: AppColors.primaryColor,
+                                        boxShadow: [
+                                          customBoxShadow(),
+                                        ],
+                                      ),
+                                      child: controller.isLoading.value
+                                          ? const CircularProgressIndicator(
+                                              valueColor:
+                                                  AlwaysStoppedAnimation<Color>(
+                                                Colors.white,
+                                              ),
+                                            )
+                                          : const Icon(
+                                              Icons.send_rounded,
+                                              color: Colors.white,
+                                              size: 22,
+                                            ),
+                                    )),
                               ),
                             ),
                           ],

@@ -61,15 +61,6 @@ class _PostDetailsScreenState extends State<PostDetailNotification> {
     await controller.toggleLike(post.id ?? 0, context);
   }
 
-  void toggleBookmark() async {
-    bool newBookmarkedValue = !isBookmarked.value;
-    isBookmarked.value = newBookmarkedValue;
-    bookmarkCount.value =
-        newBookmarkedValue ? bookmarkCount.value + 1 : bookmarkCount.value - 1;
-
-    await controller.toggleBookMark(post.id ?? 0, context);
-  }
-
   @override
   void initState() {
     super.initState();
@@ -390,7 +381,16 @@ class _PostDetailsScreenState extends State<PostDetailNotification> {
                             height: size.height * 0.028,
                             width: size.height * 0.028,
                             child: GestureDetector(
-                              onTap: toggleLike,
+                              onTap: () async {
+                                bool newLikedValue = !isLiked.value;
+                                isLiked.value = newLikedValue;
+                                likeCount.value = newLikedValue
+                                    ? likeCount.value + 1
+                                    : likeCount.value - 1;
+
+                                await controller.toggleLike(
+                                    data.id ?? 0, context);
+                              },
                               child: Icon(
                                 // Observe like status
                                 isLiked.value
@@ -473,7 +473,16 @@ class _PostDetailsScreenState extends State<PostDetailNotification> {
                             height: size.height * 0.028,
                             width: size.height * 0.028,
                             child: GestureDetector(
-                              onTap: () => toggleBookmark(),
+                              onTap: () async {
+                                bool newBookmarkedValue = !isBookmarked.value;
+                                isBookmarked.value = newBookmarkedValue;
+                                bookmarkCount.value = newBookmarkedValue
+                                    ? bookmarkCount.value + 1
+                                    : bookmarkCount.value - 1;
+
+                                await controller.toggleBookMark(
+                                    data.id ?? 0, context);
+                              },
                               child: SvgPicture.asset(
                                 isBookmarked.value
                                     ? Assets.svgCheckBookmark

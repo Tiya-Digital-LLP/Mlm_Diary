@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:mlmdiary/classified/classified.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/get_banner_entity.dart';
@@ -111,14 +112,26 @@ class HomeController extends GetxController {
                 itemBuilder: (context, index) {
                   final banner = popupbanners[index];
                   return GestureDetector(
-                    onTap: () {
+                    onTap: () async {
+                      SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                      String? apiToken = prefs.getString(Constants.accessToken);
+
+                      if (apiToken == null) {
+                        // ignore: use_build_context_synchronously
+                        showSignupDialog(context);
+                        return;
+                      }
                       if (banner.weblink == null || banner.weblink!.isEmpty) {
+                        // ignore: use_build_context_synchronously
                         showToasterrorborder('No Any Url Found', context);
                       } else {
                         launchUrl(
                           Uri.parse(banner.weblink.toString()),
                           mode: LaunchMode.externalApplication,
                         );
+                        // ignore: use_build_context_synchronously
+                        bannerClick(banner.id ?? 0, context);
                       }
                     },
                     child: ClipRRect(
@@ -203,9 +216,26 @@ class HomeController extends GetxController {
         return;
       }
 
-      final response = await http.get(
-        Uri.parse('${Constants.baseUrl}${Constants.getbanner}'),
-      );
+      SharedPreferences? prefs;
+      try {
+        prefs = await SharedPreferences.getInstance();
+      } catch (error) {
+        if (kDebugMode) {
+          print('Error obtaining SharedPreferences: $error');
+        }
+        isLoading.value = false;
+        return;
+      }
+
+      // Get the api_token, which might be null
+      String? apiToken = prefs.getString(Constants.accessToken);
+
+      // Build the URI with or without the api_token based on its value
+      final Uri uri = Uri.parse('${Constants.baseUrl}${Constants.getbanner}')
+          .replace(
+              queryParameters: apiToken != null ? {'api_token': apiToken} : {});
+
+      final response = await http.get(uri);
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseBody =
@@ -243,6 +273,59 @@ class HomeController extends GetxController {
       if (kDebugMode) {
         print('Error loading banners: $e');
       }
+    }
+  }
+
+  Future<void> bannerClick(int bannerId, context) async {
+    isLoading.value = true;
+    String device =
+        Platform.isAndroid ? 'android' : (Platform.isIOS ? 'ios' : '');
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+
+    try {
+      var connectivityResult = await (Connectivity().checkConnectivity());
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult == ConnectivityResult.none) {
+        showToasterrorborder("No internet connection", context);
+        isLoading.value = false;
+        return;
+      }
+
+      Map<String, String> queryParams = {
+        'api_token': apiToken ?? '',
+        'device': device,
+        'banner_id': bannerId.toString(),
+      };
+
+      if (kDebugMode) {
+        print('api_token: $apiToken');
+        print('device: $device');
+        print('bannerid: $bannerId');
+      }
+
+      Uri uri = Uri.parse(Constants.baseUrl + Constants.bannerclick)
+          .replace(queryParameters: queryParams);
+
+      final response = await http.post(uri);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        if (kDebugMode) {
+          print(json.encode(responseData));
+        }
+      } else {
+        if (kDebugMode) {
+          print("Error: ${response.body}");
+        }
+      }
+    } catch (error) {
+      if (kDebugMode) {
+        print("Error: $error");
+      }
+    } finally {
+      isLoading.value = false;
     }
   }
 

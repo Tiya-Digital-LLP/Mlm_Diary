@@ -69,70 +69,76 @@ class _ClassifiedCardState extends State<UserNotificationCard> {
               ),
               10.sbw,
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.userName,
-                      style: textStyleW700(
-                          size.width * 0.034, AppColors.blackText),
-                    ),
-                    Text(
-                      widget.userNametype,
-                      style: textStyleW700(
-                          size.width * 0.034, AppColors.blackText),
-                    ),
-                    Text(
-                      postTimeFormatter.formatPostTime(widget.dateTime),
-                      style: textStyleW500(
-                          size.width * 0.032, AppColors.blackText),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(children: [
-                          Image.asset(
-                            Assets.imagesAdminlogo,
-                            height: 30,
-                            width: 30,
-                          ),
-                          3.sbw,
-                          Text(
-                            'Admin',
-                            style: textStyleW700(
-                                size.width * 0.032, AppColors.blackText),
-                          ),
-                        ]),
-                        Row(
-                          children: [
-                            Container(
-                              height: 10,
-                              width: 10,
-                              decoration: BoxDecoration(
-                                color: AppColors.primaryColor,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.delete,
-                                color: AppColors.redText,
-                              ),
-                              onPressed: () =>
-                                  LogoutDialog.show(context, () async {
-                                widget.controller.deleteNotification(
-                                    widget.classifiedId, context, widget.type);
-                                widget.controller
-                                    .fetchNotification(1, widget.type);
-                              }),
-                            ),
-                          ],
+                  child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        widget.userName,
+                        style: textStyleW700(
+                            size.width * 0.034, AppColors.blackText),
+                      ),
+                      3.sbw,
+                      Text(
+                        postTimeFormatter.formatPostTime(widget.dateTime),
+                        style: textStyleW500(
+                            size.width * 0.030, AppColors.blackText),
+                      ),
+                    ],
+                  ),
+                  3.sbh,
+                  Text(
+                    widget.userNametype,
+                    style:
+                        textStyleW700(size.width * 0.030, AppColors.blackText),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(children: [
+                        Image.asset(
+                          Assets.imagesAdminlogo,
+                          height: 30,
+                          width: 30,
                         ),
-                      ],
-                    ),
-                  ],
-                ),
-              )
+                        3.sbw,
+                        Text(
+                          'Admin',
+                          style: textStyleW700(
+                              size.width * 0.032, AppColors.blackText),
+                        ),
+                      ]),
+                      Row(
+                        children: [
+                          Container(
+                            height: 10,
+                            width: 10,
+                            decoration: BoxDecoration(
+                              color: AppColors.primaryColor,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              Icons.delete,
+                              color: AppColors.redText,
+                            ),
+                            onPressed: () =>
+                                LogoutDialog.show(context, () async {
+                              widget.controller.deleteNotification(
+                                  widget.classifiedId, context, widget.type);
+                              widget.controller
+                                  .fetchNotification(1, widget.type);
+                            }),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ))
             ])
           ],
         ));

@@ -292,22 +292,30 @@ class _CommentDialogState extends State<CommentDialogPost> {
                                       isLimitExceeded = false;
                                     });
                                   },
-                                  child: Container(
-                                    width: 40,
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: AppColors.primaryColor,
-                                      boxShadow: [
-                                        customBoxShadow(),
-                                      ],
-                                    ),
-                                    child: const Icon(
-                                      Icons.send_rounded,
-                                      color: Colors.white,
-                                      size: 22,
-                                    ),
-                                  ),
+                                  child: Obx(() => Container(
+                                        width: 40,
+                                        height: 40,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: AppColors.primaryColor,
+                                          boxShadow: [
+                                            customBoxShadow(),
+                                          ],
+                                        ),
+                                        child: controller.isLoading.value
+                                            ? const CircularProgressIndicator(
+                                                valueColor:
+                                                    AlwaysStoppedAnimation<
+                                                        Color>(
+                                                  Colors.white,
+                                                ),
+                                              )
+                                            : const Icon(
+                                                Icons.send_rounded,
+                                                color: Colors.white,
+                                                size: 22,
+                                              ),
+                                      )),
                                 ),
                               ),
                             ],
@@ -533,22 +541,28 @@ class _CommentDialogState extends State<CommentDialogPost> {
                           }
                           await _refreshData();
                         },
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: AppColors.primaryColor,
-                            boxShadow: [
-                              customBoxShadow(),
-                            ],
-                          ),
-                          child: const Icon(
-                            Icons.send_rounded,
-                            color: Colors.white,
-                            size: 22,
-                          ),
-                        ),
+                        child: Obx(() => Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: AppColors.primaryColor,
+                                boxShadow: [
+                                  customBoxShadow(),
+                                ],
+                              ),
+                              child: controller.isLoading.value
+                                  ? const CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white,
+                                      ),
+                                    )
+                                  : const Icon(
+                                      Icons.send_rounded,
+                                      color: Colors.white,
+                                      size: 22,
+                                    ),
+                            )),
                       ),
                     ],
                   ),
@@ -917,22 +931,29 @@ class _CommentDialogState extends State<CommentDialogPost> {
                                   controller.commment.value.clear();
                                   Get.back();
                                 },
-                                child: Container(
-                                  width: 40,
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: AppColors.primaryColor,
-                                    boxShadow: [
-                                      customBoxShadow(),
-                                    ],
-                                  ),
-                                  child: const Icon(
-                                    Icons.send_rounded,
-                                    color: Colors.white,
-                                    size: 22,
-                                  ),
-                                ),
+                                child: Obx(() => Container(
+                                      width: 40,
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: AppColors.primaryColor,
+                                        boxShadow: [
+                                          customBoxShadow(),
+                                        ],
+                                      ),
+                                      child: controller.isLoading.value
+                                          ? const CircularProgressIndicator(
+                                              valueColor:
+                                                  AlwaysStoppedAnimation<Color>(
+                                                Colors.white,
+                                              ),
+                                            )
+                                          : const Icon(
+                                              Icons.send_rounded,
+                                              color: Colors.white,
+                                              size: 22,
+                                            ),
+                                    )),
                               ),
                             ),
                           ],

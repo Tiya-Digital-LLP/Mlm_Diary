@@ -19,6 +19,7 @@ class Constants {
   //home
   static const String gethome = "/gethomepost_like_count";
   static const String mutualfriend = "/mutualFriends";
+  static const String bannerclick = "/countbannerclick";
 
   static const String getUserType = "/getusertype";
   static const String domesticPhoneOtp = "/register/domestic_phone_otp";

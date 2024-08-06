@@ -219,26 +219,26 @@ class _ClassifiedScreenState extends State<ClassifiedScreen> {
             String selectedType = 'classified';
             await controller.handleTap(selectedType);
           },
-          child: Ink(
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.transparent,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  SvgPicture.asset(
-                    Assets.svgPlusIcon,
-                  ),
-                  Obx(() => Visibility(
-                        visible: controller.isLoading.value,
-                        child: CircularProgressIndicator(
-                          color: AppColors.white,
-                        ),
-                      )),
-                ],
+          child: Obx(
+            () => Ink(
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.transparent,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    controller.isLoading.value
+                        ? CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              AppColors.primaryColor,
+                            ),
+                          )
+                        : SvgPicture.asset(Assets.svgPlusIcon)
+                  ],
+                ),
               ),
             ),
           ),

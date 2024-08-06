@@ -67,9 +67,6 @@ class NotificationHandler {
           // Classified
 
           case 'classified':
-          case 'classified_like':
-          case 'classified_saved':
-          case 'classified_edit':
             if (kDebugMode) {
               print('Navigating to classified with post_id: $postId');
             }
@@ -80,36 +77,32 @@ class NotificationHandler {
 
           // News
           case 'news':
-          case 'news_like':
-          case 'news_saved':
           case 'manage_news':
             if (kDebugMode) {
               print('Navigating to news with post_id: $postId');
             }
 
-            await manageNewsController.getNews(1, newsId: postId);
             Get.toNamed(Routes.newsdetailsnotification, arguments: {
               'id': postId,
             });
+            await manageNewsController.getNews(1, newsId: postId);
+
             break;
 
           // Blog
           case 'blog':
-          case 'blog_like':
-          case 'blog_saved':
-          case 'manage_blog':
             if (kDebugMode) {
               print('Navigating to blog with post_id: $postId');
             }
-            await manageBlogController.getBlog(1, blogid: postId);
             Get.toNamed(Routes.blogdetailsnotification, arguments: {
               'id': postId,
             });
+            await manageBlogController.getBlog(1, blogid: postId);
+
             break;
 
           // question
           case 'question':
-          case 'question_saved':
             if (kDebugMode) {
               print('Navigating to userquestion with post_id: $postId');
             }
@@ -122,8 +115,6 @@ class NotificationHandler {
 
           // post
           case 'user_post':
-          case 'user_post_like':
-          case 'post_saved':
             if (kDebugMode) {
               print('Navigating to post with post_id: $postId');
             }
@@ -131,7 +122,6 @@ class NotificationHandler {
             Get.toNamed(Routes.postdetailnotification, arguments: {
               'id': postId,
             });
-            await editPostController.fetchPost(1, postId: postId);
             break;
 
           // Chat
@@ -144,27 +134,28 @@ class NotificationHandler {
             break;
 
           // User-Profile
-          case 'follow_user':
-          case 'profile_saved':
+          case 'user_profile':
             if (kDebugMode) {
               print('Navigating to userprofilescreen with user_id: $postId');
             }
             Get.toNamed(Routes.userprofilescreen, arguments: {
               'user_id': postId,
             });
+            await editPostController.fetchPost(1, postId: postId);
+
             break;
 
           // Company
 
-          case 'company_like':
           case 'company':
             if (kDebugMode) {
               print('Navigating to Company with post_id: $postId');
             }
-            await companyController.getAdminCompany(1, companyId: postId);
             Get.toNamed(Routes.mlmcompaniesnotificationdetails, arguments: {
               'id': postId,
             });
+            await companyController.getAdminCompany(1, companyId: postId);
+
             break;
 
           // video
@@ -217,7 +208,7 @@ class NotificationHandler {
               }
             }
             break;
-          case 'post_comment':
+          case 'user_post_comment':
             final context = Get.context;
             if (context != null) {
               showFullScreenDialogPost(context, postId);
