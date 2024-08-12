@@ -560,6 +560,12 @@ class EditPostController extends GetxController {
         request.fields['device'] = device;
         request.fields['user_id'] = userId.toString();
 
+        if (kDebugMode) {
+          print("database view api token: $apiToken");
+          print("database view device: $device");
+          print("database view user_id: $userId");
+        }
+
         final streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);
 
@@ -569,7 +575,7 @@ class EditPostController extends GetxController {
               UserProfileCountViewEntity.fromJson(data);
 
           if (kDebugMode) {
-            print('Success: $countViewUserProfileEntity');
+            print('user_profile_view: $countViewUserProfileEntity');
           }
         } else {
           //

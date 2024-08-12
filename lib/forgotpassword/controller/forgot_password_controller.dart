@@ -48,71 +48,79 @@ class ForgotPasswordController extends GetxController {
     }
   }
 
-  Future<void> sendForgotPasswordRequest(
-      BuildContext context, String countryCode) async {
-    isLoading(true);
-    try {
-      final response = await http.post(
-        Uri.parse('${Constants.baseUrl}${Constants.forgotpassword}'),
-        body: {
-          'email': email.value.text,
-          'mobile': mobile.value.text,
-          'countrycode': countryCode,
-        },
-      );
+ Future<void> sendForgotPasswordRequest(
+    BuildContext context, String countryCode) async {
+  isLoading(true);
+  try {
+    final response = await http.post(
+      Uri.parse('${Constants.baseUrl}${Constants.forgotpassword}'),
+      body: {
+        'email': email.value.text,
+        'mobile': mobile.value.text,
+        'countrycode': countryCode,
+      },
+    );
 
-      if (kDebugMode) {
-        print('Response status code: ${response.statusCode}');
-      }
-      if (kDebugMode) {
-        print('Response body: ${response.body}');
-      }
+    if (kDebugMode) {
+      // Improved print statements
+      print('email: ${email.value.text}');
+      print('mobile: ${mobile.value.text}');
+      print('countrycode: $countryCode');
+    }
 
-      if (response.statusCode == 200) {
-        final responseData = json.decode(response.body);
-        ForgotPasswordEntity forgotPasswordEntity =
-            ForgotPasswordEntity.fromJson(responseData);
-        if (forgotPasswordEntity.result == 1) {
-          // ignore: use_build_context_synchronously
-          showToastverifedborder(
-              "Password reset sent successfully!",
-              // ignore: use_build_context_synchronously
-              context);
-          if (forgotPasswordEntity.userId != null) {
-          } else {
-            showToasterrorborder(
-                "User ID is null, cannot save to shared preferences",
-                // ignore: use_build_context_synchronously
-                context);
-          }
+    if (kDebugMode) {
+      print('Response status code: ${response.statusCode}');
+    }
+    if (kDebugMode) {
+      print('Response body: ${response.body}');
+    }
 
-          Get.toNamed(
-            Routes.otp,
-            arguments: {
-              'otp': forgotPasswordEntity.userOtp,
-              'userId': forgotPasswordEntity.userId,
-            },
-          );
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body);
+      ForgotPasswordEntity forgotPasswordEntity =
+          ForgotPasswordEntity.fromJson(responseData);
+      if (forgotPasswordEntity.result == 1) {
+        // ignore: use_build_context_synchronously
+        showToastverifedborder(
+            "Password reset sent successfully!",
+            // ignore: use_build_context_synchronously
+            context);
+        if (forgotPasswordEntity.userId != null) {
         } else {
           showToasterrorborder(
-              forgotPasswordEntity.message ?? "Forgot password request failed",
+              "User ID is null, cannot save to shared preferences",
               // ignore: use_build_context_synchronously
               context);
         }
+
+        Get.toNamed(
+          Routes.otp,
+          arguments: {
+            'otp': forgotPasswordEntity.userOtp,
+            'userId': forgotPasswordEntity.userId,
+          },
+        );
       } else {
         showToasterrorborder(
-            "Forgot password request failed: ${response.reasonPhrase}",
+            forgotPasswordEntity.message ?? "Forgot password request failed",
             // ignore: use_build_context_synchronously
             context);
       }
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error: $e');
-      }
-    } finally {
-      isLoading(false);
+    } else {
+      showToasterrorborder(
+          "Forgot password request failed: ${response.reasonPhrase}",
+          // ignore: use_build_context_synchronously
+          context);
     }
+  } catch (e) {
+    if (kDebugMode) {
+      print('Error: $e');
+    }
+  } finally {
+    isLoading(false);
   }
+}
+
 
   void passwordValidation() {
     passwordError.value =

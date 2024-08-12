@@ -22,6 +22,8 @@ import 'package:mlmdiary/widgets/custon_test_app_bar.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../menu/menuscreens/profile/controller/edit_post_controller.dart';
+
 class DatabaseScreen extends StatefulWidget {
   const DatabaseScreen({super.key});
 
@@ -34,6 +36,7 @@ class _DatabaseState extends State<DatabaseScreen> {
   final DatabaseController controller = Get.put(DatabaseController());
   final UserProfileController userProfileController =
       Get.put(UserProfileController());
+  final EditPostController editPostController = Get.put(EditPostController());
 
   String googleApikey = "AIzaSyB3s5ixJVnWzsXoUZaP9ISDp_80GXWJXuU";
   late double lat = 0.0;
@@ -300,9 +303,11 @@ class _DatabaseState extends State<DatabaseScreen> {
                               }
                               Get.toNamed(Routes.userprofilescreen,
                                   arguments: {'user_id': post.id});
-
                               await userProfileController.fetchUserAllPost(
                                   1, post.id.toString());
+                              editPostController.countViewUserProfile(
+                                  // ignore: use_build_context_synchronously
+                                  post.id ?? 0, context);
                             },
                             child: UserCard(
                               post: post,

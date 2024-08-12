@@ -47,7 +47,13 @@ class _SignupPageState extends State<SignupPage> {
     Country? defaultCountry = await getCountryByCountryCode(context, 'IN');
     selectedCountry.value = defaultCountry;
     if (kDebugMode) {
-      print('Country: $selectedCountry');
+      if (selectedCountry.value != null) {
+        print('Country name: ${selectedCountry.value!.name}');
+        print('Country calling code: ${selectedCountry.value!.callingCode}');
+        print('Country code: ${selectedCountry.value!}');
+      } else {
+        print('Country is null');
+      }
     }
   }
 
@@ -60,14 +66,17 @@ class _SignupPageState extends State<SignupPage> {
     FocusScope.of(context).unfocus();
     final mobileNumber = controller.mobile.value.text;
     final userName = controller.name.value.text;
-    final countryCode = selectedCountry.value?.callingCode ?? '';
-
     if (isDomesticPhoneNumber(mobileNumber)) {
       controller.sendDomesticPhoneOtp(mobileNumber, userName, '91', context);
     } else {
       controller.sendForeignPhoneOtp(
-          mobileNumber, userName, countryCode, context);
+          mobileNumber, userName, getFormattedForeignNumberCountryCode(), context);
     }
+  }
+
+    String getFormattedForeignNumberCountryCode() {
+    // Removes the '+' sign from the country code
+    return selectedCountry.value?.callingCode.replaceAll('+', '') ?? '';
   }
 
   @override

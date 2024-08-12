@@ -14,8 +14,8 @@ import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/border_text_field.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
 import 'package:mlmdiary/widgets/custom_border_container.dart';
-import 'package:mlmdiary/widgets/custom_button.dart';
 import 'package:mlmdiary/widgets/custom_mobile_field.dart';
+import 'package:mlmdiary/widgets/normal_button.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -42,8 +42,19 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
     Country? defaultCountry = await getCountryByCountryCode(context, 'IN');
     selectedCountry.value = defaultCountry;
     if (kDebugMode) {
-      print('Country: $selectedCountry');
+      if (selectedCountry.value != null) {
+        print('Country name: ${selectedCountry.value!.name}');
+        print('Country calling code: ${selectedCountry.value!.callingCode}');
+        print('Country code: ${selectedCountry.value!}');
+      } else {
+        print('Country is null');
+      }
     }
+  }
+
+  String getFormattedCountryCode() {
+    // Removes the '+' sign from the country code
+    return selectedCountry.value?.callingCode.replaceAll('+', '') ?? '';
   }
 
   @override
@@ -124,20 +135,18 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                           30.sbh,
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: CustomButton(
-                              title: "Submit",
-                              btnColor: AppColors.primaryColor,
-                              titleColor: AppColors.white,
-                              onTap: () {
+                            child: NormalButton(
+                              onPressed: () {
                                 controller.emailValidation();
                                 if (controller.email.value.text.isEmpty) {
                                   showToasterrorborder(
                                       "Please Enter Email", context);
                                 } else {
                                   controller.sendForgotPasswordRequest(
-                                      context, selectedCountry.toString());
+                                      context, getFormattedCountryCode());
                                 }
                               },
+                              text: 'Submit',
                               isLoading: controller.isLoading,
                             ),
                           ),
@@ -218,18 +227,16 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                           30.sbh,
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: CustomButton(
-                              title: "Submit",
-                              btnColor: AppColors.primaryColor,
-                              titleColor: AppColors.white,
-                              onTap: () {
+                            child: NormalButton(
+                              text: "Submit",
+                              onPressed: () {
                                 controller.mobileValidation();
                                 if (controller.mobile.value.text.isEmpty) {
                                   showToasterrorborder(
                                       "Please Enter Mobile", context);
                                 } else {
                                   controller.sendForgotPasswordRequest(
-                                      context, selectedCountry.toString());
+                                      context, getFormattedCountryCode());
                                 }
                               },
                               isLoading: controller.isLoading,

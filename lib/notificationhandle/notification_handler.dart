@@ -53,6 +53,8 @@ class NotificationHandler {
     final String imageUrl = data['image']?.toString() ?? '';
     final String title = data['title']?.toString() ?? '';
     final String type = data['type']?.toString() ?? '';
+    final String chatId = data['chat_id']?.toString() ?? '';
+
     if (kDebugMode) {
       print('Notification type: ${data['type']}');
       print('Post ID: $postId');
@@ -127,7 +129,7 @@ class NotificationHandler {
           // Chat
           case 'chat':
             Get.toNamed(Routes.usermessagedetailscreen, arguments: {
-              "chatId": null,
+              "chatId": chatId,
               "username": title,
               "imageUrl": imageUrl,
             });
