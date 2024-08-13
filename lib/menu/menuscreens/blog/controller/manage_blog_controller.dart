@@ -1042,7 +1042,15 @@ class ManageBlogController extends GetxController {
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
           var addCommentBlogEntity = AddCommentBlogEntity.fromJson(data);
+          // Check if the status is 0 and show a toast message
+        if (data['status'] == 0) {
+          showToasterrorborder(data['message'], context);
+        } else {
           getCommentBlog(1, blodId, context);
+          if (kDebugMode) {
+            print('Success: $addCommentBlogEntity');
+          }
+        }
 
           if (kDebugMode) {
             print('Success: $addCommentBlogEntity');

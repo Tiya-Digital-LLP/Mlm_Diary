@@ -1132,7 +1132,14 @@ class ManageNewsController extends GetxController {
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
           var addCommentNewsEntity = AddCommentNewsEntity.fromJson(data);
+          if (data['status'] == 0) {
+          showToasterrorborder(data['message'], context);
+        } else {
           getCommentNews(1, newsId, context);
+          if (kDebugMode) {
+            print('Success: $addCommentNewsEntity');
+          }
+        }
 
           if (kDebugMode) {
             print('Success: $addCommentNewsEntity');

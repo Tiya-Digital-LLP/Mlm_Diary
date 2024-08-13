@@ -51,9 +51,11 @@ class NotificationHandler {
     final int postId = int.tryParse(data['post_id'].toString()) ?? 0;
     final int userId = int.tryParse(data['user_id'].toString()) ?? 0;
     final String imageUrl = data['image']?.toString() ?? '';
-    final String title = data['title']?.toString() ?? '';
+    // final String title = data['title']?.toString() ?? '';
     final String type = data['type']?.toString() ?? '';
     final String chatId = data['chat_id']?.toString() ?? '';
+    final String username = data['user_name']?.toString() ?? '';
+
 
     if (kDebugMode) {
       print('Notification type: ${data['type']}');
@@ -61,7 +63,7 @@ class NotificationHandler {
       print('User ID: $userId');
     }
 
-    Timer(const Duration(milliseconds: 200), () async {
+    Timer(const Duration(milliseconds: 400), () async {
       try {
         String key = '${data['type']}';
 
@@ -130,7 +132,7 @@ class NotificationHandler {
           case 'chat':
             Get.toNamed(Routes.usermessagedetailscreen, arguments: {
               "chatId": chatId,
-              "username": title,
+              "username": username,
               "imageUrl": imageUrl,
             });
             break;

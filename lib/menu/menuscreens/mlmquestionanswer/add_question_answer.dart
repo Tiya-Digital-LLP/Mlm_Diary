@@ -211,6 +211,8 @@ class _AddClassifiedState extends State<AddQuestionAnswer> {
       showToasterrorborder("Please Select Sub Category", context);
     } else if (controller.isCategorySelectedList.contains(true)) {
       await controller.addQuestion(imageFile: file.value);
+      
+
     } else {
       //
     }

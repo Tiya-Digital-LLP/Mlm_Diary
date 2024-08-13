@@ -1045,7 +1045,15 @@ class EditPostController extends GetxController {
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
           var addPostCommentEntity = AddPostCommentEntity.fromJson(data);
+           // Check if the status is 0 and show a toast message
+        if (data['status'] == 0) {
+          showToasterrorborder(data['message'], context);
+        } else {
           getCommentPost(1, postId, context);
+          if (kDebugMode) {
+            print('Success: $addPostCommentEntity');
+          }
+        }
 
           if (kDebugMode) {
             print('Success: $addPostCommentEntity');

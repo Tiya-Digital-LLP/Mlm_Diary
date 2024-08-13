@@ -675,6 +675,15 @@ class QuestionAnswerController extends GetxController {
           var data = jsonDecode(response.body);
           var addAnswerEntity = AddAnswerEntity.fromJson(data);
           await getAnswers(1, answerId);
+           // Check if the status is 0 and show a toast message
+        if (data['status'] == 0) {
+          showToasterrorborder(data['message'], context);
+        } else {
+          getAnswers(1, answerId);
+          if (kDebugMode) {
+            print('Success: $addAnswerEntity');
+          }
+        }
           if (kDebugMode) {
             print('Success: $addAnswerEntity');
           }
@@ -1175,7 +1184,7 @@ class QuestionAnswerController extends GetxController {
             print("Response body: $jsonBody");
           }
           // Check if all fields in the response are true (you may need to adjust this condition based on the actual response structure)
-          if (jsonBody['success'] == true) {
+          if (jsonBody['status'] == 1) {
             toastification.show(
               context: context,
               alignment: Alignment.bottomCenter,
@@ -1231,9 +1240,8 @@ class QuestionAnswerController extends GetxController {
   }
 
   void clearFormFields() {
-    title.value.clear();
-    categorylist.clear();
-    subcategoryList.clear();
+    selectedCategoryId.value = 0;
+    selectedSubCategoryId.value = 0;
   }
 
   // like_list_question

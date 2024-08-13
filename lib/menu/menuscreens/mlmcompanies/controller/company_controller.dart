@@ -427,7 +427,15 @@ class CompanyController extends GetxController {
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
           var addCompanyCommentEntity = AddCompanyCommentEntity.fromJson(data);
+          // Check if the status is 0 and show a toast message
+        if (data['status'] == 0) {
+          showToasterrorborder(data['message'], context);
+        } else {
           getCommentCompany(1, companyId, context);
+          if (kDebugMode) {
+            print('Success: $addCompanyCommentEntity');
+          }
+        }
 
           if (kDebugMode) {
             print('Success: $addCompanyCommentEntity');
