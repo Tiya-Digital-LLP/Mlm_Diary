@@ -1016,7 +1016,7 @@ class _moreState extends State<MoreOptionScreen> {
                         break;
                       case '14':
                         showToastverifedborder(
-                            'Premium Plan Include Commming Soon', context);
+                            'Premium Plan coming soon!', context);
                         break;
                       case '15':
                         shareApp(
@@ -1026,7 +1026,7 @@ class _moreState extends State<MoreOptionScreen> {
                         break;
                       case '16':
                         showToastverifedborder(
-                            'Refer & Earn Include Commming Soon', context);
+                            'Refer & Earn Comming Soon!', context);
                         break;
                       default:
                         if (kDebugMode) {
