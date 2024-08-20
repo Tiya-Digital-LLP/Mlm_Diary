@@ -63,13 +63,22 @@ class _MlmCompaniesDetailsState extends State<MlmcompanyNotificationDetail> {
   }
 
   void initializeLikes() {
-    isLiked = RxBool(controller.companyAdminList[0].likedByUser ?? false);
-    likeCount = RxInt(controller.companyAdminList[0].totallike ?? 0);
+    if (controller.companyAdminList.isNotEmpty) {
+      isLiked = RxBool(controller.companyAdminList[0].likedByUser ?? false);
+      likeCount = RxInt(controller.companyAdminList[0].totallike ?? 0);
+    } else {
+      isLiked = RxBool(false);
+      likeCount = RxInt(0);
+    }
   }
 
   void initializeBookmarks() {
-    isBookmarked =
-        RxBool(controller.companyAdminList[0].bookmarkedByUser ?? false);
+    if (controller.companyAdminList.isNotEmpty) {
+      isBookmarked =
+          RxBool(controller.companyAdminList[0].bookmarkedByUser ?? false);
+    } else {
+      isBookmarked = RxBool(false);
+    }
   }
 
   @override

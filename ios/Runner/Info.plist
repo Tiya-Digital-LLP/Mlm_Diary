@@ -29,11 +29,16 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>YOUR_REVERSED_CLIENT_ID</string>
-				<string>fbYOUR_FACEBOOK_APP_ID</string>
+				<string>com.mlm.mlmdiary</string>
+				<string>fb907153864102367</string>
 			</array>
 		</dict>
 	</array>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+<array>
+    <string>com.mlm.mlmdiary.taskidentifier</string>
+</array>
+
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>FacebookAppID</key>
@@ -77,8 +82,8 @@
 	<string>Microphone permission is required for recording audio.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Photo Library permission is required for saving screenshots.</string>
-	<key>NSUserTrackingUsageDescription</key>
-	<string>This identifier will be used to deliver personalized ads to you.</string>
+	<!-- <key>NSUserTrackingUsageDescription</key>
+	<string>This identifier will be used to deliver personalized ads to you.</string> -->
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>

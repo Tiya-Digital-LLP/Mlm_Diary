@@ -47,9 +47,13 @@ class _UserQuestionState extends State<UserQuestionCopy> {
   late RxInt likeCount;
   late RxInt bookmarkCount;
 
-  void initializeLikes() {
-    isLiked = RxBool(controller.questionList[0].likedByUser ?? false);
-    likeCount = RxInt(controller.questionList[0].totallike ?? 0);
+  void toggleBookmark() async {
+    bool newBookmarkedValue = !isBookmarked.value;
+    isBookmarked.value = newBookmarkedValue;
+    bookmarkCount.value =
+        newBookmarkedValue ? bookmarkCount.value + 1 : bookmarkCount.value - 1;
+
+    await controller.toggleBookMark(post.id ?? 0, context);
   }
 
   void toggleLike() async {
@@ -60,28 +64,14 @@ class _UserQuestionState extends State<UserQuestionCopy> {
     await controller.toggleLike(post.id ?? 0, context);
   }
 
-  void initializeBookmarks() {
-    isBookmarked = RxBool(controller.questionList[0].bookmarkedByUser ?? false);
-    bookmarkCount = RxInt(controller.questionList[0].totalbookmark ?? 0);
-  }
-
-  void toggleBookmark() async {
-    bool newBookmarkedValue = !isBookmarked.value;
-    isBookmarked.value = newBookmarkedValue;
-    bookmarkCount.value =
-        newBookmarkedValue ? bookmarkCount.value + 1 : bookmarkCount.value - 1;
-
-    await controller.toggleBookMark(post.id ?? 0, context);
-  }
-
   @override
   void initState() {
     super.initState();
     _refreshData();
-    initializeLikes();
-    initializeBookmarks();
 
     final arguments = Get.arguments as Map<String, dynamic>?;
+    initializeLikes();
+    initializeBookmarks();
     if (arguments != null) {
       post = GetQuestionListQuestions.fromJson(arguments);
       if (post != null) {
@@ -105,6 +95,25 @@ class _UserQuestionState extends State<UserQuestionCopy> {
 
     _scrollController = ScrollController();
     _scrollController.addListener(_scrollListener);
+  }
+
+  void initializeLikes() {
+    if (controller.questionList.isNotEmpty) {
+      isLiked = RxBool(controller.questionList[0].likedByUser ?? false);
+      likeCount = RxInt(controller.questionList[0].totallike ?? 0);
+    } else {
+      isLiked = RxBool(false);
+      likeCount = RxInt(0);
+    }
+  }
+
+  void initializeBookmarks() {
+    if (controller.questionList.isNotEmpty) {
+      isBookmarked =
+          RxBool(controller.questionList[0].bookmarkedByUser ?? false);
+    } else {
+      isBookmarked = RxBool(false);
+    }
   }
 
   void _scrollListener() {

@@ -43,16 +43,6 @@ class _PostDetailsScreenState extends State<PostDetailNotification> {
   late RxBool isBookmarked;
   late RxInt bookmarkCount;
 
-  void initializeLikes() {
-    isLiked = RxBool(controller.getpostList[0].likedByUser ?? false);
-    likeCount = RxInt(controller.getpostList[0].totallike ?? 0);
-  }
-
-  void initializeBookmarks() {
-    isBookmarked = RxBool(controller.getpostList[0].bookmarkedByUser ?? false);
-    bookmarkCount = RxInt(controller.getpostList[0].totalbookmark ?? 0);
-  }
-
   void toggleLike() async {
     bool newLikedValue = !isLiked.value;
     isLiked.value = newLikedValue;
@@ -65,7 +55,8 @@ class _PostDetailsScreenState extends State<PostDetailNotification> {
   void initState() {
     super.initState();
     final arguments = Get.arguments as Map<String, dynamic>?;
-
+    initializeLikes();
+    initializeBookmarks();
     if (arguments != null) {
       post = GetPostData.fromJson(arguments);
       if (post != null) {
@@ -81,12 +72,29 @@ class _PostDetailsScreenState extends State<PostDetailNotification> {
       }
     }
 
-    initializeLikes();
-    initializeBookmarks();
     // ignore: unrelated_type_equality_checks
     controller.likeCountMap == 0;
     // ignore: unrelated_type_equality_checks
     controller.bookmarkCountMap == 0;
+  }
+
+  void initializeLikes() {
+    if (controller.getpostList.isNotEmpty) {
+      isLiked = RxBool(controller.getpostList[0].likedByUser ?? false);
+      likeCount = RxInt(controller.getpostList[0].totallike ?? 0);
+    } else {
+      isLiked = RxBool(false);
+      likeCount = RxInt(0);
+    }
+  }
+
+  void initializeBookmarks() {
+    if (controller.getpostList.isNotEmpty) {
+      isBookmarked =
+          RxBool(controller.getpostList[0].bookmarkedByUser ?? false);
+    } else {
+      isBookmarked = RxBool(false);
+    }
   }
 
   @override

@@ -64,13 +64,22 @@ class _ClassidiedDetailsScreenCopyState
   }
 
   void initializeLikes() {
-    isLiked = RxBool(controller.classifiedList[0].likedByUser ?? false);
-    likeCount = RxInt(controller.classifiedList[0].totallike ?? 0);
+    if (controller.classifiedList.isNotEmpty) {
+      isLiked = RxBool(controller.classifiedList[0].likedByUser ?? false);
+      likeCount = RxInt(controller.classifiedList[0].totallike ?? 0);
+    } else {
+      isLiked = RxBool(false);
+      likeCount = RxInt(0);
+    }
   }
 
   void initializeBookmarks() {
-    isBookmarked =
-        RxBool(controller.classifiedList[0].bookmarkedByUser ?? false);
+    if (controller.classifiedList.isNotEmpty) {
+      isBookmarked =
+          RxBool(controller.classifiedList[0].bookmarkedByUser ?? false);
+    } else {
+      isBookmarked = RxBool(false);
+    }
   }
 
   @override

@@ -44,16 +44,6 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
   late RxBool isBookmarked;
   late RxInt bookmarkCount;
 
-  void initializeLikes() {
-    isLiked = RxBool(controller.blogList[0].likedByUser ?? false);
-    likeCount = RxInt(controller.blogList[0].totallike ?? 0);
-  }
-
-  void initializeBookmarks() {
-    isBookmarked = RxBool(controller.blogList[0].bookmarkedByUser ?? false);
-    bookmarkCount = RxInt(controller.blogList[0].totalbookmark ?? 0);
-  }
-
   void toggleLike() async {
     bool newLikedValue = !isLiked.value;
     isLiked.value = newLikedValue;
@@ -81,6 +71,24 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
           });
         }
       }
+    }
+  }
+
+  void initializeLikes() {
+    if (controller.blogList.isNotEmpty) {
+      isLiked = RxBool(controller.blogList[0].likedByUser ?? false);
+      likeCount = RxInt(controller.blogList[0].totallike ?? 0);
+    } else {
+      isLiked = RxBool(false);
+      likeCount = RxInt(0);
+    }
+  }
+
+  void initializeBookmarks() {
+    if (controller.blogList.isNotEmpty) {
+      isBookmarked = RxBool(controller.blogList[0].bookmarkedByUser ?? false);
+    } else {
+      isBookmarked = RxBool(false);
     }
   }
 

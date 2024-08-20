@@ -39,7 +39,7 @@ class UserProfileScreen extends StatefulWidget {
 
 class _UserProfileScreenState extends State<UserProfileScreen>
     with SingleTickerProviderStateMixin {
-  final DatabaseController controller = Get.find();
+  final DatabaseController controller = Get.put(DatabaseController());
   final EditPostController editPostController = Get.put(EditPostController());
   final UserProfileController userProfileController =
       Get.put(UserProfileController());

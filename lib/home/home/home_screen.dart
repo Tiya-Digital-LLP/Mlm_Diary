@@ -101,12 +101,15 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(70.0),
         child: AppBar(
-          title: SizedBox(
-            height: size.height * 0.08,
-            width: size.width * 0.45,
-            child: Image.asset(
-              Assets.imagesLogo,
-              fit: BoxFit.fill,
+          title: Align(
+            alignment: Alignment.topLeft,
+            child: SizedBox(
+              height: size.height * 0.08,
+              width: size.width * 0.45,
+              child: Image.asset(
+                Assets.imagesLogo,
+                fit: BoxFit.fill,
+              ),
             ),
           ),
           actions: [

@@ -42,22 +42,13 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
   late RxBool isBookmarked;
   late RxInt bookmarkCount;
 
-  void initializeLikes() {
-    isLiked = RxBool(controller.newsList[0].likedByUser ?? false);
-    likeCount = RxInt(controller.newsList[0].totallike ?? 0);
-  }
-
-  void initializeBookmarks() {
-    isBookmarked = RxBool(controller.newsList[0].bookmarkedByUser ?? false);
-    bookmarkCount = RxInt(controller.newsList[0].totalbookmark ?? 0);
-  }
-
   @override
   void initState() {
     super.initState();
 
     final arguments = Get.arguments as Map<String, dynamic>?;
-
+    initializeLikes();
+    initializeBookmarks();
     if (arguments != null) {
       post = GetNewsListData.fromJson(arguments);
       if (post != null) {
@@ -72,9 +63,24 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
         }
       }
     }
+  }
 
-    initializeLikes();
-    initializeBookmarks();
+  void initializeLikes() {
+    if (controller.newsList.isNotEmpty) {
+      isLiked = RxBool(controller.newsList[0].likedByUser ?? false);
+      likeCount = RxInt(controller.newsList[0].totallike ?? 0);
+    } else {
+      isLiked = RxBool(false);
+      likeCount = RxInt(0);
+    }
+  }
+
+  void initializeBookmarks() {
+    if (controller.newsList.isNotEmpty) {
+      isBookmarked = RxBool(controller.newsList[0].bookmarkedByUser ?? false);
+    } else {
+      isBookmarked = RxBool(false);
+    }
   }
 
   @override

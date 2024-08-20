@@ -213,7 +213,7 @@ class _ProfileScreenState extends State<ProfileScreen>
       floatingActionButton: Container(
         decoration: BoxDecoration(
             color: AppColors.white, borderRadius: BorderRadius.circular(30)),
-        width: 150,
+        width: 250,
         child: InkWell(
           onTap: () {
             Get.toNamed(Routes.messagescreen);

@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:mlmdiary/maincontroller/main_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
@@ -47,8 +46,6 @@ void main() async {
       rethrow;
     }
   }
-  // Initialize GetX Controller
-  Get.put(NavigationController());
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   final facebookAppEvents = FacebookAppEvents();
 

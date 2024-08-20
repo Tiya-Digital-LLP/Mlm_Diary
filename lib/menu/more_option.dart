@@ -1015,7 +1015,8 @@ class _moreState extends State<MoreOptionScreen> {
                         Get.toNamed(Routes.planandcompanyinterest);
                         break;
                       case '14':
-                        Get.toNamed(Routes.premiumplan);
+                        showToastverifedborder(
+                            'Premium Plan Include Commming Soon', context);
                         break;
                       case '15':
                         shareApp(
@@ -1024,7 +1025,8 @@ class _moreState extends State<MoreOptionScreen> {
                         );
                         break;
                       case '16':
-                        Get.toNamed(Routes.referearn);
+                        showToastverifedborder(
+                            'Refer & Earn Include Commming Soon', context);
                         break;
                       default:
                         if (kDebugMode) {

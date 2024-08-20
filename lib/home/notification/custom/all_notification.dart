@@ -1,10 +1,17 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/home/notification/card/all_notification_card.dart';
 import 'package:mlmdiary/home/notification/controller/notification_controller.dart';
-import 'package:mlmdiary/routes/app_pages.dart';
+import 'package:mlmdiary/home/notification/custom/notification_handle_inside_app.dart';
+import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 
@@ -17,7 +24,22 @@ class AllNotification extends StatefulWidget {
 }
 
 class _AllNotificationState extends State<AllNotification> {
+  final ManageNewsController manageNewsController =
+      Get.find<ManageNewsController>();
   final NotificationController controller = Get.put(NotificationController());
+  final ClasifiedController clasifiedController =
+      Get.put(ClasifiedController());
+  final EditPostController editPostController = Get.put(EditPostController());
+  final CompanyController companyController = Get.put(CompanyController());
+  final ManageBlogController manageBlogController =
+      Get.find<ManageBlogController>();
+  final QuestionAnswerController questionAnswerController =
+      Get.put(QuestionAnswerController());
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,16 +97,20 @@ class _AllNotificationState extends State<AllNotification> {
                         vertical: 8,
                       ),
                       child: GestureDetector(
-                        onTap: () {
-                          if (post.type == 'Favorite' &&
-                              post.postType == 'News') {
-                            Get.toNamed(Routes.newsdetails);
-                          } else if (post.type == 'all' &&
-                              post.postType == 'Classified') {
-                            Get.toNamed(Routes.mlmclassifieddetail);
-                          } else {
-                            Get.toNamed('/default_detail');
+                        onTap: () async {
+                          final handler = PostNavigationHandler(
+                            post: post,
+                            classifiedController: clasifiedController,
+                            editPostController: editPostController,
+                            manageNewsController: manageNewsController,
+                            manageBlogController: manageBlogController,
+                            questionAnswerController: questionAnswerController,
+                            companyController: companyController,
+                          );
+                          if (kDebugMode) {
+                            print('tap');
                           }
+                          await handler.handleTap();
                         },
                         child: AllNotificationCard(
                           key: ValueKey(post.id),

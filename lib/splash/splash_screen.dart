@@ -8,7 +8,6 @@ import 'package:get/get.dart';
 import 'package:gtm/gtm.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/assets.dart';
-import 'package:mlmdiary/maincontroller/main_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/splash/controller/version_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
@@ -23,8 +22,6 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   final VersionController _versionController = Get.put(VersionController());
-  final NavigationController _navigationController =
-      Get.find<NavigationController>();
 
   @override
   void initState() {
@@ -81,26 +78,21 @@ class _SplashScreenState extends State<SplashScreen> {
 
     if (versionCheck != null) {
       if (versionCheck.success == 1) {
-        Timer(const Duration(milliseconds: 200), () {
-          if (!_navigationController.isNavigating.value) {
-            _navigateToNextScreen();
-          }
+        Timer(const Duration(milliseconds: 100), () {
+          _navigateToNextScreen();
         });
       } else if (versionCheck.success == 2) {
         // ignore: use_build_context_synchronously
         _showUpdateDialog(context);
       }
     } else {
-      Timer(const Duration(milliseconds: 200), () {
-        if (!_navigationController.isNavigating.value) {
-          _navigateToNextScreen();
-        }
+      Timer(const Duration(milliseconds: 100), () {
+        _navigateToNextScreen();
       });
     }
   }
 
   Future<void> _navigateToNextScreen() async {
-    _navigationController.setNavigating(true);
     final prefs = await SharedPreferences.getInstance();
     final bool isLoggedIn = prefs.getBool(Constants.isLoggedIn) ?? false;
 
@@ -109,8 +101,6 @@ class _SplashScreenState extends State<SplashScreen> {
     } else {
       Get.offAllNamed(Routes.login);
     }
-
-    _navigationController.setNavigating(false);
   }
 
   void _showUpdateDialog(context) {

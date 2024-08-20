@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/classified/custom/custom_commment.dart';
 import 'package:mlmdiary/home/message/controller/message_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/custom_blog_comment.dart';
@@ -22,12 +23,13 @@ class NotificationHandler {
       Get.find<ManageNewsController>();
   final ManageBlogController manageBlogController =
       Get.find<ManageBlogController>();
-  final EditPostController editPostController = Get.find<EditPostController>();
+  final EditPostController editPostController = Get.put(EditPostController());
   final MessageController messageController = Get.put(MessageController());
   final QuestionAnswerController questionAnswerController =
       Get.put(QuestionAnswerController());
   final CompanyController companyController = Get.put(CompanyController());
-
+  final ClasifiedController clasifiedController =
+      Get.put(ClasifiedController());
   void handleNotificationClick(String? payload) {
     if (kDebugMode) {
       print('Handling notification click with payload: $payload');
@@ -56,14 +58,13 @@ class NotificationHandler {
     final String chatId = data['chat_id']?.toString() ?? '';
     final String username = data['user_name']?.toString() ?? '';
 
-
     if (kDebugMode) {
       print('Notification type: ${data['type']}');
       print('Post ID: $postId');
       print('User ID: $userId');
     }
 
-    Timer(const Duration(milliseconds: 400), () async {
+    Timer(const Duration(milliseconds: 100), () async {
       try {
         String key = '${data['type']}';
 
@@ -74,6 +75,7 @@ class NotificationHandler {
             if (kDebugMode) {
               print('Navigating to classified with post_id: $postId');
             }
+
             Get.toNamed(Routes.mlmclassifieddetailcopy, arguments: {
               'id': postId,
             });
@@ -139,6 +141,7 @@ class NotificationHandler {
 
           // User-Profile
           case 'user_profile':
+          case 'follow_user':
             if (kDebugMode) {
               print('Navigating to userprofilescreen with user_id: $postId');
             }
