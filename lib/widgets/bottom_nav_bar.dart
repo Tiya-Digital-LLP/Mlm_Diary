@@ -55,10 +55,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
                       Text(
                         bottomBarTexts[index],
                         style: TextStyle(
-                          fontSize: 10,
+                          fontSize: 8,
                           color: (controller.tappedIndex.value == index)
                               ? AppColors.primaryColor
                               : AppColors.bottomIcon,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],

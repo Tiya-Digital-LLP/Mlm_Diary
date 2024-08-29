@@ -21,39 +21,62 @@ class Advertising extends StatefulWidget {
 }
 
 class Choice {
-  const Choice(
-      {required this.title,
-      required this.type,
-      required this.price,
-      required this.size,
-      required this.icon});
+  const Choice({
+    required this.title,
+    required this.type,
+    required this.price,
+    required this.size,
+    required this.icon,
+    required this.app,
+    required this.web,
+  });
 
   final String title;
   final String type;
   final String price;
   final String size;
   final String icon;
+  final String app;
+  final String web;
 }
 
 List<Choice> choices = <Choice>[
   const Choice(
-      title: 'Homepage Banner Advertisement',
-      type: 'Image or Video',
-      price: '₹25000/- Per Month',
-      size: '1170 X 200 (pixels)',
-      icon: Assets.imagesAdwithus3),
+    title: 'Homepage Banner Advertisement',
+    type: 'Image or Video',
+    price: 'App & Web ₹40000/- Per Month',
+    size: '1170 X 200 (pixels)',
+    icon: Assets.imagesAdwithus3,
+    app: 'App ₹25000/- Per Month',
+    web: 'Web ₹25000/- Per Month',
+  ),
   const Choice(
-      title: 'Pop-up Banner Advertisement',
-      type: 'Image',
-      price: '₹40000/- Per Month',
-      size: '500 X 500 (pixels)',
-      icon: Assets.imagesAdwithus1),
+    title: 'Pop-up Banner Advertisement',
+    type: 'Image',
+    price: 'App & Web ₹60000/- Per Month',
+    size: '500 X 500 (pixels)',
+    icon: Assets.imagesAdwithus1,
+    app: 'App ₹40000/- Per Month',
+    web: 'Web ₹40000/- Per Month',
+  ),
   const Choice(
-      title: 'Premium Classified',
-      type: 'Image',
-      price: '₹5000/- Per Month',
-      size: '550 X 200 (pixels)',
-      icon: Assets.imagesAdwithus2),
+    title: 'Premium Classified',
+    type: 'Image',
+    price: 'App & Web ₹15000/- Per Month',
+    size: '550 X 200 (pixels)',
+    icon: Assets.imagesAdwithus2,
+    app: 'App ₹15000/- Per Month',
+    web: 'Web ₹15000/- Per Month',
+  ),
+  const Choice(
+    title: 'Notification Ads',
+    type: 'Image',
+    price: 'App & Web ₹5000/- Per Notification',
+    size: '550 X 200 (pixels)',
+    icon: Assets.imagesAdwithus2,
+    app: 'App ₹5000/- Per Notification',
+    web: 'Web ₹5000/- Per Notification',
+  ),
 ];
 
 class _AdwithusState extends State<Advertising>
@@ -251,6 +274,18 @@ class _AdwithusState extends State<Advertising>
                                 style: textStyleW500(
                                     size.width * 0.032, AppColors.blackText),
                               ),
+                              Text(
+                                record.app,
+                                style: textStyleW600(
+                                    size.width * 0.042, AppColors.blackText),
+                              ),
+                              3.sbh,
+                              Text(
+                                record.web,
+                                style: textStyleW600(
+                                    size.width * 0.042, AppColors.blackText),
+                              ),
+                              3.sbh,
                               Text(
                                 record.price,
                                 style: textStyleW600(

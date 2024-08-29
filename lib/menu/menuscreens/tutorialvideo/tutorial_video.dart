@@ -31,12 +31,14 @@ class _TutorialVideoState extends State<TutorialVideo> {
     if (kDebugMode) {
       print('Arguments: $args');
     }
-    if (args != null && args['position'] != null) {
-      position = args['position'];
-      controller.fetchVideo(position, context);
-    } else {
-      controller.fetchVideo('', context);
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (args != null && args['position'] != null) {
+        position = args['position'];
+        controller.fetchVideo(position, context);
+      } else {
+        controller.fetchVideo('', context);
+      }
+    });
   }
 
   @override

@@ -23,14 +23,14 @@ class FavouriteController extends GetxController {
   var selectedType = 'All'.obs;
   final List<String> types = [
     'All',
-    'blog',
-    'database',
-    'post',
-    'news',
-    'classified',
-    'company',
-    'question',
-    'video'
+    'Blog',
+    'Database',
+    'Post',
+    'News',
+    'Classified',
+    'Company',
+    'Question',
+    'Video'
   ];
 
   @override

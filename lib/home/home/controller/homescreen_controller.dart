@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -39,14 +40,14 @@ class HomeController extends GetxController {
   var selectedType = 'All'.obs;
   final List<String> types = [
     'All',
-    'blog',
-    'database',
-    'news',
-    'classified',
-    'post',
-    'company',
-    'question',
-    'video',
+    'Blog',
+    'Database',
+    'News',
+    'Classified',
+    'Post',
+    'Company',
+    'Question',
+    'Video',
   ];
 
   void setSelectedType(String type) {
@@ -93,6 +94,26 @@ class HomeController extends GetxController {
       initialPage: 0,
       viewportFraction: 1,
     );
+
+    // ValueNotifier to keep track of the current page
+    ValueNotifier<int> currentPageNotifier = ValueNotifier<int>(0);
+
+    // Timer to auto-slide every 3 seconds
+    Timer.periodic(const Duration(seconds: 6), (Timer timer) {
+      int currentPage = currentPageNotifier.value;
+      if (currentPage < banners.length - 1) {
+        currentPageNotifier.value = currentPage + 1;
+      } else {
+        currentPageNotifier.value = 0;
+      }
+
+      // Animate to the next page
+      pageController.animateToPage(
+        currentPageNotifier.value,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeIn,
+      );
+    });
 
     Get.dialog(
       Center(
@@ -155,7 +176,9 @@ class HomeController extends GetxController {
                     ),
                   );
                 },
-                onPageChanged: (index) {},
+                onPageChanged: (index) {
+                  currentPageNotifier.value = index;
+                },
               ),
               Positioned(
                 right: 0,
@@ -170,30 +193,27 @@ class HomeController extends GetxController {
               if (popupbanners.length > 1)
                 Positioned(
                   bottom: 10,
-                  right: 16,
-                  child: SizedBox(
-                    height: 8,
-                    child: Obx(() {
-                      return ListView.builder(
-                        itemCount: popupbanners.length,
-                        scrollDirection: Axis.horizontal,
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
+                  right: 10,
+                  child: ValueListenableBuilder<int>(
+                    valueListenable: currentPageNotifier,
+                    builder: (context, currentPage, child) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(banners.length, (index) {
                           return Container(
-                            width: 7,
-                            height: 7,
                             margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                            width: 8.0,
+                            height: 8.0,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: pageController.page?.round() == index
-                                  ? AppColors.primaryColor // Active indicator
-                                  : const Color(
-                                      0xFFD9D9D9), // Inactive indicator
+                              color: currentPage == index
+                                  ? AppColors.primaryColor
+                                  : Colors.white.withOpacity(0.5),
                             ),
                           );
-                        },
+                        }),
                       );
-                    }),
+                    },
                   ),
                 ),
             ],

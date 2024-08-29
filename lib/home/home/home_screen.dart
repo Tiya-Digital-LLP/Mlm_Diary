@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -916,19 +918,37 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget sliderHome(List<GetBannerData> banners, context) {
-    // Define a page controller with desired properties
+  Widget sliderHome(List<GetBannerData> banners, BuildContext context) {
     PageController pageController = PageController(
-      initialPage: 0, // Set the initial page index
+      initialPage: 0,
       viewportFraction: 1,
     );
+
+    // ValueNotifier to keep track of the current page
+    ValueNotifier<int> currentPageNotifier = ValueNotifier<int>(0);
+
+    // Timer to auto-slide every 3 seconds
+    Timer.periodic(const Duration(seconds: 6), (Timer timer) {
+      int currentPage = currentPageNotifier.value;
+      if (currentPage < banners.length - 1) {
+        currentPageNotifier.value = currentPage + 1;
+      } else {
+        currentPageNotifier.value = 0;
+      }
+
+      // Animate to the next page
+      pageController.animateToPage(
+        currentPageNotifier.value,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeIn,
+      );
+    });
 
     return SizedBox(
       height: MediaQuery.of(context).size.width / 1.9,
       child: Stack(
         alignment: Alignment.bottomRight,
         children: [
-          // Use PageView.builder with the defined page controller
           PageView.builder(
             controller: pageController,
             itemCount: banners.length,
@@ -967,7 +987,34 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               );
             },
-            onPageChanged: (index) {},
+            onPageChanged: (index) {
+              currentPageNotifier.value = index;
+            },
+          ),
+          Positioned(
+            bottom: 10,
+            right: 10,
+            child: ValueListenableBuilder<int>(
+              valueListenable: currentPageNotifier,
+              builder: (context, currentPage, child) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(banners.length, (index) {
+                    return Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                      width: 8.0,
+                      height: 8.0,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: currentPage == index
+                            ? AppColors.primaryColor
+                            : Colors.white.withOpacity(0.5),
+                      ),
+                    );
+                  }),
+                );
+              },
+            ),
           ),
         ],
       ),

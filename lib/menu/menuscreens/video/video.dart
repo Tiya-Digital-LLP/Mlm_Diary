@@ -28,7 +28,9 @@ class _YourWidgetState extends State<Video> {
   @override
   void initState() {
     super.initState();
-    controller.fetchVideoList();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.fetchVideoList();
+    });
   }
 
   @override

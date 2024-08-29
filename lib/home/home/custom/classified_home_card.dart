@@ -261,16 +261,16 @@ class _FavouritrCardState extends State<ClassifiedHomeCard> {
                         ),
                       ),
                       child: Center(
-                        child: Text(widget.type,
-                            style: TextStyle(
-                              color: widget.isPopular
-                                  ? Colors.black
-                                  : AppColors.white,
-                              fontSize: 11,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: Assets.fontsSatoshiRegular,
-                            )),
-                      ),
+                          child: Text(
+                        '${widget.type[0].toUpperCase()}${widget.type.substring(1)}',
+                        style: TextStyle(
+                          color:
+                              widget.isPopular ? Colors.black : AppColors.white,
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: Assets.fontsSatoshiRegular,
+                        ),
+                      )),
                     ),
                   ],
                 ),

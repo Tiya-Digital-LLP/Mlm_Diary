@@ -200,7 +200,7 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
                       ),
                       child: Center(
                         child: Text(
-                          widget.type,
+                          '${widget.type[0].toUpperCase()}${widget.type.substring(1)}',
                           style: textStyleW700(
                             size.width * 0.026,
                             AppColors.white,

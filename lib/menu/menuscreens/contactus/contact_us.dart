@@ -1,6 +1,7 @@
 import 'package:country_calling_code_picker/country.dart';
 import 'package:country_calling_code_picker/country_code_picker.dart';
 import 'package:country_calling_code_picker/functions.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -14,6 +15,7 @@ import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/border_text_field.dart';
 import 'package:mlmdiary/widgets/custom_border_container.dart';
 import 'package:mlmdiary/widgets/normal_button.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ContactUs extends StatefulWidget {
   const ContactUs({super.key});
@@ -290,10 +292,20 @@ class _ContactUsState extends State<ContactUs> {
                               style: textStyleW700(
                                   size.width * 0.060, AppColors.blackText),
                             ),
-                            80.sbw,
+                            60.sbw,
                             Expanded(
-                              child: SvgPicture.asset(
-                                Assets.svgMobileIconContactUs,
+                              child: IconButton(
+                                onPressed: () {
+                                  final Uri phoneUri =
+                                      Uri(scheme: 'tel', path: '8866409966');
+                                  launchUrl(phoneUri);
+                                  if (kDebugMode) {
+                                    print('tap with number');
+                                  }
+                                },
+                                icon: SvgPicture.asset(
+                                  Assets.svgMobileIconContactUs,
+                                ),
                               ),
                             ),
                           ],
