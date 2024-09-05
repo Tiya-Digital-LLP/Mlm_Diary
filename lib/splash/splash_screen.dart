@@ -12,6 +12,7 @@ import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/splash/controller/version_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -104,6 +105,12 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _showUpdateDialog(context) {
+    const String androidLink =
+        'https://play.google.com/store/apps/details?id=com.mlm.mlmdiary';
+    const String iosLink =
+        'https://apps.apple.com/app/mlm-diary-network-marketing/id6636474809';
+
+    String link = Platform.isAndroid ? androidLink : iosLink;
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -179,11 +186,7 @@ class _SplashScreenState extends State<SplashScreen> {
                             color: AppColors.primaryColor),
                         child: TextButton(
                           onPressed: () {
-                            if (Platform.isAndroid) {
-                              // _openGooglePlayStore();
-                            } else if (Platform.isIOS) {
-                              // _launchAppStore();
-                            }
+                            launchUrl(Uri.parse(link));
                           },
                           child: const Text(
                             'Update',

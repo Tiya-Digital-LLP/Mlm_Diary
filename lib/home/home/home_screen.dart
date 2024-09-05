@@ -936,12 +936,14 @@ class _HomeScreenState extends State<HomeScreen> {
         currentPageNotifier.value = 0;
       }
 
-      // Animate to the next page
-      pageController.animateToPage(
-        currentPageNotifier.value,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeIn,
-      );
+      // Ensure the PageController is attached to any PageView
+      if (pageController.hasClients) {
+        pageController.animateToPage(
+          currentPageNotifier.value,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeIn,
+        );
+      }
     });
 
     return SizedBox(

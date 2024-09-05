@@ -78,11 +78,14 @@ class _AddPostState extends State<AddPost> {
           child: SingleChildScrollView(
             child: Column(
               children: [
+                const Align(
+                  alignment: Alignment.topLeft,
+                  child: Text('Comments'),
+                ),
                 Obx(() => TextField(
                       controller: controller.comments.value,
                       maxLines: 10,
                       decoration: InputDecoration(
-                        labelText: 'Comments',
                         border: UnderlineInputBorder(
                           borderSide: BorderSide(
                             color: controller.postError.value

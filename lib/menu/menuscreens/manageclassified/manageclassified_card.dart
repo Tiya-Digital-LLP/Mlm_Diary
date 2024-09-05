@@ -213,18 +213,6 @@ class _ManageClassifiedCardState extends State<ManageClassifiedCard> {
                 ),
                 Row(
                   children: [
-                    // InkWell(
-                    //   onTap: () {
-                    //     widget.controller
-                    //         .boostOnTopClassified(widget.classifiedId, context);
-                    //   },
-                    //   child: Ink(
-                    //     height: size.height * 0.030,
-                    //     width: size.height * 0.030,
-                    //     child: SvgPicture.asset(Assets.svgBoostClassified),
-                    //   ),
-                    // ),
-                    10.sbw,
                     InkWell(
                       onTap: () async {
                         bool success = await widget.controller

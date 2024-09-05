@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
-import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 class PremiumPlan extends StatefulWidget {
   const PremiumPlan({super.key});
@@ -13,20 +12,8 @@ class PremiumPlan extends StatefulWidget {
 }
 
 class _PremiumPlanState extends State<PremiumPlan> {
-  late Razorpay _razorpay;
-
-  @override
-  void initState() {
-    super.initState();
-    _razorpay = Razorpay();
-    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, handlePaymentErrorResponse);
-    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, handlePaymentSuccessResponse);
-    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, handleExternalWalletSelected);
-  }
-
   @override
   void dispose() {
-    _razorpay.clear();
     super.dispose();
   }
 
@@ -70,47 +57,12 @@ class _PremiumPlanState extends State<PremiumPlan> {
                   if (kDebugMode) {
                     print('tap');
                   }
-                  var options = {
-                    'key': 'rzp_live_foyJnC4PMTEx8U',
-                    'amount': 1000,
-                    'name': 'Aman Talaviya.',
-                    'description': 'Fine T-Shirt',
-                    'retry': {'enabled': true, 'max_count': 1},
-                    'send_sms_hash': true,
-                    'prefill': {
-                      'contact': '9274529956',
-                      'email': 'amantalaviya29@gmail.com'
-                    },
-                    'external': {
-                      'wallets': ['paytm']
-                    }
-                  };
-                  _razorpay.open(options);
                 },
                 child: const Text("Pay with Razorpay")),
           ],
         ),
       ),
     );
-  }
-
-  void handlePaymentErrorResponse(PaymentFailureResponse response) {
-    showAlertDialog(context, "Payment Failed",
-        "Code: ${response.code}\nDescription: ${response.message}\nMetadata:${response.error.toString()}");
-    if (kDebugMode) {
-      print(
-          "Code: ${response.code}\nDescription: ${response.message}\nMetadata:${response.error.toString()}");
-    }
-  }
-
-  void handlePaymentSuccessResponse(PaymentSuccessResponse response) {
-    showAlertDialog(
-        context, "Payment Successful", "Payment ID: ${response.paymentId}");
-  }
-
-  void handleExternalWalletSelected(ExternalWalletResponse response) {
-    showAlertDialog(
-        context, "External Wallet Selected", "${response.walletName}");
   }
 
   void showAlertDialog(BuildContext context, String title, String message) {

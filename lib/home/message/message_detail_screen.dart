@@ -95,7 +95,7 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
                     post.id ?? 0,
                   );
                   Get.toNamed(
-                    Routes.userprofilescreencopy,
+                    Routes.userprofilescreen,
                     arguments: post,
                   );
                 },

@@ -98,10 +98,10 @@ class HomeController extends GetxController {
     // ValueNotifier to keep track of the current page
     ValueNotifier<int> currentPageNotifier = ValueNotifier<int>(0);
 
-    // Timer to auto-slide every 3 seconds
+    // Timer to auto-slide every 6 seconds
     Timer.periodic(const Duration(seconds: 6), (Timer timer) {
       int currentPage = currentPageNotifier.value;
-      if (currentPage < banners.length - 1) {
+      if (currentPage < popupbanners.length - 1) {
         currentPageNotifier.value = currentPage + 1;
       } else {
         currentPageNotifier.value = 0;
@@ -116,107 +116,142 @@ class HomeController extends GetxController {
     });
 
     Get.dialog(
-      Center(
-        child: Container(
-          width: Get.width * 0.8,
-          height: Get.height * 0.5,
-          padding: const EdgeInsets.all(16.0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16.0),
-          ),
-          child: Stack(
-            children: [
-              PageView.builder(
-                controller: pageController,
-                itemCount: popupbanners.length,
-                itemBuilder: (context, index) {
-                  final banner = popupbanners[index];
-                  return GestureDetector(
-                    onTap: () async {
-                      SharedPreferences prefs =
-                          await SharedPreferences.getInstance();
-                      String? apiToken = prefs.getString(Constants.accessToken);
+      TweenAnimationBuilder(
+        tween: Tween<Offset>(
+          begin: const Offset(1.0, 1.0),
+          end: const Offset(0.3, 0.3),
+        ),
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+        builder: (context, Offset offset, child) {
+          return Transform.translate(
+            offset: Offset(
+              offset.dx *
+                  Get.width *
+                  0.5, // Adjust the animation offset for horizontal
+              offset.dy *
+                  Get.height *
+                  0.5, // Adjust the animation offset for vertical
+            ),
+            child: child,
+          );
+        },
+        // ignore: deprecated_member_use
+        child: WillPopScope(
+          onWillPop: () async {
+            // Animate back to bottom right when closing
+            await Future.delayed(const Duration(milliseconds: 100));
+            Get.back();
+            return true;
+          },
+          child: Center(
+            child: Container(
+              width: Get.width * 0.6,
+              height: Get.height * 0.5,
+              padding: const EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              child: Stack(
+                children: [
+                  PageView.builder(
+                    controller: pageController,
+                    itemCount: popupbanners.length,
+                    itemBuilder: (context, index) {
+                      final banner = popupbanners[index];
+                      return GestureDetector(
+                        onTap: () async {
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          String? apiToken =
+                              prefs.getString(Constants.accessToken);
 
-                      if (apiToken == null) {
-                        // ignore: use_build_context_synchronously
-                        showSignupDialog(context);
-                        return;
-                      }
-                      if (banner.weblink == null || banner.weblink!.isEmpty) {
-                        // ignore: use_build_context_synchronously
-                        showToasterrorborder('No Any Url Found', context);
-                      } else {
-                        launchUrl(
-                          Uri.parse(banner.weblink.toString()),
-                          mode: LaunchMode.externalApplication,
-                        );
-                        // ignore: use_build_context_synchronously
-                        bannerClick(banner.id ?? 0, context);
-                      }
-                    },
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10.0),
-                      child: banner.weblink == null || banner.weblink!.isEmpty
-                          ? Center(
-                              child: Text(
-                                'Banner not available',
-                                style: textStyleW700(
-                                  MediaQuery.of(context).size.width * 0.048,
-                                  AppColors.blackText,
-                                ).copyWith(
-                                  decoration: TextDecoration.none,
+                          if (apiToken == null) {
+                            // ignore: use_build_context_synchronously
+                            showSignupDialog(context);
+                            return;
+                          }
+                          if (banner.weblink == null ||
+                              banner.weblink!.isEmpty) {
+                            // ignore: use_build_context_synchronously
+                            showToasterrorborder('No Any Url Found', context);
+                          } else {
+                            launchUrl(
+                              Uri.parse(banner.weblink.toString()),
+                              mode: LaunchMode.externalApplication,
+                            );
+                            // ignore: use_build_context_synchronously
+                            bannerClick(banner.id ?? 0, context);
+                          }
+                        },
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10.0),
+                          child: banner.weblink == null ||
+                                  banner.weblink!.isEmpty
+                              ? Center(
+                                  child: Text(
+                                    'Banner not available',
+                                    style: textStyleW700(
+                                      MediaQuery.of(context).size.width * 0.048,
+                                      AppColors.blackText,
+                                    ).copyWith(
+                                      decoration: TextDecoration.none,
+                                    ),
+                                  ),
+                                )
+                              : Image.network(
+                                  banner.image ?? '',
+                                  fit: BoxFit.fill,
                                 ),
-                              ),
-                            )
-                          : Image.network(
-                              banner.image ?? '',
-                              fit: BoxFit.fill,
-                            ),
-                    ),
-                  );
-                },
-                onPageChanged: (index) {
-                  currentPageNotifier.value = index;
-                },
-              ),
-              Positioned(
-                right: 0,
-                top: 0,
-                child: IconButton(
-                  icon: const Icon(Icons.cancel, color: Colors.red),
-                  onPressed: () {
-                    Get.back();
-                  },
-                ),
-              ),
-              if (popupbanners.length > 1)
-                Positioned(
-                  bottom: 10,
-                  right: 10,
-                  child: ValueListenableBuilder<int>(
-                    valueListenable: currentPageNotifier,
-                    builder: (context, currentPage, child) {
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(banners.length, (index) {
-                          return Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                            width: 8.0,
-                            height: 8.0,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: currentPage == index
-                                  ? AppColors.primaryColor
-                                  : Colors.white.withOpacity(0.5),
-                            ),
-                          );
-                        }),
+                        ),
                       );
                     },
+                    onPageChanged: (index) {
+                      currentPageNotifier.value = index;
+                    },
                   ),
-                ),
-            ],
+                  Positioned(
+                    right: 0,
+                    top: 0,
+                    child: IconButton(
+                      icon: const Icon(Icons.cancel, color: Colors.red),
+                      onPressed: () {
+                        Get.back();
+                      },
+                    ),
+                  ),
+                  if (popupbanners.length > 1)
+                    Positioned(
+                      bottom: 10,
+                      right: 10,
+                      child: ValueListenableBuilder<int>(
+                        valueListenable: currentPageNotifier,
+                        builder: (context, currentPage, child) {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children:
+                                List.generate(popupbanners.length, (index) {
+                              return Container(
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 4.0),
+                                width: 8.0,
+                                height: 8.0,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: currentPage == index
+                                      ? AppColors.primaryColor
+                                      : Colors.white.withOpacity(0.5),
+                                ),
+                              );
+                            }),
+                          );
+                        },
+                      ),
+                    ),
+                ],
+              ),
+            ),
           ),
         ),
       ),

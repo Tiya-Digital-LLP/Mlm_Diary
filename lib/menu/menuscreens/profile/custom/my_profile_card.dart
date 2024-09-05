@@ -148,7 +148,7 @@ class _MyProfileCardState extends State<MyProfileCard> {
                               width: 7,
                             ),
                             Text(
-                              "Added Classified",
+                              "Added Post",
                               style: textStyleW400(size.width * 0.037,
                                   AppColors.blackText.withOpacity(0.5)),
                             ),

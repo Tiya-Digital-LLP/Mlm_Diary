@@ -1,14 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/data/constants.dart';
+import 'package:mlmdiary/generated/get_followers_entity.dart';
+import 'package:mlmdiary/generated/get_following_entity.dart';
 import 'package:mlmdiary/generated/get_user_all_post_entity.dart';
+import 'package:mlmdiary/generated/get_views_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
@@ -17,11 +19,218 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class UserProfileController extends GetxController {
   RxList<GetUserAllPostData> postallList = <GetUserAllPostData>[].obs;
+  var followers = <GetFollowersData>[].obs;
+  var following = <GetFollowingData>[].obs;
+  var views = <GetViewsData>[].obs;
 
   var isLoading = false.obs;
   var isEndOfData = false.obs;
 
-  final ScrollController scrollController = ScrollController();
+  Future<void> getViews(int page, int userId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = Platform.isAndroid ? 'android' : 'ios';
+
+    if (kDebugMode) {
+      print('Fetching followers for user ID: $userId');
+    }
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri = Uri.parse('${Constants.baseUrl}${Constants.getViews}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['user_id'] = userId.toString();
+        request.fields['page'] = page.toString();
+
+        if (kDebugMode) {
+          print('Sending request to: ${uri.toString()}');
+        } // Print request URL
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (kDebugMode) {
+          print('Response status code: ${response.statusCode}');
+        } // Print status code
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          if (kDebugMode) {
+            print('Response data: $data');
+          } // Print response data
+
+          var getViewsEntity = GetViewsEntity.fromJson(data);
+
+          if (getViewsEntity.data.isNotEmpty) {
+            views.addAll(getViewsEntity.data);
+
+            isEndOfData(false); // More data is available
+          } else {
+            isEndOfData(true); // No more data available
+          }
+
+          if (kDebugMode) {
+            print('GetViews: ${getViewsEntity.data}');
+          } // Print followers
+        } else {
+          if (kDebugMode) {
+            print('Error: ${response.body}');
+          } // Print error message
+        }
+      } else {
+        //
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error: $e');
+      }
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<void> getFollowers(int page, int userId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = Platform.isAndroid ? 'android' : 'ios';
+
+    if (kDebugMode) {
+      print('Fetching followers for user ID: $userId');
+    }
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri = Uri.parse('${Constants.baseUrl}${Constants.getFollowers}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['user_id'] = userId.toString();
+        request.fields['page'] = page.toString();
+
+        if (kDebugMode) {
+          print('Sending request to: ${uri.toString()}');
+        } // Print request URL
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (kDebugMode) {
+          print('Response status code: ${response.statusCode}');
+        } // Print status code
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          if (kDebugMode) {
+            print('Response data: $data');
+          } // Print response data
+
+          var getFollowerEntity = GetFollowersEntity.fromJson(data);
+
+          if (getFollowerEntity.data != null &&
+              getFollowerEntity.data!.isNotEmpty) {
+            followers.addAll(getFollowerEntity.data!);
+
+            isEndOfData(false); // More data is available
+          } else {
+            isEndOfData(true); // No more data available
+          }
+
+          if (kDebugMode) {
+            print('Followers: ${getFollowerEntity.data}');
+          } // Print followers
+        } else {
+          if (kDebugMode) {
+            print('Error: ${response.body}');
+          } // Print error message
+        }
+      } else {
+        //
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error: $e');
+      }
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  // Follow-Unfollow
+  Future<void> getFollowing(int page, int userId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = Platform.isAndroid ? 'android' : 'ios';
+
+    if (kDebugMode) {
+      print('Fetching followers for user ID: $userId');
+    }
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri = Uri.parse('${Constants.baseUrl}${Constants.getFollowing}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['user_id'] = userId.toString();
+        request.fields['page'] = page.toString();
+
+        if (kDebugMode) {
+          print('Sending request to: ${uri.toString()}');
+        } // Print request URL
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (kDebugMode) {
+          print('Response status code: ${response.statusCode}');
+        } // Print status code
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          if (kDebugMode) {
+            print('Response data: $data');
+          } // Print response data
+
+          var getFollowingEntity = GetFollowingEntity.fromJson(data);
+
+          if (getFollowingEntity.data != null &&
+              getFollowingEntity.data!.isNotEmpty) {
+            following.addAll(getFollowingEntity.data!);
+            isEndOfData(false); // More data is available
+          } else {
+            isEndOfData(true); // No more data available
+          }
+
+          if (kDebugMode) {
+            print('Following: ${getFollowingEntity.data}');
+          } // Print followers
+        } else {
+          if (kDebugMode) {
+            print('Error: ${response.body}');
+          } // Print error message
+        }
+      } else {
+        //
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error: $e');
+      } // Print exception
+    } finally {
+      isLoading(false);
+    }
+  }
 
   var selectedType = 'All'.obs;
   final List<String> types = [

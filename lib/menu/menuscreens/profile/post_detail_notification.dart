@@ -132,7 +132,7 @@ class _PostDetailsScreenState extends State<PostDetailNotification> {
                           child: InkWell(
                             onTap: () async {
                               Get.toNamed(
-                                Routes.userprofilescreencopy,
+                                Routes.userprofilescreen,
                                 arguments: post,
                               );
                               await userProfileController.fetchUserAllPost(

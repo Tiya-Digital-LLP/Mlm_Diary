@@ -23,16 +23,12 @@ class Choice {
 }
 
 List<Choice> choices = <Choice>[
-  Choice(title: 'Sell Post', icon: true.obs),
-  Choice(title: 'Buy Post', icon: true.obs),
-  Choice(title: 'Domestic', icon: true.obs),
-  Choice(title: 'International', icon: true.obs),
-  Choice(title: 'Category, Type, Grade Match', icon: true.obs),
+  Choice(title: 'Post', icon: true.obs),
+  Choice(title: 'Classified', icon: true.obs),
   Choice(title: 'Followers', icon: true.obs),
   Choice(title: 'Post Interested', icon: true.obs),
   Choice(title: 'Post Comment', icon: true.obs),
   Choice(title: 'Favourite', icon: true.obs),
-  Choice(title: 'Business Profile Like', icon: true.obs),
   Choice(title: 'User Follow', icon: true.obs),
   Choice(title: 'User Unfollow', icon: true.obs),
   Choice(title: 'Live Price', icon: true.obs),

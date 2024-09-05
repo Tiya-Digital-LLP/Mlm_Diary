@@ -60,17 +60,104 @@ class _UserProfileScreenState extends State<UserProfileScreen>
   late TabController _tabController;
 
   RxBool isBookmarked = false.obs;
+  late ScrollController _viewersScrollController;
+  late ScrollController _followersScrollController;
+  late ScrollController _followingScrollController;
+  bool isFetchingViewrs = false;
+
+  bool isFetchingFollowers = false;
+  bool isFetchingFollowing = false;
 
   @override
   void initState() {
     super.initState();
-    // Extract user_id from arguments
     final int userId = Get.arguments['user_id'] as int;
-    // Fetch user post
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.fetchUserPost(userId, context);
+      _refreshFollowers(userId);
+      _refreshFollowing(userId);
+      _refreshViews(userId);
     });
+
+    _followersScrollController = ScrollController();
+    _followingScrollController = ScrollController();
+    _viewersScrollController = ScrollController();
+
+    _followersScrollController.addListener(() {
+      if (_followersScrollController.position.pixels ==
+          _followersScrollController.position.maxScrollExtent) {
+        _loadMoreFollowers(userId);
+      }
+    });
+
+    _followingScrollController.addListener(() {
+      if (_followingScrollController.position.pixels ==
+          _followingScrollController.position.maxScrollExtent) {
+        _loadMoreFollowing(userId);
+      }
+    });
+
+    _viewersScrollController.addListener(() {
+      if (_viewersScrollController.position.pixels ==
+          _viewersScrollController.position.maxScrollExtent) {
+        _loadMoreViewers(userId);
+      }
+    });
+
     _tabController = TabController(length: 2, vsync: this);
+  }
+
+  Future<void> _refreshFollowers(int userId) async {
+    userProfileController.followers.clear();
+    await userProfileController.getFollowers(1, userId);
+  }
+
+  Future<void> _refreshFollowing(int userId) async {
+    userProfileController.following.clear();
+    await userProfileController.getFollowing(1, userId);
+  }
+
+  Future<void> _refreshViews(int userId) async {
+    userProfileController.views.clear();
+    await userProfileController.getViews(1, userId);
+  }
+
+  Future<void> _loadMoreFollowers(int userId) async {
+    if (!isFetchingFollowers) {
+      isFetchingFollowers = true;
+      int nextPage = (userProfileController.followers.length ~/ 10) +
+          1; // Assuming 10 items per page
+      await userProfileController.getFollowers(nextPage, userId);
+      isFetchingFollowers = false;
+    }
+  }
+
+  Future<void> _loadMoreFollowing(int userId) async {
+    if (!isFetchingFollowing) {
+      isFetchingFollowing = true;
+      int nextPage = (userProfileController.following.length ~/ 10) +
+          1; // Assuming 10 items per page
+      await userProfileController.getFollowing(nextPage, userId);
+      isFetchingFollowing = false;
+    }
+  }
+
+  Future<void> _loadMoreViewers(int userId) async {
+    if (!isFetchingViewrs) {
+      isFetchingViewrs = true;
+      int nextPage = (userProfileController.views.length ~/ 10) +
+          1; // Assuming 10 items per page
+      await userProfileController.getViews(nextPage, userId);
+      isFetchingViewrs = false;
+    }
+  }
+
+  @override
+  void dispose() {
+    _followersScrollController.dispose();
+    _followingScrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -292,55 +379,82 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                 20.sbw,
                                 Row(
                                   children: [
-                                    Column(
-                                      children: [
-                                        Text(
-                                          post.followersCount.toString(),
-                                          style: textStyleW700(
-                                              size.width * 0.045,
-                                              AppColors.blackText),
-                                        ),
-                                        Text(
-                                          'Followers',
-                                          style: textStyleW500(
-                                              size.width * 0.035,
-                                              AppColors.blackText),
-                                        ),
-                                      ],
+                                    GestureDetector(
+                                      onTap: () async {
+                                        showModalBottomSheet(
+                                          context: context,
+                                          builder: (context) => Container(
+                                              child: buildTabBarView()),
+                                        );
+                                      },
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            post.followersCount.toString(),
+                                            style: textStyleW700(
+                                                size.width * 0.045,
+                                                AppColors.blackText),
+                                          ),
+                                          Text(
+                                            'Followers',
+                                            style: textStyleW500(
+                                                size.width * 0.035,
+                                                AppColors.blackText),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                     20.sbw,
-                                    Column(
-                                      children: [
-                                        Text(
-                                          post.followingCount.toString(),
-                                          style: textStyleW700(
-                                              size.width * 0.045,
-                                              AppColors.blackText),
-                                        ),
-                                        Text(
-                                          'Following',
-                                          style: textStyleW500(
-                                              size.width * 0.035,
-                                              AppColors.blackText),
-                                        ),
-                                      ],
+                                    GestureDetector(
+                                      onTap: () async {
+                                        showModalBottomSheet(
+                                          context: context,
+                                          builder: (context) =>
+                                              buildTabBarView(),
+                                        );
+                                      },
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            post.followingCount.toString(),
+                                            style: textStyleW700(
+                                                size.width * 0.045,
+                                                AppColors.blackText),
+                                          ),
+                                          Text(
+                                            'Following',
+                                            style: textStyleW500(
+                                                size.width * 0.035,
+                                                AppColors.blackText),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                     20.sbw,
-                                    Column(
-                                      children: [
-                                        Text(
-                                          post.views.toString(),
-                                          style: textStyleW700(
-                                              size.width * 0.045,
-                                              AppColors.blackText),
-                                        ),
-                                        Text(
-                                          'Profile Visits',
-                                          style: textStyleW500(
-                                              size.width * 0.035,
-                                              AppColors.blackText),
-                                        ),
-                                      ],
+                                    GestureDetector(
+                                      onTap: () async {
+                                        showModalBottomSheet(
+                                          context: context,
+                                          builder: (context) =>
+                                              buildTabBarView(),
+                                        );
+                                      },
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            post.views.toString(),
+                                            style: textStyleW700(
+                                                size.width * 0.045,
+                                                AppColors.blackText),
+                                          ),
+                                          Text(
+                                            'Profile Visits',
+                                            style: textStyleW500(
+                                                size.width * 0.035,
+                                                AppColors.blackText),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -974,6 +1088,313 @@ class _UserProfileScreenState extends State<UserProfileScreen>
               : const Center(child: Text('No data available'));
         }
       }),
+    );
+  }
+
+  Widget buildTabBarView() {
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          automaticallyImplyLeading: false,
+          title: const TabBar(
+            tabs: [
+              Tab(text: 'Followers'),
+              Tab(text: 'Following'),
+              Tab(text: 'Views'),
+            ],
+          ),
+        ),
+        body: TabBarView(
+          key: UniqueKey(),
+          children: [
+            Obx(() => userProfileController.followers.isEmpty
+                ? const Center(child: Text('No followers'))
+                : ListView.builder(
+                    controller:
+                        _followersScrollController, // Set the controller here
+                    itemCount: userProfileController.followers.length,
+                    itemBuilder: (context, index) {
+                      if (index == userProfileController.followers.length) {
+                        // Show the loader at the bottom while loading more data
+                        return const Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(16),
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                      }
+                      var follower = userProfileController.followers[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: InkWell(
+                          onTap: () async {
+                            controller.fetchUserPost(follower.id ?? 0, context);
+                            await userProfileController.fetchUserAllPost(
+                              1,
+                              follower.id.toString(),
+                            );
+                            Get.back();
+                          },
+                          child: Card(
+                            color: Colors.white,
+                            elevation: 9,
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Container(
+                                        width: 30,
+                                        height: 30,
+                                        decoration: ShapeDecoration(
+                                          image: DecorationImage(
+                                            image: follower.imageUrl != null
+                                                ? NetworkImage(
+                                                    follower.imageUrl
+                                                        .toString(),
+                                                  )
+                                                : const AssetImage(
+                                                        'assets/more.png')
+                                                    as ImageProvider,
+                                            fit: BoxFit.cover,
+                                          ),
+                                          shape: const OvalBorder(),
+                                        ),
+                                      ),
+                                      8.sbw,
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            follower.name ?? "Unknown",
+                                            style: const TextStyle(
+                                                fontSize: 14.0,
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.black,
+                                                fontFamily:
+                                                    'assets/fonst/Metropolis-Black.otf'),
+                                          ),
+                                          Text(
+                                            follower.immlm ?? "Unknown",
+                                            style: TextStyle(
+                                              color: AppColors.blackText,
+                                              fontSize: 12.0,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  const Icon(
+                                    Icons.arrow_right,
+                                    size: 30,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  )),
+            Obx(() => userProfileController.following.isEmpty
+                ? const Center(child: Text('No following'))
+                : ListView.builder(
+                    controller:
+                        _followingScrollController, // Set the controller here
+                    itemCount: userProfileController.following.length,
+                    itemBuilder: (context, index) {
+                      if (index == userProfileController.following.length) {
+                        // Show the loader at the bottom while loading more data
+                        return const Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(16),
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                      }
+                      var follow = userProfileController.following[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: InkWell(
+                          onTap: () async {
+                            controller.fetchUserPost(follow.id ?? 0, context);
+                            await userProfileController.fetchUserAllPost(
+                              1,
+                              follow.id.toString(),
+                            );
+                            Get.back();
+                          },
+                          child: Card(
+                            color: Colors.white,
+                            elevation: 9,
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Container(
+                                        width: 30,
+                                        height: 30,
+                                        decoration: ShapeDecoration(
+                                          image: DecorationImage(
+                                            image: follow.imageUrl != null
+                                                ? NetworkImage(
+                                                    follow.imageUrl.toString(),
+                                                  )
+                                                : const AssetImage(
+                                                        'assets/more.png')
+                                                    as ImageProvider,
+                                            fit: BoxFit.cover,
+                                          ),
+                                          shape: const OvalBorder(),
+                                        ),
+                                      ),
+                                      8.sbw,
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            follow.name ?? "Unknown",
+                                            style: const TextStyle(
+                                                fontSize: 14.0,
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.black,
+                                                fontFamily:
+                                                    'assets/fonst/Metropolis-Black.otf'),
+                                          ),
+                                          Text(
+                                            follow.immlm ?? "Unknown",
+                                            style: TextStyle(
+                                              color: AppColors.blackText,
+                                              fontSize: 12.0,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  const Icon(
+                                    Icons.arrow_right,
+                                    size: 30,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  )),
+            Obx(() => userProfileController.views.isEmpty
+                ? const Center(child: Text('No Views'))
+                : ListView.builder(
+                    controller:
+                        _viewersScrollController, // Set the controller here
+                    itemCount: userProfileController.views.length,
+                    itemBuilder: (context, index) {
+                      if (index == userProfileController.views.length) {
+                        // Show the loader at the bottom while loading more data
+                        return const Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(16),
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                      }
+                      var viewers = userProfileController.views[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: InkWell(
+                          onTap: () async {
+                            controller.fetchUserPost(viewers.id, context);
+                            await userProfileController.fetchUserAllPost(
+                              1,
+                              viewers.id.toString(),
+                            );
+                            Get.back();
+                          },
+                          child: Card(
+                            color: Colors.white,
+                            elevation: 9,
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Container(
+                                        width: 30,
+                                        height: 30,
+                                        decoration: ShapeDecoration(
+                                          image: DecorationImage(
+                                            // ignore: unnecessary_null_comparison
+                                            image: viewers.userimageUrl != null
+                                                ? NetworkImage(
+                                                    viewers.userimageUrl
+                                                        .toString(),
+                                                  )
+                                                : const AssetImage(
+                                                        'assets/more.png')
+                                                    as ImageProvider,
+                                            fit: BoxFit.cover,
+                                          ),
+                                          shape: const OvalBorder(),
+                                        ),
+                                      ),
+                                      8.sbw,
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            viewers.name,
+                                            style: const TextStyle(
+                                                fontSize: 14.0,
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.black,
+                                                fontFamily:
+                                                    'assets/fonst/Metropolis-Black.otf'),
+                                          ),
+                                          Text(
+                                            viewers.immlm,
+                                            style: TextStyle(
+                                              color: AppColors.blackText,
+                                              fontSize: 12.0,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  const Icon(
+                                    Icons.arrow_right,
+                                    size: 30,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  )),
+          ],
+        ),
+      ),
     );
   }
 

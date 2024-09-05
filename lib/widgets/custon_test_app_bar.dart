@@ -40,6 +40,7 @@ class CustonTestAppBar extends StatelessWidget implements PreferredSizeWidget {
             onTap: () {
               homeScreenController.newIndex.value = 0;
               homeScreenController.tappedIndex.value = 0;
+              Get.back();
             },
             customBorder: const CircleBorder(),
             child: SvgPicture.asset(Assets.svgBack),

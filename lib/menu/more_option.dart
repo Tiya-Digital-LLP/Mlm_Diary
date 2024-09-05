@@ -65,7 +65,6 @@ class _moreState extends State<MoreOptionScreen> {
   final LoginController loginController = Get.put(LoginController());
   final HomeScreenController homeScreenController =
       Get.put(HomeScreenController());
-  String? packageName;
   String appVersion = '';
 
   @override
@@ -78,7 +77,12 @@ class _moreState extends State<MoreOptionScreen> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
+    const String androidLink =
+        'https://play.google.com/store/apps/details?id=com.mlm.mlmdiary';
+    const String iosLink =
+        'https://apps.apple.com/app/mlm-diary-network-marketing/id6636474809';
 
+    String link = Platform.isAndroid ? androidLink : iosLink;
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0,
@@ -680,7 +684,9 @@ class _moreState extends State<MoreOptionScreen> {
                           size.width * 0.032, AppColors.blackText),
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        launchUrl(Uri.parse(link));
+                      },
                       child: Text(
                         'Check Latest Update',
                         style: textStyleW500(
@@ -802,7 +808,7 @@ class _moreState extends State<MoreOptionScreen> {
                       onTap: () {
                         shareApp(
                           url:
-                              "https://play.google.com/store/apps/details?id=$packageName",
+                              "https://play.google.com/store/apps/details?id=com.mlm.mlmdiary",
                         );
                       },
                       child: Container(
@@ -1021,7 +1027,7 @@ class _moreState extends State<MoreOptionScreen> {
                       case '15':
                         shareApp(
                           url:
-                              "https://play.google.com/store/apps/details?id=$packageName",
+                              "https://play.google.com/store/apps/details?id=com.mlm.mlmdiary",
                         );
                         break;
                       case '16':
@@ -1093,18 +1099,18 @@ class _moreState extends State<MoreOptionScreen> {
     await Share.shareXFiles([XFile(path)],
         // ignore: prefer_interpolation_to_compose_strings
         text:
-            'Plastic4trade Global B2B Polymer Raw Material Trading, Buy & Sale, Recycle Plastic Scrap, Rate, News, Update for Manufacturer, Trader, Exporter, Importer, Business App'
+            'MLM Diary app delivers the latest in MLM leaders, software, companies, products, trainers, business plans, news, blogs, videos, and more. Its the first online community for network marketing professionals.'
             "\n"
             '\n'
             'Download App'
             '\n'
             'Android:'
             '\n'
-            'https://play.google.com/store/apps/details?id=${packageName ?? ''}'
+            'https://play.google.com/store/apps/details?id=com.mlm.mlmdiary'
             '\n'
             '\n'
             'iOS:'
             '\n'
-            'https://apps.apple.com/app/plastic4trade/id6450507332');
+            'https://apps.apple.com/app/mlm-diary-network-marketing/id6636474809');
   }
 }

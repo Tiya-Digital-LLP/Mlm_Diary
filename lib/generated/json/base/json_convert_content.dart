@@ -121,6 +121,7 @@ import 'package:mlmdiary/generated/user_profile_count_view_entity.dart';
 import 'package:mlmdiary/generated/user_register_entity_entity.dart';
 import 'package:mlmdiary/generated/verify_phone_otp_entity.dart';
 import 'package:mlmdiary/generated/version_check_entity.dart';
+import 'package:mlmdiary/generated/get_views_entity.dart';
 
 JsonConvert jsonConvert = JsonConvert();
 
@@ -243,7 +244,12 @@ class JsonConvert {
         if (value == null) {
           return null;
         }
-        return convertFuncMap[type]!(value as Map<String, dynamic>) as T;
+        var covertFunc = convertFuncMap[type]!;
+        if (covertFunc is Map<String, dynamic>) {
+          return covertFunc(value as Map<String, dynamic>) as T;
+        } else {
+          return covertFunc(Map<String, dynamic>.from(value)) as T;
+        }
       } else {
         throw UnimplementedError(
             '$type unimplemented,you can try running the app again');
@@ -1152,6 +1158,14 @@ class JsonConvert {
       return data.map<VersionCheckEntity>((Map<String, dynamic> e) =>
           VersionCheckEntity.fromJson(e)).toList() as M;
     }
+    if (<GetViewsEntity>[] is M) {
+      return data.map<GetViewsEntity>((Map<String, dynamic> e) =>
+          GetViewsEntity.fromJson(e)).toList() as M;
+    }
+    if (<GetViewsData>[] is M) {
+      return data.map<GetViewsData>((Map<String, dynamic> e) =>
+          GetViewsData.fromJson(e)).toList() as M;
+    }
 
     debugPrint("$M not found");
 
@@ -1430,6 +1444,8 @@ class JsonConvertClassCollection {
     (UserRegisterEntityEntity).toString(): UserRegisterEntityEntity.fromJson,
     (VerifyPhoneOtpEntity).toString(): VerifyPhoneOtpEntity.fromJson,
     (VersionCheckEntity).toString(): VersionCheckEntity.fromJson,
+    (GetViewsEntity).toString(): GetViewsEntity.fromJson,
+    (GetViewsData).toString(): GetViewsData.fromJson,
   };
 
   bool containsKey(String type) {
