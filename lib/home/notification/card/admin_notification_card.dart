@@ -16,6 +16,7 @@ class AdminNotificationCard extends StatefulWidget {
   final String userNametype;
 
   final String type;
+  final String name;
 
   const AdminNotificationCard({
     super.key,
@@ -26,6 +27,7 @@ class AdminNotificationCard extends StatefulWidget {
     required this.controller,
     required this.type,
     required this.userNametype,
+    required this.name,
   });
 
   @override
@@ -52,86 +54,95 @@ class _ClassifiedCardState extends State<AdminNotificationCard> {
         borderRadius: BorderRadius.circular(14),
         color: AppColors.white,
       ),
-      child: Column(
-        children: [
-          Row(children: [
-            Container(
-              height: 75,
-              width: 75,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                image: DecorationImage(
-                  image: NetworkImage(widget.image),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              child: widget.image.isEmpty ? const Icon(Icons.person) : null,
+      child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+        Container(
+          height: 75,
+          width: 75,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            image: DecorationImage(
+              image: NetworkImage(widget.image),
+              fit: BoxFit.cover,
             ),
-            10.sbw,
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+          ),
+          child: widget.image.isEmpty ? const Icon(Icons.person) : null,
+        ),
+        16.sbw,
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    widget.userName,
+                    widget.userNametype,
                     style:
                         textStyleW700(size.width * 0.034, AppColors.blackText),
+                    maxLines: 2,
                   ),
-                  2.sbh,
                   Text(
                     postTimeFormatter.formatPostTime(widget.dateTime),
                     style:
                         textStyleW500(size.width * 0.030, AppColors.blackText),
                   ),
+                ],
+              ),
+              3.sbh,
+              Text(
+                widget.userName,
+                style: textStyleW700(size.width * 0.034, AppColors.blackText),
+                maxLines: 2,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(children: [
+                    Image.asset(
+                      Assets.imagesAdminlogo,
+                      height: 30,
+                      width: 30,
+                    ),
+                    3.sbw,
+                    SizedBox(
+                      width: size.width * 0.30,
+                      child: Text(
+                        widget.name,
+                        style: textStyleW700(
+                            size.width * 0.032, AppColors.blackText),
+                        maxLines: 1,
+                      ),
+                    ),
+                  ]),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(children: [
-                        Image.asset(
-                          Assets.imagesAdminlogo,
-                          height: 30,
-                          width: 30,
+                      Container(
+                        height: 10,
+                        width: 10,
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryColor,
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        3.sbw,
-                        Text(
-                          'Admin',
-                          style: textStyleW700(
-                              size.width * 0.032, AppColors.blackText),
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          Icons.delete,
+                          color: AppColors.redText,
                         ),
-                      ]),
-                      Row(
-                        children: [
-                          Container(
-                            height: 10,
-                            width: 10,
-                            decoration: BoxDecoration(
-                              color: AppColors.primaryColor,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          IconButton(
-                            icon: Icon(
-                              Icons.delete,
-                              color: AppColors.redText,
-                            ),
-                            onPressed: () =>
-                                LogoutDialog.show(context, () async {
-                              widget.controller.deleteNotification(
-                                  widget.classifiedId, context, widget.type);
-                              widget.controller
-                                  .fetchNotification(1, widget.type);
-                            }),
-                          ),
-                        ],
+                        onPressed: () => LogoutDialog.show(context, () async {
+                          widget.controller.deleteNotification(
+                              widget.classifiedId, context, widget.type);
+                          widget.controller.fetchNotification(1, widget.type);
+                        }),
                       ),
                     ],
                   ),
                 ],
               ),
-            )
-          ])
-        ],
-      ),
+            ],
+          ),
+        )
+      ]),
     );
   }
 }

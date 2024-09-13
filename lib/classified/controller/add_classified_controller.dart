@@ -1061,62 +1061,62 @@ class ClasifiedController extends GetxController {
   }
 
   Future<void> addReplyComment(int classifiedId, int commentId, context) async {
-  isLoading(true);
+    isLoading(true);
 
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  String? apiToken = prefs.getString(Constants.accessToken);
-  String device = '';
-  if (Platform.isAndroid) {
-    device = 'android';
-  } else if (Platform.isIOS) {
-    device = 'ios';
-  }
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = '';
+    if (Platform.isAndroid) {
+      device = 'android';
+    } else if (Platform.isIOS) {
+      device = 'ios';
+    }
 
-  try {
-    var connectivityResult = await Connectivity().checkConnectivity();
-    // ignore: unrelated_type_equality_checks
-    if (connectivityResult != ConnectivityResult.none) {
-      var uri = Uri.parse('${Constants.baseUrl}${Constants.addcommentreply}');
-      var request = http.MultipartRequest('POST', uri);
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri = Uri.parse('${Constants.baseUrl}${Constants.addcommentreply}');
+        var request = http.MultipartRequest('POST', uri);
 
-      request.fields['api_token'] = apiToken ?? '';
-      request.fields['device'] = device;
-      request.fields['classified_id'] = classifiedId.toString();
-      request.fields['comment_id'] = commentId.toString();
-      request.fields['comment'] = commment.value.text;
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['classified_id'] = classifiedId.toString();
+        request.fields['comment_id'] = commentId.toString();
+        request.fields['comment'] = commment.value.text;
 
-      final streamedResponse = await request.send();
-      final response = await http.Response.fromStream(streamedResponse);       
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
 
-      if (response.statusCode == 200) {
-        var data = jsonDecode(response.body);
-        var addCommentEntity = AddCommentEntity.fromJson(data);
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var addCommentEntity = AddCommentEntity.fromJson(data);
 
-        // Check if the status is 0 and show a toast message
-        if (data['status'] == 0) {
-          showToasterrorborder(data['message'], context);
+          // Check if the status is 0 and show a toast message
+          if (data['status'] == 0) {
+            showToasterrorborder(data['message'], context);
+          } else {
+            getCommentClassified(1, classifiedId, context);
+            if (kDebugMode) {
+              print('Success: $addCommentEntity');
+            }
+          }
         } else {
-          getCommentClassified(1, classifiedId, context);
           if (kDebugMode) {
-            print('Success: $addCommentEntity');
+            print("Error: ${response.body}");
           }
         }
       } else {
-        if (kDebugMode) {
-          print("Error: ${response.body}");
-        }
+        showToasterrorborder("No internet connection", context);
       }
-    } else {
-      showToasterrorborder("No internet connection", context);
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error: $e");
+      }
+    } finally {
+      isLoading(false);
     }
-  } catch (e) {
-    if (kDebugMode) {
-      print("Error: $e");
-    }
-  } finally {
-    isLoading(false);
   }
-}
 
   Future<void> deleteComment(int classifiedId, int commentId, context) async {
     isLoading(true);

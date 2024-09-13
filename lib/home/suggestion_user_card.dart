@@ -8,6 +8,8 @@ import 'package:mlmdiary/utils/text_style.dart';
 class SuggetionUserCard extends StatefulWidget {
   final String userImage;
   final String name;
+  final String mlm;
+
   final String post;
   final int postId;
   final EditPostController editpostcontroller;
@@ -19,7 +21,8 @@ class SuggetionUserCard extends StatefulWidget {
       required this.post,
       required this.postId,
       required this.editpostcontroller,
-      required this.isfollowing});
+      required this.isfollowing,
+      required this.mlm});
 
   @override
   State<SuggetionUserCard> createState() => _SuggetionUserCardState();
@@ -91,7 +94,15 @@ class _SuggetionUserCardState extends State<SuggetionUserCard> {
                   style: textStyleW700(size.width * 0.043, AppColors.blackText),
                   textAlign: TextAlign.center,
                 ),
-                15.sbh,
+                5.sbh,
+                Text(
+                  widget.mlm,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: textStyleW400(size.width * 0.037, AppColors.blackText),
+                  textAlign: TextAlign.center,
+                ),
+                5.sbh,
                 Text(
                   widget.post,
                   maxLines: 1,

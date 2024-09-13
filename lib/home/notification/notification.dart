@@ -39,6 +39,8 @@ class _NotificationState extends State<NotificationScreen>
   }
 
   Future<void> _refreshData() async {
+    controller.notificationList.clear();
+
     String type;
     switch (_tabController.index) {
       case 1:

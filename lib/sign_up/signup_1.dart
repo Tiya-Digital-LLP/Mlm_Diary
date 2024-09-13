@@ -69,12 +69,12 @@ class _SignupPageState extends State<SignupPage> {
     if (isDomesticPhoneNumber(mobileNumber)) {
       controller.sendDomesticPhoneOtp(mobileNumber, userName, '91', context);
     } else {
-      controller.sendForeignPhoneOtp(
-          mobileNumber, userName, getFormattedForeignNumberCountryCode(), context);
+      controller.sendForeignPhoneOtp(mobileNumber, userName,
+          getFormattedForeignNumberCountryCode(), context);
     }
   }
 
-    String getFormattedForeignNumberCountryCode() {
+  String getFormattedForeignNumberCountryCode() {
     // Removes the '+' sign from the country code
     return selectedCountry.value?.callingCode.replaceAll('+', '') ?? '';
   }
@@ -376,8 +376,8 @@ class _SignupPageState extends State<SignupPage> {
                                                         ),
                                                         GestureDetector(
                                                           onTap: () {
-                                                            Get.toNamed(Routes
-                                                                .advertisewithus);
+                                                            Get.toNamed(
+                                                                Routes.terms);
                                                           },
                                                           child: Text(
                                                             "Terms & Conditions",

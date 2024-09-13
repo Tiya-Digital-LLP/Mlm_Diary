@@ -61,7 +61,6 @@ class _FavouriteState extends State<Favourite> {
   Future<void> _refreshData() async {
     try {
       controller.isEndOfData.value = false;
-      controller.favouriteList.clear();
       await controller.fetchBookmark(1);
     } catch (error) {
       if (kDebugMode) {

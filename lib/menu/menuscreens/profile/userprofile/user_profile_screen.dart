@@ -1131,6 +1131,10 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: InkWell(
                           onTap: () async {
+                            _refreshFollowers(follower.id ?? 0);
+                            _refreshFollowing(follower.id ?? 0);
+                            _refreshViews(follower.id ?? 0);
+
                             controller.fetchUserPost(follower.id ?? 0, context);
                             await userProfileController.fetchUserAllPost(
                               1,
@@ -1225,6 +1229,10 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: InkWell(
                           onTap: () async {
+                            _refreshFollowers(follow.id ?? 0);
+                            _refreshFollowing(follow.id ?? 0);
+                            _refreshViews(follow.id ?? 0);
+
                             controller.fetchUserPost(follow.id ?? 0, context);
                             await userProfileController.fetchUserAllPost(
                               1,
@@ -1318,6 +1326,9 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: InkWell(
                           onTap: () async {
+                            _refreshFollowers(viewers.id);
+                            _refreshFollowing(viewers.id);
+                            _refreshViews(viewers.id);
                             controller.fetchUserPost(viewers.id, context);
                             await userProfileController.fetchUserAllPost(
                               1,

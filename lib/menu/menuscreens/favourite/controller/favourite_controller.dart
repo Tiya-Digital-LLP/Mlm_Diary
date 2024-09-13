@@ -237,6 +237,8 @@ class FavouriteController extends GetxController {
     }
 
     try {
+      favouriteList.clear();
+
       var connectivityResult = await (Connectivity().checkConnectivity());
       // ignore: unrelated_type_equality_checks
       if (connectivityResult == ConnectivityResult.none) {

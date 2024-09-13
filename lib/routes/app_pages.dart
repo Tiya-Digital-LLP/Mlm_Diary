@@ -67,7 +67,7 @@ import 'package:mlmdiary/menu/menuscreens/video/video.dart';
 import 'package:mlmdiary/sign_up/signup_1.dart';
 import 'package:mlmdiary/sign_up/signup_2.dart';
 import 'package:mlmdiary/splash/splash_screen.dart';
-import 'package:mlmdiary/menu/menuscreens/terms&condition/advertise_with_us_screen.dart';
+import 'package:mlmdiary/menu/menuscreens/terms&condition/terms.dart';
 
 part 'app_routes.dart';
 
@@ -156,8 +156,8 @@ class AppPages {
       page: () => const ContactUs(),
     ),
     GetPage(
-      name: Routes.advertisewithus,
-      page: () => const AddwertiseWithUs(),
+      name: Routes.terms,
+      page: () => const Terms(),
     ),
     GetPage(
       name: Routes.followers,

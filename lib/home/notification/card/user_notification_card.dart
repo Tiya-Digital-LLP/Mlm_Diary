@@ -12,6 +12,8 @@ class UserNotificationCard extends StatefulWidget {
   final String userName;
   final String dateTime;
   final String type;
+  final String name;
+
   final String userNametype;
 
   final int classifiedId;
@@ -25,6 +27,7 @@ class UserNotificationCard extends StatefulWidget {
     required this.classifiedId,
     required this.controller,
     required this.type,
+    required this.name,
     required this.userNametype,
   });
 
@@ -93,6 +96,7 @@ class _ClassifiedCardState extends State<UserNotificationCard> {
                     widget.userNametype,
                     style:
                         textStyleW700(size.width * 0.030, AppColors.blackText),
+                    maxLines: 2,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -104,10 +108,14 @@ class _ClassifiedCardState extends State<UserNotificationCard> {
                           width: 30,
                         ),
                         3.sbw,
-                        Text(
-                          'Admin',
-                          style: textStyleW700(
-                              size.width * 0.032, AppColors.blackText),
+                        SizedBox(
+                          width: size.width * 0.30,
+                          child: Text(
+                            widget.name,
+                            style: textStyleW700(
+                                size.width * 0.032, AppColors.blackText),
+                            maxLines: 1,
+                          ),
                         ),
                       ]),
                       Row(

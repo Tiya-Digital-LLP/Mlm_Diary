@@ -208,9 +208,6 @@ class _NewsCardState extends State<NewsCard> {
             SizedBox(
               height: size.height * 0.01,
             ),
-            SizedBox(
-              height: size.height * 0.012,
-            ),
             Container(
               height: size.height * 0.28,
               width: size.width,
@@ -222,11 +219,7 @@ class _NewsCardState extends State<NewsCard> {
                 height: 97,
                 width: 105,
                 fit: BoxFit.fill,
-                placeholder: (context, url) => CustomLottieAnimation(
-                  child: Lottie.asset(
-                    Assets.lottieLottie,
-                  ),
-                ),
+                placeholder: (context, url) => const SizedBox(),
                 errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
             ),

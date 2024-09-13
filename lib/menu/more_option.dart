@@ -420,7 +420,7 @@ class _moreState extends State<MoreOptionScreen> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Get.toNamed(Routes.advertisewithus);
+                    Get.toNamed(Routes.terms);
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width,
@@ -466,7 +466,7 @@ class _moreState extends State<MoreOptionScreen> {
                                 ),
                                 IconButton(
                                     onPressed: () {
-                                      Get.toNamed(Routes.advertisewithus);
+                                      Get.toNamed(Routes.terms);
                                     },
                                     icon: const Icon(
                                       Icons.arrow_forward_ios_rounded,

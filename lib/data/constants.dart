@@ -45,6 +45,8 @@ class Constants {
   static const String forgotpassword = "/user/forgotpassword_otp";
   static const String changepassword = "/user/changepassword";
   static const String termsandcondition = "/termscondition";
+  static const String aboutus = "/aboutus";
+
   static const String userprofile = "/getuserprofile";
   static const String updateuserprofile = "/updateuserprofile_step1";
   static const String sendphoneotp = "/updatePhonenoRequest";

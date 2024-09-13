@@ -23,7 +23,7 @@ abstract class Routes {
 
   static const aboutus = '/aboutUs';
   static const contactus = '/contactUs';
-  static const advertisewithus = '/advertiseWithUs';
+  static const terms = '/terms';
   static const followers = '/followers';
   static const notification = '/notification';
   static const notificatiosetting = '/notificatioSetting';

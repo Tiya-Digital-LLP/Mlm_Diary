@@ -112,6 +112,7 @@ class _AllNotificationState extends State<UserNotification> {
                           userName: post.title ?? '',
                           controller: controller,
                           userNametype: post.message ?? '',
+                          name: post.name ?? '',
                           type: 'user',
                         ),
                       ),

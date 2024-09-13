@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
@@ -25,14 +24,14 @@ class AllNotification extends StatefulWidget {
 
 class _AllNotificationState extends State<AllNotification> {
   final ManageNewsController manageNewsController =
-      Get.find<ManageNewsController>();
+      Get.put(ManageNewsController());
   final NotificationController controller = Get.put(NotificationController());
   final ClasifiedController clasifiedController =
       Get.put(ClasifiedController());
   final EditPostController editPostController = Get.put(EditPostController());
   final CompanyController companyController = Get.put(CompanyController());
   final ManageBlogController manageBlogController =
-      Get.find<ManageBlogController>();
+      Get.put(ManageBlogController());
   final QuestionAnswerController questionAnswerController =
       Get.put(QuestionAnswerController());
 
@@ -96,7 +95,7 @@ class _AllNotificationState extends State<AllNotification> {
                         horizontal: 12,
                         vertical: 8,
                       ),
-                      child: GestureDetector(
+                      child: InkWell(
                         onTap: () async {
                           final handler = PostNavigationHandler(
                             post: post,
@@ -107,9 +106,6 @@ class _AllNotificationState extends State<AllNotification> {
                             questionAnswerController: questionAnswerController,
                             companyController: companyController,
                           );
-                          if (kDebugMode) {
-                            print('tap');
-                          }
                           await handler.handleTap();
                         },
                         child: AllNotificationCard(
@@ -120,6 +116,7 @@ class _AllNotificationState extends State<AllNotification> {
                           userName: post.title ?? '',
                           controller: controller,
                           userNametype: post.message ?? '',
+                          name: post.name ?? '',
                           type: 'all',
                         ),
                       ),

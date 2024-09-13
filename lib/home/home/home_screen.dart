@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +32,7 @@ import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_pr
 import 'package:mlmdiary/menu/menuscreens/video/controller/video_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/home/suggestion_user_card.dart';
+import 'package:mlmdiary/splash/controller/version_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
@@ -54,6 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final HomeController controller = Get.put(HomeController());
   final FavouriteController favouriteController =
       Get.put(FavouriteController());
+  final VersionController _versionController = Get.put(VersionController());
 
   final ManageBlogController manageBlogController =
       Get.put(ManageBlogController());
@@ -76,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _refreshData();
+    _checkVersionAndNavigate();
   }
 
   Future<void> _refreshData() async {
@@ -357,94 +360,116 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Obx(
                               () => Row(
                                 children: [
-                                  for (int index = 0;
-                                      index <
-                                          controller.mutualFriendList.length;
-                                      index++)
-                                    Row(
-                                      children: [
-                                        SizedBox(
-                                            width: (index == 0)
-                                                ? 0
-                                                : size.width * 0.03),
-                                        Builder(builder: (context) {
-                                          return InkWell(
-                                            onTap: () async {
-                                              Get.toNamed(
-                                                  Routes.userprofilescreen,
-                                                  arguments: {
-                                                    'user_id': controller
+                                  // Display the mutual friends if the list is not empty
+                                  if (controller
+                                      .mutualFriendList.isNotEmpty) ...[
+                                    for (int index = 0;
+                                        index <
+                                            controller.mutualFriendList.length;
+                                        index++)
+                                      Row(
+                                        children: [
+                                          SizedBox(
+                                              width: (index == 0)
+                                                  ? 0
+                                                  : size.width * 0.03),
+                                          Builder(builder: (context) {
+                                            return InkWell(
+                                              onTap: () async {
+                                                Get.toNamed(
+                                                    Routes.userprofilescreen,
+                                                    arguments: {
+                                                      'user_id': controller
+                                                          .mutualFriendList[
+                                                              index]
+                                                          .id,
+                                                    });
+
+                                                await userProfileController
+                                                    .fetchUserAllPost(
+                                                  1,
+                                                  controller
+                                                      .mutualFriendList[index]
+                                                      .id
+                                                      .toString(),
+                                                );
+                                              },
+                                              child: SuggetionUserCard(
+                                                postId: controller
                                                         .mutualFriendList[index]
-                                                        .id,
-                                                  });
+                                                        .id ??
+                                                    0,
+                                                editpostcontroller:
+                                                    editPostController,
+                                                userImage: controller
+                                                        .mutualFriendList[index]
+                                                        .imageUrl ??
+                                                    '',
+                                                name: controller
+                                                        .mutualFriendList[index]
+                                                        .title ??
+                                                    '',
+                                                mlm: controller
+                                                        .mutualFriendList[index]
+                                                        .immlm ??
+                                                    '',
+                                                post: controller
+                                                        .mutualFriendList[index]
+                                                        .company ??
+                                                    '',
+                                                isfollowing: controller
+                                                        .mutualFriendList[index]
+                                                        .isFollowing ??
+                                                    false,
+                                              ),
+                                            );
+                                          }),
+                                        ],
+                                      ),
+                                    10.sbw,
+                                    // Only display "View All" if the list is not empty
+                                    InkWell(
+                                      onTap: () async {
+                                        SharedPreferences prefs =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        String? apiToken = prefs
+                                            .getString(Constants.accessToken);
 
-                                              await userProfileController
-                                                  .fetchUserAllPost(
-                                                1,
-                                                controller
-                                                    .mutualFriendList[index].id
-                                                    .toString(),
-                                              );
-                                            },
-                                            child: SuggetionUserCard(
-                                              postId: controller
-                                                      .mutualFriendList[index]
-                                                      .id ??
-                                                  0,
-                                              editpostcontroller:
-                                                  editPostController,
-                                              userImage: controller
-                                                      .mutualFriendList[index]
-                                                      .imageUrl ??
-                                                  '',
-                                              name: controller
-                                                      .mutualFriendList[index]
-                                                      .title ??
-                                                  '',
-                                              post: controller
-                                                      .mutualFriendList[index]
-                                                      .company ??
-                                                  '',
-                                              isfollowing: controller
-                                                      .mutualFriendList[index]
-                                                      .isFollowing ??
-                                                  false,
-                                            ),
-                                          );
-                                        }),
-                                      ],
+                                        if (apiToken == null) {
+                                          // ignore: use_build_context_synchronously
+                                          showSignupDialog(context);
+                                          return;
+                                        }
+                                        Get.toNamed(Routes.databasescreen);
+                                      },
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            'view all',
+                                            style: textStyleW700(
+                                                size.width * 0.036,
+                                                AppColors.blackText),
+                                          ),
+                                          const Icon(
+                                            Icons.arrow_right,
+                                            size: 30,
+                                          )
+                                        ],
+                                      ),
                                     ),
-                                  10.sbw,
-                                  InkWell(
-                                    onTap: () async {
-                                      SharedPreferences prefs =
-                                          await SharedPreferences.getInstance();
-                                      String? apiToken = prefs
-                                          .getString(Constants.accessToken);
-
-                                      if (apiToken == null) {
-                                        // ignore: use_build_context_synchronously
-                                        showSignupDialog(context);
-                                        return;
-                                      }
-                                      Get.toNamed(Routes.databasescreen);
-                                    },
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          'view all',
-                                          style: textStyleW700(
-                                              size.width * 0.036,
-                                              AppColors.blackText),
-                                        ),
-                                        const Icon(
-                                          Icons.arrow_right,
-                                          size: 30,
-                                        )
-                                      ],
+                                    20.sbw,
+                                  ] else ...[
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: size.width * 0.04),
+                                      child: Text(
+                                        'No mutual friends found',
+                                        style: textStyleW700(size.width * 0.036,
+                                            AppColors.blackText),
+                                      ),
                                     ),
-                                  ),
-                                  20.sbw,
+                                  ],
                                 ],
                               ),
                             ),
@@ -841,6 +866,122 @@ class _HomeScreenState extends State<HomeScreen> {
         icon: SvgPicture.asset(Assets.svgPlusIcon),
       ),
     );
+  }
+
+  Future<void> _checkVersionAndNavigate() async {
+    final versionCheck = await _versionController.checkVersion();
+
+    if (versionCheck != null) {
+      if (versionCheck.success == 1) {
+        _refreshData();
+      } else if (versionCheck.success == 2) {
+        // ignore: use_build_context_synchronously
+        _showUpdateDialog(context);
+      }
+    } else {
+      _refreshData();
+    }
+  }
+
+  void _showUpdateDialog(context) {
+    const String androidLink =
+        'https://play.google.com/store/apps/details?id=com.mlm.mlmdiary';
+    const String iosLink =
+        'https://apps.apple.com/app/mlm-diary-network-marketing/id6636474809';
+
+    String link = Platform.isAndroid ? androidLink : iosLink;
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Dialog(
+            backgroundColor: AppColors.white,
+            insetPadding: const EdgeInsets.all(22.0),
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Image.asset(
+                      Assets.imagesLogo,
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                  const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Update Available!',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                              fontSize: 22),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Align(
+                        alignment: Alignment.center,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          child: Text(
+                            'A new version of the app is available. Please update to continue.',
+                            style:
+                                TextStyle(color: Colors.black45, fontSize: 16),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 40),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      SizedBox(
+                        width: 140,
+                        child: OutlinedButton(
+                          onPressed: () {
+                            Get.back();
+                            exit(0);
+                          },
+                          child: const Text(
+                            'Cancel',
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        width: 140,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50.0),
+                            color: AppColors.primaryColor),
+                        child: TextButton(
+                          onPressed: () {
+                            launchUrl(Uri.parse(link));
+                          },
+                          child: const Text(
+                            'Update',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
   }
 
   Future<void> _navigateToDetails(post) async {

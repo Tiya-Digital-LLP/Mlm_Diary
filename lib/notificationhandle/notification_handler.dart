@@ -64,7 +64,7 @@ class NotificationHandler {
       print('User ID: $userId');
     }
 
-    Timer(const Duration(milliseconds: 100), () async {
+    Timer(const Duration(milliseconds: 500), () async {
       try {
         String key = '${data['type']}';
 

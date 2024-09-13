@@ -261,7 +261,9 @@ class _ClassidiedDetailsScreenCopyState
                               ),
                               3.sbh,
                               Text(
-                                data.company ?? 'N/A',
+                                data.company?.isNotEmpty == true
+                                    ? data.company!
+                                    : 'Company is not provided',
                                 style: textStyleW400(
                                     size.width * 0.032, AppColors.blackText),
                               ),
@@ -296,9 +298,11 @@ class _ClassidiedDetailsScreenCopyState
                               ),
                               3.sbh,
                               Text(
-                                '${data.city} ${data.state} ${data.country}',
+                                '${data.city?.isNotEmpty == true ? data.city : "Address not provided"} '
+                                '${data.state?.isNotEmpty == true ? data.state : ""} '
+                                '${data.country?.isNotEmpty == true ? data.country : ""}',
                                 style: textStyleW400(
-                                    size.width * 0.035, AppColors.blackText),
+                                    size.width * 0.032, AppColors.blackText),
                               ),
                             ],
                           ),
@@ -334,7 +338,8 @@ class _ClassidiedDetailsScreenCopyState
                                   ),
                                   3.sbh,
                                   Text(
-                                    '${data.userData!.countrycode1} - ${data.userData!.mobile}',
+                                    '${data.userData!.countrycode1?.isNotEmpty == true ? data.userData!.countrycode1 : ""}'
+                                    '${data.userData!.mobile?.isNotEmpty == true ? data.userData!.mobile : "Number is not provided"}',
                                     style: textStyleW400(size.width * 0.032,
                                         AppColors.blackText),
                                   ),
@@ -361,7 +366,7 @@ class _ClassidiedDetailsScreenCopyState
                                     ),
                                     3.sbh,
                                     Text(
-                                      '${data.userData!.email}',
+                                      '${data.userData!.email?.isNotEmpty == true ? data.userData!.email : "Email is not provided"}',
                                       style: textStyleW400(size.width * 0.032,
                                           AppColors.blackText),
                                     ),
@@ -399,7 +404,9 @@ class _ClassidiedDetailsScreenCopyState
                               ),
                               3.sbh,
                               LinkText(
-                                text: data.website ?? '',
+                                text: data.website!.isNotEmpty == true
+                                    ? data.website!
+                                    : "Website is not provided",
                                 style: textStyleW400(
                                   size.width * 0.035,
                                   AppColors.blackText.withOpacity(0.5),

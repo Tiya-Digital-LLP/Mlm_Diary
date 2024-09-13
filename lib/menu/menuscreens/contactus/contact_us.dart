@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/menu/controller/profile_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/contactus/controller/contactus_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
@@ -14,6 +16,7 @@ import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/border_text_field.dart';
 import 'package:mlmdiary/widgets/custom_border_container.dart';
+import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:mlmdiary/widgets/normal_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -26,6 +29,8 @@ class ContactUs extends StatefulWidget {
 
 class _ContactUsState extends State<ContactUs> {
   final ContactusController controller = Get.put(ContactusController());
+  final ProfileController profileController = Get.put(ProfileController());
+
   final Rx<Country?> _selectedCountry = Rx<Country?>(null);
 
   @override
@@ -320,85 +325,187 @@ class _ContactUsState extends State<ContactUs> {
                   ),
                 ),
                 10.sbh,
-                Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 5),
-                    decoration: ShapeDecoration(
-                        color: AppColors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(13.05),
-                        ),
-                        shadows: [customBoxShadow()]),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Text(
-                          'Follow MLM Diary',
-                          style: textStyleW500(
-                              size.width * 0.030, AppColors.blackText),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            IconButton(
-                              iconSize: 25,
-                              padding: const EdgeInsets.all(0),
-                              onPressed: () {},
-                              icon: SvgPicture.asset(
-                                Assets.svgLogosWhatsappIcon,
-                                height: 25,
-                                width: 25,
+                Obx(() {
+                  final mlmSocial =
+                      profileController.mlmSocial.value.sitesetting;
+                  final profile =
+                      profileController.userProfile.value.userProfile;
+
+                  if (controller.isLoading.value) {
+                    return Center(
+                        child: CustomLottieAnimation(
+                      child: Lottie.asset(
+                        Assets.lottieLottie,
+                      ),
+                    ));
+                  }
+
+                  return Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(vertical: 5),
+                      decoration: ShapeDecoration(
+                          color: AppColors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(13.05),
+                          ),
+                          shadows: [customBoxShadow()]),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Text(
+                            'Follow MLM Diary',
+                            style: textStyleW500(
+                                size.width * 0.030, AppColors.blackText),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              IconButton(
+                                padding: EdgeInsets.zero,
+                                onPressed: () async {
+                                  if (mlmSocial!.whatsapp != null) {
+                                    final String phoneNumber =
+                                        mlmSocial.whatsapp!;
+                                    final String name = profile!.name ?? 'N/A';
+                                    String message =
+                                        "Hello, I am $name. I want to know regarding MLM Diary App.";
+                                    final Uri whatsappUri = Uri.parse(
+                                        "https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}");
+
+                                    if (await canLaunchUrl(whatsappUri)) {
+                                      await launchUrl(whatsappUri);
+                                      if (kDebugMode) {
+                                        print('URL: $whatsappUri');
+                                      }
+                                    } else {
+                                      if (kDebugMode) {
+                                        print('Could not launch $whatsappUri');
+                                      }
+                                      showToasterrorborder(
+                                          "Could not launch WhatsApp",
+                                          // ignore: use_build_context_synchronously
+                                          context);
+                                    }
+                                  } else {
+                                    showToasterrorborder(
+                                        "No Any Url Found", context);
+                                  }
+                                },
+                                icon: SvgPicture.asset(
+                                    Assets.svgLogosWhatsappIcon,
+                                    height: 26,
+                                    width: 26),
                               ),
-                            ),
-                            IconButton(
-                              iconSize: 25,
-                              padding: const EdgeInsets.all(0),
-                              onPressed: () {},
-                              icon: SvgPicture.asset(Assets.svgLogosFacebook,
-                                  height: 25, width: 25),
-                            ),
-                            IconButton(
-                              iconSize: 25,
-                              padding: const EdgeInsets.all(0),
-                              onPressed: () {},
-                              icon: SvgPicture.asset(Assets.svgInstagram,
-                                  height: 25, width: 25),
-                            ),
-                            IconButton(
-                              iconSize: 25,
-                              padding: const EdgeInsets.all(0),
-                              onPressed: () {},
-                              icon: SvgPicture.asset(
-                                  Assets.svgLogosLinkedinIcon,
-                                  height: 25,
-                                  width: 25),
-                            ),
-                            IconButton(
-                              iconSize: 25,
-                              padding: const EdgeInsets.all(0),
-                              onPressed: () {},
-                              icon: SvgPicture.asset(Assets.svgYoutube,
-                                  height: 25, width: 25),
-                            ),
-                            IconButton(
-                              iconSize: 25,
-                              padding: const EdgeInsets.all(0),
-                              onPressed: () {},
-                              icon: SvgPicture.asset(Assets.svgTelegram,
-                                  height: 25, width: 25),
-                            ),
-                            IconButton(
-                              iconSize: 25,
-                              padding: const EdgeInsets.all(0),
-                              onPressed: () {},
-                              icon: SvgPicture.asset(Assets.svgTwitter,
-                                  height: 25, width: 25),
-                            ),
-                          ],
-                        ),
-                      ],
-                    )),
+                              IconButton(
+                                padding: EdgeInsets.zero,
+                                onPressed: () {
+                                  if (mlmSocial!.facebookLink != null) {
+                                    _launchURL(
+                                        mlmSocial.facebookLink.toString());
+                                    if (kDebugMode) {
+                                      print('URL: ${mlmSocial.facebookLink}');
+                                    }
+                                  } else {
+                                    showToasterrorborder(
+                                        "No Any Url Fond", context);
+                                  }
+                                },
+                                icon: SvgPicture.asset(Assets.svgLogosFacebook,
+                                    height: 26, width: 26),
+                              ),
+                              IconButton(
+                                padding: EdgeInsets.zero,
+                                onPressed: () {
+                                  if (mlmSocial!.intagramLink != null) {
+                                    _launchURL(
+                                        mlmSocial.intagramLink.toString());
+                                    if (kDebugMode) {
+                                      print('URL: ${mlmSocial.intagramLink}');
+                                    }
+                                  } else {
+                                    showToasterrorborder(
+                                        "No Any Url Fond", context);
+                                  }
+                                },
+                                icon: SvgPicture.asset(Assets.svgInstagram,
+                                    height: 26, width: 26),
+                              ),
+                              IconButton(
+                                padding: EdgeInsets.zero,
+                                onPressed: () {
+                                  if (mlmSocial!.linkedinLink != null) {
+                                    _launchURL(
+                                        mlmSocial.linkedinLink.toString());
+                                    if (kDebugMode) {
+                                      print('URL: ${mlmSocial.linkedinLink}');
+                                    }
+                                  } else {
+                                    showToasterrorborder(
+                                        "No Any Url Fond", context);
+                                  }
+                                },
+                                icon: SvgPicture.asset(
+                                    Assets.svgLogosLinkedinIcon,
+                                    height: 26,
+                                    width: 26),
+                              ),
+                              IconButton(
+                                padding: EdgeInsets.zero,
+                                onPressed: () {
+                                  if (mlmSocial!.youtubeLink != null) {
+                                    _launchURL(
+                                        mlmSocial.youtubeLink.toString());
+                                    if (kDebugMode) {
+                                      print('URL: ${mlmSocial.youtubeLink}');
+                                    }
+                                  } else {
+                                    showToasterrorborder(
+                                        "No Any Url Fond", context);
+                                  }
+                                },
+                                icon: SvgPicture.asset(Assets.svgYoutube,
+                                    height: 26, width: 26),
+                              ),
+                              IconButton(
+                                padding: EdgeInsets.zero,
+                                onPressed: () {
+                                  if (mlmSocial!.telegramLink != null) {
+                                    _launchURL(
+                                        mlmSocial.telegramLink.toString());
+                                    if (kDebugMode) {
+                                      print('URL: ${mlmSocial.telegramLink}');
+                                    }
+                                  } else {
+                                    showToasterrorborder(
+                                        "No Any Url Fond", context);
+                                  }
+                                },
+                                icon: SvgPicture.asset(Assets.svgTelegram,
+                                    height: 26, width: 26),
+                              ),
+                              IconButton(
+                                padding: EdgeInsets.zero,
+                                onPressed: () {
+                                  if (mlmSocial!.twitterLink != null) {
+                                    _launchURL(
+                                        mlmSocial.twitterLink.toString());
+                                    if (kDebugMode) {
+                                      print('URL: ${mlmSocial.twitterLink}');
+                                    }
+                                  } else {
+                                    showToasterrorborder(
+                                        "No Any Url Fond", context);
+                                  }
+                                },
+                                icon: SvgPicture.asset(Assets.svgTwitter,
+                                    height: 26, width: 26),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ));
+                }),
               ],
             ),
           ),
@@ -456,6 +563,16 @@ class _ContactUsState extends State<ContactUs> {
             ),
           )),
     );
+  }
+
+  void _launchURL(String url) async {
+    // ignore: deprecated_member_use
+    if (await canLaunch(url)) {
+      // ignore: deprecated_member_use
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   void _onPressedShowBottomSheet() async {

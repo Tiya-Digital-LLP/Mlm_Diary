@@ -14,6 +14,8 @@ class AllNotificationCard extends StatefulWidget {
   final int classifiedId;
   final NotificationController controller;
   final String type;
+  final String name;
+
   final String userNametype;
 
   const AllNotificationCard(
@@ -24,6 +26,7 @@ class AllNotificationCard extends StatefulWidget {
       required this.classifiedId,
       required this.controller,
       required this.type,
+      required this.name,
       required this.userNametype});
 
   @override
@@ -43,106 +46,103 @@ class _AllNotificationCardState extends State<AllNotificationCard> {
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
 
-    return GestureDetector(
-      onTap: () {
-        // Handle tap if needed
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
-          color: AppColors.white,
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              height: 75,
-              width: 75,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                image: DecorationImage(
-                  image: NetworkImage(widget.image),
-                  fit: BoxFit.cover,
-                ),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(14),
+        color: AppColors.white,
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            height: 75,
+            width: 75,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              image: DecorationImage(
+                image: NetworkImage(widget.image),
+                fit: BoxFit.cover,
               ),
-              child: widget.image.isEmpty ? const Icon(Icons.person) : null,
             ),
-            10.sbw,
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        widget.userName,
-                        style: textStyleW700(
-                            size.width * 0.034, AppColors.blackText),
+            child: widget.image.isEmpty ? const Icon(Icons.person) : null,
+          ),
+          10.sbw,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      widget.userName,
+                      style: textStyleW700(
+                          size.width * 0.034, AppColors.blackText),
+                    ),
+                    3.sbw,
+                    Text(
+                      postTimeFormatter.formatPostTime(widget.dateTime),
+                      style: textStyleW500(
+                          size.width * 0.030, AppColors.blackText),
+                    ),
+                  ],
+                ),
+                3.sbh,
+                Text(
+                  widget.userNametype,
+                  style: textStyleW700(size.width * 0.030, AppColors.blackText),
+                  maxLines: 2,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(children: [
+                      Image.asset(
+                        Assets.imagesAdminlogo,
+                        height: 30,
+                        width: 30,
                       ),
                       3.sbw,
-                      Text(
-                        postTimeFormatter.formatPostTime(widget.dateTime),
-                        style: textStyleW500(
-                            size.width * 0.030, AppColors.blackText),
-                      ),
-                    ],
-                  ),
-                  3.sbh,
-                  Text(
-                    widget.userNametype,
-                    style:
-                        textStyleW700(size.width * 0.030, AppColors.blackText),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(children: [
-                        Image.asset(
-                          Assets.imagesAdminlogo,
-                          height: 30,
-                          width: 30,
-                        ),
-                        3.sbw,
-                        Text(
-                          'Admin',
+                      SizedBox(
+                        width: size.width * 0.30,
+                        child: Text(
+                          widget.name,
                           style: textStyleW700(
                               size.width * 0.032, AppColors.blackText),
+                          maxLines: 1,
                         ),
-                      ]),
-                      Row(
-                        children: [
-                          Container(
-                            height: 10,
-                            width: 10,
-                            decoration: BoxDecoration(
-                              color: AppColors.primaryColor,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          IconButton(
-                            icon: Icon(
-                              Icons.delete,
-                              color: AppColors.redText,
-                            ),
-                            onPressed: () =>
-                                LogoutDialog.show(context, () async {
-                              widget.controller.deleteNotification(
-                                  widget.classifiedId, context, widget.type);
-                              widget.controller
-                                  .fetchNotification(1, widget.type);
-                            }),
-                          ),
-                        ],
                       ),
-                    ],
-                  ),
-                ],
-              ),
+                    ]),
+                    Row(
+                      children: [
+                        Container(
+                          height: 10,
+                          width: 10,
+                          decoration: BoxDecoration(
+                            color: AppColors.primaryColor,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            Icons.delete,
+                            color: AppColors.redText,
+                          ),
+                          onPressed: () => LogoutDialog.show(context, () async {
+                            widget.controller.deleteNotification(
+                                widget.classifiedId, context, widget.type);
+                            widget.controller.fetchNotification(1, widget.type);
+                          }),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

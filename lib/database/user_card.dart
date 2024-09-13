@@ -110,10 +110,14 @@ class _UserCardState extends State<UserCard> {
                       style: textStyleW600(
                           size.width * 0.034, AppColors.blackText),
                     ),
-                    Text(
-                      widget.plan,
-                      style: textStyleW400(
-                          size.width * 0.035, AppColors.blackText),
+                    SizedBox(
+                      width: size.width * 0.35,
+                      child: Text(
+                        widget.plan,
+                        style: textStyleW400(
+                            size.width * 0.035, AppColors.blackText),
+                        maxLines: 1,
+                      ),
                     ),
                   ],
                 ),

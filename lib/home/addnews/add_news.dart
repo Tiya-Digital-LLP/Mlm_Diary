@@ -257,7 +257,7 @@ class _ManageNewsPlusIconState extends State<AddNews> {
                   20.sbh,
                   GestureDetector(
                     onTap: () {
-                      Get.toNamed(Routes.advertisewithus);
+                      Get.toNamed(Routes.terms);
                     },
                     child: Text.rich(
                       TextSpan(

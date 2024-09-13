@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
-import 'package:html_unescape/html_unescape.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/firstscreen/home_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
@@ -13,16 +13,15 @@ import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 
-class AddwertiseWithUs extends StatefulWidget {
-  const AddwertiseWithUs({super.key});
+class Terms extends StatefulWidget {
+  const Terms({super.key});
 
   @override
-  State<AddwertiseWithUs> createState() => _AdwithusState();
+  State<Terms> createState() => _TermsState();
 }
 
-class _AdwithusState extends State<AddwertiseWithUs>
-    with SingleTickerProviderStateMixin {
-  final TermsController _termsController = Get.put(TermsController());
+class _TermsState extends State<Terms> with SingleTickerProviderStateMixin {
+  final TermsController termsController = Get.put(TermsController());
   final TutorialVideoController videoController =
       Get.put(TutorialVideoController());
   static const String position = 'advertisewithus';
@@ -31,7 +30,7 @@ class _AdwithusState extends State<AddwertiseWithUs>
   @override
   void initState() {
     super.initState();
-    _termsController.fetchTermsAndConditions();
+    termsController.fetchTermsAndConditions();
     videoController.fetchVideo(position, context);
   }
 
@@ -94,38 +93,40 @@ class _AdwithusState extends State<AddwertiseWithUs>
           children: [
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Builder(
-                  builder: (context) {
-                    return Obx(() {
-                      if (_termsController.isLoading.value) {
-                        return CustomLottieAnimation(
+              child: Builder(
+                builder: (context) {
+                  return Obx(() {
+                    if (termsController.isLoading.value) {
+                      return Center(
+                        child: CustomLottieAnimation(
                           child: Lottie.asset(Assets.lottieLottie),
-                        );
-                      } else if (_termsController.termsAndConditions.value !=
-                          null) {
-                        return Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            HtmlUnescape().convert(_termsController
-                                .termsAndConditions.value
-                                .toString()),
-                          ),
-                        );
-                      } else {
-                        return const Text(
-                          'Failed to load terms and conditions',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16.0,
-                            color: Colors.red,
-                          ),
-                        );
-                      }
-                    });
-                  },
-                ),
+                        ),
+                      );
+                    } else if (termsController.termsAndConditions.value !=
+                        null) {
+                      // Directly accessing the policy field
+                      return Card(
+                        color: Colors.white,
+                        elevation: 9,
+                        child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: HtmlWidget(
+                              termsController.termsAndConditions.value.policy
+                                  .toString(),
+                            )),
+                      );
+                    } else {
+                      return const Text(
+                        'Failed to load terms and conditions',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.0,
+                          color: Colors.red,
+                        ),
+                      );
+                    }
+                  });
+                },
               ),
             ),
           ],
