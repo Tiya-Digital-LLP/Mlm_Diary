@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
@@ -19,6 +20,8 @@ import 'package:share_plus/share_plus.dart';
 import 'package:text_link/text_link.dart';
 // ignore: library_prefixes
 import 'package:html/parser.dart' as htmlParser;
+import 'package:url_launcher/url_launcher.dart';
+import 'package:html/dom.dart' as dom;
 
 class ClassidiedDetailsScreen extends StatefulWidget {
   const ClassidiedDetailsScreen({required Key key}) : super(key: key);
@@ -211,8 +214,38 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
                             ),
                             child: Align(
                               alignment: Alignment.topLeft,
-                              child: _buildHtmlContent(
-                                  post.description ?? '', size),
+                              child: Html(
+                                data: post.description,
+                                style: {
+                                  "table": Style(
+                                    backgroundColor:
+                                        Color.fromARGB(0x50, 0xee, 0xee, 0xee),
+                                  ),
+                                  "tr": Style(
+                                    border: Border(
+                                        bottom: BorderSide(color: Colors.grey)),
+                                  ),
+                                  "th": Style(
+                                    backgroundColor: Colors.grey,
+                                  ),
+                                  "td": Style(
+                                    alignment: Alignment.topLeft,
+                                  ),
+                                  'h5': Style(
+                                    maxLines: 2,
+                                    textOverflow: TextOverflow.ellipsis,
+                                  ),
+                                },
+                                onLinkTap: (String? url,
+                                    Map<String, String> attributes,
+                                    dom.Element? element) {
+                                  if (url != null) {
+                                    print("Opening $url...");
+                                    // Use url_launcher to open the URL
+                                    _launchUrl(url);
+                                  }
+                                },
+                              ),
                             ),
                           ),
                           SizedBox(
@@ -573,6 +606,17 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
             ),
           )),
     );
+  }
+
+// Define the _launchUrl method
+  Future<void> _launchUrl(String url) async {
+    // ignore: deprecated_member_use
+    if (await canLaunch(url)) {
+      // ignore: deprecated_member_use
+      await launch(url); // Old launch method for non-web
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   void showLikeList(BuildContext context) {

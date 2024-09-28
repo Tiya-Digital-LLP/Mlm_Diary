@@ -99,15 +99,20 @@ class _SuggetionUserCardState extends State<SuggetionUserCard> {
                   widget.mlm,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: textStyleW400(size.width * 0.037, AppColors.blackText),
+                  style: textStyleW400(
+                    size.width * 0.032,
+                    AppColors.blackText.withOpacity(0.8),
+                  ),
                   textAlign: TextAlign.center,
                 ),
-                5.sbh,
                 Text(
                   widget.post,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: textStyleW400(size.width * 0.037, AppColors.blackText),
+                  style: textStyleW400(
+                    size.width * 0.032,
+                    AppColors.blackText.withOpacity(0.8),
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -128,7 +133,7 @@ class _SuggetionUserCardState extends State<SuggetionUserCard> {
                   ),
                   decoration: BoxDecoration(
                     color: AppColors.primaryColor,
-                    borderRadius: BorderRadius.circular(50),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
                     isFollowing.value ? 'Unfollow' : 'Follow',

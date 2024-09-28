@@ -413,10 +413,26 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         .mutualFriendList[index]
                                                         .immlm ??
                                                     '',
-                                                post: controller
-                                                        .mutualFriendList[index]
-                                                        .company ??
-                                                    '',
+                                                post: [
+                                                  controller
+                                                          .mutualFriendList[
+                                                              index]
+                                                          .city ??
+                                                      '',
+                                                  controller
+                                                          .mutualFriendList[
+                                                              index]
+                                                          .state ??
+                                                      '',
+                                                  controller
+                                                          .mutualFriendList[
+                                                              index]
+                                                          .country ??
+                                                      ''
+                                                ]
+                                                    .where((element) =>
+                                                        element.isNotEmpty)
+                                                    .join(', '),
                                                 isfollowing: controller
                                                         .mutualFriendList[index]
                                                         .isFollowing ??
@@ -1069,7 +1085,7 @@ class _HomeScreenState extends State<HomeScreen> {
     ValueNotifier<int> currentPageNotifier = ValueNotifier<int>(0);
 
     // Timer to auto-slide every 3 seconds
-    Timer.periodic(const Duration(seconds: 6), (Timer timer) {
+    Timer.periodic(const Duration(seconds: 5), (Timer timer) {
       int currentPage = currentPageNotifier.value;
       if (currentPage < banners.length - 1) {
         currentPageNotifier.value = currentPage + 1;

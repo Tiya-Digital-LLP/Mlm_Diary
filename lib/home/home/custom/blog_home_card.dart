@@ -258,12 +258,29 @@ class _FavouritrCardState extends State<BlogHomeCard> {
             Align(
               alignment: Alignment.topLeft,
               child: Html(
+                data: widget.postTitle,
+                style: {
+                  "html": Style(
+                    lineHeight: const LineHeight(1),
+                    maxLines: 1,
+                    fontFamily: fontFamily,
+                    fontWeight: FontWeight.w700,
+                    fontSize: FontSize.medium,
+                    color: AppColors.blackText,
+                  ),
+                },
+              ),
+            ),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Html(
                 data: widget.postCaption,
                 style: {
                   "html": Style(
+                    lineHeight: const LineHeight(1.2),
                     maxLines: 2,
                     fontFamily: fontFamily,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w500,
                     fontSize: FontSize.medium,
                     color: AppColors.blackText,
                   ),

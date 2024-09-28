@@ -292,6 +292,10 @@ class HomeController extends GetxController {
 
       final response = await http.get(uri);
 
+      if (kDebugMode) {
+        print('uri: $uri');
+      }
+
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseBody =
             jsonDecode(response.body) as Map<String, dynamic>;

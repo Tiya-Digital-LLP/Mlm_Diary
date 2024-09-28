@@ -288,7 +288,12 @@ class _DatabaseState extends State<DatabaseScreen> {
                           }
                           final post = controller.mlmDatabaseList[index];
                           String location =
-                              '${post.city ?? ''}, ${post.state ?? ''}, ${post.country ?? ''}';
+                              '${post.city ?? ''}, ${post.state ?? ''}, ${post.country ?? ''}'
+                                  .trim();
+                          if (location == ', ,') {
+                            location = 'N/A';
+                          }
+
                           return GestureDetector(
                             onTap: () async {
                               SharedPreferences prefs =
@@ -306,8 +311,9 @@ class _DatabaseState extends State<DatabaseScreen> {
                               await userProfileController.fetchUserAllPost(
                                   1, post.id.toString());
                               editPostController.countViewUserProfile(
+                                  post.id ?? 0,
                                   // ignore: use_build_context_synchronously
-                                  post.id ?? 0, context);
+                                  context);
                             },
                             child: UserCard(
                               post: post,
