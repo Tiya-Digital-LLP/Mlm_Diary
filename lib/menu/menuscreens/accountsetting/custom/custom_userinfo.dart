@@ -7,6 +7,7 @@ import 'package:flutter_google_places_hoc081098/google_maps_webservice_places.da
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+// ignore: depend_on_referenced_packages
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -77,19 +78,19 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
           ),
         ));
       } else {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            GestureDetector(
-              onTap: () {
-                showModalBottomSheet(
-                  backgroundColor: Colors.white,
-                  context: context,
-                  builder: (context) => bottomsheet(),
-                );
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(top: 20),
+        return Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  showModalBottomSheet(
+                    backgroundColor: Colors.white,
+                    context: context,
+                    builder: (context) => bottomsheet(),
+                  );
+                },
                 child: Stack(
                   children: <Widget>[
                     Obx(
@@ -104,8 +105,7 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                                     height: 120,
                                     width: 120,
                                     fit: BoxFit.cover,
-                                    key: ValueKey<DateTime>(
-                                        DateTime.now()), // Force reload
+                                    key: ValueKey<DateTime>(DateTime.now()),
                                   ),
                                 )
                               : controller.userImage.value.isNotEmpty
@@ -115,8 +115,7 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                                         height: 120,
                                         width: 120,
                                         fit: BoxFit.cover,
-                                        key: ValueKey<DateTime>(
-                                            DateTime.now()), // Force reload
+                                        key: ValueKey<DateTime>(DateTime.now()),
                                       ),
                                     )
                                   : ClipOval(
@@ -125,8 +124,7 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                                         height: 120,
                                         width: 120,
                                         fit: BoxFit.cover,
-                                        key: ValueKey<DateTime>(
-                                            DateTime.now()), // Force reload
+                                        key: ValueKey<DateTime>(DateTime.now()),
                                       ),
                                     ),
                         ),
@@ -144,58 +142,53 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                   ],
                 ),
               ),
-            ),
-            10.sbh,
-            Obx(
-              () => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: BorderContainer(
+              10.sbh,
+              Obx(
+                () => BorderContainer(
                   isError: controller.mlmTypeError.value,
-                  height: 65,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    child: TextField(
-                      controller: controller.getSelectedOptionsTextController(),
-                      readOnly: true,
-                      onTap: () {
-                        showBottomSheetFunc(
-                            context, size, controller, controller.userTypes);
-                        controller.mlmCategoryValidation();
-                      },
-                      style:
-                          textStyleW500(size.width * 0.04, AppColors.blackText),
-                      cursorColor: AppColors.blackText,
-                      decoration: InputDecoration(
-                        hintText: "I am a MLM*",
-                        border: InputBorder.none,
-                        suffixIcon: Icon(
-                          Icons.arrow_drop_down,
-                          color: AppColors.blackText,
-                        ),
+                  height: 58,
+                  child: TextField(
+                    controller: controller.getSelectedOptionsTextController(),
+                    readOnly: true,
+                    onTap: () {
+                      showBottomSheetFunc(
+                          context, size, controller, controller.userTypes);
+                      controller.mlmCategoryValidation();
+                    },
+                    style:
+                        textStyleW500(size.width * 0.04, AppColors.blackText),
+                    cursorColor: AppColors.blackText,
+                    decoration: InputDecoration(
+                      labelStyle: const TextStyle(
+                        color: Colors.black,
+                      ),
+                      labelText: "I am a MLM*",
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 5,
+                        horizontal: 2,
+                      ),
+                      border: InputBorder.none,
+                      suffixIcon: Icon(
+                        Icons.arrow_drop_down,
+                        color: AppColors.blackText,
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-            10.sbh,
-            Obx(
-              () => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: BorderTextField(
+              10.sbh,
+              Obx(
+                () => BorderTextField(
                   keyboard: TextInputType.name,
                   textInputType: const [],
                   hint: "Your Name",
                   controller: controller.name.value,
-                  height: 65,
+                  height: 58,
                   byDefault: !controller.isNameTyping.value,
                 ),
               ),
-            ),
-            10.sbh,
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Obx(
+              10.sbh,
+              Obx(
                 () => Row(
                   children: [
                     Text(
@@ -279,13 +272,10 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                   ],
                 ),
               ),
-            ),
-            10.sbh,
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Obx(
+              10.sbh,
+              Obx(
                 () => CompanyBorderTextfield(
-                  height: 65,
+                  height: 58,
                   keyboard: TextInputType.multiline,
                   textInputType: const [],
                   hint: "Company Name",
@@ -310,152 +300,145 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                   },
                 ),
               ),
-            ),
-            10.sbh,
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Obx(
+              10.sbh,
+              Obx(
                 () => BorderContainer(
                   isError: controller.planTypeError.value,
-                  height: 60,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: TextField(
-                      controller:
-                          controller.getSelectedPlanOptionsTextController(),
-                      readOnly: true,
-                      onTap: () {
-                        showBottomSheetFuncPlan(
-                            context, size, controller, controller.planList);
-                        controller.planCategoryValidation();
-                      },
-                      style:
-                          textStyleW500(size.width * 0.04, AppColors.blackText),
-                      cursorColor: AppColors.blackText,
-                      decoration: InputDecoration(
-                          hintText: "Select Plan",
-                          border: InputBorder.none,
-                          suffixIcon: Icon(
-                            Icons.arrow_drop_down,
-                            color: AppColors.blackText,
-                          )),
-                    ),
+                  height: 58,
+                  child: TextField(
+                    controller:
+                        controller.getSelectedPlanOptionsTextController(),
+                    readOnly: true,
+                    onTap: () {
+                      showBottomSheetFuncPlan(
+                          context, size, controller, controller.planList);
+                      controller.planCategoryValidation();
+                    },
+                    style:
+                        textStyleW500(size.width * 0.04, AppColors.blackText),
+                    cursorColor: AppColors.blackText,
+                    decoration: InputDecoration(
+                        labelText: "Select Plan",
+                        labelStyle: const TextStyle(
+                          color: Colors.black,
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 5,
+                          horizontal: 2,
+                        ),
+                        border: InputBorder.none,
+                        suffixIcon: Icon(
+                          Icons.arrow_drop_down,
+                          color: AppColors.blackText,
+                        )),
                   ),
                 ),
               ),
-            ),
-            10.sbh,
-            Padding(
-                padding: const EdgeInsets.fromLTRB(16.0, 5.0, 16.0, 5.0),
-                child: Obx(
-                  () => TextFormField(
-                    controller: controller.location.value,
-                    readOnly: true,
-                    style: const TextStyle(
-                        fontSize: 15.0,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.black,
-                        fontFamily: 'assets/fonst/Metropolis-Black.otf'),
-                    onTap: () async {
-                      var place = await PlacesAutocomplete.show(
-                        context: context,
-                        apiKey: googleApikey,
-                        mode: Mode.fullscreen,
-                        types: ['geocode', 'establishment'],
-                        strictbounds: false,
-                        onError: (err) {},
-                      );
+              10.sbh,
+              Obx(
+                () => TextFormField(
+                  controller: controller.location.value,
+                  readOnly: true,
+                  style: const TextStyle(
+                      fontSize: 15.0,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
+                      fontFamily: 'assets/fonst/Metropolis-Black.otf'),
+                  onTap: () async {
+                    var place = await PlacesAutocomplete.show(
+                      context: context,
+                      apiKey: googleApikey,
+                      mode: Mode.fullscreen,
+                      types: ['geocode', 'establishment'],
+                      strictbounds: false,
+                      onError: (err) {},
+                    );
 
-                      if (place != null) {
-                        setState(() {
-                          controller.location.value.text =
-                              place.description.toString();
-                          _loc.text = controller.location.value.text;
-                          controller.validateAddress();
-                        });
-                        final plist = GoogleMapsPlaces(
-                          apiKey: googleApikey,
-                          apiHeaders:
-                              await const GoogleApiHeaders().getHeaders(),
-                        );
-                        String placeid = place.placeId ?? "0";
-                        final detail = await plist.getDetailsByPlaceId(placeid);
-                        for (var component in detail.result.addressComponents) {
-                          for (var type in component.types) {
-                            if (type == "administrative_area_level_1") {
-                              controller.state.value.text = component.longName;
-                            } else if (type == "locality") {
-                              controller.city.value.text = component.longName;
-                            } else if (type == "country") {
-                              controller.country.value.text =
-                                  component.longName;
-                            }
+                    if (place != null) {
+                      setState(() {
+                        controller.location.value.text =
+                            place.description.toString();
+                        _loc.text = controller.location.value.text;
+                        controller.validateAddress();
+                      });
+                      final plist = GoogleMapsPlaces(
+                        apiKey: googleApikey,
+                        apiHeaders: await const GoogleApiHeaders().getHeaders(),
+                      );
+                      String placeid = place.placeId ?? "0";
+                      final detail = await plist.getDetailsByPlaceId(placeid);
+                      for (var component in detail.result.addressComponents) {
+                        for (var type in component.types) {
+                          if (type == "administrative_area_level_1") {
+                            controller.state.value.text = component.longName;
+                          } else if (type == "locality") {
+                            controller.city.value.text = component.longName;
+                          } else if (type == "country") {
+                            controller.country.value.text = component.longName;
                           }
                         }
+                      }
 
-                        final geometry = detail.result.geometry!;
-                        setState(() {
-                          lat = geometry.location.lat;
-                          log = geometry.location.lng;
-                        });
-                      }
-                    },
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: AppColors.white,
-                      hintText: "Location/ Address / City *",
-                      hintStyle: const TextStyle(
-                              fontSize: 15.0,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black,
-                              fontFamily: 'assets/fonst/Metropolis-Black.otf')
-                          .copyWith(color: Colors.black45),
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              width: 1,
-                              color: controller.addressValidationColor.value),
-                          borderRadius: BorderRadius.circular(10.0)),
-                      border: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              width: 1,
-                              color: controller.addressValidationColor.value),
-                          borderRadius: BorderRadius.circular(10.0)),
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              width: 1,
-                              color: controller.addressValidationColor.value),
-                          borderRadius: BorderRadius.circular(10.0)),
-                    ),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        setState(() {
-                          controller.validateAddress();
-                        });
-                      } else {}
-                      return null;
-                    },
-                    onFieldSubmitted: (value) {
-                      if (value.isEmpty) {
-                        Fluttertoast.showToast(
-                            timeInSecForIosWeb: 2,
-                            msg:
-                                'Please Search and Save your Business Location');
-                        setState(() {
-                          controller.validateAddress();
-                        });
-                      } else if (value.isNotEmpty) {
-                        setState(() {
-                          controller.validateAddress();
-                        });
-                      }
-                    },
+                      final geometry = detail.result.geometry!;
+                      setState(() {
+                        lat = geometry.location.lat;
+                        log = geometry.location.lng;
+                      });
+                    }
+                  },
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: AppColors.white,
+                    hintText: "Location/ Address / City *",
+                    hintStyle: const TextStyle(
+                            fontSize: 15.0,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                            fontFamily: 'assets/fonst/Metropolis-Black.otf')
+                        .copyWith(color: Colors.black45),
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            width: 1,
+                            color: controller.addressValidationColor.value),
+                        borderRadius: BorderRadius.circular(10.0)),
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            width: 1,
+                            color: controller.addressValidationColor.value),
+                        borderRadius: BorderRadius.circular(10.0)),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            width: 1,
+                            color: controller.addressValidationColor.value),
+                        borderRadius: BorderRadius.circular(10.0)),
                   ),
-                )),
-            10.sbh,
-            Obx(
-              () => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: DiscriptionTextField(
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      setState(() {
+                        controller.validateAddress();
+                      });
+                    } else {}
+                    return null;
+                  },
+                  onFieldSubmitted: (value) {
+                    if (value.isEmpty) {
+                      Fluttertoast.showToast(
+                          timeInSecForIosWeb: 2,
+                          msg: 'Please Search and Save your Business Location');
+                      setState(() {
+                        controller.validateAddress();
+                      });
+                    } else if (value.isNotEmpty) {
+                      setState(() {
+                        controller.validateAddress();
+                      });
+                    }
+                  },
+                ),
+              ),
+              10.sbh,
+              Obx(
+                () => DiscriptionTextField(
                   keyboard: TextInputType.name,
                   textInputType: const [],
                   hint: "About you",
@@ -464,14 +447,9 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                   height: 95,
                 ),
               ),
-            ),
-            10.sbh,
-            Obx(
-              () => Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                ),
-                child: DiscriptionTextField(
+              10.sbh,
+              Obx(
+                () => DiscriptionTextField(
                   keyboard: TextInputType.name,
                   textInputType: const [],
                   hint: "About company",
@@ -480,17 +458,17 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                   height: 95,
                 ),
               ),
-            ),
-            20.sbh,
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: NormalButton(
-                onPressed: handleSaveButtonPressed,
-                text: 'Save',
-                isLoading: controller.isLoading,
+              20.sbh,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: NormalButton(
+                  onPressed: handleSaveButtonPressed,
+                  text: 'Save',
+                  isLoading: controller.isLoading,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         );
       }
     });

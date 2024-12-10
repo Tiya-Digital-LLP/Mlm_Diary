@@ -92,7 +92,6 @@ import 'package:mlmdiary/generated/mlm_like_company_entity.dart';
 import 'package:mlmdiary/generated/mlm_social_media_entity.dart';
 import 'package:mlmdiary/generated/mutual_friends_entity.dart';
 import 'package:mlmdiary/generated/my_blog_list_entity.dart';
-import 'package:mlmdiary/generated/my_news_entity.dart';
 import 'package:mlmdiary/generated/my_post_list_entity.dart';
 import 'package:mlmdiary/generated/my_question_entity.dart';
 import 'package:mlmdiary/generated/news_count_view_entity.dart';
@@ -123,6 +122,7 @@ import 'package:mlmdiary/generated/user_profile_count_view_entity.dart';
 import 'package:mlmdiary/generated/user_register_entity_entity.dart';
 import 'package:mlmdiary/generated/verify_phone_otp_entity.dart';
 import 'package:mlmdiary/generated/version_check_entity.dart';
+import 'package:mlmdiary/generated/my_news_entity.dart';
 
 JsonConvert jsonConvert = JsonConvert();
 
@@ -966,18 +966,6 @@ class JsonConvert {
       return data.map<MyBlogListDataUserData>((Map<String, dynamic> e) =>
           MyBlogListDataUserData.fromJson(e)).toList() as M;
     }
-    if (<MyNewsEntity>[] is M) {
-      return data.map<MyNewsEntity>((Map<String, dynamic> e) =>
-          MyNewsEntity.fromJson(e)).toList() as M;
-    }
-    if (<MyNewsData>[] is M) {
-      return data.map<MyNewsData>((Map<String, dynamic> e) =>
-          MyNewsData.fromJson(e)).toList() as M;
-    }
-    if (<MyNewsDataUserData>[] is M) {
-      return data.map<MyNewsDataUserData>((Map<String, dynamic> e) =>
-          MyNewsDataUserData.fromJson(e)).toList() as M;
-    }
     if (<MyPostListEntity>[] is M) {
       return data.map<MyPostListEntity>((Map<String, dynamic> e) =>
           MyPostListEntity.fromJson(e)).toList() as M;
@@ -1174,6 +1162,18 @@ class JsonConvert {
     if (<VersionCheckEntity>[] is M) {
       return data.map<VersionCheckEntity>((Map<String, dynamic> e) =>
           VersionCheckEntity.fromJson(e)).toList() as M;
+    }
+    if (<MyNewsEntity>[] is M) {
+      return data.map<MyNewsEntity>((Map<String, dynamic> e) =>
+          MyNewsEntity.fromJson(e)).toList() as M;
+    }
+    if (<MyNewsData>[] is M) {
+      return data.map<MyNewsData>((Map<String, dynamic> e) =>
+          MyNewsData.fromJson(e)).toList() as M;
+    }
+    if (<MyNewsDataUserData>[] is M) {
+      return data.map<MyNewsDataUserData>((Map<String, dynamic> e) =>
+          MyNewsDataUserData.fromJson(e)).toList() as M;
     }
 
     debugPrint("$M not found");
@@ -1398,9 +1398,6 @@ class JsonConvertClassCollection {
     (MyBlogListEntity).toString(): MyBlogListEntity.fromJson,
     (MyBlogListData).toString(): MyBlogListData.fromJson,
     (MyBlogListDataUserData).toString(): MyBlogListDataUserData.fromJson,
-    (MyNewsEntity).toString(): MyNewsEntity.fromJson,
-    (MyNewsData).toString(): MyNewsData.fromJson,
-    (MyNewsDataUserData).toString(): MyNewsDataUserData.fromJson,
     (MyPostListEntity).toString(): MyPostListEntity.fromJson,
     (MyPostListData).toString(): MyPostListData.fromJson,
     (MyPostListDataUserData).toString(): MyPostListDataUserData.fromJson,
@@ -1457,6 +1454,9 @@ class JsonConvertClassCollection {
     (UserRegisterEntityEntity).toString(): UserRegisterEntityEntity.fromJson,
     (VerifyPhoneOtpEntity).toString(): VerifyPhoneOtpEntity.fromJson,
     (VersionCheckEntity).toString(): VersionCheckEntity.fromJson,
+    (MyNewsEntity).toString(): MyNewsEntity.fromJson,
+    (MyNewsData).toString(): MyNewsData.fromJson,
+    (MyNewsDataUserData).toString(): MyNewsDataUserData.fromJson,
   };
 
   bool containsKey(String type) {

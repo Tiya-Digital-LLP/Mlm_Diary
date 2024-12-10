@@ -20,7 +20,7 @@ Map<String, dynamic> $GetClassifiedDetailEntityToJson(
     GetClassifiedDetailEntity entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
   data['status'] = entity.status;
-  data['data'] = entity.data?.toJson();
+  data['data'] = entity.data.toJson();
   return data;
 }
 
@@ -62,13 +62,11 @@ GetClassifiedDetailData $GetClassifiedDetailDataFromJson(
   if (company != null) {
     getClassifiedDetailData.company = company;
   }
-  final String? premiumsdate = jsonConvert.convert<String>(
-      json['premiumsdate']);
+  final dynamic premiumsdate = json['premiumsdate'];
   if (premiumsdate != null) {
     getClassifiedDetailData.premiumsdate = premiumsdate;
   }
-  final String? premiumedate = jsonConvert.convert<String>(
-      json['premiumedate']);
+  final dynamic premiumedate = json['premiumedate'];
   if (premiumedate != null) {
     getClassifiedDetailData.premiumedate = premiumedate;
   }
@@ -85,7 +83,7 @@ GetClassifiedDetailData $GetClassifiedDetailDataFromJson(
   if (category != null) {
     getClassifiedDetailData.category = category;
   }
-  final String? creatby = jsonConvert.convert<String>(json['creatby']);
+  final int? creatby = jsonConvert.convert<int>(json['creatby']);
   if (creatby != null) {
     getClassifiedDetailData.creatby = creatby;
   }
@@ -113,11 +111,11 @@ GetClassifiedDetailData $GetClassifiedDetailDataFromJson(
   if (country != null) {
     getClassifiedDetailData.country = country;
   }
-  final dynamic lat = json['lat'];
+  final String? lat = jsonConvert.convert<String>(json['lat']);
   if (lat != null) {
     getClassifiedDetailData.lat = lat;
   }
-  final dynamic lng = json['lng'];
+  final String? lng = jsonConvert.convert<String>(json['lng']);
   if (lng != null) {
     getClassifiedDetailData.lng = lng;
   }
@@ -146,6 +144,16 @@ GetClassifiedDetailData $GetClassifiedDetailDataFromJson(
       json['bookmarked_by_user']);
   if (bookmarkedByUser != null) {
     getClassifiedDetailData.bookmarkedByUser = bookmarkedByUser;
+  }
+  final String? categoryName = jsonConvert.convert<String>(
+      json['category_name']);
+  if (categoryName != null) {
+    getClassifiedDetailData.categoryName = categoryName;
+  }
+  final String? subcategoryName = jsonConvert.convert<String>(
+      json['subcategory_name']);
+  if (subcategoryName != null) {
+    getClassifiedDetailData.subcategoryName = subcategoryName;
   }
   final GetClassifiedDetailDataUserData? userData = jsonConvert.convert<
       GetClassifiedDetailDataUserData>(json['user_data']);
@@ -201,7 +209,9 @@ Map<String, dynamic> $GetClassifiedDetailDataToJson(
   data['totalcomment'] = entity.totalcomment;
   data['liked_by_user'] = entity.likedByUser;
   data['bookmarked_by_user'] = entity.bookmarkedByUser;
-  data['user_data'] = entity.userData?.toJson();
+  data['category_name'] = entity.categoryName;
+  data['subcategory_name'] = entity.subcategoryName;
+  data['user_data'] = entity.userData.toJson();
   data['full_url'] = entity.fullUrl;
   data['image_url'] = entity.imageUrl;
   data['image_path'] = entity.imagePath;
@@ -217,26 +227,28 @@ extension GetClassifiedDetailDataExtension on GetClassifiedDetailData {
     String? description,
     int? pgcnt,
     String? company,
-    String? premiumsdate,
-    String? premiumedate,
+    dynamic premiumsdate,
+    dynamic premiumedate,
     String? datemodified,
     String? createdate,
     String? category,
-    String? creatby,
+    int? creatby,
     String? subcategory,
     String? popular,
     String? website,
     String? city,
     String? state,
     String? country,
-    dynamic lat,
-    dynamic lng,
+    String? lat,
+    String? lng,
     String? urlcomponent,
     int? totallike,
     int? totalbookmark,
     int? totalcomment,
     bool? likedByUser,
     bool? bookmarkedByUser,
+    String? categoryName,
+    String? subcategoryName,
     GetClassifiedDetailDataUserData? userData,
     String? fullUrl,
     String? imageUrl,
@@ -270,6 +282,8 @@ extension GetClassifiedDetailDataExtension on GetClassifiedDetailData {
       ..totalcomment = totalcomment ?? this.totalcomment
       ..likedByUser = likedByUser ?? this.likedByUser
       ..bookmarkedByUser = bookmarkedByUser ?? this.bookmarkedByUser
+      ..categoryName = categoryName ?? this.categoryName
+      ..subcategoryName = subcategoryName ?? this.subcategoryName
       ..userData = userData ?? this.userData
       ..fullUrl = fullUrl ?? this.fullUrl
       ..imageUrl = imageUrl ?? this.imageUrl
@@ -293,11 +307,12 @@ GetClassifiedDetailDataUserData $GetClassifiedDetailDataUserDataFromJson(
   if (email != null) {
     getClassifiedDetailDataUserData.email = email;
   }
-  final dynamic mobile = json['mobile'];
+  final String? mobile = jsonConvert.convert<String>(json['mobile']);
   if (mobile != null) {
     getClassifiedDetailDataUserData.mobile = mobile;
   }
-  final dynamic countrycode1 = json['countrycode1'];
+  final String? countrycode1 = jsonConvert.convert<String>(
+      json['countrycode1']);
   if (countrycode1 != null) {
     getClassifiedDetailDataUserData.countrycode1 = countrycode1;
   }
@@ -331,8 +346,8 @@ extension GetClassifiedDetailDataUserDataExtension on GetClassifiedDetailDataUse
     String? name,
     String? userimage,
     String? email,
-    dynamic mobile,
-    dynamic countrycode1,
+    String? mobile,
+    String? countrycode1,
     String? imagePath,
     String? imageThumPath,
   }) {

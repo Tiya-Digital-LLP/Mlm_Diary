@@ -24,6 +24,7 @@ import 'package:mlmdiary/widgets/custom_mobile_field.dart';
 import 'package:mlmdiary/widgets/custom_name_text_field.dart';
 import 'package:mlmdiary/widgets/normal_button.dart';
 import 'package:mlmdiary/widgets/password_border_text_field.dart';
+import 'package:pinput/pinput.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -121,29 +122,33 @@ class _SignupPageState extends State<SignupPage> {
                         () => BorderContainer(
                           isError: controller.mlmTypeError.value,
                           byDefault: !controller.isMlmTyping.value,
-                          height: 65,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: TextField(
-                              controller:
-                                  controller.getSelectedOptionsTextController(),
-                              readOnly: true,
-                              onTap: () async {
-                                // ignore: use_build_context_synchronously
-                                showBottomSheetFunc(context, size, controller,
-                                    controller.userTypes);
-                                controller.mlmCategoryValidation();
-                              },
-                              style: textStyleW500(
-                                  size.width * 0.04, AppColors.blackText),
-                              cursorColor: AppColors.blackText,
-                              decoration: InputDecoration(
-                                hintText: "I am a MLM",
-                                border: InputBorder.none,
-                                suffixIcon: Icon(
-                                  Icons.arrow_drop_down,
-                                  color: AppColors.blackText,
-                                ),
+                          height: 58,
+                          child: TextField(
+                            controller:
+                                controller.getSelectedOptionsTextController(),
+                            readOnly: true,
+                            onTap: () async {
+                              // ignore: use_build_context_synchronously
+                              showBottomSheetFunc(context, size, controller,
+                                  controller.userTypes);
+                              controller.mlmCategoryValidation();
+                            },
+                            style: textStyleW500(
+                                size.width * 0.04, AppColors.blackText),
+                            cursorColor: AppColors.blackText,
+                            decoration: InputDecoration(
+                              labelText: "I am a MLM",
+                              labelStyle: const TextStyle(
+                                color: Colors.black,
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                vertical: 5.5,
+                                horizontal: 2,
+                              ),
+                              border: InputBorder.none,
+                              suffixIcon: Icon(
+                                Icons.arrow_drop_down,
+                                color: AppColors.blackText,
                               ),
                             ),
                           ),
@@ -154,7 +159,7 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                       Obx(
                         () => CustomNameTextField(
-                          height: 65,
+                          height: 58,
                           keyboard: TextInputType.name,
                           textInputType: const [],
                           hint: "Your Name",
@@ -178,9 +183,9 @@ class _SignupPageState extends State<SignupPage> {
                               onTap: _onPressedShowBottomSheet,
                               child: SizedBox(
                                 width: 120,
-                                height: 65,
+                                height: 58,
                                 child: BorderContainer(
-                                  height: 60,
+                                  height: 58,
                                   child: selectedCountry.value == null
                                       ? Container()
                                       : Center(
@@ -216,7 +221,7 @@ class _SignupPageState extends State<SignupPage> {
                               flex: 5,
                               child: Obx(
                                 () => CustomMobileField(
-                                  height: 65,
+                                  height: 58,
                                   hint: "Mobile Number",
                                   readOnly: controller.mobileReadOnly.value,
                                   controller: controller.mobile.value,
@@ -521,33 +526,75 @@ class _SignupPageState extends State<SignupPage> {
                                                           .value
                                                       ? Column(
                                                           children: [
-                                                            BorderTextField(
-                                                              controller:
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8.0),
+                                                              child: Pinput(
+                                                                controller:
+                                                                    controller
+                                                                        .emailOtp
+                                                                        .value,
+                                                                length: 6,
+                                                                onChanged:
+                                                                    (pin) {
                                                                   controller
                                                                       .emailOtp
-                                                                      .value,
-                                                              hint: "Enter OTP",
-                                                              textInputType: [
-                                                                FilteringTextInputFormatter
-                                                                    .digitsOnly
-                                                              ],
-                                                              keyboard:
-                                                                  TextInputType
-                                                                      .number,
-                                                              isError: controller
-                                                                  .emailOtpError
-                                                                  .value,
-                                                              byDefault: !controller
-                                                                  .isEmailOtpTyping
-                                                                  .value,
-                                                              onChanged:
-                                                                  (value) {
-                                                                controller
-                                                                    .emailOtpValidation();
-                                                                controller
-                                                                    .isEmailOtpTyping
-                                                                    .value = true;
-                                                              },
+                                                                      .value
+                                                                      .text = pin;
+                                                                },
+                                                                onSubmitted:
+                                                                    (pin) {
+                                                                  controller
+                                                                      .emailOtp
+                                                                      .value
+                                                                      .text = pin;
+                                                                },
+                                                                defaultPinTheme:
+                                                                    PinTheme(
+                                                                  width: 56,
+                                                                  height: 56,
+                                                                  textStyle:
+                                                                      const TextStyle(
+                                                                    fontSize:
+                                                                        22,
+                                                                    color: Colors
+                                                                        .black,
+                                                                  ),
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    color: Colors
+                                                                            .grey[
+                                                                        200],
+                                                                    borderRadius:
+                                                                        BorderRadius
+                                                                            .circular(8),
+                                                                  ),
+                                                                ),
+                                                                focusedPinTheme:
+                                                                    PinTheme(
+                                                                  width: 56,
+                                                                  height: 56,
+                                                                  textStyle:
+                                                                      const TextStyle(
+                                                                    fontSize:
+                                                                        22,
+                                                                    color: Colors
+                                                                        .blue,
+                                                                  ),
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    borderRadius:
+                                                                        BorderRadius
+                                                                            .circular(8),
+                                                                    border: Border.all(
+                                                                        color: Colors
+                                                                            .blue),
+                                                                  ),
+                                                                ),
+                                                              ),
                                                             ),
                                                             SizedBox(
                                                               height:
@@ -743,25 +790,53 @@ class _SignupPageState extends State<SignupPage> {
                                         ? Column(
                                             children: [
                                               // ENTER MOBILE OTP
-                                              BorderTextField(
-                                                controller:
-                                                    controller.mobileOtp.value,
-                                                hint: "Enter OTP",
-                                                textInputType: [
-                                                  FilteringTextInputFormatter
-                                                      .digitsOnly
-                                                ],
-                                                keyboard: TextInputType.number,
-                                                isError: controller
-                                                    .mobileOtpError.value,
-                                                byDefault: !controller
-                                                    .isMobileOtpTyping.value,
-                                                onChanged: (value) {
-                                                  controller
-                                                      .mobileOtpValidation();
-                                                  controller.isMobileOtpTyping
-                                                      .value = true;
-                                                },
+
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Pinput(
+                                                  controller: controller
+                                                      .mobileOtp.value,
+                                                  length: 6,
+                                                  onChanged: (pin) {
+                                                    controller.mobileOtp.value
+                                                        .text = pin;
+                                                  },
+                                                  onSubmitted: (pin) {
+                                                    controller.mobileOtp.value
+                                                        .text = pin;
+                                                  },
+                                                  defaultPinTheme: PinTheme(
+                                                    width: 56,
+                                                    height: 56,
+                                                    textStyle: const TextStyle(
+                                                      fontSize: 22,
+                                                      color: Colors.black,
+                                                    ),
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.grey[200],
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8),
+                                                    ),
+                                                  ),
+                                                  focusedPinTheme: PinTheme(
+                                                    width: 56,
+                                                    height: 56,
+                                                    textStyle: const TextStyle(
+                                                      fontSize: 22,
+                                                      color: Colors.blue,
+                                                    ),
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8),
+                                                      border: Border.all(
+                                                          color: Colors.blue),
+                                                    ),
+                                                  ),
+                                                ),
                                               ),
                                               SizedBox(
                                                 height: size.height * 0.015,

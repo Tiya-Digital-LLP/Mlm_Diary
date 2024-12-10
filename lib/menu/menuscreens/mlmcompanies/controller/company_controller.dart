@@ -31,8 +31,8 @@ class CompanyController extends GetxController {
   var isEndOfData = false.obs;
   final ScrollController scrollController = ScrollController();
   //like
-  var likedStatusMap = <int, bool>{};
-  var likeCountMap = <int, int>{};
+  RxMap<int, bool> likedStatusMap = <int, bool>{}.obs;
+  RxMap<int, int> likeCountMap = <int, int>{}.obs;
 
   //bookmark
   var bookmarkStatusMap = <int, bool>{};
@@ -167,10 +167,10 @@ class CompanyController extends GetxController {
           // Update the liked status and like count based on the message
           if (message == 'You have liked this classified') {
             likedStatusMap[companyId] = true;
-            likeCountMap[companyId] = (likeCountMap[companyId] ?? 0) + 1;
+            likeCountMap[companyId] = (likeCountMap[companyId] ?? 0);
           } else if (message == 'You have unliked this classified') {
             likedStatusMap[companyId] = false;
-            likeCountMap[companyId] = (likeCountMap[companyId] ?? 0) - 1;
+            likeCountMap[companyId] = (likeCountMap[companyId] ?? 0);
           }
 
           showToastverifedborder(message!, context);
@@ -428,14 +428,14 @@ class CompanyController extends GetxController {
           var data = jsonDecode(response.body);
           var addCompanyCommentEntity = AddCompanyCommentEntity.fromJson(data);
           // Check if the status is 0 and show a toast message
-        if (data['status'] == 0) {
-          showToasterrorborder(data['message'], context);
-        } else {
-          getCommentCompany(1, companyId, context);
-          if (kDebugMode) {
-            print('Success: $addCompanyCommentEntity');
+          if (data['status'] == 0) {
+            showToasterrorborder(data['message'], context);
+          } else {
+            getCommentCompany(1, companyId, context);
+            if (kDebugMode) {
+              print('Success: $addCompanyCommentEntity');
+            }
           }
-        }
 
           if (kDebugMode) {
             print('Success: $addCompanyCommentEntity');

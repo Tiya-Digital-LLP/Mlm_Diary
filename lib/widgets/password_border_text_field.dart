@@ -48,7 +48,7 @@ class _PasswordBorderTextFieldState extends State<PasswordBorderTextField> {
     return Container(
       width: size.width,
       padding: EdgeInsets.symmetric(
-          horizontal: size.width * 0.05, vertical: size.height * 0.005),
+          horizontal: size.width * 0.03, vertical: size.height * 0.005),
       decoration: BoxDecoration(
         border: Border.all(
             color: widget.byDefault
@@ -72,12 +72,18 @@ class _PasswordBorderTextFieldState extends State<PasswordBorderTextField> {
                 controller: widget.controller,
                 obscureText: obscureText.value,
                 obscuringCharacter: "●",
-                style:
-                    TextStyle(fontSize: size.width * 0.04, color: Colors.black),
+                style: TextStyle(
+                  fontSize: size.width * 0.04,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w500,
+                ),
                 cursorColor: Colors.black,
                 decoration: InputDecoration(
                   counterText: "",
-                  hintText: widget.hint,
+                  labelText: widget.hint,
+                  labelStyle: const TextStyle(
+                    color: Colors.black,
+                  ),
                   border: InputBorder.none,
                 ),
               ),

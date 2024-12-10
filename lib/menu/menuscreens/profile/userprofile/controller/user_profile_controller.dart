@@ -389,10 +389,6 @@ class UserProfileController extends GetxController {
     }
 
     String? apiToken = prefs.getString(Constants.accessToken);
-    if (apiToken == null) {
-      isLoading.value = false;
-      return;
-    }
 
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
@@ -403,7 +399,7 @@ class UserProfileController extends GetxController {
       }
 
       Map<String, String> queryParams = {
-        'api_token': apiToken,
+        'api_token': apiToken.toString(),
         'device': device,
         'page': page.toString(),
         'user_id': userId.toString(),

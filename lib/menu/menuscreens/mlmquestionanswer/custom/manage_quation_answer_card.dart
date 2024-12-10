@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/question_like_list_content.dart';
@@ -11,7 +10,6 @@ import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
-import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 
 class ManageQuestionCard extends StatefulWidget {
   final String userImage;
@@ -115,11 +113,6 @@ class _ManageQuestionCardState extends State<ManageQuestionCard> {
                       height: 60,
                       width: 60,
                       fit: BoxFit.cover,
-                      placeholder: (context, url) => CustomLottieAnimation(
-                        child: Lottie.asset(
-                          Assets.lottieLottie,
-                        ),
-                      ),
                       errorWidget: (context, url, error) =>
                           const Icon(Icons.error),
                     ),

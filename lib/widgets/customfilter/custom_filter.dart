@@ -3,6 +3,7 @@ import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.
 import 'package:flutter_google_places_hoc081098/google_maps_webservice_places.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+// ignore: depend_on_referenced_packages
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:mlmdiary/classified/custom/add_comapany_classfied.dart';
 import 'package:mlmdiary/database/controller/database_controller.dart';

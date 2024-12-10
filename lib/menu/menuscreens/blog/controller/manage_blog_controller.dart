@@ -49,8 +49,8 @@ class ManageBlogController extends GetxController {
   RxList<BlogLikeListData> blogLikeList = RxList<BlogLikeListData>();
 
   //like
-  var likedStatusMap = <int, bool>{};
-  var likeCountMap = <int, int>{};
+  RxMap<int, bool> likedStatusMap = <int, bool>{}.obs;
+  RxMap<int, int> likeCountMap = <int, int>{}.obs;
 
 //bookmark
   var bookmarkStatusMap = <int, bool>{};
@@ -98,7 +98,6 @@ class ManageBlogController extends GetxController {
   void onInit() {
     super.onInit();
     fetchCategoryList();
-    fetchMyBlog();
     getBlog(1);
     scrollController.addListener(() {
       if (scrollController.position.pixels ==
@@ -112,12 +111,8 @@ class ManageBlogController extends GetxController {
 
   void resetSelections() {
     // Reset category and subcategory selections
-    for (int i = 0; i < isCategorySelectedList.length; i++) {
-      isCategorySelectedList[i] = false;
-    }
-    for (int i = 0; i < isSubCategorySelectedList.length; i++) {
-      isSubCategorySelectedList[i] = false;
-    }
+    selectedCategoryId.value = 0;
+    selectedSubCategoryId.value = 0;
     getBlog(1);
   }
 
@@ -208,12 +203,7 @@ class ManageBlogController extends GetxController {
     int? articleId,
   }) async {
     isLoading.value = true;
-    String device = '';
-    if (Platform.isAndroid) {
-      device = 'android';
-    } else if (Platform.isIOS) {
-      device = 'ios';
-    }
+    String device = Platform.isAndroid ? 'android' : 'ios';
 
     if (kDebugMode) {
       print('Device Name: $device');
@@ -240,7 +230,6 @@ class ManageBlogController extends GetxController {
         'page': page.toString(),
       };
 
-      // If articleId is provided, add it to formData
       if (articleId != null) {
         formData['blog_id'] = articleId.toString();
       }
@@ -259,71 +248,27 @@ class ManageBlogController extends GetxController {
 
         final List<MyBlogListData> myBlogData = myBlogEntity.data ?? [];
 
-        // Assign or add data to myBlogList based on the page number
         if (page == 1) {
           myBlogList.assignAll(myBlogData);
         } else {
           myBlogList.addAll(myBlogData);
         }
 
-        // Save the articleId to SharedPreferences
-        if (articleId != null) {
-          await prefs.setInt('saved_article_id', articleId);
-        }
-
-        // Update UI with appropriate blog data
-        if (articleId != null) {
-          // Find the selected blog by articleId
-          MyBlogListData? selectedBlog;
-          for (var blog in myBlogData) {
-            if (blog.articleId == articleId) {
-              selectedBlog = blog;
-              break;
-            }
-          }
-
-          if (selectedBlog != null) {
-            updateUIWithBlogData(selectedBlog);
-          } else {
-            // Show error message if blog with articleId is not found
-            if (context != null) {
-              showToasterrorborder(
-                  "Blog with ID $articleId not found",
-                  // ignore: use_build_context_synchronously
-                  context);
-            }
-          }
-        } else {
-          // If articleId is not provided, update UI with the first news
-          if (myBlogData.isNotEmpty) {
-            updateUIWithBlogData(myBlogData[0]);
-          } else {
-            // Show error message if no data found
-            if (context != null) {
-              // ignore: use_build_context_synchronously
-              showToasterrorborder("No data found", context);
-            }
-          }
-        }
+        updateUIWithBlogData(myBlogData.first);
       } else {
-        // Show error message if response status code is not 200
         if (context != null) {
-          // ignore: use_build_context_synchronously
           if (kDebugMode) {
             print("Error: ${response.body}");
           }
         }
       }
     } catch (error) {
-      // Show error message for any caught exception
       if (context != null) {
-        // ignore: use_build_context_synchronously
         if (kDebugMode) {
           print("Error: $error");
         }
       }
     } finally {
-      // Set isLoading to false after completing fetch operation
       isLoading.value = false;
     }
   }
@@ -334,16 +279,77 @@ class ManageBlogController extends GetxController {
     url.value.text = blogData.website ?? '';
     userImage.value = blogData.imagePath ?? '';
 
-    isCategorySelectedList.clear();
-    for (var category in categorylist) {
-      bool isSelected = blogData.category == (category.id.toString());
-      isCategorySelectedList.add(isSelected);
+    if (kDebugMode) {
+      print('PostImageBlog: $userImage');
     }
 
-    isSubCategorySelectedList.clear();
-    for (var subcategory in subcategoryList) {
-      bool isSelected = blogData.subcategory == (subcategory.id.toString());
-      isSubCategorySelectedList.add(isSelected);
+    // Handle category selection (using categoryId as int)
+    int? categoryId = int.tryParse(blogData.category ?? '');
+
+    if (categoryId != null) {
+      if (kDebugMode) {
+        print('Category ID selected: $categoryId');
+      }
+
+      isCategorySelectedList.fillRange(0, isCategorySelectedList.length, false);
+      int index = categorylist.indexWhere((item) => item.id == categoryId);
+
+      if (kDebugMode) {
+        print('Category index by ID: $index');
+      }
+
+      if (index != -1) {
+        isCategorySelectedList[index] = true;
+        selectedCountCategory.value = 1;
+        selectedCategoryId.value = categorylist[index].id!;
+
+        if (kDebugMode) {
+          print('Category selected, ID: ${selectedCategoryId.value}');
+        }
+
+        fetchSubCategoryList(categorylist[index].id!);
+      }
+    } else {
+      if (kDebugMode) {
+        print('Invalid categoryId');
+      }
+    }
+
+    // Handle subcategory selection (using subcategoryId as int)
+    int? subcategoryId = int.tryParse(blogData.subcategory ?? '');
+
+    if (subcategoryId != null) {
+      if (kDebugMode) {
+        print('Subcategory ID selected: $subcategoryId');
+      }
+
+      isSubCategorySelectedList.fillRange(
+          0, isSubCategorySelectedList.length, false);
+
+      int subcategoryIndex =
+          subcategoryList.indexWhere((item) => item.id == subcategoryId);
+
+      if (kDebugMode) {
+        print('Subcategory index by ID: $subcategoryIndex');
+      }
+
+      if (subcategoryIndex != -1) {
+        isSubCategorySelectedList[subcategoryIndex] = true;
+        selectedCountSubCategory.value = 1;
+        selectedSubCategoryId.value = subcategoryList[subcategoryIndex].id!;
+
+        if (kDebugMode) {
+          print('Subcategory selected, ID: ${selectedSubCategoryId.value}');
+        }
+      } else {
+        if (kDebugMode) {
+          print('Subcategory not found in the list');
+        }
+      }
+    } else {
+      if (kDebugMode) {
+        print('Invalid subcategoryId');
+      }
     }
   }
 
@@ -602,10 +608,10 @@ class ManageBlogController extends GetxController {
           // Update the liked status and like count based on the message
           if (message == 'You have liked this Blog') {
             likedStatusMap[blogId] = true;
-            likeCountMap[blogId] = (likeCountMap[blogId] ?? 0) + 1;
+            likeCountMap[blogId] = (likeCountMap[blogId] ?? 0);
           } else if (message == 'You have unliked this Blog') {
             likedStatusMap[blogId] = false;
-            likeCountMap[blogId] = (likeCountMap[blogId] ?? 0) - 1;
+            likeCountMap[blogId] = (likeCountMap[blogId] ?? 0);
           }
 
           showToastverifedborder(message!, context);
@@ -679,8 +685,7 @@ class ManageBlogController extends GetxController {
     }
   }
 
-  //update-Blog
-  Future<void> updateBlog({required File? imageFile, context}) async {
+  Future<void> updateBlog(File? imageFile, int blogId, context) async {
     isLoading(true);
     String device = '';
     if (Platform.isAndroid) {
@@ -693,7 +698,6 @@ class ManageBlogController extends GetxController {
     }
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
-    int? blogId = prefs.getInt('saved_article_id');
 
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
@@ -718,21 +722,15 @@ class ManageBlogController extends GetxController {
         }
 
         if (imageFile != null) {
+          if (kDebugMode) {
+            print('Attaching new image file: ${imageFile.path}');
+          }
           request.files.add(
             http.MultipartFile(
               'image',
               imageFile.readAsBytes().asStream(),
               imageFile.lengthSync(),
               filename: 'image.jpg',
-              contentType: MediaType('image', 'jpg'),
-            ),
-          );
-        } else {
-          request.files.add(
-            http.MultipartFile.fromString(
-              'image',
-              'dummy_image.jpg',
-              filename: 'dummy_image.jpg',
               contentType: MediaType('image', 'jpg'),
             ),
           );
@@ -746,7 +744,6 @@ class ManageBlogController extends GetxController {
           if (kDebugMode) {
             print("Response body: $jsonBody");
           }
-          // Check if all fields in the response are true (you may need to adjust this condition based on the actual response structure)
           if (jsonBody['status'] == 1) {
             toastification.show(
               context: context,
@@ -763,8 +760,8 @@ class ManageBlogController extends GetxController {
               primaryColor: Colors.green,
               title: const Text('Blog Updated Successfully'),
             );
-            fetchMyBlog();
             Get.back();
+            fetchMyBlog();
           } else if (jsonBody['status'] == 0) {
             toastification.show(
               context: context,
@@ -1043,14 +1040,14 @@ class ManageBlogController extends GetxController {
           var data = jsonDecode(response.body);
           var addCommentBlogEntity = AddCommentBlogEntity.fromJson(data);
           // Check if the status is 0 and show a toast message
-        if (data['status'] == 0) {
-          showToasterrorborder(data['message'], context);
-        } else {
-          getCommentBlog(1, blodId, context);
-          if (kDebugMode) {
-            print('Success: $addCommentBlogEntity');
+          if (data['status'] == 0) {
+            showToasterrorborder(data['message'], context);
+          } else {
+            getCommentBlog(1, blodId, context);
+            if (kDebugMode) {
+              print('Success: $addCommentBlogEntity');
+            }
           }
-        }
 
           if (kDebugMode) {
             print('Success: $addCommentBlogEntity');

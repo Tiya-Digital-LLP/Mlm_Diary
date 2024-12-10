@@ -5,7 +5,7 @@ import 'package:mlmdiary/database/database.dart';
 import 'package:mlmdiary/firstscreen/home_controller.dart';
 import 'package:mlmdiary/home/home/home_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/advertising/advertising.dart';
-import 'package:mlmdiary/menu/more_option.dart';
+import 'package:mlmdiary/menu/moreoption/more_option.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/widgets/bottom_nav_bar.dart';
 

@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/generated/get_user_profile_entity.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,15 +16,69 @@ import 'package:toastification/toastification.dart';
 
 class AddPostController extends GetxController {
   Rx<TextEditingController> comments = TextEditingController().obs;
+  var userProfile = GetUserProfileEntity().obs;
+  RxString userImage = ''.obs;
+  RxString userName = ''.obs;
+  RxString iammlm = ''.obs;
+
   var isLoading = false.obs;
   RxBool postError = false.obs;
   RxBool isPostTyping = false.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchUserProfile();
+  }
 
   void validateComments(String text) {
     if (text.isEmpty) {
       postError(true);
     } else {
       postError(false);
+    }
+  }
+
+  Future<void> fetchUserProfile() async {
+    isLoading(true);
+
+    final prefs = await SharedPreferences.getInstance();
+    final apiToken = prefs.getString(Constants.accessToken);
+
+    if (apiToken == null || apiToken.isEmpty) {
+      isLoading(false);
+
+      return;
+    }
+
+    try {
+      final response = await http.post(
+        Uri.parse('${Constants.baseUrl}${Constants.userprofile}'),
+        body: {'api_token': apiToken},
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        final userProfileEntity = GetUserProfileEntity.fromJson(responseData);
+        userProfile(userProfileEntity);
+        userImage.value = userProfileEntity.userProfile!.imagePath ?? '';
+        userName.value = userProfileEntity.userProfile!.name ?? '';
+        iammlm.value = userProfileEntity.userProfile!.immlm ?? '';
+
+        if (kDebugMode) {
+          print('Account Settings Data: $responseData');
+        }
+      } else {
+        if (kDebugMode) {
+          print("Error: ${response.body}");
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error: $e");
+      }
+    } finally {
+      isLoading(false);
     }
   }
 

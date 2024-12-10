@@ -80,8 +80,7 @@ class _ManageBlogPlusIconState extends State<AddBlog> {
                         controller.titleValidation();
                         controller.isTitleTyping.value = true;
                       },
-                      height: 65,
-                      maxLength: 100,
+                      height: 58,
                     ),
                   ),
                   10.sbh,
@@ -89,36 +88,37 @@ class _ManageBlogPlusIconState extends State<AddBlog> {
                     () => BorderContainer(
                       isError: controller.categoryError.value,
                       byDefault: !controller.isCategoryTyping.value,
-                      height: 60,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: TextField(
-                          controller:
-                              controller.getSelectedCategoryTextController(),
-                          readOnly: true,
-                          onTap: () {
-                            log("BEFORE ==  ${controller.categoryError.value}");
+                      height: 58,
+                      child: TextField(
+                        controller:
+                            controller.getSelectedCategoryTextController(),
+                        readOnly: true,
+                        onTap: () {
+                          log("BEFORE ==  ${controller.categoryError.value}");
 
-                            showSelectCategory(context, size, controller,
-                                controller.categorylist);
-                            controller.mlmCategoryValidation();
+                          showSelectCategory(context, size, controller,
+                              controller.categorylist);
+                          controller.mlmCategoryValidation();
 
-                            log("AFTER == ${controller.categoryError.value}");
-                          },
-                          style: textStyleW500(
-                              size.width * 0.04, AppColors.blackText),
-                          cursorColor: AppColors.blackText,
-                          decoration: InputDecoration(
-                              hintText: "Select Category",
-                              contentPadding: const EdgeInsets.only(
-                                top: 3,
-                              ),
-                              border: InputBorder.none,
-                              suffixIcon: Icon(
-                                Icons.arrow_drop_down,
-                                color: AppColors.blackText,
-                              )),
-                        ),
+                          log("AFTER == ${controller.categoryError.value}");
+                        },
+                        style: textStyleW500(
+                            size.width * 0.04, AppColors.blackText),
+                        cursorColor: AppColors.blackText,
+                        decoration: InputDecoration(
+                            labelText: "Select Category",
+                            labelStyle: const TextStyle(
+                              color: Colors.black,
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 5,
+                              horizontal: 2,
+                            ),
+                            border: InputBorder.none,
+                            suffixIcon: Icon(
+                              Icons.arrow_drop_down,
+                              color: AppColors.blackText,
+                            )),
                       ),
                     ),
                   ),
@@ -127,38 +127,41 @@ class _ManageBlogPlusIconState extends State<AddBlog> {
                     () => BorderContainer(
                       isError: controller.subCategoryError.value,
                       byDefault: !controller.isSubCategoryTyping.value,
-                      height: 60,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: TextField(
-                          controller:
-                              controller.getSelectedSubCategoryTextController(),
-                          readOnly: true,
-                          onTap: () {
-                            log("BEFORE ==  ${controller.subCategoryError.value}");
+                      height: 58,
+                      child: TextField(
+                        controller:
+                            controller.getSelectedSubCategoryTextController(),
+                        readOnly: true,
+                        onTap: () {
+                          log("BEFORE ==  ${controller.subCategoryError.value}");
 
-                            showSelectSubCategory(
-                              context,
-                              size,
-                              controller,
-                              controller.subcategoryList,
-                            );
-                            controller.mlmsubCategoryValidation();
+                          showSelectSubCategory(
+                            context,
+                            size,
+                            controller,
+                            controller.subcategoryList,
+                          );
+                          controller.mlmsubCategoryValidation();
 
-                            log("AFTER == ${controller.subCategoryError.value}");
-                          },
-                          style: textStyleW500(
-                              size.width * 0.04, AppColors.blackText),
-                          cursorColor: AppColors.blackText,
-                          decoration: InputDecoration(
-                              hintText: "Select Sub Category",
-                              contentPadding: const EdgeInsets.only(top: 3),
-                              border: InputBorder.none,
-                              suffixIcon: Icon(
-                                Icons.arrow_drop_down,
-                                color: AppColors.blackText,
-                              )),
-                        ),
+                          log("AFTER == ${controller.subCategoryError.value}");
+                        },
+                        style: textStyleW500(
+                            size.width * 0.04, AppColors.blackText),
+                        cursorColor: AppColors.blackText,
+                        decoration: InputDecoration(
+                            labelText: "Select Sub Category",
+                            labelStyle: const TextStyle(
+                              color: Colors.black,
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 5,
+                              horizontal: 2,
+                            ),
+                            border: InputBorder.none,
+                            suffixIcon: Icon(
+                              Icons.arrow_drop_down,
+                              color: AppColors.blackText,
+                            )),
                       ),
                     ),
                   ),
@@ -190,7 +193,7 @@ class _ManageBlogPlusIconState extends State<AddBlog> {
                         controller.urlValidation();
                         controller.isUrlTyping.value = true;
                       },
-                      height: 65,
+                      height: 58,
                     ),
                   ),
                   20.sbh,

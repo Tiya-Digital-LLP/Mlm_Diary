@@ -14,6 +14,7 @@ import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
+import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_shimmer_classified.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:mlmdiary/widgets/remimaining_count_controller./remaining_count.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,9 +33,16 @@ class _MlmBlogState extends State<MlmBlog> {
   static const String position = 'blog';
   final HomeScreenController homeScreenController =
       Get.put(HomeScreenController());
+
+  final RxBool showShimmer = true.obs;
+
   @override
   void initState() {
     super.initState();
+    // Start a timer to switch from shimmer to UI after 1 second
+    Future.delayed(const Duration(seconds: 1), () {
+      showShimmer.value = false;
+    });
     _refreshData();
     videoController.fetchVideo(position, context);
   }
@@ -150,79 +158,94 @@ class _MlmBlogState extends State<MlmBlog> {
               ),
               Expanded(
                 child: Obx(() {
-                  if (controller.isLoading.value &&
-                      controller.blogList.isEmpty) {
-                    return Center(
-                      child: CustomLottieAnimation(
-                        child: Lottie.asset(Assets.lottieLottie),
+                  if (showShimmer.value) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: ListView.builder(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        itemCount: 4,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return const CustomShimmerClassified(
+                              width: 175, height: 240);
+                        },
                       ),
                     );
-                  }
+                  } else {
+                    return Expanded(
+                      child: Obx(() {
+                        if (controller.isLoading.value &&
+                            controller.blogList.isEmpty) {
+                          return Center(
+                            child: CustomLottieAnimation(
+                              child: Lottie.asset(Assets.lottieLottie),
+                            ),
+                          );
+                        }
 
-                  if (controller.blogList.isEmpty) {
-                    return const Center(
-                      child: Text(
-                        'Data not found',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black),
-                      ),
-                    );
-                  }
-                  return ListView.builder(
-                    controller: controller.scrollController,
-                    padding: EdgeInsets.zero,
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: controller.blogList.length +
-                        (controller.isLoading.value ? 1 : 0),
-                    itemBuilder: (context, index) {
-                      if (index == controller.blogList.length) {
-                        return Center(
-                          child: CustomLottieAnimation(
-                            child: Lottie.asset(Assets.lottieLottie),
-                          ),
-                        );
-                      }
-
-                      final post = controller.blogList[index];
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 8),
-                        child: GestureDetector(
-                          onTap: () async {
-                            SharedPreferences prefs =
-                                await SharedPreferences.getInstance();
-                            String? apiToken =
-                                prefs.getString(Constants.accessToken);
-
-                            if (apiToken == null) {
-                              // ignore: use_build_context_synchronously
-                              showSignupDialog(context);
-                              return;
+                        if (controller.blogList.isEmpty) {
+                          return const Center(
+                            child: Text(
+                              'Data not found',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black),
+                            ),
+                          );
+                        }
+                        return ListView.builder(
+                          controller: controller.scrollController,
+                          padding: EdgeInsets.zero,
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: controller.blogList.length +
+                              (controller.isLoading.value ? 1 : 0),
+                          itemBuilder: (context, index) {
+                            if (index == controller.blogList.length) {
+                              return Center(
+                                child: CustomLottieAnimation(
+                                  child: Lottie.asset(Assets.lottieLottie),
+                                ),
+                              );
                             }
-                            Get.toNamed(Routes.blogdetails, arguments: post);
+
+                            final post = controller.blogList[index];
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 8),
+                              child: GestureDetector(
+                                onTap: () async {
+                                  SharedPreferences prefs =
+                                      await SharedPreferences.getInstance();
+                                  prefs.getString(Constants.accessToken);
+                                  Get.toNamed(Routes.blogdetails,
+                                      arguments: post);
+                                },
+                                child: BlogCard(
+                                  image: post.userData?.imagePath ?? '',
+                                  dateTime: post.createdate ?? '',
+                                  blogId: post.id ?? 0,
+                                  userImage: post.imageUrl ?? '',
+                                  userName: post.userData?.name ?? '',
+                                  postTitle: post.title ?? '',
+                                  postCaption: post.description ?? '',
+                                  likedCount: post.totallike ?? 0,
+                                  controller: controller,
+                                  viewcounts: post.pgcnt ?? 0,
+                                  bookmarkCount: post.totalbookmark ?? 0,
+                                  commentcount: post.totalcomment ?? 0,
+                                  likedbyuser: post.likedByUser ?? false,
+                                  bookmarkedbyuser:
+                                      post.bookmarkedByUser ?? false,
+                                ),
+                              ),
+                            );
                           },
-                          child: BlogCard(
-                            image: post.userData?.imagePath ?? '',
-                            dateTime: post.createdate ?? '',
-                            blogId: post.id ?? 0,
-                            userImage: post.imageUrl ?? '',
-                            userName: post.userData?.name ?? '',
-                            postTitle: post.title ?? '',
-                            likedCount: post.totallike ?? 0,
-                            controller: controller,
-                            viewcounts: post.pgcnt ?? 0,
-                            bookmarkCount: post.totalbookmark ?? 0,
-                            commentcount: post.totalcomment ?? 0,
-                            likedbyuser: post.likedByUser ?? false,
-                            bookmarkedbyuser: post.bookmarkedByUser ?? false,
-                          ),
-                        ),
-                      );
-                    },
-                  );
+                        );
+                      }),
+                    );
+                  }
                 }),
               ),
             ],
@@ -234,13 +257,7 @@ class _MlmBlogState extends State<MlmBlog> {
         builder: (controller) => InkWell(
           onTap: () async {
             SharedPreferences prefs = await SharedPreferences.getInstance();
-            String? apiToken = prefs.getString(Constants.accessToken);
-
-            if (apiToken == null) {
-              // ignore: use_build_context_synchronously
-              showSignupDialog(context);
-              return;
-            }
+            prefs.getString(Constants.accessToken);
             String selectedType = 'blog';
             await controller.handleTap(selectedType);
           },

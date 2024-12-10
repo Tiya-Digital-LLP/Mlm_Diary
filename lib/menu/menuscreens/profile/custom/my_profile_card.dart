@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/custom/custom_post_comment.dart';
@@ -12,7 +12,6 @@ import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
-import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:mlmdiary/widgets/logout_dialog/custom_logout_dialog.dart';
 
 class MyProfileCard extends StatefulWidget {
@@ -120,11 +119,6 @@ class _MyProfileCardState extends State<MyProfileCard> {
                         height: 97,
                         width: 105,
                         fit: BoxFit.fill,
-                        placeholder: (context, url) => CustomLottieAnimation(
-                          child: Lottie.asset(
-                            Assets.lottieLottie,
-                          ),
-                        ),
                         errorWidget: (context, url, error) =>
                             const Icon(Icons.error),
                       ),
@@ -178,25 +172,23 @@ class _MyProfileCardState extends State<MyProfileCard> {
               SizedBox(
                 height: size.height * 0.012,
               ),
-              Container(
-                height: size.height * 0.28,
-                width: size.width,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: CachedNetworkImage(
-                  imageUrl: widget.postImage,
-                  height: 97,
-                  width: 105,
-                  fit: BoxFit.fill,
-                  placeholder: (context, url) => CustomLottieAnimation(
-                    child: Lottie.asset(
-                      Assets.lottieLottie,
-                    ),
-                  ),
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
-                ),
-              ),
+              widget.postImage.isNotEmpty
+                  ? Container(
+                      height: size.height * 0.28,
+                      width: size.width,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: CachedNetworkImage(
+                        imageUrl: widget.postImage,
+                        height: 97,
+                        width: 105,
+                        fit: BoxFit.fill,
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
               SizedBox(
                 height: size.height * 0.017,
               ),
@@ -329,7 +321,10 @@ class _MyProfileCardState extends State<MyProfileCard> {
                     onTap: () async {
                       await widget.controller
                           .fetchMyPost(postId: widget.postId);
-                      Get.toNamed(Routes.editpost);
+                      Get.toNamed(Routes.editpost, arguments: widget.postId);
+                      if (kDebugMode) {
+                        print('postId: ${widget.postId}');
+                      }
                     },
                     value: 'edit',
                     child: Row(

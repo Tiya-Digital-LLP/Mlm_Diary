@@ -167,6 +167,14 @@ class _SearchBarAppState extends State<SearchBarApp> {
                         ));
                       }
                       final post = controller.homeList[index];
+                      String location =
+                          '${post.city ?? ''}, ${post.state ?? ''}, ${post.country ?? ''}'
+                              .trim();
+                      if (location == ', ,') {
+                        location = 'N/A';
+                      }
+                      String? plan =
+                          post.plan?.isNotEmpty == true ? post.plan : 'N/A';
                       Widget cardWidget;
                       switch (post.type) {
                         case 'classified':
@@ -250,7 +258,7 @@ class _SearchBarAppState extends State<SearchBarApp> {
                         case 'news':
                           cardWidget = NewsHomeCard(
                             userImage: post.userData?.imagePath ?? '',
-                            userName: post.userData?.name ?? '',
+                            userName: post.userData?.name ?? 'N/A',
                             postTitle: post.title ?? '',
                             postCaption: post.description ?? '',
                             postImage: post.imageUrl ?? '',
@@ -285,9 +293,9 @@ class _SearchBarAppState extends State<SearchBarApp> {
                             userImage: post.userData?.imagePath ?? '',
                             userName: post.title ?? '',
                             postTitle: post.title ?? '',
-                            postLocation: post.city ?? '',
+                            postLocation: location,
                             immlm: post.immlm ?? '',
-                            plan: post.plan ?? '',
+                            plan: plan.toString(),
                             postImage: post.imageUrl ?? '',
                             dateTime: post.createdate ?? '',
                             controller: controller,

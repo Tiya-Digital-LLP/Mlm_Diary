@@ -141,7 +141,9 @@ class _FavouritrCardState extends State<BlogUserCard> {
                   backgroundImage: widget.userImage.isNotEmpty &&
                           Uri.tryParse(widget.userImage)?.hasAbsolutePath ==
                               true
-                      ? NetworkImage(widget.userImage)
+                      ? NetworkImage(
+                          widget.userImage,
+                        )
                       : null,
                   child: widget.userImage.isEmpty
                       ? Image.asset(Assets.imagesAdminlogo)

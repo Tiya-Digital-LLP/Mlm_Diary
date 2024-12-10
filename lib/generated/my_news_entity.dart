@@ -30,10 +30,10 @@ class MyNewsData {
 	int? pgcnt = 0;
 	String? createdate = '';
 	String? category = '';
-	String? creatby = '';
+	int? creatby = 0;
 	int? status = 0;
 	String? subcategory = '';
-	String? website = '';
+	dynamic website;
 	String? urlcomponent = '';
 	int? totallike = 0;
 	int? totalbookmark = 0;
@@ -44,6 +44,10 @@ class MyNewsData {
 	bool? bookmarkedByUser = false;
 	@JSONField(name: "user_data")
 	MyNewsDataUserData? userData;
+	@JSONField(name: "category_name")
+	String? categoryName = '';
+	@JSONField(name: "subcategory_name")
+	String? subcategoryName = '';
 	@JSONField(name: "image_path")
 	String? imagePath = '';
 

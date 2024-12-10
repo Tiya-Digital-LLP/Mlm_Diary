@@ -8,6 +8,7 @@ import 'package:mlmdiary/home/message/controller/message_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
+import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_shimmer_followers.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 
 class Message extends StatefulWidget {
@@ -100,12 +101,20 @@ class _MessageState extends State<Message> {
                 Obx(() {
                   if (messageController.isLoading.value &&
                       messageController.chatList.isEmpty) {
-                    return Center(
-                        child: CustomLottieAnimation(
-                      child: Lottie.asset(
-                        Assets.lottieLottie,
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
                       ),
-                    ));
+                      child: ListView.builder(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        itemCount: 1,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return const ChatShimmerLoader(
+                              width: 175, height: 100);
+                        },
+                      ),
+                    );
                   }
 
                   if (messageController.chatList.isEmpty) {

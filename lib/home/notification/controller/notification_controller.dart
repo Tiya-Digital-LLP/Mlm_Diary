@@ -66,13 +66,6 @@ class NotificationController extends GetxController {
     }
 
     String? apiToken = prefs.getString(Constants.accessToken);
-    if (apiToken == null) {
-      if (kDebugMode) {
-        print('API token is null');
-      }
-      isLoading.value = false;
-      return;
-    }
     if (kDebugMode) {
       print('API token: $apiToken');
     }
@@ -89,7 +82,7 @@ class NotificationController extends GetxController {
       }
 
       Map<String, String> queryParams = {
-        'api_token': apiToken,
+        'api_token': apiToken.toString(),
         'device': device,
         'page': page.toString(),
         'notification_type': type ?? '',

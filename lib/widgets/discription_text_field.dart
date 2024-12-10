@@ -44,7 +44,7 @@ class DiscriptionTextField extends StatelessWidget {
         color: AppColors.white,
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Center(
           child: Container(
             alignment: Alignment.topLeft,
@@ -59,10 +59,17 @@ class DiscriptionTextField extends StatelessWidget {
               style: textStyleW500(size.width * 0.04, AppColors.blackText),
               cursorColor: AppColors.blackText,
               minLines: 3,
-              maxLines: 6,
+              maxLines: null,
               decoration: InputDecoration(
                 counterText: "",
-                hintText: hint,
+                labelText: hint,
+                labelStyle: const TextStyle(
+                  color: Colors.black,
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 10,
+                ),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
                 border: InputBorder.none,
               ),
             ),

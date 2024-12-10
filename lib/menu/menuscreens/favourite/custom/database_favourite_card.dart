@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
@@ -119,18 +120,22 @@ class _FavouritrCardState extends State<DatabaseFavouriteCard> {
                 if (widget.postImage.isNotEmpty &&
                     Uri.tryParse(widget.postImage)?.hasAbsolutePath == true)
                   Container(
-                    height: 60,
-                    width: 60,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
+                        borderRadius: BorderRadius.circular(100),
+                        border: Border.all(
+                            color: AppColors.primaryColor, width: 1)),
                     child: ClipOval(
-                      child: Image.network(
-                        widget.postImage,
-                        fit: BoxFit.fill,
-                        errorBuilder: (context, error, stackTrace) {
-                          return const SizedBox();
-                        },
+                      child: CachedNetworkImage(
+                        imageUrl: widget.postImage,
+                        height: 60.0,
+                        width: 60.0,
+                        fit: BoxFit.cover,
+                        errorWidget: (context, url, error) => Image.asset(
+                          Assets.imagesAdminlogo,
+                          height: 60.0,
+                          width: 60.0,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),
@@ -142,11 +147,10 @@ class _FavouritrCardState extends State<DatabaseFavouriteCard> {
                       Row(
                         children: [
                           Expanded(
-                            child: Text(
-                              widget.userName,
-                              style: textStyleW700(
-                                  size.width * 0.038, AppColors.blackText),
-                            ),
+                            child: Text(widget.userName,
+                                style: textStyleW700(
+                                    size.width * 0.038, AppColors.blackText),
+                                maxLines: 1),
                           ),
                           Container(
                             width: 70,
@@ -169,24 +173,25 @@ class _FavouritrCardState extends State<DatabaseFavouriteCard> {
                       ),
                       Text(
                         widget.postLocation,
-                        style: textStyleW700(
-                            size.width * 0.038, AppColors.blackText),
+                        style: textStyleW400(
+                            size.width * 0.035, AppColors.blackText),
                       ),
                       Text(
                         widget.immlm,
-                        style: textStyleW700(
-                            size.width * 0.038, AppColors.blackText),
+                        style: textStyleW600(
+                            size.width * 0.034, AppColors.blackText),
                       ),
                       Row(
                         children: [
                           Expanded(
-                            child: Text(
-                              widget.plan,
-                              style: textStyleW700(
-                                size.width * 0.038,
-                                AppColors.blackText,
+                            child: SizedBox(
+                              width: size.width * 0.35,
+                              child: Text(
+                                widget.plan,
+                                style: textStyleW400(
+                                    size.width * 0.032, AppColors.blackText),
+                                maxLines: 1,
                               ),
-                              maxLines: 1,
                             ),
                           ),
                           SizedBox(
@@ -195,9 +200,7 @@ class _FavouritrCardState extends State<DatabaseFavouriteCard> {
                             child: GestureDetector(
                               onTap: togleBookmark,
                               child: SvgPicture.asset(
-                                isBookmarked
-                                    ? Assets.svgCheckBookmark
-                                    : Assets.svgSavePost,
+                                Assets.svgCheckBookmark,
                                 height: size.height * 0.032,
                               ),
                             ),

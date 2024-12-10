@@ -376,24 +376,16 @@ class AccountSeetingController extends GetxController {
               'usertype: ${selectedTypesId.map((type) => type.value.toString()).join(',')}');
         }
 
-        // Add image file if provided, or dummy image if not
         if (imageFile != null) {
+          if (kDebugMode) {
+            print('Attaching new image file: ${imageFile.path}');
+          }
           request.files.add(
             http.MultipartFile(
               'image',
               imageFile.readAsBytes().asStream(),
               imageFile.lengthSync(),
               filename: 'image.jpg',
-              contentType: MediaType('image', 'jpg'),
-            ),
-          );
-        } else {
-          // Provide a dummy image or placeholder
-          request.files.add(
-            http.MultipartFile.fromString(
-              'image',
-              'dummy_image.jpg',
-              filename: 'dummy_image.jpg',
               contentType: MediaType('image', 'jpg'),
             ),
           );
@@ -425,9 +417,9 @@ class AccountSeetingController extends GetxController {
               primaryColor: Colors.green,
               title: const Text('Your Details is Successfully Updated'),
             );
-            fetchUserProfile();
 
             Get.back();
+            fetchUserProfile();
           } else if (jsonBody['success'] == 0) {
             toastification.show(
               context: context,

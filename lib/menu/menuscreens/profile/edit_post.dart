@@ -16,10 +16,11 @@ import 'package:mlmdiary/widgets/custom_back_button.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io' as io;
 
-import 'package:video_player/video_player.dart';
+// import 'package:video_player/video_player.dart';
 
 class EditPost extends StatefulWidget {
-  const EditPost({super.key});
+  final int postId;
+  const EditPost({super.key, required this.postId});
 
   @override
   State<EditPost> createState() => _AddPostState();
@@ -32,8 +33,8 @@ class _AddPostState extends State<EditPost> {
   final ImagePicker _picker = ImagePicker();
 
   // video
-  late VideoPlayerController _videoPlayerController;
-  static List<io.File> videoList = <io.File>[];
+  // late VideoPlayerController _videoPlayerController;
+  // static List<io.File> videoList = <io.File>[];
 
   Rx<io.File?> videoFile = Rx<io.File?>(null);
 
@@ -73,89 +74,118 @@ class _AddPostState extends State<EditPost> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              TextField(
-                maxLines: 10,
-                controller: controller.comments.value,
-              ),
-              30.sbh,
-              ClipRRect(
-                borderRadius: BorderRadius.circular(13.05),
-                child: Stack(
-                  children: [
-                    // Show selected image if available
-                    if (file.value != null)
-                      Image.file(
-                        file.value!,
-                        height: 200,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
-                    // Show fetched image if available
-                    if (file.value == null)
-                      Image.network(
-                        controller.userImage.value,
-                        height: 200,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
-                    // Delete button for selected image
-                    Visibility(
-                      visible: file.value != null,
-                      child: Positioned(
-                        top: 10,
-                        right: 0,
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          margin: const EdgeInsets.all(2.0),
-                          child: GestureDetector(
-                            child: Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color: AppColors.white,
-                                shape: BoxShape.circle,
-                              ),
-                              child: Center(
-                                child: Icon(
-                                  Icons.delete,
-                                  color: AppColors.redText,
+              Obx(() {
+                return Align(
+                  alignment: Alignment.topLeft,
+                  child: Row(
+                    children: [
+                      ClipOval(
+                        clipBehavior: Clip.hardEdge,
+                        child: controller.userPostImage.value.isNotEmpty
+                            ? Image.network(
+                                controller.userPostImage.value,
+                                fit: BoxFit.cover,
+                                width: 50,
+                                height: 50,
+                                errorBuilder: (context, error, stackTrace) {
+                                  if (kDebugMode) {
+                                    print("Error loading image: $error");
+                                  }
+                                  return Container(
+                                    color: Colors.grey[200],
+                                    child: const Icon(
+                                      Icons.account_circle,
+                                      size: 50,
+                                      color: Colors.grey,
+                                    ),
+                                  );
+                                },
+                              )
+                            : Container(
+                                color: Colors.grey[200],
+                                child: const Icon(
+                                  Icons.account_circle,
+                                  size: 50,
+                                  color: Colors.grey,
                                 ),
                               ),
-                            ),
-                            onTap: () {
-                              setState(() {
-                                imagesList.remove(file.value);
-                                file.value = null;
-                              });
-                            },
-                          ),
-                        ),
                       ),
-                    ),
-                  ],
-                ),
+                      8.sbw,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            controller.userName.toString(),
+                            style: textStyleW700(
+                                size.width * 0.038, AppColors.blackText),
+                          ),
+                          Text(
+                            controller.iammlm.toString(),
+                            style: textStyleW400(
+                                size.width * 0.032, AppColors.blackText),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              }),
+              5.sbh,
+              const Divider(
+                color: Colors.grey, // Line color
+                thickness: 1, // Line thickness
               ),
+              5.sbh,
+              Obx(() => TextField(
+                    controller: controller.editcomments.value,
+                    minLines: 10,
+                    maxLines: null,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      counterText: "",
+                      labelText: "Add Description",
+                      filled: true,
+                      fillColor: Colors.transparent,
+                      labelStyle: TextStyle(
+                        color: Colors.grey[600],
+                      ),
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                    ),
+                    onChanged: (value) {
+                      controller.validateComments(value);
+                    },
+                  )),
               30.sbh,
-              videoFile.value != null
-                  ? Stack(
-                      children: [
-                        AspectRatio(
-                          aspectRatio: _videoPlayerController.value.aspectRatio,
-                          child: VideoPlayer(_videoPlayerController),
+              Obx(
+                () => ClipRRect(
+                  borderRadius: BorderRadius.circular(13.05),
+                  child: Stack(
+                    children: [
+                      if (file.value != null)
+                        Image.file(
+                          file.value!,
+                          height: 150,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
                         ),
-                        Visibility(
-                          visible: videoFile.value != null,
-                          child: Positioned(
-                            top: 10,
-                            right: 10,
+                      if (file.value == null &&
+                          controller.userImage.value.isNotEmpty)
+                        Image.network(
+                          controller.userImage.value,
+                          height: 150,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
+                      Visibility(
+                        visible: file.value != null,
+                        child: Positioned(
+                          top: 10,
+                          right: 0,
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            margin: const EdgeInsets.all(2.0),
                             child: GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  videoList.remove(videoFile.value);
-                                  videoFile.value = null;
-                                });
-                              },
                               child: Container(
                                 width: 40,
                                 height: 40,
@@ -170,12 +200,52 @@ class _AddPostState extends State<EditPost> {
                                   ),
                                 ),
                               ),
+                              onTap: () {
+                                setState(() {
+                                  imagesList.remove(file.value);
+                                  file.value = null;
+                                });
+                              },
                             ),
                           ),
                         ),
-                      ],
-                    )
-                  : const SizedBox(),
+                      ),
+                      Visibility(
+                        visible: controller.userImage.value.isNotEmpty &&
+                            file.value == null,
+                        child: Positioned(
+                          top: 10,
+                          right: 0,
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            margin: const EdgeInsets.all(2.0),
+                            child: GestureDetector(
+                              child: Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: AppColors.white,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.delete,
+                                    color: AppColors.redText,
+                                  ),
+                                ),
+                              ),
+                              onTap: () {
+                                controller.userImage.value = '';
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
             ],
           ),
         ),
@@ -207,21 +277,6 @@ class _AddPostState extends State<EditPost> {
                         height: 30,
                       ),
                     ),
-                    20.sbw,
-                    InkWell(
-                      onTap: () {
-                        if (file.value == null && videoFile.value == null) {
-                          _selectVideo();
-                        } else {
-                          showToasterrorborder(
-                              'Select only one image or video', context);
-                        }
-                      },
-                      child: SvgPicture.asset(
-                        Assets.svgVideo,
-                        height: 30,
-                      ),
-                    ),
                     const Spacer(),
                     SizedBox(
                       height: 40,
@@ -231,8 +286,9 @@ class _AddPostState extends State<EditPost> {
                         ),
                         onPressed: () {
                           controller.editPost(
-                            imageFile: file.value,
-                            videoFile: videoFile.value,
+                            file.value,
+                            widget.postId,
+                            context,
                           );
                         },
                         child: Text(
@@ -419,28 +475,28 @@ class _AddPostState extends State<EditPost> {
     return compressedFile;
   }
 
-  void _selectVideo() async {
-    final pickedFile = await _picker.pickVideo(source: ImageSource.gallery);
+  // void _selectVideo() async {
+  //   final pickedFile = await _picker.pickVideo(source: ImageSource.gallery);
 
-    if (pickedFile != null) {
-      io.File video = io.File(pickedFile.path);
-      setState(() {
-        videoFile.value = video;
-        _videoPlayerController = VideoPlayerController.file(video)
-          ..initialize().then((_) {
-            // Play the video immediately after initialization
-            _videoPlayerController.play();
-            // Listen for video playback status changes
-            _videoPlayerController.addListener(() {
-              if (_videoPlayerController.value.position ==
-                  _videoPlayerController.value.duration) {
-                // If the video reaches the end, seek to the beginning and play again
-                _videoPlayerController.seekTo(Duration.zero);
-                _videoPlayerController.play();
-              }
-            });
-          });
-      });
-    }
-  }
+  //   if (pickedFile != null) {
+  //     io.File video = io.File(pickedFile.path);
+  //     setState(() {
+  //       videoFile.value = video;
+  //       _videoPlayerController = VideoPlayerController.file(video)
+  //         ..initialize().then((_) {
+  //           // Play the video immediately after initialization
+  //           _videoPlayerController.play();
+  //           // Listen for video playback status changes
+  //           _videoPlayerController.addListener(() {
+  //             if (_videoPlayerController.value.position ==
+  //                 _videoPlayerController.value.duration) {
+  //               // If the video reaches the end, seek to the beginning and play again
+  //               _videoPlayerController.seekTo(Duration.zero);
+  //               _videoPlayerController.play();
+  //             }
+  //           });
+  //         });
+  //     });
+  //   }
+  // }
 }

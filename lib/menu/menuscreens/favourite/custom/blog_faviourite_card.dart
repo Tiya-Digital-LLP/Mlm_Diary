@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -154,24 +155,19 @@ class _FavouritrCardState extends State<BlogFaviouriteCard> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (widget.userImage.isNotEmpty &&
-                    Uri.tryParse(widget.userImage)?.hasAbsolutePath == true)
-                  Container(
+                // if (widget.userImage.isNotEmpty &&
+                //     Uri.tryParse(widget.userImage)?.hasAbsolutePath == true)
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(100),
+                  child: CachedNetworkImage(
+                    imageUrl: widget.userImage,
                     height: 60,
                     width: 60,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: ClipOval(
-                      child: Image.network(
-                        widget.userImage,
-                        fit: BoxFit.fill,
-                        errorBuilder: (context, error, stackTrace) {
-                          return const SizedBox();
-                        },
-                      ),
-                    ),
+                    fit: BoxFit.fill,
+                    errorWidget: (context, url, error) =>
+                        Image.asset(Assets.imagesAdminlogo),
                   ),
+                ),
                 10.sbw,
                 Expanded(
                   child: Column(
@@ -216,10 +212,11 @@ class _FavouritrCardState extends State<BlogFaviouriteCard> {
             Align(
               alignment: Alignment.topLeft,
               child: Html(
-                data: widget.postCaption,
+                data: widget.postTitle,
                 style: {
                   "html": Style(
-                    maxLines: 2,
+                    lineHeight: const LineHeight(1),
+                    maxLines: 1,
                     fontFamily: fontFamily,
                     fontWeight: FontWeight.w700,
                     fontSize: FontSize.medium,
@@ -228,37 +225,42 @@ class _FavouritrCardState extends State<BlogFaviouriteCard> {
                 },
               ),
             ),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Html(
+                data: widget.postCaption,
+                style: {
+                  "html": Style(
+                    lineHeight: const LineHeight(1.2),
+                    maxLines: 2,
+                    fontFamily: fontFamily,
+                    fontWeight: FontWeight.w500,
+                    fontSize: FontSize.medium,
+                    color: AppColors.blackText,
+                  ),
+                },
+              ),
+            ),
             if (widget.postImage.isNotEmpty &&
                 Uri.tryParse(widget.postImage)?.hasAbsolutePath == true)
-              Container(
-                height: 220,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: Image.network(
-                  widget.postImage,
-                  fit: BoxFit.fill,
-                  loadingBuilder: (BuildContext context, Widget child,
-                      ImageChunkEvent? loadingProgress) {
-                    if (loadingProgress == null) {
-                      return child;
-                    }
-                    return Center(
-                      child: CircularProgressIndicator(
-                        value: loadingProgress.expectedTotalBytes != null
-                            ? loadingProgress.cumulativeBytesLoaded /
-                                (loadingProgress.expectedTotalBytes ?? 1)
-                            : null,
-                      ),
-                    );
-                  },
-                  errorBuilder: (context, error, stackTrace) {
-                    return Image.asset(
-                      Assets.imagesLogo,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6),
+                child: SizedBox(
+                  height: size.height * 0.26,
+                  width: size.width,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12.0),
+                    child: Image.network(
+                      widget.postImage,
                       fit: BoxFit.fill,
-                    );
-                  },
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.asset(
+                          Assets.imagesLogo,
+                          fit: BoxFit.fill,
+                        );
+                      },
+                    ),
+                  ),
                 ),
               ),
             10.sbh,
@@ -347,9 +349,7 @@ class _FavouritrCardState extends State<BlogFaviouriteCard> {
                         child: GestureDetector(
                           onTap: togleBookmark,
                           child: SvgPicture.asset(
-                            isBookmarked
-                                ? Assets.svgCheckBookmark
-                                : Assets.svgSavePost,
+                            Assets.svgCheckBookmark,
                             height: size.height * 0.032,
                           ),
                         ),

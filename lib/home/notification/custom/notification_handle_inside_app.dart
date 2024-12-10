@@ -47,7 +47,7 @@ class PostNavigationHandler {
       case 'news':
       case 'manage_news':
         Get.toNamed(Routes.newsdetailsnotification, arguments: {'id': post.id});
-        await manageNewsController.getNews(1, newsId: post.postid);
+        await manageNewsController.getNews(1);
         break;
 
       case 'blog':

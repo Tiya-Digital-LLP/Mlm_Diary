@@ -4,7 +4,6 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/assets.dart';
@@ -20,7 +19,6 @@ import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
-import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -115,13 +113,7 @@ class _CompanieFaviouriteCardState extends State<CompanyHomeCard> {
 
   void toggleLike() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? apiToken = prefs.getString(Constants.accessToken);
-
-    if (apiToken == null) {
-      // ignore: use_build_context_synchronously
-      showSignupDialog(context);
-      return;
-    }
+    prefs.getString(Constants.accessToken);
     bool newLikedValue = !isLiked.value;
     isLiked.value = newLikedValue;
     likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
@@ -141,13 +133,7 @@ class _CompanieFaviouriteCardState extends State<CompanyHomeCard> {
 
   void toggleBookmark() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? apiToken = prefs.getString(Constants.accessToken);
-
-    if (apiToken == null) {
-      // ignore: use_build_context_synchronously
-      showSignupDialog(context);
-      return;
-    }
+    prefs.getString(Constants.accessToken);
     bool newBookmarkedValue = !isBookmarked.value;
     isBookmarked.value = newBookmarkedValue;
 
@@ -180,7 +166,7 @@ class _CompanieFaviouriteCardState extends State<CompanyHomeCard> {
         child: Column(
           children: [
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
                   decoration: BoxDecoration(
@@ -198,11 +184,6 @@ class _CompanieFaviouriteCardState extends State<CompanyHomeCard> {
                       height: 60.0,
                       width: 60.0,
                       fit: BoxFit.cover,
-                      placeholder: (context, url) => CustomLottieAnimation(
-                        child: Lottie.asset(
-                          Assets.lottieLottie,
-                        ),
-                      ),
                       errorWidget: (context, url, error) =>
                           const Icon(Icons.error),
                     ),
@@ -217,6 +198,7 @@ class _CompanieFaviouriteCardState extends State<CompanyHomeCard> {
                         widget.postTitle,
                         style: textStyleW700(
                             size.width * 0.038, AppColors.blackText),
+                        maxLines: 1,
                       ),
                       Text(
                         'Ahemdabad,Gujarat,India',

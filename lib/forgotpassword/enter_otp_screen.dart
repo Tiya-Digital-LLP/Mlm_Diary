@@ -76,15 +76,6 @@ class _EnterOTPScreenState extends State<EnterOTPScreen> {
             SizedBox(
               height: size.height * 0.02,
             ),
-            Text(
-              "Enter OTP Sent To +88 7475775843\nand Dinesh@yahoo.com",
-              maxLines: 2,
-              textAlign: TextAlign.center,
-              style: textStyleW500(size.width * 0.044, AppColors.blackText),
-            ),
-            SizedBox(
-              height: size.height * 0.02,
-            ),
             OtpTextField(
               numberOfFields: 6,
               onSubmit: (String verificationCode) {

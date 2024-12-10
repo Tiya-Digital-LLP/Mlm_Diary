@@ -12,6 +12,7 @@ import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_shimmer_followers.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 
 class AllNotification extends StatefulWidget {
@@ -51,12 +52,20 @@ class _AllNotificationState extends State<AllNotification> {
               child: Obx(() {
                 if (controller.isLoading.value &&
                     controller.notificationList.isEmpty) {
-                  return Center(
-                      child: CustomLottieAnimation(
-                    child: Lottie.asset(
-                      Assets.lottieLottie,
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 4,
                     ),
-                  ));
+                    child: ListView.builder(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      itemCount: 10,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        return const ChatShimmerLoader(width: 175, height: 100);
+                      },
+                    ),
+                  );
                 }
 
                 if (controller.notificationList.isEmpty) {
@@ -93,7 +102,7 @@ class _AllNotificationState extends State<AllNotification> {
                     return Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 12,
-                        vertical: 8,
+                        vertical: 4,
                       ),
                       child: InkWell(
                         onTap: () async {

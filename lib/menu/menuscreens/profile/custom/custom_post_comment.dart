@@ -111,12 +111,7 @@ class _CommentDialogState extends State<CommentDialogPost> {
             () {
               if (controller.isLoading.value &&
                   controller.getCommentList.isEmpty) {
-                return Center(
-                    child: CustomLottieAnimation(
-                  child: Lottie.asset(
-                    Assets.lottieLottie,
-                  ),
-                ));
+                return const SizedBox();
               }
 
               if (controller.getCommentList.isEmpty) {

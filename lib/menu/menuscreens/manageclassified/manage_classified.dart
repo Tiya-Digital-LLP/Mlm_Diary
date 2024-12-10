@@ -1,7 +1,9 @@
 import 'dart:io' as io;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
 import 'package:flutter_google_places_hoc081098/google_maps_webservice_places.dart';
+// ignore: depend_on_referenced_packages
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -29,7 +31,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:image_cropper/image_cropper.dart';
 
 class ManageClassifiedPlusIcon extends StatefulWidget {
-  const ManageClassifiedPlusIcon({super.key});
+  final int classfiedId;
+  const ManageClassifiedPlusIcon({super.key, required this.classfiedId});
 
   @override
   State<ManageClassifiedPlusIcon> createState() =>
@@ -49,14 +52,6 @@ class _ManageClassifiedPlusIconState extends State<ManageClassifiedPlusIcon> {
 
   final ManageClasifiedController controller =
       Get.put(ManageClasifiedController());
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchClassifieds();
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,43 +87,44 @@ class _ManageClassifiedPlusIconState extends State<ManageClassifiedPlusIcon> {
                         controller.titleValidation(context);
                         controller.isTitleTyping.value = true;
                       },
-                      height: 60,
+                      height: 58,
                     ),
                   ),
                   10.sbh,
                   Obx(
                     () => BorderContainer(
                       isError: controller.categoryError.value,
-                      height: 60,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: TextField(
-                          controller:
-                              controller.getSelectedCategoryTextController(),
-                          readOnly: true,
-                          onTap: () {
-                            showSelectCategory(
-                              context,
-                              size,
-                              controller,
-                              controller.categorylist,
-                            );
-                            controller.mlmCategoryValidation();
-                          },
-                          style: textStyleW500(
-                              size.width * 0.04, AppColors.blackText),
-                          cursorColor: AppColors.blackText,
-                          decoration: InputDecoration(
-                              hintText: "Select Category",
-                              contentPadding: const EdgeInsets.only(
-                                top: 3,
-                              ),
-                              border: InputBorder.none,
-                              suffixIcon: Icon(
-                                Icons.arrow_drop_down,
-                                color: AppColors.blackText,
-                              )),
-                        ),
+                      height: 58,
+                      child: TextField(
+                        controller:
+                            controller.getSelectedCategoryTextController(),
+                        readOnly: true,
+                        onTap: () {
+                          showSelectCategory(
+                            context,
+                            size,
+                            controller,
+                            controller.categorylist,
+                          );
+                          controller.mlmCategoryValidation();
+                        },
+                        style: textStyleW500(
+                            size.width * 0.04, AppColors.blackText),
+                        cursorColor: AppColors.blackText,
+                        decoration: InputDecoration(
+                            labelText: "Select Category",
+                            labelStyle: const TextStyle(
+                              color: Colors.black,
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 5.5,
+                              horizontal: 2,
+                            ),
+                            border: InputBorder.none,
+                            suffixIcon: Icon(
+                              Icons.arrow_drop_down,
+                              color: AppColors.blackText,
+                            )),
                       ),
                     ),
                   ),
@@ -136,41 +132,44 @@ class _ManageClassifiedPlusIconState extends State<ManageClassifiedPlusIcon> {
                   Obx(
                     () => BorderContainer(
                       isError: controller.subCategoryError.value,
-                      height: 60,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: TextField(
-                          controller:
-                              controller.getSelectedSubCategoryTextController(),
-                          readOnly: true,
-                          onTap: () {
-                            showSelectSubCategory(
-                              context,
-                              size,
-                              controller,
-                              controller.subcategoryList,
-                            );
-                            controller.mlmsubCategoryValidation();
-                          },
-                          style: textStyleW500(
-                              size.width * 0.04, AppColors.blackText),
-                          cursorColor: AppColors.blackText,
-                          decoration: InputDecoration(
-                              hintText: "Select Sub Category",
-                              contentPadding: const EdgeInsets.only(top: 3),
-                              border: InputBorder.none,
-                              suffixIcon: Icon(
-                                Icons.arrow_drop_down,
-                                color: AppColors.blackText,
-                              )),
-                        ),
+                      height: 58,
+                      child: TextField(
+                        controller:
+                            controller.getSelectedSubCategoryTextController(),
+                        readOnly: true,
+                        onTap: () {
+                          showSelectSubCategory(
+                            context,
+                            size,
+                            controller,
+                            controller.subcategoryList,
+                          );
+                          controller.mlmsubCategoryValidation();
+                        },
+                        style: textStyleW500(
+                            size.width * 0.04, AppColors.blackText),
+                        cursorColor: AppColors.blackText,
+                        decoration: InputDecoration(
+                            labelStyle: const TextStyle(
+                              color: Colors.black,
+                            ),
+                            labelText: "Select Sub Category",
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 5.5,
+                              horizontal: 2,
+                            ),
+                            border: InputBorder.none,
+                            suffixIcon: Icon(
+                              Icons.arrow_drop_down,
+                              color: AppColors.blackText,
+                            )),
                       ),
                     ),
                   ),
                   10.sbh,
                   Obx(
                     () => CompanyBorderTextfield(
-                      height: 65,
+                      height: 58,
                       keyboard: TextInputType.multiline,
                       textInputType: const [],
                       hint: "Company Name",
@@ -222,7 +221,7 @@ class _ManageClassifiedPlusIconState extends State<ManageClassifiedPlusIcon> {
                       onChanged: (value) {
                         controller.isUrlTyping.value = true;
                       },
-                      height: 60,
+                      height: 58,
                     ),
                   ),
                   10.sbh,
@@ -232,7 +231,7 @@ class _ManageClassifiedPlusIconState extends State<ManageClassifiedPlusIcon> {
                       readOnly: true,
                       style: const TextStyle(
                           fontSize: 15.0,
-                          fontWeight: FontWeight.w400,
+                          fontWeight: FontWeight.w500,
                           color: Colors.black,
                           fontFamily: 'assets/fonts/Metropolis-Black.otf'),
                       onTap: () async {
@@ -289,11 +288,10 @@ class _ManageClassifiedPlusIconState extends State<ManageClassifiedPlusIcon> {
                       decoration: InputDecoration(
                         hintText: "Location/ Address / City *",
                         hintStyle: const TextStyle(
-                                fontSize: 15.0,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black,
-                                fontFamily: 'assets/fonts/Metropolis-Black.otf')
-                            .copyWith(color: Colors.black45),
+                          color: Colors.black,
+                        ),
+                        filled: true,
+                        fillColor: AppColors.white,
                         enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
                                 width: 1,
@@ -336,12 +334,12 @@ class _ManageClassifiedPlusIconState extends State<ManageClassifiedPlusIcon> {
                     ),
                   ),
                   20.sbh,
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(13.05),
-                    child: Stack(
-                      children: [
-                        Obx(
-                          () => GestureDetector(
+                  Obx(
+                    () => ClipRRect(
+                      borderRadius: BorderRadius.circular(13.05),
+                      child: Stack(
+                        children: [
+                          GestureDetector(
                             child: file.value != null
                                 ? Image.file(
                                     file.value!,
@@ -351,18 +349,16 @@ class _ManageClassifiedPlusIconState extends State<ManageClassifiedPlusIcon> {
                                   )
                                 : controller.userImage.value.isNotEmpty
                                     ? Image.network(
-                                        controller.userImage.value,
+                                        '${controller.userImage.value}?t=${DateTime.now().millisecondsSinceEpoch}',
                                         height: 100,
                                         width: double.infinity,
                                         fit: BoxFit.cover,
                                       )
-                                    : ClipOval(
-                                        child: Image.asset(
-                                          Assets.imagesLogo,
-                                          height: 100,
-                                          width: double.infinity,
-                                          fit: BoxFit.cover,
-                                        ),
+                                    : Image.asset(
+                                        Assets.imagesLogo,
+                                        height: 100,
+                                        width: double.infinity,
+                                        fit: BoxFit.cover,
                                       ),
                             onTap: () {
                               showModalBottomSheet(
@@ -371,33 +367,33 @@ class _ManageClassifiedPlusIconState extends State<ManageClassifiedPlusIcon> {
                                   builder: (context) => bottomsheet(context));
                             },
                           ),
-                        ),
-                        Visibility(
-                          visible: file.value != null ||
-                              controller.userImage.value.isNotEmpty,
-                          child: Positioned(
-                              top: 10,
-                              left: 320,
-                              right: 0,
-                              child: Container(
-                                width: 40,
-                                height: 40,
-                                margin: const EdgeInsets.all(2.0),
-                                child: Card(
-                                    shape: const CircleBorder(),
-                                    child: GestureDetector(
-                                      child: Icon(Icons.delete,
-                                          color: AppColors.redText),
-                                      onTap: () {
-                                        setState(() {
-                                          imagesList.remove(file.value);
-                                          file.value = null;
-                                        });
-                                      },
-                                    )),
-                              )),
-                        )
-                      ],
+                          Visibility(
+                            visible: file.value != null,
+                            child: Positioned(
+                                top: 0,
+                                right: 0,
+                                child: Container(
+                                  width: 40,
+                                  height: 40,
+                                  margin: const EdgeInsets.all(2.0),
+                                  child: Card(
+                                      shape: const CircleBorder(),
+                                      child: GestureDetector(
+                                        child: Icon(
+                                          Icons.delete,
+                                          color: AppColors.redText,
+                                        ),
+                                        onTap: () {
+                                          setState(() {
+                                            imagesList.remove(file.value);
+                                            file.value = null;
+                                          });
+                                        },
+                                      )),
+                                )),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                   10.sbh,
@@ -444,9 +440,9 @@ class _ManageClassifiedPlusIconState extends State<ManageClassifiedPlusIcon> {
     } else if (controller.location.value.text.isEmpty) {
       showToasterrorborder("The address field is required.", context);
     } else if (controller.isCategorySelectedList.contains(true)) {
-      // Perform address validation
       if (controller.addressValidationColor.value != AppColors.redText) {
-        await controller.updateClassified(imageFile: file.value);
+        await controller.updateClassified(
+            file.value, widget.classfiedId, context);
       } else {
         showToasterrorborder("Please enter a valid address.", context);
       }
@@ -502,37 +498,54 @@ class _ManageClassifiedPlusIconState extends State<ManageClassifiedPlusIcon> {
     final pickedFile =
         await _picker.pickImage(source: source, imageQuality: 100);
     if (pickedFile != null) {
+      if (kDebugMode) {
+        print('Picked image path: ${pickedFile.path}');
+      }
       io.File imageFile = io.File(pickedFile.path);
-      int fileSizeInBytes = imageFile.lengthSync();
-      double fileSizeInKB = fileSizeInBytes / 1024;
 
-      if (fileSizeInKB > 5000) {
+      if (imageFile.lengthSync() / 1024 > 5000) {
         Fluttertoast.showToast(msg: 'Please select an image below 5 MB');
         return;
       }
 
+      // Crop image
       io.File? croppedFile = await _cropImage(imageFile);
-      if (croppedFile != null) {
-        double croppedFileSizeInKB = croppedFile.lengthSync() / 1024;
+      if (croppedFile == null || croppedFile.lengthSync() == 0) {
+        Fluttertoast.showToast(msg: 'Image cropping failed');
+        return;
+      }
+      if (kDebugMode) {
+        print('Cropped image path: ${croppedFile.path}');
+      }
 
-        if (croppedFileSizeInKB > 250) {
-          croppedFile = await _compressImage(croppedFile);
-          if (croppedFile == null) {
-            Fluttertoast.showToast(msg: 'Image compression failed');
-            return;
-          }
+      // Compress image
+      io.File? compressedFile = await _compressImage(croppedFile);
+      if (compressedFile == null || compressedFile.lengthSync() == 0) {
+        Fluttertoast.showToast(msg: 'Image compression failed');
+        return;
+      }
+      if (kDebugMode) {
+        print('Compressed image path: ${compressedFile.path}');
+      }
+
+      // Save to temporary file
+      final tempDir = await getTemporaryDirectory();
+      final tempFile = io.File(
+          '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg');
+      await compressedFile.copy(tempFile.path);
+
+      if (tempFile.existsSync() && tempFile.lengthSync() > 0) {
+        file.value = tempFile;
+        if (kDebugMode) {
+          print('Updated file observable: ${file.value?.path}');
         }
-
-        // Save to a different directory if necessary
-        final tempDir = await getTemporaryDirectory();
-        final tempFile = io.File(
-            '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg');
-        await croppedFile.copy(tempFile.path);
-
-        file.value = tempFile; // Update file observable with new file
         Get.back();
       } else {
-        Fluttertoast.showToast(msg: 'Image cropping failed');
+        if (kDebugMode) {
+          print('Temporary file saving failed');
+        }
+        Fluttertoast.showToast(
+            msg: 'Failed to save the image. Please try again.');
       }
     } else {
       Fluttertoast.showToast(msg: 'Please select an image');

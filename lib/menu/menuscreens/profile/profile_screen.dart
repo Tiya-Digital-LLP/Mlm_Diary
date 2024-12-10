@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mlmdiary/database/controller/database_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_user_profile_entity.dart';
 import 'package:mlmdiary/menu/controller/profile_controller.dart';
@@ -14,6 +15,7 @@ import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controlle
 import 'package:mlmdiary/menu/menuscreens/profile/custom/about_me.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/custom/my_profile_card.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/custom/social_button.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
@@ -22,6 +24,7 @@ import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:io' as io;
 
@@ -39,6 +42,13 @@ class _ProfileScreenState extends State<ProfileScreen>
   late TabController _tabController;
   final userProfile = Get.arguments as GetUserProfileUserProfile;
   final EditPostController controller = Get.put(EditPostController());
+  final UserProfileController userProfileController =
+      Get.put(UserProfileController());
+  final DatabaseController databaseController = Get.put(DatabaseController());
+  late ScrollController _viewersScrollController;
+  bool isFetchingViewrs = false;
+  int? userId;
+
   //image
   Rx<io.File?> file = Rx<io.File?>(null);
   static List<io.File> imagesList = <io.File>[];
@@ -60,6 +70,38 @@ class _ProfileScreenState extends State<ProfileScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _viewersScrollController = ScrollController();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _fetchUserIdAndRefreshViews();
+    });
+  }
+
+  Future<void> _fetchUserIdAndRefreshViews() async {
+    final prefs = await SharedPreferences.getInstance();
+    final id = prefs.getInt('user_id');
+    setState(() {
+      userId = id;
+    });
+
+    if (userId != null) {
+      _refreshViews(userId!);
+      _viewersScrollController.addListener(() {
+        if (_viewersScrollController.position.pixels ==
+            _viewersScrollController.position.maxScrollExtent) {
+          _loadMoreViewers(userId!);
+        }
+      });
+    }
+  }
+
+  Future<void> _loadMoreViewers(int userId) async {
+    if (!isFetchingViewrs) {
+      isFetchingViewrs = true;
+      int nextPage = (userProfileController.views.length ~/ 10) +
+          1; // Assuming 10 items per page
+      await userProfileController.getViews(nextPage, userId);
+      isFetchingViewrs = false;
+    }
   }
 
   @override
@@ -213,7 +255,7 @@ class _ProfileScreenState extends State<ProfileScreen>
       floatingActionButton: Container(
         decoration: BoxDecoration(
             color: AppColors.white, borderRadius: BorderRadius.circular(30)),
-        width: 250,
+        width: 125,
         child: InkWell(
           onTap: () {
             Get.toNamed(Routes.messagescreen);
@@ -358,6 +400,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                           //           ],
                           //         ),
                           // ),
+                          10.sbw,
                           InkWell(
                             onTap: () {
                               FocusScope.of(context).unfocus();
@@ -366,9 +409,13 @@ class _ProfileScreenState extends State<ProfileScreen>
                                 videoFile: videoFile.value,
                               );
                             },
-                            child: const Icon(
-                              Icons.arrow_right_rounded,
-                              size: 50,
+                            child: Text(
+                              'Post',
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.blackText,
+                              ),
                             ),
                           ),
                         ],
@@ -412,25 +459,10 @@ class _ProfileScreenState extends State<ProfileScreen>
                 child: Image.network(
                   '${userProfile.imagePath.toString()}?${DateTime.now().millisecondsSinceEpoch}',
                   fit: BoxFit.cover,
-                  loadingBuilder: (BuildContext context, Widget child,
-                      ImageChunkEvent? loadingProgress) {
-                    if (loadingProgress == null) {
-                      return child;
-                    }
-                    return Center(
-                      child: CircularProgressIndicator(
-                        value: loadingProgress.expectedTotalBytes != null
-                            ? loadingProgress.cumulativeBytesLoaded /
-                                (loadingProgress.expectedTotalBytes ?? 1)
-                            : null,
-                      ),
-                    );
-                  },
                   errorBuilder: (context, error, stackTrace) {
                     return Image.asset(
                       Assets.imagesAdminlogo,
-                      fit: BoxFit
-                          .cover, // Ensure the error image also uses BoxFit.cover
+                      fit: BoxFit.cover,
                     );
                   },
                 ),
@@ -578,24 +610,129 @@ class _ProfileScreenState extends State<ProfileScreen>
                 ],
               ),
               20.sbw,
-              Column(
-                children: [
-                  Text(
-                    userProfile.views.toString(),
-                    style:
-                        textStyleW700(size.width * 0.045, AppColors.blackText),
-                  ),
-                  Text(
-                    'Profile Visits',
-                    style:
-                        textStyleW500(size.width * 0.035, AppColors.blackText),
-                  ),
-                ],
+              InkWell(
+                onTap: () async {
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (context) => buildTabBarView(),
+                  );
+                },
+                child: Column(
+                  children: [
+                    Text(
+                      userProfile.views.toString(),
+                      style: textStyleW700(
+                          size.width * 0.045, AppColors.blackText),
+                    ),
+                    Text(
+                      'Profile Visits',
+                      style: textStyleW500(
+                          size.width * 0.035, AppColors.blackText),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
         ],
       ),
+    );
+  }
+
+  Future<void> _refreshViews(int userId) async {
+    userProfileController.views.clear();
+    await userProfileController.getViews(1, userId);
+  }
+
+  Widget buildTabBarView() {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Obx(() {
+        // Check if views list is empty
+        if (userProfileController.views.isEmpty) {
+          return const Center(child: Text('No Views'));
+        }
+
+        return ListView.builder(
+          controller: _viewersScrollController,
+          itemCount: userProfileController.views.length,
+          itemBuilder: (context, index) {
+            var viewers = userProfileController.views[index];
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: InkWell(
+                onTap: () async {
+                  // Refresh views and fetch data
+                  await _refreshViews(viewers.id);
+                  // ignore: use_build_context_synchronously
+                  await databaseController.fetchUserPost(viewers.id, context);
+                  await userProfileController.fetchUserAllPost(
+                    1,
+                    viewers.id.toString(),
+                  );
+                  // Navigate back to the previous screen
+                  Get.back();
+                },
+                child: Card(
+                  color: Colors.white,
+                  elevation: 9,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              width: 30,
+                              height: 30,
+                              decoration: ShapeDecoration(
+                                image: DecorationImage(
+                                  image: viewers.userimageUrl.isNotEmpty == true
+                                      ? NetworkImage(viewers.userimageUrl)
+                                      : const AssetImage('assets/more.png')
+                                          as ImageProvider,
+                                  fit: BoxFit.cover,
+                                ),
+                                shape: const OvalBorder(),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  viewers.name,
+                                  style: const TextStyle(
+                                    fontSize: 14.0,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                Text(
+                                  viewers.immlm,
+                                  style: TextStyle(
+                                    color: AppColors.blackText,
+                                    fontSize: 12.0,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        const Icon(
+                          Icons.arrow_right,
+                          size: 30,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      }),
     );
   }
 

@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
@@ -12,14 +13,15 @@ import 'package:mlmdiary/menu/menuscreens/blog/custom_blog_comment.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
+import 'package:mlmdiary/widgets/image_preview_user_image.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:text_link/text_link.dart';
-// ignore: library_prefixes
-import 'package:html/parser.dart' as htmlParser;
+import 'package:url_launcher/url_launcher.dart';
 
 class BlogDetailNotification extends StatefulWidget {
   const BlogDetailNotification({
@@ -149,12 +151,6 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
                                         height: 60.0,
                                         width: 60.0,
                                         fit: BoxFit.cover,
-                                        placeholder: (context, url) =>
-                                            CustomLottieAnimation(
-                                          child: Lottie.asset(
-                                            Assets.lottieLottie,
-                                          ),
-                                        ),
                                         errorWidget: (context, url, error) =>
                                             Image.asset(Assets.imagesAdminlogo),
                                       ),
@@ -196,56 +192,65 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
                           SizedBox(
                             height: size.height * 0.012,
                           ),
-                          if (data.imageUrl!.isNotEmpty &&
-                              Uri.tryParse(data.imageUrl!)?.hasAbsolutePath ==
-                                  true)
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                              ),
-                              child: Container(
-                                height: size.height * 0.28,
-                                width: size.width,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                child: Image.network(
-                                  data.imageUrl!,
-                                  fit: BoxFit.fill,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Image.asset(Assets.imagesLogo);
+                          // if (data.imageUrl!.isNotEmpty &&
+                          //     Uri.tryParse(data.imageUrl!)?.hasAbsolutePath ==
+                          //         true)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: InkWell(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return FullScreenImageDialog(
+                                        imageUrl: data.imageUrl.toString());
                                   },
+                                );
+                              },
+                              child: SizedBox(
+                                height: size.height * 0.26,
+                                width: size.width,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  child: Image.network(
+                                    data.imageUrl.toString(),
+                                    fit: BoxFit.fill,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Image.asset(
+                                        Assets.imagesLogo,
+                                        fit: BoxFit.fill,
+                                      );
+                                    },
+                                  ),
                                 ),
                               ),
                             ),
+                          ),
                           SizedBox(
                             height: size.height * 0.01,
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
+                              horizontal: 8,
                             ),
                             child: Align(
                               alignment: Alignment.topLeft,
-                              child: _buildHtmlContent(
-                                  data.description ?? '', size),
+                              child: Html(
+                                data: data.title,
+                                style: {
+                                  "html": Style(
+                                    lineHeight: const LineHeight(1),
+                                    maxLines: 1,
+                                    fontFamily: fontFamily,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: FontSize.medium,
+                                    color: AppColors.blackText,
+                                  ),
+                                },
+                              ),
                             ),
                           ),
-                          Align(
-                            alignment: Alignment.topLeft,
-                            child: Html(
-                              data: data.description ?? '',
-                              style: {
-                                "html": Style(
-                                  maxLines: 1,
-                                  fontFamily: fontFamily,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: FontSize.medium,
-                                  color: AppColors.blackText,
-                                ),
-                              },
-                            ),
-                          ),
+
                           SizedBox(
                             height: size.height * 0.01,
                           ),
@@ -300,10 +305,39 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
                                           ),
                                         ],
                                       ),
-                                      Text(
-                                        '${data.userData!.countrycode1} - ${data.userData!.mobile}',
-                                        style: textStyleW400(size.width * 0.035,
-                                            AppColors.blackText),
+                                      InkWell(
+                                        onTap: () {
+                                          final String? countryCode =
+                                              data.userData!.countrycode1;
+                                          final String? mobileNumber =
+                                              data.userData!.mobile;
+
+                                          if (mobileNumber == null ||
+                                              mobileNumber.isEmpty) {
+                                            showToasterrorborder(
+                                                'No Any Url Found', context);
+                                            if (kDebugMode) {
+                                              print('Tap without number');
+                                            }
+                                          } else {
+                                            final Uri phoneUri = Uri(
+                                              scheme: 'tel',
+                                              path:
+                                                  '$countryCode$mobileNumber', // Combine country code and mobile
+                                            );
+                                            launchUrl(phoneUri);
+                                            if (kDebugMode) {
+                                              print(
+                                                  'Tap with number: $countryCode$mobileNumber');
+                                            }
+                                          }
+                                        },
+                                        child: Text(
+                                          '${data.userData!.countrycode1 ?? 'N/A'} - ${data.userData!.mobile ?? 'N/A'}',
+                                          style: textStyleW400(
+                                              size.width * 0.035,
+                                              AppColors.blackText),
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -329,10 +363,35 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
                                         ),
                                       ],
                                     ),
-                                    Text(
-                                      '${data.userData!.email}',
-                                      style: textStyleW400(size.width * 0.035,
-                                          AppColors.blackText),
+                                    InkWell(
+                                      onTap: () {
+                                        final String? email =
+                                            data.userData!.email;
+
+                                        if (email != null && email.isNotEmpty) {
+                                          final Uri emailUri = Uri(
+                                            scheme: 'mailto',
+                                            path: email,
+                                          );
+                                          launchUrl(emailUri);
+                                          if (kDebugMode) {
+                                            print('Tap with email: $email');
+                                          }
+                                        } else {
+                                          showToasterrorborder(
+                                              'No Email Found', context);
+                                          if (kDebugMode) {
+                                            print('Tap without email');
+                                          }
+                                        }
+                                      },
+                                      child: Text(
+                                        data.userData!.email?.isNotEmpty == true
+                                            ? data.userData!.email!
+                                            : 'N/A',
+                                        style: textStyleW400(size.width * 0.035,
+                                            AppColors.blackText),
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -365,7 +424,9 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
                                   ],
                                 ),
                                 LinkText(
-                                  text: data.website ?? '',
+                                  text: data.website?.isNotEmpty == true
+                                      ? data.website!
+                                      : 'N/A',
                                   style: textStyleW400(
                                     size.width * 0.035,
                                     AppColors.blackText.withOpacity(0.5),
@@ -572,22 +633,5 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
 
   void fetchLikeList() async {
     await controller.fetchLikeListBlog(post.id ?? 0, context);
-  }
-
-  Widget _buildHtmlContent(String htmlContent, Size size) {
-    final parsedHtml = htmlParser.parse(htmlContent);
-    final text = parsedHtml.body?.text ?? '';
-
-    return LinkText(
-      text: text,
-      style: textStyleW400(
-        size.width * 0.035,
-        AppColors.blackText.withOpacity(0.5),
-      ),
-      linkStyle: const TextStyle(
-        color: Colors.blue,
-        decoration: TextDecoration.underline,
-      ),
-    );
   }
 }

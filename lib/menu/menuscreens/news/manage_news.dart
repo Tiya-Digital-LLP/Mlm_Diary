@@ -1,15 +1,13 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/manage_news_card.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
-import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
+import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_shimmer_classified.dart';
 import 'package:mlmdiary/widgets/remimaining_count_controller./remaining_count.dart';
 
 class ManageNews extends StatefulWidget {
@@ -52,17 +50,19 @@ class _MlmnewsState extends State<ManageNews> {
         child: Container(
           color: AppColors.background,
           child: Obx(() {
-            if (kDebugMode) {
-              print('isLoading: ${controller.isLoading.value}');
-              print('myNewsList: ${controller.myNewsList.length}');
-            }
             if (controller.isLoading.value && controller.myNewsList.isEmpty) {
-              return Center(
-                  child: CustomLottieAnimation(
-                child: Lottie.asset(
-                  Assets.lottieLottie,
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: ListView.builder(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  itemCount: 1,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    return const CustomShimmerClassified(
+                        width: 175, height: 240);
+                  },
                 ),
-              ));
+              );
             }
 
             if (controller.myNewsList.isEmpty) {
@@ -84,8 +84,7 @@ class _MlmnewsState extends State<ManageNews> {
                 itemCount: controller.myNewsList.length,
                 itemBuilder: (context, index) {
                   final post = controller.myNewsList[index];
-                  final image =
-                      '${post.imagePath.toString()}?${DateTime.now().millisecondsSinceEpoch}';
+
                   return Padding(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -98,7 +97,7 @@ class _MlmnewsState extends State<ManageNews> {
                       },
                       child: ManageNewsCard(
                         onDelete: () => deletePost(index),
-                        userImage: image,
+                        userImage: post.imagePath ?? '',
                         userName: post.userData!.name ?? '',
                         postTitle: post.title ?? '',
                         postCaption: post.description ?? '',

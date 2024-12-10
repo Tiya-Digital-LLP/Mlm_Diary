@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/custom_blog_comment.dart';
@@ -11,7 +11,6 @@ import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
-import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:mlmdiary/widgets/logout_dialog/custom_logout_dialog.dart';
 
 class ManageBlogCard extends StatefulWidget {
@@ -146,15 +145,10 @@ class _ManageBlogCardState extends State<ManageBlogCard> {
               children: [
                 CachedNetworkImage(
                   imageUrl:
-                      '${widget.postImage.toString()}?${DateTime.now().millisecondsSinceEpoch}',
+                      '${widget.postImage}?t=${DateTime.now().millisecondsSinceEpoch}',
                   height: 97,
                   width: 105,
                   fit: BoxFit.fill,
-                  placeholder: (context, url) => CustomLottieAnimation(
-                    child: Lottie.asset(
-                      Assets.lottieLottie,
-                    ),
-                  ),
                   errorWidget: (context, url, error) => const Icon(Icons.error),
                 ),
                 10.sbw,
@@ -257,11 +251,15 @@ class _ManageBlogCardState extends State<ManageBlogCard> {
                     Material(
                       child: InkWell(
                         onTap: () async {
-                          await widget.controller
-                              .fetchMyBlog(articleId: widget.blogId);
                           Get.toNamed(
                             Routes.blogplusicon,
+                            arguments: widget.blogId,
                           );
+                          await widget.controller
+                              .fetchMyBlog(articleId: widget.blogId);
+                          if (kDebugMode) {
+                            print('BlogId: ${widget.blogId}');
+                          }
                         },
                         child: Ink(
                           height: size.height * 0.030,

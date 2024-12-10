@@ -231,10 +231,6 @@ class FavouriteController extends GetxController {
     }
 
     String? apiToken = prefs.getString(Constants.accessToken);
-    if (apiToken == null) {
-      isLoading.value = false;
-      return;
-    }
 
     try {
       favouriteList.clear();
@@ -247,7 +243,7 @@ class FavouriteController extends GetxController {
       }
 
       Map<String, String> queryParams = {
-        'api_token': apiToken,
+        'api_token': apiToken.toString(),
         'device': device,
         'page': page.toString(),
         'type': selectedType.value == 'All' ? '' : selectedType.value,

@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/followers/controller/followers_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
@@ -11,7 +10,7 @@ import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
-import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
+import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_shimmer_followers.dart';
 
 class Followers extends StatefulWidget {
   const Followers({super.key});
@@ -132,6 +131,18 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
     );
   }
 
+  // ignore: non_constant_identifier_names
+  Widget FollowerWithShimmerLoader(BuildContext context) {
+    return ListView.builder(
+      physics: const AlwaysScrollableScrollPhysics(),
+      itemCount: 1,
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+        return const ChatShimmerLoader(width: 175, height: 100);
+      },
+    );
+  }
+
   Widget _buildFollowersTab(Size size) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -156,20 +167,10 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
             onRefresh: _refreshFollowers,
             child: Obx(() {
               if (controller.isLoading.value) {
-                return Center(
-                    child: CustomLottieAnimation(
-                  child: Lottie.asset(
-                    Assets.lottieLottie,
-                  ),
-                ));
+                return FollowerWithShimmerLoader(context);
               }
               if (controller.followers.isEmpty) {
-                return Align(
-                  alignment: Alignment.topCenter,
-                  child: CustomLottieAnimation(
-                    child: Lottie.asset(Assets.lottieLottie),
-                  ),
-                );
+                return FollowerWithShimmerLoader(context);
               } else {
                 return ListView.builder(
                   controller: controller.scrollController,
@@ -177,12 +178,7 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
                       (controller.isLoading.value ? 1 : 0),
                   itemBuilder: (context, index) {
                     if (index == controller.followers.length) {
-                      return Center(
-                          child: CustomLottieAnimation(
-                        child: Lottie.asset(
-                          Assets.lottieLottie,
-                        ),
-                      ));
+                      return FollowerWithShimmerLoader(context);
                     }
                     final follower = controller.followers[index];
                     return Padding(
@@ -207,7 +203,6 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
                                   fit: BoxFit.cover,
                                   height: 50,
                                   width: 50,
-                                  placeholder: (context, url) => Container(),
                                   errorWidget: (context, url, error) =>
                                       const Icon(Icons.error),
                                 ),
@@ -287,23 +282,10 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
             onRefresh: _refreshFollowing,
             child: Obx(() {
               if (controller.isLoading.value) {
-                return Center(
-                    child: CustomLottieAnimation(
-                  child: Lottie.asset(
-                    Assets.lottieLottie,
-                  ),
-                ));
+                return FollowerWithShimmerLoader(context);
               }
-              if (controller.following.isEmpty &&
-                  controller.isEndOfData.value) {
-                return Align(
-                  alignment: Alignment.topCenter,
-                  child: Text(
-                    'No following found.',
-                    style:
-                        textStyleW700(size.width * 0.030, AppColors.blackText),
-                  ),
-                );
+              if (controller.following.isEmpty) {
+                return FollowerWithShimmerLoader(context);
               } else {
                 return ListView.builder(
                   controller: controller.scrollController,
@@ -311,12 +293,7 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
                       (controller.isLoading.value ? 1 : 0),
                   itemBuilder: (context, index) {
                     if (index == controller.following.length) {
-                      return Center(
-                          child: CustomLottieAnimation(
-                        child: Lottie.asset(
-                          Assets.lottieLottie,
-                        ),
-                      ));
+                      return FollowerWithShimmerLoader(context);
                     }
                     final following = controller.following[index];
                     return Padding(
@@ -341,7 +318,6 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
                                   fit: BoxFit.cover,
                                   height: 50,
                                   width: 50,
-                                  placeholder: (context, url) => Container(),
                                   errorWidget: (context, url, error) =>
                                       const Icon(Icons.error),
                                 ),

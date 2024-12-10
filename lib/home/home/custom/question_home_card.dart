@@ -4,7 +4,6 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/assets.dart';
@@ -20,7 +19,6 @@ import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
-import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -102,13 +100,7 @@ class _FavouritrCardState extends State<QuestionHomeCard> {
 
   void toggleLike() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? apiToken = prefs.getString(Constants.accessToken);
-
-    if (apiToken == null) {
-      // ignore: use_build_context_synchronously
-      showSignupDialog(context);
-      return;
-    }
+    prefs.getString(Constants.accessToken);
     bool newLikedValue = !isLiked.value;
     isLiked.value = newLikedValue;
     likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
@@ -128,13 +120,7 @@ class _FavouritrCardState extends State<QuestionHomeCard> {
 
   void toggleBookmark() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? apiToken = prefs.getString(Constants.accessToken);
-
-    if (apiToken == null) {
-      // ignore: use_build_context_synchronously
-      showSignupDialog(context);
-      return;
-    }
+    prefs.getString(Constants.accessToken);
     bool newBookmarkedValue = !isBookmarked.value;
     isBookmarked.value = newBookmarkedValue;
 
@@ -185,11 +171,6 @@ class _FavouritrCardState extends State<QuestionHomeCard> {
                     height: 60,
                     width: 60,
                     fit: BoxFit.fill,
-                    placeholder: (context, url) => CustomLottieAnimation(
-                      child: Lottie.asset(
-                        Assets.lottieLottie,
-                      ),
-                    ),
                     errorWidget: (context, url, error) =>
                         const Icon(Icons.error),
                   ),
@@ -204,10 +185,20 @@ class _FavouritrCardState extends State<QuestionHomeCard> {
                         style: textStyleW700(
                             size.width * 0.038, AppColors.blackText),
                       ),
-                      Text(
-                        postTimeFormatter.formatPostTime(widget.dateTime),
-                        style: textStyleW400(size.width * 0.028,
-                            AppColors.blackText.withOpacity(0.8)),
+                      Row(
+                        children: [
+                          Text(
+                            postTimeFormatter.formatPostTime(widget.dateTime),
+                            style: textStyleW400(size.width * 0.028,
+                                AppColors.blackText.withOpacity(0.8)),
+                          ),
+                          8.sbw,
+                          Text(
+                            'asked a question',
+                            style: textStyleW400(size.width * 0.028,
+                                AppColors.blackText.withOpacity(0.8)),
+                          )
+                        ],
                       ),
                     ],
                   ),
@@ -243,7 +234,6 @@ class _FavouritrCardState extends State<QuestionHomeCard> {
                   "html": Style(
                     maxLines: 2,
                     fontFamily: fontFamily,
-                    fontWeight: FontWeight.w700,
                     fontSize: FontSize.medium,
                     color: AppColors.blackText,
                   ),

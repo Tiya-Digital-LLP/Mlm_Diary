@@ -78,13 +78,7 @@ class _QuestionCardState extends State<QuestionCard> {
 
   void toggleLike() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? apiToken = prefs.getString(Constants.accessToken);
-
-    if (apiToken == null) {
-      // ignore: use_build_context_synchronously
-      showSignupDialog(context);
-      return;
-    }
+    prefs.getString(Constants.accessToken);
     bool newLikedValue = !isLiked.value;
     isLiked.value = newLikedValue;
     likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
@@ -100,13 +94,7 @@ class _QuestionCardState extends State<QuestionCard> {
 
   void toggleBookmark() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? apiToken = prefs.getString(Constants.accessToken);
-
-    if (apiToken == null) {
-      // ignore: use_build_context_synchronously
-      showSignupDialog(context);
-      return;
-    }
+    prefs.getString(Constants.accessToken);
     bool newBookmarkedValue = !isBookmarked.value;
     isBookmarked.value = newBookmarkedValue;
     bookmarkCount.value =
@@ -144,22 +132,6 @@ class _QuestionCardState extends State<QuestionCard> {
                         child: Image.network(
                           widget.userImage,
                           fit: BoxFit.cover,
-                          loadingBuilder: (BuildContext context, Widget child,
-                              ImageChunkEvent? loadingProgress) {
-                            if (loadingProgress == null) {
-                              return child;
-                            }
-                            return Center(
-                              child: CircularProgressIndicator(
-                                value: loadingProgress.expectedTotalBytes !=
-                                        null
-                                    ? loadingProgress.cumulativeBytesLoaded /
-                                        (loadingProgress.expectedTotalBytes ??
-                                            1)
-                                    : null,
-                              ),
-                            );
-                          },
                           errorBuilder: (context, error, stackTrace) {
                             return Image.asset(
                               Assets.imagesAdminlogo,

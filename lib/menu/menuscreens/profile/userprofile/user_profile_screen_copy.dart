@@ -201,7 +201,6 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                           fit: BoxFit.cover,
                           height: 120,
                           width: 120,
-                          placeholder: (context, url) => Container(),
                           errorWidget: (context, url, error) => Image.asset(
                             Assets.imagesAdminlogo,
                             fit: BoxFit
@@ -336,8 +335,9 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                               print('tap without number');
                             }
                           } else {
-                            final Uri phoneUri =
-                                Uri(scheme: 'tel', path: post.mobile);
+                            final Uri phoneUri = Uri(
+                                scheme: 'tel',
+                                path: '+${post.countrycode1} ${post.mobile}');
                             launchUrl(phoneUri);
                             if (kDebugMode) {
                               print('tap with number');
@@ -375,14 +375,24 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                       10.sbw,
                       InkWell(
                         onTap: () async {
-                          if (post!.mobile != null) {
+                          if (post.mobile != null &&
+                              post.countrycode1 != null) {
                             final String phoneNumber = post.mobile!;
+                            final String countryCode =
+                                post.countrycode1!.trim();
+
+                            // Ensure the country code includes the '+' prefix
+                            final String formattedCountryCode =
+                                countryCode.startsWith('+')
+                                    ? countryCode
+                                    : '+$countryCode';
+
                             final String name = userProfile!.name.toString();
 
                             String message =
                                 "Hello, I am $name. I want to know regarding MLM Diary App.";
                             final Uri whatsappUri = Uri.parse(
-                                "https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}");
+                                "https://wa.me/${formattedCountryCode.replaceAll(' ', '')}$phoneNumber?text=${Uri.encodeComponent(message)}");
 
                             if (await canLaunchUrl(whatsappUri)) {
                               await launchUrl(whatsappUri);
@@ -399,7 +409,9 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                                   context);
                             }
                           } else {
-                            showToasterrorborder("No Any Url Found", context);
+                            showToasterrorborder(
+                                "No valid phone number or country code found",
+                                context);
                           }
                         },
                         child: const SocialButton(

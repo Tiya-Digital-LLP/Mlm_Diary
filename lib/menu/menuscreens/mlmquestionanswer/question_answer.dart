@@ -12,6 +12,7 @@ import 'package:mlmdiary/menu/menuscreens/tutorialvideo/controller/tutorial_vide
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
+import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_shimmer_question.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -30,9 +31,15 @@ class _QuationAnswerState extends State<QuationAnswer> {
   static const String position = 'questionanswer';
   final HomeScreenController homeScreenController =
       Get.put(HomeScreenController());
+  final RxBool showShimmer = true.obs;
+
   @override
   void initState() {
     super.initState();
+    // Start a timer to switch from shimmer to UI after 1 second
+    Future.delayed(const Duration(seconds: 1), () {
+      showShimmer.value = false;
+    });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _refreshData();
     });
@@ -125,83 +132,98 @@ class _QuationAnswerState extends State<QuationAnswer> {
             ),
             Expanded(
               child: Obx(() {
-                if (controller.isLoading.value &&
-                    controller.questionList.isEmpty) {
-                  return Center(
-                      child: CustomLottieAnimation(
-                    child: Lottie.asset(
-                      Assets.lottieLottie,
-                    ),
-                  ));
-                }
-
-                if (controller.questionList.isEmpty) {
-                  return const Center(
-                    child: Text(
-                      'Data not found',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
+                if (showShimmer.value) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: ListView.builder(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      itemCount: 10,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        return const CustomShimmerQuestion(
+                          width: 175,
+                          height: 180,
+                        );
+                      },
                     ),
                   );
-                }
+                } else {
+                  return Expanded(
+                    child: Obx(() {
+                      if (controller.isLoading.value &&
+                          controller.questionList.isEmpty) {
+                        return Center(
+                            child: CustomLottieAnimation(
+                          child: Lottie.asset(
+                            Assets.lottieLottie,
+                          ),
+                        ));
+                      }
 
-                return ListView.builder(
-                  padding: EdgeInsets.zero,
-                  controller: controller.scrollController,
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: controller.questionList.length +
-                      (controller.isLoading.value ? 1 : 0),
-                  itemBuilder: (context, index) {
-                    if (index == controller.questionList.length) {
-                      return Center(
-                          child: CustomLottieAnimation(
-                        child: Lottie.asset(
-                          Assets.lottieLottie,
-                        ),
-                      ));
-                    }
-                    final post = controller.questionList[index];
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 8),
-                      child: GestureDetector(
-                        onTap: () async {
-                          SharedPreferences prefs =
-                              await SharedPreferences.getInstance();
-                          String? apiToken =
-                              prefs.getString(Constants.accessToken);
+                      if (controller.questionList.isEmpty) {
+                        return const Center(
+                          child: Text(
+                            'Data not found',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                        );
+                      }
 
-                          if (apiToken == null) {
-                            // ignore: use_build_context_synchronously
-                            showSignupDialog(context);
-                            return;
+                      return ListView.builder(
+                        padding: EdgeInsets.zero,
+                        controller: controller.scrollController,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: controller.questionList.length +
+                            (controller.isLoading.value ? 1 : 0),
+                        itemBuilder: (context, index) {
+                          if (index == controller.questionList.length) {
+                            return Center(
+                                child: CustomLottieAnimation(
+                              child: Lottie.asset(
+                                Assets.lottieLottie,
+                              ),
+                            ));
                           }
-                          Get.toNamed(
-                            Routes.userquestion,
-                            arguments: post,
+                          final post = controller.questionList[index];
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 8),
+                            child: GestureDetector(
+                              onTap: () async {
+                                SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
+                                prefs.getString(Constants.accessToken);
+                                Get.toNamed(
+                                  Routes.userquestion,
+                                  arguments: post,
+                                );
+                              },
+                              child: QuestionCard(
+                                userImage: post.userData?.imagePath ?? '',
+                                userName: post.userData?.name ?? '',
+                                postCaption: post.title ?? '',
+                                viewcounts: post.pgcnt ?? 0,
+                                dateTime: post.creatdate ?? '',
+                                controller: controller,
+                                questionId: post.id ?? 0,
+                                bookmarkCount: post.totalbookmark ?? 0,
+                                likedCount: post.totallike ?? 0,
+                                likedbyuser: post.likedByUser ?? false,
+                                bookmarkedbyuser:
+                                    post.bookmarkedByUser ?? false,
+                              ),
+                            ),
                           );
                         },
-                        child: QuestionCard(
-                          userImage: post.userData?.imagePath ?? '',
-                          userName: post.userData?.name ?? '',
-                          postCaption: post.title ?? '',
-                          viewcounts: post.pgcnt ?? 0,
-                          dateTime: post.creatdate ?? '',
-                          controller: controller,
-                          questionId: post.id ?? 0,
-                          bookmarkCount: post.totalbookmark ?? 0,
-                          likedCount: post.totallike ?? 0,
-                          likedbyuser: post.likedByUser ?? false,
-                          bookmarkedbyuser: post.bookmarkedByUser ?? false,
-                        ),
-                      ),
-                    );
-                  },
-                );
+                      );
+                    }),
+                  );
+                }
               }),
             ),
           ],
@@ -210,13 +232,7 @@ class _QuationAnswerState extends State<QuationAnswer> {
       floatingActionButton: InkWell(
         onTap: () async {
           SharedPreferences prefs = await SharedPreferences.getInstance();
-          String? apiToken = prefs.getString(Constants.accessToken);
-
-          if (apiToken == null) {
-            // ignore: use_build_context_synchronously
-            showSignupDialog(context);
-            return;
-          }
+          prefs.getString(Constants.accessToken);
           Get.toNamed(Routes.addquestionanswer);
         },
         child: Ink(

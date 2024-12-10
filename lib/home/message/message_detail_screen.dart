@@ -1,15 +1,17 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/home/message/controller/message_controller.dart';
+import 'package:mlmdiary/menu/controller/profile_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
+import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 
 class MessageDetailsScreen extends StatefulWidget {
   const MessageDetailsScreen({super.key});
@@ -22,6 +24,7 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
   final MessageController messageController = Get.put(MessageController());
   final UserProfileController userProfileController =
       Get.put(UserProfileController());
+  final ProfileController profileController = Get.put(ProfileController());
   late PostTimeFormatter postTimeFormatter;
   dynamic post;
   final ScrollController _scrollController = ScrollController();
@@ -34,12 +37,8 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         messageController.fetchMyChatDetail(post.chatId.toString());
       });
-      if (kDebugMode) {
-        print('chat: $post');
-      }
       postTimeFormatter = PostTimeFormatter();
 
-      // Scroll to the bottom when the chat details are fetched
       messageController.chatdetailsList.listen((_) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (_scrollController.hasClients) {
@@ -59,72 +58,48 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
-
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        scrolledUnderElevation: 0,
-        centerTitle: true,
-        leading: Padding(
-          padding: EdgeInsets.all(size.height * 0.012),
-          child: Align(
-            alignment: Alignment.topLeft,
-            child: InkWell(
-              onTap: () {
-                Get.back();
-                messageController.fetchMyChat().then((_) {});
-              },
-              child: SvgPicture.asset(
-                Assets.svgBack,
-              ),
-            ),
-          ),
-        ),
         backgroundColor: Colors.white,
         elevation: 0,
-        title: Align(
-          alignment: Alignment.topLeft,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+        centerTitle: true,
+        leading: IconButton(
+          icon: SvgPicture.asset(Assets.svgBack),
+          onPressed: () {
+            Get.back();
+            messageController.fetchMyChat();
+          },
+        ),
+        title: InkWell(
+          onTap: () async {
+            Get.toNamed(
+              Routes.userprofilescreen,
+              arguments: {
+                'user_id': post.fromid,
+              },
+            );
+            await userProfileController.fetchUserAllPost(
+              1,
+              post.fromid.toString(),
+            );
+          },
+          child: Row(
             children: [
-              InkWell(
-                onTap: () async {
-                  await userProfileController.fetchUserAllPost(
-                    1,
-                    post.id ?? 0,
-                  );
-                  Get.toNamed(
-                    Routes.userprofilescreen,
-                    arguments: post,
-                  );
-                },
-                child: Row(
-                  children: [
-                    // Example of accessing userImage from post
-                    if (post != null && post.imageUrl != null) ...[
-                      ClipOval(
-                        child: Image.network(
-                          post.imageUrl,
-                          height: 30.0,
-                          width: 30.0,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) =>
-                              const Icon(Icons.error),
-                        ),
-                      ),
-                      10.sbw,
-                    ],
-                    Text(
-                      post.username ?? 'Unknown',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: size.width * 0.05,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ],
+              if (post != null && post.imageUrl != null)
+                ClipOval(
+                  child: Image.network(
+                    post.imageUrl,
+                    height: 30.0,
+                    width: 30.0,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => const Icon(Icons.error),
+                  ),
                 ),
+              10.sbw,
+              Text(
+                post.username ?? 'Unknown',
+                style: textStyleW700(16, Colors.black),
               ),
             ],
           ),
@@ -141,181 +116,158 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
                     fit: BoxFit.cover,
                   ),
                 ),
-                Obx(
-                  () => ListView.builder(
-                    controller: _scrollController,
-                    itemCount: messageController.chatdetailsList.length,
-                    reverse: true,
-                    itemBuilder: (context, index) {
-                      final message = messageController.chatdetailsList[index];
-                      final isSender = message.fromid == post.fromid;
+                // Show the loader if data is being fetched
+                Obx(() {
+                  return messageController.isLoading.value
+                      ? Center(
+                          child: CustomLottieAnimation(
+                            child: Lottie.asset(
+                              Assets.lottieLottie,
+                            ),
+                          ),
+                        )
+                      : ListView.builder(
+                          controller: _scrollController,
+                          padding: const EdgeInsetsDirectional.symmetric(
+                            horizontal: 16,
+                          ),
+                          reverse: true,
+                          itemCount: messageController.chatdetailsList.length,
+                          itemBuilder: (_, index) {
+                            final message =
+                                messageController.chatdetailsList[index];
+                            final isSender = message.fromid.toString() ==
+                                profileController.userId.toString();
+                            final userImage = isSender
+                                ? profileController.userImage
+                                : post.imageUrl;
 
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
-                        child: Row(
-                          mainAxisAlignment: isSender
-                              ? MainAxisAlignment.end
-                              : MainAxisAlignment.start,
-                          children: [
-                            if (!isSender &&
-                                post != null &&
-                                post.imageUrl != null) ...[
-                              ClipOval(
-                                child: Image.network(
-                                  post.imageUrl,
-                                  height: 30.0,
-                                  width: 30.0,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      const Icon(Icons.error),
-                                ),
-                              ),
-                              10.sbw,
-                            ],
-                            Column(
-                              crossAxisAlignment: isSender
-                                  ? CrossAxisAlignment.end
-                                  : CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    color: isSender
-                                        ? AppColors.primaryColor
-                                        : AppColors.primaryColor
-                                            .withOpacity(0.8),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment: isSender
-                                        ? CrossAxisAlignment.end
-                                        : CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        message.msg ?? '',
-                                        style: TextStyle(
-                                          color: AppColors.white,
-                                        ),
+                            return Align(
+                              alignment: isSender
+                                  ? Alignment.centerRight
+                                  : Alignment.centerLeft,
+                              child: Row(
+                                mainAxisAlignment: isSender
+                                    ? MainAxisAlignment.end
+                                    : MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (!isSender)
+                                    ClipOval(
+                                      child: Image.network(
+                                        userImage ?? '',
+                                        height: 30.0,
+                                        width: 30.0,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (_, __, ___) =>
+                                            const Icon(Icons.error, size: 30),
                                       ),
-                                      5.sbh,
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
+                                    ),
+                                  Flexible(
+                                    child: Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 12, vertical: 8),
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        color: isSender
+                                            ? AppColors.primaryColor
+                                            : AppColors.grey.withOpacity(0.8),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment: isSender
+                                            ? CrossAxisAlignment.end
+                                            : CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            postTimeFormatter.formatPostTime(
-                                                message.updatedAt!),
+                                            message.msg ?? '',
                                             style: textStyleW400(
-                                              size.width * 0.03,
-                                              AppColors.white.withOpacity(0.7),
-                                            ),
+                                                14, AppColors.white),
                                           ),
-                                          6.sbw,
-                                          Icon(
-                                            message.readStatus == 0
-                                                ? Icons.check
-                                                : Icons.done_all,
-                                            size: 16,
-                                            color: AppColors.white,
+                                          5.sbh,
+                                          Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(
+                                                postTimeFormatter
+                                                    .formatPostTime(
+                                                        message.updatedAt!),
+                                                style: textStyleW400(
+                                                  12,
+                                                  AppColors.white
+                                                      .withOpacity(0.7),
+                                                ),
+                                              ),
+                                              6.sbw,
+                                              Icon(
+                                                message.readStatus == 0
+                                                    ? Icons.check
+                                                    : Icons.done_all,
+                                                size: 16,
+                                                color: AppColors.white,
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
-                                    ],
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            if (isSender) ...[
-                              10.sbw,
-                              ClipOval(
-                                child: Image.asset(
-                                  Assets.imagesAdminlogo,
-                                  height: 30,
-                                ),
+                                  if (isSender)
+                                    ClipOval(
+                                      child: Image.network(
+                                        userImage ?? '',
+                                        height: 30.0,
+                                        width: 30.0,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (_, __, ___) =>
+                                            const Icon(Icons.error, size: 30),
+                                      ),
+                                    ),
+                                ],
                               ),
-                            ],
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
+                            );
+                          },
+                        );
+                }),
               ],
             ),
           ),
           Container(
-            height: 100,
-            color: AppColors.white,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+            color: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            child: Row(
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.primaryColor.withOpacity(0.4),
-                              spreadRadius: 2,
-                              blurRadius: 5,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: SvgPicture.asset(
-                          Assets.svgPlusIcon,
-                          height: 40,
-                        ),
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: AppColors.searchbar,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16.0),
-                              child: TextField(
-                                controller: messageController.msg.value,
-                                decoration: const InputDecoration(
-                                  hintText: 'Write your answer here',
-                                  border: InputBorder.none,
-                                ),
-                                onChanged: (value) {},
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.send, color: AppColors.primaryColor),
-                        onPressed: () {
-                          messageController
-                              .fetchMyChatDetail(post.chatId.toString());
-                          messageController.sendChat(
-                            toId: post.toid.toString(),
-                            chatId: post.chatId ?? '',
-                          );
-
-                          // Scroll to the bottom after sending a message
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            if (_scrollController.hasClients) {
-                              _scrollController.jumpTo(
-                                _scrollController.position.maxScrollExtent,
-                              );
-                            }
-                          });
-                        },
-                      ),
-                    ],
+                IconButton(
+                  icon: SvgPicture.asset(
+                    Assets.svgPlusIcon,
+                    height: 40,
                   ),
+                  onPressed: () {},
+                ),
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.searchbar,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: TextField(
+                      controller: messageController.msg.value,
+                      decoration: const InputDecoration(
+                        hintText: 'Write a message...',
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.send, color: AppColors.primaryColor),
+                  onPressed: () {
+                    messageController.sendChat(
+                      toId: post.toid.toString(),
+                      chatId: post.chatId ?? '',
+                    );
+                  },
                 ),
               ],
             ),

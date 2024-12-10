@@ -45,7 +45,7 @@ class CustomNameTextField extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: 16,
+          horizontal: 10,
         ),
         child: Center(
           child: TextField(
@@ -62,7 +62,10 @@ class CustomNameTextField extends StatelessWidget {
             cursorColor: AppColors.blackText,
             decoration: InputDecoration(
               counterText: "",
-              hintText: hint,
+              labelText: hint,
+              labelStyle: const TextStyle(
+                color: Colors.black,
+              ),
               border: InputBorder.none,
             ),
             enableInteractiveSelection: false,

@@ -1,23 +1,26 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/classified/classified_like_list_content.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/custom/custom_post_comment.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
+import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
-import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
+import 'package:mlmdiary/widgets/image_preview_user_image.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:text_link/text_link.dart';
-// ignore: library_prefixes
-import 'package:html/parser.dart' as htmlParser;
+import 'package:url_launcher/url_launcher.dart';
+import 'package:html/dom.dart' as dom;
 
 class PostDetailScreen extends StatefulWidget {
   const PostDetailScreen({super.key});
@@ -115,14 +118,16 @@ class _PostDetailsScreenState extends State<PostDetailScreen> {
                           horizontal: 16, vertical: 8),
                       child: InkWell(
                         onTap: () async {
-                          // Get.toNamed(
-                          //   Routes.userprofilescreencopy,
-                          //   arguments: post,
-                          // );
-                          // await userProfileController.fetchUserAllPost(
-                          //   1,
-                          //   post.id ?? 0,
-                          // );
+                          Get.toNamed(
+                            Routes.userprofilescreen,
+                            arguments: {
+                              'user_id': post.userId,
+                            },
+                          );
+                          await userProfileController.fetchUserAllPost(
+                            1,
+                            post.userId.toString(),
+                          );
                         },
                         child: Row(
                           children: [
@@ -132,12 +137,6 @@ class _PostDetailsScreenState extends State<PostDetailScreen> {
                                 height: 60.0,
                                 width: 60.0,
                                 fit: BoxFit.cover,
-                                placeholder: (context, url) =>
-                                    CustomLottieAnimation(
-                                  child: Lottie.asset(
-                                    Assets.lottieLottie,
-                                  ),
-                                ),
                                 errorWidget: (context, url, error) =>
                                     Image.asset(Assets.imagesAdminlogo),
                               ),
@@ -177,65 +176,36 @@ class _PostDetailsScreenState extends State<PostDetailScreen> {
                     SizedBox(
                       height: size.height * 0.012,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                      ),
-                      child: Container(
-                        height: size.height * 0.28,
-                        width: size.width,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: CachedNetworkImage(
-                          imageUrl: post.imageUrl ?? '',
-                          height: 97,
-                          width: 105,
-                          fit: BoxFit.fill,
-                          placeholder: (context, url) => Center(
-                              child: Center(
-                                  child: CustomLottieAnimation(
-                            child: Lottie.asset(
-                              Assets.lottieLottie,
+                    if (post.imageUrl.isNotEmpty &&
+                        Uri.tryParse(post.imageUrl)?.hasAbsolutePath == true)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: InkWell(
+                          onTap: () {
+                            _showFullScreenImageDialog(context);
+                          },
+                          child: SizedBox(
+                            height: size.height * 0.26,
+                            width: size.width,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12.0),
+                              child: Image.network(
+                                post.imageUrl,
+                                fit: BoxFit.fill,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Image.asset(
+                                    Assets.imagesLogo,
+                                    fit: BoxFit.fill,
+                                  );
+                                },
+                              ),
                             ),
-                          ))),
-                          errorWidget: (context, url, error) =>
-                              Image.asset(Assets.imagesLogo),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: size.height * 0.01,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                      ),
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: _buildHtmlContent(post.description ?? '', size),
-                      ),
-                    ),
-                    SizedBox(
-                      height: size.height * 0.01,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                      ),
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          '${post.category} | ${post.subcategory}',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            color: AppColors.blackText,
-                            fontSize: size.width * 0.035,
                           ),
                         ),
                       ),
+                    SizedBox(
+                      height: size.height * 0.01,
                     ),
-                    5.sbh,
                     Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(14),
@@ -263,9 +233,13 @@ class _PostDetailsScreenState extends State<PostDetailScreen> {
                           ),
                           3.sbh,
                           Text(
-                            '${post.city},${post.state},${post.country}',
+                            '${post.city?.isNotEmpty == true ? post.city : 'N/A'}, '
+                            '${post.state?.isNotEmpty == true ? post.state : 'N/A'}, '
+                            '${post.country?.isNotEmpty == true ? post.country : 'N/A'}',
                             style: textStyleW400(
-                                size.width * 0.035, AppColors.blackText),
+                              size.width * 0.035,
+                              AppColors.blackText,
+                            ),
                           ),
                         ],
                       ),
@@ -300,11 +274,39 @@ class _PostDetailsScreenState extends State<PostDetailScreen> {
                                 ],
                               ),
                               3.sbh,
-                              Text(
-                                '${post.userData!.countrycode1} - ${post.userData!.mobile}',
-                                style: textStyleW400(
-                                    size.width * 0.032, AppColors.blackText),
-                              ),
+                              InkWell(
+                                onTap: () {
+                                  final String? countryCode =
+                                      post.userData?.countrycode1;
+                                  final String? mobileNumber =
+                                      post.userData?.mobile;
+
+                                  if (mobileNumber == null ||
+                                      mobileNumber.isEmpty) {
+                                    showToasterrorborder(
+                                        'No Any Url Found', context);
+                                    if (kDebugMode) {
+                                      print('Tap without number');
+                                    }
+                                  } else {
+                                    final Uri phoneUri = Uri(
+                                      scheme: 'tel',
+                                      path:
+                                          '+$countryCode$mobileNumber', // Combine country code and mobile
+                                    );
+                                    launchUrl(phoneUri);
+                                    if (kDebugMode) {
+                                      print(
+                                          'Tap with number: $countryCode$mobileNumber');
+                                    }
+                                  }
+                                },
+                                child: Text(
+                                  '+${post.userData?.countrycode1 ?? 'N/A'} - ${post.userData?.mobile ?? 'N/A'}',
+                                  style: textStyleW400(
+                                      size.width * 0.032, AppColors.blackText),
+                                ),
+                              )
                             ],
                           ),
                         ),
@@ -326,10 +328,34 @@ class _PostDetailsScreenState extends State<PostDetailScreen> {
                                   ],
                                 ),
                                 3.sbh,
-                                Text(
-                                  '${post.userData!.email}',
-                                  style: textStyleW400(
-                                      size.width * 0.032, AppColors.blackText),
+                                InkWell(
+                                  onTap: () {
+                                    final String? email = post.userData?.email;
+
+                                    if (email != null && email.isNotEmpty) {
+                                      final Uri emailUri = Uri(
+                                        scheme: 'mailto',
+                                        path: email,
+                                      );
+                                      launchUrl(emailUri);
+                                      if (kDebugMode) {
+                                        print('Tap with email: $email');
+                                      }
+                                    } else {
+                                      showToasterrorborder(
+                                          'No Email Found', context);
+                                      if (kDebugMode) {
+                                        print('Tap without email');
+                                      }
+                                    }
+                                  },
+                                  child: Text(
+                                    post.userData!.email?.isNotEmpty == true
+                                        ? post.userData!.email!
+                                        : 'N/A',
+                                    style: textStyleW400(size.width * 0.032,
+                                        AppColors.blackText),
+                                  ),
                                 ),
                               ],
                             ),
@@ -365,7 +391,9 @@ class _PostDetailsScreenState extends State<PostDetailScreen> {
                           ),
                           3.sbh,
                           LinkText(
-                            text: post.website ?? '',
+                            text: post.website?.isNotEmpty == true
+                                ? post.website
+                                : 'N/A',
                             style: textStyleW400(
                               size.width * 0.035,
                               AppColors.blackText.withOpacity(0.5),
@@ -376,6 +404,58 @@ class _PostDetailsScreenState extends State<PostDetailScreen> {
                             ),
                           ),
                         ],
+                      ),
+                    ),
+                    5.sbh,
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(14),
+                        color: AppColors.white,
+                        border: const Border(
+                            bottom: BorderSide(color: Colors.grey)),
+                      ),
+                    ),
+                    5.sbh,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                      ),
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        child: Html(
+                          data: post.description,
+                          style: {
+                            "table": Style(
+                              backgroundColor:
+                                  const Color.fromARGB(0x50, 0xee, 0xee, 0xee),
+                            ),
+                            "tr": Style(
+                              border: const Border(
+                                  bottom: BorderSide(color: Colors.grey)),
+                            ),
+                            "th": Style(
+                              backgroundColor: Colors.grey,
+                            ),
+                            "td": Style(
+                              alignment: Alignment.topLeft,
+                            ),
+                            'h5': Style(
+                              maxLines: 2,
+                              textOverflow: TextOverflow.ellipsis,
+                            ),
+                          },
+                          onLinkTap: (String? url,
+                              Map<String, String> attributes,
+                              dom.Element? element) {
+                            if (url != null) {
+                              if (kDebugMode) {
+                                print("Opening $url...");
+                              }
+                              // Use url_launcher to open the URL
+                              _launchUrl(url);
+                            }
+                          },
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -411,14 +491,16 @@ class _PostDetailsScreenState extends State<PostDetailScreen> {
                         height: size.height * 0.028,
                         width: size.height * 0.028,
                         child: GestureDetector(
-                          onTap: toggleLike,
+                          onTap: () {
+                            controller.toggleLike(post.id, context);
+                          },
                           child: Icon(
-                            // Observe like status
-                            isLiked.value
-                                ? Icons.thumb_up_off_alt_sharp
+                            controller.likedStatusMap[post.id] == true
+                                ? Icons.thumb_up
                                 : Icons.thumb_up_off_alt_outlined,
-                            color:
-                                isLiked.value ? AppColors.primaryColor : null,
+                            color: controller.likedStatusMap[post.id] == true
+                                ? AppColors.primaryColor
+                                : null,
                             size: size.height * 0.032,
                           ),
                         ),
@@ -429,18 +511,22 @@ class _PostDetailsScreenState extends State<PostDetailScreen> {
                       width: 7,
                     ),
                     // ignore: unrelated_type_equality_checks
-                    likeCount.value == 0
-                        ? const SizedBox.shrink()
-                        : InkWell(
-                            onTap: () {
-                              showLikeList(context);
-                            },
-                            child: Text(
-                              '${likeCount.value}',
-                              style: textStyleW600(
-                                  size.width * 0.038, AppColors.blackText),
-                            ),
-                          ),
+                    Obx(() {
+                      // Sum the original `post.totallike` with the reactive like count
+                      int totalLikes = post.totallike +
+                          (controller.likeCountMap[post.id] ?? 0);
+
+                      return InkWell(
+                        onTap: () {
+                          showLikeList(context);
+                        },
+                        child: Text(
+                          totalLikes.toString(),
+                          style: textStyleW600(
+                              size.width * 0.038, AppColors.blackText),
+                        ),
+                      );
+                    }),
                     const SizedBox(
                       width: 15,
                     ),
@@ -531,6 +617,26 @@ class _PostDetailsScreenState extends State<PostDetailScreen> {
     );
   }
 
+  // Define the _launchUrl method
+  Future<void> _launchUrl(String url) async {
+    // ignore: deprecated_member_use
+    if (await canLaunch(url)) {
+      // ignore: deprecated_member_use
+      await launch(url); // Old launch method for non-web
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  void _showFullScreenImageDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return FullScreenImageDialog(imageUrl: post.imageUrl.toString());
+      },
+    );
+  }
+
   void showLikeList(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -544,22 +650,5 @@ class _PostDetailsScreenState extends State<PostDetailScreen> {
 
   void fetchLikeList() async {
     await controller.fetchLikeListPost(post.id ?? 0, context);
-  }
-
-  Widget _buildHtmlContent(String htmlContent, Size size) {
-    final parsedHtml = htmlParser.parse(htmlContent);
-    final text = parsedHtml.body?.text ?? '';
-
-    return LinkText(
-      text: text,
-      style: textStyleW400(
-        size.width * 0.035,
-        AppColors.blackText.withOpacity(0.5),
-      ),
-      linkStyle: const TextStyle(
-        color: Colors.blue,
-        decoration: TextDecoration.underline,
-      ),
-    );
   }
 }

@@ -8,3 +8,10 @@
 
 # Keep all classes in the Firebase library
 -keep class com.google.firebase.** { *; }
+
+-keep class com.google.protobuf.** { *; }
+-dontwarn com.google.protobuf.**
+
+-keep class io.grpc.** { *; }
+-dontwarn io.grpc.**
+

@@ -28,7 +28,7 @@ class BorderTextField extends StatelessWidget {
     this.onChanged,
     this.height = 65.0,
     this.maxLength,
-    this.suffixIcon, // Add this line
+    this.suffixIcon,
   });
 
   @override
@@ -51,10 +51,10 @@ class BorderTextField extends StatelessWidget {
         children: [
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Center(
                 child: TextField(
-                  cursorHeight: 20,
+                  cursorHeight: 15,
                   autocorrect: false,
                   readOnly: readOnly,
                   keyboardType: keyboard,
@@ -66,7 +66,13 @@ class BorderTextField extends StatelessWidget {
                   cursorColor: AppColors.blackText,
                   decoration: InputDecoration(
                     counterText: "",
-                    hintText: hint,
+                    labelText: hint,
+                    labelStyle: const TextStyle(
+                      color: Colors.black,
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 12,
+                    ),
                     border: InputBorder.none,
                   ),
                 ),

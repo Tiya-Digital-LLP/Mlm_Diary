@@ -16,6 +16,7 @@ import 'package:mlmdiary/generated/boost_on_top_classified_entity.dart';
 import 'package:mlmdiary/generated/boost_on_top_classified_premium_entity.dart';
 import 'package:mlmdiary/generated/classified_count_view_entity.dart';
 import 'package:mlmdiary/generated/get_category_entity.dart';
+import 'package:mlmdiary/generated/get_classified_detail_entity.dart';
 import 'package:mlmdiary/generated/get_classified_entity.dart';
 import 'package:mlmdiary/generated/get_company_entity.dart';
 import 'package:mlmdiary/generated/get_sub_category_entity.dart';
@@ -60,6 +61,8 @@ class ManageClasifiedController extends GetxController {
   RxList<GetSubCategoryCategory> subcategoryList =
       RxList<GetSubCategoryCategory>();
   final RxList<bool> isSubCategorySelectedList = RxList<bool>([]);
+
+  List<String> selectedCategoryNames = [];
 
   //image
   RxString userImage = ''.obs;
@@ -108,6 +111,157 @@ class ManageClasifiedController extends GetxController {
     getClassified();
   }
 
+  Future<void> fetchClassifiedDetail(int classfiedId, context) async {
+    // Clear all previous data before fetching new data
+    title.value.text = "";
+    companyName.value.text = "";
+    discription.value.text = "";
+    url.value.text = "";
+    userImage.value = "";
+    city.value.text = "";
+    state.value.text = "";
+    country.value.text = "";
+
+    isLoading.value = true;
+    String device =
+        Platform.isAndroid ? 'android' : (Platform.isIOS ? 'ios' : '');
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+
+    try {
+      var connectivityResult = await (Connectivity().checkConnectivity());
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult == ConnectivityResult.none) {
+        showToasterrorborder("No internet connection", context);
+        isLoading.value = false;
+        return;
+      }
+
+      Map<String, String> queryParams = {
+        'api_token': apiToken ?? '',
+        'device': device,
+        'classified_id': classfiedId.toString(),
+      };
+
+      if (kDebugMode) {
+        print('api_token: $apiToken');
+        print('device: $device');
+        print('classfiedId: $classfiedId');
+      }
+
+      Uri uri = Uri.parse(Constants.baseUrl + Constants.classifieddetail)
+          .replace(queryParameters: queryParams);
+
+      final response = await http.post(uri);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        if (kDebugMode) {
+          print(json.encode(responseData));
+        }
+
+        final GetClassifiedDetailEntity classifiedDetailEntity =
+            GetClassifiedDetailEntity.fromJson(responseData);
+
+        final GetClassifiedDetailData firstPost = classifiedDetailEntity.data;
+
+        // Update fields with new data
+        title.value.text = firstPost.title.toString();
+        companyName.value.text = firstPost.company;
+        discription.value.text = firstPost.description;
+        url.value.text = firstPost.website;
+        userImage.value = firstPost.imagePath;
+        city.value.text = firstPost.city;
+        state.value.text = firstPost.state;
+        country.value.text = firstPost.country;
+        location.value.text =
+            '${firstPost.city}, ${firstPost.state}, ${firstPost.country}'
+                .trim()
+                .replaceAll(RegExp(r',\s*$'), '');
+        // Handle category selection (using categoryId as int)
+        int? categoryId = int.tryParse(firstPost.category);
+
+        if (categoryId != null) {
+          if (kDebugMode) {
+            print('Category ID selected: $categoryId');
+          }
+
+          isCategorySelectedList.fillRange(
+              0, isCategorySelectedList.length, false);
+          int index = categorylist.indexWhere((item) => item.id == categoryId);
+
+          if (kDebugMode) {
+            print('Category index by ID: $index');
+          }
+
+          if (index != -1) {
+            isCategorySelectedList[index] = true;
+            selectedCountCategory.value = 1;
+            selectedCategoryId.value = categorylist[index].id!;
+
+            if (kDebugMode) {
+              print('Category selected, ID: ${selectedCategoryId.value}');
+            }
+
+            fetchSubCategoryList(categorylist[index].id!);
+          }
+        } else {
+          if (kDebugMode) {
+            print('Invalid categoryId');
+          }
+        }
+
+        // Handle subcategory selection (using subcategoryId as int)
+        int? subcategoryId = int.tryParse(firstPost.subcategory);
+
+        if (subcategoryId != null) {
+          if (kDebugMode) {
+            print('Subcategory ID selected: $subcategoryId');
+          }
+
+          isSubCategorySelectedList.fillRange(
+              0, isSubCategorySelectedList.length, false);
+
+          int subcategoryIndex =
+              subcategoryList.indexWhere((item) => item.id == subcategoryId);
+
+          if (kDebugMode) {
+            print('Subcategory index by ID: $subcategoryIndex');
+          }
+
+          if (subcategoryIndex != -1) {
+            isSubCategorySelectedList[subcategoryIndex] = true;
+            selectedCountSubCategory.value = 1;
+            selectedSubCategoryId.value = subcategoryList[subcategoryIndex].id!;
+
+            if (kDebugMode) {
+              print('Subcategory selected, ID: ${selectedSubCategoryId.value}');
+            }
+          } else {
+            if (kDebugMode) {
+              print('Subcategory not found in the list');
+            }
+          }
+        } else {
+          if (kDebugMode) {
+            print('Invalid subcategoryId');
+          }
+        }
+      } else {
+        if (kDebugMode) {
+          print("Error: ${response.body}");
+        }
+      }
+    } catch (error) {
+      if (kDebugMode) {
+        print("Error: $error");
+      }
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   Future<void> getClassified() async {
     isLoading(true);
 
@@ -140,52 +294,6 @@ class ManageClasifiedController extends GetxController {
           var data = jsonDecode(response.body);
           if (kDebugMode) {
             print("API Response Data: $data");
-          }
-          var getClassifiedEntity = GetClassifiedEntity.fromJson(data);
-
-          // Extract the ID from the fetchClassifieds response
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          String? lastClassifiedId = prefs.getString('lastClassifiedId');
-
-          // Find the classified with matching ID
-          var classified = getClassifiedEntity.data?.firstWhere(
-            (classified) => classified.id.toString() == lastClassifiedId,
-            orElse: () => GetClassifiedData(),
-          );
-
-          if (classified != null) {
-            title.value.text = classified.title ?? '';
-            companyName.value.text = classified.company ?? '';
-            discription.value.text = classified.description ?? '';
-            url.value.text = classified.website ?? '';
-            userImage.value = classified.imagePath ?? '';
-            city.value.text = classified.city ?? '';
-            state.value.text = classified.state ?? '';
-            country.value.text = classified.country ?? '';
-
-            // Update Category List
-            isCategorySelectedList.clear();
-            for (var category in categorylist) {
-              bool isSelected = classified.category == (category.name ?? '');
-              isCategorySelectedList.add(isSelected);
-            }
-
-            // Update SubCategory List
-            isSubCategorySelectedList.clear();
-            for (var subcategory in subcategoryList) {
-              bool isSelected =
-                  classified.subcategory == (subcategory.name ?? '');
-              isSubCategorySelectedList.add(isSelected);
-            }
-
-            if (kDebugMode) {
-              print('Success: $getClassifiedEntity');
-            }
-          } else {
-            if (kDebugMode) {
-              print(
-                  "No classified found matching the ID from fetchClassifieds");
-            }
           }
         } else {
           if (kDebugMode) {
@@ -257,7 +365,6 @@ class ManageClasifiedController extends GetxController {
         if (kDebugMode) {
           print('manage classified data: $responseData');
         }
-        // Update controllers with fetched data
 
         // Combine city, state, and country to form location
         location.value.text = _formatLocation(
@@ -265,17 +372,6 @@ class ManageClasifiedController extends GetxController {
           state.value.text,
           country.value.text,
         );
-
-        // Store ID using SharedPreferences
-        final List<ManageClassifiedData> classifiedData =
-            classifiedEntity.data!;
-        if (classifiedData.isNotEmpty) {
-          final String classifiedId = classifiedData[0].id.toString();
-          await prefs.setString('lastClassifiedId', classifiedId);
-          if (kDebugMode) {
-            print('Last Classified ID stored: $classifiedId');
-          }
-        }
 
         // Update state with fetched data
         if (page == 1) {
@@ -350,23 +446,26 @@ class ManageClasifiedController extends GetxController {
   }
 
   void toggleCategorySelected(int index, BuildContext context) {
-    // Unselect all categories
-    for (int i = 0; i < isCategorySelectedList.length; i++) {
-      isCategorySelectedList[i] = false;
-    }
+    if (!isCategorySelectedList[index]) {
+      // Deselect all categories first
+      for (int i = 0; i < isCategorySelectedList.length; i++) {
+        isCategorySelectedList[i] = false;
+      }
 
-    // Select the current category
-    isCategorySelectedList[index] = true;
-    selectedCountCategory.value = 1;
-    selectedCategoryId.value = categorylist[index].id!;
+      // Select the category at the specified index
+      isCategorySelectedList[index] = true;
 
-    // Fetch subcategory list for the selected category
-    fetchSubCategoryList(categorylist[index].id!);
+      // Update the selected count and category ID
+      selectedCountCategory.value = 1;
+      selectedCategoryId.value = categorylist[index].id!;
+
+      // Fetch subcategories for the selected category
+      fetchSubCategoryList(categorylist[index].id!);
+    } else {}
   }
 
   TextEditingController getSelectedCategoryTextController() {
-    List<String> selectedCategoryNames = [];
-
+    selectedCategoryNames.clear(); // Clear the list before adding new values
     for (int i = 0; i < isCategorySelectedList.length; i++) {
       if (isCategorySelectedList[i]) {
         selectedCategoryNames.add(categorylist[i].name ?? '');
@@ -437,17 +536,23 @@ class ManageClasifiedController extends GetxController {
   }
 
   void toggleSubCategorySelected(int index) {
-    bool isCurrentlySelected = isSubCategorySelectedList[index];
+    if (index >= 0 && index < isSubCategorySelectedList.length) {
+      bool isCurrentlySelected = isSubCategorySelectedList[index];
 
-    // Unselect all subcategories
-    for (int i = 0; i < isSubCategorySelectedList.length; i++) {
-      isSubCategorySelectedList[i] = false;
+      // Unselect all subcategories
+      for (int i = 0; i < isSubCategorySelectedList.length; i++) {
+        isSubCategorySelectedList[i] = false;
+      }
+
+      // Toggle the selected state of the current subcategory
+      isSubCategorySelectedList[index] = !isCurrentlySelected;
+      selectedCountSubCategory.value = isSubCategorySelectedList[index] ? 1 : 0;
+      selectedSubCategoryId.value = subcategoryList[index].id!;
+    } else {
+      if (kDebugMode) {
+        print("Invalid subcategory index: $index");
+      }
     }
-
-    // Toggle the selected state of the current subcategory
-    isSubCategorySelectedList[index] = !isCurrentlySelected;
-    selectedCountSubCategory.value = isSubCategorySelectedList[index] ? 1 : 0;
-    selectedSubCategoryId.value = subcategoryList[index].id!;
   }
 
   TextEditingController getSelectedSubCategoryTextController() {
@@ -508,7 +613,8 @@ class ManageClasifiedController extends GetxController {
 
   //updateclassified
 
-  Future<void> updateClassified({required File? imageFile, context}) async {
+  Future<void> updateClassified(
+       File? imageFile, int classifiedId, context) async {
     isLoading(true);
     String device = '';
     if (Platform.isAndroid) {
@@ -521,7 +627,6 @@ class ManageClasifiedController extends GetxController {
     }
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
-    String? classifiedId = prefs.getString('lastClassifiedId');
 
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
@@ -550,25 +655,19 @@ class ManageClasifiedController extends GetxController {
         request.fields['classified_id'] = classifiedId.toString();
 
         if (kDebugMode) {
-          print('classified id ; $classifiedId');
+          print('classified id: $classifiedId');
         }
 
         if (imageFile != null) {
+          if (kDebugMode) {
+            print('Attaching new image file: ${imageFile.path}');
+          }
           request.files.add(
             http.MultipartFile(
               'image',
               imageFile.readAsBytes().asStream(),
               imageFile.lengthSync(),
               filename: 'image.jpg',
-              contentType: MediaType('image', 'jpg'),
-            ),
-          );
-        } else {
-          request.files.add(
-            http.MultipartFile.fromString(
-              'image',
-              'dummy_image.jpg',
-              filename: 'dummy_image.jpg',
               contentType: MediaType('image', 'jpg'),
             ),
           );
@@ -582,9 +681,7 @@ class ManageClasifiedController extends GetxController {
           if (kDebugMode) {
             print("Response body: $jsonBody");
           }
-          // Check if all fields in the response are true (you may need to adjust this condition based on the actual response structure)
           if (jsonBody['status'] == 1) {
-            // All fields are true, navigate back
             toastification.show(
               context: context,
               alignment: Alignment.bottomCenter,
@@ -600,9 +697,8 @@ class ManageClasifiedController extends GetxController {
               primaryColor: Colors.green,
               title: const Text('Classified Updated Successfully'),
             );
-
-            fetchClassifieds();
             Get.back();
+            fetchClassifieds();
           } else if (jsonBody['status'] == 0) {
             toastification.show(
               context: context,
@@ -770,7 +866,6 @@ class ManageClasifiedController extends GetxController {
 
           if (status == 1) {
             showToastverifedborder(message, context);
-            // Remove the classified from the list if the deletion was successful
             classifiedList.removeAt(index);
           } else {
             showToasterrorborder(

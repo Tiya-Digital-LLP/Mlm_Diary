@@ -78,35 +78,82 @@ class _AddPostState extends State<AddPost> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                const Align(
-                  alignment: Alignment.topLeft,
-                  child: Text('Comments'),
+                Obx(() {
+                  return Align(
+                    alignment: Alignment.topLeft,
+                    child: Row(
+                      children: [
+                        ClipOval(
+                          clipBehavior: Clip.hardEdge,
+                          child: controller.userImage.value.isNotEmpty
+                              ? Image.network(
+                                  controller.userImage.value,
+                                  fit: BoxFit.cover,
+                                  width: 50,
+                                  height: 50,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    if (kDebugMode) {
+                                      print("Error loading image: $error");
+                                    }
+                                    return Container(
+                                      color: Colors.grey[200],
+                                      child: const Icon(
+                                        Icons.account_circle,
+                                        size: 50,
+                                        color: Colors.grey,
+                                      ),
+                                    );
+                                  },
+                                )
+                              : Container(
+                                  color: Colors.grey[200],
+                                  child: const Icon(
+                                    Icons.account_circle,
+                                    size: 50,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                        ),
+                        8.sbw,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              controller.userName.toString(),
+                              style: textStyleW700(
+                                  size.width * 0.038, AppColors.blackText),
+                            ),
+                            Text(
+                              controller.iammlm.toString(),
+                              style: textStyleW400(
+                                  size.width * 0.032, AppColors.blackText),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+                5.sbh,
+                const Divider(
+                  color: Colors.grey,
+                  thickness: 1,
                 ),
+                5.sbh,
                 Obx(() => TextField(
                       controller: controller.comments.value,
-                      maxLines: 10,
+                      minLines: 10,
+                      maxLines: null,
                       decoration: InputDecoration(
-                        border: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: controller.postError.value
-                                ? Colors.red
-                                : Colors.green,
-                          ),
+                        border: InputBorder.none,
+                        counterText: "",
+                        labelText: "Add Description",
+                        filled: true,
+                        fillColor: Colors.transparent,
+                        labelStyle: TextStyle(
+                          color: Colors.grey[600],
                         ),
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: controller.postError.value
-                                ? Colors.red
-                                : Colors.green,
-                          ),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: controller.postError.value
-                                ? Colors.red
-                                : Colors.green,
-                          ),
-                        ),
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
                       ),
                       onChanged: (value) {
                         controller.validateComments(value);

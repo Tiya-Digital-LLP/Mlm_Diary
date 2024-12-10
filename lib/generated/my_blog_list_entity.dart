@@ -36,7 +36,7 @@ class MyBlogListData {
 	int? userId = 0;
 	String? subcategory = '';
 	int? status = 0;
-	String? website = '';
+	dynamic website;
 	String? urlcomponent = '';
 	int? totallike = 0;
 	int? totalbookmark = 0;
@@ -47,6 +47,10 @@ class MyBlogListData {
 	bool? bookmarkedByUser = false;
 	@JSONField(name: "user_data")
 	MyBlogListDataUserData? userData;
+	@JSONField(name: "category_name")
+	String? categoryName = '';
+	@JSONField(name: "subcategory_name")
+	String? subcategoryName = '';
 	@JSONField(name: "image_path")
 	String? imagePath = '';
 

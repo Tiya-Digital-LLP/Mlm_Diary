@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:html_unescape/html_unescape.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/home/home/custom/sign_up_dialog.dart';
@@ -15,13 +13,14 @@ import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
-import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NewsCard extends StatefulWidget {
   final String userImage;
   final String userName;
   final String postTitle;
+  final String postCaption;
+
   final String dateTime;
   final int likedCount;
   final int newsId;
@@ -39,6 +38,7 @@ class NewsCard extends StatefulWidget {
     required this.userImage,
     required this.userName,
     required this.postTitle,
+    required this.postCaption,
     required this.dateTime,
     required this.likedCount,
     required this.newsId,
@@ -87,13 +87,7 @@ class _NewsCardState extends State<NewsCard> {
 
   void toggleLike() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? apiToken = prefs.getString(Constants.accessToken);
-
-    if (apiToken == null) {
-      // ignore: use_build_context_synchronously
-      showSignupDialog(context);
-      return;
-    }
+    prefs.getString(Constants.accessToken);
     bool newLikedValue = !isLiked.value;
     isLiked.value = newLikedValue;
     likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
@@ -109,13 +103,7 @@ class _NewsCardState extends State<NewsCard> {
 
   void toggleBookmark() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? apiToken = prefs.getString(Constants.accessToken);
-
-    if (apiToken == null) {
-      // ignore: use_build_context_synchronously
-      showSignupDialog(context);
-      return;
-    }
+    prefs.getString(Constants.accessToken);
     bool newBookmarkedValue = !isBookmarked.value;
     isBookmarked.value = newBookmarkedValue;
     bookmarkCount.value =
@@ -128,7 +116,6 @@ class _NewsCardState extends State<NewsCard> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    String decodedPostTitle = HtmlUnescape().convert(widget.postTitle);
 
     return Obx(() {
       return Container(
@@ -142,19 +129,15 @@ class _NewsCardState extends State<NewsCard> {
           children: [
             Row(
               children: [
-                ClipOval(
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(100),
                   child: CachedNetworkImage(
                     imageUrl: widget.image,
-                    height: 60.0,
-                    width: 60.0,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => CustomLottieAnimation(
-                      child: Lottie.asset(
-                        Assets.lottieLottie,
-                      ),
-                    ),
+                    height: 60,
+                    width: 60,
+                    fit: BoxFit.fill,
                     errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
+                        Image.asset(Assets.imagesAdminlogo),
                   ),
                 ),
                 const SizedBox(
@@ -168,7 +151,7 @@ class _NewsCardState extends State<NewsCard> {
                         Text(
                           widget.userName,
                           style: textStyleW700(
-                              size.width * 0.043, AppColors.blackText),
+                              size.width * 0.038, AppColors.blackText),
                         ),
                       ],
                     ),
@@ -184,43 +167,57 @@ class _NewsCardState extends State<NewsCard> {
             SizedBox(
               height: size.height * 0.01,
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: Text(
-                  widget.postTitle,
-                  style: textStyleW700(size.width * 0.040, AppColors.blackText),
-                ),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Html(
+                data: widget.postTitle,
+                style: {
+                  "html": Style(
+                    lineHeight: const LineHeight(1),
+                    maxLines: 1,
+                    fontFamily: fontFamily,
+                    fontWeight: FontWeight.w700,
+                    fontSize: FontSize.medium,
+                    color: AppColors.blackText,
+                  ),
+                },
               ),
             ),
             Align(
               alignment: Alignment.topLeft,
               child: Html(
-                data: decodedPostTitle,
+                data: widget.postCaption,
                 style: {
                   "html": Style(
+                    lineHeight: const LineHeight(1.2),
                     maxLines: 2,
+                    fontFamily: fontFamily,
+                    fontWeight: FontWeight.w500,
+                    fontSize: FontSize.small,
+                    color: AppColors.blackText,
+                    textOverflow: TextOverflow.ellipsis,
                   ),
                 },
               ),
             ),
-            SizedBox(
-              height: size.height * 0.01,
-            ),
-            Container(
-              height: size.height * 0.28,
-              width: size.width,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: CachedNetworkImage(
-                imageUrl: widget.userImage,
-                height: 97,
-                width: 105,
-                fit: BoxFit.fill,
-                placeholder: (context, url) => const SizedBox(),
-                errorWidget: (context, url, error) => const Icon(Icons.error),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              child: SizedBox(
+                height: size.height * 0.26,
+                width: size.width,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12.0),
+                  child: Image.network(
+                    widget.userImage,
+                    fit: BoxFit.fill,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        Assets.imagesLogo,
+                        fit: BoxFit.fill,
+                      );
+                    },
+                  ),
+                ),
               ),
             ),
             SizedBox(
@@ -269,14 +266,7 @@ class _NewsCardState extends State<NewsCard> {
                           onTap: () async {
                             SharedPreferences prefs =
                                 await SharedPreferences.getInstance();
-                            String? apiToken =
-                                prefs.getString(Constants.accessToken);
-
-                            if (apiToken == null) {
-                              // ignore: use_build_context_synchronously
-                              showSignupDialog(context);
-                              return;
-                            }
+                            prefs.getString(Constants.accessToken);
                             showFullScreenDialogNews(
                               // ignore: use_build_context_synchronously
                               context,
@@ -332,9 +322,6 @@ class _NewsCardState extends State<NewsCard> {
                           height: size.height * 0.032,
                         ),
                       ),
-                    ),
-                    const SizedBox(
-                      width: 7,
                     ),
                     const SizedBox(
                       width: 10,

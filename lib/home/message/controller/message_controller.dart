@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/get_my_chat_detail_entity.dart';
 import 'package:mlmdiary/generated/get_my_chat_history_entity.dart';
+import 'package:mlmdiary/menu/controller/profile_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -17,6 +18,7 @@ class MessageController extends GetxController {
       <GetMyChatDetailMychatoverviewData>[].obs;
   final TextEditingController _search = TextEditingController();
   Rx<TextEditingController> msg = TextEditingController().obs;
+  final ProfileController profileController = Get.put(ProfileController());
 
   TextEditingController get searchController => _search;
   var chatId = ''.obs;
@@ -27,7 +29,7 @@ class MessageController extends GetxController {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
 
-    if (apiToken == null || apiToken.isEmpty) {
+    if (apiToken.toString().isEmpty) {
       isLoading(false);
       if (kDebugMode) {
         print('No API token found');
@@ -53,6 +55,8 @@ class MessageController extends GetxController {
           if (getMyChatHistoryEntity.mychatoverview != null &&
               getMyChatHistoryEntity.mychatoverview!.data != null) {
             chatList.assignAll(getMyChatHistoryEntity.mychatoverview!.data!);
+            profileController.fetchUserProfile();
+
             if (kDebugMode) {
               print('Fetched ${chatList.length} chats');
             }
@@ -82,6 +86,7 @@ class MessageController extends GetxController {
   }
 
   Future<void> fetchMyChatDetail(String chatId) async {
+    // Start loading
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -119,7 +124,9 @@ class MessageController extends GetxController {
 
           if (getMyChatHistoryEntity.mychatoverview != null &&
               getMyChatHistoryEntity.mychatoverview!.data != null) {
-            // Clear the list before assigning new data
+            // Clear the old chat details list before adding new data
+            profileController.fetchUserProfile();
+
             chatdetailsList.clear();
             chatdetailsList
                 .assignAll(getMyChatHistoryEntity.mychatoverview!.data!);
@@ -150,6 +157,7 @@ class MessageController extends GetxController {
         print('Error: $e');
       }
     } finally {
+      // Stop loading after data fetch
       isLoading(false);
     }
   }
@@ -163,18 +171,10 @@ class MessageController extends GetxController {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
 
-    if (apiToken == null) {
-      if (kDebugMode) {
-        print('Error: API Token is null');
-      }
-      isLoading(false);
-      return;
-    }
-
     try {
       var uri = Uri.parse('${Constants.baseUrl}${Constants.sendchat}');
       var request = http.MultipartRequest('POST', uri);
-      request.fields['api_token'] = apiToken;
+      request.fields['api_token'] = apiToken.toString();
       request.fields['toid'] = toId;
       request.fields['msg'] = msg.value.text;
       request.fields['chat_id'] = chatId ?? '';
@@ -266,22 +266,16 @@ class MessageController extends GetxController {
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonBody = json.decode(response.body);
 
-        // Check if response contains 'success' or 'error' keys
-        if (jsonBody.containsKey('success')) {
-          // Handle success scenario
+        // Check if response contains 'status' key with value 1
+        if (jsonBody['status'] == 1) {
+          fetchMyChat();
           if (kDebugMode) {
-            print('Chat Delete successfully');
-          }
-        } else if (jsonBody.containsKey('error')) {
-          // Handle failure scenario
-          if (kDebugMode) {
-            print('Failed to Delete chat: ${jsonBody['error']}');
+            print('Chat Deleted successfully');
           }
         } else {
-          // Handle unexpected response format
+          // Handle failure scenario
           if (kDebugMode) {
-            print('Failed to Delete chat: Unexpected response format');
-            print('Response body: $jsonBody');
+            print('Failed to Delete chat: ${jsonBody['message']}');
           }
         }
       } else {

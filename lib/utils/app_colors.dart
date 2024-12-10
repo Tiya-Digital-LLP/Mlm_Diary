@@ -13,4 +13,7 @@ class AppColors {
   static Color bottomIcon = const Color(0xFF292D32);
   static Color background = const Color(0xFFf5f6f6);
   static Color searchbar = const Color(0xFFF1F5F6);
+  static Color grayHighforshimmer = Colors.grey[300]!;
+  static Color grayLightforshimmer = Colors.grey[200]!;
+  static Color boxShadowforshimmer = const Color(0x3FA6A6A6);
 }

@@ -57,24 +57,10 @@ class _ChatCardState extends State<ChatCard> {
         children: [
           ClipOval(
             child: Image.network(
-              '${widget.userImage.toString()}?${DateTime.now().millisecondsSinceEpoch}',
+              widget.userImage.toString(),
               height: 60.0,
               width: 60.0,
               fit: BoxFit.cover,
-              loadingBuilder: (BuildContext context, Widget child,
-                  ImageChunkEvent? loadingProgress) {
-                if (loadingProgress == null) {
-                  return child;
-                }
-                return Center(
-                  child: CircularProgressIndicator(
-                    value: loadingProgress.expectedTotalBytes != null
-                        ? loadingProgress.cumulativeBytesLoaded /
-                            (loadingProgress.expectedTotalBytes ?? 1)
-                        : null,
-                  ),
-                );
-              },
               errorBuilder: (context, error, stackTrace) {
                 return Image.asset(
                   Assets.imagesAdminlogo,
@@ -136,7 +122,6 @@ class _ChatCardState extends State<ChatCard> {
                         ),
                         onPressed: () => LogoutDialog.show(context, () async {
                           widget.controller.deleteChat(chatId: widget.chatId);
-                          widget.controller.fetchMyChat();
                         }),
                       ),
                     ],

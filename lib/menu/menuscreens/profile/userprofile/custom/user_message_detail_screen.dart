@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/home/message/controller/message_controller.dart';
+import 'package:mlmdiary/menu/controller/profile_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -21,6 +22,8 @@ class UserMessageDetailScreen extends StatefulWidget {
 
 class _UserMessageDetailScreenState extends State<UserMessageDetailScreen> {
   final MessageController messageController = Get.put(MessageController());
+  final ProfileController profileController = Get.put(ProfileController());
+
   late PostTimeFormatter postTimeFormatter;
   dynamic post;
   final ScrollController _scrollController = ScrollController();
@@ -145,101 +148,92 @@ class _UserMessageDetailScreenState extends State<UserMessageDetailScreen> {
                     controller: _scrollController,
                     itemCount: messageController.chatdetailsList.length,
                     reverse: true,
-                    itemBuilder: (context, index) {
+                    itemBuilder: (_, index) {
                       final message = messageController.chatdetailsList[index];
-                      final isSender = message.fromid == currentUserID;
+                      final isSender =
+                          message.fromid.toString() == currentUserID.toString();
+                      final userImage = isSender
+                          ? profileController.userImage
+                          : post['profile_pic'];
 
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
+                      return Align(
+                        alignment: isSender
+                            ? Alignment.centerRight
+                            : Alignment.centerLeft,
                         child: Row(
                           mainAxisAlignment: isSender
                               ? MainAxisAlignment.end
                               : MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            if (!isSender &&
-                                post != null &&
-                                post['imageUrl'] != null) ...[
+                            if (!isSender)
                               ClipOval(
                                 child: Image.network(
-                                  post['imageUrl'],
+                                  userImage ?? '',
                                   height: 30.0,
                                   width: 30.0,
                                   fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      const Icon(Icons.error),
+                                  errorBuilder: (_, __, ___) =>
+                                      const Icon(Icons.error, size: 30),
                                 ),
                               ),
-                              10.sbw,
-                            ],
-                            Column(
-                              crossAxisAlignment: isSender
-                                  ? CrossAxisAlignment.end
-                                  : CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    color: isSender
-                                        ? AppColors.primaryColor
-                                        : AppColors.primaryColor
-                                            .withOpacity(0.8),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment: isSender
-                                        ? CrossAxisAlignment.end
-                                        : CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        message.msg ?? '',
-                                        style: TextStyle(
+                            Flexible(
+                              child: Container(
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 8),
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: isSender
+                                      ? AppColors.primaryColor
+                                      : AppColors.grey.withOpacity(0.8),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: isSender
+                                      ? CrossAxisAlignment.end
+                                      : CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      message.msg ?? '',
+                                      style: textStyleW400(14, AppColors.white),
+                                    ),
+                                    5.sbh,
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          postTimeFormatter.formatPostTime(
+                                              message.updatedAt!),
+                                          style: textStyleW400(
+                                            12,
+                                            AppColors.white.withOpacity(0.7),
+                                          ),
+                                        ),
+                                        6.sbw,
+                                        Icon(
+                                          message.readStatus == 0
+                                              ? Icons.check
+                                              : Icons.done_all,
+                                          size: 16,
                                           color: AppColors.white,
                                         ),
-                                      ),
-                                      5.sbh,
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          Text(
-                                            postTimeFormatter.formatPostTime(
-                                                message.updatedAt!),
-                                            style: textStyleW400(
-                                              size.width * 0.03,
-                                              AppColors.white.withOpacity(0.7),
-                                            ),
-                                          ),
-                                          6.sbw,
-                                          Icon(
-                                            message.readStatus == 0
-                                                ? Icons.check
-                                                : Icons.done_all,
-                                            size: 16,
-                                            color: AppColors.white,
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
-                              ],
+                              ),
                             ),
-                            if (isSender &&
-                                post != null &&
-                                post['profile_pic'] != null) ...[
-                              10.sbw,
+                            if (isSender)
                               ClipOval(
                                 child: Image.network(
-                                  post['profile_pic'],
+                                  userImage ?? '',
                                   height: 30.0,
                                   width: 30.0,
                                   fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      const Icon(Icons.error),
+                                  errorBuilder: (_, __, ___) =>
+                                      const Icon(Icons.error, size: 30),
                                 ),
                               ),
-                            ],
                           ],
                         ),
                       );
@@ -250,71 +244,40 @@ class _UserMessageDetailScreenState extends State<UserMessageDetailScreen> {
             ),
           ),
           Container(
-            height: 80,
             color: AppColors.white,
-            child: Column(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            child: Row(
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.primaryColor.withOpacity(0.4),
-                              spreadRadius: 2,
-                              blurRadius: 5,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: SvgPicture.asset(
-                          Assets.svgPlusIcon,
-                          height: 40,
+                SvgPicture.asset(
+                  Assets.svgPlusIcon,
+                  height: 40,
+                ),
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.searchbar,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      child: TextField(
+                        controller: messageController.msg.value,
+                        decoration: const InputDecoration(
+                          hintText: 'Write a message...',
+                          border: InputBorder.none,
                         ),
                       ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: AppColors.searchbar,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16.0),
-                              child: TextField(
-                                controller: messageController.msg.value,
-                                decoration: const InputDecoration(
-                                  hintText: 'Write your answer here',
-                                  border: InputBorder.none,
-                                ),
-                                onChanged: (value) {},
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.send, color: AppColors.primaryColor),
-                        onPressed: () async {
-                          await messageController.sendChat(
-                            toId: post['toid'].toString(),
-                            chatId: messageController
-                                .chatId.value, // Use the stored chatId
-                          );
-                          // Scroll to the bottom after sending a message
-                          if (_scrollController.hasClients) {
-                            _scrollController.jumpTo(
-                                _scrollController.position.maxScrollExtent);
-                          }
-                        },
-                      ),
-                    ],
+                    ),
                   ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.send, color: AppColors.primaryColor),
+                  onPressed: () async {
+                    await messageController.sendChat(
+                      toId: post['toid'].toString(),
+                      chatId: messageController.chatId.value,
+                    );
+                  },
                 ),
               ],
             ),

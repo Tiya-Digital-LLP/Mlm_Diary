@@ -4,7 +4,6 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
@@ -18,7 +17,6 @@ import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
-import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:share_plus/share_plus.dart';
 
 class QuestionFavouriteCard extends StatefulWidget {
@@ -161,11 +159,6 @@ class _FavouritrCardState extends State<QuestionFavouriteCard> {
                     height: 60,
                     width: 60,
                     fit: BoxFit.fill,
-                    placeholder: (context, url) => CustomLottieAnimation(
-                      child: Lottie.asset(
-                        Assets.lottieLottie,
-                      ),
-                    ),
                     errorWidget: (context, url, error) =>
                         const Icon(Icons.error),
                   ),
@@ -217,7 +210,7 @@ class _FavouritrCardState extends State<QuestionFavouriteCard> {
                 data: widget.postTitle,
                 style: {
                   "html": Style(
-                    maxLines: 2,
+                    maxLines: 1,
                     fontFamily: fontFamily,
                     fontWeight: FontWeight.w700,
                     fontSize: FontSize.medium,
@@ -290,9 +283,7 @@ class _FavouritrCardState extends State<QuestionFavouriteCard> {
                         child: GestureDetector(
                           onTap: togleBookmark,
                           child: SvgPicture.asset(
-                            isBookmarked
-                                ? Assets.svgCheckBookmark
-                                : Assets.svgSavePost,
+                            Assets.svgCheckBookmark,
                             height: size.height * 0.032,
                           ),
                         ),

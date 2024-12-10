@@ -94,13 +94,7 @@ class _FavouritrCardState extends State<DatabaseHomeCard> {
 
   Future<void> togleBookmark() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? apiToken = prefs.getString(Constants.accessToken);
-
-    if (apiToken == null) {
-      // ignore: use_build_context_synchronously
-      showSignupDialog(context);
-      return;
-    }
+    prefs.getString(Constants.accessToken);
     setState(() {
       isBookmarked = !isBookmarked;
       widget.controller.toggleBookmark(
@@ -147,20 +141,6 @@ class _FavouritrCardState extends State<DatabaseHomeCard> {
                       child: Image.network(
                         widget.postImage,
                         fit: BoxFit.fill,
-                        loadingBuilder: (BuildContext context, Widget child,
-                            ImageChunkEvent? loadingProgress) {
-                          if (loadingProgress == null) {
-                            return child;
-                          }
-                          return Center(
-                            child: CircularProgressIndicator(
-                              value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded /
-                                      (loadingProgress.expectedTotalBytes ?? 1)
-                                  : null,
-                            ),
-                          );
-                        },
                         errorBuilder: (context, error, stackTrace) {
                           return Image.asset(
                             Assets.imagesAdminlogo,
@@ -211,7 +191,7 @@ class _FavouritrCardState extends State<DatabaseHomeCard> {
                       Text(
                         widget.immlm,
                         style: textStyleW700(
-                            size.width * 0.038, AppColors.blackText),
+                            size.width * 0.032, AppColors.blackText),
                       ),
                       Row(
                         children: [

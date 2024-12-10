@@ -2,11 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/classified/custom/custom_commment.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/manage_classified_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/manageclassified/controller/manage_classified_controller.dart';
+import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -14,8 +14,9 @@ import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 // ignore: library_prefixes
 import 'package:html/parser.dart' as htmlParser;
-import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:text_link/text_link.dart';
+
+import '../profile/userprofile/controller/user_profile_controller.dart';
 
 class ManageClassifiedDetailsScreen extends StatefulWidget {
   const ManageClassifiedDetailsScreen({required Key key}) : super(key: key);
@@ -32,7 +33,8 @@ class _ClassidiedDetailsScreenState
   final post = Get.arguments as ManageClassifiedData;
 
   PostTimeFormatter postTimeFormatter = PostTimeFormatter();
-
+  final UserProfileController userProfileController =
+      Get.put(UserProfileController());
 // like
   late RxBool isLiked;
   late RxInt likeCount;
@@ -105,49 +107,58 @@ class _ClassidiedDetailsScreenState
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 8),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            backgroundColor: const Color(0XFFCCC9C9),
-                            radius: size.width * 0.07,
-                            child: ClipOval(
-                              child: Image.asset(
-                                '${post.userData!.imagePath.toString()}?${DateTime.now().millisecondsSinceEpoch}',
-                                height: 100,
-                                width: 100,
-                                fit: BoxFit.cover,
+                      child: InkWell(
+                        onTap: () async {
+                          Get.toNamed(Routes.userprofilescreen, arguments: {
+                            'user_id': post.userData!.id ?? 0,
+                          });
+                          await userProfileController.fetchUserAllPost(
+                            1,
+                            post.userData!.id.toString(),
+                          );
+                        },
+                        child: Row(
+                          children: [
+                            ClipOval(
+                              child: CachedNetworkImage(
+                                imageUrl: post.userData!.imagePath.toString(),
+                                height: 60,
+                                width: 60,
+                                fit: BoxFit.fill,
+                                errorWidget: (context, url, error) =>
+                                    const Icon(Icons.error),
                               ),
                             ),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    post.userData!.name ?? '',
-                                    style: textStyleW700(size.width * 0.043,
-                                        AppColors.blackText),
-                                  ),
-                                  const SizedBox(
-                                    width: 07,
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                postTimeFormatter
-                                    .formatPostTime(post.datecreated ?? ''),
-                                style: textStyleW400(
-                                  size.width * 0.035,
-                                  AppColors.blackText.withOpacity(0.5),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      post.userData!.name ?? '',
+                                      style: textStyleW700(size.width * 0.043,
+                                          AppColors.blackText),
+                                    ),
+                                    const SizedBox(
+                                      width: 07,
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            ],
-                          )
-                        ],
+                                Text(
+                                  postTimeFormatter
+                                      .formatPostTime(post.datecreated ?? ''),
+                                  style: textStyleW400(
+                                    size.width * 0.035,
+                                    AppColors.blackText.withOpacity(0.5),
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -169,12 +180,6 @@ class _ClassidiedDetailsScreenState
                           height: 97,
                           width: 105,
                           fit: BoxFit.fill,
-                          placeholder: (context, url) => Center(
-                              child: CustomLottieAnimation(
-                            child: Lottie.asset(
-                              Assets.lottieLottie,
-                            ),
-                          )),
                           errorWidget: (context, url, error) =>
                               const Icon(Icons.error),
                         ),

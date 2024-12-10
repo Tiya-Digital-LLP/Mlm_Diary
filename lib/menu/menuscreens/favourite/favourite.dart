@@ -152,6 +152,16 @@ class _FavouriteState extends State<Favourite> {
                       ));
                     }
                     final post = controller.favouriteList[index];
+                    String location =
+                        '${post.city ?? ''}, ${post.state ?? ''}, ${post.country ?? ''}'
+                            .trim();
+                    if (location == ', ,') {
+                      location = 'N/A';
+                    }
+                    String? plan =
+                        post.plan?.isNotEmpty == true ? post.plan : 'N/A';
+                    String? immlm =
+                        post.immlm?.isNotEmpty == true ? post.immlm : 'N/A';
                     Widget cardWidget;
                     switch (post.type) {
                       case 'classified':
@@ -265,9 +275,9 @@ class _FavouriteState extends State<Favourite> {
                           userImage: post.userData?.imagePath ?? '',
                           userName: post.title ?? '',
                           postTitle: post.title ?? '',
-                          postLocation: post.city ?? '',
-                          immlm: post.immlm ?? '',
-                          plan: post.plan ?? '',
+                          postLocation: location,
+                          immlm: immlm.toString(),
+                          plan: plan.toString(),
                           postImage: post.imageUrl ?? '',
                           dateTime: post.bookmarkDate ?? '',
                           controller: controller,

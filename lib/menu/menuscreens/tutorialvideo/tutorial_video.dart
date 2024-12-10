@@ -3,13 +3,11 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/firstscreen/home_controller.dart';
-import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/tutorialvideo/controller/tutorial_video_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_video_shimmer.dart';
 import 'package:mlmdiary/widgets/custon_test_app_bar.dart';
-import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class TutorialVideo extends StatefulWidget {
@@ -58,11 +56,15 @@ class _TutorialVideoState extends State<TutorialVideo> {
         () => Stack(
           children: [
             if (controller.isLoading.value)
-              Center(
-                child: CustomLottieAnimation(
-                  child: Lottie.asset(
-                    Assets.lottieLottie,
-                  ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: ListView.builder(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  itemCount: 4,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    return const VideoShimmerLoader(width: 175, height: 300);
+                  },
                 ),
               ),
             if (!controller.isLoading.value)

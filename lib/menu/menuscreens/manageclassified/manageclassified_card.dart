@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/classified/custom/custom_commment.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/manageclassified/controller/manage_classified_controller.dart';
@@ -11,7 +10,6 @@ import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
-import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:mlmdiary/widgets/logout_dialog/custom_logout_dialog.dart';
 
 class ManageClassifiedCard extends StatefulWidget {
@@ -96,15 +94,11 @@ class _ManageClassifiedCardState extends State<ManageClassifiedCard> {
               children: [
                 // Replace Image.asset with CachedNetworkImage
                 CachedNetworkImage(
-                  imageUrl: widget.userImage,
+                  imageUrl:
+                      '${widget.userImage}?t=${DateTime.now().millisecondsSinceEpoch}',
                   height: 97,
                   width: 105,
                   fit: BoxFit.fill,
-                  placeholder: (context, url) => CustomLottieAnimation(
-                    child: Lottie.asset(
-                      Assets.lottieLottie,
-                    ),
-                  ),
                   errorWidget: (context, url, error) => const Icon(Icons.error),
                 ),
                 10.sbw,
@@ -315,7 +309,9 @@ class _ManageClassifiedCardState extends State<ManageClassifiedCard> {
                               );
                             },
                           );
-                        } else {}
+                        } else {
+                          //
+                        }
                       },
                       child: Ink(
                         height: size.height * 0.030,
@@ -326,7 +322,12 @@ class _ManageClassifiedCardState extends State<ManageClassifiedCard> {
                     10.sbw,
                     InkWell(
                       onTap: () {
-                        Get.toNamed(Routes.manageClassifiedplusicon);
+                        Get.toNamed(
+                          Routes.manageClassifiedplusicon,
+                          arguments: widget.classifiedId,
+                        );
+                        widget.controller.fetchClassifiedDetail(
+                            widget.classifiedId, context);
                       },
                       child: Ink(
                         height: size.height * 0.030,

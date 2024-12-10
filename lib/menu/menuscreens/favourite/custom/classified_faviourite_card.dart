@@ -151,7 +151,7 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
         child: Column(
           children: [
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 if (widget.userImage.isNotEmpty &&
                     Uri.tryParse(widget.userImage)?.hasAbsolutePath == true)
@@ -225,29 +225,18 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
                       ),
-                      child: Image.network(
-                        widget.postImage,
-                        fit: BoxFit.fill,
-                        loadingBuilder: (BuildContext context, Widget child,
-                            ImageChunkEvent? loadingProgress) {
-                          if (loadingProgress == null) {
-                            return child;
-                          }
-                          return Center(
-                            child: CircularProgressIndicator(
-                              value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded /
-                                      (loadingProgress.expectedTotalBytes ?? 1)
-                                  : null,
-                            ),
-                          );
-                        },
-                        errorBuilder: (context, error, stackTrace) {
-                          return Image.asset(
-                            Assets.imagesLogo,
-                            fit: BoxFit.fill,
-                          );
-                        },
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12.0),
+                        child: Image.network(
+                          widget.postImage,
+                          fit: BoxFit.fill,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Image.asset(
+                              Assets.imagesLogo,
+                              fit: BoxFit.fill,
+                            );
+                          },
+                        ),
                       ),
                     ),
                   10.sbw,
@@ -255,27 +244,38 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          widget.postTitle,
-                          style: TextStyle(
-                            fontFamily: fontFamily,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.blackText,
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Html(
+                            data: widget.postTitle,
+                            style: {
+                              "html": Style(
+                                lineHeight: const LineHeight(1),
+                                maxLines: 1,
+                                fontFamily: fontFamily,
+                                fontWeight: FontWeight.w700,
+                                fontSize: FontSize.medium,
+                                color: AppColors.blackText,
+                              ),
+                            },
                           ),
-                          maxLines: 2,
-                          textAlign: TextAlign.left,
                         ),
-                        Html(
-                          data: widget.postCaption,
-                          style: {
-                            "html": Style(
-                              maxLines: 2,
-                              fontFamily: fontFamily,
-                              fontWeight: FontWeight.w700,
-                              fontSize: FontSize.medium,
-                              color: AppColors.blackText,
-                            ),
-                          },
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Html(
+                            data: widget.postCaption,
+                            style: {
+                              "html": Style(
+                                lineHeight: const LineHeight(1.2),
+                                maxLines: 2,
+                                fontFamily: fontFamily,
+                                fontWeight: FontWeight.w500,
+                                fontSize: FontSize.small,
+                                color: AppColors.blackText,
+                                textOverflow: TextOverflow.ellipsis,
+                              ),
+                            },
+                          ),
                         ),
                       ],
                     ),
@@ -370,9 +370,7 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
                         child: GestureDetector(
                           onTap: togleBookmark,
                           child: SvgPicture.asset(
-                            isBookmarked
-                                ? Assets.svgCheckBookmark
-                                : Assets.svgSavePost,
+                            Assets.svgCheckBookmark,
                             height: size.height * 0.032,
                           ),
                         ),

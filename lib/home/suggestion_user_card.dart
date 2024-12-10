@@ -53,7 +53,7 @@ class _SuggetionUserCardState extends State<SuggetionUserCard> {
     final Size size = MediaQuery.of(context).size;
     return Container(
       width: 200,
-      height: 280,
+      height: 265,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
@@ -63,7 +63,7 @@ class _SuggetionUserCardState extends State<SuggetionUserCard> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
-            flex: 5,
+            flex: 6,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -91,7 +91,7 @@ class _SuggetionUserCardState extends State<SuggetionUserCard> {
                   widget.name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: textStyleW700(size.width * 0.043, AppColors.blackText),
+                  style: textStyleW700(size.width * 0.038, AppColors.blackText),
                   textAlign: TextAlign.center,
                 ),
                 5.sbh,

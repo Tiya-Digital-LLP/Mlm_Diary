@@ -29,7 +29,9 @@ import 'dart:io' as io;
 import 'package:path_provider/path_provider.dart';
 
 class ManageNewsPlusIcon extends StatefulWidget {
-  const ManageNewsPlusIcon({super.key});
+  final int newsId;
+
+  const ManageNewsPlusIcon({super.key, required this.newsId});
 
   @override
   State<ManageNewsPlusIcon> createState() => _ManageNewsPlusIconState();
@@ -40,14 +42,6 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
   final ImagePicker _picker = ImagePicker();
   Rx<io.File?> file = Rx<io.File?>(null);
   static List<io.File> imagesList = <io.File>[];
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchMyNews();
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,47 +77,48 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
                         controller.titleValidation(context);
                         controller.isTitleTyping.value = true;
                       },
-                      height: 65,
+                      height: 58,
                     ),
                   ),
                   10.sbh,
                   Obx(
                     () => BorderContainer(
                       isError: controller.categoryError.value,
-                      height: 60,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: TextField(
-                          controller:
-                              controller.getSelectedCategoryTextController(),
-                          readOnly: true,
-                          onTap: () {
-                            log("BEFORE ==  ${controller.categoryError.value}");
+                      height: 58,
+                      child: TextField(
+                        controller:
+                            controller.getSelectedCategoryTextController(),
+                        readOnly: true,
+                        onTap: () {
+                          log("BEFORE ==  ${controller.categoryError.value}");
 
-                            showSelectCategory(
-                              context,
-                              size,
-                              controller,
-                              controller.categorylist,
-                            );
-                            controller.mlmCategoryValidation();
+                          showSelectCategory(
+                            context,
+                            size,
+                            controller,
+                            controller.categorylist,
+                          );
+                          controller.mlmCategoryValidation();
 
-                            log("AFTER == ${controller.categoryError.value}");
-                          },
-                          style: textStyleW500(
-                              size.width * 0.04, AppColors.blackText),
-                          cursorColor: AppColors.blackText,
-                          decoration: InputDecoration(
-                              hintText: "Select Category",
-                              contentPadding: const EdgeInsets.only(
-                                top: 3,
-                              ),
-                              border: InputBorder.none,
-                              suffixIcon: Icon(
-                                Icons.arrow_drop_down,
-                                color: AppColors.blackText,
-                              )),
-                        ),
+                          log("AFTER == ${controller.categoryError.value}");
+                        },
+                        style: textStyleW500(
+                            size.width * 0.04, AppColors.blackText),
+                        cursorColor: AppColors.blackText,
+                        decoration: InputDecoration(
+                            labelText: "Select Category",
+                            labelStyle: const TextStyle(
+                              color: Colors.black,
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 5.5,
+                              horizontal: 2,
+                            ),
+                            border: InputBorder.none,
+                            suffixIcon: Icon(
+                              Icons.arrow_drop_down,
+                              color: AppColors.blackText,
+                            )),
                       ),
                     ),
                   ),
@@ -131,38 +126,41 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
                   Obx(
                     () => BorderContainer(
                       isError: controller.subCategoryError.value,
-                      height: 60,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: TextField(
-                          controller:
-                              controller.getSelectedSubCategoryTextController(),
-                          readOnly: true,
-                          onTap: () {
-                            log("BEFORE ==  ${controller.subCategoryError.value}");
+                      height: 58,
+                      child: TextField(
+                        controller:
+                            controller.getSelectedSubCategoryTextController(),
+                        readOnly: true,
+                        onTap: () {
+                          log("BEFORE ==  ${controller.subCategoryError.value}");
 
-                            showSelectSubCategory(
-                              context,
-                              size,
-                              controller,
-                              controller.subcategoryList,
-                            );
-                            controller.mlmsubCategoryValidation();
+                          showSelectSubCategory(
+                            context,
+                            size,
+                            controller,
+                            controller.subcategoryList,
+                          );
+                          controller.mlmsubCategoryValidation();
 
-                            log("AFTER == ${controller.subCategoryError.value}");
-                          },
-                          style: textStyleW500(
-                              size.width * 0.04, AppColors.blackText),
-                          cursorColor: AppColors.blackText,
-                          decoration: InputDecoration(
-                              hintText: "Select Sub Category",
-                              contentPadding: const EdgeInsets.only(top: 3),
-                              border: InputBorder.none,
-                              suffixIcon: Icon(
-                                Icons.arrow_drop_down,
-                                color: AppColors.blackText,
-                              )),
-                        ),
+                          log("AFTER == ${controller.subCategoryError.value}");
+                        },
+                        style: textStyleW500(
+                            size.width * 0.04, AppColors.blackText),
+                        cursorColor: AppColors.blackText,
+                        decoration: InputDecoration(
+                            labelText: "Select Sub Category",
+                            labelStyle: const TextStyle(
+                              color: Colors.black,
+                            ),
+                            border: InputBorder.none,
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 5.5,
+                              horizontal: 2,
+                            ),
+                            suffixIcon: Icon(
+                              Icons.arrow_drop_down,
+                              color: AppColors.blackText,
+                            )),
                       ),
                     ),
                   ),
@@ -194,16 +192,16 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
                         controller.urlValidation();
                         controller.isUrlTyping.value = true;
                       },
-                      height: 65,
+                      height: 58,
                     ),
                   ),
                   20.sbh,
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(13.05),
-                    child: Stack(
-                      children: [
-                        Obx(
-                          () => GestureDetector(
+                  Obx(
+                    () => ClipRRect(
+                      borderRadius: BorderRadius.circular(13.05),
+                      child: Stack(
+                        children: [
+                          GestureDetector(
                             child: file.value != null
                                 ? Image.file(
                                     file.value!,
@@ -213,7 +211,7 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
                                   )
                                 : controller.userImage.value.isNotEmpty
                                     ? Image.network(
-                                        controller.userImage.value,
+                                        '${controller.userImage.value}?t=${DateTime.now().millisecondsSinceEpoch}',
                                         height: 100,
                                         width: double.infinity,
                                         fit: BoxFit.cover,
@@ -231,32 +229,31 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
                                   builder: (context) => bottomsheet(context));
                             },
                           ),
-                        ),
-                        Visibility(
-                          visible: file.value == null ? false : true,
-                          child: Positioned(
-                              bottom: -5,
-                              left: 0,
-                              right: 0,
-                              child: Container(
-                                width: 40,
-                                height: 40,
-                                margin: const EdgeInsets.all(2.0),
-                                child: Card(
-                                    shape: const CircleBorder(),
-                                    child: GestureDetector(
-                                      child: Icon(Icons.delete,
-                                          color: AppColors.redText),
-                                      onTap: () {
-                                        setState(() {
-                                          imagesList.remove(file.value);
-                                          file.value = null;
-                                        });
-                                      },
-                                    )),
-                              )),
-                        )
-                      ],
+                          Visibility(
+                            visible: file.value != null,
+                            child: Positioned(
+                                top: 0,
+                                right: 0,
+                                child: Container(
+                                  width: 40,
+                                  height: 40,
+                                  margin: const EdgeInsets.all(2.0),
+                                  child: Card(
+                                      shape: const CircleBorder(),
+                                      child: GestureDetector(
+                                        child: Icon(Icons.delete,
+                                            color: AppColors.redText),
+                                        onTap: () {
+                                          setState(() {
+                                            imagesList.remove(file.value);
+                                            file.value = null;
+                                          });
+                                        },
+                                      )),
+                                )),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                   10.sbh,
@@ -323,7 +320,7 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
       showToasterrorborder("Please Upload Photo", context);
     } else {
       try {
-        await controller.updateNews(imageFile: file.value);
+        await controller.updateNews(file.value, widget.newsId, context);
       } catch (e) {
         if (kDebugMode) {
           print("Error submitting news: $e");

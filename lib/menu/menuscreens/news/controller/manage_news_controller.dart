@@ -55,8 +55,8 @@ class ManageNewsController extends GetxController {
   var isEndOfData = false.obs;
 
   //like
-  var likedStatusMap = <int, bool>{};
-  var likeCountMap = <int, int>{};
+  RxMap<int, bool> likedStatusMap = <int, bool>{}.obs;
+  RxMap<int, int> likeCountMap = <int, int>{}.obs;
 
   //bookmark
   var bookmarkStatusMap = <int, bool>{};
@@ -102,7 +102,6 @@ class ManageNewsController extends GetxController {
   void onInit() {
     super.onInit();
     fetchCategoryList();
-    fetchMyNews();
     getNews(1);
     scrollController.addListener(() {
       if (scrollController.position.pixels ==
@@ -116,12 +115,8 @@ class ManageNewsController extends GetxController {
 
   void resetSelections() {
     // Reset category and subcategory selections
-    for (int i = 0; i < isCategorySelectedList.length; i++) {
-      isCategorySelectedList[i] = false;
-    }
-    for (int i = 0; i < isSubCategorySelectedList.length; i++) {
-      isSubCategorySelectedList[i] = false;
-    }
+    selectedCategoryId.value = 0;
+    selectedSubCategoryId.value = 0;
     getNews(1);
   }
 
@@ -237,10 +232,6 @@ class ManageNewsController extends GetxController {
 
         final List<MyNewsData> myNewsData = myNewsEntity.data ?? [];
 
-        if (newsId != null) {
-          await prefs.setInt('saved_news_id', newsId);
-        }
-
         // Assign or add data to myBlogList based on the page number
         if (page == 1) {
           myNewsList.assignAll(myNewsData);
@@ -248,38 +239,7 @@ class ManageNewsController extends GetxController {
           myNewsList.addAll(myNewsData);
         }
 
-        // Update UI with appropriate blog data
-        if (newsId != null) {
-          // Find the selected blog by articleId
-          MyNewsData? selectedBlog;
-          for (var blog in myNewsData) {
-            if (blog.id == newsId) {
-              selectedBlog = blog;
-              break;
-            }
-          }
-
-          if (selectedBlog != null) {
-            updateUIWithBlogData(selectedBlog);
-          } else {
-            // Show error message if blog with articleId is not found
-            if (context != null) {
-              // ignore: use_build_context_synchronously
-              showToasterrorborder("Blog with ID $newsId not found", context);
-            }
-          }
-        } else {
-          // If articleId is not provided, update UI with the first news
-          if (myNewsData.isNotEmpty) {
-            updateUIWithBlogData(myNewsData[0]);
-          } else {
-            // Show error message if no data found
-            if (context != null) {
-              // ignore: use_build_context_synchronously
-              showToasterrorborder("No data found", context);
-            }
-          }
-        }
+        updateUIWithBlogData(myNewsData.first);
       } else {
         // Show error message if response status code is not 200
         if (context != null) {
@@ -304,16 +264,73 @@ class ManageNewsController extends GetxController {
     url.value.text = blogData.website ?? '';
     userImage.value = blogData.imagePath ?? '';
 
-    isCategorySelectedList.clear();
-    for (var category in categorylist) {
-      bool isSelected = blogData.category == (category.id.toString());
-      isCategorySelectedList.add(isSelected);
+// Handle category selection (using categoryId as int)
+    int? categoryId = int.tryParse(blogData.category ?? '');
+
+    if (categoryId != null) {
+      if (kDebugMode) {
+        print('Category ID selected: $categoryId');
+      }
+
+      isCategorySelectedList.fillRange(0, isCategorySelectedList.length, false);
+      int index = categorylist.indexWhere((item) => item.id == categoryId);
+
+      if (kDebugMode) {
+        print('Category index by ID: $index');
+      }
+
+      if (index != -1) {
+        isCategorySelectedList[index] = true;
+        selectedCountCategory.value = 1;
+        selectedCategoryId.value = categorylist[index].id!;
+
+        if (kDebugMode) {
+          print('Category selected, ID: ${selectedCategoryId.value}');
+        }
+
+        fetchSubCategoryList(categorylist[index].id!);
+      }
+    } else {
+      if (kDebugMode) {
+        print('Invalid categoryId');
+      }
     }
 
-    isSubCategorySelectedList.clear();
-    for (var subcategory in subcategoryList) {
-      bool isSelected = blogData.subcategory == (subcategory.id.toString());
-      isSubCategorySelectedList.add(isSelected);
+    // Handle subcategory selection (using subcategoryId as int)
+    int? subcategoryId = int.tryParse(blogData.subcategory ?? '');
+
+    if (subcategoryId != null) {
+      if (kDebugMode) {
+        print('Subcategory ID selected: $subcategoryId');
+      }
+
+      isSubCategorySelectedList.fillRange(
+          0, isSubCategorySelectedList.length, false);
+
+      int subcategoryIndex =
+          subcategoryList.indexWhere((item) => item.id == subcategoryId);
+
+      if (kDebugMode) {
+        print('Subcategory index by ID: $subcategoryIndex');
+      }
+
+      if (subcategoryIndex != -1) {
+        isSubCategorySelectedList[subcategoryIndex] = true;
+        selectedCountSubCategory.value = 1;
+        selectedSubCategoryId.value = subcategoryList[subcategoryIndex].id!;
+
+        if (kDebugMode) {
+          print('Subcategory selected, ID: ${selectedSubCategoryId.value}');
+        }
+      } else {
+        if (kDebugMode) {
+          print('Subcategory not found in the list');
+        }
+      }
+    } else {
+      if (kDebugMode) {
+        print('Invalid subcategoryId');
+      }
     }
   }
 
@@ -589,7 +606,7 @@ class ManageNewsController extends GetxController {
 
   //updateclassified
 
-  Future<void> updateNews({required File? imageFile, context}) async {
+  Future<void> updateNews(File? imageFile, int newsId, context) async {
     isLoading(true);
     String device = '';
     if (Platform.isAndroid) {
@@ -602,7 +619,6 @@ class ManageNewsController extends GetxController {
     }
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
-    int? newsId = prefs.getInt('saved_news_id');
 
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
@@ -627,21 +643,15 @@ class ManageNewsController extends GetxController {
         }
 
         if (imageFile != null) {
+          if (kDebugMode) {
+            print('Attaching new image file: ${imageFile.path}');
+          }
           request.files.add(
             http.MultipartFile(
               'photo',
               imageFile.readAsBytes().asStream(),
               imageFile.lengthSync(),
               filename: 'image.jpg',
-              contentType: MediaType('image', 'jpg'),
-            ),
-          );
-        } else {
-          request.files.add(
-            http.MultipartFile.fromString(
-              'photo',
-              'dummy_image.jpg',
-              filename: 'dummy_image.jpg',
               contentType: MediaType('image', 'jpg'),
             ),
           );
@@ -672,8 +682,8 @@ class ManageNewsController extends GetxController {
               primaryColor: Colors.green,
               title: const Text('News Updated Successfully'),
             );
-            fetchMyNews();
             Get.back();
+            fetchMyNews();
           } else if (jsonBody['status'] == 0) {
             toastification.show(
               context: context,
@@ -739,10 +749,10 @@ class ManageNewsController extends GetxController {
           // Update the liked status and like count based on the message
           if (message == 'You have liked this News') {
             likedStatusMap[newsId] = true;
-            likeCountMap[newsId] = (likeCountMap[newsId] ?? 0) + 1;
+            likeCountMap[newsId] = (likeCountMap[newsId] ?? 0);
           } else if (message == 'You have unliked this News') {
             likedStatusMap[newsId] = false;
-            likeCountMap[newsId] = (likeCountMap[newsId] ?? 0) - 1;
+            likeCountMap[newsId] = (likeCountMap[newsId] ?? 0);
           }
 
           showToastverifedborder(message!, context);
@@ -870,7 +880,7 @@ class ManageNewsController extends GetxController {
     await likedNewsUser(newsId, context);
   }
 
-  Future<void> getNews(int page, {int? newsId}) async {
+  Future<void> getNews(int page) async {
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -899,7 +909,6 @@ class ManageNewsController extends GetxController {
         request.fields['search'] = search.value.text;
         request.fields['category'] = selectedCategoryId.value.toString();
         request.fields['subcategory'] = selectedSubCategoryId.value.toString();
-        request.fields['news_id'] = newsId?.toString() ?? '';
 
         if (kDebugMode) {
           print('Request URL: ${request.url}');
@@ -910,15 +919,7 @@ class ManageNewsController extends GetxController {
         final response = await http.Response.fromStream(streamedResponse);
 
         if (response.statusCode == 200) {
-          if (kDebugMode) {
-            print('Raw Response Body: ${response.body}');
-          }
-
           var data = jsonDecode(response.body);
-
-          if (kDebugMode) {
-            print('Parsed JSON Data: $data');
-          }
 
           var getNewsEntity = GetNewsListEntity.fromJson(data);
 
@@ -928,19 +929,9 @@ class ManageNewsController extends GetxController {
 
           if (getNewsEntity.data != null && getNewsEntity.data!.isNotEmpty) {
             if (page == 1) {
-              if (newsId == null) {
-                newsList.value = getNewsEntity.data!;
-              } else {
-                newsList.value = [getNewsEntity.data!.first];
-              }
+              newsList.value = getNewsEntity.data!;
             } else {
-              if (newsId == null) {
-                newsList.addAll(getNewsEntity.data!);
-              } else {
-                if (getNewsEntity.data!.isNotEmpty) {
-                  newsList.add(getNewsEntity.data!.first);
-                }
-              }
+              newsList.addAll(getNewsEntity.data!);
             }
             isEndOfData(false);
           } else {
@@ -1133,13 +1124,13 @@ class ManageNewsController extends GetxController {
           var data = jsonDecode(response.body);
           var addCommentNewsEntity = AddCommentNewsEntity.fromJson(data);
           if (data['status'] == 0) {
-          showToasterrorborder(data['message'], context);
-        } else {
-          getCommentNews(1, newsId, context);
-          if (kDebugMode) {
-            print('Success: $addCommentNewsEntity');
+            showToasterrorborder(data['message'], context);
+          } else {
+            getCommentNews(1, newsId, context);
+            if (kDebugMode) {
+              print('Success: $addCommentNewsEntity');
+            }
           }
-        }
 
           if (kDebugMode) {
             print('Success: $addCommentNewsEntity');

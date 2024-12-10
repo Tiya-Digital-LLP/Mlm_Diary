@@ -74,7 +74,7 @@ class _AddClassifiedState extends State<AddQuestionAnswer> {
                         controller.titleValidation(context);
                         controller.isTitleTyping.value = true;
                       },
-                      height: 60,
+                      height: 58,
                     ),
                   ),
                   10.sbh,
@@ -97,36 +97,34 @@ class _AddClassifiedState extends State<AddQuestionAnswer> {
                     () => BorderContainer(
                       isError: controller.categoryError.value,
                       byDefault: !controller.isCategoryTyping.value,
-                      height: 60,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: TextField(
-                          controller:
-                              controller.getSelectedCategoryTextController(),
-                          readOnly: true,
-                          onTap: () {
-                            showSelectCategory(
-                              context,
-                              size,
-                              controller,
-                              controller.categorylist,
-                            );
-                            controller.mlmCategoryValidation();
-                          },
-                          style: textStyleW500(
-                              size.width * 0.04, AppColors.blackText),
-                          cursorColor: AppColors.blackText,
-                          decoration: InputDecoration(
-                              hintText: "Select Category",
-                              contentPadding: const EdgeInsets.only(
-                                top: 3,
-                              ),
-                              border: InputBorder.none,
-                              suffixIcon: Icon(
-                                Icons.arrow_drop_down,
-                                color: AppColors.blackText,
-                              )),
-                        ),
+                      height: 58,
+                      child: TextField(
+                        controller:
+                            controller.getSelectedCategoryTextController(),
+                        readOnly: true,
+                        onTap: () {
+                          showSelectCategory(
+                            context,
+                            size,
+                            controller,
+                            controller.categorylist,
+                          );
+                          controller.mlmCategoryValidation();
+                        },
+                        style: textStyleW500(
+                            size.width * 0.04, AppColors.blackText),
+                        cursorColor: AppColors.blackText,
+                        decoration: InputDecoration(
+                            labelText: "Select Category",
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 5.5,
+                              horizontal: 2,
+                            ),
+                            border: InputBorder.none,
+                            suffixIcon: Icon(
+                              Icons.arrow_drop_down,
+                              color: AppColors.blackText,
+                            )),
                       ),
                     ),
                   ),
@@ -135,34 +133,34 @@ class _AddClassifiedState extends State<AddQuestionAnswer> {
                     () => BorderContainer(
                       isError: controller.subCategoryError.value,
                       byDefault: !controller.isSubCategoryTyping.value,
-                      height: 60,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: TextField(
-                          controller:
-                              controller.getSelectedSubCategoryTextController(),
-                          readOnly: true,
-                          onTap: () {
-                            showSelectSubCategory(
-                              context,
-                              size,
-                              controller,
-                              controller.subcategoryList,
-                            );
-                            controller.mlmsubCategoryValidation();
-                          },
-                          style: textStyleW500(
-                              size.width * 0.04, AppColors.blackText),
-                          cursorColor: AppColors.blackText,
-                          decoration: InputDecoration(
-                              hintText: "Select Sub Category",
-                              contentPadding: const EdgeInsets.only(top: 3),
-                              border: InputBorder.none,
-                              suffixIcon: Icon(
-                                Icons.arrow_drop_down,
-                                color: AppColors.blackText,
-                              )),
-                        ),
+                      height: 58,
+                      child: TextField(
+                        controller:
+                            controller.getSelectedSubCategoryTextController(),
+                        readOnly: true,
+                        onTap: () {
+                          showSelectSubCategory(
+                            context,
+                            size,
+                            controller,
+                            controller.subcategoryList,
+                          );
+                          controller.mlmsubCategoryValidation();
+                        },
+                        style: textStyleW500(
+                            size.width * 0.04, AppColors.blackText),
+                        cursorColor: AppColors.blackText,
+                        decoration: InputDecoration(
+                            labelText: "Select Sub Category",
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 5.5,
+                              horizontal: 2,
+                            ),
+                            border: InputBorder.none,
+                            suffixIcon: Icon(
+                              Icons.arrow_drop_down,
+                              color: AppColors.blackText,
+                            )),
                       ),
                     ),
                   ),
@@ -211,8 +209,6 @@ class _AddClassifiedState extends State<AddQuestionAnswer> {
       showToasterrorborder("Please Select Sub Category", context);
     } else if (controller.isCategorySelectedList.contains(true)) {
       await controller.addQuestion(imageFile: file.value);
-      
-
     } else {
       //
     }

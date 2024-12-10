@@ -91,7 +91,7 @@ class NotificationHandler {
             Get.toNamed(Routes.newsdetailsnotification, arguments: {
               'id': postId,
             });
-            await manageNewsController.getNews(1, newsId: postId);
+            await manageNewsController.getNews(1);
 
             break;
 

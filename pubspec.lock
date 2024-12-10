@@ -625,7 +625,7 @@ packages:
     source: hosted
     version: "4.6.6"
   google_api_headers:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: google_api_headers
       sha256: "59ebb30d12fea5a77525b8e66cf3cec9593a9433dc0f0168497ebca1d3142311"
@@ -1056,6 +1056,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.2"
+  pinput:
+    dependency: "direct main"
+    description:
+      name: pinput
+      sha256: "7bf9aa7d0eeb3da9f7d49d2087c7bc7d36cd277d2e94cc31c6da52e1ebb048d0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.0"
   platform:
     dependency: transitive
     description:
@@ -1168,6 +1176,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.1"
+  shimmer:
+    dependency: "direct main"
+    description:
+      name: shimmer
+      sha256: "5f88c883a22e9f9f299e5ba0e4f7e6054857224976a5d9f839d4ebdc94a14ac9"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -1261,38 +1277,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
-  text_to_speech:
-    dependency: "direct main"
-    description:
-      name: text_to_speech
-      sha256: f9adeb82bf0c912fd7f0ce656b1283e49b0869f9247bf865859dcf0186ed32f3
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.2.3"
-  text_to_speech_macos:
-    dependency: transitive
-    description:
-      name: text_to_speech_macos
-      sha256: "11d1b7d4eff579743b04d371e86d17bebd599f7d998b9fa4cf07a5821cda3b6d"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.1"
-  text_to_speech_platform_interface:
-    dependency: transitive
-    description:
-      name: text_to_speech_platform_interface
-      sha256: "9d637f0ae36e296f42a0e555bd65ba4c64a28a7c26a2752fdae62f6d78b6c2d0"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.3"
-  text_to_speech_web:
-    dependency: transitive
-    description:
-      name: text_to_speech_web
-      sha256: "47d006c0a377c9eb3f6bcca4d92b3ece2c67f5eb31b9416727cc81b92c36d6d1"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.2"
   textfield_tags:
     dependency: "direct main"
     description:
@@ -1325,6 +1309,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.2"
+  universal_platform:
+    dependency: transitive
+    description:
+      name: universal_platform
+      sha256: "64e16458a0ea9b99260ceb5467a214c1f298d647c659af1bff6d3bf82536b1ec"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   url_launcher:
     dependency: "direct main"
     description:

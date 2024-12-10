@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/manage_blog_card.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
-import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
+import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_shimmer_classified.dart';
 import 'package:mlmdiary/widgets/remimaining_count_controller./remaining_count.dart';
 
 class ManageBlog extends StatefulWidget {
@@ -50,14 +49,21 @@ class _ManageBlogState extends State<ManageBlog> {
         onRefresh: _refreshData,
         child: Container(
           color: AppColors.background,
-          child: Obx(() {
+          child: 
+          Obx(() {
             if (controller.isLoading.value && controller.myBlogList.isEmpty) {
-              return Center(
-                  child: CustomLottieAnimation(
-                child: Lottie.asset(
-                  Assets.lottieLottie,
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: ListView.builder(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  itemCount: 1,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    return const CustomShimmerClassified(
+                        width: 175, height: 240);
+                  },
                 ),
-              ));
+              );
             }
 
             if (controller.myBlogList.isEmpty) {
@@ -80,8 +86,7 @@ class _ManageBlogState extends State<ManageBlog> {
               itemCount: controller.myBlogList.length,
               itemBuilder: (context, index) {
                 final post = controller.myBlogList[index];
-                final image =
-                    '${post.imagePath.toString()}?${DateTime.now().millisecondsSinceEpoch}';
+
                 return Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -98,7 +103,7 @@ class _ManageBlogState extends State<ManageBlog> {
                       userName: post.userData?.name ?? '',
                       postTitle: post.title ?? '',
                       postCaption: post.description ?? '',
-                      postImage: image,
+                      postImage: post.imagePath ?? '',
                       dateTime: post.createdDate ?? '',
                       viewcounts: post.pgcnt ?? 0,
                       controller: controller,

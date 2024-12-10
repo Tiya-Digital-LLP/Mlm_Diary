@@ -11,6 +11,7 @@ import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
 import 'package:mlmdiary/notificationhandle/notification_handler.dart';
+import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
@@ -138,11 +139,8 @@ class _MyAppState extends State<MyApp> {
   Future<void> _requestAPNSToken() async {
     if (defaultTargetPlatform == TargetPlatform.iOS ||
         defaultTargetPlatform == TargetPlatform.macOS) {
-      String? apnsToken = await _firebaseMessaging.getAPNSToken();
-      if (apnsToken != null) {
-        _getToken();
-        _subscribeToTopic('mlm');
-      }
+      _getToken();
+      _subscribeToTopic('mlm');
     } else {
       _getToken();
       _subscribeToTopic('mlm');
@@ -212,6 +210,10 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
+        bottomSheetTheme: BottomSheetThemeData(
+          backgroundColor: AppColors.background,
+        ),
+        dialogBackgroundColor: Colors.white,
       ),
       getPages: AppPages.routes,
       navigatorObservers: <NavigatorObserver>[observer],

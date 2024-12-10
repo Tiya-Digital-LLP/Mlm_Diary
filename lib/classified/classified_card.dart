@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/classified/classified_like_list_content.dart';
@@ -12,13 +14,14 @@ import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:html_unescape/html_unescape.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ClassifiedCard extends StatefulWidget {
   final String userImage;
   final String userName;
   final String postTitle;
+  final String postCaption;
+
   final String dateTime;
   final int likedCount;
   final int classifiedId;
@@ -37,6 +40,7 @@ class ClassifiedCard extends StatefulWidget {
     required this.userImage,
     required this.userName,
     required this.postTitle,
+    required this.postCaption,
     required this.dateTime,
     required this.likedCount,
     required this.classifiedId,
@@ -91,13 +95,7 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
 
   void toggleLike() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? apiToken = prefs.getString(Constants.accessToken);
-
-    if (apiToken == null) {
-      // ignore: use_build_context_synchronously
-      showSignupDialog(context);
-      return;
-    }
+    prefs.getString(Constants.accessToken);
     bool newLikedValue = !isLiked.value;
     isLiked.value = newLikedValue;
     likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
@@ -107,13 +105,7 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
 
   void toggleBookmark() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? apiToken = prefs.getString(Constants.accessToken);
-
-    if (apiToken == null) {
-      // ignore: use_build_context_synchronously
-      showSignupDialog(context);
-      return;
-    }
+    prefs.getString(Constants.accessToken);
     bool newBookmarkedValue = !isBookmarked.value;
     isBookmarked.value = newBookmarkedValue;
     bookmarkCount.value =
@@ -125,7 +117,6 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    String decodedPostTitle = HtmlUnescape().convert(widget.postTitle);
 
     return Obx(() {
       return Container(
@@ -143,12 +134,16 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
           children: [
             Row(
               children: [
-                CircleAvatar(
-                  backgroundImage: widget.image.isNotEmpty &&
-                          Uri.tryParse(widget.image)?.hasAbsolutePath == true
-                      ? NetworkImage(widget.image)
-                      : null,
-                  child: widget.image.isEmpty ? const Icon(Icons.person) : null,
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(100),
+                  child: CachedNetworkImage(
+                    imageUrl: widget.image,
+                    height: 60,
+                    width: 60,
+                    fit: BoxFit.fill,
+                    errorWidget: (context, url, error) =>
+                        Image.asset(Assets.imagesAdminlogo),
+                  ),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
@@ -158,7 +153,7 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
                       Text(
                         widget.userName,
                         style: textStyleW700(
-                          size.width * 0.043,
+                          size.width * 0.038,
                           AppColors.blackText,
                         ),
                         maxLines: 1,
@@ -196,35 +191,59 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
             SizedBox(height: size.height * 0.01),
             Align(
               alignment: Alignment.topLeft,
-              child: Text(
-                widget.postTitle,
-                style: textStyleW700(size.width * 0.040, AppColors.blackText),
+              child: Html(
+                data: widget.postTitle,
+                style: {
+                  "html": Style(
+                    lineHeight: const LineHeight(1),
+                    maxLines: 1,
+                    fontFamily: fontFamily,
+                    fontWeight: FontWeight.w700,
+                    fontSize: FontSize.medium,
+                    color: AppColors.blackText,
+                  ),
+                },
               ),
             ),
             Align(
               alignment: Alignment.topLeft,
-              child: Text(
-                decodedPostTitle,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+              child: Html(
+                data: widget.postCaption,
+                style: {
+                  "html": Style(
+                    lineHeight: const LineHeight(1.2),
+                    maxLines: 2,
+                    fontFamily: fontFamily,
+                    fontWeight: FontWeight.w500,
+                    fontSize: FontSize.small,
+                    color: AppColors.blackText,
+                    textOverflow: TextOverflow.ellipsis,
+                  ),
+                },
               ),
             ),
-            if (widget.userImage.isNotEmpty &&
-                Uri.tryParse(widget.userImage)?.hasAbsolutePath == true)
-              Container(
-                height: size.height * 0.28,
+            // if (widget.userImage.isNotEmpty &&
+            //     Uri.tryParse(widget.userImage)?.hasAbsolutePath == true)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              child: SizedBox(
+                height: size.height * 0.26,
                 width: size.width,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: Image.network(
-                  widget.userImage,
-                  fit: BoxFit.fill,
-                  errorBuilder: (context, error, stackTrace) {
-                    return const SizedBox();
-                  },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12.0),
+                  child: Image.network(
+                    widget.userImage,
+                    fit: BoxFit.fill,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        Assets.imagesLogo,
+                        fit: BoxFit.fill,
+                      );
+                    },
+                  ),
                 ),
               ),
+            ),
             SizedBox(height: size.height * 0.017),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -264,14 +283,7 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
                           onTap: () async {
                             SharedPreferences prefs =
                                 await SharedPreferences.getInstance();
-                            String? apiToken =
-                                prefs.getString(Constants.accessToken);
-
-                            if (apiToken == null) {
-                              // ignore: use_build_context_synchronously
-                              showSignupDialog(context);
-                              return;
-                            }
+                            prefs.getString(Constants.accessToken);
                             showFullScreenDialog(
                               // ignore: use_build_context_synchronously
                               context,

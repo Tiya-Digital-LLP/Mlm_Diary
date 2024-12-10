@@ -13,6 +13,7 @@ import 'package:mlmdiary/generated/edit_comment_entity.dart';
 import 'package:mlmdiary/generated/follow_user_entity.dart';
 import 'package:mlmdiary/generated/get_post_entity.dart';
 import 'package:mlmdiary/generated/get_user_post_comment_entity.dart';
+import 'package:mlmdiary/generated/get_user_profile_entity.dart';
 import 'package:mlmdiary/generated/my_post_list_entity.dart';
 import 'package:mlmdiary/generated/post_bookmark_entity.dart';
 import 'package:mlmdiary/generated/post_like_entity.dart';
@@ -26,10 +27,13 @@ import 'package:toastification/toastification.dart';
 
 class EditPostController extends GetxController {
   Rx<TextEditingController> comments = TextEditingController().obs;
+  Rx<TextEditingController> editcomments = TextEditingController().obs;
+
   var isLoading = false.obs;
   RxList<MyPostListData> myPostList = <MyPostListData>[].obs;
   RxList<PostLikeListData> postLikeList = RxList<PostLikeListData>();
   RxList<GetPostData> getpostList = <GetPostData>[].obs;
+  var userProfile = GetUserProfileEntity().obs;
 
   // Post comment
   RxList<GetUserPostCommentData> getCommentList =
@@ -37,10 +41,15 @@ class EditPostController extends GetxController {
   Rx<TextEditingController> commment = TextEditingController().obs;
   var isEndOfData = false.obs;
   RxString userImage = ''.obs;
+  RxString userImage1 = ''.obs;
+
+  RxString userPostImage = ''.obs;
+  RxString userName = ''.obs;
+  RxString iammlm = ''.obs;
 
   //like
-  var likedStatusMap = <int, bool>{};
-  var likeCountMap = <int, int>{};
+  RxMap<int, bool> likedStatusMap = <int, bool>{}.obs;
+  RxMap<int, int> likeCountMap = <int, int>{}.obs;
 
   //bookmark
   var bookmarkStatusMap = <int, bool>{};
@@ -53,12 +62,65 @@ class EditPostController extends GetxController {
   //bookmarkProfile
   var followProfileStatusMap = <int, bool>{}.obs;
   var followProfileCountMap = <int, int>{}.obs;
+  RxBool postError = false.obs;
 
   @override
   void onInit() {
     super.onInit();
     fetchMyPost();
     fetchPost(1);
+    fetchUserProfile();
+  }
+
+  void validateComments(String text) {
+    if (text.isEmpty) {
+      postError(true);
+    } else {
+      postError(false);
+    }
+  }
+
+  Future<void> fetchUserProfile() async {
+    isLoading(true);
+
+    final prefs = await SharedPreferences.getInstance();
+    final apiToken = prefs.getString(Constants.accessToken);
+
+    if (apiToken == null || apiToken.isEmpty) {
+      isLoading(false);
+
+      return;
+    }
+
+    try {
+      final response = await http.post(
+        Uri.parse('${Constants.baseUrl}${Constants.userprofile}'),
+        body: {'api_token': apiToken},
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        final userProfileEntity = GetUserProfileEntity.fromJson(responseData);
+        userProfile(userProfileEntity);
+        userPostImage.value = userProfileEntity.userProfile!.imagePath ?? '';
+        userName.value = userProfileEntity.userProfile!.name ?? '';
+        iammlm.value = userProfileEntity.userProfile!.immlm ?? '';
+
+        if (kDebugMode) {
+          print('Account Settings Data: $responseData');
+        }
+      } else {
+        if (kDebugMode) {
+          print("Error: ${response.body}");
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error: $e");
+      }
+    } finally {
+      isLoading(false);
+    }
   }
 
   Future<void> addPost(
@@ -104,7 +166,6 @@ class EditPostController extends GetxController {
               imageFile.readAsBytes().asStream(),
               imageFile.lengthSync(),
               filename: 'image.jpg',
-              contentType: MediaType('image', 'jpg'),
             ),
           );
         }
@@ -142,7 +203,13 @@ class EditPostController extends GetxController {
               primaryColor: Colors.green,
               title: Text('${jsonBody['message']}'),
             );
+            if (imageFile != null) {
+              // Delete the file first, then clear the reference
+              await imageFile.delete();
+              imageFile = null; // Now clear the reference
+            }
             comments.value.clear();
+
             fetchMyPost();
           } else if (jsonBody['status'] == 0) {
             toastification.show(
@@ -277,7 +344,6 @@ class EditPostController extends GetxController {
     }
   }
 
-  // Method to fetch data from API
   Future<void> fetchMyPost({
     int page = 1,
     context,
@@ -293,6 +359,7 @@ class EditPostController extends GetxController {
     if (kDebugMode) {
       print('Device Name: $device');
     }
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
 
@@ -313,8 +380,9 @@ class EditPostController extends GetxController {
         'page': page.toString(),
       };
 
+      // If postId is provided, add it to the query parameters
       if (postId != null) {
-        formData['post_id'] = postId.toString();
+        formData['postid'] = postId.toString();
       }
 
       // Build URL
@@ -335,14 +403,15 @@ class EditPostController extends GetxController {
         final List<MyPostListData> myPostData = mypostEntity.data ?? [];
         if (myPostData.isNotEmpty) {
           final MyPostListData firstPost = myPostData[0];
-          final String postId = firstPost.id.toString();
-          await prefs.setString('lastPostid', postId);
-          if (kDebugMode) {
-            print('Last Post ID stored: $postId');
-          }
 
-          comments.value.text = firstPost.comments ?? '';
+          editcomments.value.text = firstPost.comments ?? '';
           userImage.value = firstPost.attachmentPath ?? '';
+          userImage1.value = firstPost.attachment ?? '';
+        }
+
+        if (kDebugMode) {
+          print('userImage from fetchMyPost: $userImage');
+          print('userImage1 from fetchMyPost: $userImage1');
         }
 
         // Update state with fetched data
@@ -363,14 +432,12 @@ class EditPostController extends GetxController {
     }
   }
 
-  Future<void> editPost(
-      {required File? imageFile, required File? videoFile, context}) async {
+  Future<void> editPost(File? imageFile, int postId, context) async {
     isLoading(true);
     String device = Platform.isAndroid ? 'android' : 'ios';
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
-    String? postId = prefs.getString('lastPostid');
 
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
@@ -382,33 +449,27 @@ class EditPostController extends GetxController {
           Uri.parse('${Constants.baseUrl}${Constants.editpost}'),
         );
 
+        // Adding request fields
         request.fields['device'] = device;
         request.fields['api_token'] = apiToken ?? '';
-        request.fields['comments'] = comments.value.text;
+        request.fields['comments'] = editcomments.value.text;
         request.fields['postid'] = postId.toString();
+        request.fields['comtype'] = 'Photo';
 
         if (kDebugMode) {
-          print('postid: $postId');
-        }
-
-        if (imageFile != null && videoFile != null) {
-          request.fields['comtype'] = 'Photo';
-          request.fields['attachment'] = 'Photo';
-        } else if (imageFile != null) {
-          request.fields['comtype'] = 'Photo';
-          request.fields['attachment'] = 'Photo';
-        } else if (videoFile != null) {
-          request.fields['comtype'] = 'Video';
-          request.fields['attachment'] = 'Video';
-        } else {
-          request.fields['comtype'] = 'Status';
-          request.fields['attachment'] = 'Status';
+          print('Device: $device');
+          print('API Token: $apiToken');
+          print('Comments: ${editcomments.value.text}');
+          print('Comtype: Photo');
         }
 
         if (imageFile != null) {
+          if (kDebugMode) {
+            print('Attaching new image file: ${imageFile.path}');
+          }
           request.files.add(
             http.MultipartFile(
-              'attechment',
+              'attachment',
               imageFile.readAsBytes().asStream(),
               imageFile.lengthSync(),
               filename: 'image.jpg',
@@ -417,36 +478,19 @@ class EditPostController extends GetxController {
           );
         }
 
-        if (videoFile != null) {
-          request.files.add(
-            http.MultipartFile(
-              'attechment',
-              videoFile.readAsBytes().asStream(),
-              videoFile.lengthSync(),
-              filename: 'video.mp4',
-              contentType: MediaType('video', 'mp4'),
-            ),
-          );
-        }
-
+        // Sending request
         var streamedResponse = await request.send();
         var response = await http.Response.fromStream(streamedResponse);
 
         if (response.statusCode == 200) {
           final Map<String, dynamic> jsonBody = jsonDecode(response.body);
           if (jsonBody['status'] == 1) {
-            final Map<String, dynamic> userPost = jsonBody['userpost'];
-            final String postId =
-                userPost['postid'].toString(); // Extract postid
             if (kDebugMode) {
               print("Post Added Successfully");
-            }
-            if (kDebugMode) {
               print("PostID: $postId");
             }
-            // You can use postId as needed here
-
             Get.back();
+            fetchMyPost();
           } else {
             if (kDebugMode) {
               print("Failed to Add Post: ${jsonBody['message']}");
@@ -456,17 +500,18 @@ class EditPostController extends GetxController {
           if (kDebugMode) {
             print(
                 "HTTP error: Failed to Add Post. Status code: ${response.statusCode}");
-          }
-          if (kDebugMode) {
             print("Response body: ${response.body}");
           }
         }
       } else {
+        if (kDebugMode) {
+          print("No internet connection.");
+        }
         showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
       if (kDebugMode) {
-        print("An error occurred while Add Post: $e");
+        print("An error occurred while Adding Post: $e");
       }
     } finally {
       isLoading(false);
@@ -621,10 +666,10 @@ class EditPostController extends GetxController {
           // Update the liked status and like count based on the message
           if (message == 'You have liked this Post') {
             likedStatusMap[postId] = true;
-            likeCountMap[postId] = (likeCountMap[postId] ?? 0) + 1;
+            likeCountMap[postId] = (likeCountMap[postId] ?? 0);
           } else if (message == 'You have unliked this Post') {
             likedStatusMap[postId] = false;
-            likeCountMap[postId] = (likeCountMap[postId] ?? 0) - 1;
+            likeCountMap[postId] = (likeCountMap[postId] ?? 0);
           }
 
           showToastverifedborder(message!, context);
@@ -1045,15 +1090,15 @@ class EditPostController extends GetxController {
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
           var addPostCommentEntity = AddPostCommentEntity.fromJson(data);
-           // Check if the status is 0 and show a toast message
-        if (data['status'] == 0) {
-          showToasterrorborder(data['message'], context);
-        } else {
-          getCommentPost(1, postId, context);
-          if (kDebugMode) {
-            print('Success: $addPostCommentEntity');
+          // Check if the status is 0 and show a toast message
+          if (data['status'] == 0) {
+            showToasterrorborder(data['message'], context);
+          } else {
+            getCommentPost(1, postId, context);
+            if (kDebugMode) {
+              print('Success: $addPostCommentEntity');
+            }
           }
-        }
 
           if (kDebugMode) {
             print('Success: $addPostCommentEntity');

@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -21,9 +22,7 @@ import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:mlmdiary/widgets/logout_dialog/custom_logout_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:text_link/text_link.dart';
-// ignore: library_prefixes
-import 'package:html/parser.dart' as htmlParser;
+import 'package:url_launcher/url_launcher.dart';
 
 class UserQuestionCopy extends StatefulWidget {
   const UserQuestionCopy({super.key});
@@ -203,8 +202,53 @@ class _UserQuestionState extends State<UserQuestionCopy> {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Expanded(
-                                  child: _buildHtmlContent(
-                                      comment.ansTitle.toString(), size),
+                                  child: Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Html(
+                                      data: comment.ansTitle,
+                                      style: {
+                                        "table": Style(
+                                          backgroundColor: const Color.fromARGB(
+                                              0x50, 0xee, 0xee, 0xee),
+                                        ),
+                                        "tr": Style(
+                                          border: const Border(
+                                              bottom: BorderSide(
+                                                  color: Colors.grey)),
+                                        ),
+                                        "th": Style(
+                                          backgroundColor: Colors.grey,
+                                        ),
+                                        "td": Style(
+                                          alignment: Alignment.topLeft,
+                                        ),
+                                        'h5': Style(
+                                          maxLines: 2,
+                                          textOverflow: TextOverflow.ellipsis,
+                                        ),
+                                      },
+                                      onLinkTap: (String? url,
+                                          Map<String, String> attributes,
+                                          _) async {
+                                        if (url != null) {
+                                          final Uri uri = Uri.parse(url);
+                                          if (await canLaunchUrl(uri)) {
+                                            await launchUrl(uri,
+                                                mode: LaunchMode
+                                                    .externalApplication);
+                                          } else {
+                                            // ignore: use_build_context_synchronously
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                  content: Text(
+                                                      'Could not open the link')),
+                                            );
+                                          }
+                                        }
+                                      },
+                                    ),
+                                  ),
                                 ),
                                 8.sbw,
                                 InkWell(
@@ -394,8 +438,53 @@ class _UserQuestionState extends State<UserQuestionCopy> {
                             Row(
                               children: [
                                 Expanded(
-                                  child: _buildHtmlContent(
-                                      commentData.comment.toString(), size),
+                                  child: Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Html(
+                                      data: commentData.comment,
+                                      style: {
+                                        "table": Style(
+                                          backgroundColor: const Color.fromARGB(
+                                              0x50, 0xee, 0xee, 0xee),
+                                        ),
+                                        "tr": Style(
+                                          border: const Border(
+                                              bottom: BorderSide(
+                                                  color: Colors.grey)),
+                                        ),
+                                        "th": Style(
+                                          backgroundColor: Colors.grey,
+                                        ),
+                                        "td": Style(
+                                          alignment: Alignment.topLeft,
+                                        ),
+                                        'h5': Style(
+                                          maxLines: 2,
+                                          textOverflow: TextOverflow.ellipsis,
+                                        ),
+                                      },
+                                      onLinkTap: (String? url,
+                                          Map<String, String> attributes,
+                                          _) async {
+                                        if (url != null) {
+                                          final Uri uri = Uri.parse(url);
+                                          if (await canLaunchUrl(uri)) {
+                                            await launchUrl(uri,
+                                                mode: LaunchMode
+                                                    .externalApplication);
+                                          } else {
+                                            // ignore: use_build_context_synchronously
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                  content: Text(
+                                                      'Could not open the link')),
+                                            );
+                                          }
+                                        }
+                                      },
+                                    ),
+                                  ),
                                 ),
                                 8.sbw,
                                 InkWell(
@@ -589,9 +678,53 @@ class _UserQuestionState extends State<UserQuestionCopy> {
                             Row(
                               children: [
                                 Expanded(
-                                  child: _buildHtmlContent(
-                                      replytoreplyData.comment.toString(),
-                                      size),
+                                  child: Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Html(
+                                      data: replytoreplyData.comment,
+                                      style: {
+                                        "table": Style(
+                                          backgroundColor: const Color.fromARGB(
+                                              0x50, 0xee, 0xee, 0xee),
+                                        ),
+                                        "tr": Style(
+                                          border: const Border(
+                                              bottom: BorderSide(
+                                                  color: Colors.grey)),
+                                        ),
+                                        "th": Style(
+                                          backgroundColor: Colors.grey,
+                                        ),
+                                        "td": Style(
+                                          alignment: Alignment.topLeft,
+                                        ),
+                                        'h5': Style(
+                                          maxLines: 2,
+                                          textOverflow: TextOverflow.ellipsis,
+                                        ),
+                                      },
+                                      onLinkTap: (String? url,
+                                          Map<String, String> attributes,
+                                          _) async {
+                                        if (url != null) {
+                                          final Uri uri = Uri.parse(url);
+                                          if (await canLaunchUrl(uri)) {
+                                            await launchUrl(uri,
+                                                mode: LaunchMode
+                                                    .externalApplication);
+                                          } else {
+                                            // ignore: use_build_context_synchronously
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                  content: Text(
+                                                      'Could not open the link')),
+                                            );
+                                          }
+                                        }
+                                      },
+                                    ),
+                                  ),
                                 ),
                                 8.sbw,
                                 InkWell(
@@ -787,9 +920,53 @@ class _UserQuestionState extends State<UserQuestionCopy> {
                             Row(
                               children: [
                                 Expanded(
-                                  child: _buildHtmlContent(
-                                      replytoreplyData.comment.toString(),
-                                      size),
+                                  child: Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Html(
+                                      data: replytoreplyData.comment,
+                                      style: {
+                                        "table": Style(
+                                          backgroundColor: const Color.fromARGB(
+                                              0x50, 0xee, 0xee, 0xee),
+                                        ),
+                                        "tr": Style(
+                                          border: const Border(
+                                              bottom: BorderSide(
+                                                  color: Colors.grey)),
+                                        ),
+                                        "th": Style(
+                                          backgroundColor: Colors.grey,
+                                        ),
+                                        "td": Style(
+                                          alignment: Alignment.topLeft,
+                                        ),
+                                        'h5': Style(
+                                          maxLines: 2,
+                                          textOverflow: TextOverflow.ellipsis,
+                                        ),
+                                      },
+                                      onLinkTap: (String? url,
+                                          Map<String, String> attributes,
+                                          _) async {
+                                        if (url != null) {
+                                          final Uri uri = Uri.parse(url);
+                                          if (await canLaunchUrl(uri)) {
+                                            await launchUrl(uri,
+                                                mode: LaunchMode
+                                                    .externalApplication);
+                                          } else {
+                                            // ignore: use_build_context_synchronously
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                  content: Text(
+                                                      'Could not open the link')),
+                                            );
+                                          }
+                                        }
+                                      },
+                                    ),
+                                  ),
                                 ),
                                 8.sbw,
                                 InkWell(
@@ -1261,23 +1438,6 @@ class _UserQuestionState extends State<UserQuestionCopy> {
     );
   }
 
-  Widget _buildHtmlContent(String htmlContent, Size size) {
-    final parsedHtml = htmlParser.parse(htmlContent);
-    final text = parsedHtml.body?.text ?? '';
-
-    return LinkText(
-      text: text,
-      style: textStyleW400(
-        size.width * 0.028,
-        AppColors.blackText.withOpacity(0.8),
-      ),
-      linkStyle: const TextStyle(
-        color: Colors.blue,
-        decoration: TextDecoration.underline,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -1326,12 +1486,6 @@ class _UserQuestionState extends State<UserQuestionCopy> {
                                     height: 60.0,
                                     width: 60.0,
                                     fit: BoxFit.cover,
-                                    placeholder: (context, url) =>
-                                        CustomLottieAnimation(
-                                      child: Lottie.asset(
-                                        Assets.lottieLottie,
-                                      ),
-                                    ),
                                     errorWidget: (context, url, error) =>
                                         const Icon(Icons.error),
                                   ),
@@ -1407,14 +1561,20 @@ class _UserQuestionState extends State<UserQuestionCopy> {
                                           height: size.height * 0.028,
                                           width: size.height * 0.028,
                                           child: GestureDetector(
-                                            onTap: toggleLike,
+                                            onTap: () {
+                                              controller.toggleLike(
+                                                  post.id, context);
+                                            },
                                             child: Icon(
-                                              // Observe like status
-                                              isLiked.value
-                                                  ? Icons.thumb_up_off_alt_sharp
+                                              controller.likedStatusMap[
+                                                          post.id] ==
+                                                      true
+                                                  ? Icons.thumb_up
                                                   : Icons
                                                       .thumb_up_off_alt_outlined,
-                                              color: isLiked.value
+                                              color: controller.likedStatusMap[
+                                                          post.id] ==
+                                                      true
                                                   ? AppColors.primaryColor
                                                   : null,
                                               size: size.height * 0.032,
@@ -1426,22 +1586,24 @@ class _UserQuestionState extends State<UserQuestionCopy> {
                                         width: 7,
                                       ),
                                       // ignore: unrelated_type_equality_checks
-                                      likeCount.value == 0
-                                          ? const SizedBox.shrink()
-                                          : InkWell(
-                                              onTap: () {
-                                                showLikeList(context);
-                                              },
-                                              child: Text(
-                                                '${likeCount.value}',
-                                                style: textStyleW600(
-                                                    size.width * 0.038,
-                                                    AppColors.blackText),
-                                              ),
-                                            ),
-                                      const SizedBox(
-                                        width: 15,
-                                      ),
+                                      Obx(() {
+                                        // Sum the original `post.totallike` with the reactive like count
+                                        int totalLikes = post.totallike +
+                                            (controller.likeCountMap[post.id] ??
+                                                0);
+
+                                        return InkWell(
+                                          onTap: () {
+                                            showLikeList(context);
+                                          },
+                                          child: Text(
+                                            totalLikes.toString(),
+                                            style: textStyleW600(
+                                                size.width * 0.038,
+                                                AppColors.blackText),
+                                          ),
+                                        );
+                                      }),
                                     ],
                                   ),
                                 ),

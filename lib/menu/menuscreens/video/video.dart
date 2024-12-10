@@ -4,14 +4,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/video/controller/video_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
-import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
+import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_video_shimmer.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class Video extends StatefulWidget {
@@ -65,16 +64,15 @@ class _YourWidgetState extends State<Video> {
         () => Stack(
           children: [
             if (controller.isLoading.value)
-              Container(
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                ),
-                child: Center(
-                  child: CustomLottieAnimation(
-                    child: Lottie.asset(
-                      Assets.lottieLottie,
-                    ),
-                  ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: ListView.builder(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  itemCount: 4,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    return const VideoShimmerLoader(width: 175, height: 300);
+                  },
                 ),
               ),
             if (!controller.isLoading.value)

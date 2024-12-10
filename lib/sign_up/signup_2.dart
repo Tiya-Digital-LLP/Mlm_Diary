@@ -7,6 +7,7 @@ import 'package:flutter_google_places_hoc081098/google_maps_webservice_places.da
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+// ignore: depend_on_referenced_packages
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -93,6 +94,7 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                           children: [
                             CircleAvatar(
                               radius: 60.0,
+                              backgroundColor: AppColors.background,
                               child: GestureDetector(
                                 child: ClipOval(
                                   child: file.value != null
@@ -102,8 +104,10 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                                           width: 120,
                                           fit: BoxFit.cover,
                                         )
-                                      : Image.asset(
-                                          Assets.imagesAdminlogo,
+                                      : Icon(
+                                          Icons.supervised_user_circle_outlined,
+                                          color: AppColors.primaryColor,
+                                          size: 80,
                                         ),
                                 ),
                                 onTap: () {
@@ -231,7 +235,7 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                     const SizedBox(height: 10),
                     Obx(
                       () => CompanyBorderTextfield(
-                        height: 65,
+                        height: 58,
                         keyboard: TextInputType.name,
                         textInputType: const [],
                         hint: "Company Name",
@@ -264,28 +268,32 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                       () => BorderContainer(
                         isError: controller.planTypeError.value,
                         byDefault: !controller.isPlanTyping.value,
-                        height: 60,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: TextField(
-                            controller: controller
-                                .getSelectedPlanOptionsTextController(),
-                            readOnly: true,
-                            onTap: () {
-                              showBottomSheetFunc(context, size, controller,
-                                  controller.planList);
-                              controller.planCategoryValidation();
-                            },
-                            style: textStyleW500(
-                                size.width * 0.04, AppColors.blackText),
-                            cursorColor: AppColors.blackText,
-                            decoration: InputDecoration(
-                              hintText: "Select Plan",
-                              border: InputBorder.none,
-                              suffixIcon: Icon(
-                                Icons.arrow_drop_down,
-                                color: AppColors.blackText,
-                              ),
+                        height: 58,
+                        child: TextField(
+                          controller:
+                              controller.getSelectedPlanOptionsTextController(),
+                          readOnly: true,
+                          onTap: () {
+                            showBottomSheetFunc(
+                                context, size, controller, controller.planList);
+                            controller.planCategoryValidation();
+                          },
+                          style: textStyleW500(
+                              size.width * 0.04, AppColors.blackText),
+                          cursorColor: AppColors.blackText,
+                          decoration: InputDecoration(
+                            labelText: "Select Plan",
+                            labelStyle: const TextStyle(
+                              color: Colors.black,
+                            ),
+                            border: InputBorder.none,
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 5.5,
+                              horizontal: 2,
+                            ),
+                            suffixIcon: Icon(
+                              Icons.arrow_drop_down,
+                              color: AppColors.blackText,
                             ),
                           ),
                         ),
@@ -298,7 +306,7 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                         readOnly: true,
                         style: const TextStyle(
                             fontSize: 15.0,
-                            fontWeight: FontWeight.w400,
+                            fontWeight: FontWeight.w500,
                             color: Colors.black,
                             fontFamily: 'assets/fonts/Metropolis-Black.otf'),
                         onTap: () async {

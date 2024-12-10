@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -11,6 +12,8 @@ import 'package:mlmdiary/generated/get_answers_entity.dart';
 import 'package:mlmdiary/generated/my_question_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/question_like_list_content.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
+import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -19,9 +22,7 @@ import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:mlmdiary/widgets/logout_dialog/custom_logout_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:text_link/text_link.dart';
-// ignore: library_prefixes
-import 'package:html/parser.dart' as htmlParser;
+import 'package:url_launcher/url_launcher.dart';
 
 class Question extends StatefulWidget {
   const Question({super.key});
@@ -36,6 +37,8 @@ class _QuestionState extends State<Question> {
   final post = Get.arguments as MyQuestionQuestions;
   PostTimeFormatter postTimeFormatter = PostTimeFormatter();
   late ScrollController _scrollController;
+  final UserProfileController userProfileController =
+      Get.put(UserProfileController());
 
   late RxBool isLiked;
   late RxBool isBookmarked;
@@ -134,9 +137,24 @@ class _QuestionState extends State<Question> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CircleAvatar(
-                        backgroundImage: NetworkImage(comment.userimage ?? ''),
-                        radius: 20,
+                      InkWell(
+                        onTap: () async {
+                          Get.toNamed(
+                            Routes.userprofilescreen,
+                            arguments: {
+                              'user_id': comment.userId,
+                            },
+                          );
+                          await userProfileController.fetchUserAllPost(
+                            1,
+                            comment.userId.toString(),
+                          );
+                        },
+                        child: CircleAvatar(
+                          backgroundImage:
+                              NetworkImage(comment.userimage ?? ''),
+                          radius: 20,
+                        ),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
@@ -166,8 +184,53 @@ class _QuestionState extends State<Question> {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Expanded(
-                                  child: _buildHtmlContent(
-                                      comment.ansTitle.toString(), size),
+                                  child: Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Html(
+                                      data: comment.ansTitle,
+                                      style: {
+                                        "table": Style(
+                                          backgroundColor: const Color.fromARGB(
+                                              0x50, 0xee, 0xee, 0xee),
+                                        ),
+                                        "tr": Style(
+                                          border: const Border(
+                                              bottom: BorderSide(
+                                                  color: Colors.grey)),
+                                        ),
+                                        "th": Style(
+                                          backgroundColor: Colors.grey,
+                                        ),
+                                        "td": Style(
+                                          alignment: Alignment.topLeft,
+                                        ),
+                                        'h5': Style(
+                                          maxLines: 2,
+                                          textOverflow: TextOverflow.ellipsis,
+                                        ),
+                                      },
+                                      onLinkTap: (String? url,
+                                          Map<String, String> attributes,
+                                          _) async {
+                                        if (url != null) {
+                                          final Uri uri = Uri.parse(url);
+                                          if (await canLaunchUrl(uri)) {
+                                            await launchUrl(uri,
+                                                mode: LaunchMode
+                                                    .externalApplication);
+                                          } else {
+                                            // ignore: use_build_context_synchronously
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                  content: Text(
+                                                      'Could not open the link')),
+                                            );
+                                          }
+                                        }
+                                      },
+                                    ),
+                                  ),
                                 ),
                                 8.sbw,
                                 InkWell(
@@ -314,10 +377,24 @@ class _QuestionState extends State<Question> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CircleAvatar(
-                        backgroundImage:
-                            NetworkImage(commentData.userimage ?? ''),
-                        radius: 16,
+                      InkWell(
+                        onTap: () async {
+                          Get.toNamed(
+                            Routes.userprofilescreen,
+                            arguments: {
+                              'user_id': commentData.userid,
+                            },
+                          );
+                          await userProfileController.fetchUserAllPost(
+                            1,
+                            commentData.userid.toString(),
+                          );
+                        },
+                        child: CircleAvatar(
+                          backgroundImage:
+                              NetworkImage(commentData.userimage ?? ''),
+                          radius: 16,
+                        ),
                       ),
                       const SizedBox(width: 8),
                       Expanded(
@@ -346,8 +423,53 @@ class _QuestionState extends State<Question> {
                             Row(
                               children: [
                                 Expanded(
-                                  child: _buildHtmlContent(
-                                      commentData.comment.toString(), size),
+                                  child: Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Html(
+                                      data: commentData.comment,
+                                      style: {
+                                        "table": Style(
+                                          backgroundColor: const Color.fromARGB(
+                                              0x50, 0xee, 0xee, 0xee),
+                                        ),
+                                        "tr": Style(
+                                          border: const Border(
+                                              bottom: BorderSide(
+                                                  color: Colors.grey)),
+                                        ),
+                                        "th": Style(
+                                          backgroundColor: Colors.grey,
+                                        ),
+                                        "td": Style(
+                                          alignment: Alignment.topLeft,
+                                        ),
+                                        'h5': Style(
+                                          maxLines: 2,
+                                          textOverflow: TextOverflow.ellipsis,
+                                        ),
+                                      },
+                                      onLinkTap: (String? url,
+                                          Map<String, String> attributes,
+                                          _) async {
+                                        if (url != null) {
+                                          final Uri uri = Uri.parse(url);
+                                          if (await canLaunchUrl(uri)) {
+                                            await launchUrl(uri,
+                                                mode: LaunchMode
+                                                    .externalApplication);
+                                          } else {
+                                            // ignore: use_build_context_synchronously
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                  content: Text(
+                                                      'Could not open the link')),
+                                            );
+                                          }
+                                        }
+                                      },
+                                    ),
+                                  ),
                                 ),
                                 8.sbw,
                                 InkWell(
@@ -498,10 +620,24 @@ class _QuestionState extends State<Question> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CircleAvatar(
-                        backgroundImage:
-                            NetworkImage(replytoreplyData.userimage ?? ''),
-                        radius: 16,
+                      InkWell(
+                        onTap: () async {
+                          Get.toNamed(
+                            Routes.userprofilescreen,
+                            arguments: {
+                              'user_id': replytoreplyData.userid,
+                            },
+                          );
+                          await userProfileController.fetchUserAllPost(
+                            1,
+                            replytoreplyData.userid.toString(),
+                          );
+                        },
+                        child: CircleAvatar(
+                          backgroundImage:
+                              NetworkImage(replytoreplyData.userimage ?? ''),
+                          radius: 16,
+                        ),
                       ),
                       const SizedBox(width: 8),
                       Expanded(
@@ -530,9 +666,53 @@ class _QuestionState extends State<Question> {
                             Row(
                               children: [
                                 Expanded(
-                                  child: _buildHtmlContent(
-                                      replytoreplyData.comment.toString(),
-                                      size),
+                                  child: Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Html(
+                                      data: replytoreplyData.comment,
+                                      style: {
+                                        "table": Style(
+                                          backgroundColor: const Color.fromARGB(
+                                              0x50, 0xee, 0xee, 0xee),
+                                        ),
+                                        "tr": Style(
+                                          border: const Border(
+                                              bottom: BorderSide(
+                                                  color: Colors.grey)),
+                                        ),
+                                        "th": Style(
+                                          backgroundColor: Colors.grey,
+                                        ),
+                                        "td": Style(
+                                          alignment: Alignment.topLeft,
+                                        ),
+                                        'h5': Style(
+                                          maxLines: 2,
+                                          textOverflow: TextOverflow.ellipsis,
+                                        ),
+                                      },
+                                      onLinkTap: (String? url,
+                                          Map<String, String> attributes,
+                                          _) async {
+                                        if (url != null) {
+                                          final Uri uri = Uri.parse(url);
+                                          if (await canLaunchUrl(uri)) {
+                                            await launchUrl(uri,
+                                                mode: LaunchMode
+                                                    .externalApplication);
+                                          } else {
+                                            // ignore: use_build_context_synchronously
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                  content: Text(
+                                                      'Could not open the link')),
+                                            );
+                                          }
+                                        }
+                                      },
+                                    ),
+                                  ),
                                 ),
                                 8.sbw,
                                 InkWell(
@@ -685,10 +865,24 @@ class _QuestionState extends State<Question> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CircleAvatar(
-                        backgroundImage:
-                            NetworkImage(replytoreplyData.userimage ?? ''),
-                        radius: 16,
+                      InkWell(
+                        onTap: () async {
+                          Get.toNamed(
+                            Routes.userprofilescreen,
+                            arguments: {
+                              'user_id': replytoreplyData.userid,
+                            },
+                          );
+                          await userProfileController.fetchUserAllPost(
+                            1,
+                            replytoreplyData.userid.toString(),
+                          );
+                        },
+                        child: CircleAvatar(
+                          backgroundImage:
+                              NetworkImage(replytoreplyData.userimage ?? ''),
+                          radius: 16,
+                        ),
                       ),
                       const SizedBox(width: 8),
                       Expanded(
@@ -717,9 +911,53 @@ class _QuestionState extends State<Question> {
                             Row(
                               children: [
                                 Expanded(
-                                  child: _buildHtmlContent(
-                                      replytoreplyData.comment.toString(),
-                                      size),
+                                  child: Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Html(
+                                      data: replytoreplyData.comment,
+                                      style: {
+                                        "table": Style(
+                                          backgroundColor: const Color.fromARGB(
+                                              0x50, 0xee, 0xee, 0xee),
+                                        ),
+                                        "tr": Style(
+                                          border: const Border(
+                                              bottom: BorderSide(
+                                                  color: Colors.grey)),
+                                        ),
+                                        "th": Style(
+                                          backgroundColor: Colors.grey,
+                                        ),
+                                        "td": Style(
+                                          alignment: Alignment.topLeft,
+                                        ),
+                                        'h5': Style(
+                                          maxLines: 2,
+                                          textOverflow: TextOverflow.ellipsis,
+                                        ),
+                                      },
+                                      onLinkTap: (String? url,
+                                          Map<String, String> attributes,
+                                          _) async {
+                                        if (url != null) {
+                                          final Uri uri = Uri.parse(url);
+                                          if (await canLaunchUrl(uri)) {
+                                            await launchUrl(uri,
+                                                mode: LaunchMode
+                                                    .externalApplication);
+                                          } else {
+                                            // ignore: use_build_context_synchronously
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                  content: Text(
+                                                      'Could not open the link')),
+                                            );
+                                          }
+                                        }
+                                      },
+                                    ),
+                                  ),
                                 ),
                                 8.sbw,
                                 InkWell(
@@ -1191,23 +1429,6 @@ class _QuestionState extends State<Question> {
     );
   }
 
-  Widget _buildHtmlContent(String htmlContent, Size size) {
-    final parsedHtml = htmlParser.parse(htmlContent);
-    final text = parsedHtml.body?.text ?? '';
-
-    return LinkText(
-      text: text,
-      style: textStyleW400(
-        size.width * 0.028,
-        AppColors.blackText.withOpacity(0.8),
-      ),
-      linkStyle: const TextStyle(
-        color: Colors.blue,
-        decoration: TextDecoration.underline,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -1240,12 +1461,6 @@ class _QuestionState extends State<Question> {
                               height: 97,
                               width: 105,
                               fit: BoxFit.fill,
-                              placeholder: (context, url) =>
-                                  CustomLottieAnimation(
-                                child: Lottie.asset(
-                                  Assets.lottieLottie,
-                                ),
-                              ),
                               errorWidget: (context, url, error) =>
                                   const Icon(Icons.error),
                             ),
@@ -1308,46 +1523,46 @@ class _QuestionState extends State<Question> {
                         Row(
                           children: [
                             const SizedBox(width: 10),
-                            GestureDetector(
-                              onTap: () {},
-                              child: Obx(
-                                () => Row(
-                                  children: [
-                                    SizedBox(
-                                      height: size.height * 0.028,
-                                      width: size.height * 0.028,
-                                      child: GestureDetector(
-                                        onTap: toggleLike,
-                                        child: Icon(
-                                          // Observe like status
-                                          isLiked.value
-                                              ? Icons.thumb_up_off_alt_sharp
-                                              : Icons.thumb_up_off_alt_outlined,
-                                          color: isLiked.value
-                                              ? AppColors.primaryColor
-                                              : null,
-                                          size: size.height * 0.032,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 7),
-                                    likeCount.value == 0
-                                        ? const SizedBox.shrink()
-                                        : InkWell(
-                                            onTap: () {
-                                              showLikeList(context);
-                                            },
-                                            child: Text(
-                                              '${likeCount.value}',
-                                              style: textStyleW600(
-                                                  size.width * 0.038,
-                                                  AppColors.blackText),
-                                            ),
-                                          ),
-                                  ],
+                            Obx(
+                              () => SizedBox(
+                                height: size.height * 0.028,
+                                width: size.height * 0.028,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    controller.toggleLike(post.id!, context);
+                                  },
+                                  child: Icon(
+                                    controller.likedStatusMap[post.id] == true
+                                        ? Icons.thumb_up
+                                        : Icons.thumb_up_off_alt_outlined,
+                                    color: controller.likedStatusMap[post.id] ==
+                                            true
+                                        ? AppColors.primaryColor
+                                        : null,
+                                    size: size.height * 0.032,
+                                  ),
                                 ),
                               ),
                             ),
+                            const SizedBox(
+                              width: 7,
+                            ),
+                            Obx(() {
+                              // Sum the original `post.totallike` with the reactive like count
+                              int totalLikes = post.totallike! +
+                                  (controller.likeCountMap[post.id] ?? 0);
+
+                              return InkWell(
+                                onTap: () {
+                                  showLikeList(context);
+                                },
+                                child: Text(
+                                  totalLikes.toString(),
+                                  style: textStyleW600(
+                                      size.width * 0.038, AppColors.blackText),
+                                ),
+                              );
+                            }),
                             const SizedBox(width: 15),
                             SizedBox(
                               height: size.height * 0.028,

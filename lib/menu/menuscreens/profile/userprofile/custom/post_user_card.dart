@@ -4,7 +4,6 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
@@ -17,7 +16,6 @@ import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
-import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:share_plus/share_plus.dart';
 
 class PostUserCard extends StatefulWidget {
@@ -153,14 +151,9 @@ class _FavouritrCardState extends State<PostUserCard> {
                   borderRadius: BorderRadius.circular(100),
                   child: CachedNetworkImage(
                     imageUrl: widget.userImage,
-                    height: 60,
-                    width: 60,
+                    height: 40,
+                    width: 40,
                     fit: BoxFit.fill,
-                    placeholder: (context, url) => CustomLottieAnimation(
-                      child: Lottie.asset(
-                        Assets.lottieLottie,
-                      ),
-                    ),
                     errorWidget: (context, url, error) =>
                         Image.asset(Assets.imagesAdminlogo),
                   ),
@@ -226,24 +219,21 @@ class _FavouritrCardState extends State<PostUserCard> {
               ),
             ),
             SizedBox(
-              height: size.height * 0.26,
-              width: size.width,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12.0),
-                child: CachedNetworkImage(
-                  imageUrl: widget.postImage,
-                  height: 100.0,
-                  width: 60.0,
-                  fit: BoxFit.fill,
-                  placeholder: (context, url) => CustomLottieAnimation(
-                    child: Lottie.asset(
-                      Assets.lottieLottie,
-                    ),
-                  ),
-                  errorWidget: (context, url, error) =>
-                      Image.asset(Assets.imagesLogo),
-                ),
-              ),
+              height: widget.postImage.isNotEmpty ? size.height * 0.26 : 0.0,
+              width: widget.postImage.isNotEmpty ? size.width : 0.0,
+              child: widget.postImage.isNotEmpty
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(12.0),
+                      child: CachedNetworkImage(
+                        imageUrl: widget.postImage,
+                        height: 100.0,
+                        width: 60.0,
+                        fit: BoxFit.fill,
+                        errorWidget: (context, url, error) =>
+                            Image.asset(Assets.imagesLogo),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
             ),
             10.sbh,
             Padding(

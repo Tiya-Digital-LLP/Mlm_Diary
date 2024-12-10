@@ -4,6 +4,7 @@ import 'package:flutter_google_places_hoc081098/google_maps_webservice_places.da
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+// ignore: depend_on_referenced_packages
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/data/constants.dart';
@@ -15,6 +16,7 @@ import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_pr
 import 'package:mlmdiary/menu/menuscreens/tutorialvideo/controller/tutorial_video_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_shimmer_database.dart';
 import 'package:mlmdiary/widgets/customfilter/custom_filter.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
 import 'package:mlmdiary/database/user_card.dart';
@@ -37,6 +39,7 @@ class _DatabaseState extends State<DatabaseScreen> {
   final UserProfileController userProfileController =
       Get.put(UserProfileController());
   final EditPostController editPostController = Get.put(EditPostController());
+  final RxBool showShimmer = true.obs;
 
   String googleApikey = "AIzaSyB3s5ixJVnWzsXoUZaP9ISDp_80GXWJXuU";
   late double lat = 0.0;
@@ -49,6 +52,10 @@ class _DatabaseState extends State<DatabaseScreen> {
   @override
   void initState() {
     super.initState();
+    // Start a timer to switch from shimmer to UI after 1 second
+    Future.delayed(const Duration(seconds: 1), () {
+      showShimmer.value = false;
+    });
     _refreshData();
     videoController.fetchVideo(position, context);
   }
@@ -243,93 +250,110 @@ class _DatabaseState extends State<DatabaseScreen> {
                   ],
                 ),
               ),
-              Obx(() {
-                if (controller.isLoading.value &&
-                    controller.mlmDatabaseList.isEmpty) {
-                  return Center(
-                    child: CustomLottieAnimation(
-                      child: Lottie.asset(
-                        Assets.lottieLottie,
-                      ),
-                    ),
-                  );
-                }
-
-                if (controller.mlmDatabaseList.isEmpty) {
-                  return const Center(
-                    child: Text(
-                      'Data not found',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                  );
-                }
-                return Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+              Expanded(child: Obx(() {
+                if (showShimmer.value) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: ListView.builder(
-                        controller: controller.scrollController,
-                        itemCount: controller.mlmDatabaseList.length +
-                            (controller.isLoading.value ? 1 : 0),
-                        padding: EdgeInsets.zero,
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          if (index == controller.mlmDatabaseList.length) {
-                            return Center(
-                              child: CustomLottieAnimation(
-                                child: Lottie.asset(
-                                  Assets.lottieLottie,
-                                ),
-                              ),
-                            );
-                          }
-                          final post = controller.mlmDatabaseList[index];
-                          String location =
-                              '${post.city ?? ''}, ${post.state ?? ''}, ${post.country ?? ''}'
-                                  .trim();
-                          if (location == ', ,') {
-                            location = 'N/A';
-                          }
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      itemCount: 10,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        return const ShimmerUserProfileCard(
+                            width: 175, height: 240);
+                      },
+                    ),
+                  );
+                } else {
+                  return Obx(() {
+                    if (controller.isLoading.value &&
+                        controller.mlmDatabaseList.isEmpty) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: ListView.builder(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          itemCount: 10,
+                          shrinkWrap: true,
+                          itemBuilder: (context, index) {
+                            return const ShimmerUserProfileCard(
+                                width: 175, height: 240);
+                          },
+                        ),
+                      );
+                    }
 
-                          return GestureDetector(
-                            onTap: () async {
-                              SharedPreferences prefs =
-                                  await SharedPreferences.getInstance();
-                              String? apiToken =
-                                  prefs.getString(Constants.accessToken);
-
-                              if (apiToken == null) {
-                                // ignore: use_build_context_synchronously
-                                showSignupDialog(context);
-                                return;
+                    if (controller.mlmDatabaseList.isEmpty) {
+                      return const Center(
+                        child: Text(
+                          'Data not found',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      );
+                    }
+                    return Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: ListView.builder(
+                            controller: controller.scrollController,
+                            itemCount: controller.mlmDatabaseList.length +
+                                (controller.isLoading.value ? 1 : 0),
+                            padding: EdgeInsets.zero,
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              if (index == controller.mlmDatabaseList.length) {
+                                return Center(
+                                  child: CustomLottieAnimation(
+                                    child: Lottie.asset(
+                                      Assets.lottieLottie,
+                                    ),
+                                  ),
+                                );
                               }
-                              Get.toNamed(Routes.userprofilescreen,
-                                  arguments: {'user_id': post.id});
-                              await userProfileController.fetchUserAllPost(
-                                  1, post.id.toString());
-                              editPostController.countViewUserProfile(
-                                  post.id ?? 0,
-                                  // ignore: use_build_context_synchronously
-                                  context);
-                            },
-                            child: UserCard(
-                              post: post,
-                              postid: post.id ?? 0,
-                              userprofilecontroller: userProfileController,
-                              userImage: post.imagePath ?? '',
-                              userName: post.name ?? '',
-                              location: location,
-                              designation: post.immlm ?? '',
-                              plan: post.plan ?? '',
-                            ),
-                          );
-                        }),
-                  ),
-                );
-              })
+                              final post = controller.mlmDatabaseList[index];
+                              String location =
+                                  '${post.city ?? ''}, ${post.state ?? ''}, ${post.country ?? ''}'
+                                      .trim();
+                              if (location == ', ,') {
+                                location = 'N/A';
+                              }
+                              String? plan = post.plan?.isNotEmpty == true
+                                  ? post.plan
+                                  : 'N/A';
+                              return GestureDetector(
+                                onTap: () async {
+                                  SharedPreferences prefs =
+                                      await SharedPreferences.getInstance();
+                                  prefs.getString(Constants.accessToken);
+                                  Get.toNamed(Routes.userprofilescreen,
+                                      arguments: {'user_id': post.id});
+                                  await userProfileController.fetchUserAllPost(
+                                      1, post.id.toString());
+                                  editPostController.countViewUserProfile(
+                                      post.id ?? 0,
+                                      // ignore: use_build_context_synchronously
+                                      context);
+                                },
+                                child: UserCard(
+                                  post: post,
+                                  postid: post.id ?? 0,
+                                  userprofilecontroller: userProfileController,
+                                  userImage: post.imagePath ?? '',
+                                  userName: post.name ?? '',
+                                  location: location,
+                                  designation: post.immlm ?? '',
+                                  plan: plan.toString(),
+                                ),
+                              );
+                            }),
+                      ),
+                    );
+                  });
+                }
+              })),
             ],
           ),
         ),

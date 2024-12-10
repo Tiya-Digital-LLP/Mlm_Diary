@@ -84,7 +84,7 @@ MyBlogListData $MyBlogListDataFromJson(Map<String, dynamic> json) {
   if (status != null) {
     myBlogListData.status = status;
   }
-  final String? website = jsonConvert.convert<String>(json['website']);
+  final dynamic website = json['website'];
   if (website != null) {
     myBlogListData.website = website;
   }
@@ -119,6 +119,16 @@ MyBlogListData $MyBlogListDataFromJson(Map<String, dynamic> json) {
   if (userData != null) {
     myBlogListData.userData = userData;
   }
+  final String? categoryName = jsonConvert.convert<String>(
+      json['category_name']);
+  if (categoryName != null) {
+    myBlogListData.categoryName = categoryName;
+  }
+  final String? subcategoryName = jsonConvert.convert<String>(
+      json['subcategory_name']);
+  if (subcategoryName != null) {
+    myBlogListData.subcategoryName = subcategoryName;
+  }
   final String? imagePath = jsonConvert.convert<String>(json['image_path']);
   if (imagePath != null) {
     myBlogListData.imagePath = imagePath;
@@ -146,6 +156,8 @@ Map<String, dynamic> $MyBlogListDataToJson(MyBlogListData entity) {
   data['liked_by_user'] = entity.likedByUser;
   data['bookmarked_by_user'] = entity.bookmarkedByUser;
   data['user_data'] = entity.userData?.toJson();
+  data['category_name'] = entity.categoryName;
+  data['subcategory_name'] = entity.subcategoryName;
   data['image_path'] = entity.imagePath;
   return data;
 }
@@ -162,7 +174,7 @@ extension MyBlogListDataExtension on MyBlogListData {
     int? userId,
     String? subcategory,
     int? status,
-    String? website,
+    dynamic website,
     String? urlcomponent,
     int? totallike,
     int? totalbookmark,
@@ -170,6 +182,8 @@ extension MyBlogListDataExtension on MyBlogListData {
     bool? likedByUser,
     bool? bookmarkedByUser,
     MyBlogListDataUserData? userData,
+    String? categoryName,
+    String? subcategoryName,
     String? imagePath,
   }) {
     return MyBlogListData()
@@ -191,6 +205,8 @@ extension MyBlogListDataExtension on MyBlogListData {
       ..likedByUser = likedByUser ?? this.likedByUser
       ..bookmarkedByUser = bookmarkedByUser ?? this.bookmarkedByUser
       ..userData = userData ?? this.userData
+      ..categoryName = categoryName ?? this.categoryName
+      ..subcategoryName = subcategoryName ?? this.subcategoryName
       ..imagePath = imagePath ?? this.imagePath;
   }
 }

@@ -1,8 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
+
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/custom_news_comment.dart';
@@ -11,7 +10,6 @@ import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
-import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:mlmdiary/widgets/logout_dialog/custom_logout_dialog.dart';
 
 class ManageNewsCard extends StatefulWidget {
@@ -121,17 +119,14 @@ class _ManageNewsCardState extends State<ManageNewsCard> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CachedNetworkImage(
-                  imageUrl: widget.userImage,
+                Image.network(
+                  '${widget.userImage}?t=${DateTime.now().millisecondsSinceEpoch}',
                   height: 97,
                   width: 105,
                   fit: BoxFit.fill,
-                  placeholder: (context, url) => CustomLottieAnimation(
-                    child: Lottie.asset(
-                      Assets.lottieLottie,
-                    ),
-                  ),
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                  errorBuilder: (context, error, stackTrace) =>
+                      const Icon(Icons.error),
+                  headers: const {'Cache-Control': 'no-cache'},
                 ),
                 10.sbw,
                 Expanded(
@@ -234,9 +229,13 @@ class _ManageNewsCardState extends State<ManageNewsCard> {
                   children: [
                     InkWell(
                       onTap: () async {
-                        await widget.controller
-                            .fetchMyNews(newsId: widget.newsId);
-                        Get.toNamed(Routes.newsplusicon);
+                        Get.toNamed(
+                          Routes.newsplusicon,
+                          arguments: widget.newsId,
+                        );
+                        await widget.controller.fetchMyNews(
+                          newsId: widget.newsId,
+                        );
                       },
                       child: Ink(
                         height: size.height * 0.030,

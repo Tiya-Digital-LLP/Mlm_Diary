@@ -64,8 +64,8 @@ class ClasifiedController extends GetxController {
       RxList<GetSubCategoryCategory>();
   final RxList<bool> isSubCategorySelectedList = RxList<bool>([]);
 //like
-  var likedStatusMap = <int, bool>{};
-  var likeCountMap = <int, int>{};
+  RxMap<int, bool> likedStatusMap = <int, bool>{}.obs;
+  RxMap<int, int> likeCountMap = <int, int>{}.obs;
 
 //bookmark
   var bookmarkStatusMap = <int, bool>{};
@@ -252,13 +252,11 @@ class ClasifiedController extends GetxController {
         final GetClassifiedDetailEntity classifiedDetailEntity =
             GetClassifiedDetailEntity.fromJson(responseData);
 
-        final GetClassifiedDetailData? firstPost = classifiedDetailEntity.data;
-        if (firstPost != null) {
-          // Replace old data with the fetched post
-          classifiedDetailList.clear(); // Ensure old data is cleared
-          classifiedDetailList.add(firstPost);
-        }
-      } else {
+        final GetClassifiedDetailData firstPost = classifiedDetailEntity.data;
+        // Replace old data with the fetched post
+        classifiedDetailList.clear(); // Ensure old data is cleared
+        classifiedDetailList.add(firstPost);
+            } else {
         if (kDebugMode) {
           print("Error: ${response.body}");
         }
@@ -536,7 +534,6 @@ class ClasifiedController extends GetxController {
   Future<void> likedUser(int classifiedId, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
-
     String device = Platform.isAndroid ? 'android' : 'ios';
 
     try {
@@ -562,10 +559,10 @@ class ClasifiedController extends GetxController {
           // Update the liked status and like count based on the message
           if (message == 'You have liked this classified') {
             likedStatusMap[classifiedId] = true;
-            likeCountMap[classifiedId] = (likeCountMap[classifiedId] ?? 0) + 1;
+            likeCountMap[classifiedId] = (likeCountMap[classifiedId] ?? 0);
           } else if (message == 'You have unliked this classified') {
             likedStatusMap[classifiedId] = false;
-            likeCountMap[classifiedId] = (likeCountMap[classifiedId] ?? 0) - 1;
+            likeCountMap[classifiedId] = (likeCountMap[classifiedId] ?? 0);
           }
 
           showToastverifedborder(message!, context);
@@ -575,7 +572,7 @@ class ClasifiedController extends GetxController {
           }
         }
       } else {
-        //
+        // Handle no connectivity
       }
     } catch (e) {
       if (kDebugMode) {

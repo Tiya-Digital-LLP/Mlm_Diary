@@ -70,7 +70,7 @@ MyNewsData $MyNewsDataFromJson(Map<String, dynamic> json) {
   if (category != null) {
     myNewsData.category = category;
   }
-  final String? creatby = jsonConvert.convert<String>(json['creatby']);
+  final int? creatby = jsonConvert.convert<int>(json['creatby']);
   if (creatby != null) {
     myNewsData.creatby = creatby;
   }
@@ -82,7 +82,7 @@ MyNewsData $MyNewsDataFromJson(Map<String, dynamic> json) {
   if (subcategory != null) {
     myNewsData.subcategory = subcategory;
   }
-  final String? website = jsonConvert.convert<String>(json['website']);
+  final dynamic website = json['website'];
   if (website != null) {
     myNewsData.website = website;
   }
@@ -117,6 +117,16 @@ MyNewsData $MyNewsDataFromJson(Map<String, dynamic> json) {
   if (userData != null) {
     myNewsData.userData = userData;
   }
+  final String? categoryName = jsonConvert.convert<String>(
+      json['category_name']);
+  if (categoryName != null) {
+    myNewsData.categoryName = categoryName;
+  }
+  final String? subcategoryName = jsonConvert.convert<String>(
+      json['subcategory_name']);
+  if (subcategoryName != null) {
+    myNewsData.subcategoryName = subcategoryName;
+  }
   final String? imagePath = jsonConvert.convert<String>(json['image_path']);
   if (imagePath != null) {
     myNewsData.imagePath = imagePath;
@@ -144,6 +154,8 @@ Map<String, dynamic> $MyNewsDataToJson(MyNewsData entity) {
   data['liked_by_user'] = entity.likedByUser;
   data['bookmarked_by_user'] = entity.bookmarkedByUser;
   data['user_data'] = entity.userData?.toJson();
+  data['category_name'] = entity.categoryName;
+  data['subcategory_name'] = entity.subcategoryName;
   data['image_path'] = entity.imagePath;
   return data;
 }
@@ -157,10 +169,10 @@ extension MyNewsDataExtension on MyNewsData {
     int? pgcnt,
     String? createdate,
     String? category,
-    String? creatby,
+    int? creatby,
     int? status,
     String? subcategory,
-    String? website,
+    dynamic website,
     String? urlcomponent,
     int? totallike,
     int? totalbookmark,
@@ -168,6 +180,8 @@ extension MyNewsDataExtension on MyNewsData {
     bool? likedByUser,
     bool? bookmarkedByUser,
     MyNewsDataUserData? userData,
+    String? categoryName,
+    String? subcategoryName,
     String? imagePath,
   }) {
     return MyNewsData()
@@ -189,6 +203,8 @@ extension MyNewsDataExtension on MyNewsData {
       ..likedByUser = likedByUser ?? this.likedByUser
       ..bookmarkedByUser = bookmarkedByUser ?? this.bookmarkedByUser
       ..userData = userData ?? this.userData
+      ..categoryName = categoryName ?? this.categoryName
+      ..subcategoryName = subcategoryName ?? this.subcategoryName
       ..imagePath = imagePath ?? this.imagePath;
   }
 }

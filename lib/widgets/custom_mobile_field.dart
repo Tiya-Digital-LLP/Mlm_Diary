@@ -65,7 +65,10 @@ class CustomMobileField extends StatelessWidget {
                   cursorColor: AppColors.blackText,
                   decoration: InputDecoration(
                     counterText: "",
-                    hintText: hint,
+                    labelText: hint,
+                    labelStyle: const TextStyle(
+                      color: Colors.black,
+                    ),
                     border: InputBorder.none,
                   ),
                 ),

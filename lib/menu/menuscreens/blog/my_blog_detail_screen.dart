@@ -2,12 +2,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/my_blog_list_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/blog_liked_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/custom_blog_comment.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
+import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -15,7 +16,6 @@ import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 // ignore: library_prefixes
 import 'package:html/parser.dart' as htmlParser;
-import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:text_link/text_link.dart';
 
 class MyBlogDetailScreen extends StatefulWidget {
@@ -32,7 +32,8 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen> {
   final post = Get.arguments as MyBlogListData;
 
   PostTimeFormatter postTimeFormatter = PostTimeFormatter();
-
+  final UserProfileController userProfileController =
+      Get.put(UserProfileController());
   @override
   void initState() {
     super.initState();
@@ -101,54 +102,59 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 8),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            backgroundColor: const Color(0XFFCCC9C9),
-                            radius: size.width * 0.07,
-                            child: ClipOval(
-                              child: CachedNetworkImage(
-                                imageUrl: post.userData!.imagePath ?? '',
-                                height: 97,
-                                width: 105,
-                                fit: BoxFit.fill,
-                                placeholder: (context, url) =>
-                                    CustomLottieAnimation(
-                                  child: Lottie.asset(
-                                    Assets.lottieLottie,
-                                  ),
+                      child: InkWell(
+                        onTap: () async {
+                          Get.toNamed(Routes.userprofilescreen, arguments: {
+                            'user_id': post.userData!.id ?? 0,
+                          });
+                          await userProfileController.fetchUserAllPost(
+                            1,
+                            post.userData!.id.toString(),
+                          );
+                        },
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              backgroundColor: const Color(0XFFCCC9C9),
+                              radius: size.width * 0.07,
+                              child: ClipOval(
+                                child: CachedNetworkImage(
+                                  imageUrl: post.userData!.imagePath ?? '',
+                                  height: 97,
+                                  width: 105,
+                                  fit: BoxFit.fill,
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(Icons.error),
                                 ),
-                                errorWidget: (context, url, error) =>
-                                    const Icon(Icons.error),
                               ),
                             ),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    post.title ?? '',
-                                    style: textStyleW700(size.width * 0.043,
-                                        AppColors.blackText),
-                                  ),
-                                  const SizedBox(
-                                    width: 07,
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                "2 Min Ago",
-                                style: textStyleW400(size.width * 0.035,
-                                    AppColors.blackText.withOpacity(0.5)),
-                              ),
-                            ],
-                          )
-                        ],
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      post.title ?? '',
+                                      style: textStyleW700(size.width * 0.043,
+                                          AppColors.blackText),
+                                    ),
+                                    const SizedBox(
+                                      width: 07,
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  "2 Min Ago",
+                                  style: textStyleW400(size.width * 0.035,
+                                      AppColors.blackText.withOpacity(0.5)),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -165,16 +171,10 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen> {
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: CachedNetworkImage(
-                          imageUrl:
-                              '${post.imagePath.toString()}?${DateTime.now().millisecondsSinceEpoch}',
+                          imageUrl: post.imagePath.toString(),
                           height: 97,
                           width: 105,
                           fit: BoxFit.fill,
-                          placeholder: (context, url) => CustomLottieAnimation(
-                            child: Lottie.asset(
-                              Assets.lottieLottie,
-                            ),
-                          ),
                           errorWidget: (context, url, error) =>
                               const Icon(Icons.error),
                         ),
@@ -202,7 +202,7 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen> {
                       child: Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          '${post.category} | ${post.subcategory}',
+                          '${post.categoryName} | ${post.subcategoryName}',
                           style: TextStyle(
                             fontWeight: FontWeight.w400,
                             color: AppColors.blackText,
@@ -431,13 +431,17 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen> {
                       height: size.height * 0.028,
                       width: size.height * 0.028,
                       child: GestureDetector(
-                        onTap: toggleLike,
+                        onTap: () {
+                          controller.toggleLike(post.articleId!, context);
+                        },
                         child: Icon(
-                          // Observe like status
-                          isLiked.value
-                              ? Icons.thumb_up_off_alt_sharp
+                          controller.likedStatusMap[post.articleId] == true
+                              ? Icons.thumb_up
                               : Icons.thumb_up_off_alt_outlined,
-                          color: isLiked.value ? AppColors.primaryColor : null,
+                          color:
+                              controller.likedStatusMap[post.articleId] == true
+                                  ? AppColors.primaryColor
+                                  : null,
                           size: size.height * 0.032,
                         ),
                       ),
@@ -446,19 +450,21 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen> {
                   const SizedBox(
                     width: 7,
                   ),
-                  // ignore: unrelated_type_equality_checks
-                  likeCount.value == 0
-                      ? const SizedBox.shrink()
-                      : InkWell(
-                          onTap: () {
-                            showLikeList(context);
-                          },
-                          child: Text(
-                            '${likeCount.value}',
-                            style: textStyleW600(
-                                size.width * 0.038, AppColors.blackText),
-                          ),
-                        ),
+                  Obx(() {
+                    int totalLikes = post.totallike! +
+                        (controller.likeCountMap[post.articleId] ?? 0);
+
+                    return InkWell(
+                      onTap: () {
+                        showLikeList(context);
+                      },
+                      child: Text(
+                        totalLikes.toString(),
+                        style: textStyleW600(
+                            size.width * 0.038, AppColors.blackText),
+                      ),
+                    );
+                  }),
                   const SizedBox(
                     width: 15,
                   ),

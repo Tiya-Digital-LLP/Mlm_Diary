@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:html_unescape/html_unescape.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/home/home/custom/sign_up_dialog.dart';
@@ -20,6 +19,8 @@ class BlogCard extends StatefulWidget {
   final String userImage;
   final String userName;
   final String postTitle;
+  final String postCaption;
+
   final String dateTime;
   final int likedCount;
   final int blogId;
@@ -46,6 +47,7 @@ class BlogCard extends StatefulWidget {
     required this.commentcount,
     required this.likedbyuser,
     required this.bookmarkedbyuser,
+    required this.postCaption,
   });
 
   @override
@@ -76,13 +78,7 @@ class _BlogCardState extends State<BlogCard> {
 
   void toggleLike() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? apiToken = prefs.getString(Constants.accessToken);
-
-    if (apiToken == null) {
-      // ignore: use_build_context_synchronously
-      showSignupDialog(context);
-      return;
-    }
+    prefs.getString(Constants.accessToken);
     bool newLikedValue = !isLiked.value;
     isLiked.value = newLikedValue;
     likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
@@ -98,13 +94,7 @@ class _BlogCardState extends State<BlogCard> {
 
   void toggleBookmark() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? apiToken = prefs.getString(Constants.accessToken);
-
-    if (apiToken == null) {
-      // ignore: use_build_context_synchronously
-      showSignupDialog(context);
-      return;
-    }
+    prefs.getString(Constants.accessToken);
     bool newBookmarkedValue = !isBookmarked.value;
     isBookmarked.value = newBookmarkedValue;
     bookmarkCount.value =
@@ -117,7 +107,6 @@ class _BlogCardState extends State<BlogCard> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    String decodedPostTitle = HtmlUnescape().convert(widget.postTitle);
 
     return Obx(() {
       return Container(
@@ -133,13 +122,16 @@ class _BlogCardState extends State<BlogCard> {
               onTap: () {},
               child: Row(
                 children: [
-                  CircleAvatar(
-                    backgroundImage: widget.image.isNotEmpty &&
-                            Uri.tryParse(widget.image)?.hasAbsolutePath == true
-                        ? NetworkImage(widget.image)
-                        : null,
-                    child:
-                        widget.image.isEmpty ? const Icon(Icons.person) : null,
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: CachedNetworkImage(
+                      imageUrl: widget.image,
+                      height: 60,
+                      width: 60,
+                      fit: BoxFit.fill,
+                      errorWidget: (context, url, error) =>
+                          Image.asset(Assets.imagesAdminlogo),
+                    ),
                   ),
                   const SizedBox(
                     width: 10,
@@ -152,7 +144,7 @@ class _BlogCardState extends State<BlogCard> {
                           Text(
                             widget.userName,
                             style: textStyleW700(
-                                size.width * 0.043, AppColors.blackText),
+                                size.width * 0.038, AppColors.blackText),
                           ),
                         ],
                       ),
@@ -169,23 +161,35 @@ class _BlogCardState extends State<BlogCard> {
             SizedBox(
               height: size.height * 0.01,
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: Text(
-                  widget.postTitle,
-                  style: textStyleW700(size.width * 0.040, AppColors.blackText),
-                ),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Html(
+                data: widget.postTitle,
+                style: {
+                  "html": Style(
+                    lineHeight: const LineHeight(1),
+                    maxLines: 1,
+                    fontFamily: fontFamily,
+                    fontWeight: FontWeight.w700,
+                    fontSize: FontSize.medium,
+                    color: AppColors.blackText,
+                  ),
+                },
               ),
             ),
             Align(
               alignment: Alignment.topLeft,
               child: Html(
-                data: decodedPostTitle,
+                data: widget.postCaption,
                 style: {
                   "html": Style(
+                    lineHeight: const LineHeight(1.2),
                     maxLines: 2,
+                    fontFamily: fontFamily,
+                    fontWeight: FontWeight.w500,
+                    fontSize: FontSize.small,
+                    color: AppColors.blackText,
+                    textOverflow: TextOverflow.ellipsis,
                   ),
                 },
               ),
@@ -193,23 +197,26 @@ class _BlogCardState extends State<BlogCard> {
             SizedBox(
               height: size.height * 0.01,
             ),
-            if (widget.userImage.isNotEmpty &&
-                Uri.tryParse(widget.userImage)?.hasAbsolutePath == true)
-              Container(
-                height: size.height * 0.28,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              child: SizedBox(
+                height: size.height * 0.26,
                 width: size.width,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: CachedNetworkImage(
-                  imageUrl: widget.userImage,
-                  height: 97,
-                  width: 105,
-                  fit: BoxFit.fill,
-                  placeholder: (context, url) => const SizedBox(),
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12.0),
+                  child: Image.network(
+                    widget.userImage,
+                    fit: BoxFit.fill,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        Assets.imagesLogo,
+                        fit: BoxFit.fill,
+                      );
+                    },
+                  ),
                 ),
               ),
+            ),
             SizedBox(
               height: size.height * 0.017,
             ),
@@ -256,14 +263,7 @@ class _BlogCardState extends State<BlogCard> {
                           onTap: () async {
                             SharedPreferences prefs =
                                 await SharedPreferences.getInstance();
-                            String? apiToken =
-                                prefs.getString(Constants.accessToken);
-
-                            if (apiToken == null) {
-                              // ignore: use_build_context_synchronously
-                              showSignupDialog(context);
-                              return;
-                            }
+                            prefs.getString(Constants.accessToken);
                             showFullScreenDialogBlog(
                               // ignore: use_build_context_synchronously
                               context,

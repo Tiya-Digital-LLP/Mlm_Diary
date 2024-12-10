@@ -118,7 +118,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: Obx(
                               () => BorderTextField(
-                                height: 65,
+                                height: 58,
                                 controller: controller.email.value,
                                 hint: "Enter Your Email",
                                 textInputType: const [],
@@ -132,7 +132,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                               ),
                             ),
                           ),
-                          30.sbh,
+                          20.sbh,
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: NormalButton(
@@ -153,96 +153,104 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                         ],
                       ),
                     ),
-                    Obx(() => Column(children: [
-                          20.sbh,
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: Row(
-                              children: [
-                                GestureDetector(
-                                  onTap: _onPressedShowBottomSheet,
-                                  child: SizedBox(
-                                    width: 120,
-                                    height: 65,
-                                    child: BorderContainer(
-                                      height: 60,
-                                      child: selectedCountry.value == null
-                                          ? Container()
-                                          : Center(
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Image.asset(
-                                                    selectedCountry.value!.flag,
-                                                    package:
-                                                        countryCodePackageName,
-                                                    width: 25,
-                                                    height: 25,
-                                                  ),
-                                                  8.sbw,
-                                                  Text(
-                                                    selectedCountry
-                                                        .value!.callingCode,
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                      fontSize:
-                                                          size.width * 0.045,
+                    Obx(() => SingleChildScrollView(
+                          child: Column(children: [
+                            20.sbh,
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              child: Row(
+                                children: [
+                                  GestureDetector(
+                                    onTap: _onPressedShowBottomSheet,
+                                    child: SizedBox(
+                                      width: 120,
+                                      height: 58,
+                                      child: BorderContainer(
+                                        height: 58,
+                                        child: selectedCountry.value == null
+                                            ? Container()
+                                            : Center(
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    Image.asset(
+                                                      selectedCountry
+                                                          .value!.flag,
+                                                      package:
+                                                          countryCodePackageName,
+                                                      width: 25,
+                                                      height: 25,
                                                     ),
-                                                  ),
-                                                ],
+                                                    8.sbw,
+                                                    Text(
+                                                      selectedCountry
+                                                          .value!.callingCode,
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                        fontSize:
+                                                            size.width * 0.045,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
+                                      ),
                                     ),
                                   ),
-                                ),
-                                10.sbw,
-                                Expanded(
-                                  flex: 5,
-                                  child: Obx(
-                                    () => CustomMobileField(
-                                      height: 65,
-                                      hint: "Enter Your Mobile Number",
-                                      readOnly: controller.mobileReadOnly.value,
-                                      controller: controller.mobile.value,
-                                      textInputType: [
-                                        FilteringTextInputFormatter.digitsOnly
-                                      ],
-                                      keyboard: TextInputType.phone,
-                                      isError: controller.mobileError.value,
-                                      byDefault:
-                                          !controller.isMobileTyping.value,
-                                      onChanged: (value) {
-                                        controller.mobileValidation();
-                                        controller.isMobileTyping.value = true;
-                                      },
+                                  10.sbw,
+                                  Expanded(
+                                    flex: 5,
+                                    child: Obx(
+                                      () => CustomMobileField(
+                                        height: 58,
+                                        hint: "Enter Your Mobile Number",
+                                        readOnly:
+                                            controller.mobileReadOnly.value,
+                                        controller: controller.mobile.value,
+                                        textInputType: [
+                                          FilteringTextInputFormatter.digitsOnly
+                                        ],
+                                        keyboard: TextInputType.phone,
+                                        isError: controller.mobileError.value,
+                                        byDefault:
+                                            !controller.isMobileTyping.value,
+                                        onChanged: (value) {
+                                          controller.mobileValidation();
+                                          controller.isMobileTyping.value =
+                                              true;
+                                        },
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                          30.sbh,
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: NormalButton(
-                              text: "Submit",
-                              onPressed: () {
-                                controller.mobileValidation();
-                                if (controller.mobile.value.text.isEmpty) {
-                                  showToasterrorborder(
-                                      "Please Enter Mobile", context);
-                                } else {
-                                  controller.sendForgotPasswordRequest(
-                                      context, getFormattedCountryCode());
-                                }
-                              },
-                              isLoading: controller.isLoading,
+                            20.sbh,
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              child: NormalButton(
+                                text: "Submit",
+                                onPressed: () {
+                                  controller.mobileValidation();
+                                  if (controller.mobile.value.text.isEmpty) {
+                                    showToasterrorborder(
+                                        "Please Enter Mobile", context);
+                                  } else {
+                                    controller.sendForgotPasswordRequest(
+                                        context, getFormattedCountryCode());
+                                  }
+                                },
+                                isLoading: controller.isLoading,
+                              ),
                             ),
-                          ),
-                        ])),
+                          ]),
+                        )),
                   ],
                 ),
               ),

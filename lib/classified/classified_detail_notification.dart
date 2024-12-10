@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
@@ -11,15 +13,17 @@ import 'package:mlmdiary/generated/get_classified_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
+import 'package:mlmdiary/widgets/image_preview_user_image.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:text_link/text_link.dart';
-// ignore: library_prefixes
-import 'package:html/parser.dart' as htmlParser;
+import 'package:url_launcher/url_launcher.dart';
+import 'package:html/dom.dart' as dom;
 
 class ClassifiedDetailNotification extends StatefulWidget {
   const ClassifiedDetailNotification({required Key key}) : super(key: key);
@@ -128,18 +132,12 @@ class _ClassidiedDetailsScreenCopyState
                               children: [
                                 ClipOval(
                                   child: CachedNetworkImage(
-                                    imageUrl: data.userData!.imagePath ?? '',
+                                    imageUrl: data.userData.imagePath,
                                     height: 60.0,
                                     width: 60.0,
                                     fit: BoxFit.cover,
-                                    placeholder: (context, url) =>
-                                        CustomLottieAnimation(
-                                      child: Lottie.asset(
-                                        Assets.lottieLottie,
-                                      ),
-                                    ),
                                     errorWidget: (context, url, error) =>
-                                        const Icon(Icons.error),
+                                        Image.asset(Assets.imagesAdminlogo),
                                   ),
                                 ),
                                 const SizedBox(
@@ -151,7 +149,7 @@ class _ClassidiedDetailsScreenCopyState
                                     Row(
                                       children: [
                                         Text(
-                                          data.userData!.name ?? '',
+                                          data.userData.name,
                                           style: textStyleW700(
                                               size.width * 0.043,
                                               AppColors.blackText),
@@ -162,8 +160,8 @@ class _ClassidiedDetailsScreenCopyState
                                       ],
                                     ),
                                     Text(
-                                      postTimeFormatter.formatPostTime(
-                                          data.createdate ?? ''),
+                                      postTimeFormatter
+                                          .formatPostTime(data.createdate),
                                       style: textStyleW400(
                                         size.width * 0.035,
                                         AppColors.blackText.withOpacity(0.5),
@@ -178,29 +176,41 @@ class _ClassidiedDetailsScreenCopyState
                         SizedBox(
                           height: size.height * 0.012,
                         ),
-                        if (data.imageUrl.toString().isNotEmpty &&
-                            Uri.tryParse(data.imageUrl.toString())
-                                    ?.hasAbsolutePath ==
-                                true)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                            ),
-                            child: Container(
-                              height: size.height * 0.28,
-                              width: size.width,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              child: Image.network(
-                                data.imageUrl ?? '',
-                                fit: BoxFit.fill,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return const SizedBox();
+                        // if (data.imageUrl.toString().isNotEmpty &&
+                        //     Uri.tryParse(data.imageUrl.toString())
+                        //             ?.hasAbsolutePath ==
+                        //         true)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: InkWell(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return FullScreenImageDialog(
+                                      imageUrl: data.imageUrl.toString());
                                 },
+                              );
+                            },
+                            child: SizedBox(
+                              height: size.height * 0.26,
+                              width: size.width,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(12.0),
+                                child: Image.network(
+                                  data.imageUrl.toString(),
+                                  fit: BoxFit.fill,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Image.asset(
+                                      Assets.imagesLogo,
+                                      fit: BoxFit.fill,
+                                    );
+                                  },
+                                ),
                               ),
                             ),
                           ),
+                        ),
                         SizedBox(
                           height: size.height * 0.01,
                         ),
@@ -210,8 +220,19 @@ class _ClassidiedDetailsScreenCopyState
                           ),
                           child: Align(
                             alignment: Alignment.topLeft,
-                            child:
-                                _buildHtmlContent(data.description ?? '', size),
+                            child: Html(
+                              data: data.title,
+                              style: {
+                                "html": Style(
+                                  lineHeight: const LineHeight(1),
+                                  maxLines: 1,
+                                  fontFamily: fontFamily,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: FontSize.medium,
+                                  color: AppColors.blackText,
+                                ),
+                              },
+                            ),
                           ),
                         ),
                         SizedBox(
@@ -261,9 +282,9 @@ class _ClassidiedDetailsScreenCopyState
                               ),
                               3.sbh,
                               Text(
-                                data.company?.isNotEmpty == true
-                                    ? data.company!
-                                    : 'Company is not provided',
+                                data.company.isNotEmpty == true
+                                    ? data.company
+                                    : 'N/A',
                                 style: textStyleW400(
                                     size.width * 0.032, AppColors.blackText),
                               ),
@@ -298,9 +319,9 @@ class _ClassidiedDetailsScreenCopyState
                               ),
                               3.sbh,
                               Text(
-                                '${data.city?.isNotEmpty == true ? data.city : "Address not provided"} '
-                                '${data.state?.isNotEmpty == true ? data.state : ""} '
-                                '${data.country?.isNotEmpty == true ? data.country : ""}',
+                                '${data.city.isNotEmpty == true ? data.city : "N/A"} '
+                                '${data.state.isNotEmpty == true ? data.state : ""} '
+                                '${data.country.isNotEmpty == true ? data.country : ""}',
                                 style: textStyleW400(
                                     size.width * 0.032, AppColors.blackText),
                               ),
@@ -337,11 +358,38 @@ class _ClassidiedDetailsScreenCopyState
                                     ],
                                   ),
                                   3.sbh,
-                                  Text(
-                                    '${data.userData!.countrycode1?.isNotEmpty == true ? data.userData!.countrycode1 : ""}'
-                                    '${data.userData!.mobile?.isNotEmpty == true ? data.userData!.mobile : "Number is not provided"}',
-                                    style: textStyleW400(size.width * 0.032,
-                                        AppColors.blackText),
+                                  InkWell(
+                                    onTap: () {
+                                      final String countryCode =
+                                          data.userData.countrycode1;
+                                      final String mobileNumber =
+                                          data.userData.mobile;
+
+                                      if (mobileNumber.isEmpty) {
+                                        showToasterrorborder(
+                                            'No Any Url Found', context);
+                                        if (kDebugMode) {
+                                          print('Tap without number');
+                                        }
+                                      } else {
+                                        final Uri phoneUri = Uri(
+                                          scheme: 'tel',
+                                          path:
+                                              '$countryCode$mobileNumber', // Combine country code and mobile
+                                        );
+                                        launchUrl(phoneUri);
+                                        if (kDebugMode) {
+                                          print(
+                                              'Tap with number: $countryCode$mobileNumber');
+                                        }
+                                      }
+                                    },
+                                    child: Text(
+                                      '${data.userData.countrycode1.isNotEmpty == true ? data.userData.countrycode1 : ""}'
+                                      '${data.userData.mobile.isNotEmpty == true ? data.userData.mobile : "N/A"}',
+                                      style: textStyleW400(size.width * 0.032,
+                                          AppColors.blackText),
+                                    ),
                                   ),
                                 ],
                               ),
@@ -365,10 +413,35 @@ class _ClassidiedDetailsScreenCopyState
                                       ],
                                     ),
                                     3.sbh,
-                                    Text(
-                                      '${data.userData!.email?.isNotEmpty == true ? data.userData!.email : "Email is not provided"}',
-                                      style: textStyleW400(size.width * 0.032,
-                                          AppColors.blackText),
+                                    InkWell(
+                                      onTap: () {
+                                        final String email =
+                                            data.userData.email;
+
+                                        if (email.isNotEmpty) {
+                                          final Uri emailUri = Uri(
+                                            scheme: 'mailto',
+                                            path: email,
+                                          );
+                                          launchUrl(emailUri);
+                                          if (kDebugMode) {
+                                            print('Tap with email: $email');
+                                          }
+                                        } else {
+                                          showToasterrorborder(
+                                              'No Email Found', context);
+                                          if (kDebugMode) {
+                                            print('Tap without email');
+                                          }
+                                        }
+                                      },
+                                      child: Text(
+                                        data.userData.email.isNotEmpty == true
+                                            ? data.userData.email
+                                            : "Email is not provided",
+                                        style: textStyleW400(size.width * 0.032,
+                                            AppColors.blackText),
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -404,8 +477,8 @@ class _ClassidiedDetailsScreenCopyState
                               ),
                               3.sbh,
                               LinkText(
-                                text: data.website!.isNotEmpty == true
-                                    ? data.website!
+                                text: data.website.isNotEmpty == true
+                                    ? data.website
                                     : "Website is not provided",
                                 style: textStyleW400(
                                   size.width * 0.035,
@@ -417,6 +490,58 @@ class _ClassidiedDetailsScreenCopyState
                                 ),
                               ),
                             ],
+                          ),
+                        ),
+                        5.sbh,
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(14),
+                            color: AppColors.white,
+                            border: const Border(
+                                bottom: BorderSide(color: Colors.grey)),
+                          ),
+                        ),
+                        5.sbh,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                          ),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Html(
+                              data: data.description,
+                              style: {
+                                "table": Style(
+                                  backgroundColor: const Color.fromARGB(
+                                      0x50, 0xee, 0xee, 0xee),
+                                ),
+                                "tr": Style(
+                                  border: const Border(
+                                      bottom: BorderSide(color: Colors.grey)),
+                                ),
+                                "th": Style(
+                                  backgroundColor: Colors.grey,
+                                ),
+                                "td": Style(
+                                  alignment: Alignment.topLeft,
+                                ),
+                                'h5': Style(
+                                  maxLines: 2,
+                                  textOverflow: TextOverflow.ellipsis,
+                                ),
+                              },
+                              onLinkTap: (String? url,
+                                  Map<String, String> attributes,
+                                  dom.Element? element) {
+                                if (url != null) {
+                                  if (kDebugMode) {
+                                    print("Opening $url...");
+                                  }
+                                  // Use url_launcher to open the URL
+                                  _launchUrl(url);
+                                }
+                              },
+                            ),
                           ),
                         ),
                         SizedBox(
@@ -474,8 +599,7 @@ class _ClassidiedDetailsScreenCopyState
                                     ? likeCount.value + 1
                                     : likeCount.value - 1;
 
-                                await controller.toggleLike(
-                                    data.id ?? 0, context);
+                                await controller.toggleLike(data.id, context);
                               },
                               child: Icon(
                                 // Observe like status
@@ -500,7 +624,7 @@ class _ClassidiedDetailsScreenCopyState
                             : InkWell(
                                 onTap: () async {
                                   await controller.fetchLikeListClassified(
-                                      data.id ?? 0, context);
+                                      data.id, context);
                                   // ignore: use_build_context_synchronously
                                   showLikeList(context);
                                 },
@@ -518,7 +642,7 @@ class _ClassidiedDetailsScreenCopyState
                             GestureDetector(
                               onTap: () => showFullScreenDialog(
                                 context,
-                                data.id!,
+                                data.id,
                               ),
                               child: SizedBox(
                                 height: size.height * 0.028,
@@ -567,7 +691,7 @@ class _ClassidiedDetailsScreenCopyState
                                 isBookmarked.value = newBookmarkedValue;
 
                                 await controller.toggleBookMark(
-                                    data.id ?? 0, context);
+                                    data.id, context);
                               },
                               child: SvgPicture.asset(
                                 isBookmarked.value
@@ -583,7 +707,7 @@ class _ClassidiedDetailsScreenCopyState
                         ),
                         InkWell(
                           onTap: () {
-                            Share.share(data.fullUrl ?? '');
+                            Share.share(data.fullUrl);
                           },
                           child: SizedBox(
                             height: size.height * 0.028,
@@ -608,29 +732,23 @@ class _ClassidiedDetailsScreenCopyState
     );
   }
 
+  // Define the _launchUrl method
+  Future<void> _launchUrl(String url) async {
+    // ignore: deprecated_member_use
+    if (await canLaunch(url)) {
+      // ignore: deprecated_member_use
+      await launch(url); // Old launch method for non-web
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
   void showLikeList(BuildContext context) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
         return const ClassifiedLikedListContent();
       },
-    );
-  }
-
-  Widget _buildHtmlContent(String htmlContent, Size size) {
-    final parsedHtml = htmlParser.parse(htmlContent);
-    final text = parsedHtml.body?.text ?? '';
-
-    return LinkText(
-      text: text,
-      style: textStyleW400(
-        size.width * 0.035,
-        AppColors.blackText.withOpacity(0.5),
-      ),
-      linkStyle: const TextStyle(
-        color: Colors.blue,
-        decoration: TextDecoration.underline,
-      ),
     );
   }
 }

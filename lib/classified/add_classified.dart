@@ -8,6 +8,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+// ignore: depend_on_referenced_packages
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -88,7 +89,7 @@ class _AddClassifiedState extends State<AddClassified> {
                         controller.titleValidation();
                         controller.isTitleTyping.value = true;
                       },
-                      height: 60,
+                      height: 58,
                     ),
                   ),
                   10.sbh,
@@ -96,35 +97,37 @@ class _AddClassifiedState extends State<AddClassified> {
                     () => BorderContainer(
                       isError: controller.categoryError.value,
                       byDefault: !controller.isCategoryTyping.value,
-                      height: 60,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: TextField(
-                          controller:
-                              controller.getSelectedCategoryTextController(),
-                          readOnly: true,
-                          onTap: () {
-                            showSelectCategory(
-                              context,
-                              size,
-                              controller,
-                              controller.categorylist,
-                            );
-                            controller.mlmCategoryValidation();
-                          },
-                          style: textStyleW500(
-                              size.width * 0.04, AppColors.blackText),
-                          cursorColor: AppColors.blackText,
-                          decoration: InputDecoration(
-                              hintText: "Select Category",
-                              contentPadding: const EdgeInsets.only(
-                                top: 3,
-                              ),
-                              border: InputBorder.none,
-                              suffixIcon: Icon(
-                                Icons.arrow_drop_down,
-                                color: AppColors.blackText,
-                              )),
+                      height: 58,
+                      child: TextField(
+                        controller:
+                            controller.getSelectedCategoryTextController(),
+                        readOnly: true,
+                        onTap: () {
+                          showSelectCategory(
+                            context,
+                            size,
+                            controller,
+                            controller.categorylist,
+                          );
+                          controller.mlmCategoryValidation();
+                        },
+                        style: textStyleW500(
+                            size.width * 0.04, AppColors.blackText),
+                        cursorColor: AppColors.blackText,
+                        decoration: InputDecoration(
+                          labelText: "Select Category",
+                          labelStyle: const TextStyle(
+                            color: Colors.black,
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 5,
+                            horizontal: 2,
+                          ),
+                          border: InputBorder.none,
+                          suffixIcon: Icon(
+                            Icons.arrow_drop_down,
+                            color: AppColors.blackText,
+                          ),
                         ),
                       ),
                     ),
@@ -134,41 +137,44 @@ class _AddClassifiedState extends State<AddClassified> {
                     () => BorderContainer(
                       isError: controller.subCategoryError.value,
                       byDefault: !controller.isSubCategoryTyping.value,
-                      height: 60,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: TextField(
-                          controller:
-                              controller.getSelectedSubCategoryTextController(),
-                          readOnly: true,
-                          onTap: () {
-                            showSelectSubCategory(
-                              context,
-                              size,
-                              controller,
-                              controller.subcategoryList,
-                            );
-                            controller.mlmsubCategoryValidation();
-                          },
-                          style: textStyleW500(
-                              size.width * 0.04, AppColors.blackText),
-                          cursorColor: AppColors.blackText,
-                          decoration: InputDecoration(
-                              hintText: "Select Sub Category",
-                              contentPadding: const EdgeInsets.only(top: 3),
-                              border: InputBorder.none,
-                              suffixIcon: Icon(
-                                Icons.arrow_drop_down,
-                                color: AppColors.blackText,
-                              )),
-                        ),
+                      height: 58,
+                      child: TextField(
+                        controller:
+                            controller.getSelectedSubCategoryTextController(),
+                        readOnly: true,
+                        onTap: () {
+                          showSelectSubCategory(
+                            context,
+                            size,
+                            controller,
+                            controller.subcategoryList,
+                          );
+                          controller.mlmsubCategoryValidation();
+                        },
+                        style: textStyleW500(
+                            size.width * 0.04, AppColors.blackText),
+                        cursorColor: AppColors.blackText,
+                        decoration: InputDecoration(
+                            labelText: "Select Sub Category",
+                            labelStyle: const TextStyle(
+                              color: Colors.black,
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 5,
+                              horizontal: 2,
+                            ),
+                            border: InputBorder.none,
+                            suffixIcon: Icon(
+                              Icons.arrow_drop_down,
+                              color: AppColors.blackText,
+                            )),
                       ),
                     ),
                   ),
                   10.sbh,
                   Obx(
                     () => CompanyBorderTextfield(
-                      height: 65,
+                      height: 58,
                       keyboard: TextInputType.multiline,
                       textInputType: const [],
                       hint: "Company Name",
@@ -219,7 +225,7 @@ class _AddClassifiedState extends State<AddClassified> {
                       onChanged: (value) {
                         controller.isUrlTyping.value = true;
                       },
-                      height: 60,
+                      height: 58,
                     ),
                   ),
                   10.sbh,
@@ -229,7 +235,7 @@ class _AddClassifiedState extends State<AddClassified> {
                       readOnly: true,
                       style: const TextStyle(
                           fontSize: 15.0,
-                          fontWeight: FontWeight.w400,
+                          fontWeight: FontWeight.w500,
                           color: Colors.black,
                           fontFamily: 'assets/fonts/Metropolis-Black.otf'),
                       onTap: () async {
@@ -286,12 +292,9 @@ class _AddClassifiedState extends State<AddClassified> {
                       },
                       decoration: InputDecoration(
                         hintText: "Location/ Address / City *",
-                        hintStyle: const TextStyle(
-                                fontSize: 15.0,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black,
-                                fontFamily: 'assets/fonts/Metropolis-Black.otf')
-                            .copyWith(color: Colors.black45),
+                        labelStyle: const TextStyle(
+                          color: Colors.black,
+                        ),
                         filled: true,
                         fillColor: AppColors.white,
                         enabledBorder: OutlineInputBorder(

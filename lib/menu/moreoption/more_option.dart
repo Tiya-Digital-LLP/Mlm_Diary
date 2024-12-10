@@ -11,6 +11,7 @@ import 'package:mlmdiary/firstscreen/home_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/login/controller/login_controller.dart';
 import 'package:mlmdiary/menu/controller/profile_controller.dart';
+import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_shimmer_more.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
@@ -111,12 +112,25 @@ class _moreState extends State<MoreOptionScreen> {
           final userProfile = controller.userProfile.value.userProfile;
           final mlmSocial = controller.mlmSocial.value.sitesetting;
           if (controller.isLoading.value) {
-            return Center(
-                child: CustomLottieAnimation(
-              child: Lottie.asset(
-                Assets.lottieLottie,
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: SizedBox(
+                width: double.infinity,
+                height: double.infinity,
+                child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    childAspectRatio: 2,
+                  ),
+                  itemCount: choices.length,
+                  itemBuilder: (context, index) {
+                    return const CustomGridItem();
+                  },
+                ),
               ),
-            ));
+            );
           }
 
           if (userProfile == null) {
@@ -169,26 +183,6 @@ class _moreState extends State<MoreOptionScreen> {
                               child: Image.network(
                                 '${userProfile.imagePath.toString()}?${DateTime.now().millisecondsSinceEpoch}',
                                 fit: BoxFit.cover,
-                                loadingBuilder: (BuildContext context,
-                                    Widget child,
-                                    ImageChunkEvent? loadingProgress) {
-                                  if (loadingProgress == null) {
-                                    return child;
-                                  }
-                                  return Center(
-                                    child: CircularProgressIndicator(
-                                      value:
-                                          loadingProgress.expectedTotalBytes !=
-                                                  null
-                                              ? loadingProgress
-                                                      .cumulativeBytesLoaded /
-                                                  (loadingProgress
-                                                          .expectedTotalBytes ??
-                                                      1)
-                                              : null,
-                                    ),
-                                  );
-                                },
                                 errorBuilder: (context, error, stackTrace) {
                                   return Image.asset(
                                     Assets.imagesAdminlogo,
@@ -552,9 +546,8 @@ class _moreState extends State<MoreOptionScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      IconButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () async {
+                      InkWell(
+                        onTap: () async {
                           if (mlmSocial!.whatsapp != null) {
                             final String phoneNumber = mlmSocial.whatsapp!;
                             final String name = userProfile.name ?? 'N/A';
@@ -579,12 +572,11 @@ class _moreState extends State<MoreOptionScreen> {
                             showToasterrorborder("No Any Url Found", context);
                           }
                         },
-                        icon: SvgPicture.asset(Assets.svgLogosWhatsappIcon,
+                        child: SvgPicture.asset(Assets.svgLogosWhatsappIcon,
                             height: 26, width: 26),
                       ),
-                      IconButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () {
+                      InkWell(
+                        onTap: () {
                           if (mlmSocial!.facebookLink != null) {
                             _launchURL(mlmSocial.facebookLink.toString());
                             if (kDebugMode) {
@@ -594,12 +586,11 @@ class _moreState extends State<MoreOptionScreen> {
                             showToasterrorborder("No Any Url Fond", context);
                           }
                         },
-                        icon: SvgPicture.asset(Assets.svgLogosFacebook,
+                        child: SvgPicture.asset(Assets.svgLogosFacebook,
                             height: 26, width: 26),
                       ),
-                      IconButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () {
+                      InkWell(
+                        onTap: () {
                           if (mlmSocial!.intagramLink != null) {
                             _launchURL(mlmSocial.intagramLink.toString());
                             if (kDebugMode) {
@@ -609,12 +600,11 @@ class _moreState extends State<MoreOptionScreen> {
                             showToasterrorborder("No Any Url Fond", context);
                           }
                         },
-                        icon: SvgPicture.asset(Assets.svgInstagram,
+                        child: SvgPicture.asset(Assets.svgInstagram,
                             height: 26, width: 26),
                       ),
-                      IconButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () {
+                      InkWell(
+                        onTap: () {
                           if (mlmSocial!.linkedinLink != null) {
                             _launchURL(mlmSocial.linkedinLink.toString());
                             if (kDebugMode) {
@@ -624,12 +614,11 @@ class _moreState extends State<MoreOptionScreen> {
                             showToasterrorborder("No Any Url Fond", context);
                           }
                         },
-                        icon: SvgPicture.asset(Assets.svgLogosLinkedinIcon,
+                        child: SvgPicture.asset(Assets.svgLogosLinkedinIcon,
                             height: 26, width: 26),
                       ),
-                      IconButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () {
+                      InkWell(
+                        onTap: () {
                           if (mlmSocial!.youtubeLink != null) {
                             _launchURL(mlmSocial.youtubeLink.toString());
                             if (kDebugMode) {
@@ -639,12 +628,11 @@ class _moreState extends State<MoreOptionScreen> {
                             showToasterrorborder("No Any Url Fond", context);
                           }
                         },
-                        icon: SvgPicture.asset(Assets.svgYoutube,
+                        child: SvgPicture.asset(Assets.svgYoutube,
                             height: 26, width: 26),
                       ),
-                      IconButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () {
+                      InkWell(
+                        onTap: () {
                           if (mlmSocial!.telegramLink != null) {
                             _launchURL(mlmSocial.telegramLink.toString());
                             if (kDebugMode) {
@@ -654,12 +642,11 @@ class _moreState extends State<MoreOptionScreen> {
                             showToasterrorborder("No Any Url Fond", context);
                           }
                         },
-                        icon: SvgPicture.asset(Assets.svgTelegram,
+                        child: SvgPicture.asset(Assets.svgTelegram,
                             height: 26, width: 26),
                       ),
-                      IconButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () {
+                      InkWell(
+                        onTap: () {
                           if (mlmSocial!.twitterLink != null) {
                             _launchURL(mlmSocial.twitterLink.toString());
                             if (kDebugMode) {
@@ -669,7 +656,7 @@ class _moreState extends State<MoreOptionScreen> {
                             showToasterrorborder("No Any Url Fond", context);
                           }
                         },
-                        icon: SvgPicture.asset(Assets.svgTwitter,
+                        child: SvgPicture.asset(Assets.svgTwitter,
                             height: 26, width: 26),
                       ),
                     ],

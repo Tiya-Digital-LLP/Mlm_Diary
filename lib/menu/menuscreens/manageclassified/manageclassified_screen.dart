@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/manageclassified/controller/manage_classified_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/manageclassified/manageclassified_card.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
-import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
+import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_shimmer_classified.dart';
 import 'package:mlmdiary/widgets/remimaining_count_controller./remaining_count.dart';
 
 class ManageClassified extends StatefulWidget {
@@ -25,9 +24,6 @@ class _MlmClassifiedState extends State<ManageClassified> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchClassifieds();
-    });
     _refreshData();
   }
 
@@ -37,7 +33,7 @@ class _MlmClassifiedState extends State<ManageClassified> {
   }
 
   Future<void> _refreshData() async {
-    await controller.getClassified();
+    await controller.fetchClassifieds();
   }
 
   @override
@@ -57,12 +53,18 @@ class _MlmClassifiedState extends State<ManageClassified> {
           child: Obx(() {
             if (controller.isLoading.value &&
                 controller.classifiedList.isEmpty) {
-              return Center(
-                  child: CustomLottieAnimation(
-                child: Lottie.asset(
-                  Assets.lottieLottie,
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: ListView.builder(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  itemCount: 1,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    return const CustomShimmerClassified(
+                        width: 175, height: 240);
+                  },
                 ),
-              ));
+              );
             }
 
             if (controller.classifiedList.isEmpty) {
@@ -85,8 +87,7 @@ class _MlmClassifiedState extends State<ManageClassified> {
               itemCount: controller.classifiedList.length,
               itemBuilder: (context, index) {
                 final post = controller.classifiedList[index];
-                final image =
-                    '${post.imagePath.toString()}?${DateTime.now().millisecondsSinceEpoch}';
+
                 return Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -99,7 +100,7 @@ class _MlmClassifiedState extends State<ManageClassified> {
                     },
                     child: ManageClassifiedCard(
                       onDelete: () => deletePost(index),
-                      userImage: image,
+                      userImage: post.imagePath ?? '',
                       userName: post.creatby ?? '',
                       postTitle: post.title ?? '',
                       dateTime: post.datecreated ?? '',

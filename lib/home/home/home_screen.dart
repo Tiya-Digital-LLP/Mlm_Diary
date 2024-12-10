@@ -37,9 +37,12 @@ import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
+import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_shimmer_classified.dart';
+import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_shimmer_user_card.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:mlmdiary/widgets/remimaining_count_controller./remaining_count.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -127,13 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     onTap: () async {
                       SharedPreferences prefs =
                           await SharedPreferences.getInstance();
-                      String? apiToken = prefs.getString(Constants.accessToken);
-
-                      if (apiToken == null) {
-                        // ignore: use_build_context_synchronously
-                        showSignupDialog(context);
-                        return;
-                      }
+                      prefs.getString(Constants.accessToken);
                       Get.toNamed(Routes.search);
                     },
                     child: Padding(
@@ -150,13 +147,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     onTap: () async {
                       SharedPreferences prefs =
                           await SharedPreferences.getInstance();
-                      String? apiToken = prefs.getString(Constants.accessToken);
-
-                      if (apiToken == null) {
-                        // ignore: use_build_context_synchronously
-                        showSignupDialog(context);
-                        return;
-                      }
+                      prefs.getString(Constants.accessToken);
                       Get.toNamed(Routes.mlmcompanies);
                     },
                     child: Padding(
@@ -173,13 +164,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     onTap: () async {
                       SharedPreferences prefs =
                           await SharedPreferences.getInstance();
-                      String? apiToken = prefs.getString(Constants.accessToken);
-
-                      if (apiToken == null) {
-                        // ignore: use_build_context_synchronously
-                        showSignupDialog(context);
-                        return;
-                      }
+                      prefs.getString(Constants.accessToken);
                       Get.toNamed(Routes.messagescreen);
                     },
                     child: Padding(
@@ -196,13 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     onTap: () async {
                       SharedPreferences prefs =
                           await SharedPreferences.getInstance();
-                      String? apiToken = prefs.getString(Constants.accessToken);
-
-                      if (apiToken == null) {
-                        // ignore: use_build_context_synchronously
-                        showSignupDialog(context);
-                        return;
-                      }
+                      prefs.getString(Constants.accessToken);
                       Get.toNamed(Routes.notification);
                     },
                     child: Stack(
@@ -360,7 +339,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Obx(
                               () => Row(
                                 children: [
-                                  // Display the mutual friends if the list is not empty
                                   if (controller
                                       .mutualFriendList.isNotEmpty) ...[
                                     for (int index = 0;
@@ -443,20 +421,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ],
                                       ),
                                     10.sbw,
-                                    // Only display "View All" if the list is not empty
                                     InkWell(
                                       onTap: () async {
                                         SharedPreferences prefs =
                                             await SharedPreferences
                                                 .getInstance();
-                                        String? apiToken = prefs
-                                            .getString(Constants.accessToken);
-
-                                        if (apiToken == null) {
-                                          // ignore: use_build_context_synchronously
-                                          showSignupDialog(context);
-                                          return;
-                                        }
+                                        prefs.getString(Constants.accessToken);
                                         Get.toNamed(Routes.databasescreen);
                                       },
                                       child: Row(
@@ -476,13 +446,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                     20.sbw,
                                   ] else ...[
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: size.width * 0.04),
-                                      child: Text(
-                                        'No mutual friends found',
-                                        style: textStyleW700(size.width * 0.036,
-                                            AppColors.blackText),
+                                    SizedBox(
+                                      height: 200,
+                                      child: ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount: 5,
+                                        shrinkWrap: true,
+                                        itemBuilder: (context, index) {
+                                          return Padding(
+                                            padding: EdgeInsets.only(
+                                                right: size.width * 0.03),
+                                            child:
+                                                const SuggetionUserCardShimmer(),
+                                          );
+                                        },
                                       ),
                                     ),
                                   ],
@@ -498,25 +475,32 @@ class _HomeScreenState extends State<HomeScreen> {
                       if (controller.isLoading.value &&
                           controller.homeList.isEmpty) {
                         return SliverToBoxAdapter(
-                          child: Center(
-                            child: CustomLottieAnimation(
-                              child: Lottie.asset(
-                                Assets.lottieLottie,
-                              ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: ListView.builder(
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              itemCount: 4,
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                return const CustomShimmerClassified(
+                                    width: 175, height: 240);
+                              },
                             ),
                           ),
                         );
                       }
                       if (controller.homeList.isEmpty) {
-                        return const SliverToBoxAdapter(
-                          child: Center(
-                            child: Text(
-                              'Data not found',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
+                        return SliverToBoxAdapter(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: ListView.builder(
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              itemCount: 4,
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                return const CustomShimmerClassified(
+                                    width: 175, height: 240);
+                              },
                             ),
                           ),
                         );
@@ -535,7 +519,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             }
                             final post = controller.homeList[index];
                             String location =
-                                '${post.city ?? ''}, ${post.state ?? ''}, ${post.country ?? ''}';
+                                '${post.city ?? ''}, ${post.state ?? ''}, ${post.country ?? ''}'
+                                    .trim();
+                            if (location == ', ,') {
+                              location = 'N/A';
+                            }
+                            String? plan = post.plan?.isNotEmpty == true
+                                ? post.plan
+                                : 'N/A';
                             Widget cardWidget;
                             switch (post.type) {
                               case 'classified':
@@ -625,7 +616,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               case 'news':
                                 cardWidget = NewsHomeCard(
                                   userImage: post.userData?.imagePath ?? '',
-                                  userName: post.userData?.name ?? '',
+                                  userName: post.userData?.name ?? 'N/A',
                                   postTitle: post.title ?? '',
                                   postCaption: post.description ?? '',
                                   postImage: post.imageUrl ?? '',
@@ -663,8 +654,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   userName: post.title ?? '',
                                   postTitle: post.title ?? '',
                                   postLocation: location,
-                                  immlm: post.immlm ?? '',
-                                  plan: post.plan ?? '',
+                                  immlm: post.immlm ?? 'N/A',
+                                  plan: plan.toString(),
                                   postImage: post.imageUrl ?? '',
                                   dateTime: post.createdate ?? '',
                                   controller: controller,
@@ -768,13 +759,7 @@ class _HomeScreenState extends State<HomeScreen> {
             value: 1,
             onTap: () async {
               SharedPreferences prefs = await SharedPreferences.getInstance();
-              String? apiToken = prefs.getString(Constants.accessToken);
-
-              if (apiToken == null) {
-                // ignore: use_build_context_synchronously
-                showSignupDialog(context);
-                return;
-              }
+              prefs.getString(Constants.accessToken);
               Get.toNamed(Routes.addpost);
             },
             child: Row(
@@ -789,13 +774,7 @@ class _HomeScreenState extends State<HomeScreen> {
             value: 2,
             onTap: () async {
               SharedPreferences prefs = await SharedPreferences.getInstance();
-              String? apiToken = prefs.getString(Constants.accessToken);
-
-              if (apiToken == null) {
-                // ignore: use_build_context_synchronously
-                showSignupDialog(context);
-                return;
-              }
+              prefs.getString(Constants.accessToken);
               // ignore: use_build_context_synchronously
               var controller = CustomFloatingActionButtonController(context);
               String selectedType = 'classified';
@@ -813,13 +792,7 @@ class _HomeScreenState extends State<HomeScreen> {
             value: 3,
             onTap: () async {
               SharedPreferences prefs = await SharedPreferences.getInstance();
-              String? apiToken = prefs.getString(Constants.accessToken);
-
-              if (apiToken == null) {
-                // ignore: use_build_context_synchronously
-                showSignupDialog(context);
-                return;
-              }
+              prefs.getString(Constants.accessToken);
               Get.toNamed(Routes.addquestionanswer);
             },
             child: Row(
@@ -834,13 +807,7 @@ class _HomeScreenState extends State<HomeScreen> {
             value: 4,
             onTap: () async {
               SharedPreferences prefs = await SharedPreferences.getInstance();
-              String? apiToken = prefs.getString(Constants.accessToken);
-
-              if (apiToken == null) {
-                // ignore: use_build_context_synchronously
-                showSignupDialog(context);
-                return;
-              }
+              prefs.getString(Constants.accessToken);
               // ignore: use_build_context_synchronously
               var controller = CustomFloatingActionButtonController(context);
               String selectedType = 'blog';
@@ -858,13 +825,7 @@ class _HomeScreenState extends State<HomeScreen> {
             value: 5,
             onTap: () async {
               SharedPreferences prefs = await SharedPreferences.getInstance();
-              String? apiToken = prefs.getString(Constants.accessToken);
-
-              if (apiToken == null) {
-                // ignore: use_build_context_synchronously
-                showSignupDialog(context);
-                return;
-              }
+              prefs.getString(Constants.accessToken);
               // ignore: use_build_context_synchronously
               var controller = CustomFloatingActionButtonController(context);
               String selectedType = 'news';
@@ -1002,13 +963,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _navigateToDetails(post) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? apiToken = prefs.getString(Constants.accessToken);
-
-    if (apiToken == null) {
-      // ignore: use_build_context_synchronously
-      showSignupDialog(context);
-      return;
-    }
+    prefs.getString(Constants.accessToken);
 
     switch (post.type) {
       case 'classified':
@@ -1108,48 +1063,53 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Stack(
         alignment: Alignment.bottomRight,
         children: [
-          PageView.builder(
-            controller: pageController,
-            itemCount: banners.length,
-            itemBuilder: (context, index) {
-              final banner = banners[index];
-              return GestureDetector(
-                onTap: () async {
-                  SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
-                  String? apiToken = prefs.getString(Constants.accessToken);
-
-                  if (apiToken == null) {
-                    // ignore: use_build_context_synchronously
-                    showSignupDialog(context);
-                    return;
-                  }
-                  if (banner.weblink == null || banner.weblink!.isEmpty) {
-                    // ignore: use_build_context_synchronously
-                    showToasterrorborder('No Any Url Found', context);
-                  } else {
-                    launchUrl(
-                      Uri.parse(banner.weblink.toString()),
-                      mode: LaunchMode.externalApplication,
-                    );
-                    // ignore: use_build_context_synchronously
-                    controller.bannerClick(banner.id ?? 0, context);
-                  }
-                },
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: Image.network(
-                    banner.image ?? '',
-                    fit: BoxFit.fill,
-                    width: 2500.0,
+          banners.isEmpty
+              ? Shimmer.fromColors(
+                  baseColor: AppColors.grayHighforshimmer,
+                  highlightColor: AppColors.grayLightforshimmer,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
                   ),
+                )
+              : PageView.builder(
+                  controller: pageController,
+                  itemCount: banners.length,
+                  itemBuilder: (context, index) {
+                    final banner = banners[index];
+                    return GestureDetector(
+                      onTap: () async {
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        prefs.getString(Constants.accessToken);
+                        if (banner.weblink == null || banner.weblink!.isEmpty) {
+                          // ignore: use_build_context_synchronously
+                          showToasterrorborder('No Any Url Found', context);
+                        } else {
+                          launchUrl(
+                            Uri.parse(banner.weblink.toString()),
+                            mode: LaunchMode.externalApplication,
+                          );
+                          // ignore: use_build_context_synchronously
+                          controller.bannerClick(banner.id ?? 0, context);
+                        }
+                      },
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10.0),
+                        child: Image.network(
+                          banner.image ?? '',
+                          fit: BoxFit.fill,
+                          width: 2500.0,
+                        ),
+                      ),
+                    );
+                  },
+                  onPageChanged: (index) {
+                    currentPageNotifier.value = index;
+                  },
                 ),
-              );
-            },
-            onPageChanged: (index) {
-              currentPageNotifier.value = index;
-            },
-          ),
           Positioned(
             bottom: 10,
             right: 10,

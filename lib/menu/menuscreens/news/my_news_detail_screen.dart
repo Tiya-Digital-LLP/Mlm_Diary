@@ -2,17 +2,17 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/my_news_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/custom_news_comment.dart';
 import 'package:mlmdiary/menu/menuscreens/news/news_like_list_content.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
+import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
-import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:text_link/text_link.dart';
 // ignore: library_prefixes
 import 'package:html/parser.dart' as htmlParser;
@@ -29,13 +29,16 @@ class MyNewsDetailScreen extends StatefulWidget {
 class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
   final ManageNewsController controller = Get.put(ManageNewsController());
   final post = Get.arguments as MyNewsData;
-
+  final UserProfileController userProfileController =
+      Get.put(UserProfileController());
   // like
   late RxBool isLiked;
   late RxInt likeCount;
 // bookmark
   late RxBool isBookmarked;
   late RxInt bookmarkCount;
+
+  int? currentUserID;
 
   void initializeLikes() {
     isLiked = RxBool(controller.newsList[0].likedByUser ?? false);
@@ -68,7 +71,7 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
   void initState() {
     super.initState();
 
-    initializeLikes();
+    // initializeLikes();
     initializeBookmarks();
   }
 
@@ -99,53 +102,58 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 8),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            backgroundColor: const Color(0XFFCCC9C9),
-                            radius: size.width * 0.07,
-                            child: ClipOval(
-                              child: CachedNetworkImage(
-                                  imageUrl: post.userData!.imagePath ?? '',
-                                  height: 97,
-                                  width: 105,
-                                  fit: BoxFit.fill,
-                                  placeholder: (context, url) => Center(
-                                          child: CustomLottieAnimation(
-                                        child: Lottie.asset(
-                                          Assets.lottieLottie,
-                                        ),
-                                      )),
-                                  errorWidget: (context, url, error) =>
-                                      Image.asset(Assets.imagesAdminlogo)),
+                      child: InkWell(
+                        onTap: () async {
+                          Get.toNamed(Routes.userprofilescreen, arguments: {
+                            'user_id': post.userData!.id ?? 0,
+                          });
+                          await userProfileController.fetchUserAllPost(
+                            1,
+                            post.userData!.id.toString(),
+                          );
+                        },
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              backgroundColor: const Color(0XFFCCC9C9),
+                              radius: size.width * 0.07,
+                              child: ClipOval(
+                                child: CachedNetworkImage(
+                                    imageUrl: post.userData!.imagePath ?? '',
+                                    height: 97,
+                                    width: 105,
+                                    fit: BoxFit.fill,
+                                    errorWidget: (context, url, error) =>
+                                        Image.asset(Assets.imagesAdminlogo)),
+                              ),
                             ),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    post.title ?? '',
-                                    style: textStyleW700(size.width * 0.043,
-                                        AppColors.blackText),
-                                  ),
-                                  const SizedBox(
-                                    width: 07,
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                "2 Min Ago",
-                                style: textStyleW400(size.width * 0.035,
-                                    AppColors.blackText.withOpacity(0.5)),
-                              ),
-                            ],
-                          )
-                        ],
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      post.title ?? '',
+                                      style: textStyleW700(size.width * 0.043,
+                                          AppColors.blackText),
+                                    ),
+                                    const SizedBox(
+                                      width: 07,
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  "2 Min Ago",
+                                  style: textStyleW400(size.width * 0.035,
+                                      AppColors.blackText.withOpacity(0.5)),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -163,16 +171,10 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
                         ),
                         child: CachedNetworkImage(
                           imageUrl:
-                              '${post.imagePath.toString()}?${DateTime.now().millisecondsSinceEpoch}',
+                              '${post.imagePath}?t=${DateTime.now().millisecondsSinceEpoch}',
                           height: 97,
                           width: 105,
                           fit: BoxFit.fill,
-                          placeholder: (context, url) => Center(
-                              child: CustomLottieAnimation(
-                            child: Lottie.asset(
-                              Assets.lottieLottie,
-                            ),
-                          )),
                           errorWidget: (context, url, error) =>
                               const Icon(Icons.error),
                         ),
@@ -200,7 +202,7 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
                       child: Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          '${post.category} | ${post.subcategory}',
+                          '${post.categoryName} | ${post.subcategoryName}',
                           style: TextStyle(
                             fontWeight: FontWeight.w400,
                             color: AppColors.blackText,
@@ -428,14 +430,16 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
                         height: size.height * 0.028,
                         width: size.height * 0.028,
                         child: GestureDetector(
-                          onTap: toggleLike,
+                          onTap: () {
+                            controller.toggleLike(post.id!, context);
+                          },
                           child: Icon(
-                            // Observe like status
-                            isLiked.value
-                                ? Icons.thumb_up_off_alt_sharp
+                            controller.likedStatusMap[post.id] == true
+                                ? Icons.thumb_up
                                 : Icons.thumb_up_off_alt_outlined,
-                            color:
-                                isLiked.value ? AppColors.primaryColor : null,
+                            color: controller.likedStatusMap[post.id] == true
+                                ? AppColors.primaryColor
+                                : null,
                             size: size.height * 0.032,
                           ),
                         ),
@@ -444,18 +448,22 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
                     const SizedBox(
                       width: 7,
                     ),
-                    likeCount.value == 0
-                        ? const SizedBox.shrink()
-                        : InkWell(
-                            onTap: () {
-                              showLikeList(context);
-                            },
-                            child: Text(
-                              '${likeCount.value}',
-                              style: textStyleW600(
-                                  size.width * 0.038, AppColors.blackText),
-                            ),
-                          ),
+                    Obx(() {
+                      // Sum the original `post.totallike` with the reactive like count
+                      int totalLikes = post.totallike! +
+                          (controller.likeCountMap[post.id] ?? 0);
+
+                      return InkWell(
+                        onTap: () {
+                          showLikeList(context);
+                        },
+                        child: Text(
+                          totalLikes.toString(),
+                          style: textStyleW600(
+                              size.width * 0.038, AppColors.blackText),
+                        ),
+                      );
+                    }),
                     const SizedBox(
                       width: 15,
                     ),

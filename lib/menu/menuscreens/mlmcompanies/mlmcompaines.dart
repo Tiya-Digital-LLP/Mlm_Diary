@@ -167,8 +167,10 @@ class _MlmCompaniesState extends State<MlmCompanies> {
                             horizontal: 12, vertical: 8),
                         child: GestureDetector(
                           onTap: () {
-                            Get.toNamed(Routes.mlmcompaniesdetails,
-                                arguments: post);
+                            Get.toNamed(
+                              Routes.mlmcompaniesdetails,
+                              arguments: post,
+                            );
                           },
                           child: MlmCompaniesCard(
                             userImage: post.imageUrl ?? '',

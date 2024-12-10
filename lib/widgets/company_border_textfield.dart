@@ -45,14 +45,12 @@ class CompanyBorderTextfield extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         color: AppColors.white,
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-        ),
-        child: Center(
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
           child: TextField(
             onTap: onTap,
-            cursorHeight: 20,
+            cursorHeight: 15,
             autocorrect: false,
             readOnly: readOnly,
             keyboardType: keyboard,
@@ -64,7 +62,14 @@ class CompanyBorderTextfield extends StatelessWidget {
             cursorColor: AppColors.blackText,
             decoration: InputDecoration(
               counterText: "",
-              hintText: hint,
+              labelText: hint,
+              labelStyle: const TextStyle(
+                color: Colors.black,
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 12,
+                horizontal: 2,
+              ),
               border: InputBorder.none,
             ),
           ),

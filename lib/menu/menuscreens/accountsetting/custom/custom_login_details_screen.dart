@@ -112,14 +112,15 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                       10.sbh,
                       Row(
                         children: [
-                          Icon(
-                            Icons.flag,
-                            size: 17,
-                            color: AppColors.bottomIcon,
+                          Image.asset(
+                            selectedCountry.value!.flag,
+                            package: countryCodePackageName,
+                            width: 20,
+                            height: 20,
                           ),
                           3.sbw,
                           Text(
-                            userProfile!.countrycode1 ?? 'N/A',
+                            '+${userProfile!.countrycode1 ?? 'N/A'}',
                             style: textStyleW400(
                               size.width * 0.032,
                               AppColors.blackText,
@@ -145,7 +146,7 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                   GestureDetector(
                                     onTap: _onPressedShowBottomSheet,
                                     child: BorderContainer(
-                                      height: 65,
+                                      height: 58,
                                       child: selectedCountry.value == null
                                           ? Container()
                                           : Center(
@@ -182,7 +183,7 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                     flex: 5,
                                     child: Obx(
                                       () => BorderTextField(
-                                        height: 65,
+                                        height: 58,
                                         hint: "New Mobile Number",
                                         readOnly:
                                             controller.mobileReadOnly.value,
@@ -204,49 +205,53 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                   ),
                                 ],
                               ),
-                              16.sbh,
                               Obx(() {
                                 // Show OTP field based on the value of showPhoneOtpField
                                 if (controller.showPhoneOtpField.value) {
-                                  return Column(
-                                    children: [
-                                      BorderTextField(
-                                        controller: controller.mobileOtp.value,
-                                        hint: "Enter OTP",
-                                        textInputType: [
-                                          FilteringTextInputFormatter.digitsOnly
-                                        ],
-                                        keyboard: TextInputType.number,
-                                        isError:
-                                            controller.mobileOtpError.value,
-                                        byDefault:
-                                            !controller.isMobileOtpTyping.value,
-                                        onChanged: (value) {
-                                          controller.mobileOtpValidation();
-                                          controller.isMobileOtpTyping.value =
-                                              true;
-                                        },
-                                      ),
-                                      16.sbh,
-                                      NormalButton(
-                                        onPressed: () {
-                                          FocusScope.of(context).unfocus();
-                                          // Access the TextEditingController instance and then get its text
-                                          final mobileOtpText =
-                                              controller.mobileOtp.value.text;
-                                          final countryText = selectedCountry
-                                              .value!.callingCode;
+                                  return Padding(
+                                    padding: const EdgeInsets.only(top: 16),
+                                    child: Column(
+                                      children: [
+                                        BorderTextField(
+                                          controller:
+                                              controller.mobileOtp.value,
+                                          hint: "Enter OTP",
+                                          textInputType: [
+                                            FilteringTextInputFormatter
+                                                .digitsOnly
+                                          ],
+                                          keyboard: TextInputType.number,
+                                          isError:
+                                              controller.mobileOtpError.value,
+                                          byDefault: !controller
+                                              .isMobileOtpTyping.value,
+                                          onChanged: (value) {
+                                            controller.mobileOtpValidation();
+                                            controller.isMobileOtpTyping.value =
+                                                true;
+                                          },
+                                        ),
+                                        16.sbh,
+                                        NormalButton(
+                                          onPressed: () {
+                                            FocusScope.of(context).unfocus();
+                                            // Access the TextEditingController instance and then get its text
+                                            final mobileOtpText =
+                                                controller.mobileOtp.value.text;
+                                            final countryText = selectedCountry
+                                                .value!.callingCode;
 
-                                          // Call updateVerifyPhoneOtp method here
-                                          controller.updateVerifyPhoneOtp(
-                                              mobileOtpText,
-                                              countryText,
-                                              context);
-                                        },
-                                        text: 'Verify',
-                                        isLoading: controller.isLoading,
-                                      )
-                                    ],
+                                            // Call updateVerifyPhoneOtp method here
+                                            controller.updateVerifyPhoneOtp(
+                                                mobileOtpText,
+                                                countryText,
+                                                context);
+                                          },
+                                          text: 'Verify',
+                                          isLoading: controller.isLoading,
+                                        )
+                                      ],
+                                    ),
                                   );
                                 } else {
                                   return const SizedBox();
@@ -350,7 +355,7 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                   hint: "New Email Address",
                                   controller: controller.email.value,
                                   byDefault: !controller.isEmailTyping.value,
-                                  height: 65,
+                                  height: 58,
                                 ),
                               ),
                               16.sbh,

@@ -123,14 +123,8 @@ class _MlmCompaniesDetailsState extends State<MlmcompanyNotificationDetail> {
                                         height: 60.0,
                                         width: 60.0,
                                         fit: BoxFit.cover,
-                                        placeholder: (context, url) => Center(
-                                            child: CustomLottieAnimation(
-                                          child: Lottie.asset(
-                                            Assets.lottieLottie,
-                                          ),
-                                        )),
                                         errorWidget: (context, url, error) =>
-                                            const Icon(Icons.error),
+                                            Image.asset(Assets.imagesAdminlogo),
                                       ),
                                     ),
                                   ]),
@@ -217,11 +211,39 @@ class _MlmCompaniesDetailsState extends State<MlmcompanyNotificationDetail> {
                                             ),
                                           ],
                                         ),
-                                        Text(
-                                          data.phone ?? '',
-                                          style: textStyleW400(
-                                              size.width * 0.035,
-                                              AppColors.blackText),
+                                        InkWell(
+                                          onTap: () {
+                                            final String? countryCode =
+                                                data.country;
+                                            final String? mobileNumber =
+                                                data.phone;
+
+                                            if (mobileNumber == null ||
+                                                mobileNumber.isEmpty) {
+                                              showToasterrorborder(
+                                                  'No Any Url Found', context);
+                                              if (kDebugMode) {
+                                                print('Tap without number');
+                                              }
+                                            } else {
+                                              final Uri phoneUri = Uri(
+                                                scheme: 'tel',
+                                                path:
+                                                    '$countryCode$mobileNumber', // Combine country code and mobile
+                                              );
+                                              launchUrl(phoneUri);
+                                              if (kDebugMode) {
+                                                print(
+                                                    'Tap with number: $countryCode$mobileNumber');
+                                              }
+                                            }
+                                          },
+                                          child: Text(
+                                            '${data.country ?? 'N/A'} - ${data.phone ?? 'N/A'}',
+                                            style: textStyleW400(
+                                                size.width * 0.035,
+                                                AppColors.blackText),
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -248,10 +270,36 @@ class _MlmCompaniesDetailsState extends State<MlmcompanyNotificationDetail> {
                                           ),
                                         ],
                                       ),
-                                      Text(
-                                        data.email ?? '',
-                                        style: textStyleW400(size.width * 0.035,
-                                            AppColors.blackText),
+                                      InkWell(
+                                        onTap: () {
+                                          final String? email = data.email;
+
+                                          if (email != null &&
+                                              email.isNotEmpty) {
+                                            final Uri emailUri = Uri(
+                                              scheme: 'mailto',
+                                              path: email,
+                                            );
+                                            launchUrl(emailUri);
+                                            if (kDebugMode) {
+                                              print('Tap with email: $email');
+                                            }
+                                          } else {
+                                            showToasterrorborder(
+                                                'No Email Found', context);
+                                            if (kDebugMode) {
+                                              print('Tap without email');
+                                            }
+                                          }
+                                        },
+                                        child: Text(
+                                          data.email?.isNotEmpty == true
+                                              ? data.email!
+                                              : 'N/A',
+                                          style: textStyleW400(
+                                              size.width * 0.035,
+                                              AppColors.blackText),
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -293,7 +341,9 @@ class _MlmCompaniesDetailsState extends State<MlmcompanyNotificationDetail> {
                                           ],
                                         ),
                                         LinkText(
-                                          text: data.website ?? '',
+                                          text: data.website?.isNotEmpty == true
+                                              ? data.website!
+                                              : 'N/A',
                                           style: textStyleW400(
                                             size.width * 0.035,
                                             AppColors.blackText

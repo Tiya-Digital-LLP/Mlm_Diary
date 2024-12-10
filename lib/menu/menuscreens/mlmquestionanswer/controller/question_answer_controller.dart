@@ -68,9 +68,8 @@ class QuestionAnswerController extends GetxController {
   RxInt selectedCountSubCategory = 0.obs;
 
   //like
-  var likedStatusMap = <int, bool>{};
-  var likeCountMap = <int, int>{};
-
+  RxMap<int, bool> likedStatusMap = <int, bool>{}.obs;
+  RxMap<int, int> likeCountMap = <int, int>{}.obs;
   //answer-like
   var answerlikedStatusMap = <int, bool>{};
   var answerlikeCountMap = <int, int>{};
@@ -675,15 +674,15 @@ class QuestionAnswerController extends GetxController {
           var data = jsonDecode(response.body);
           var addAnswerEntity = AddAnswerEntity.fromJson(data);
           await getAnswers(1, answerId);
-           // Check if the status is 0 and show a toast message
-        if (data['status'] == 0) {
-          showToasterrorborder(data['message'], context);
-        } else {
-          getAnswers(1, answerId);
-          if (kDebugMode) {
-            print('Success: $addAnswerEntity');
+          // Check if the status is 0 and show a toast message
+          if (data['status'] == 0) {
+            showToasterrorborder(data['message'], context);
+          } else {
+            getAnswers(1, answerId);
+            if (kDebugMode) {
+              print('Success: $addAnswerEntity');
+            }
           }
-        }
           if (kDebugMode) {
             print('Success: $addAnswerEntity');
           }
@@ -944,16 +943,73 @@ class QuestionAnswerController extends GetxController {
   void updateUIWithQuestionData(MyQuestionQuestions blogData) {
     title.value.text = blogData.title ?? '';
 
-    isCategorySelectedList.clear();
-    for (var category in categorylist) {
-      bool isSelected = blogData.category == (category.id.toString());
-      isCategorySelectedList.add(isSelected);
+    // Handle category selection (using categoryId as int)
+    int? categoryId = int.tryParse(blogData.category ?? '');
+
+    if (categoryId != null) {
+      if (kDebugMode) {
+        print('Category ID selected: $categoryId');
+      }
+
+      isCategorySelectedList.fillRange(0, isCategorySelectedList.length, false);
+      int index = categorylist.indexWhere((item) => item.id == categoryId);
+
+      if (kDebugMode) {
+        print('Category index by ID: $index');
+      }
+
+      if (index != -1) {
+        isCategorySelectedList[index] = true;
+        selectedCountCategory.value = 1;
+        selectedCategoryId.value = categorylist[index].id!;
+
+        if (kDebugMode) {
+          print('Category selected, ID: ${selectedCategoryId.value}');
+        }
+
+        fetchSubCategoryList(categorylist[index].id!);
+      }
+    } else {
+      if (kDebugMode) {
+        print('Invalid categoryId');
+      }
     }
 
-    isSubCategorySelectedList.clear();
-    for (var subcategory in subcategoryList) {
-      bool isSelected = blogData.subcategory == (subcategory.id.toString());
-      isSubCategorySelectedList.add(isSelected);
+    // Handle subcategory selection (using subcategoryId as int)
+    int? subcategoryId = int.tryParse(blogData.subcategory ?? '');
+
+    if (subcategoryId != null) {
+      if (kDebugMode) {
+        print('Subcategory ID selected: $subcategoryId');
+      }
+
+      isSubCategorySelectedList.fillRange(
+          0, isSubCategorySelectedList.length, false);
+
+      int subcategoryIndex =
+          subcategoryList.indexWhere((item) => item.id == subcategoryId);
+
+      if (kDebugMode) {
+        print('Subcategory index by ID: $subcategoryIndex');
+      }
+
+      if (subcategoryIndex != -1) {
+        isSubCategorySelectedList[subcategoryIndex] = true;
+        selectedCountSubCategory.value = 1;
+        selectedSubCategoryId.value = subcategoryList[subcategoryIndex].id!;
+
+        if (kDebugMode) {
+          print('Subcategory selected, ID: ${selectedSubCategoryId.value}');
+        }
+      } else {
+        if (kDebugMode) {
+          print('Subcategory not found in the list');
+        }
+      }
+    } else {
+      if (kDebugMode) {
+        print('Invalid subcategoryId');
+      }
     }
   }
 
@@ -1359,10 +1415,10 @@ class QuestionAnswerController extends GetxController {
           // Update the liked status and like count based on the message
           if (message == 'You have liked this Question') {
             likedStatusMap[questionId] = true;
-            likeCountMap[questionId] = (likeCountMap[questionId] ?? 0) + 1;
+            likeCountMap[questionId] = (likeCountMap[questionId] ?? 0);
           } else if (message == 'You have unliked this Question') {
             likedStatusMap[questionId] = false;
-            likeCountMap[questionId] = (likeCountMap[questionId] ?? 0) - 1;
+            likeCountMap[questionId] = (likeCountMap[questionId] ?? 0);
           }
 
           showToastverifedborder(message!, context);

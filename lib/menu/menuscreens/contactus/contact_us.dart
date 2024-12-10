@@ -16,6 +16,7 @@ import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/border_text_field.dart';
 import 'package:mlmdiary/widgets/custom_border_container.dart';
+import 'package:mlmdiary/widgets/discription_text_field.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:mlmdiary/widgets/normal_button.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -105,7 +106,7 @@ class _ContactUsState extends State<ContactUs> {
                       controller.nameValidation(context);
                       controller.isNameTyping.value = true;
                     },
-                    height: 70,
+                    height: 58,
                   ),
                 ),
                 10.sbh,
@@ -121,7 +122,7 @@ class _ContactUsState extends State<ContactUs> {
                       controller.emailValidation();
                       controller.isEmailTyping.value = true;
                     },
-                    height: 70,
+                    height: 58,
                   ),
                 ),
                 10.sbh,
@@ -131,9 +132,9 @@ class _ContactUsState extends State<ContactUs> {
                       onTap: _onPressedShowBottomSheet,
                       child: SizedBox(
                         width: 120,
-                        height: 68,
+                        height: 58,
                         child: BorderContainer(
-                          height: 60,
+                          height: 58,
                           child: Obx(() {
                             final country = _selectedCountry.value;
                             return country == null
@@ -170,7 +171,7 @@ class _ContactUsState extends State<ContactUs> {
                     Expanded(
                       child: Obx(
                         () => BorderTextField(
-                          height: 70,
+                          height: 58,
                           hint: "Mobile Number",
                           readOnly: controller.mobileReadOnly.value,
                           controller: controller.mobile.value,
@@ -192,19 +193,20 @@ class _ContactUsState extends State<ContactUs> {
                 10.sbh,
                 Obx(
                   () => BorderTextField(
-                    keyboard: TextInputType.name,
+                    keyboard: TextInputType.multiline,
                     textInputType: const [],
+                    readOnly: true,
                     hint: "Company",
                     controller: controller.company.value,
                     byDefault: !controller.isCompanyTyping.value,
                     onChanged: (value) {},
-                    height: 70,
+                    height: 58,
                   ),
                 ),
                 10.sbh,
                 Obx(
-                  () => BorderTextField(
-                    keyboard: TextInputType.name,
+                  () => DiscriptionTextField(
+                    keyboard: TextInputType.multiline,
                     textInputType: const [],
                     hint: "Message*",
                     controller: controller.message.value,
@@ -214,7 +216,6 @@ class _ContactUsState extends State<ContactUs> {
                       controller.messageValidation();
                       controller.isMessageTyping.value = true;
                     },
-                    height: 100,
                   ),
                 ),
                 20.sbh,
@@ -293,7 +294,7 @@ class _ContactUsState extends State<ContactUs> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Text(
-                              '+91 8866409966',
+                              '+91 8866409933',
                               style: textStyleW700(
                                   size.width * 0.060, AppColors.blackText),
                             ),
@@ -302,7 +303,7 @@ class _ContactUsState extends State<ContactUs> {
                               child: IconButton(
                                 onPressed: () {
                                   final Uri phoneUri =
-                                      Uri(scheme: 'tel', path: '8866409966');
+                                      Uri(scheme: 'tel', path: '8866409933');
                                   launchUrl(phoneUri);
                                   if (kDebugMode) {
                                     print('tap with number');
@@ -519,6 +520,7 @@ class _ContactUsState extends State<ContactUs> {
     final Size size = MediaQuery.of(context).size;
 
     return Container(
+      height: 58,
       decoration: BoxDecoration(
         border: Border.all(
             width: 1, color: AppColors.containerBorder.withOpacity(0.4)),

@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_mlm_database_entity.dart';
@@ -11,7 +10,6 @@ import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
-import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserCard extends StatefulWidget {
@@ -75,11 +73,6 @@ class _UserCardState extends State<UserCard> {
                     height: 60.0,
                     width: 60.0,
                     fit: BoxFit.cover,
-                    placeholder: (context, url) => CustomLottieAnimation(
-                      child: Lottie.asset(
-                        Assets.lottieLottie,
-                      ),
-                    ),
                     errorWidget: (context, url, error) => Image.asset(
                       Assets.imagesAdminlogo,
                       height: 60.0,
@@ -97,25 +90,25 @@ class _UserCardState extends State<UserCard> {
                     Text(
                       widget.userName,
                       style: textStyleW700(
-                          size.width * 0.043, AppColors.blackText),
+                          size.width * 0.038, AppColors.blackText),
                     ),
                     SizedBox(height: size.height * 0.005),
                     Text(
                       widget.location,
                       style: textStyleW400(
-                          size.width * 0.035, AppColors.blackText),
+                          size.width * 0.032, AppColors.blackText),
                     ),
                     Text(
                       widget.designation,
                       style: textStyleW600(
-                          size.width * 0.034, AppColors.blackText),
+                          size.width * 0.032, AppColors.blackText),
                     ),
                     SizedBox(
                       width: size.width * 0.35,
                       child: Text(
                         widget.plan,
                         style: textStyleW400(
-                            size.width * 0.035, AppColors.blackText),
+                            size.width * 0.032, AppColors.blackText),
                         maxLines: 1,
                       ),
                     ),
@@ -130,13 +123,7 @@ class _UserCardState extends State<UserCard> {
             child: InkWell(
               onTap: () async {
                 SharedPreferences prefs = await SharedPreferences.getInstance();
-                String? apiToken = prefs.getString(Constants.accessToken);
-
-                if (apiToken == null) {
-                  // ignore: use_build_context_synchronously
-                  showSignupDialog(context);
-                  return;
-                }
+                prefs.getString(Constants.accessToken);
                 Get.toNamed(Routes.userprofilescreen, arguments: {
                   'user_id': widget.postid,
                 });

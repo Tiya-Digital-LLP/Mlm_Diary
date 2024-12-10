@@ -115,7 +115,10 @@ class AppPages {
     ),
     GetPage(
       name: Routes.manageClassifiedplusicon,
-      page: () => const ManageClassifiedPlusIcon(),
+      page: () {
+        final int classifiedId = Get.arguments;
+        return ManageClassifiedPlusIcon(classfiedId: classifiedId);
+      },
     ),
     GetPage(
       name: Routes.manageclasifieddetailscreen,
@@ -233,7 +236,10 @@ class AppPages {
     ),
     GetPage(
       name: Routes.newsplusicon,
-      page: () => const ManageNewsPlusIcon(),
+      page: () {
+        final int newsId = Get.arguments;
+        return ManageNewsPlusIcon(newsId: newsId);
+      },
     ),
     GetPage(
       name: Routes.addnews,
@@ -267,7 +273,10 @@ class AppPages {
     ),
     GetPage(
       name: Routes.blogplusicon,
-      page: () => const ManageBlogPlusIcon(),
+      page: () {
+        final int blogId = Get.arguments;
+        return ManageBlogPlusIcon(blogId: blogId);
+      },
     ),
     GetPage(
       name: Routes.addblog,
@@ -321,7 +330,10 @@ class AppPages {
     ),
     GetPage(
       name: Routes.editpost,
-      page: () => const EditPost(),
+      page: () {
+        final int postId = Get.arguments;
+        return EditPost(postId: postId);
+      },
     ),
     GetPage(
       name: Routes.search,

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:mlmdiary/classified/classified.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/get_banner_entity.dart';
@@ -164,14 +163,7 @@ class HomeController extends GetxController {
                         onTap: () async {
                           SharedPreferences prefs =
                               await SharedPreferences.getInstance();
-                          String? apiToken =
-                              prefs.getString(Constants.accessToken);
-
-                          if (apiToken == null) {
-                            // ignore: use_build_context_synchronously
-                            showSignupDialog(context);
-                            return;
-                          }
+                          prefs.getString(Constants.accessToken);
                           if (banner.weblink == null ||
                               banner.weblink!.isEmpty) {
                             // ignore: use_build_context_synchronously
@@ -467,13 +459,6 @@ class HomeController extends GetxController {
     }
 
     String? apiToken = prefs.getString(Constants.accessToken);
-    if (apiToken == null) {
-      if (kDebugMode) {
-        print('API token is null');
-      }
-      isLoading.value = false;
-      return;
-    }
 
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
@@ -484,7 +469,7 @@ class HomeController extends GetxController {
       }
 
       Map<String, String> queryParams = {
-        'api_token': apiToken,
+        'api_token': apiToken.toString(),
         'device': device,
         'page': page.toString(),
         'notification_type': type ?? '',
@@ -739,7 +724,7 @@ class HomeController extends GetxController {
 
     // Prepare query parameters
     Map<String, String> queryParams = {
-      if (apiToken != null) 'api_token': apiToken,
+      'api_token': apiToken.toString(),
       'device': device,
       'page': page.toString(),
       'search': search.value.text,
@@ -807,10 +792,6 @@ class HomeController extends GetxController {
     }
 
     String? apiToken = prefs.getString(Constants.accessToken);
-    if (apiToken == null) {
-      isLoading.value = false;
-      return;
-    }
 
     try {
       var connectivityResult = await (Connectivity().checkConnectivity());
@@ -821,7 +802,7 @@ class HomeController extends GetxController {
       }
 
       Map<String, String> queryParams = {
-        'api_token': apiToken,
+        'api_token': apiToken.toString(),
         'device': device,
         'page': page.toString(),
       };

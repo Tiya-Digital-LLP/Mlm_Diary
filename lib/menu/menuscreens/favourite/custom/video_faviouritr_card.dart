@@ -56,9 +56,7 @@ class VideoFavouriteCard extends StatelessWidget {
                   }
                 },
                 child: SvgPicture.asset(
-                  videoItem.isBookmark ?? false
-                      ? Assets.svgCheckBookmark
-                      : Assets.svgSavePost,
+                  Assets.svgCheckBookmark,
                   height: size.height * 0.028,
                 ),
               ),

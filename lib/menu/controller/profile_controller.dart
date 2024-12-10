@@ -11,6 +11,8 @@ class ProfileController extends GetxController {
   var isLoading = false.obs;
   var userProfile = GetUserProfileEntity().obs;
   var mlmSocial = MlmSocialMediaEntity().obs;
+  var userId = ''.obs;
+  String userImage = '';
 
   @override
   void onInit() {
@@ -58,6 +60,22 @@ class ProfileController extends GetxController {
 
         // Set userProfile state
         userProfile(userProfileEntity);
+        userId.value = userProfileEntity.userProfile!.id.toString();
+// Fetch and store user image
+        final String? userImageUrl = userProfileEntity.userProfile?.imagePath;
+        if (userImageUrl != null && userImageUrl.isNotEmpty) {
+          userImage = userImageUrl; // Update `userImage` with the fetched URL
+        } else {
+          userImage = ''; // Handle the case where there's no image
+        }
+
+        if (kDebugMode) {
+          print('userImageUrl: $userImage');
+        }
+
+        if (kDebugMode) {
+          print('userId from fetchUserProfile: $userId');
+        }
       } else {
         if (kDebugMode) {
           print("Error: ${response.body}");

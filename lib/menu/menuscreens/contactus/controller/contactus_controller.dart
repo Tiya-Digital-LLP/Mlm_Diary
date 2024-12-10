@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
 import 'package:mlmdiary/data/constants.dart';
+import 'package:mlmdiary/generated/get_user_profile_entity.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/email_validator.dart';
 import 'package:mlmdiary/utils/lists.dart';
@@ -28,6 +29,7 @@ class ContactusController extends GetxController {
   RxBool messageError = false.obs;
 
   RxBool nameError = false.obs;
+  var userProfile = GetUserProfileEntity().obs;
 
   // ENABLED TYPING VALIDATION
   RxBool isNameTyping = false.obs;
@@ -43,6 +45,58 @@ class ContactusController extends GetxController {
   RxBool mobileReadOnly = false.obs;
 
   var isLoading = false.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchUserProfile();
+  }
+
+  Future<void> fetchUserProfile() async {
+    isLoading(true);
+
+    final prefs = await SharedPreferences.getInstance();
+    final apiToken = prefs.getString(Constants.accessToken);
+
+    if (apiToken == null || apiToken.isEmpty) {
+      isLoading(false);
+
+      return;
+    }
+
+    try {
+      final response = await http.post(
+        Uri.parse('${Constants.baseUrl}${Constants.userprofile}'),
+        body: {'api_token': apiToken},
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        final userProfileEntity = GetUserProfileEntity.fromJson(responseData);
+        userProfile(userProfileEntity);
+
+        // Update controllers with fetched data
+        name.value.text = userProfileEntity.userProfile?.name ?? '';
+        email.value.text = userProfileEntity.userProfile?.email ?? '';
+        company.value.text = userProfileEntity.userProfile?.company ?? '';
+        mobile.value.text = userProfileEntity.userProfile?.mobile ?? '';
+
+        if (kDebugMode) {
+          print('Account Settings Data: $responseData');
+        }
+      } else {
+        if (kDebugMode) {
+          print("Error: ${response.body}");
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error: $e");
+      }
+    } finally {
+      isLoading(false);
+    }
+  }
 
   Future<void> contactus(context) async {
     isLoading(true);
