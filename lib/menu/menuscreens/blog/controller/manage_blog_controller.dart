@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:mlmdiary/classified/get_blog_list_entity.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/add_comment_blog_entity.dart';
 import 'package:mlmdiary/generated/assets.dart';
@@ -16,7 +17,7 @@ import 'package:mlmdiary/generated/blog_count_view_entity.dart';
 import 'package:mlmdiary/generated/blog_like_list_entity.dart';
 import 'package:mlmdiary/generated/edit_comment_entity.dart';
 import 'package:mlmdiary/generated/get_blog_comment_entity.dart';
-import 'package:mlmdiary/generated/get_blog_list_entity.dart';
+
 import 'package:mlmdiary/generated/get_category_entity.dart';
 import 'package:mlmdiary/generated/get_sub_category_entity.dart';
 import 'package:mlmdiary/generated/l_iked_blog_entity.dart';

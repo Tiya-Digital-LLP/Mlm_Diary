@@ -29,6 +29,7 @@ class GetNewsListData {
 	String? description = '';
 	int? pgcnt = 0;
 	String? createdate = '';
+	String? datemodified = '';
 	String? category = '';
 	int? creatby = 0;
 	int? status = 0;

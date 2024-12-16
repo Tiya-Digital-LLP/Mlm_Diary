@@ -32,6 +32,7 @@ class ManageBlogCard extends StatefulWidget {
   final bool bookmarkedbyuser;
 
   final ManageBlogController controller;
+  final String updatedateTime;
 
   const ManageBlogCard(
       {super.key,
@@ -50,7 +51,8 @@ class ManageBlogCard extends StatefulWidget {
       required this.blogstatus,
       required this.commentcount,
       required this.likedbyuser,
-      required this.bookmarkedbyuser});
+      required this.bookmarkedbyuser,
+      required this.updatedateTime});
 
   @override
   State<ManageBlogCard> createState() => _ManageBlogCardState();
@@ -316,9 +318,16 @@ class _ManageBlogCardState extends State<ManageBlogCard> {
                   ),
                 ),
                 Text(
-                  postTimeFormatter.formatPostTime(widget.dateTime),
-                  style: textStyleW500(
-                      size.width * 0.028, AppColors.blackText.withOpacity(0.5)),
+                  postTimeFormatter.formatPostTime(
+                    DateTime.parse(widget.dateTime).isAtSameMomentAs(
+                            DateTime.parse(widget.updatedateTime))
+                        ? widget.dateTime
+                        : widget.updatedateTime,
+                  ),
+                  style: textStyleW400(
+                    size.width * 0.035,
+                    AppColors.blackText.withOpacity(0.5),
+                  ),
                 ),
               ],
             ),

@@ -44,6 +44,7 @@ class PostFavouriteCard extends StatefulWidget {
   final CompanyController companyController;
 
   final FavouriteController controller;
+  final String updatedateTime;
 
   const PostFavouriteCard({
     super.key,
@@ -67,6 +68,7 @@ class PostFavouriteCard extends StatefulWidget {
     required this.likedbyuser,
     required this.likecount,
     required this.commentcount,
+    required this.updatedateTime,
   });
 
   @override
@@ -180,9 +182,16 @@ class _FavouritrCardState extends State<PostFavouriteCard> {
                       Row(
                         children: [
                           Text(
-                            postTimeFormatter.formatPostTime(widget.dateTime),
-                            style: textStyleW400(size.width * 0.035,
-                                AppColors.blackText.withOpacity(0.8)),
+                            postTimeFormatter.formatPostTime(
+                              DateTime.parse(widget.dateTime).isAtSameMomentAs(
+                                      DateTime.parse(widget.updatedateTime))
+                                  ? widget.dateTime
+                                  : widget.updatedateTime,
+                            ),
+                            style: textStyleW400(
+                              size.width * 0.035,
+                              AppColors.blackText.withOpacity(0.5),
+                            ),
                           ),
                         ],
                       ),

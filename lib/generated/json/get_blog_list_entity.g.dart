@@ -1,5 +1,5 @@
 import 'package:mlmdiary/generated/json/base/json_convert_content.dart';
-import 'package:mlmdiary/generated/get_blog_list_entity.dart';
+import 'package:mlmdiary/classified/get_blog_list_entity.dart';
 
 GetBlogListEntity $GetBlogListEntityFromJson(Map<String, dynamic> json) {
   final GetBlogListEntity getBlogListEntity = GetBlogListEntity();
@@ -68,6 +68,11 @@ GetBlogListData $GetBlogListDataFromJson(Map<String, dynamic> json) {
   if (createdate != null) {
     getBlogListData.createdate = createdate;
   }
+  final String? datemodified = jsonConvert.convert<String>(
+      json['datemodified']);
+  if (datemodified != null) {
+    getBlogListData.datemodified = datemodified;
+  }
   final String? category = jsonConvert.convert<String>(json['category']);
   if (category != null) {
     getBlogListData.category = category;
@@ -134,6 +139,7 @@ Map<String, dynamic> $GetBlogListDataToJson(GetBlogListData entity) {
   data['description'] = entity.description;
   data['pgcnt'] = entity.pgcnt;
   data['createdate'] = entity.createdate;
+  data['datemodified'] = entity.datemodified;
   data['category'] = entity.category;
   data['user_id'] = entity.userId;
   data['subcategory'] = entity.subcategory;
@@ -158,6 +164,7 @@ extension GetBlogListDataExtension on GetBlogListData {
     String? description,
     int? pgcnt,
     String? createdate,
+    String? datemodified,
     String? category,
     int? userId,
     String? subcategory,
@@ -179,6 +186,7 @@ extension GetBlogListDataExtension on GetBlogListData {
       ..description = description ?? this.description
       ..pgcnt = pgcnt ?? this.pgcnt
       ..createdate = createdate ?? this.createdate
+      ..datemodified = datemodified ?? this.datemodified
       ..category = category ?? this.category
       ..userId = userId ?? this.userId
       ..subcategory = subcategory ?? this.subcategory
@@ -222,6 +230,18 @@ GetBlogListDataUserData $GetBlogListDataUserDataFromJson(
   if (countrycode1 != null) {
     getBlogListDataUserData.countrycode1 = countrycode1;
   }
+  final String? company = jsonConvert.convert<String>(json['company']);
+  if (company != null) {
+    getBlogListDataUserData.company = company;
+  }
+  final String? country = jsonConvert.convert<String>(json['country']);
+  if (country != null) {
+    getBlogListDataUserData.country = country;
+  }
+  final String? city = jsonConvert.convert<String>(json['city']);
+  if (city != null) {
+    getBlogListDataUserData.city = city;
+  }
   final String? imagePath = jsonConvert.convert<String>(json['image_path']);
   if (imagePath != null) {
     getBlogListDataUserData.imagePath = imagePath;
@@ -243,6 +263,9 @@ Map<String, dynamic> $GetBlogListDataUserDataToJson(
   data['email'] = entity.email;
   data['mobile'] = entity.mobile;
   data['countrycode1'] = entity.countrycode1;
+  data['company'] = entity.company;
+  data['country'] = entity.country;
+  data['city'] = entity.city;
   data['image_path'] = entity.imagePath;
   data['image_thum_path'] = entity.imageThumPath;
   return data;
@@ -256,6 +279,9 @@ extension GetBlogListDataUserDataExtension on GetBlogListDataUserData {
     String? email,
     dynamic mobile,
     dynamic countrycode1,
+    String? company,
+    String? country,
+    String? city,
     String? imagePath,
     String? imageThumPath,
   }) {
@@ -266,6 +292,9 @@ extension GetBlogListDataUserDataExtension on GetBlogListDataUserData {
       ..email = email ?? this.email
       ..mobile = mobile ?? this.mobile
       ..countrycode1 = countrycode1 ?? this.countrycode1
+      ..company = company ?? this.company
+      ..country = country ?? this.country
+      ..city = city ?? this.city
       ..imagePath = imagePath ?? this.imagePath
       ..imageThumPath = imageThumPath ?? this.imageThumPath;
   }

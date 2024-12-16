@@ -27,6 +27,10 @@ import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
+import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_shimmer_classified.dart';
+import 'package:mlmdiary/widgets/custom_shimmer_loader/profile_shimmer/axis_scroll_shimmer.dart';
+import 'package:mlmdiary/widgets/custom_shimmer_loader/profile_shimmer/axis_scroll_social_shimmer.dart';
+import 'package:mlmdiary/widgets/custom_shimmer_loader/profile_shimmer/personal_info_shimmer.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -67,11 +71,16 @@ class _UserProfileScreenState extends State<UserProfileScreen>
 
   bool isFetchingFollowers = false;
   bool isFetchingFollowing = false;
+  final RxBool showShimmer = true.obs;
 
   @override
   void initState() {
     super.initState();
     final int userId = Get.arguments['user_id'] as int;
+
+    Future.delayed(const Duration(seconds: 1), () {
+      showShimmer.value = false;
+    });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.fetchUserPost(userId, context);
@@ -160,973 +169,1015 @@ class _UserProfileScreenState extends State<UserProfileScreen>
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    return Obx(() {
-      final userProfile = profileController.userProfile.value.userProfile;
 
-      return Scaffold(
-        backgroundColor: AppColors.background,
-        appBar: AppBar(
-          scrolledUnderElevation: 0,
-          centerTitle: true,
-          backgroundColor: Colors.white,
-          leading: Padding(
-            padding: EdgeInsets.all(size.height * 0.012),
-            child: const Align(
-              alignment: Alignment.topLeft,
-              child: CustomBackButton(),
-            ),
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        scrolledUnderElevation: 0,
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        leading: Padding(
+          padding: EdgeInsets.all(size.height * 0.012),
+          child: const Align(
+            alignment: Alignment.topLeft,
+            child: CustomBackButton(),
           ),
-          elevation: 0,
-          title: Text(
-            'User Profile',
-            style: textStyleW700(size.width * 0.048, AppColors.blackText),
-          ),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Obx(
-                () => IconButton(
-                  icon: SvgPicture.asset(
-                    isBookmarked.value
-                        ? Assets.svgCheckBookmark
-                        : Assets.svgSavePost,
-                    height: size.height * 0.028,
-                  ),
-                  onPressed: () async {
-                    final bookmark = controller.mlmDetailsDatabaseList[0];
-                    final userId = bookmark.id ?? 0;
-
-                    try {
-                      // Fetch current bookmark status
-                      bool bookmarkStatus = await _fetchBookmarkStatus(userId);
-
-                      // Defer the state update
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        isBookmarked.value = !bookmarkStatus;
-                      });
-
-                      await editPostController.toggleProfileBookMark(
-                          userId,
-                          // ignore: use_build_context_synchronously
-                          context);
-                    } catch (e) {
-                      Fluttertoast.showToast(
-                        msg: "Error: $e",
-                        toastLength: Toast.LENGTH_LONG,
-                        gravity: ToastGravity.BOTTOM,
-                      );
-                    }
-                  },
-                ),
-              ),
-            ),
-          ],
         ),
-        body: Obx(() {
-          if (controller.isLoading.value) {
-            return Center(
-                child: CustomLottieAnimation(
-              child: Lottie.asset(
-                Assets.lottieLottie,
+        elevation: 0,
+        title: Text(
+          'User Profile',
+          style: textStyleW700(size.width * 0.048, AppColors.blackText),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Obx(
+              () => IconButton(
+                icon: SvgPicture.asset(
+                  isBookmarked.value
+                      ? Assets.svgCheckBookmark
+                      : Assets.svgSavePost,
+                  height: size.height * 0.028,
+                ),
+                onPressed: () async {
+                  final bookmark = controller.mlmDetailsDatabaseList[0];
+                  final userId = bookmark.id ?? 0;
+
+                  try {
+                    // Fetch current bookmark status
+                    bool bookmarkStatus = await _fetchBookmarkStatus(userId);
+
+                    // Defer the state update
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      isBookmarked.value = !bookmarkStatus;
+                    });
+
+                    await editPostController.toggleProfileBookMark(
+                        userId,
+                        // ignore: use_build_context_synchronously
+                        context);
+                  } catch (e) {
+                    Fluttertoast.showToast(
+                      msg: "Error: $e",
+                      toastLength: Toast.LENGTH_LONG,
+                      gravity: ToastGravity.BOTTOM,
+                    );
+                  }
+                },
               ),
-            ));
-          } else {
-            final post = controller.mlmDetailsDatabaseList.isNotEmpty
-                ? controller.mlmDetailsDatabaseList[0]
-                : null;
-            return post != null
-                ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        color: AppColors.white,
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return Dialog(
-                                          insetPadding: EdgeInsets.zero,
-                                          child: Stack(
-                                            children: [
-                                              SizedBox(
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                height: MediaQuery.of(context)
-                                                    .size
-                                                    .height,
-                                                child: InteractiveViewer(
-                                                  child: Image.network(
-                                                    '${post.imageUrl.toString()}?${DateTime.now().millisecondsSinceEpoch}',
-                                                    fit: BoxFit.contain,
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                            .size
-                                                            .width,
-                                                  ),
-                                                ),
-                                              ),
-                                              Positioned(
-                                                top: 20,
-                                                right: 20,
-                                                child: IconButton(
-                                                  icon: const Icon(Icons.cancel,
-                                                      color: Colors.black),
-                                                  onPressed: () {
-                                                    Get.back();
-                                                  },
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  },
-                                  child: ClipOval(
-                                    child: CachedNetworkImage(
-                                      imageUrl: post.imageUrl ??
-                                          Assets.imagesAdminlogo,
-                                      fit: BoxFit.cover,
-                                      height: 120,
-                                      width: 120,
-                                      errorWidget: (context, url, error) =>
-                                          Image.asset(
-                                        Assets.imagesAdminlogo,
-                                        fit: BoxFit.cover,
+            ),
+          ),
+        ],
+      ),
+      body: Obx(() {
+        final post = controller.mlmDetailsDatabaseList.isNotEmpty
+            ? controller.mlmDetailsDatabaseList[0]
+            : null;
+        return post != null
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    color: AppColors.white,
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        showShimmer.value
+                            ? const PersonalInfoShimmer()
+                            : personlaInfo(),
+                        5.sbh,
+                        showShimmer.value
+                            ? AxisScrollShimmer(
+                                width: size.width,
+                              )
+                            : axisScroll(),
+                        15.sbh,
+                        axisScrollsocial(),
+                      ],
+                    ),
+                  ),
+                  const Divider(color: Colors.black26, height: 2.0),
+                  Container(
+                    color: AppColors.white,
+                    child: TabBar(
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      controller: _tabController,
+                      indicatorColor: AppColors.primaryColor,
+                      indicatorWeight: 1.5,
+                      labelColor: AppColors.primaryColor,
+                      tabs: [
+                        Tab(text: 'Posts (${post.followersCount})'),
+                        const Tab(text: 'About Me'),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: TabBarView(
+                      controller: _tabController,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              top: 20, left: 16, right: 16),
+                          child: CustomScrollView(
+                            slivers: [
+                              Obx(() {
+                                if (controller.isLoading.value &&
+                                    userProfileController.postallList.isEmpty) {
+                                  return SliverToBoxAdapter(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8),
+                                      child: ListView.builder(
+                                        physics:
+                                            const AlwaysScrollableScrollPhysics(),
+                                        itemCount: 4,
+                                        shrinkWrap: true,
+                                        itemBuilder: (context, index) {
+                                          return const CustomShimmerClassified(
+                                              width: 175, height: 240);
+                                        },
                                       ),
                                     ),
-                                  ),
-                                ),
-                                30.sbw,
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        post.name ?? 'N/A',
-                                        style: textStyleW700(size.width * 0.045,
-                                            AppColors.blackText),
-                                      ),
-                                      Text(
-                                        '${post.city ?? 'N/A'}, ${post.state ?? 'N/A'}, ${post.country ?? 'N/A'}',
-                                        style: textStyleW500(
-                                          size.width * 0.035,
-                                          AppColors.blackText,
+                                  );
+                                }
+                                if (userProfileController.postallList.isEmpty) {
+                                  return const SliverToBoxAdapter(
+                                    child: Center(
+                                      child: Text(
+                                        'Data not found',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
                                         ),
                                       ),
-                                      Text(
-                                        post.company ?? 'N/A',
-                                        style: textStyleW500(size.width * 0.035,
-                                            AppColors.blackText),
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          isExpanded.value = !isExpanded.value;
-                                        },
-                                        child: Obx(() => Text(
-                                              post.plan ?? 'N/A',
-                                              style: textStyleW500(
-                                                  size.width * 0.035,
-                                                  AppColors.blackText),
-                                              maxLines:
-                                                  isExpanded.value ? null : 10,
-                                              overflow: TextOverflow.ellipsis,
-                                            )),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            20.sbh,
-                            SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Obx(() {
-                                    bool isFollowing = editPostController
-                                            .followProfileStatusMap[post.id] ??
-                                        false;
-                                    return SizedBox(
-                                      height: 30,
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              AppColors.primaryColor,
-                                        ),
-                                        onPressed: () {
-                                          editPostController
-                                              .toggleProfileFollow(
-                                                  post.id ?? 0, context);
-                                        },
-                                        child: Text(
-                                          isFollowing ? 'Unfollow' : 'Follow',
-                                          style: textStyleW700(
-                                              size.width * 0.030,
-                                              AppColors.white),
-                                        ),
-                                      ),
-                                    );
-                                  }),
-                                  20.sbw,
-                                  Row(
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () async {
-                                          showModalBottomSheet(
-                                            context: context,
-                                            builder: (context) => Container(
-                                                child: buildTabBarView()),
-                                          );
-                                        },
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              post.followersCount.toString(),
-                                              style: textStyleW700(
-                                                  size.width * 0.045,
-                                                  AppColors.blackText),
-                                            ),
-                                            Text(
-                                              'Followers',
-                                              style: textStyleW500(
-                                                  size.width * 0.035,
-                                                  AppColors.blackText),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      20.sbw,
-                                      GestureDetector(
-                                        onTap: () async {
-                                          showModalBottomSheet(
-                                            context: context,
-                                            builder: (context) =>
-                                                buildTabBarView(),
-                                          );
-                                        },
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              post.followingCount.toString(),
-                                              style: textStyleW700(
-                                                  size.width * 0.045,
-                                                  AppColors.blackText),
-                                            ),
-                                            Text(
-                                              'Following',
-                                              style: textStyleW500(
-                                                  size.width * 0.035,
-                                                  AppColors.blackText),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      20.sbw,
-                                      GestureDetector(
-                                        onTap: () async {
-                                          showModalBottomSheet(
-                                            context: context,
-                                            builder: (context) =>
-                                                buildTabBarView(),
-                                          );
-                                        },
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              post.views.toString(),
-                                              style: textStyleW700(
-                                                  size.width * 0.045,
-                                                  AppColors.blackText),
-                                            ),
-                                            Text(
-                                              'Profile Visits',
-                                              style: textStyleW500(
-                                                  size.width * 0.035,
-                                                  AppColors.blackText),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                            20.sbh,
-                            SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                children: [
-                                  InkWell(
-                                    onTap: () {
-                                      if (post.mobile == null ||
-                                          post.mobile!.isEmpty) {
-                                        showToasterrorborder(
-                                            'No Any Url Found', context);
-                                        if (kDebugMode) {
-                                          print('tap without number');
-                                        }
-                                      } else {
-                                        final Uri phoneUri = Uri(
-                                            scheme: 'tel',
-                                            path:
-                                                '+${post.countrycode1} ${post.mobile}');
-                                        launchUrl(phoneUri);
-                                        if (kDebugMode) {
-                                          print('tap with number');
-                                        }
-                                      }
-                                    },
-                                    child: const SocialButton(
-                                        icon: Assets.svgCalling, label: 'Call'),
-                                  ),
-                                  10.sbw,
-                                  InkWell(
-                                    onTap: () async {
-                                      if (messageController
-                                          .chatList.isNotEmpty) {
-                                        final post =
-                                            messageController.chatList[0];
-
-                                        Get.toNamed(Routes.messagedetailscreen,
-                                            arguments: post);
-                                      } else {
-                                        // If chat list is empty, navigate to screen with a dummy post or handle accordingly
-                                        final dummyPost = {
-                                          "chatId": null,
-                                          "toid": post.id,
-                                          "username": post.name,
-                                          "imageUrl": post.imageUrl,
-                                        };
-                                        Get.toNamed(
-                                            Routes.usermessagedetailscreen,
-                                            arguments: dummyPost);
-                                      }
-                                    },
-                                    child: const SocialButton(
-                                      icon: Assets.svgChat,
-                                      label: 'Message',
                                     ),
-                                  ),
-                                  10.sbw,
-                                  InkWell(
-                                    onTap: () async {
-                                      if (post.mobile != null &&
-                                          post.countrycode1 != null) {
-                                        final String phoneNumber = post.mobile!;
-                                        final String countryCode =
-                                            post.countrycode1!.trim();
-
-                                        // Ensure the country code includes the '+' prefix
-                                        final String formattedCountryCode =
-                                            countryCode.startsWith('+')
-                                                ? countryCode
-                                                : '+$countryCode';
-
-                                        // Check if userProfile is null before accessing its properties
-                                        if (userProfile != null &&
-                                            userProfile.name != null) {
-                                          final String name =
-                                              userProfile.name.toString();
-                                          String message =
-                                              "Hello, I am $name. I want to know regarding MLM Diary App.";
-
-                                          final Uri whatsappUri = Uri.parse(
-                                              "https://wa.me/${formattedCountryCode.replaceAll(' ', '')}$phoneNumber?text=${Uri.encodeComponent(message)}");
-
-                                          if (await canLaunchUrl(whatsappUri)) {
-                                            await launchUrl(whatsappUri);
-                                            if (kDebugMode) {
-                                              print('URL: $whatsappUri');
-                                            }
-                                          } else {
-                                            if (kDebugMode) {
-                                              print(
-                                                  'Could not launch $whatsappUri');
-                                            }
-                                            showToasterrorborder(
-                                                "Could not launch WhatsApp",
-                                                // ignore: use_build_context_synchronously
-                                                context);
-                                          }
-                                        } else {
-                                          showToasterrorborder(
-                                              "User profile or name is null",
-                                              // ignore: use_build_context_synchronously
-                                              context);
-                                        }
-                                      } else {
-                                        showToasterrorborder(
-                                            "No valid phone number or country code found",
-                                            context);
-                                      }
-                                    },
-                                    child: const SocialButton(
-                                      icon: Assets.svgWhatsappIcon,
-                                      label: 'WhatsApp',
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const Divider(color: Colors.black26, height: 2.0),
-                      Container(
-                        color: AppColors.white,
-                        child: TabBar(
-                          indicatorSize: TabBarIndicatorSize.tab,
-                          controller: _tabController,
-                          indicatorColor: AppColors.primaryColor,
-                          indicatorWeight: 1.5,
-                          labelColor: AppColors.primaryColor,
-                          tabs: [
-                            Tab(text: 'Posts (${post.followersCount})'),
-                            const Tab(text: 'About Me'),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: TabBarView(
-                          controller: _tabController,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 20, left: 16, right: 16),
-                              child: CustomScrollView(
-                                slivers: [
-                                  Obx(() {
-                                    if (controller.isLoading.value &&
-                                        userProfileController
-                                            .postallList.isEmpty) {
-                                      return SliverToBoxAdapter(
-                                        child: Center(
+                                  );
+                                }
+                                return SliverList(
+                                  delegate: SliverChildBuilderDelegate(
+                                    (context, index) {
+                                      if (index ==
+                                          userProfileController
+                                              .postallList.length) {
+                                        return Center(
                                           child: CustomLottieAnimation(
                                             child: Lottie.asset(
                                               Assets.lottieLottie,
                                             ),
                                           ),
+                                        );
+                                      }
+                                      final post = userProfileController
+                                          .postallList[index];
+                                      Widget cardWidget;
+                                      switch (post.type) {
+                                        case 'classified':
+                                          cardWidget = ClassifiedUserCard(
+                                            updatedateTime:
+                                                post.datemodified ?? '',
+                                            userImage:
+                                                post.userData?.imagePath ?? '',
+                                            userName: post.userData?.name ?? '',
+                                            postTitle: post.title ?? '',
+                                            postCaption: post.description ?? '',
+                                            postImage: post.imageUrl ?? '',
+                                            dateTime: post.createdate ?? '',
+                                            viewcounts: post.pgcnt ?? 0,
+                                            userProfileController:
+                                                userProfileController,
+                                            bookmarkId: post.id ?? 0,
+                                            url: post.urlcomponent ?? '',
+                                            type: post.type ?? '',
+                                            manageBlogController:
+                                                manageBlogController,
+                                            manageNewsController:
+                                                manageNewsController,
+                                            clasifiedController:
+                                                clasifiedController,
+                                            editpostController:
+                                                editPostController,
+                                            questionAnswerController:
+                                                questionAnswerController,
+                                            likedbyuser:
+                                                post.likedByUser ?? false,
+                                            bookmarkedbyuser:
+                                                post.bookmarkByUser ?? false,
+                                            likecount: post.totallike ?? 0,
+                                            classifiedId: post.id ?? 0,
+                                            commentcount:
+                                                post.totalcomment ?? 0,
+                                            isPopular: post.popular == 'Y',
+                                          );
+                                          break;
+
+                                        case 'blog':
+                                          cardWidget = BlogUserCard(
+                                            updatedateTime:
+                                                post.datemodified ?? '',
+                                            userImage:
+                                                post.userData?.imagePath ?? '',
+                                            userName: post.userData?.name ?? '',
+                                            postTitle: post.title ?? '',
+                                            postCaption: post.description ?? '',
+                                            postImage: post.imageUrl ?? '',
+                                            dateTime: post.createdate ?? '',
+                                            viewcounts: post.pgcnt ?? 0,
+                                            userProfileController:
+                                                userProfileController,
+                                            bookmarkId: post.id ?? 0,
+                                            url: post.urlcomponent ?? '',
+                                            type: post.type ?? '',
+                                            manageBlogController:
+                                                manageBlogController,
+                                            manageNewsController:
+                                                manageNewsController,
+                                            clasifiedController:
+                                                clasifiedController,
+                                            editpostController:
+                                                editPostController,
+                                            questionAnswerController:
+                                                questionAnswerController,
+                                            likedbyuser:
+                                                post.likedByUser ?? false,
+                                            likedCount: post.totallike ?? 0,
+                                            commentcount:
+                                                post.totalcomment ?? 0,
+                                            bookmarkedbyuser:
+                                                post.bookmarkByUser ?? false,
+                                          );
+                                          break;
+                                        case 'news':
+                                          cardWidget = NewsUserCard(
+                                            updatedateTime:
+                                                post.datemodified ?? '',
+                                            userImage:
+                                                post.userData?.imagePath ?? '',
+                                            userName: post.userData?.name ?? '',
+                                            postTitle: post.title ?? '',
+                                            postCaption: post.description ?? '',
+                                            postImage: post.imageUrl ?? '',
+                                            dateTime: post.createdate ?? '',
+                                            viewcounts: post.pgcnt ?? 0,
+                                            userProfileController:
+                                                userProfileController,
+                                            bookmarkId: post.id ?? 0,
+                                            url: post.urlcomponent ?? '',
+                                            type: post.type ?? '',
+                                            manageBlogController:
+                                                manageBlogController,
+                                            manageNewsController:
+                                                manageNewsController,
+                                            clasifiedController:
+                                                clasifiedController,
+                                            editpostController:
+                                                editPostController,
+                                            questionAnswerController:
+                                                questionAnswerController,
+                                            likedbyuser:
+                                                post.likedByUser ?? false,
+                                            commentcount:
+                                                post.totalcomment ?? 0,
+                                            likedCount: post.totallike ?? 0,
+                                            bookmarkedbyuser:
+                                                post.bookmarkByUser ?? false,
+                                          );
+                                          break;
+
+                                        case 'question':
+                                          cardWidget = QuestionUserCard(
+                                            updatedateTime:
+                                                post.datemodified ?? '',
+                                            userImage:
+                                                post.userData?.imagePath ?? '',
+                                            userName: post.userData?.name ?? '',
+                                            postTitle: post.title ?? '',
+                                            postCaption: post.description ?? '',
+                                            postImage: post.imageUrl ?? '',
+                                            dateTime: post.createdate ?? '',
+                                            viewcounts: post.pgcnt ?? 0,
+                                            userProfileController:
+                                                userProfileController,
+                                            bookmarkId: post.id ?? 0,
+                                            url: post.urlcomponent ?? '',
+                                            type: post.type ?? '',
+                                            manageBlogController:
+                                                manageBlogController,
+                                            manageNewsController:
+                                                manageNewsController,
+                                            clasifiedController:
+                                                clasifiedController,
+                                            editpostController:
+                                                editPostController,
+                                            questionAnswerController:
+                                                questionAnswerController,
+                                            likedbyuser:
+                                                post.likedByUser ?? false,
+                                            likedCount: post.totallike ?? 0,
+                                            bookmarkedbyuser:
+                                                post.bookmarkByUser ?? false,
+                                          );
+                                          break;
+                                        case 'post':
+                                          cardWidget = PostUserCard(
+                                            updatedateTime:
+                                                post.datemodified ?? '',
+                                            userImage:
+                                                post.userData?.imagePath ?? '',
+                                            userName: post.userData?.name ?? '',
+                                            postTitle: post.title ?? '',
+                                            postCaption: post.description ?? '',
+                                            postImage: post.imageUrl ?? '',
+                                            dateTime: post.createdate ?? '',
+                                            viewcounts: post.pgcnt ?? 0,
+                                            userProfileController:
+                                                userProfileController,
+                                            bookmarkId: post.id ?? 0,
+                                            url: post.urlcomponent ?? '',
+                                            type: post.type ?? '',
+                                            manageBlogController:
+                                                manageBlogController,
+                                            manageNewsController:
+                                                manageNewsController,
+                                            clasifiedController:
+                                                clasifiedController,
+                                            editpostController:
+                                                editPostController,
+                                            questionAnswerController:
+                                                questionAnswerController,
+                                            likedbyuser:
+                                                post.likedByUser ?? false,
+                                            likecount: post.totallike ?? 0,
+                                            commentcount:
+                                                post.totalcomment ?? 0,
+                                            likedCount: post.totallike ?? 0,
+                                            bookmarkedbyuser:
+                                                post.bookmarkByUser ?? false,
+                                          );
+                                          break;
+                                        default:
+                                          cardWidget = const SizedBox();
+                                      }
+                                      return Padding(
+                                        padding: const EdgeInsets.only(
+                                            bottom: 12, left: 16, right: 16),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            _navigateToDetails(post);
+                                          },
+                                          child: cardWidget,
                                         ),
                                       );
-                                    }
-                                    if (userProfileController
-                                        .postallList.isEmpty) {
-                                      return const SliverToBoxAdapter(
-                                        child: Center(
-                                          child: Text(
-                                            'Data not found',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black,
+                                    },
+                                    childCount: userProfileController
+                                            .postallList.length +
+                                        (controller.isLoading.value ? 1 : 0),
+                                  ),
+                                );
+                              }),
+                            ],
+                          ),
+                        ),
+                        SingleChildScrollView(
+                          padding: const EdgeInsets.only(
+                              top: 20, left: 16, right: 16),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(14),
+                              color: AppColors.white,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 6,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Follow me on',
+                                        style: textStyleW400(
+                                            size.width * 0.035, AppColors.grey),
+                                      ),
+                                      10.sbh,
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: InkWell(
+                                              onTap: () {
+                                                if (post.wplink == null ||
+                                                    post.wplink!.isEmpty) {
+                                                  showToasterrorborder(
+                                                      'No Any Url Found',
+                                                      context);
+                                                } else {
+                                                  launchUrl(
+                                                    Uri.parse(
+                                                        post.wplink.toString()),
+                                                    mode: LaunchMode
+                                                        .externalApplication,
+                                                  );
+                                                }
+                                              },
+                                              child: SvgPicture.asset(
+                                                Assets.svgLogosWhatsappIcon,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      );
-                                    }
-                                    return SliverList(
-                                      delegate: SliverChildBuilderDelegate(
-                                        (context, index) {
-                                          if (index ==
-                                              userProfileController
-                                                  .postallList.length) {
-                                            return Center(
-                                              child: CustomLottieAnimation(
-                                                child: Lottie.asset(
-                                                  Assets.lottieLottie,
-                                                ),
-                                              ),
-                                            );
-                                          }
-                                          final post = userProfileController
-                                              .postallList[index];
-                                          Widget cardWidget;
-                                          switch (post.type) {
-                                            case 'classified':
-                                              cardWidget = ClassifiedUserCard(
-                                                userImage:
-                                                    post.userData?.imagePath ??
-                                                        '',
-                                                userName:
-                                                    post.userData?.name ?? '',
-                                                postTitle: post.title ?? '',
-                                                postCaption:
-                                                    post.description ?? '',
-                                                postImage: post.imageUrl ?? '',
-                                                dateTime: post.createdate ?? '',
-                                                viewcounts: post.pgcnt ?? 0,
-                                                userProfileController:
-                                                    userProfileController,
-                                                bookmarkId: post.id ?? 0,
-                                                url: post.urlcomponent ?? '',
-                                                type: post.type ?? '',
-                                                manageBlogController:
-                                                    manageBlogController,
-                                                manageNewsController:
-                                                    manageNewsController,
-                                                clasifiedController:
-                                                    clasifiedController,
-                                                editpostController:
-                                                    editPostController,
-                                                questionAnswerController:
-                                                    questionAnswerController,
-                                                likedbyuser:
-                                                    post.likedByUser ?? false,
-                                                bookmarkedbyuser:
-                                                    post.bookmarkByUser ??
-                                                        false,
-                                                likecount: post.totallike ?? 0,
-                                                classifiedId: post.id ?? 0,
-                                                commentcount:
-                                                    post.totalcomment ?? 0,
-                                                isPopular: post.popular == 'Y',
-                                              );
-                                              break;
-
-                                            case 'blog':
-                                              cardWidget = BlogUserCard(
-                                                userImage:
-                                                    post.userData?.imagePath ??
-                                                        '',
-                                                userName:
-                                                    post.userData?.name ?? '',
-                                                postTitle: post.title ?? '',
-                                                postCaption:
-                                                    post.description ?? '',
-                                                postImage: post.imageUrl ?? '',
-                                                dateTime: post.createdate ?? '',
-                                                viewcounts: post.pgcnt ?? 0,
-                                                userProfileController:
-                                                    userProfileController,
-                                                bookmarkId: post.id ?? 0,
-                                                url: post.urlcomponent ?? '',
-                                                type: post.type ?? '',
-                                                manageBlogController:
-                                                    manageBlogController,
-                                                manageNewsController:
-                                                    manageNewsController,
-                                                clasifiedController:
-                                                    clasifiedController,
-                                                editpostController:
-                                                    editPostController,
-                                                questionAnswerController:
-                                                    questionAnswerController,
-                                                likedbyuser:
-                                                    post.likedByUser ?? false,
-                                                likedCount: post.totallike ?? 0,
-                                                commentcount:
-                                                    post.totalcomment ?? 0,
-                                                bookmarkedbyuser:
-                                                    post.bookmarkByUser ??
-                                                        false,
-                                              );
-                                              break;
-                                            case 'news':
-                                              cardWidget = NewsUserCard(
-                                                userImage:
-                                                    post.userData?.imagePath ??
-                                                        '',
-                                                userName:
-                                                    post.userData?.name ?? '',
-                                                postTitle: post.title ?? '',
-                                                postCaption:
-                                                    post.description ?? '',
-                                                postImage: post.imageUrl ?? '',
-                                                dateTime: post.createdate ?? '',
-                                                viewcounts: post.pgcnt ?? 0,
-                                                userProfileController:
-                                                    userProfileController,
-                                                bookmarkId: post.id ?? 0,
-                                                url: post.urlcomponent ?? '',
-                                                type: post.type ?? '',
-                                                manageBlogController:
-                                                    manageBlogController,
-                                                manageNewsController:
-                                                    manageNewsController,
-                                                clasifiedController:
-                                                    clasifiedController,
-                                                editpostController:
-                                                    editPostController,
-                                                questionAnswerController:
-                                                    questionAnswerController,
-                                                likedbyuser:
-                                                    post.likedByUser ?? false,
-                                                commentcount:
-                                                    post.totalcomment ?? 0,
-                                                likedCount: post.totallike ?? 0,
-                                                bookmarkedbyuser:
-                                                    post.bookmarkByUser ??
-                                                        false,
-                                              );
-                                              break;
-
-                                            case 'question':
-                                              cardWidget = QuestionUserCard(
-                                                userImage:
-                                                    post.userData?.imagePath ??
-                                                        '',
-                                                userName:
-                                                    post.userData?.name ?? '',
-                                                postTitle: post.title ?? '',
-                                                postCaption:
-                                                    post.description ?? '',
-                                                postImage: post.imageUrl ?? '',
-                                                dateTime: post.createdate ?? '',
-                                                viewcounts: post.pgcnt ?? 0,
-                                                userProfileController:
-                                                    userProfileController,
-                                                bookmarkId: post.id ?? 0,
-                                                url: post.urlcomponent ?? '',
-                                                type: post.type ?? '',
-                                                manageBlogController:
-                                                    manageBlogController,
-                                                manageNewsController:
-                                                    manageNewsController,
-                                                clasifiedController:
-                                                    clasifiedController,
-                                                editpostController:
-                                                    editPostController,
-                                                questionAnswerController:
-                                                    questionAnswerController,
-                                                likedbyuser:
-                                                    post.likedByUser ?? false,
-                                                likedCount: post.totallike ?? 0,
-                                                bookmarkedbyuser:
-                                                    post.bookmarkByUser ??
-                                                        false,
-                                              );
-                                              break;
-                                            case 'post':
-                                              cardWidget = PostUserCard(
-                                                userImage:
-                                                    post.userData?.imagePath ??
-                                                        '',
-                                                userName:
-                                                    post.userData?.name ?? '',
-                                                postTitle: post.title ?? '',
-                                                postCaption:
-                                                    post.description ?? '',
-                                                postImage: post.imageUrl ?? '',
-                                                dateTime: post.createdate ?? '',
-                                                viewcounts: post.pgcnt ?? 0,
-                                                userProfileController:
-                                                    userProfileController,
-                                                bookmarkId: post.id ?? 0,
-                                                url: post.urlcomponent ?? '',
-                                                type: post.type ?? '',
-                                                manageBlogController:
-                                                    manageBlogController,
-                                                manageNewsController:
-                                                    manageNewsController,
-                                                clasifiedController:
-                                                    clasifiedController,
-                                                editpostController:
-                                                    editPostController,
-                                                questionAnswerController:
-                                                    questionAnswerController,
-                                                likedbyuser:
-                                                    post.likedByUser ?? false,
-                                                likecount: post.totallike ?? 0,
-                                                commentcount:
-                                                    post.totalcomment ?? 0,
-                                                likedCount: post.totallike ?? 0,
-                                                bookmarkedbyuser:
-                                                    post.bookmarkByUser ??
-                                                        false,
-                                              );
-                                              break;
-                                            default:
-                                              cardWidget = const SizedBox();
-                                          }
-                                          return Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 12,
-                                                left: 16,
-                                                right: 16),
-                                            child: GestureDetector(
+                                          Expanded(
+                                            child: InkWell(
                                               onTap: () {
-                                                _navigateToDetails(post);
+                                                if (post.fblink == null ||
+                                                    post.fblink!.isEmpty) {
+                                                  showToasterrorborder(
+                                                      'No Any Url Found',
+                                                      context);
+                                                } else {
+                                                  launchUrl(
+                                                    Uri.parse(
+                                                        post.fblink.toString()),
+                                                    mode: LaunchMode
+                                                        .externalApplication,
+                                                  );
+                                                }
                                               },
-                                              child: cardWidget,
+                                              child: SvgPicture.asset(
+                                                Assets.svgLogosFacebook,
+                                              ),
                                             ),
-                                          );
-                                        },
-                                        childCount: userProfileController
-                                                .postallList.length +
-                                            (controller.isLoading.value
-                                                ? 1
-                                                : 0),
+                                          ),
+                                          Expanded(
+                                            child: InkWell(
+                                              onTap: () {
+                                                if (post.instalink == null ||
+                                                    post.instalink!.isEmpty) {
+                                                  showToasterrorborder(
+                                                      'No Any Url Found',
+                                                      context);
+                                                } else {
+                                                  launchUrl(
+                                                    Uri.parse(post.instalink
+                                                        .toString()),
+                                                    mode: LaunchMode
+                                                        .externalApplication,
+                                                  );
+                                                }
+                                              },
+                                              child: SvgPicture.asset(
+                                                Assets.svgInstagram,
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: InkWell(
+                                              onTap: () {
+                                                if (post.lilink == null ||
+                                                    post.lilink!.isEmpty) {
+                                                  showToasterrorborder(
+                                                      'No Any Url Found',
+                                                      context);
+                                                } else {
+                                                  launchUrl(
+                                                    Uri.parse(
+                                                        post.lilink.toString()),
+                                                    mode: LaunchMode
+                                                        .externalApplication,
+                                                  );
+                                                }
+                                              },
+                                              child: SvgPicture.asset(
+                                                Assets.svgLogosLinkedinIcon,
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: InkWell(
+                                              onTap: () {
+                                                if (post.youlink == null ||
+                                                    post.youlink!.isEmpty) {
+                                                  showToasterrorborder(
+                                                      'No Any Url Found',
+                                                      context);
+                                                } else {
+                                                  launchUrl(
+                                                    Uri.parse(post.youlink
+                                                        .toString()),
+                                                    mode: LaunchMode
+                                                        .externalApplication,
+                                                  );
+                                                }
+                                              },
+                                              child: SvgPicture.asset(
+                                                Assets.svgYoutube,
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: InkWell(
+                                              onTap: () {
+                                                if (post.telink == null ||
+                                                    post.telink!.isEmpty) {
+                                                  showToasterrorborder(
+                                                      'No Any Url Found',
+                                                      context);
+                                                } else {
+                                                  launchUrl(
+                                                    Uri.parse(
+                                                        post.telink.toString()),
+                                                    mode: LaunchMode
+                                                        .externalApplication,
+                                                  );
+                                                }
+                                              },
+                                              child: SvgPicture.asset(
+                                                Assets.svgTelegram,
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: InkWell(
+                                              onTap: () {
+                                                if (post.twiterlink == null ||
+                                                    post.twiterlink!.isEmpty) {
+                                                  showToasterrorborder(
+                                                      'No Any Url Found',
+                                                      context);
+                                                } else {
+                                                  launchUrl(
+                                                    Uri.parse(post.twiterlink
+                                                        .toString()),
+                                                    mode: LaunchMode
+                                                        .externalApplication,
+                                                  );
+                                                }
+                                              },
+                                              child: SvgPicture.asset(
+                                                Assets.svgTwitter,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    );
-                                  }),
-                                ],
+                                    ],
+                                  ),
+                                ),
+                                10.sbh,
+                                const Divider(color: Colors.grey),
+                                10.sbh,
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text('About me',
+                                          style: textStyleW400(
+                                              size.width * 0.035,
+                                              AppColors.grey)),
+                                      Text(
+                                        post.aboutyou ?? 'N/A',
+                                        style: textStyleW500(size.width * 0.035,
+                                            AppColors.blackText),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                10.sbh,
+                                const Divider(color: Colors.grey),
+                                10.sbh,
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text('About Company',
+                                          style: textStyleW400(
+                                              size.width * 0.035,
+                                              AppColors.grey)),
+                                      Text(
+                                        post.aboutcompany ?? 'N/A',
+                                        style: textStyleW500(size.width * 0.035,
+                                            AppColors.blackText),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: size.height * 0.017),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              )
+            : const Center(child: Text('No data available'));
+      }),
+    );
+  }
+
+  Widget personlaInfo() {
+    final Size size = MediaQuery.of(context).size;
+
+    return Obx(() {
+      if (controller.mlmDetailsDatabaseList.isEmpty) {
+        return Center(
+          child: Text(
+            'No data available',
+            style: textStyleW500(size.width * 0.04, AppColors.blackText),
+          ),
+        );
+      }
+
+      return ListView.builder(
+        shrinkWrap: true,
+        padding: EdgeInsets.zero,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: controller.mlmDetailsDatabaseList.length,
+        itemBuilder: (context, index) {
+          final post = controller.mlmDetailsDatabaseList[index];
+
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              InkWell(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Dialog(
+                        insetPadding: EdgeInsets.zero,
+                        child: Stack(
+                          children: [
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height,
+                              child: InteractiveViewer(
+                                child: Image.network(
+                                  '${post.imageUrl.toString()}?${DateTime.now().millisecondsSinceEpoch}',
+                                  fit: BoxFit.contain,
+                                  width: MediaQuery.of(context).size.width,
+                                ),
                               ),
                             ),
-                            SingleChildScrollView(
-                              padding: const EdgeInsets.only(
-                                  top: 20, left: 16, right: 16),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(14),
-                                  color: AppColors.white,
-                                ),
-                                child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 16,
-                                        vertical: 6,
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Follow me on',
-                                            style: textStyleW400(
-                                                size.width * 0.035,
-                                                AppColors.grey),
-                                          ),
-                                          10.sbh,
-                                          Row(
-                                            children: [
-                                              Expanded(
-                                                child: InkWell(
-                                                  onTap: () {
-                                                    if (post.wplink == null ||
-                                                        post.wplink!.isEmpty) {
-                                                      showToasterrorborder(
-                                                          'No Any Url Found',
-                                                          context);
-                                                    } else {
-                                                      launchUrl(
-                                                        Uri.parse(post.wplink
-                                                            .toString()),
-                                                        mode: LaunchMode
-                                                            .externalApplication,
-                                                      );
-                                                    }
-                                                  },
-                                                  child: SvgPicture.asset(
-                                                    Assets.svgLogosWhatsappIcon,
-                                                  ),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: InkWell(
-                                                  onTap: () {
-                                                    if (post.fblink == null ||
-                                                        post.fblink!.isEmpty) {
-                                                      showToasterrorborder(
-                                                          'No Any Url Found',
-                                                          context);
-                                                    } else {
-                                                      launchUrl(
-                                                        Uri.parse(post.fblink
-                                                            .toString()),
-                                                        mode: LaunchMode
-                                                            .externalApplication,
-                                                      );
-                                                    }
-                                                  },
-                                                  child: SvgPicture.asset(
-                                                    Assets.svgLogosFacebook,
-                                                  ),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: InkWell(
-                                                  onTap: () {
-                                                    if (post.instalink ==
-                                                            null ||
-                                                        post.instalink!
-                                                            .isEmpty) {
-                                                      showToasterrorborder(
-                                                          'No Any Url Found',
-                                                          context);
-                                                    } else {
-                                                      launchUrl(
-                                                        Uri.parse(post.instalink
-                                                            .toString()),
-                                                        mode: LaunchMode
-                                                            .externalApplication,
-                                                      );
-                                                    }
-                                                  },
-                                                  child: SvgPicture.asset(
-                                                    Assets.svgInstagram,
-                                                  ),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: InkWell(
-                                                  onTap: () {
-                                                    if (post.lilink == null ||
-                                                        post.lilink!.isEmpty) {
-                                                      showToasterrorborder(
-                                                          'No Any Url Found',
-                                                          context);
-                                                    } else {
-                                                      launchUrl(
-                                                        Uri.parse(post.lilink
-                                                            .toString()),
-                                                        mode: LaunchMode
-                                                            .externalApplication,
-                                                      );
-                                                    }
-                                                  },
-                                                  child: SvgPicture.asset(
-                                                    Assets.svgLogosLinkedinIcon,
-                                                  ),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: InkWell(
-                                                  onTap: () {
-                                                    if (post.youlink == null ||
-                                                        post.youlink!.isEmpty) {
-                                                      showToasterrorborder(
-                                                          'No Any Url Found',
-                                                          context);
-                                                    } else {
-                                                      launchUrl(
-                                                        Uri.parse(post.youlink
-                                                            .toString()),
-                                                        mode: LaunchMode
-                                                            .externalApplication,
-                                                      );
-                                                    }
-                                                  },
-                                                  child: SvgPicture.asset(
-                                                    Assets.svgYoutube,
-                                                  ),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: InkWell(
-                                                  onTap: () {
-                                                    if (post.telink == null ||
-                                                        post.telink!.isEmpty) {
-                                                      showToasterrorborder(
-                                                          'No Any Url Found',
-                                                          context);
-                                                    } else {
-                                                      launchUrl(
-                                                        Uri.parse(post.telink
-                                                            .toString()),
-                                                        mode: LaunchMode
-                                                            .externalApplication,
-                                                      );
-                                                    }
-                                                  },
-                                                  child: SvgPicture.asset(
-                                                    Assets.svgTelegram,
-                                                  ),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: InkWell(
-                                                  onTap: () {
-                                                    if (post.twiterlink ==
-                                                            null ||
-                                                        post.twiterlink!
-                                                            .isEmpty) {
-                                                      showToasterrorborder(
-                                                          'No Any Url Found',
-                                                          context);
-                                                    } else {
-                                                      launchUrl(
-                                                        Uri.parse(post
-                                                            .twiterlink
-                                                            .toString()),
-                                                        mode: LaunchMode
-                                                            .externalApplication,
-                                                      );
-                                                    }
-                                                  },
-                                                  child: SvgPicture.asset(
-                                                    Assets.svgTwitter,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    10.sbh,
-                                    const Divider(color: Colors.grey),
-                                    10.sbh,
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 16),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text('About me',
-                                              style: textStyleW400(
-                                                  size.width * 0.035,
-                                                  AppColors.grey)),
-                                          Text(
-                                            post.aboutyou ?? 'N/A',
-                                            style: textStyleW500(
-                                                size.width * 0.035,
-                                                AppColors.blackText),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    10.sbh,
-                                    const Divider(color: Colors.grey),
-                                    10.sbh,
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 16),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text('About Company',
-                                              style: textStyleW400(
-                                                  size.width * 0.035,
-                                                  AppColors.grey)),
-                                          Text(
-                                            post.aboutcompany ?? 'N/A',
-                                            style: textStyleW500(
-                                                size.width * 0.035,
-                                                AppColors.blackText),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(height: size.height * 0.017),
-                                  ],
-                                ),
+                            Positioned(
+                              top: 20,
+                              right: 20,
+                              child: IconButton(
+                                icon: const Icon(Icons.cancel,
+                                    color: Colors.black),
+                                onPressed: () {
+                                  Get.back();
+                                },
                               ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
+                child: ClipOval(
+                  child: CachedNetworkImage(
+                    imageUrl: post.imageUrl ?? Assets.imagesAdminlogo,
+                    fit: BoxFit.cover,
+                    height: 120,
+                    width: 120,
+                    errorWidget: (context, url, error) => Image.asset(
+                      Assets.imagesAdminlogo,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ),
+              30.sbw,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      post.name ?? 'N/A',
+                      style: textStyleW700(
+                          size.width * 0.045, AppColors.blackText),
+                    ),
+                    Text(
+                      '${post.city ?? 'N/A'}, ${post.state ?? 'N/A'}, ${post.country ?? 'N/A'}',
+                      style: textStyleW500(
+                        size.width * 0.035,
+                        AppColors.blackText,
+                      ),
+                    ),
+                    Text(
+                      post.company ?? 'N/A',
+                      style: textStyleW500(
+                          size.width * 0.035, AppColors.blackText),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        isExpanded.value = !isExpanded.value;
+                      },
+                      child: Obx(() => Text(
+                            post.plan ?? 'N/A',
+                            style: textStyleW500(
+                                size.width * 0.035, AppColors.blackText),
+                            maxLines: isExpanded.value ? null : 10,
+                            overflow: TextOverflow.ellipsis,
+                          )),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    });
+  }
+
+  Widget axisScroll() {
+    final Size size = MediaQuery.of(context).size;
+
+    return Obx(() {
+      if (controller.mlmDetailsDatabaseList.isEmpty) {
+        return Center(
+          child: Text(
+            'No data available',
+            style: textStyleW500(size.width * 0.04, AppColors.blackText),
+          ),
+        );
+      }
+
+      return ListView.builder(
+          shrinkWrap: true,
+          padding: EdgeInsets.zero,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: controller.mlmDetailsDatabaseList.length,
+          itemBuilder: (context, index) {
+            final post = controller.mlmDetailsDatabaseList[index];
+
+            return SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  SizedBox(
+                    height: 30,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primaryColor,
+                      ),
+                      onPressed: () {
+                        Get.toNamed(Routes.accountsettingscreen);
+                      },
+                      child: Text(
+                        'Edit Profile',
+                        style:
+                            textStyleW700(size.width * 0.030, AppColors.white),
+                      ),
+                    ),
+                  ),
+                  20.sbw,
+                  Row(
+                    children: [
+                      Column(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (context) => buildTabBarView(),
+                              );
+                            },
+                            child: Column(
+                              children: [
+                                Text(
+                                  post.followersCount.toString(),
+                                  style: textStyleW700(
+                                      size.width * 0.045, AppColors.blackText),
+                                ),
+                                Text(
+                                  'Followers',
+                                  style: textStyleW500(
+                                      size.width * 0.035, AppColors.blackText),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      20.sbw,
+                      Column(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (context) => buildTabBarView(),
+                              );
+                            },
+                            child: Column(
+                              children: [
+                                Text(
+                                  post.followingCount.toString(),
+                                  style: textStyleW700(
+                                      size.width * 0.045, AppColors.blackText),
+                                ),
+                                Text(
+                                  'Following',
+                                  style: textStyleW500(
+                                      size.width * 0.035, AppColors.blackText),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      20.sbw,
+                      InkWell(
+                        onTap: () async {
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (context) => buildTabBarView(),
+                          );
+                        },
+                        child: Column(
+                          children: [
+                            Text(
+                              post.views.toString(),
+                              style: textStyleW700(
+                                  size.width * 0.045, AppColors.blackText),
+                            ),
+                            Text(
+                              'Profile Visits',
+                              style: textStyleW500(
+                                  size.width * 0.035, AppColors.blackText),
                             ),
                           ],
                         ),
                       ),
                     ],
-                  )
-                : const Center(child: Text('No data available'));
-          }
-        }),
+                  ),
+                ],
+              ),
+            );
+          });
+    });
+  }
+
+  Widget axisScrollsocial() {
+    final Size size = MediaQuery.of(context).size;
+    final userProfile = profileController.userProfile.value.userProfile;
+
+    return Obx(() {
+      if (controller.mlmDetailsDatabaseList.isEmpty) {
+        return Center(
+          child: Text(
+            'No data available',
+            style: textStyleW500(size.width * 0.04, AppColors.blackText),
+          ),
+        );
+      }
+
+      if (showShimmer.value) {
+        return ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: 1,
+          itemBuilder: (context, index) {
+            return Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: AxisScrollSocialShimmer(
+                      width: double.infinity,
+                      height: 40,
+                      margin: EdgeInsets.only(right: 10),
+                    ),
+                  ),
+                  Expanded(
+                    child: AxisScrollSocialShimmer(
+                      width: double.infinity,
+                      height: 40,
+                      margin: EdgeInsets.only(right: 10),
+                    ),
+                  ),
+                  Expanded(
+                    child: AxisScrollSocialShimmer(
+                      width: double.infinity,
+                      height: 40,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      }
+
+      // Main ListView
+      return ListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        padding: EdgeInsets.zero,
+        itemCount: controller.mlmDetailsDatabaseList.length,
+        itemBuilder: (context, index) {
+          final post = controller.mlmDetailsDatabaseList[index];
+
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                InkWell(
+                  onTap: () {
+                    if (post.mobile == null || post.mobile!.isEmpty) {
+                      showToasterrorborder('No Any Url Found', context);
+                    } else {
+                      final Uri phoneUri = Uri(
+                          scheme: 'tel',
+                          path: '+${post.countrycode1} ${post.mobile}');
+                      launchUrl(phoneUri);
+                    }
+                  },
+                  child: const SocialButton(
+                      icon: Assets.svgCalling, label: 'Call'),
+                ),
+                const SizedBox(width: 10),
+                InkWell(
+                  onTap: () async {
+                    if (messageController.chatList.isNotEmpty) {
+                      final post = messageController.chatList[0];
+                      Get.toNamed(Routes.messagedetailscreen, arguments: post);
+                    } else {
+                      final dummyPost = {
+                        "chatId": null,
+                        "toid": post.id,
+                        "username": post.name,
+                        "imageUrl": post.imageUrl,
+                      };
+                      Get.toNamed(Routes.usermessagedetailscreen,
+                          arguments: dummyPost);
+                    }
+                  },
+                  child: const SocialButton(
+                      icon: Assets.svgChat, label: 'Message'),
+                ),
+                const SizedBox(width: 10),
+                InkWell(
+                  onTap: () async {
+                    if (post.mobile != null && post.countrycode1 != null) {
+                      final String phoneNumber = post.mobile!;
+                      final String countryCode = post.countrycode1!.trim();
+                      final String formattedCountryCode =
+                          countryCode.startsWith('+')
+                              ? countryCode
+                              : '+$countryCode';
+
+                      if (userProfile != null && userProfile.name != null) {
+                        final String name = userProfile.name.toString();
+                        String message =
+                            "Hello, I am $name. I want to know regarding MLM Diary App.";
+
+                        final Uri whatsappUri = Uri.parse(
+                            "https://wa.me/${formattedCountryCode.replaceAll(' ', '')}$phoneNumber?text=${Uri.encodeComponent(message)}");
+
+                        if (await canLaunchUrl(whatsappUri)) {
+                          await launchUrl(whatsappUri);
+                        } else {
+                          showToasterrorborder(
+                              "Could not launch WhatsApp",
+                              // ignore: use_build_context_synchronously
+                              context);
+                        }
+                      } else {
+                        showToasterrorborder(
+                            "User profile or name is null", context);
+                      }
+                    } else {
+                      showToasterrorborder(
+                          "No valid phone number or country code found",
+                          context);
+                    }
+                  },
+                  child: const SocialButton(
+                    icon: Assets.svgWhatsappIcon,
+                    label: 'WhatsApp',
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       );
     });
   }

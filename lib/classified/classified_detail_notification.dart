@@ -160,8 +160,14 @@ class _ClassidiedDetailsScreenCopyState
                                       ],
                                     ),
                                     Text(
-                                      postTimeFormatter
-                                          .formatPostTime(data.createdate),
+                                      postTimeFormatter.formatPostTime(
+                                        DateTime.parse(data.createdate)
+                                                .isAtSameMomentAs(
+                                                    DateTime.parse(
+                                                        data.datemodified))
+                                            ? data.createdate
+                                            : data.datemodified,
+                                      ),
                                       style: textStyleW400(
                                         size.width * 0.035,
                                         AppColors.blackText.withOpacity(0.5),

@@ -330,9 +330,13 @@ class _PlanandCompanyState extends State<PlanandCompany> {
                   Get.back();
                 } else {
                   showToasterrorborder(
-                      "Please select at least one Company.", context);
+                    "Please select at least one Company.",
+                    context,
+                  );
                 }
               } else {
+                _refreshDataCompany();
+
                 bool hasAutoSelected =
                     controller.planList.any((plan) => plan.selected == true);
 

@@ -27,12 +27,12 @@ class GetHomeData {
 	String? title = '';
 	String? urlcomponent = '';
 	String? company = '';
-	String? popular = '';
-	String? premiumsdate = '';
+	dynamic popular;
+	dynamic premiumsdate;
 	String? category = '';
 	String? subcategory = '';
 	String? description = '';
-	String? website = '';
+	dynamic website;
 	dynamic email;
 	dynamic phone;
 	String? createdate = '';
@@ -62,6 +62,7 @@ class GetHomeData {
 	String? imageUrl = '';
 	@JSONField(name: "user_data")
 	GetHomeDataUserData? userData;
+	String? datemodified = '';
 
 	GetHomeData();
 

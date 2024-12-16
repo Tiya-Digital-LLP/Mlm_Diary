@@ -49,8 +49,7 @@ class _ManageBlogState extends State<ManageBlog> {
         onRefresh: _refreshData,
         child: Container(
           color: AppColors.background,
-          child: 
-          Obx(() {
+          child: Obx(() {
             if (controller.isLoading.value && controller.myBlogList.isEmpty) {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -98,6 +97,7 @@ class _ManageBlogState extends State<ManageBlog> {
                       );
                     },
                     child: ManageBlogCard(
+                      updatedateTime: post.datemodified ?? '',
                       onDelete: () => deletePost(index),
                       userImage: post.userData?.imagePath ?? '',
                       userName: post.userData?.name ?? '',

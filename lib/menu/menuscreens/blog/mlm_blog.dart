@@ -223,6 +223,7 @@ class _MlmBlogState extends State<MlmBlog> {
                                       arguments: post);
                                 },
                                 child: BlogCard(
+                                  updatedateTime: post.datemodified ?? '',
                                   image: post.userData?.imagePath ?? '',
                                   dateTime: post.createdate ?? '',
                                   blogId: post.id ?? 0,

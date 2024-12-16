@@ -6,8 +6,11 @@ import 'package:get/get.dart';
 import 'package:mlmdiary/firstscreen/home_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/tutorialvideo/controller/tutorial_video_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
+import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_video_shimmer.dart';
 import 'package:mlmdiary/widgets/custon_test_app_bar.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class TutorialVideo extends StatefulWidget {
@@ -75,38 +78,35 @@ class _TutorialVideoState extends State<TutorialVideo> {
                   final videoItem = controller.videoList[index];
                   final videoId = extractVideoId(videoItem.video ?? '');
                   final decodedTitle = decodeTitle(videoItem.title);
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(13.05)),
-                        color: Colors.white,
-                      ),
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 5),
-                      child: Padding(
-                        padding: const EdgeInsets.all(13.05),
-                        child: Column(
-                          children: [
-                            YoutubeViewer(videoId),
-                            const SizedBox(height: 10),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    decodedTitle,
-                                    style: const TextStyle(
-                                      fontSize: 15.0,
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily:
-                                          'assets/fonts/Metropolis-Black.otf',
-                                    ),
+                  return Container(
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(13.05)),
+                      color: Colors.white,
+                    ),
+                    margin:
+                        const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                    child: Padding(
+                      padding: const EdgeInsets.all(13.05),
+                      child: Column(
+                        children: [
+                          YoutubeViewer(videoId),
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  decodedTitle,
+                                  style: const TextStyle(
+                                    fontSize: 15.0,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily:
+                                        'assets/fonts/Metropolis-Black.otf',
                                   ),
                                 ),
-                              ],
-                            ),
-                          ],
-                        ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   );
@@ -149,6 +149,8 @@ class YoutubeViewer extends StatefulWidget {
 class _YoutubeViewerState extends State<YoutubeViewer>
     with AutomaticKeepAliveClientMixin {
   late final YoutubePlayerController controller;
+  bool isPlaying = false;
+  bool _showOverlay = true;
 
   @override
   bool get wantKeepAlive => true;
@@ -156,6 +158,7 @@ class _YoutubeViewerState extends State<YoutubeViewer>
   @override
   void initState() {
     super.initState();
+
     controller = YoutubePlayerController.fromVideoId(
       params: const YoutubePlayerParams(
         enableCaption: false,
@@ -175,18 +178,62 @@ class _YoutubeViewerState extends State<YoutubeViewer>
     super.dispose();
   }
 
+  Future<void> _launchYoutube() async {
+    final url = 'https://www.youtube.com/watch?v=${widget.videoID}';
+    // ignore: deprecated_member_use
+    if (await canLaunch(url)) {
+      // ignore: deprecated_member_use
+      await launch(url);
+    } else {
+      // ignore: use_build_context_synchronously
+      showToasterrorborder('Could not open YouTube', context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final player = YoutubePlayer(
-      controller: controller,
-      key: ValueKey(widget.videoID),
-    );
 
-    return ClipRRect(
-      clipBehavior: Clip.antiAlias,
-      borderRadius: BorderRadius.circular(13.05),
-      child: player,
+    return Column(
+      children: [
+        ClipRRect(
+          clipBehavior: Clip.antiAlias,
+          borderRadius: BorderRadius.circular(13.05),
+          child: Stack(
+            children: [
+              YoutubePlayer(
+                controller: controller,
+                aspectRatio: 16 / 9,
+              ),
+              if (_showOverlay)
+                Positioned.fill(
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _showOverlay = false;
+                      });
+                      controller.playVideo();
+                    },
+                    child: Container(color: Colors.transparent),
+                  ),
+                ),
+            ],
+          ),
+        ),
+        GestureDetector(
+          onTap: _launchYoutube,
+          child: Row(
+            children: [
+              const Icon(Icons.ondemand_video, color: Colors.red),
+              5.sbw,
+              Text(
+                "Watch on YouTube",
+                style: TextStyle(color: AppColors.primaryColor, fontSize: 16),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

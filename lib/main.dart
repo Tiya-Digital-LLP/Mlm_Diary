@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:convert'; // Import for JSON encoding
+import 'dart:convert';
 import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
@@ -16,7 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:toastification/toastification.dart';
-import 'firebase_options.dart'; // Import the Firebase options file
+import 'firebase_options.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   try {
@@ -204,21 +204,25 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      navigatorKey: navigatorKey,
-      title: 'MLM Diary',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-        bottomSheetTheme: BottomSheetThemeData(
-          backgroundColor: AppColors.background,
+    return MediaQuery(
+      // ignore: deprecated_member_use
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      child: GetMaterialApp(
+        navigatorKey: navigatorKey,
+        title: 'MLM Diary',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+          bottomSheetTheme: BottomSheetThemeData(
+            backgroundColor: AppColors.background,
+          ),
+          dialogBackgroundColor: Colors.white,
         ),
-        dialogBackgroundColor: Colors.white,
+        getPages: AppPages.routes,
+        navigatorObservers: <NavigatorObserver>[observer],
+        debugShowCheckedModeBanner: false,
+        initialRoute: Routes.splash,
       ),
-      getPages: AppPages.routes,
-      navigatorObservers: <NavigatorObserver>[observer],
-      debugShowCheckedModeBanner: false,
-      initialRoute: Routes.splash,
     );
   }
 }

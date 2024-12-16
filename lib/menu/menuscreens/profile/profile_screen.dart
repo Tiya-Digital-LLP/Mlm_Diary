@@ -22,6 +22,8 @@ import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
+import 'package:mlmdiary/widgets/custom_shimmer_loader/profile_shimmer/axis_scroll_shimmer.dart';
+import 'package:mlmdiary/widgets/custom_shimmer_loader/profile_shimmer/personal_info_shimmer.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -66,9 +68,14 @@ class _ProfileScreenState extends State<ProfileScreen>
     await controller.deletePost(newsId, index, context);
   }
 
+  final RxBool showShimmer = true.obs;
+
   @override
   void initState() {
     super.initState();
+    Future.delayed(const Duration(seconds: 1), () {
+      showShimmer.value = false;
+    });
     _tabController = TabController(length: 2, vsync: this);
     _viewersScrollController = ScrollController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -138,12 +145,20 @@ class _ProfileScreenState extends State<ProfileScreen>
                 Container(
                   color: AppColors.white,
                   padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      personlaInfo(),
-                      20.sbh,
-                      axisScroll(),
-                    ],
+                  child: Obx(
+                    () => Column(
+                      children: [
+                        showShimmer.value
+                            ? const PersonalInfoShimmer()
+                            : personlaInfo(),
+                        20.sbh,
+                        showShimmer.value
+                            ? AxisScrollShimmer(
+                                width: size.width,
+                              )
+                            : axisScroll(),
+                      ],
+                    ),
                   ),
                 ),
                 const Divider(color: Colors.black26, height: 2.0),
@@ -219,6 +234,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                       );
                                     },
                                     child: MyProfileCard(
+                                      updatedateTime: post.datemodified ?? '',
                                       onDelete: () => deletePost(index),
                                       userImage: post.userData!.imagePath ?? '',
                                       userName: post.userData!.name ?? '',
@@ -255,7 +271,7 @@ class _ProfileScreenState extends State<ProfileScreen>
       floatingActionButton: Container(
         decoration: BoxDecoration(
             color: AppColors.white, borderRadius: BorderRadius.circular(30)),
-        width: 125,
+        width: 130,
         child: InkWell(
           onTap: () {
             Get.toNamed(Routes.messagescreen);
@@ -648,7 +664,6 @@ class _ProfileScreenState extends State<ProfileScreen>
     return Scaffold(
       backgroundColor: Colors.white,
       body: Obx(() {
-        // Check if views list is empty
         if (userProfileController.views.isEmpty) {
           return const Center(child: Text('No Views'));
         }
@@ -662,16 +677,17 @@ class _ProfileScreenState extends State<ProfileScreen>
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: InkWell(
                 onTap: () async {
-                  // Refresh views and fetch data
-                  await _refreshViews(viewers.id);
-                  // ignore: use_build_context_synchronously
-                  await databaseController.fetchUserPost(viewers.id, context);
+                  Get.toNamed(Routes.userprofilescreen, arguments: {
+                    'user_id': viewers.id,
+                  })!
+                      .then((_) {
+                    _refreshViews(viewers.id);
+                  });
+
                   await userProfileController.fetchUserAllPost(
                     1,
                     viewers.id.toString(),
                   );
-                  // Navigate back to the previous screen
-                  Get.back();
                 },
                 child: Card(
                   color: Colors.white,

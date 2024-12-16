@@ -27,6 +27,7 @@ import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
+import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_shimmer_classified.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 
 import '../../menu/menuscreens/profile/controller/edit_post_controller.dart';
@@ -134,12 +135,18 @@ class _SearchBarAppState extends State<SearchBarApp> {
                 child: Obx(() {
                   if (controller.isLoading.value &&
                       controller.homeList.isEmpty) {
-                    return Center(
-                        child: CustomLottieAnimation(
-                      child: Lottie.asset(
-                        Assets.lottieLottie,
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: ListView.builder(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        itemCount: 4,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return const CustomShimmerClassified(
+                              width: 175, height: 240);
+                        },
                       ),
-                    ));
+                    );
                   }
                   if (controller.homeList.isEmpty) {
                     return const Center(
@@ -179,6 +186,7 @@ class _SearchBarAppState extends State<SearchBarApp> {
                       switch (post.type) {
                         case 'classified':
                           cardWidget = ClassifiedHomeCard(
+                            updatedateTime: post.datemodified ?? '',
                             userImage: post.userData?.imagePath ?? '',
                             userName: post.userData?.name ?? '',
                             postTitle: post.title ?? '',
@@ -232,6 +240,7 @@ class _SearchBarAppState extends State<SearchBarApp> {
                           break;
                         case 'blog':
                           cardWidget = BlogHomeCard(
+                            updatedateTime: post.datemodified ?? '',
                             userImage: post.userData?.imagePath ?? '',
                             userName: post.userData?.name ?? '',
                             postTitle: post.title ?? '',
@@ -257,6 +266,7 @@ class _SearchBarAppState extends State<SearchBarApp> {
                           break;
                         case 'news':
                           cardWidget = NewsHomeCard(
+                            updatedateTime: post.datemodified ?? '',
                             userImage: post.userData?.imagePath ?? '',
                             userName: post.userData?.name ?? 'N/A',
                             postTitle: post.title ?? '',
@@ -311,6 +321,7 @@ class _SearchBarAppState extends State<SearchBarApp> {
                           break;
                         case 'question':
                           cardWidget = QuestionHomeCard(
+                            updatedateTime: post.datemodified ?? '',
                             userImage: post.userData?.imagePath ?? '',
                             userName: post.userData?.name ?? '',
                             postTitle: post.title ?? '',
@@ -335,6 +346,7 @@ class _SearchBarAppState extends State<SearchBarApp> {
                           break;
                         case 'post':
                           cardWidget = PostHomeCard(
+                            updatedateTime: post.datemodified ?? '',
                             userImage: post.userData?.imagePath ?? '',
                             userName: post.userData?.name ?? '',
                             postTitle: post.title ?? '',

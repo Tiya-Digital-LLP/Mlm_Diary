@@ -68,6 +68,11 @@ MyBlogListData $MyBlogListDataFromJson(Map<String, dynamic> json) {
   if (createdDate != null) {
     myBlogListData.createdDate = createdDate;
   }
+  final String? datemodified = jsonConvert.convert<String>(
+      json['datemodified']);
+  if (datemodified != null) {
+    myBlogListData.datemodified = datemodified;
+  }
   final String? category = jsonConvert.convert<String>(json['category']);
   if (category != null) {
     myBlogListData.category = category;
@@ -144,6 +149,7 @@ Map<String, dynamic> $MyBlogListDataToJson(MyBlogListData entity) {
   data['description'] = entity.description;
   data['pgcnt'] = entity.pgcnt;
   data['created_date'] = entity.createdDate;
+  data['datemodified'] = entity.datemodified;
   data['category'] = entity.category;
   data['user_id'] = entity.userId;
   data['subcategory'] = entity.subcategory;
@@ -170,6 +176,7 @@ extension MyBlogListDataExtension on MyBlogListData {
     String? description,
     int? pgcnt,
     String? createdDate,
+    String? datemodified,
     String? category,
     int? userId,
     String? subcategory,
@@ -193,6 +200,7 @@ extension MyBlogListDataExtension on MyBlogListData {
       ..description = description ?? this.description
       ..pgcnt = pgcnt ?? this.pgcnt
       ..createdDate = createdDate ?? this.createdDate
+      ..datemodified = datemodified ?? this.datemodified
       ..category = category ?? this.category
       ..userId = userId ?? this.userId
       ..subcategory = subcategory ?? this.subcategory
@@ -239,6 +247,26 @@ MyBlogListDataUserData $MyBlogListDataUserDataFromJson(
   if (countrycode1 != null) {
     myBlogListDataUserData.countrycode1 = countrycode1;
   }
+  final String? company = jsonConvert.convert<String>(json['company']);
+  if (company != null) {
+    myBlogListDataUserData.company = company;
+  }
+  final String? state = jsonConvert.convert<String>(json['state']);
+  if (state != null) {
+    myBlogListDataUserData.state = state;
+  }
+  final String? country = jsonConvert.convert<String>(json['country']);
+  if (country != null) {
+    myBlogListDataUserData.country = country;
+  }
+  final String? city = jsonConvert.convert<String>(json['city']);
+  if (city != null) {
+    myBlogListDataUserData.city = city;
+  }
+  final String? fullAddress = jsonConvert.convert<String>(json['full_address']);
+  if (fullAddress != null) {
+    myBlogListDataUserData.fullAddress = fullAddress;
+  }
   final String? imagePath = jsonConvert.convert<String>(json['image_path']);
   if (imagePath != null) {
     myBlogListDataUserData.imagePath = imagePath;
@@ -260,6 +288,11 @@ Map<String, dynamic> $MyBlogListDataUserDataToJson(
   data['email'] = entity.email;
   data['mobile'] = entity.mobile;
   data['countrycode1'] = entity.countrycode1;
+  data['company'] = entity.company;
+  data['state'] = entity.state;
+  data['country'] = entity.country;
+  data['city'] = entity.city;
+  data['full_address'] = entity.fullAddress;
   data['image_path'] = entity.imagePath;
   data['image_thum_path'] = entity.imageThumPath;
   return data;
@@ -273,6 +306,11 @@ extension MyBlogListDataUserDataExtension on MyBlogListDataUserData {
     String? email,
     String? mobile,
     String? countrycode1,
+    String? company,
+    String? state,
+    String? country,
+    String? city,
+    String? fullAddress,
     String? imagePath,
     String? imageThumPath,
   }) {
@@ -283,6 +321,11 @@ extension MyBlogListDataUserDataExtension on MyBlogListDataUserData {
       ..email = email ?? this.email
       ..mobile = mobile ?? this.mobile
       ..countrycode1 = countrycode1 ?? this.countrycode1
+      ..company = company ?? this.company
+      ..state = state ?? this.state
+      ..country = country ?? this.country
+      ..city = city ?? this.city
+      ..fullAddress = fullAddress ?? this.fullAddress
       ..imagePath = imagePath ?? this.imagePath
       ..imageThumPath = imageThumPath ?? this.imageThumPath;
   }

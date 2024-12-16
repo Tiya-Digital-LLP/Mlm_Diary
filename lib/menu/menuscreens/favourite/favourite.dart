@@ -25,6 +25,7 @@ import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
+import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_shimmer_classified.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 
 class Favourite extends StatefulWidget {
@@ -114,12 +115,18 @@ class _FavouriteState extends State<Favourite> {
               if (controller.isLoading.value &&
                   controller.favouriteList.isEmpty) {
                 return SliverFillRemaining(
-                  child: Center(
-                      child: CustomLottieAnimation(
-                    child: Lottie.asset(
-                      Assets.lottieLottie,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: ListView.builder(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      itemCount: 4,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        return const CustomShimmerClassified(
+                            width: 175, height: 240);
+                      },
                     ),
-                  )),
+                  ),
                 );
               }
 
@@ -166,6 +173,7 @@ class _FavouriteState extends State<Favourite> {
                     switch (post.type) {
                       case 'classified':
                         cardWidget = ClassifiedFavouriteCard(
+                          updatedateTime: post.datemodified ?? '',
                           userImage: post.userData?.imagePath ?? '',
                           userName: post.userData?.name ?? '',
                           postTitle: post.title ?? '',
@@ -215,6 +223,7 @@ class _FavouriteState extends State<Favourite> {
 
                       case 'blog':
                         cardWidget = BlogFaviouriteCard(
+                          updatedateTime: post.datemodified ?? '',
                           userImage: post.userData?.imagePath ?? '',
                           userName: post.userData?.name ?? '',
                           postTitle: post.title ?? '',
@@ -239,6 +248,7 @@ class _FavouriteState extends State<Favourite> {
                         break;
                       case 'news':
                         cardWidget = NewsFaviouriteCard(
+                          updatedateTime: post.datemodified ?? '',
                           userImage: post.userData?.imagePath ?? '',
                           userName: post.userData?.name ?? '',
                           postTitle: post.title ?? '',
@@ -316,6 +326,7 @@ class _FavouriteState extends State<Favourite> {
                         break;
                       case 'post':
                         cardWidget = PostFavouriteCard(
+                          updatedateTime: post.datemodified ?? '',
                           userImage: post.userData?.imagePath ?? '',
                           userName: post.userData?.name ?? '',
                           postTitle: post.title ?? '',

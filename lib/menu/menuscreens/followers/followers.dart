@@ -35,6 +35,11 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
   }
 
   void _handleTabChange() {
+    if (_tabController.indexIsChanging) {
+      // Prevent executing logic during swipe
+      return;
+    }
+
     if (_tabController.index == 0) {
       _refreshFollowers();
     } else if (_tabController.index == 1) {

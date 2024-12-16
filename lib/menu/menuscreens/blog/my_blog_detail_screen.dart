@@ -16,6 +16,7 @@ import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 // ignore: library_prefixes
 import 'package:html/parser.dart' as htmlParser;
+import 'package:mlmdiary/widgets/image_preview_user_image.dart';
 import 'package:text_link/text_link.dart';
 
 class MyBlogDetailScreen extends StatefulWidget {
@@ -147,9 +148,17 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen> {
                                   ],
                                 ),
                                 Text(
-                                  "2 Min Ago",
-                                  style: textStyleW400(size.width * 0.035,
-                                      AppColors.blackText.withOpacity(0.5)),
+                                  postTimeFormatter.formatPostTime(
+                                    DateTime.parse(post.createdDate ?? '')
+                                            .isAtSameMomentAs(DateTime.parse(
+                                                post.datemodified ?? ''))
+                                        ? post.createdDate ?? ''
+                                        : post.datemodified ?? '',
+                                  ),
+                                  style: textStyleW400(
+                                    size.width * 0.035,
+                                    AppColors.blackText.withOpacity(0.5),
+                                  ),
                                 ),
                               ],
                             )
@@ -164,19 +173,25 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen> {
                       padding: const EdgeInsets.symmetric(
                         horizontal: 16,
                       ),
-                      child: Container(
-                        height: size.height * 0.28,
-                        width: size.width,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: CachedNetworkImage(
-                          imageUrl: post.imagePath.toString(),
-                          height: 97,
-                          width: 105,
-                          fit: BoxFit.fill,
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
+                      child: InkWell(
+                        onTap: () {
+                          _showFullScreenImageDialog(context);
+                        },
+                        child: Container(
+                          height: size.height * 0.28,
+                          width: size.width,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: CachedNetworkImage(
+                            imageUrl:
+                                '${post.imagePath.toString()}?${DateTime.now().millisecondsSinceEpoch}',
+                            height: 97,
+                            width: 105,
+                            fit: BoxFit.fill,
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
+                          ),
                         ),
                       ),
                     ),
@@ -241,7 +256,7 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen> {
                             ],
                           ),
                           Text(
-                            "Vicodin",
+                            post.userData!.company.toString(),
                             style: textStyleW400(
                                 size.width * 0.035, AppColors.blackText),
                           ),
@@ -278,7 +293,7 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen> {
                             ],
                           ),
                           Text(
-                            "Scottsdale, AZ, USA",
+                            post.userData!.fullAddress.toString(),
                             style: textStyleW400(
                                 size.width * 0.035, AppColors.blackText),
                           ),
@@ -544,6 +559,15 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  void _showFullScreenImageDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return FullScreenImageDialog(imageUrl: post.imagePath.toString());
+      },
     );
   }
 

@@ -59,12 +59,11 @@ GetHomeData $GetHomeDataFromJson(Map<String, dynamic> json) {
   if (company != null) {
     getHomeData.company = company;
   }
-  final String? popular = jsonConvert.convert<String>(json['popular']);
+  final dynamic popular = json['popular'];
   if (popular != null) {
     getHomeData.popular = popular;
   }
-  final String? premiumsdate = jsonConvert.convert<String>(
-      json['premiumsdate']);
+  final dynamic premiumsdate = json['premiumsdate'];
   if (premiumsdate != null) {
     getHomeData.premiumsdate = premiumsdate;
   }
@@ -80,7 +79,7 @@ GetHomeData $GetHomeDataFromJson(Map<String, dynamic> json) {
   if (description != null) {
     getHomeData.description = description;
   }
-  final String? website = jsonConvert.convert<String>(json['website']);
+  final dynamic website = json['website'];
   if (website != null) {
     getHomeData.website = website;
   }
@@ -175,6 +174,11 @@ GetHomeData $GetHomeDataFromJson(Map<String, dynamic> json) {
   if (userData != null) {
     getHomeData.userData = userData;
   }
+  final String? datemodified = jsonConvert.convert<String>(
+      json['datemodified']);
+  if (datemodified != null) {
+    getHomeData.datemodified = datemodified;
+  }
   return getHomeData;
 }
 
@@ -212,6 +216,7 @@ Map<String, dynamic> $GetHomeDataToJson(GetHomeData entity) {
   data['liked_by_user'] = entity.likedByUser;
   data['image_url'] = entity.imageUrl;
   data['user_data'] = entity.userData?.toJson();
+  data['datemodified'] = entity.datemodified;
   return data;
 }
 
@@ -221,12 +226,12 @@ extension GetHomeDataExtension on GetHomeData {
     String? title,
     String? urlcomponent,
     String? company,
-    String? popular,
-    String? premiumsdate,
+    dynamic popular,
+    dynamic premiumsdate,
     String? category,
     String? subcategory,
     String? description,
-    String? website,
+    dynamic website,
     dynamic email,
     dynamic phone,
     String? createdate,
@@ -249,6 +254,7 @@ extension GetHomeDataExtension on GetHomeData {
     bool? likedByUser,
     String? imageUrl,
     GetHomeDataUserData? userData,
+    String? datemodified,
   }) {
     return GetHomeData()
       ..id = id ?? this.id
@@ -282,7 +288,8 @@ extension GetHomeDataExtension on GetHomeData {
       ..bookmarkByUser = bookmarkByUser ?? this.bookmarkByUser
       ..likedByUser = likedByUser ?? this.likedByUser
       ..imageUrl = imageUrl ?? this.imageUrl
-      ..userData = userData ?? this.userData;
+      ..userData = userData ?? this.userData
+      ..datemodified = datemodified ?? this.datemodified;
   }
 }
 

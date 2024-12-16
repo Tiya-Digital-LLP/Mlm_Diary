@@ -34,13 +34,15 @@ class AllBookmarkData {
 	dynamic email;
 	dynamic phone;
 	String? createdate = '';
+	@JSONField(name: "updated_at")
+	String? updatedAt = '';
 	int? pgcnt = 0;
 	String? location = '';
 	String? image = '';
 	@JSONField(name: "user_id")
 	int? userId = 0;
 	String? type = '';
-	dynamic immlm;
+	String? immlm = '';
 	String? plan = '';
 	String? city = '';
 	String? state = '';
@@ -55,6 +57,7 @@ class AllBookmarkData {
 	String? imageUrl = '';
 	@JSONField(name: "user_data")
 	AllBookmarkDataUserData? userData;
+	String? datemodified = '';
 
 	AllBookmarkData();
 

@@ -31,6 +31,7 @@ class MyBlogListData {
 	int? pgcnt = 0;
 	@JSONField(name: "created_date")
 	String? createdDate = '';
+	String? datemodified = '';
 	String? category = '';
 	@JSONField(name: "user_id")
 	int? userId = 0;
@@ -74,6 +75,12 @@ class MyBlogListDataUserData {
 	String? email = '';
 	String? mobile = '';
 	String? countrycode1 = '';
+	String? company = '';
+	String? state = '';
+	String? country = '';
+	String? city = '';
+	@JSONField(name: "full_address")
+	String? fullAddress = '';
 	@JSONField(name: "image_path")
 	String? imagePath = '';
 	@JSONField(name: "image_thum_path")

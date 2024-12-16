@@ -37,6 +37,7 @@ class BlogUserCard extends StatefulWidget {
   final UserProfileController userProfileController;
   final int likedCount;
   final bool bookmarkedbyuser;
+  final String updatedateTime;
 
   const BlogUserCard({
     super.key,
@@ -60,6 +61,7 @@ class BlogUserCard extends StatefulWidget {
     required this.likedCount,
     required this.bookmarkedbyuser,
     required this.userProfileController,
+    required this.updatedateTime,
   });
 
   @override
@@ -164,9 +166,16 @@ class _FavouritrCardState extends State<BlogUserCard> {
                         ),
                       ),
                       Text(
-                        postTimeFormatter.formatPostTime(widget.dateTime),
-                        style: textStyleW400(size.width * 0.035,
-                            AppColors.blackText.withOpacity(0.8)),
+                        postTimeFormatter.formatPostTime(
+                          DateTime.parse(widget.dateTime).isAtSameMomentAs(
+                                  DateTime.parse(widget.updatedateTime))
+                              ? widget.dateTime
+                              : widget.updatedateTime,
+                        ),
+                        style: textStyleW400(
+                          size.width * 0.035,
+                          AppColors.blackText.withOpacity(0.5),
+                        ),
                       ),
                     ],
                   ),

@@ -106,6 +106,7 @@ class _MlmClassifiedState extends State<ManageClassified> {
                       dateTime: post.datecreated ?? '',
                       postCaption: post.description ?? '',
                       postTime: post.datecreated ?? '',
+                      updatedateTime: post.datemodified ?? '',
                       controller: controller,
                       viewcounts: post.pgcnt ?? 0,
                       likedCount: post.totallike ?? 0,

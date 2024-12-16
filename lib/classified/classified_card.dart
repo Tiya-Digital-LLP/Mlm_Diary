@@ -23,6 +23,7 @@ class ClassifiedCard extends StatefulWidget {
   final String postCaption;
 
   final String dateTime;
+  final String updatedateTime;
   final int likedCount;
   final int classifiedId;
   final ClasifiedController controller;
@@ -42,6 +43,7 @@ class ClassifiedCard extends StatefulWidget {
     required this.postTitle,
     required this.postCaption,
     required this.dateTime,
+    required this.updatedateTime,
     required this.likedCount,
     required this.classifiedId,
     required this.controller,
@@ -159,9 +161,16 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
                         maxLines: 1,
                       ),
                       Text(
-                        postTimeFormatter.formatPostTime(widget.dateTime),
-                        style: textStyleW400(size.width * 0.035,
-                            AppColors.blackText.withOpacity(0.5)),
+                        postTimeFormatter.formatPostTime(
+                          DateTime.parse(widget.dateTime).isAtSameMomentAs(
+                                  DateTime.parse(widget.updatedateTime))
+                              ? widget.dateTime
+                              : widget.updatedateTime,
+                        ),
+                        style: textStyleW400(
+                          size.width * 0.035,
+                          AppColors.blackText.withOpacity(0.5),
+                        ),
                       ),
                     ],
                   ),

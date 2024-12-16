@@ -43,6 +43,7 @@ class ClassifiedUserCard extends StatefulWidget {
 
   final UserProfileController userProfileController;
   final bool isPopular;
+  final String updatedateTime;
 
   const ClassifiedUserCard({
     super.key,
@@ -68,6 +69,7 @@ class ClassifiedUserCard extends StatefulWidget {
     required this.bookmarkedbyuser,
     required this.isPopular,
     required this.userProfileController,
+    required this.updatedateTime,
   });
 
   @override
@@ -173,10 +175,17 @@ class _FavouritrCardState extends State<ClassifiedUserCard> {
                             size.width * 0.038, AppColors.blackText),
                       ),
                       Text(
-                        postTimeFormatter.formatPostTime(widget.dateTime),
-                        style: textStyleW400(size.width * 0.035,
-                            AppColors.blackText.withOpacity(0.8)),
-                      )
+                        postTimeFormatter.formatPostTime(
+                          DateTime.parse(widget.dateTime).isAtSameMomentAs(
+                                  DateTime.parse(widget.updatedateTime))
+                              ? widget.dateTime
+                              : widget.updatedateTime,
+                        ),
+                        style: textStyleW400(
+                          size.width * 0.035,
+                          AppColors.blackText.withOpacity(0.5),
+                        ),
+                      ),
                     ],
                   ),
                 ),

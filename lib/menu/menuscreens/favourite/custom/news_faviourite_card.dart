@@ -43,6 +43,7 @@ class NewsFaviouriteCard extends StatefulWidget {
   final FavouriteController controller;
   final int likedCount;
   final int commentcount;
+  final String updatedateTime;
 
   const NewsFaviouriteCard({
     super.key,
@@ -66,6 +67,7 @@ class NewsFaviouriteCard extends StatefulWidget {
     required this.likedbyuser,
     required this.likedCount,
     required this.commentcount,
+    required this.updatedateTime,
   });
 
   @override
@@ -181,9 +183,16 @@ class _FavouritrCardState extends State<NewsFaviouriteCard> {
                       Row(
                         children: [
                           Text(
-                            postTimeFormatter.formatPostTime(widget.dateTime),
-                            style: textStyleW400(size.width * 0.035,
-                                AppColors.blackText.withOpacity(0.8)),
+                            postTimeFormatter.formatPostTime(
+                              DateTime.parse(widget.dateTime).isAtSameMomentAs(
+                                      DateTime.parse(widget.updatedateTime))
+                                  ? widget.dateTime
+                                  : widget.updatedateTime,
+                            ),
+                            style: textStyleW400(
+                              size.width * 0.035,
+                              AppColors.blackText.withOpacity(0.5),
+                            ),
                           ),
                         ],
                       ),

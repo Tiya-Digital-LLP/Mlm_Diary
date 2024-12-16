@@ -26,6 +26,7 @@ class MyProfileCard extends StatefulWidget {
   final EditPostController controller;
   final int bookmarkCount;
   final int commentcount;
+  final String updatedateTime;
 
   const MyProfileCard({
     super.key,
@@ -40,6 +41,7 @@ class MyProfileCard extends StatefulWidget {
     required this.controller,
     required this.bookmarkCount,
     required this.commentcount,
+    required this.updatedateTime,
   });
 
   @override
@@ -149,9 +151,16 @@ class _MyProfileCardState extends State<MyProfileCard> {
                           ],
                         ),
                         Text(
-                          postTimeFormatter.formatPostTime(widget.dateTime),
-                          style: textStyleW400(size.width * 0.035,
-                              AppColors.blackText.withOpacity(0.5)),
+                          postTimeFormatter.formatPostTime(
+                            DateTime.parse(widget.dateTime).isAtSameMomentAs(
+                                    DateTime.parse(widget.updatedateTime))
+                                ? widget.dateTime
+                                : widget.updatedateTime,
+                          ),
+                          style: textStyleW400(
+                            size.width * 0.035,
+                            AppColors.blackText.withOpacity(0.5),
+                          ),
                         ),
                       ],
                     ),

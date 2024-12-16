@@ -32,6 +32,7 @@ class NewsCard extends StatefulWidget {
   final bool bookmarkedbyuser;
 
   final String image;
+  final String updatedateTime;
 
   const NewsCard({
     super.key,
@@ -49,6 +50,7 @@ class NewsCard extends StatefulWidget {
     required this.commentcount,
     required this.likedbyuser,
     required this.bookmarkedbyuser,
+    required this.updatedateTime,
   });
 
   @override
@@ -156,9 +158,16 @@ class _NewsCardState extends State<NewsCard> {
                       ],
                     ),
                     Text(
-                      postTimeFormatter.formatPostTime(widget.dateTime),
-                      style: textStyleW400(size.width * 0.035,
-                          AppColors.blackText.withOpacity(0.5)),
+                      postTimeFormatter.formatPostTime(
+                        DateTime.parse(widget.dateTime).isAtSameMomentAs(
+                                DateTime.parse(widget.updatedateTime))
+                            ? widget.dateTime
+                            : widget.updatedateTime,
+                      ),
+                      style: textStyleW400(
+                        size.width * 0.035,
+                        AppColors.blackText.withOpacity(0.5),
+                      ),
                     ),
                   ],
                 ),

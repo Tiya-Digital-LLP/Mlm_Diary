@@ -89,6 +89,10 @@ AllBookmarkData $AllBookmarkDataFromJson(Map<String, dynamic> json) {
   if (createdate != null) {
     allBookmarkData.createdate = createdate;
   }
+  final String? updatedAt = jsonConvert.convert<String>(json['updated_at']);
+  if (updatedAt != null) {
+    allBookmarkData.updatedAt = updatedAt;
+  }
   final int? pgcnt = jsonConvert.convert<int>(json['pgcnt']);
   if (pgcnt != null) {
     allBookmarkData.pgcnt = pgcnt;
@@ -109,7 +113,7 @@ AllBookmarkData $AllBookmarkDataFromJson(Map<String, dynamic> json) {
   if (type != null) {
     allBookmarkData.type = type;
   }
-  final dynamic immlm = json['immlm'];
+  final String? immlm = jsonConvert.convert<String>(json['immlm']);
   if (immlm != null) {
     allBookmarkData.immlm = immlm;
   }
@@ -155,6 +159,11 @@ AllBookmarkData $AllBookmarkDataFromJson(Map<String, dynamic> json) {
   if (userData != null) {
     allBookmarkData.userData = userData;
   }
+  final String? datemodified = jsonConvert.convert<String>(
+      json['datemodified']);
+  if (datemodified != null) {
+    allBookmarkData.datemodified = datemodified;
+  }
   return allBookmarkData;
 }
 
@@ -171,6 +180,7 @@ Map<String, dynamic> $AllBookmarkDataToJson(AllBookmarkData entity) {
   data['email'] = entity.email;
   data['phone'] = entity.phone;
   data['createdate'] = entity.createdate;
+  data['updated_at'] = entity.updatedAt;
   data['pgcnt'] = entity.pgcnt;
   data['location'] = entity.location;
   data['image'] = entity.image;
@@ -187,6 +197,7 @@ Map<String, dynamic> $AllBookmarkDataToJson(AllBookmarkData entity) {
   data['liked_by_user'] = entity.likedByUser;
   data['image_url'] = entity.imageUrl;
   data['user_data'] = entity.userData?.toJson();
+  data['datemodified'] = entity.datemodified;
   return data;
 }
 
@@ -203,12 +214,13 @@ extension AllBookmarkDataExtension on AllBookmarkData {
     dynamic email,
     dynamic phone,
     String? createdate,
+    String? updatedAt,
     int? pgcnt,
     String? location,
     String? image,
     int? userId,
     String? type,
-    dynamic immlm,
+    String? immlm,
     String? plan,
     String? city,
     String? state,
@@ -219,6 +231,7 @@ extension AllBookmarkDataExtension on AllBookmarkData {
     bool? likedByUser,
     String? imageUrl,
     AllBookmarkDataUserData? userData,
+    String? datemodified,
   }) {
     return AllBookmarkData()
       ..id = id ?? this.id
@@ -232,6 +245,7 @@ extension AllBookmarkDataExtension on AllBookmarkData {
       ..email = email ?? this.email
       ..phone = phone ?? this.phone
       ..createdate = createdate ?? this.createdate
+      ..updatedAt = updatedAt ?? this.updatedAt
       ..pgcnt = pgcnt ?? this.pgcnt
       ..location = location ?? this.location
       ..image = image ?? this.image
@@ -247,7 +261,8 @@ extension AllBookmarkDataExtension on AllBookmarkData {
       ..totalcomment = totalcomment ?? this.totalcomment
       ..likedByUser = likedByUser ?? this.likedByUser
       ..imageUrl = imageUrl ?? this.imageUrl
-      ..userData = userData ?? this.userData;
+      ..userData = userData ?? this.userData
+      ..datemodified = datemodified ?? this.datemodified;
   }
 }
 

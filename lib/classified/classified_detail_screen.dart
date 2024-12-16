@@ -41,7 +41,7 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
   // like
   late RxBool isLiked;
   late RxInt likeCount;
-// bookmark
+  // bookmark
   late RxBool isBookmarked;
   late RxInt bookmarkCount;
 
@@ -175,7 +175,14 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
                                       ),
                                       Text(
                                         postTimeFormatter.formatPostTime(
-                                            post.createdate ?? ''),
+                                          DateTime.parse(post.createdate ?? '')
+                                                  .isAtSameMomentAs(
+                                                      DateTime.parse(
+                                                          post.datemodified ??
+                                                              ''))
+                                              ? post.createdate ?? ''
+                                              : post.datemodified ?? '',
+                                        ),
                                         style: textStyleW400(
                                           size.width * 0.035,
                                           AppColors.blackText.withOpacity(0.5),
@@ -380,8 +387,7 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
                                         } else {
                                           final Uri phoneUri = Uri(
                                             scheme: 'tel',
-                                            path:
-                                                '$countryCode$mobileNumber', // Combine country code and mobile
+                                            path: '$countryCode$mobileNumber',
                                           );
                                           launchUrl(phoneUri);
                                           if (kDebugMode) {

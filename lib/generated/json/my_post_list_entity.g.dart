@@ -56,6 +56,10 @@ MyPostListData $MyPostListDataFromJson(Map<String, dynamic> json) {
   if (attachment != null) {
     myPostListData.attachment = attachment;
   }
+  final dynamic datemodified = json['datemodified'];
+  if (datemodified != null) {
+    myPostListData.datemodified = datemodified;
+  }
   final String? createdate = jsonConvert.convert<String>(json['createdate']);
   if (createdate != null) {
     myPostListData.createdate = createdate;
@@ -107,6 +111,7 @@ Map<String, dynamic> $MyPostListDataToJson(MyPostListData entity) {
   data['id'] = entity.id;
   data['comments'] = entity.comments;
   data['attachment'] = entity.attachment;
+  data['datemodified'] = entity.datemodified;
   data['createdate'] = entity.createdate;
   data['comtype'] = entity.comtype;
   data['userid'] = entity.userid;
@@ -125,6 +130,7 @@ extension MyPostListDataExtension on MyPostListData {
     int? id,
     String? comments,
     String? attachment,
+    dynamic datemodified,
     String? createdate,
     String? comtype,
     String? userid,
@@ -140,6 +146,7 @@ extension MyPostListDataExtension on MyPostListData {
       ..id = id ?? this.id
       ..comments = comments ?? this.comments
       ..attachment = attachment ?? this.attachment
+      ..datemodified = datemodified ?? this.datemodified
       ..createdate = createdate ?? this.createdate
       ..comtype = comtype ?? this.comtype
       ..userid = userid ?? this.userid
@@ -181,6 +188,26 @@ MyPostListDataUserData $MyPostListDataUserDataFromJson(
   if (countrycode1 != null) {
     myPostListDataUserData.countrycode1 = countrycode1;
   }
+  final String? company = jsonConvert.convert<String>(json['company']);
+  if (company != null) {
+    myPostListDataUserData.company = company;
+  }
+  final String? state = jsonConvert.convert<String>(json['state']);
+  if (state != null) {
+    myPostListDataUserData.state = state;
+  }
+  final String? country = jsonConvert.convert<String>(json['country']);
+  if (country != null) {
+    myPostListDataUserData.country = country;
+  }
+  final String? city = jsonConvert.convert<String>(json['city']);
+  if (city != null) {
+    myPostListDataUserData.city = city;
+  }
+  final String? fullAddress = jsonConvert.convert<String>(json['full_address']);
+  if (fullAddress != null) {
+    myPostListDataUserData.fullAddress = fullAddress;
+  }
   final String? imagePath = jsonConvert.convert<String>(json['image_path']);
   if (imagePath != null) {
     myPostListDataUserData.imagePath = imagePath;
@@ -202,6 +229,11 @@ Map<String, dynamic> $MyPostListDataUserDataToJson(
   data['email'] = entity.email;
   data['mobile'] = entity.mobile;
   data['countrycode1'] = entity.countrycode1;
+  data['company'] = entity.company;
+  data['state'] = entity.state;
+  data['country'] = entity.country;
+  data['city'] = entity.city;
+  data['full_address'] = entity.fullAddress;
   data['image_path'] = entity.imagePath;
   data['image_thum_path'] = entity.imageThumPath;
   return data;
@@ -215,6 +247,11 @@ extension MyPostListDataUserDataExtension on MyPostListDataUserData {
     String? email,
     String? mobile,
     String? countrycode1,
+    String? company,
+    String? state,
+    String? country,
+    String? city,
+    String? fullAddress,
     String? imagePath,
     String? imageThumPath,
   }) {
@@ -225,6 +262,11 @@ extension MyPostListDataUserDataExtension on MyPostListDataUserData {
       ..email = email ?? this.email
       ..mobile = mobile ?? this.mobile
       ..countrycode1 = countrycode1 ?? this.countrycode1
+      ..company = company ?? this.company
+      ..state = state ?? this.state
+      ..country = country ?? this.country
+      ..city = city ?? this.city
+      ..fullAddress = fullAddress ?? this.fullAddress
       ..imagePath = imagePath ?? this.imagePath
       ..imageThumPath = imageThumPath ?? this.imageThumPath;
   }

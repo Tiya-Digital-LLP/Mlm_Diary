@@ -537,6 +537,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   postCaption: post.description ?? '',
                                   postImage: post.imageUrl ?? '',
                                   dateTime: post.createdate ?? '',
+                                  updatedateTime: post.datemodified ?? '',
                                   viewcounts: post.pgcnt ?? 0,
                                   controller: controller,
                                   bookmarkId: post.id ?? 0,
@@ -594,6 +595,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   postCaption: post.description ?? '',
                                   postImage: post.imageUrl ?? '',
                                   dateTime: post.createdate ?? '',
+                                  updatedateTime: post.datemodified ?? '',
                                   viewcounts: post.pgcnt ?? 0,
                                   controller: controller,
                                   bookmarkId: post.id ?? 0,
@@ -615,6 +617,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 break;
                               case 'news':
                                 cardWidget = NewsHomeCard(
+                                  updatedateTime: post.datemodified ?? '',
                                   userImage: post.userData?.imagePath ?? '',
                                   userName: post.userData?.name ?? 'N/A',
                                   postTitle: post.title ?? '',
@@ -672,6 +675,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 break;
                               case 'question':
                                 cardWidget = QuestionHomeCard(
+                                  updatedateTime: post.datemodified ?? '',
                                   userImage: post.userData?.imagePath ?? '',
                                   userName: post.userData?.name ?? '',
                                   postTitle: post.title ?? '',
@@ -698,6 +702,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 break;
                               case 'post':
                                 cardWidget = PostHomeCard(
+                                  updatedateTime: post.datemodified ?? '',
                                   userImage: post.userData?.imagePath ?? '',
                                   userName: post.userData?.name ?? '',
                                   postTitle: post.title ?? '',

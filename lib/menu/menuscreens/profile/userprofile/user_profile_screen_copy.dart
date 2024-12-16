@@ -492,6 +492,7 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                               switch (post.type) {
                                 case 'classified':
                                   cardWidget = ClassifiedUserCard(
+                                    updatedateTime: post.datemodified ?? '',
                                     userImage: post.userData?.imagePath ?? '',
                                     userName: post.userData?.name ?? '',
                                     postTitle: post.title ?? '',
@@ -522,6 +523,7 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
 
                                 case 'blog':
                                   cardWidget = BlogUserCard(
+                                    updatedateTime: post.datemodified ?? '',
                                     userImage: post.userData?.imagePath ?? '',
                                     userName: post.userData?.name ?? '',
                                     postTitle: post.title ?? '',
@@ -549,6 +551,7 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                                   break;
                                 case 'news':
                                   cardWidget = NewsUserCard(
+                                    updatedateTime: post.datemodified ?? '',
                                     userImage: post.userData?.imagePath ?? '',
                                     userName: post.userData?.name ?? '',
                                     postTitle: post.title ?? '',
@@ -577,6 +580,7 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
 
                                 case 'question':
                                   cardWidget = QuestionUserCard(
+                                    updatedateTime: post.datemodified ?? '',
                                     userImage: post.userData?.imagePath ?? '',
                                     userName: post.userData?.name ?? '',
                                     postTitle: post.title ?? '',
@@ -603,6 +607,7 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                                   break;
                                 case 'post':
                                   cardWidget = PostUserCard(
+                                    updatedateTime: post.datemodified ?? '',
                                     userImage: post.userData?.imagePath ?? '',
                                     userName: post.userData?.name ?? '',
                                     postTitle: post.title ?? '',

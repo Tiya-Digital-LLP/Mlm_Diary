@@ -7,10 +7,14 @@ import 'package:mlmdiary/generated/my_post_list_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/news/news_like_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/custom/custom_post_comment.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
+import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
+import 'package:mlmdiary/widgets/custom_dateandtime.dart';
+import 'package:mlmdiary/widgets/image_preview_user_image.dart';
 import 'package:text_link/text_link.dart';
 // ignore: library_prefixes
 import 'package:html/parser.dart' as htmlParser;
@@ -25,13 +29,16 @@ class MyPostDetailScreen extends StatefulWidget {
 class _NewsDetailScreenState extends State<MyPostDetailScreen> {
   final EditPostController controller = Get.put(EditPostController());
   final post = Get.arguments as MyPostListData;
-
+  final UserProfileController userProfileController =
+      Get.put(UserProfileController());
   // like
   late RxBool isLiked;
   late RxInt likeCount;
 // bookmark
   late RxBool isBookmarked;
   late RxInt bookmarkCount;
+
+  PostTimeFormatter postTimeFormatter = PostTimeFormatter();
 
   void initializeLikes() {
     isLiked = RxBool(controller.myPostList[0].likedByUser ?? false);
@@ -95,48 +102,70 @@ class _NewsDetailScreenState extends State<MyPostDetailScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 8),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            backgroundColor: const Color(0XFFCCC9C9),
-                            radius: size.width * 0.07,
-                            child: ClipOval(
-                              child: CachedNetworkImage(
-                                imageUrl: post.userData!.imagePath ?? '',
-                                height: 97,
-                                width: 105,
-                                fit: BoxFit.fill,
-                                errorWidget: (context, url, error) =>
-                                    const Icon(Icons.error),
+                      child: InkWell(
+                        onTap: () async {
+                          Get.toNamed(
+                            Routes.userprofilescreen,
+                            arguments: {
+                              'user_id': post.userData!.id,
+                            },
+                          );
+                          await userProfileController.fetchUserAllPost(
+                            1,
+                            post.userData!.id.toString(),
+                          );
+                        },
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              backgroundColor: const Color(0XFFCCC9C9),
+                              radius: size.width * 0.07,
+                              child: ClipOval(
+                                child: CachedNetworkImage(
+                                  imageUrl: post.userData!.imagePath ?? '',
+                                  height: 97,
+                                  width: 105,
+                                  fit: BoxFit.fill,
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(Icons.error),
+                                ),
                               ),
                             ),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    post.userData!.name ?? '',
-                                    style: textStyleW700(size.width * 0.043,
-                                        AppColors.blackText),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      post.userData!.name ?? '',
+                                      style: textStyleW700(size.width * 0.043,
+                                          AppColors.blackText),
+                                    ),
+                                    const SizedBox(
+                                      width: 07,
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  postTimeFormatter.formatPostTime(
+                                    DateTime.parse(post.createdate ?? '')
+                                            .isAtSameMomentAs(DateTime.parse(
+                                                post.datemodified ?? ''))
+                                        ? post.createdate ?? ''
+                                        : post.datemodified ?? '',
                                   ),
-                                  const SizedBox(
-                                    width: 07,
+                                  style: textStyleW400(
+                                    size.width * 0.035,
+                                    AppColors.blackText.withOpacity(0.5),
                                   ),
-                                ],
-                              ),
-                              Text(
-                                "2 Min Ago",
-                                style: textStyleW400(size.width * 0.035,
-                                    AppColors.blackText.withOpacity(0.5)),
-                              ),
-                            ],
-                          )
-                        ],
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -146,19 +175,24 @@ class _NewsDetailScreenState extends State<MyPostDetailScreen> {
                       padding: const EdgeInsets.symmetric(
                         horizontal: 16,
                       ),
-                      child: Container(
-                        height: size.height * 0.28,
-                        width: size.width,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: CachedNetworkImage(
-                          imageUrl: post.attachmentPath ?? '',
-                          height: 97,
-                          width: 105,
-                          fit: BoxFit.fill,
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
+                      child: InkWell(
+                        onTap: () {
+                          _showFullScreenImageDialog(context);
+                        },
+                        child: Container(
+                          height: size.height * 0.28,
+                          width: size.width,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: CachedNetworkImage(
+                            imageUrl: post.attachmentPath ?? '',
+                            height: 97,
+                            width: 105,
+                            fit: BoxFit.fill,
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
+                          ),
                         ),
                       ),
                     ),
@@ -196,6 +230,42 @@ class _NewsDetailScreenState extends State<MyPostDetailScreen> {
                           Row(
                             children: [
                               Text(
+                                'Company',
+                                style: textStyleW400(
+                                    size.width * 0.035, AppColors.grey),
+                              ),
+                              const SizedBox(
+                                width: 07,
+                              ),
+                            ],
+                          ),
+                          Text(
+                            post.userData!.company.toString(),
+                            style: textStyleW400(
+                                size.width * 0.035, AppColors.blackText),
+                          ),
+                        ],
+                      ),
+                    ),
+                    5.sbh,
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(14),
+                        color: AppColors.white,
+                        border: const Border(
+                            bottom: BorderSide(color: Colors.grey)),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
                                 'Location',
                                 style: textStyleW400(
                                     size.width * 0.035, AppColors.grey),
@@ -206,7 +276,7 @@ class _NewsDetailScreenState extends State<MyPostDetailScreen> {
                             ],
                           ),
                           Text(
-                            "Scottsdale, AZ, USA",
+                            post.userData!.fullAddress.toString(),
                             style: textStyleW400(
                                 size.width * 0.035, AppColors.blackText),
                           ),
@@ -454,6 +524,15 @@ class _NewsDetailScreenState extends State<MyPostDetailScreen> {
               ],
             ),
           )),
+    );
+  }
+
+  void _showFullScreenImageDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return FullScreenImageDialog(imageUrl: post.attachmentPath.toString());
+      },
     );
   }
 

@@ -26,20 +26,20 @@ class GetUserAllPostData {
 	int? id = 0;
 	String? title = '';
 	String? urlcomponent = '';
-	String? company = '';
-	String? popular = '';
+	dynamic company;
+	dynamic popular;
 	dynamic premiumsdate;
 	String? category = '';
 	String? subcategory = '';
 	String? description = '';
-	String? website = '';
+	dynamic website;
 	dynamic email;
 	dynamic phone;
 	String? createdate = '';
 	@JSONField(name: "updated_at")
 	String? updatedAt = '';
 	int? pgcnt = 0;
-	String? location = '';
+	dynamic location;
 	String? image = '';
 	@JSONField(name: "user_id")
 	String? userId = '';
@@ -49,7 +49,7 @@ class GetUserAllPostData {
 	dynamic city;
 	dynamic state;
 	dynamic country;
-	String? posttype = '';
+	dynamic posttype;
 	int? totallike = 0;
 	int? totalcomment = 0;
 	@JSONField(name: "is_popular_classified")
@@ -62,6 +62,7 @@ class GetUserAllPostData {
 	String? imageUrl = '';
 	@JSONField(name: "user_data")
 	GetUserAllPostDataUserData? userData;
+	String? datemodified = '';
 
 	GetUserAllPostData();
 

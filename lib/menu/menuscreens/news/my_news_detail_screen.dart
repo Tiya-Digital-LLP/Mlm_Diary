@@ -13,6 +13,8 @@ import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
+import 'package:mlmdiary/widgets/custom_dateandtime.dart';
+import 'package:mlmdiary/widgets/image_preview_user_image.dart';
 import 'package:text_link/text_link.dart';
 // ignore: library_prefixes
 import 'package:html/parser.dart' as htmlParser;
@@ -39,6 +41,8 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
   late RxInt bookmarkCount;
 
   int? currentUserID;
+
+  late PostTimeFormatter postTimeFormatter;
 
   void initializeLikes() {
     isLiked = RxBool(controller.newsList[0].likedByUser ?? false);
@@ -70,6 +74,7 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
   @override
   void initState() {
     super.initState();
+    postTimeFormatter = PostTimeFormatter();
 
     // initializeLikes();
     initializeBookmarks();
@@ -146,9 +151,17 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
                                   ],
                                 ),
                                 Text(
-                                  "2 Min Ago",
-                                  style: textStyleW400(size.width * 0.035,
-                                      AppColors.blackText.withOpacity(0.5)),
+                                  postTimeFormatter.formatPostTime(
+                                    DateTime.parse(post.createdate!)
+                                            .isAtSameMomentAs(DateTime.parse(
+                                                post.datemodified!))
+                                        ? post.createdate!
+                                        : post.datemodified!,
+                                  ),
+                                  style: textStyleW400(
+                                    size.width * 0.035,
+                                    AppColors.blackText.withOpacity(0.5),
+                                  ),
                                 ),
                               ],
                             )
@@ -163,20 +176,25 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
                       padding: const EdgeInsets.symmetric(
                         horizontal: 16,
                       ),
-                      child: Container(
-                        height: size.height * 0.28,
-                        width: size.width,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: CachedNetworkImage(
-                          imageUrl:
-                              '${post.imagePath}?t=${DateTime.now().millisecondsSinceEpoch}',
-                          height: 97,
-                          width: 105,
-                          fit: BoxFit.fill,
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
+                      child: InkWell(
+                        onTap: () {
+                          _showFullScreenImageDialog(context);
+                        },
+                        child: Container(
+                          height: size.height * 0.28,
+                          width: size.width,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: CachedNetworkImage(
+                            imageUrl:
+                                '${post.imagePath}?t=${DateTime.now().millisecondsSinceEpoch}',
+                            height: 97,
+                            width: 105,
+                            fit: BoxFit.fill,
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
+                          ),
                         ),
                       ),
                     ),
@@ -241,7 +259,7 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
                             ],
                           ),
                           Text(
-                            "Vicodin",
+                            post.userData!.company.toString(),
                             style: textStyleW400(
                                 size.width * 0.035, AppColors.blackText),
                           ),
@@ -278,7 +296,7 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
                             ],
                           ),
                           Text(
-                            "Scottsdale, AZ, USA",
+                            post.userData!.fullAddress.toString(),
                             style: textStyleW400(
                                 size.width * 0.035, AppColors.blackText),
                           ),
@@ -542,6 +560,15 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
               ],
             ),
           )),
+    );
+  }
+
+  void _showFullScreenImageDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return FullScreenImageDialog(imageUrl: post.imagePath.toString());
+      },
     );
   }
 

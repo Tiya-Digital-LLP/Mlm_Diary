@@ -68,6 +68,11 @@ GetNewsListData $GetNewsListDataFromJson(Map<String, dynamic> json) {
   if (createdate != null) {
     getNewsListData.createdate = createdate;
   }
+  final String? datemodified = jsonConvert.convert<String>(
+      json['datemodified']);
+  if (datemodified != null) {
+    getNewsListData.datemodified = datemodified;
+  }
   final String? category = jsonConvert.convert<String>(json['category']);
   if (category != null) {
     getNewsListData.category = category;
@@ -142,6 +147,7 @@ Map<String, dynamic> $GetNewsListDataToJson(GetNewsListData entity) {
   data['description'] = entity.description;
   data['pgcnt'] = entity.pgcnt;
   data['createdate'] = entity.createdate;
+  data['datemodified'] = entity.datemodified;
   data['category'] = entity.category;
   data['creatby'] = entity.creatby;
   data['status'] = entity.status;
@@ -168,6 +174,7 @@ extension GetNewsListDataExtension on GetNewsListData {
     String? description,
     int? pgcnt,
     String? createdate,
+    String? datemodified,
     String? category,
     int? creatby,
     int? status,
@@ -191,6 +198,7 @@ extension GetNewsListDataExtension on GetNewsListData {
       ..description = description ?? this.description
       ..pgcnt = pgcnt ?? this.pgcnt
       ..createdate = createdate ?? this.createdate
+      ..datemodified = datemodified ?? this.datemodified
       ..category = category ?? this.category
       ..creatby = creatby ?? this.creatby
       ..status = status ?? this.status

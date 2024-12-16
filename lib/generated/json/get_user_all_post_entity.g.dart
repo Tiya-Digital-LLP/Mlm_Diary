@@ -58,11 +58,11 @@ GetUserAllPostData $GetUserAllPostDataFromJson(Map<String, dynamic> json) {
   if (urlcomponent != null) {
     getUserAllPostData.urlcomponent = urlcomponent;
   }
-  final String? company = jsonConvert.convert<String>(json['company']);
+  final dynamic company = json['company'];
   if (company != null) {
     getUserAllPostData.company = company;
   }
-  final String? popular = jsonConvert.convert<String>(json['popular']);
+  final dynamic popular = json['popular'];
   if (popular != null) {
     getUserAllPostData.popular = popular;
   }
@@ -82,7 +82,7 @@ GetUserAllPostData $GetUserAllPostDataFromJson(Map<String, dynamic> json) {
   if (description != null) {
     getUserAllPostData.description = description;
   }
-  final String? website = jsonConvert.convert<String>(json['website']);
+  final dynamic website = json['website'];
   if (website != null) {
     getUserAllPostData.website = website;
   }
@@ -106,7 +106,7 @@ GetUserAllPostData $GetUserAllPostDataFromJson(Map<String, dynamic> json) {
   if (pgcnt != null) {
     getUserAllPostData.pgcnt = pgcnt;
   }
-  final String? location = jsonConvert.convert<String>(json['location']);
+  final dynamic location = json['location'];
   if (location != null) {
     getUserAllPostData.location = location;
   }
@@ -142,7 +142,7 @@ GetUserAllPostData $GetUserAllPostDataFromJson(Map<String, dynamic> json) {
   if (country != null) {
     getUserAllPostData.country = country;
   }
-  final String? posttype = jsonConvert.convert<String>(json['posttype']);
+  final dynamic posttype = json['posttype'];
   if (posttype != null) {
     getUserAllPostData.posttype = posttype;
   }
@@ -176,6 +176,11 @@ GetUserAllPostData $GetUserAllPostDataFromJson(Map<String, dynamic> json) {
       GetUserAllPostDataUserData>(json['user_data']);
   if (userData != null) {
     getUserAllPostData.userData = userData;
+  }
+  final String? datemodified = jsonConvert.convert<String>(
+      json['datemodified']);
+  if (datemodified != null) {
+    getUserAllPostData.datemodified = datemodified;
   }
   return getUserAllPostData;
 }
@@ -214,6 +219,7 @@ Map<String, dynamic> $GetUserAllPostDataToJson(GetUserAllPostData entity) {
   data['liked_by_user'] = entity.likedByUser;
   data['image_url'] = entity.imageUrl;
   data['user_data'] = entity.userData?.toJson();
+  data['datemodified'] = entity.datemodified;
   return data;
 }
 
@@ -222,19 +228,19 @@ extension GetUserAllPostDataExtension on GetUserAllPostData {
     int? id,
     String? title,
     String? urlcomponent,
-    String? company,
-    String? popular,
+    dynamic company,
+    dynamic popular,
     dynamic premiumsdate,
     String? category,
     String? subcategory,
     String? description,
-    String? website,
+    dynamic website,
     dynamic email,
     dynamic phone,
     String? createdate,
     String? updatedAt,
     int? pgcnt,
-    String? location,
+    dynamic location,
     String? image,
     String? userId,
     String? type,
@@ -243,7 +249,7 @@ extension GetUserAllPostDataExtension on GetUserAllPostData {
     dynamic city,
     dynamic state,
     dynamic country,
-    String? posttype,
+    dynamic posttype,
     int? totallike,
     int? totalcomment,
     int? isPopularClassified,
@@ -251,6 +257,7 @@ extension GetUserAllPostDataExtension on GetUserAllPostData {
     bool? likedByUser,
     String? imageUrl,
     GetUserAllPostDataUserData? userData,
+    String? datemodified,
   }) {
     return GetUserAllPostData()
       ..id = id ?? this.id
@@ -284,7 +291,8 @@ extension GetUserAllPostDataExtension on GetUserAllPostData {
       ..bookmarkByUser = bookmarkByUser ?? this.bookmarkByUser
       ..likedByUser = likedByUser ?? this.likedByUser
       ..imageUrl = imageUrl ?? this.imageUrl
-      ..userData = userData ?? this.userData;
+      ..userData = userData ?? this.userData
+      ..datemodified = datemodified ?? this.datemodified;
   }
 }
 

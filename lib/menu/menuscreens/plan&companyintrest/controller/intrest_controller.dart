@@ -114,14 +114,25 @@ class IntrestController extends GetxController {
 
   Future<void> fetchSelectedCompanyList(int page) async {
     isLoading.value = true;
+
+    if (page == 1) {
+      // Clear the companyList and other related lists if fetching the first page
+      companyList.clear();
+      isCompanySelectedList.clear();
+      isEndOfData.value = false;
+    }
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
     String device = Platform.isAndroid ? 'android' : 'ios';
+
     if (kDebugMode) {
       print('Device Name: $device');
     }
+
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
+
       // ignore: unrelated_type_equality_checks
       if (connectivityResult != ConnectivityResult.none) {
         var uri = Uri.parse(
@@ -155,18 +166,23 @@ class IntrestController extends GetxController {
               isEndOfData.value = true;
             } else {
               companyList.addAll(companyListWithSelectedEntity.company!);
-              isCompanySelectedList.addAll(List<bool>.generate(
+              isCompanySelectedList.addAll(
+                List<bool>.generate(
                   companyListWithSelectedEntity.company!.length,
                   (index) =>
                       companyListWithSelectedEntity.company![index].selected ??
-                      false));
+                      false,
+                ),
+              );
             }
 
             if (kDebugMode) {
               print("Company list: $companyList");
             }
           } else {
-            // Handle error when status is not 1
+            if (kDebugMode) {
+              print("Error: ${companyListWithSelectedEntity.status}");
+            }
           }
         } else {
           if (kDebugMode) {
@@ -175,7 +191,9 @@ class IntrestController extends GetxController {
           }
         }
       } else {
-        //
+        if (kDebugMode) {
+          print("No internet connection");
+        }
       }
     } catch (e) {
       if (kDebugMode) {

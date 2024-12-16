@@ -31,6 +31,7 @@ class BlogCard extends StatefulWidget {
   final int commentcount;
   final bool likedbyuser;
   final bool bookmarkedbyuser;
+  final String updatedateTime;
 
   const BlogCard({
     super.key,
@@ -48,6 +49,7 @@ class BlogCard extends StatefulWidget {
     required this.likedbyuser,
     required this.bookmarkedbyuser,
     required this.postCaption,
+    required this.updatedateTime,
   });
 
   @override
@@ -149,9 +151,16 @@ class _BlogCardState extends State<BlogCard> {
                         ],
                       ),
                       Text(
-                        postTimeFormatter.formatPostTime(widget.dateTime),
-                        style: textStyleW400(size.width * 0.035,
-                            AppColors.blackText.withOpacity(0.5)),
+                        postTimeFormatter.formatPostTime(
+                          DateTime.parse(widget.dateTime).isAtSameMomentAs(
+                                  DateTime.parse(widget.updatedateTime))
+                              ? widget.dateTime
+                              : widget.updatedateTime,
+                        ),
+                        style: textStyleW400(
+                          size.width * 0.035,
+                          AppColors.blackText.withOpacity(0.5),
+                        ),
                       ),
                     ],
                   ),

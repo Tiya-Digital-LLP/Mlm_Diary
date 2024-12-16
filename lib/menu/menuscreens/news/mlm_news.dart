@@ -229,6 +229,7 @@ class _MlmNewsScreenState extends State<MlmNews> {
                               },
                               child: NewsCard(
                                 image: post.userData?.imagePath ?? '',
+                                updatedateTime: post.datemodified ?? '',
                                 dateTime: post.createdate ?? '',
                                 newsId: post.id ?? 0,
                                 userImage: post.imagePath ?? '',

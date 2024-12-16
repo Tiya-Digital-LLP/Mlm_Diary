@@ -46,6 +46,7 @@ class NewsHomeCard extends StatefulWidget {
   final HomeController controller;
   final int likedCount;
   final bool bookmarkedbyuser;
+  final String updatedateTime;
 
   const NewsHomeCard({
     super.key,
@@ -70,6 +71,7 @@ class NewsHomeCard extends StatefulWidget {
     required this.commentcount,
     required this.likedCount,
     required this.bookmarkedbyuser,
+    required this.updatedateTime,
   });
 
   @override
@@ -191,9 +193,16 @@ class _FavouritrCardState extends State<NewsHomeCard> {
                       Row(
                         children: [
                           Text(
-                            postTimeFormatter.formatPostTime(widget.dateTime),
-                            style: textStyleW400(size.width * 0.035,
-                                AppColors.blackText.withOpacity(0.8)),
+                            postTimeFormatter.formatPostTime(
+                              DateTime.parse(widget.dateTime).isAtSameMomentAs(
+                                      DateTime.parse(widget.updatedateTime))
+                                  ? widget.dateTime
+                                  : widget.updatedateTime,
+                            ),
+                            style: textStyleW400(
+                              size.width * 0.035,
+                              AppColors.blackText.withOpacity(0.5),
+                            ),
                           ),
                         ],
                       ),

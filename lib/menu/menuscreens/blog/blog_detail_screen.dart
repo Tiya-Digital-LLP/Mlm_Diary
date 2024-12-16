@@ -152,10 +152,17 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                                     ],
                                   ),
                                   Text(
-                                    postTimeFormatter
-                                        .formatPostTime(post.createdate ?? ''),
-                                    style: textStyleW400(size.width * 0.035,
-                                        AppColors.blackText.withOpacity(0.5)),
+                                    postTimeFormatter.formatPostTime(
+                                      DateTime.parse(post.createdate ?? '')
+                                              .isAtSameMomentAs(DateTime.parse(
+                                                  post.datemodified ?? ''))
+                                          ? post.createdate ?? ''
+                                          : post.datemodified ?? '',
+                                    ),
+                                    style: textStyleW400(
+                                      size.width * 0.035,
+                                      AppColors.blackText.withOpacity(0.5),
+                                    ),
                                   ),
                                 ],
                               )

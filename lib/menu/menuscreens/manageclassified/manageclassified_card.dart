@@ -19,6 +19,7 @@ class ManageClassifiedCard extends StatefulWidget {
     required this.userName,
     required this.postTitle,
     required this.dateTime,
+    required this.updatedateTime,
     required this.classifiedId,
     required this.postCaption,
     required this.postTime,
@@ -34,6 +35,8 @@ class ManageClassifiedCard extends StatefulWidget {
   final String userName;
   final String postTitle;
   final String dateTime;
+  final String updatedateTime;
+
   final int classifiedId;
 
   final String postCaption;
@@ -390,9 +393,16 @@ class _ManageClassifiedCardState extends State<ManageClassifiedCard> {
                 ),
                 20.sbw,
                 Text(
-                  postTimeFormatter.formatPostTime(widget.dateTime),
-                  style: textStyleW500(
-                      size.width * 0.028, AppColors.blackText.withOpacity(0.5)),
+                  postTimeFormatter.formatPostTime(
+                    DateTime.parse(widget.dateTime).isAtSameMomentAs(
+                            DateTime.parse(widget.updatedateTime))
+                        ? widget.dateTime
+                        : widget.updatedateTime,
+                  ),
+                  style: textStyleW400(
+                    size.width * 0.035,
+                    AppColors.blackText.withOpacity(0.5),
+                  ),
                 ),
               ],
             ),

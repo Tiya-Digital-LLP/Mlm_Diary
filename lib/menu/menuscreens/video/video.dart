@@ -7,10 +7,12 @@ import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/video/controller/video_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
 import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_video_shimmer.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class Video extends StatefulWidget {
@@ -86,62 +88,59 @@ class _YourWidgetState extends State<Video> {
                   final videoId = extractVideoId(videoItem.image ?? '');
                   // Decode the title with error handling
                   final decodedTitle = decodeTitle(videoItem.title);
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(13.05)),
-                        color: Colors.white,
-                      ),
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 5),
-                      child: Padding(
-                        padding: const EdgeInsets.all(13.05),
-                        child: Column(
-                          children: [
-                            YoutubeViewer(videoId),
-                            10.sbh,
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    decodedTitle,
-                                    style: const TextStyle(
-                                      fontSize: 13.0,
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily:
-                                          'assets/fonst/Metropolis-Black.otf',
-                                    ).copyWith(fontSize: 15),
-                                  ),
+                  return Container(
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(13.05)),
+                      color: Colors.white,
+                    ),
+                    margin:
+                        const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                    child: Padding(
+                      padding: const EdgeInsets.all(13.05),
+                      child: Column(
+                        children: [
+                          YoutubeViewer(videoId),
+                          10.sbh,
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  decodedTitle,
+                                  style: const TextStyle(
+                                    fontSize: 13.0,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily:
+                                        'assets/fonst/Metropolis-Black.otf',
+                                  ).copyWith(fontSize: 15),
                                 ),
-                                GestureDetector(
-                                  onTap: () {
-                                    // Check if videoItem.id is not null before calling togglevideoBookMark
-                                    if (videoItem.id != null) {
-                                      controller.togglevideoBookMark(
-                                          videoItem.id!, context);
-                                      setState(() {
-                                        videoItem.isBookmark =
-                                            !videoItem.isBookmark!;
-                                      });
-                                    } else {
-                                      // Handle the case where videoItem.id is null
-                                      if (kDebugMode) {
-                                        print('Video ID is null');
-                                      }
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  // Check if videoItem.id is not null before calling togglevideoBookMark
+                                  if (videoItem.id != null) {
+                                    controller.togglevideoBookMark(
+                                        videoItem.id!, context);
+                                    setState(() {
+                                      videoItem.isBookmark =
+                                          !videoItem.isBookmark!;
+                                    });
+                                  } else {
+                                    // Handle the case where videoItem.id is null
+                                    if (kDebugMode) {
+                                      print('Video ID is null');
                                     }
-                                  },
-                                  child: SvgPicture.asset(
-                                    videoItem.isBookmark ?? false
-                                        ? Assets.svgCheckBookmark
-                                        : Assets.svgSavePost,
-                                    height: size.height * 0.028,
-                                  ),
+                                  }
+                                },
+                                child: SvgPicture.asset(
+                                  videoItem.isBookmark ?? false
+                                      ? Assets.svgCheckBookmark
+                                      : Assets.svgSavePost,
+                                  height: size.height * 0.028,
                                 ),
-                              ],
-                            ),
-                          ],
-                        ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   );
@@ -185,6 +184,8 @@ class YoutubeViewer extends StatefulWidget {
 class _YoutubeViewerState extends State<YoutubeViewer>
     with AutomaticKeepAliveClientMixin {
   late final YoutubePlayerController controller;
+  bool isPlaying = false;
+  bool _showOverlay = true;
 
   @override
   bool get wantKeepAlive => true;
@@ -192,6 +193,7 @@ class _YoutubeViewerState extends State<YoutubeViewer>
   @override
   void initState() {
     super.initState();
+
     controller = YoutubePlayerController.fromVideoId(
       params: const YoutubePlayerParams(
         enableCaption: false,
@@ -211,18 +213,62 @@ class _YoutubeViewerState extends State<YoutubeViewer>
     super.dispose();
   }
 
+  Future<void> _launchYoutube() async {
+    final url = 'https://www.youtube.com/watch?v=${widget.videoID}';
+    // ignore: deprecated_member_use
+    if (await canLaunch(url)) {
+      // ignore: deprecated_member_use
+      await launch(url);
+    } else {
+      // ignore: use_build_context_synchronously
+      showToasterrorborder('Could not open YouTube', context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final player = YoutubePlayer(
-      controller: controller,
-      key: ValueKey(widget.videoID),
-    );
 
-    return ClipRRect(
-      clipBehavior: Clip.antiAlias,
-      borderRadius: BorderRadius.circular(13.05),
-      child: player,
+    return Column(
+      children: [
+        ClipRRect(
+          clipBehavior: Clip.antiAlias,
+          borderRadius: BorderRadius.circular(13.05),
+          child: Stack(
+            children: [
+              YoutubePlayer(
+                controller: controller,
+                aspectRatio: 16 / 9,
+              ),
+              if (_showOverlay)
+                Positioned.fill(
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _showOverlay = false;
+                      });
+                      controller.playVideo();
+                    },
+                    child: Container(color: Colors.transparent),
+                  ),
+                ),
+            ],
+          ),
+        ),
+        GestureDetector(
+          onTap: _launchYoutube,
+          child: Row(
+            children: [
+              const Icon(Icons.ondemand_video, color: Colors.red),
+              5.sbw,
+              Text(
+                "Watch on YouTube",
+                style: TextStyle(color: AppColors.primaryColor, fontSize: 16),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
