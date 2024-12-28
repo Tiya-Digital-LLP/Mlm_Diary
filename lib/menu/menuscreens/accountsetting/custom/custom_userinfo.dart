@@ -2,6 +2,7 @@ import 'dart:io' as io;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
 import 'package:flutter_google_places_hoc081098/google_maps_webservice_places.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -179,8 +180,11 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
               10.sbh,
               Obx(
                 () => BorderTextField(
-                  keyboard: TextInputType.name,
-                  textInputType: const [],
+                  keyboard: TextInputType.text,
+                  textInputType: [
+                    FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z\s]+")),
+                    LengthLimitingTextInputFormatter(25),
+                  ],
                   hint: "Your Name",
                   controller: controller.name.value,
                   height: 58,
@@ -193,7 +197,9 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                   children: [
                     Text(
                       "Gender",
-                      style: textStyleW400(size.width * 0.045,
+                      style: textStyleW400(
+                          size.width * 0.045,
+                          // ignore: deprecated_member_use
                           AppColors.blackText.withOpacity(0.5)),
                     ),
                     20.sbw,
@@ -209,6 +215,7 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                                 Assets.imagesCircle,
                                 color: (controller.isGenderToggle.value == true)
                                     ? AppColors.primaryColor
+                                    // ignore: deprecated_member_use
                                     : AppColors.blackText.withOpacity(0.5),
                               ),
                               if (controller.isGenderToggle.value == true)
@@ -226,7 +233,9 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                             style: (controller.isGenderToggle.value == true)
                                 ? textStyleW500(
                                     size.width * 0.045, AppColors.primaryColor)
-                                : textStyleW400(size.width * 0.045,
+                                : textStyleW400(
+                                    size.width * 0.045,
+                                    // ignore: deprecated_member_use
                                     AppColors.blackText.withOpacity(0.5)),
                           ),
                         ],
@@ -246,6 +255,7 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                                 color:
                                     (controller.isGenderToggle.value == false)
                                         ? AppColors.primaryColor
+                                        // ignore: deprecated_member_use
                                         : AppColors.blackText.withOpacity(0.5),
                               ),
                               if (controller.isGenderToggle.value == false)
@@ -263,7 +273,9 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                             style: (controller.isGenderToggle.value == false)
                                 ? textStyleW500(
                                     size.width * 0.045, AppColors.primaryColor)
-                                : textStyleW400(size.width * 0.045,
+                                : textStyleW400(
+                                    size.width * 0.045,
+                                    // ignore: deprecated_member_use
                                     AppColors.blackText.withOpacity(0.5)),
                           ),
                         ],
@@ -445,9 +457,33 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                   controller: controller.aboutyou.value,
                   byDefault: !controller.isAboutTyping.value,
                   height: 95,
+                  onChanged: (value) {
+                    if (value.length > 2000) {
+                      controller.aboutyou.value.text = value.substring(0, 2000);
+                      controller.aboutyou.value.selection =
+                          TextSelection.fromPosition(
+                        const TextPosition(offset: 2000),
+                      );
+                    }
+                    controller.aboutCharCount.value =
+                        controller.aboutyou.value.text.length;
+                  },
                 ),
               ),
-              10.sbh,
+              3.sbh,
+              Obx(
+                () => Align(
+                  alignment: Alignment.topRight,
+                  child: Text(
+                    "${controller.aboutCharCount.value}/2000",
+                    style: const TextStyle(
+                      color: Colors.grey,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+              ),
+              3.sbh,
               Obx(
                 () => DiscriptionTextField(
                   keyboard: TextInputType.name,
@@ -456,6 +492,31 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                   controller: controller.aboutcompany.value,
                   byDefault: !controller.isAboutCompany.value,
                   height: 95,
+                  onChanged: (value) {
+                    if (value.length > 4000) {
+                      controller.aboutcompany.value.text =
+                          value.substring(0, 4000);
+                      controller.aboutcompany.value.selection =
+                          TextSelection.fromPosition(
+                        const TextPosition(offset: 4000),
+                      );
+                    }
+                    controller.aboutCompanyCount.value =
+                        controller.aboutcompany.value.text.length;
+                  },
+                ),
+              ),
+              3.sbh,
+              Obx(
+                () => Align(
+                  alignment: Alignment.topRight,
+                  child: Text(
+                    "${controller.aboutCompanyCount.value}/4000",
+                    style: const TextStyle(
+                      color: Colors.grey,
+                      fontSize: 12,
+                    ),
+                  ),
                 ),
               ),
               20.sbh,

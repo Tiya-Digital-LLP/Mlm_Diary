@@ -76,7 +76,6 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   String getFormattedForeignNumberCountryCode() {
-    // Removes the '+' sign from the country code
     return selectedCountry.value?.callingCode.replaceAll('+', '') ?? '';
   }
 
@@ -160,15 +159,24 @@ class _SignupPageState extends State<SignupPage> {
                       Obx(
                         () => CustomNameTextField(
                           height: 58,
-                          keyboard: TextInputType.name,
-                          textInputType: const [],
+                          keyboard: TextInputType.text,
+                          textInputType: [
+                            FilteringTextInputFormatter.allow(
+                                RegExp(r"[a-zA-Z\s]+")),
+                            LengthLimitingTextInputFormatter(25),
+                          ],
                           hint: "Your Name",
                           readOnly: controller.nameReadOnly.value,
                           controller: controller.name.value,
                           isError: controller.nameError.value,
                           byDefault: !controller.isNameTyping.value,
                           onChanged: (value) {
-                            controller.nameValidation(context);
+                            if (value.trim().isEmpty) {
+                              controller.nameError.value = true;
+                            } else {
+                              controller.nameValidation(context);
+                              controller.nameError.value = false;
+                            }
                             controller.isNameTyping.value = true;
                           },
                         ),
@@ -848,13 +856,16 @@ class _SignupPageState extends State<SignupPage> {
                                                         FocusScope.of(context)
                                                             .unfocus();
                                                         try {
-                                                          await controller
-                                                              .verifyOtp(
-                                                                  controller
-                                                                      .defaultUserId
-                                                                      .value,
-                                                                  '91',
-                                                                  context);
+                                                          await controller.verifyOtp(
+                                                              controller
+                                                                  .defaultUserId
+                                                                  .value,
+                                                              selectedCountry
+                                                                  .value!
+                                                                  .callingCode
+                                                                  .replaceAll(
+                                                                      '+', ''),
+                                                              context);
                                                           controller.timerValue
                                                               .value = 30;
                                                           controller

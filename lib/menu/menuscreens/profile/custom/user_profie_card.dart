@@ -78,6 +78,7 @@ class _UserProfileCardState extends State<UserProfileCard> {
                           Text(
                             "Added Classified",
                             style: textStyleW400(size.width * 0.037,
+                                // ignore: deprecated_member_use
                                 AppColors.blackText.withOpacity(0.5)),
                           ),
                         ],
@@ -85,6 +86,7 @@ class _UserProfileCardState extends State<UserProfileCard> {
                       Text(
                         "2 Min Ago",
                         style: textStyleW400(size.width * 0.035,
+                            // ignore: deprecated_member_use
                             AppColors.blackText.withOpacity(0.5)),
                       ),
                     ],

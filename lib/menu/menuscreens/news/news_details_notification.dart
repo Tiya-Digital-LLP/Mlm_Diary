@@ -167,7 +167,9 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
                                     Text(
                                       postTimeFormatter.formatPostTime(
                                           data.createdate ?? ''),
-                                      style: textStyleW400(size.width * 0.035,
+                                      style: textStyleW400(
+                                          size.width * 0.035,
+                                          // ignore: deprecated_member_use
                                           AppColors.blackText.withOpacity(0.5)),
                                     ),
                                   ],
@@ -411,6 +413,7 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
                                     : 'N/A',
                                 style: textStyleW400(
                                   size.width * 0.035,
+                                  // ignore: deprecated_member_use
                                   AppColors.blackText.withOpacity(0.5),
                                 ),
                                 linkStyle: const TextStyle(

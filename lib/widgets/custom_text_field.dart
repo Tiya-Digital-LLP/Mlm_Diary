@@ -35,12 +35,14 @@ class _MobileEmailFieldState extends State<MobileEmailField> {
                 ? isValid.value
                     ? Colors.green
                     : Colors.red
+                // ignore: deprecated_member_use
                 : AppColors.containerBorder.withOpacity(0.4),
           ),
           borderRadius: BorderRadius.circular(15),
           color: AppColors.white,
           boxShadow: [
             BoxShadow(
+              // ignore: deprecated_member_use
               color: AppColors.blackText.withOpacity(0.12),
               offset: const Offset(5.0, 5.0),
               blurRadius: 10.0,

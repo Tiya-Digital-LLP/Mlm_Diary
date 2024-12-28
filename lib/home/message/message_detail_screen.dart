@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -12,6 +14,7 @@ import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
+import 'package:mlmdiary/widgets/logout_dialog/custom_logout_dialog.dart';
 
 class MessageDetailsScreen extends StatefulWidget {
   const MessageDetailsScreen({super.key});
@@ -28,6 +31,7 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
   late PostTimeFormatter postTimeFormatter;
   dynamic post;
   final ScrollController _scrollController = ScrollController();
+  Timer? _timer;
 
   @override
   void initState() {
@@ -39,19 +43,22 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
       });
       postTimeFormatter = PostTimeFormatter();
 
-      messageController.chatdetailsList.listen((_) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (_scrollController.hasClients) {
-            _scrollController
-                .jumpTo(_scrollController.position.maxScrollExtent);
-          }
-        });
-      });
+      _startFetchingNewMessages();
     }
+  }
+
+  // Timer function to fetch new messages
+  void _startFetchingNewMessages() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (messageController.chatdetailsList.isNotEmpty) {
+        messageController.fetchMyChatDetail(post.chatId.toString());
+      }
+    });
   }
 
   @override
   void dispose() {
+    _timer?.cancel();
     _scrollController.dispose();
     super.dispose();
   }
@@ -61,6 +68,7 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
@@ -104,6 +112,37 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
             ],
           ),
         ),
+        actions: [
+          PopupMenuButton<int>(
+            padding: EdgeInsets.zero,
+            icon: const Icon(
+              Icons.more_vert,
+              color: Colors.black,
+            ),
+            onSelected: (value) {
+              if (value == 1) {
+                LogoutDialog.show(context, () async {
+                  messageController.deleteChat(chatId: post.chatId.toString());
+                });
+              }
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 1,
+                child: Container(
+                  padding: EdgeInsets.zero,
+                  child: const Row(
+                    children: [
+                      Icon(Icons.delete, color: Colors.red),
+                      SizedBox(width: 8),
+                      Text("Delete Chat"),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -171,6 +210,7 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
                                       decoration: BoxDecoration(
                                         color: isSender
                                             ? AppColors.primaryColor
+                                            // ignore: deprecated_member_use
                                             : AppColors.grey.withOpacity(0.8),
                                         borderRadius: BorderRadius.circular(12),
                                       ),
@@ -195,6 +235,7 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
                                                 style: textStyleW400(
                                                   12,
                                                   AppColors.white
+                                                      // ignore: deprecated_member_use
                                                       .withOpacity(0.7),
                                                 ),
                                               ),

@@ -52,7 +52,7 @@ class _DatabaseState extends State<DatabaseScreen> {
   @override
   void initState() {
     super.initState();
-    // Start a timer to switch from shimmer to UI after 1 second
+
     Future.delayed(const Duration(seconds: 1), () {
       showShimmer.value = false;
     });

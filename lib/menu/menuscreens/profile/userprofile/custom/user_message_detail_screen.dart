@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -6,10 +8,13 @@ import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/home/message/controller/message_controller.dart';
 import 'package:mlmdiary/menu/controller/profile_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
+import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
+import 'package:mlmdiary/widgets/logout_dialog/custom_logout_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserMessageDetailScreen extends StatefulWidget {
@@ -23,11 +28,13 @@ class UserMessageDetailScreen extends StatefulWidget {
 class _UserMessageDetailScreenState extends State<UserMessageDetailScreen> {
   final MessageController messageController = Get.put(MessageController());
   final ProfileController profileController = Get.put(ProfileController());
-
+  final UserProfileController userProfileController =
+      Get.put(UserProfileController());
   late PostTimeFormatter postTimeFormatter;
   dynamic post;
   final ScrollController _scrollController = ScrollController();
   int? currentUserID;
+  Timer? _timer;
 
   Future<int?> getUserId() async {
     final prefs = await SharedPreferences.getInstance();
@@ -47,25 +54,27 @@ class _UserMessageDetailScreenState extends State<UserMessageDetailScreen> {
     super.initState();
     post = Get.arguments;
     postTimeFormatter = PostTimeFormatter();
-    _getUserId(); // Fetch the current user ID
-    // Fetch chat details if chatId is not null
+    _getUserId();
     if (post != null && post['chatId'] != null) {
       messageController.chatId.value = post['chatId'].toString();
       messageController.fetchMyChatDetail(post['chatId'].toString());
+      _startFetchingNewMessages();
     }
+  }
 
-    // Listen for chat details updates and scroll to bottom
-    messageController.chatdetailsList.listen((_) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (_scrollController.hasClients) {
-          _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
-        }
-      });
+  // Timer function to fetch new messages
+  void _startFetchingNewMessages() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (messageController.chatdetailsList.isNotEmpty) {
+        messageController.fetchMyChatDetail(post.chatId.toString());
+      }
     });
   }
 
   @override
   void dispose() {
+    _timer?.cancel();
+
     _scrollController.dispose();
     super.dispose();
   }
@@ -101,7 +110,18 @@ class _UserMessageDetailScreenState extends State<UserMessageDetailScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               InkWell(
-                onTap: () async {},
+                onTap: () async {
+                  Get.toNamed(
+                    Routes.userprofilescreen,
+                    arguments: {
+                      'user_id': post['toid'],
+                    },
+                  );
+                  await userProfileController.fetchUserAllPost(
+                    1,
+                    post['toid'].toString(),
+                  );
+                },
                 child: Row(
                   children: [
                     if (post != null && post['imageUrl'] != null) ...[
@@ -131,6 +151,38 @@ class _UserMessageDetailScreenState extends State<UserMessageDetailScreen> {
             ],
           ),
         ),
+        actions: [
+          PopupMenuButton<int>(
+            padding: EdgeInsets.zero,
+            icon: const Icon(
+              Icons.more_vert,
+              color: Colors.black,
+            ),
+            onSelected: (value) {
+              if (value == 1) {
+                LogoutDialog.show(context, () async {
+                  messageController.deleteChat(
+                      chatId: post['chatId'].toString());
+                });
+              }
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 1,
+                child: Container(
+                  padding: EdgeInsets.zero,
+                  child: const Row(
+                    children: [
+                      Icon(Icons.delete, color: Colors.red),
+                      SizedBox(width: 8),
+                      Text("Delete Chat"),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -185,6 +237,7 @@ class _UserMessageDetailScreenState extends State<UserMessageDetailScreen> {
                                 decoration: BoxDecoration(
                                   color: isSender
                                       ? AppColors.primaryColor
+                                      // ignore: deprecated_member_use
                                       : AppColors.grey.withOpacity(0.8),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
@@ -206,6 +259,7 @@ class _UserMessageDetailScreenState extends State<UserMessageDetailScreen> {
                                               message.updatedAt!),
                                           style: textStyleW400(
                                             12,
+                                            // ignore: deprecated_member_use
                                             AppColors.white.withOpacity(0.7),
                                           ),
                                         ),
@@ -252,6 +306,7 @@ class _UserMessageDetailScreenState extends State<UserMessageDetailScreen> {
                   Assets.svgPlusIcon,
                   height: 40,
                 ),
+                10.sbw,
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(

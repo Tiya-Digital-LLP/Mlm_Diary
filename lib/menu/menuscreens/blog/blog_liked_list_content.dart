@@ -52,6 +52,7 @@ class _ClassifiedLikedListContentState extends State<BlogLikedListContent> {
                         height: 6,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
+                          // ignore: deprecated_member_use
                           color: AppColors.grey.withOpacity(0.5),
                         ),
                       ),

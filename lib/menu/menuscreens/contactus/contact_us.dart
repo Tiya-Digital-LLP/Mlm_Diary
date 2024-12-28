@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:country_calling_code_picker/country.dart';
 import 'package:country_calling_code_picker/country_code_picker.dart';
 import 'package:country_calling_code_picker/functions.dart';
@@ -568,9 +570,7 @@ class _ContactUsState extends State<ContactUs> {
   }
 
   void _launchURL(String url) async {
-    // ignore: deprecated_member_use
     if (await canLaunch(url)) {
-      // ignore: deprecated_member_use
       await launch(url);
     } else {
       throw 'Could not launch $url';

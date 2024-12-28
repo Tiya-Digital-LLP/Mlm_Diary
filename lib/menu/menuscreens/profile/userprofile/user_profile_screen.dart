@@ -72,6 +72,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
   bool isFetchingFollowers = false;
   bool isFetchingFollowing = false;
   final RxBool showShimmer = true.obs;
+  RxBool isFollowing = false.obs;
 
   @override
   void initState() {
@@ -115,6 +116,33 @@ class _UserProfileScreenState extends State<UserProfileScreen>
     });
 
     _tabController = TabController(length: 2, vsync: this);
+  }
+
+  void _toggleFollow(int userId) async {
+    try {
+      // Fetch current follow status
+      bool followStatus = await _fetchFollowStatus(userId);
+
+      // Defer the state update
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        isFollowing.value = !followStatus;
+      });
+
+      // Call the API to toggle the follow status
+      // ignore: use_build_context_synchronously
+      await editPostController.toggleProfileFollow(userId, context);
+    } catch (e) {
+      // Handle API errors
+      Fluttertoast.showToast(
+        msg: "Error: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+      );
+    }
+  }
+
+  Future<bool> _fetchFollowStatus(int userId) async {
+    return false;
   }
 
   Future<void> _refreshFollowers(int userId) async {
@@ -203,20 +231,18 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                   final bookmark = controller.mlmDetailsDatabaseList[0];
                   final userId = bookmark.id ?? 0;
 
+                  bool originalState = isBookmarked.value;
+                  isBookmarked.value = !originalState;
+
                   try {
-                    // Fetch current bookmark status
-                    bool bookmarkStatus = await _fetchBookmarkStatus(userId);
-
-                    // Defer the state update
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      isBookmarked.value = !bookmarkStatus;
-                    });
-
                     await editPostController.toggleProfileBookMark(
-                        userId,
-                        // ignore: use_build_context_synchronously
-                        context);
+                      userId,
+                      // ignore: use_build_context_synchronously
+                      context,
+                    );
                   } catch (e) {
+                    isBookmarked.value = originalState;
+
                     Fluttertoast.showToast(
                       msg: "Error: $e",
                       toastLength: Toast.LENGTH_LONG,
@@ -569,6 +595,52 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                           Expanded(
                                             child: InkWell(
                                               onTap: () {
+                                                if (post.website == null ||
+                                                    post.website!.isEmpty) {
+                                                  showToasterrorborder(
+                                                      'No Any Url Found',
+                                                      context);
+                                                } else {
+                                                  launchUrl(
+                                                    Uri.parse(post.website
+                                                        .toString()),
+                                                    mode: LaunchMode
+                                                        .externalApplication,
+                                                  );
+                                                }
+                                              },
+                                              child: SvgPicture.asset(
+                                                Assets.svgWebsite,
+                                                height: 28,
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: InkWell(
+                                              onTap: () {
+                                                if (post.compWebsite == null ||
+                                                    post.compWebsite!.isEmpty) {
+                                                  showToasterrorborder(
+                                                      'No Any Url Found',
+                                                      context);
+                                                } else {
+                                                  launchUrl(
+                                                    Uri.parse(post.compWebsite
+                                                        .toString()),
+                                                    mode: LaunchMode
+                                                        .externalApplication,
+                                                  );
+                                                }
+                                              },
+                                              child: SvgPicture.asset(
+                                                Assets.svgCompany,
+                                                height: 28,
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: InkWell(
+                                              onTap: () {
                                                 if (post.wplink == null ||
                                                     post.wplink!.isEmpty) {
                                                   showToasterrorborder(
@@ -849,8 +921,8 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                   child: CachedNetworkImage(
                     imageUrl: post.imageUrl ?? Assets.imagesAdminlogo,
                     fit: BoxFit.cover,
-                    height: 120,
-                    width: 120,
+                    height: 80,
+                    width: 80,
                     errorWidget: (context, url, error) => Image.asset(
                       Assets.imagesAdminlogo,
                       fit: BoxFit.cover,
@@ -869,11 +941,9 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                           size.width * 0.045, AppColors.blackText),
                     ),
                     Text(
-                      '${post.city ?? 'N/A'}, ${post.state ?? 'N/A'}, ${post.country ?? 'N/A'}',
+                      post.immlm ?? 'N/A',
                       style: textStyleW500(
-                        size.width * 0.035,
-                        AppColors.blackText,
-                      ),
+                          size.width * 0.035, AppColors.blackText),
                     ),
                     Text(
                       post.company ?? 'N/A',
@@ -891,6 +961,13 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                             maxLines: isExpanded.value ? null : 10,
                             overflow: TextOverflow.ellipsis,
                           )),
+                    ),
+                    Text(
+                      '${post.city ?? 'N/A'}, ${post.state ?? 'N/A'}, ${post.country ?? 'N/A'}',
+                      style: textStyleW500(
+                        size.width * 0.035,
+                        AppColors.blackText,
+                      ),
                     ),
                   ],
                 ),
@@ -928,19 +1005,21 @@ class _UserProfileScreenState extends State<UserProfileScreen>
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  SizedBox(
-                    height: 30,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryColor,
-                      ),
-                      onPressed: () {
-                        Get.toNamed(Routes.accountsettingscreen);
-                      },
-                      child: Text(
-                        'Edit Profile',
-                        style:
-                            textStyleW700(size.width * 0.030, AppColors.white),
+                  Obx(
+                    () => SizedBox(
+                      height: 30,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primaryColor,
+                        ),
+                        onPressed: () {
+                          _toggleFollow(post.id ?? 0);
+                        },
+                        child: Text(
+                          isFollowing.value ? 'Unfollow' : 'Follow',
+                          style: textStyleW700(
+                              size.width * 0.030, AppColors.white),
+                        ),
                       ),
                     ),
                   ),
@@ -1115,18 +1194,25 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                 const SizedBox(width: 10),
                 InkWell(
                   onTap: () async {
-                    if (messageController.chatList.isNotEmpty) {
-                      final post = messageController.chatList[0];
-                      Get.toNamed(Routes.messagedetailscreen, arguments: post);
+                    final dummyPost = {
+                      "chatId": null,
+                      "toid": post.id,
+                      "username": post.name,
+                      "imageUrl": post.imageUrl,
+                    };
+
+                    if (dummyPost['chatId'] == null) {
+                      messageController
+                          .fetchMyChatDetail(post.chatId.toString());
+                      Get.toNamed(
+                        Routes.usermessagedetailscreen,
+                        arguments: dummyPost,
+                      );
                     } else {
-                      final dummyPost = {
-                        "chatId": null,
-                        "toid": post.id,
-                        "username": post.name,
-                        "imageUrl": post.imageUrl,
-                      };
-                      Get.toNamed(Routes.usermessagedetailscreen,
-                          arguments: dummyPost);
+                      Get.toNamed(
+                        Routes.messagedetailscreen,
+                        arguments: post,
+                      );
                     }
                   },
                   child: const SocialButton(
@@ -1498,10 +1584,6 @@ class _UserProfileScreenState extends State<UserProfileScreen>
         ),
       ),
     );
-  }
-
-  Future<bool> _fetchBookmarkStatus(int userId) async {
-    return false;
   }
 
   Future<void> _navigateToDetails(post) async {

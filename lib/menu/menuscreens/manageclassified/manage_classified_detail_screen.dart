@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -307,71 +309,6 @@ class _ClassidiedDetailsScreenState
                       ),
                     ),
                     5.sbh,
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    'Phone',
-                                    style: textStyleW400(
-                                        size.width * 0.035, AppColors.grey),
-                                  ),
-                                ],
-                              ),
-                              3.sbh,
-                              Text(
-                                '${post.userData!.countrycode1} - ${post.userData!.mobile}',
-                                style: textStyleW400(
-                                    size.width * 0.032, AppColors.blackText),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    'Email',
-                                    style: textStyleW400(
-                                        size.width * 0.035, AppColors.grey),
-                                  ),
-                                ],
-                              ),
-                              3.sbh,
-                              Text(
-                                '${post.userData!.email}',
-                                style: textStyleW400(
-                                    size.width * 0.032, AppColors.blackText),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    5.sbh,
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        color: AppColors.white,
-                        border: const Border(
-                            bottom: BorderSide(color: Colors.grey)),
-                      ),
-                    ),
-                    5.sbh,
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 16,
@@ -535,7 +472,6 @@ class _ClassidiedDetailsScreenState
                         width: size.height * 0.028,
                         child: SvgPicture.asset(
                           Assets.svgSend,
-                          // ignore: deprecated_member_use
                           color: AppColors.blackText,
                         ),
                       ),

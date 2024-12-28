@@ -92,6 +92,10 @@ class CustonTestAppBar extends StatelessWidget implements PreferredSizeWidget {
               await videoController?.fetchVideo('company', context);
               Get.toNamed(Routes.tutorialvideo,
                   arguments: {'position': 'company'});
+            } else if (position == 'account_setting') {
+              await videoController?.fetchVideo('account_setting', context);
+              Get.toNamed(Routes.tutorialvideo,
+                  arguments: {'position': 'account_setting'});
             }
           },
           child: SvgPicture.asset(

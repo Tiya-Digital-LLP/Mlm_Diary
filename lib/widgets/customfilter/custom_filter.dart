@@ -49,6 +49,7 @@ class _MyWidgetState extends State<BottomSheetContent> {
               height: 6,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
+                // ignore: deprecated_member_use
                 color: AppColors.grey.withOpacity(0.5),
               ),
             ),
@@ -197,6 +198,7 @@ class _MyWidgetState extends State<BottomSheetContent> {
                       hintStyle: TextStyle(
                         fontSize: 14.0,
                         fontWeight: FontWeight.w600,
+                        // ignore: deprecated_member_use
                         color: AppColors.blackText.withOpacity(0.6),
                       ),
                       border: InputBorder.none,

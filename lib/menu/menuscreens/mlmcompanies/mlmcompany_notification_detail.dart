@@ -347,6 +347,7 @@ class _MlmCompaniesDetailsState extends State<MlmcompanyNotificationDetail> {
                                           style: textStyleW400(
                                             size.width * 0.035,
                                             AppColors.blackText
+                                                // ignore: deprecated_member_use
                                                 .withOpacity(0.5),
                                           ),
                                           linkStyle: const TextStyle(
@@ -466,7 +467,9 @@ class _MlmCompaniesDetailsState extends State<MlmcompanyNotificationDetail> {
                                   Text(
                                     postTimeFormatter
                                         .formatPostTime(data.createdate ?? ''),
-                                    style: textStyleW400(size.width * 0.035,
+                                    style: textStyleW400(
+                                        size.width * 0.035,
+                                        // ignore: deprecated_member_use
                                         AppColors.blackText.withOpacity(0.8)),
                                   ),
                                 ],
@@ -695,6 +698,7 @@ class _MlmCompaniesDetailsState extends State<MlmcompanyNotificationDetail> {
       text: text,
       style: textStyleW400(
         size.width * 0.035,
+        // ignore: deprecated_member_use
         AppColors.blackText.withOpacity(0.8),
       ),
       linkStyle: const TextStyle(

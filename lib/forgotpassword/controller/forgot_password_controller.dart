@@ -82,7 +82,7 @@ class ForgotPasswordController extends GetxController {
         if (forgotPasswordEntity.result == 1) {
           // ignore: use_build_context_synchronously
           showToastverifedborder(
-              "Password reset sent successfully!",
+              "Please Check Your Email or Mobile for OTP",
               // ignore: use_build_context_synchronously
               context);
           if (forgotPasswordEntity.userId != null) {

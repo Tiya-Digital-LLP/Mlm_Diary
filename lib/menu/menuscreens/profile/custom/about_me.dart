@@ -42,6 +42,44 @@ class AboutMeSection extends StatelessWidget {
                     Expanded(
                       child: InkWell(
                         onTap: () {
+                          if (userProfile.website == null ||
+                              userProfile.website!.isEmpty) {
+                            showToasterrorborder('No Any Url Found', context);
+                          } else {
+                            launchUrl(
+                              Uri.parse(userProfile.website.toString()),
+                              mode: LaunchMode.externalApplication,
+                            );
+                          }
+                        },
+                        child: SvgPicture.asset(
+                          Assets.svgWebsite,
+                          height: 28,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: InkWell(
+                        onTap: () {
+                          if (userProfile.compWebsite == null ||
+                              userProfile.compWebsite!.isEmpty) {
+                            showToasterrorborder('No Any Url Found', context);
+                          } else {
+                            launchUrl(
+                              Uri.parse(userProfile.compWebsite.toString()),
+                              mode: LaunchMode.externalApplication,
+                            );
+                          }
+                        },
+                        child: SvgPicture.asset(
+                          Assets.svgCompany,
+                          height: 28,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: InkWell(
+                        onTap: () {
                           if (userProfile.wplink == null ||
                               userProfile.wplink!.isEmpty) {
                             showToasterrorborder('No Any Url Found', context);
@@ -147,20 +185,22 @@ class AboutMeSection extends StatelessWidget {
                         ),
                       ),
                     ),
-                    InkWell(
-                      onTap: () {
-                        if (userProfile.twiterlink == null ||
-                            userProfile.twiterlink!.isEmpty) {
-                          showToasterrorborder('No Any Url Found', context);
-                        } else {
-                          launchUrl(
-                            Uri.parse(userProfile.twiterlink.toString()),
-                            mode: LaunchMode.externalApplication,
-                          );
-                        }
-                      },
-                      child: SvgPicture.asset(
-                        Assets.svgTwitter,
+                    Expanded(
+                      child: InkWell(
+                        onTap: () {
+                          if (userProfile.twiterlink == null ||
+                              userProfile.twiterlink!.isEmpty) {
+                            showToasterrorborder('No Any Url Found', context);
+                          } else {
+                            launchUrl(
+                              Uri.parse(userProfile.twiterlink.toString()),
+                              mode: LaunchMode.externalApplication,
+                            );
+                          }
+                        },
+                        child: SvgPicture.asset(
+                          Assets.svgTwitter,
+                        ),
                       ),
                     ),
                   ],

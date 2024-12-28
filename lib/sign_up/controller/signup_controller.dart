@@ -400,6 +400,12 @@ class SignupController extends GetxController {
           },
         );
 
+        if (kDebugMode) {
+          print('user_id: $userid');
+          print('countrycode: $countrycode');
+          print('mobile: ${mobile.value.text}');
+        }
+
         if (response.statusCode == 200) {
           final Map<String, dynamic> jsonBody = jsonDecode(response.body);
           final resentOtpEntity = ResentOtpRegisterEntity.fromJson(jsonBody);
@@ -425,6 +431,12 @@ class SignupController extends GetxController {
               title: const Text('OTP Resent Successfully'),
             );
             stopTimer();
+            if (countrycode != '91') {
+              isMobileOtpScreenVisible.value = false;
+              showEmailField.value = true;
+              mobileReadOnly.value = true;
+              countryCodeReadOnly.value = true;
+            }
           } else if (jsonBody['status'] == 0) {
             toastification.show(
               // ignore: use_build_context_synchronously

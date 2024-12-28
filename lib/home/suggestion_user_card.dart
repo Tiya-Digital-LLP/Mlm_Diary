@@ -70,6 +70,7 @@ class _SuggetionUserCardState extends State<SuggetionUserCard> {
                 Container(
                   decoration: BoxDecoration(
                     border: Border.all(
+                      // ignore: deprecated_member_use
                       color: AppColors.blackText.withOpacity(0.5),
                     ),
                     borderRadius: BorderRadius.circular(100),
@@ -101,6 +102,7 @@ class _SuggetionUserCardState extends State<SuggetionUserCard> {
                   overflow: TextOverflow.ellipsis,
                   style: textStyleW400(
                     size.width * 0.032,
+                    // ignore: deprecated_member_use
                     AppColors.blackText.withOpacity(0.8),
                   ),
                   textAlign: TextAlign.center,
@@ -111,6 +113,7 @@ class _SuggetionUserCardState extends State<SuggetionUserCard> {
                   overflow: TextOverflow.ellipsis,
                   style: textStyleW400(
                     size.width * 0.032,
+                    // ignore: deprecated_member_use
                     AppColors.blackText.withOpacity(0.8),
                   ),
                   textAlign: TextAlign.center,

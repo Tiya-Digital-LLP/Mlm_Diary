@@ -548,28 +548,47 @@ class _moreState extends State<MoreOptionScreen> {
                     children: [
                       InkWell(
                         onTap: () async {
-                          if (mlmSocial!.whatsapp != null) {
-                            final String phoneNumber = mlmSocial.whatsapp!;
-                            final String name = userProfile.name ?? 'N/A';
-                            String message =
-                                "Hello, I am $name. I want to know regarding MLM Diary App.";
-                            final Uri whatsappUri = Uri.parse(
-                                "https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}");
+                          // Debug print to check `mlmSocial.whatsapp`
+                          if (kDebugMode) {
+                            print('mlmSocial.whatsapp: ${mlmSocial?.whatsapp}');
+                          }
+                          final String? phoneNumber = mlmSocial
+                              ?.whatsapp; // Make nullable for debugging
 
-                            if (await canLaunchUrl(whatsappUri)) {
-                              await launchUrl(whatsappUri);
-                              if (kDebugMode) {
-                                print('URL: $whatsappUri');
-                              }
-                            } else {
-                              if (kDebugMode) {
-                                print('Could not launch $whatsappUri');
-                              }
-                              showToasterrorborder(
-                                  "Could not launch WhatsApp", context);
+                          if (phoneNumber == null) {
+                            if (kDebugMode) {
+                              print('Error: phoneNumber is null');
+                            }
+                            showToasterrorborder(
+                                "Phone number is not available", context);
+                            return;
+                          }
+
+                          // Debug print to check `userProfile.name`
+                          if (kDebugMode) {
+                            print('userProfile.name: ${userProfile.name}');
+                          }
+                          final String name = userProfile.name ?? 'N/A';
+
+                          String message =
+                              "Hello, I am $name. I want to know regarding MLM Diary App.";
+                          final Uri whatsappUri = Uri.parse(
+                              "https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}");
+                          if (kDebugMode) {
+                            print('Generated WhatsApp Link: $whatsappUri');
+                          }
+
+                          if (await canLaunchUrl(whatsappUri)) {
+                            await launchUrl(whatsappUri);
+                            if (kDebugMode) {
+                              print('URL: $whatsappUri');
                             }
                           } else {
-                            showToasterrorborder("No Any Url Found", context);
+                            if (kDebugMode) {
+                              print('Could not launch $whatsappUri');
+                            }
+                            showToasterrorborder(
+                                "Could not launch WhatsApp", context);
                           }
                         },
                         child: SvgPicture.asset(Assets.svgLogosWhatsappIcon,
@@ -693,6 +712,7 @@ class _moreState extends State<MoreOptionScreen> {
           border: Border(
             bottom: BorderSide(
               width: 1,
+              // ignore: deprecated_member_use
               color: AppColors.blackText.withOpacity(0.2),
             ),
           ),

@@ -137,7 +137,9 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                       alignment: Alignment.topLeft,
                       child: Text(
                         "Gender",
-                        style: textStyleW400(size.width * 0.045,
+                        style: textStyleW400(
+                            size.width * 0.045,
+                            // ignore: deprecated_member_use
                             AppColors.blackText.withOpacity(0.5)),
                       ),
                     ),
@@ -159,6 +161,7 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                                               true)
                                           ? AppColors.primaryColor
                                           : AppColors.blackText
+                                              // ignore: deprecated_member_use
                                               .withOpacity(0.5),
                                     ),
                                     if (controller.isGenderToggle.value == true)
@@ -180,6 +183,7 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                                           AppColors.primaryColor)
                                       : textStyleW400(
                                           size.width * 0.045,
+                                          // ignore: deprecated_member_use
                                           AppColors.blackText.withOpacity(0.5),
                                         ),
                                 ),
@@ -201,6 +205,7 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                                               false)
                                           ? AppColors.primaryColor
                                           : AppColors.blackText
+                                              // ignore: deprecated_member_use
                                               .withOpacity(0.5),
                                     ),
                                     if (controller.isGenderToggle.value ==
@@ -223,6 +228,7 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                                           AppColors.primaryColor)
                                       : textStyleW400(
                                           size.width * 0.045,
+                                          // ignore: deprecated_member_use
                                           AppColors.blackText.withOpacity(0.5),
                                         ),
                                 ),

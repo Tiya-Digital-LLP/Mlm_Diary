@@ -24,22 +24,44 @@ class CustomFloatingActionButtonController extends GetxController {
 
   Future<void> handleTap(String selectedType) async {
     isLoading.value = true;
+    if (kDebugMode) {
+      print("handleTap called with selectedType: $selectedType");
+    }
     try {
       var result = await classifiedRemainingCount(selectedType);
+      if (kDebugMode) {
+        print("Result from classifiedRemainingCount: $result");
+      }
 
       if (result != null) {
         if (result['status'] == 0) {
+          if (kDebugMode) {
+            print(
+                "Status is 0, showing alert dialog with message: ${result['message']}");
+          }
           showAlertDialog(result['message']);
         } else if (result['status'] == 1) {
+          if (kDebugMode) {
+            print("Status is 1, navigating to selectedType: $selectedType");
+          }
           navigateTo(selectedType);
         }
       } else {
+        if (kDebugMode) {
+          print("Result is null. Showing error message.");
+        }
         showErrorMessage("Failed to fetch data. Please try again later.");
       }
     } catch (e) {
+      if (kDebugMode) {
+        print("Error occurred: $e");
+      }
       showErrorMessage("Error: $e");
     } finally {
       isLoading.value = false;
+      if (kDebugMode) {
+        print("isLoading set to false.");
+      }
     }
   }
 

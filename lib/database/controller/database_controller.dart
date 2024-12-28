@@ -127,6 +127,9 @@ class DatabaseController extends GetxController {
     }
 
     isLoading.value = true;
+    await Future.delayed(const Duration(milliseconds: 500));
+    mlmDetailsDatabaseList.clear();
+
     String device =
         Platform.isAndroid ? 'android' : (Platform.isIOS ? 'ios' : '');
     if (kDebugMode) {
@@ -188,7 +191,7 @@ class DatabaseController extends GetxController {
         }
 
         if (firstPost != null) {
-          mlmDetailsDatabaseList.clear(); // Clear previous data
+          mlmDetailsDatabaseList.clear();
           mlmDetailsDatabaseList.add(firstPost);
         } else {
           showToasterrorborder("No data found", context);

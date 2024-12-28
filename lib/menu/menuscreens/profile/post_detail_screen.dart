@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -164,6 +166,8 @@ class _PostDetailsScreenState extends State<PostDetailScreen> {
                                       .formatPostTime(post.createdate ?? ''),
                                   style: textStyleW400(
                                     size.width * 0.035,
+                                    // ignore: duplicate_ignore
+                                    // ignore: deprecated_member_use
                                     AppColors.blackText.withOpacity(0.5),
                                   ),
                                 ),
@@ -601,7 +605,6 @@ class _PostDetailsScreenState extends State<PostDetailScreen> {
                         width: size.height * 0.028,
                         child: SvgPicture.asset(
                           Assets.svgSend,
-                          // ignore: deprecated_member_use
                           color: AppColors.blackText,
                         ),
                       ),
@@ -619,9 +622,7 @@ class _PostDetailsScreenState extends State<PostDetailScreen> {
 
   // Define the _launchUrl method
   Future<void> _launchUrl(String url) async {
-    // ignore: deprecated_member_use
     if (await canLaunch(url)) {
-      // ignore: deprecated_member_use
       await launch(url); // Old launch method for non-web
     } else {
       throw 'Could not launch $url';

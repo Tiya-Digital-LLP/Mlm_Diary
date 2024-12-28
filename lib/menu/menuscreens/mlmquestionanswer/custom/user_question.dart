@@ -1040,7 +1040,9 @@ class _UserQuestionState extends State<UserQuestion> {
                                     8.sbw,
                                     Text(
                                       'asked a question',
-                                      style: textStyleW400(size.width * 0.032,
+                                      style: textStyleW400(
+                                          size.width * 0.032,
+                                          // ignore: deprecated_member_use
                                           AppColors.blackText.withOpacity(0.8)),
                                     ),
                                   ],

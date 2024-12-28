@@ -1132,6 +1132,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         shape: BoxShape.circle,
                         color: currentPage == index
                             ? AppColors.primaryColor
+                            // ignore: deprecated_member_use
                             : Colors.white.withOpacity(0.5),
                       ),
                     );

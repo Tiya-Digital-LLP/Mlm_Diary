@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -607,9 +609,7 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
 
   // Define the _launchUrl method
   Future<void> _launchUrl(String url) async {
-    // ignore: deprecated_member_use
     if (await canLaunch(url)) {
-      // ignore: deprecated_member_use
       await launch(url); // Old launch method for non-web
     } else {
       throw 'Could not launch $url';

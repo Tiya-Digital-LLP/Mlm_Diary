@@ -96,12 +96,16 @@ class _ManageNewsCardState extends State<ManageNewsCard> {
   Color getStatusColor(int status) {
     switch (status) {
       case 0:
+        // ignore: deprecated_member_use
         return Colors.orange.withOpacity(0.5);
       case 1:
+        // ignore: deprecated_member_use
         return Colors.green.withOpacity(0.5);
       case 2:
+        // ignore: deprecated_member_use
         return Colors.red.withOpacity(0.5);
       default:
+        // ignore: deprecated_member_use
         return Colors.grey.withOpacity(0.5);
     }
   }
@@ -142,7 +146,9 @@ class _ManageNewsCardState extends State<ManageNewsCard> {
                       ),
                       Text(
                         widget.postCaption,
-                        style: textStyleW400(size.width * 0.035,
+                        style: textStyleW400(
+                            size.width * 0.035,
+                            // ignore: deprecated_member_use
                             AppColors.blackText.withOpacity(0.8)),
                       )
                     ],
@@ -301,6 +307,7 @@ class _ManageNewsCardState extends State<ManageNewsCard> {
                   ),
                   style: textStyleW400(
                     size.width * 0.035,
+                    // ignore: deprecated_member_use
                     AppColors.blackText.withOpacity(0.5),
                   ),
                 ),

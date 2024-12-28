@@ -51,14 +51,10 @@ class _ProfileScreenState extends State<ProfileScreen>
   bool isFetchingViewrs = false;
   int? userId;
 
-  //image
   Rx<io.File?> file = Rx<io.File?>(null);
   static List<io.File> imagesList = <io.File>[];
   final ImagePicker _picker = ImagePicker();
 
-  // video
-  // late VideoPlayerController _videoPlayerController;
-  // // static List<io.File> videoList = <io.File>[];
   Rx<io.File?> videoFile = Rx<io.File?>(null);
 
   RxBool isFollowing = false.obs;
@@ -466,8 +462,8 @@ class _ProfileScreenState extends State<ProfileScreen>
               _showFullScreenDialog(context);
             },
             child: Container(
-              height: 120,
-              width: 120,
+              height: 110,
+              width: 110,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
               ),
@@ -495,11 +491,8 @@ class _ProfileScreenState extends State<ProfileScreen>
                 style: textStyleW700(size.width * 0.045, AppColors.blackText),
               ),
               Text(
-                '${userProfile.city ?? 'N/A'}, ${userProfile.state ?? 'N/A'}, ${userProfile.country ?? 'N/A'}',
-                style: textStyleW500(
-                  size.width * 0.035,
-                  AppColors.blackText,
-                ),
+                userProfile.immlm ?? 'N/A',
+                style: textStyleW500(size.width * 0.035, AppColors.blackText),
               ),
               Text(
                 userProfile.company ?? 'N/A',
@@ -508,6 +501,13 @@ class _ProfileScreenState extends State<ProfileScreen>
               Text(
                 userProfile.plan ?? 'N/A',
                 style: textStyleW500(size.width * 0.035, AppColors.blackText),
+              ),
+              Text(
+                '${userProfile.city ?? 'N/A'}, ${userProfile.state ?? 'N/A'}, ${userProfile.country ?? 'N/A'}',
+                style: textStyleW500(
+                  size.width * 0.035,
+                  AppColors.blackText,
+                ),
               ),
             ],
           ),

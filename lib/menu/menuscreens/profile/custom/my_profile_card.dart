@@ -145,7 +145,9 @@ class _MyProfileCardState extends State<MyProfileCard> {
                             ),
                             Text(
                               "Added Post",
-                              style: textStyleW400(size.width * 0.037,
+                              style: textStyleW400(
+                                  size.width * 0.037,
+                                  // ignore: deprecated_member_use
                                   AppColors.blackText.withOpacity(0.5)),
                             ),
                           ],
@@ -159,6 +161,7 @@ class _MyProfileCardState extends State<MyProfileCard> {
                           ),
                           style: textStyleW400(
                             size.width * 0.035,
+                            // ignore: deprecated_member_use
                             AppColors.blackText.withOpacity(0.5),
                           ),
                         ),

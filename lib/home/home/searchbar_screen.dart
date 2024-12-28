@@ -483,6 +483,7 @@ class _SearchBarAppState extends State<SearchBarApp> {
                         1,
                       );
                     },
+                    // ignore: deprecated_member_use
                     backgroundColor: AppColors.grey.withOpacity(0.3),
                     side: BorderSide.none,
                     labelStyle: TextStyle(

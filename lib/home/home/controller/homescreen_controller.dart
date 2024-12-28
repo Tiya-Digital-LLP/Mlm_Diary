@@ -233,6 +233,7 @@ class HomeController extends GetxController {
                                   shape: BoxShape.circle,
                                   color: currentPage == index
                                       ? AppColors.primaryColor
+                                      // ignore: deprecated_member_use
                                       : Colors.white.withOpacity(0.5),
                                 ),
                               );

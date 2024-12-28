@@ -971,6 +971,7 @@ class _CommentDialogState extends State<CommentDialogNews> {
       text: text,
       style: textStyleW400(
         size.width * 0.028,
+        // ignore: deprecated_member_use
         AppColors.blackText.withOpacity(0.8),
       ),
       linkStyle: const TextStyle(

@@ -89,6 +89,7 @@ class _ChatCardState extends State<ChatCard> {
                           Text(
                             postTimeFormatter.formatPostTime(widget.datetime),
                             style: textStyleW400(size.width * 0.035,
+                                // ignore: deprecated_member_use
                                 AppColors.blackText.withOpacity(0.5)),
                           ),
                           3.sbw,
@@ -112,6 +113,7 @@ class _ChatCardState extends State<ChatCard> {
                           size.width * 0.035,
                           widget.readStatus == 0
                               ? AppColors.blackText
+                              // ignore: deprecated_member_use
                               : AppColors.blackText.withOpacity(0.5),
                         ),
                       ),

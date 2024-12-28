@@ -169,6 +169,7 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
                         ),
                         style: textStyleW400(
                           size.width * 0.035,
+                          // ignore: deprecated_member_use
                           AppColors.blackText.withOpacity(0.5),
                         ),
                       ),

@@ -36,6 +36,7 @@ class CustomNameTextField extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border.all(
             color: byDefault
+                // ignore: deprecated_member_use
                 ? AppColors.containerBorder.withOpacity(0.4)
                 : isError
                     ? AppColors.redText

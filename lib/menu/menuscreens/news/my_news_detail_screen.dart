@@ -160,6 +160,7 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
                                   ),
                                   style: textStyleW400(
                                     size.width * 0.035,
+                                    // ignore: deprecated_member_use
                                     AppColors.blackText.withOpacity(0.5),
                                   ),
                                 ),
@@ -405,6 +406,7 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
                             text: post.website ?? '',
                             style: textStyleW400(
                               size.width * 0.035,
+                              // ignore: deprecated_member_use
                               AppColors.blackText.withOpacity(0.5),
                             ),
                             linkStyle: const TextStyle(
@@ -595,6 +597,7 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
       text: text,
       style: textStyleW400(
         size.width * 0.035,
+        // ignore: deprecated_member_use
         AppColors.blackText.withOpacity(0.5),
       ),
       linkStyle: const TextStyle(

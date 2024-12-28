@@ -16,6 +16,7 @@ abstract class Routes {
   static const manageClassifiedplusicon = '/manageClassifiedplusicon';
   static const mlmclassifieddetail = '/mlmClassifiedDetailScreen';
   static const mlmclassifieddetailcopy = '/mlmClassifiedDetailScreenCopy';
+  static const mlmclassifieddetailswipe = '/mlmclassifieddetailswipe';
 
   static const messagescreen = '/messageScreen';
   static const messagedetailscreen = '/messageDetailScreen';

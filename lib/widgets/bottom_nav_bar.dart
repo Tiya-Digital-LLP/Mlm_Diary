@@ -35,7 +35,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   widget.onTap(index);
                 },
                 borderRadius: BorderRadius.circular(50),
+                // ignore: deprecated_member_use
                 splashColor: AppColors.primaryColor.withOpacity(0.3),
+                // ignore: deprecated_member_use
                 highlightColor: AppColors.primaryColor.withOpacity(0.1),
                 child: Container(
                   height: size.height * 0.07,

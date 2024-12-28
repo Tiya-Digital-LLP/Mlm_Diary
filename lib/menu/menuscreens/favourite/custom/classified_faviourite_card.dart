@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -394,7 +396,6 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
                           width: size.height * 0.028,
                           child: SvgPicture.asset(
                             Assets.svgSend,
-                            // ignore: deprecated_member_use
                             color: AppColors.blackText,
                           ),
                         ),

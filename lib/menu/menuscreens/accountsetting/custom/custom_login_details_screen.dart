@@ -15,6 +15,7 @@ import 'package:mlmdiary/widgets/custom_border_container.dart';
 import 'package:mlmdiary/widgets/logout_dialog/custom_logout_dialog.dart';
 import 'package:mlmdiary/widgets/normal_button.dart';
 import 'package:mlmdiary/widgets/password_border_text_field.dart';
+import 'package:pinput/pinput.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomLoginDetailsScreen extends StatefulWidget {
@@ -212,36 +213,53 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                     padding: const EdgeInsets.only(top: 16),
                                     child: Column(
                                       children: [
-                                        BorderTextField(
+                                        Pinput(
                                           controller:
                                               controller.mobileOtp.value,
-                                          hint: "Enter OTP",
-                                          textInputType: [
-                                            FilteringTextInputFormatter
-                                                .digitsOnly
-                                          ],
-                                          keyboard: TextInputType.number,
-                                          isError:
-                                              controller.mobileOtpError.value,
-                                          byDefault: !controller
-                                              .isMobileOtpTyping.value,
+                                          length: 4,
                                           onChanged: (value) {
                                             controller.mobileOtpValidation();
                                             controller.isMobileOtpTyping.value =
                                                 true;
                                           },
+                                          defaultPinTheme: PinTheme(
+                                            width: 56,
+                                            height: 56,
+                                            textStyle: const TextStyle(
+                                              fontSize: 22,
+                                              color: Colors.black,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: Colors.grey[200],
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                          ),
+                                          focusedPinTheme: PinTheme(
+                                            width: 56,
+                                            height: 56,
+                                            textStyle: const TextStyle(
+                                              fontSize: 22,
+                                              color: Colors.blue,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              border: Border.all(
+                                                  color: Colors.blue),
+                                            ),
+                                          ),
                                         ),
                                         16.sbh,
                                         NormalButton(
                                           onPressed: () {
                                             FocusScope.of(context).unfocus();
-                                            // Access the TextEditingController instance and then get its text
                                             final mobileOtpText =
                                                 controller.mobileOtp.value.text;
                                             final countryText = selectedCountry
                                                 .value!.callingCode;
 
-                                            // Call updateVerifyPhoneOtp method here
                                             controller.updateVerifyPhoneOtp(
                                                 mobileOtpText,
                                                 countryText,
@@ -267,7 +285,8 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                       // Call your API function here
                                       controller.sendPhoneOtp(
                                           controller.mobile.value.text,
-                                          selectedCountry.value!.callingCode,
+                                          selectedCountry.value!.callingCode
+                                              .replaceAll('+', ''),
                                           context);
                                     },
                                     text: 'Send Otp',
@@ -363,21 +382,42 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                 if (controller.showEmailOtpField.value) {
                                   return Column(
                                     children: [
-                                      BorderTextField(
+                                      Pinput(
                                         controller: controller.emailOtp.value,
-                                        hint: "Enter OTP",
-                                        textInputType: [
-                                          FilteringTextInputFormatter.digitsOnly
-                                        ],
-                                        keyboard: TextInputType.number,
-                                        isError: controller.emailOtpError.value,
-                                        byDefault:
-                                            !controller.isemailOtpTyping.value,
+                                        length: 4,
                                         onChanged: (value) {
                                           controller.emailOtpValidation();
                                           controller.isemailOtpTyping.value =
                                               true;
                                         },
+                                        defaultPinTheme: PinTheme(
+                                          width: 56,
+                                          height: 56,
+                                          textStyle: const TextStyle(
+                                            fontSize: 22,
+                                            color: Colors.black,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey[200],
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                        ),
+                                        focusedPinTheme: PinTheme(
+                                          width: 56,
+                                          height: 56,
+                                          textStyle: const TextStyle(
+                                            fontSize: 22,
+                                            color: Colors.blue,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            border:
+                                                Border.all(color: Colors.blue),
+                                          ),
+                                        ),
                                       ),
                                       16.sbh,
                                       NormalButton(
@@ -402,8 +442,7 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                   return NormalButton(
                                     onPressed: () {
                                       FocusScope.of(context).unfocus();
-                                      // Call your API function here
-                                      controller.updateEmail();
+                                      controller.updateEmail(context);
                                     },
                                     text: 'Send Otp',
                                     isLoading: controller.isLoading,
@@ -566,9 +605,10 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                 },
                 child: Text(
                   'Delete Account',
-                  style: textStyleW700(
+                  style: textStyleW400(
                     size.width * 0.032,
-                    AppColors.redText,
+                    // ignore: deprecated_member_use
+                    AppColors.redText.withOpacity(0.5),
                   ),
                 ))
           ],

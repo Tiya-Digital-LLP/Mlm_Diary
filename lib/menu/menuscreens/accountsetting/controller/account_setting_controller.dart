@@ -51,8 +51,12 @@ class AccountSeetingController extends GetxController {
   Rx<TextEditingController> twitter = TextEditingController().obs;
   Rx<TextEditingController> telegram = TextEditingController().obs;
   Rx<TextEditingController> linkdn = TextEditingController().obs;
+  Rx<TextEditingController> perwebsite = TextEditingController().obs;
+  Rx<TextEditingController> compwebsite = TextEditingController().obs;
 
   RxString userImage = ''.obs;
+  var aboutCharCount = 0.obs;
+  var aboutCompanyCount = 0.obs;
 
   final RxList<bool> isPlanSelectedList = RxList<bool>([]);
   final RxList<bool> isTypeSelectedList = RxList<bool>([]);
@@ -139,6 +143,8 @@ class AccountSeetingController extends GetxController {
         final userProfileEntity = GetUserProfileEntity.fromJson(responseData);
         userProfile(userProfileEntity);
 
+        aboutyou.value.clear();
+        aboutcompany.value.clear();
         // Update controllers with fetched data
         name.value.text = userProfileEntity.userProfile?.name ?? '';
         companyname.value.text = userProfileEntity.userProfile?.company ?? '';
@@ -149,6 +155,9 @@ class AccountSeetingController extends GetxController {
         aboutcompany.value.text =
             userProfileEntity.userProfile?.aboutcompany ?? '';
         userImage.value = userProfileEntity.userProfile!.imagePath ?? '';
+        perwebsite.value.text = userProfileEntity.userProfile!.website ?? '';
+        compwebsite.value.text =
+            userProfileEntity.userProfile!.compWebsite ?? '';
         instat.value.text = userProfileEntity.userProfile!.instalink ?? '';
         youtube.value.text = userProfileEntity.userProfile!.youlink ?? '';
         facebook.value.text = userProfileEntity.userProfile!.fblink ?? '';
@@ -458,10 +467,9 @@ class AccountSeetingController extends GetxController {
 
   void validateAddress() {
     if (location.value.text.isEmpty) {
-      addressValidationColor.value = Colors.red; // Set validation color to red
+      addressValidationColor.value = Colors.red;
     } else {
-      addressValidationColor.value =
-          Colors.green; // Set validation color to green
+      addressValidationColor.value = Colors.green;
     }
   }
 
@@ -491,6 +499,13 @@ class AccountSeetingController extends GetxController {
           },
         );
 
+        if (kDebugMode) {
+          print('api_token: $apiToken');
+          print('mobile: $mobile');
+          print('countryCode: $countryCode');
+          print('device: $device');
+        }
+
         if (response.statusCode == 200) {
           final Map<String, dynamic> jsonBody = jsonDecode(response.body);
           final otpEntity = UpdatePhoneNoEntity.fromJson(jsonBody);
@@ -504,6 +519,7 @@ class AccountSeetingController extends GetxController {
             if (kDebugMode) {
               print("Failed to send OTP: ${otpEntity.message}");
             }
+            showToasterrorborder("${otpEntity.message}", context);
           }
         } else {
           if (kDebugMode) {
@@ -572,8 +588,7 @@ class AccountSeetingController extends GetxController {
               print(
                   "Failed to verify phone OTP: ${verifyPhoneOtpEntity.message}");
             }
-            ToastUtils.showToast(
-                "Failed to Verify Mobile OTP: ${verifyPhoneOtpEntity.message}");
+            ToastUtils.showToast("${verifyPhoneOtpEntity.message}");
           }
         } else {
           if (kDebugMode) {
@@ -611,6 +626,8 @@ class AccountSeetingController extends GetxController {
             Uri.parse('${Constants.baseUrl}${Constants.updatesocialmedia}');
         var request = http.MultipartRequest('POST', uri);
 
+        request.fields['website'] = perwebsite.value.text;
+        request.fields['comp_website'] = compwebsite.value.text;
         request.fields['fblink'] = facebook.value.text;
         request.fields['instalink'] = instat.value.text;
         request.fields['twiterlink'] = twitter.value.text;
@@ -648,7 +665,7 @@ class AccountSeetingController extends GetxController {
     }
   }
 
-  Future<void> updateEmail() async {
+  Future<void> updateEmail(BuildContext context) async {
     String device = '';
     if (Platform.isAndroid) {
       device = 'android';
@@ -681,11 +698,14 @@ class AccountSeetingController extends GetxController {
             if (kDebugMode) {
               print("OTP sent successfully: ${otpemailEntity.messsage}");
             }
+            email.value.text = '';
             showEmailOtpField.value = true;
           } else {
             if (kDebugMode) {
               print("Failed to send OTP: ${otpemailEntity.messsage}");
             }
+            // ignore: use_build_context_synchronously
+            showToasterrorborder("${otpemailEntity.messsage}", context);
           }
         } else {
           if (kDebugMode) {

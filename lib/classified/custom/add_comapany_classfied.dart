@@ -103,6 +103,7 @@ class _AddCompanyClassifiedState extends State<AddCompanyClassified> {
                           borderRadius: BorderRadius.circular(8.0),
                           boxShadow: [
                             BoxShadow(
+                              // ignore: deprecated_member_use
                               color: Colors.grey.withOpacity(0.5),
                               spreadRadius: 2,
                               blurRadius: 5,
@@ -164,6 +165,7 @@ class _AddCompanyClassifiedState extends State<AddCompanyClassified> {
                             controller.companyNames[index],
                             controller.companyName.value.text,
                             size.width * 0.03,
+                            // ignore: deprecated_member_use
                             AppColors.blackText.withOpacity(0.6),
                           ),
                         ),

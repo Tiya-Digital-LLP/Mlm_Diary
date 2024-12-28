@@ -52,6 +52,7 @@ class _PasswordBorderTextFieldState extends State<PasswordBorderTextField> {
       decoration: BoxDecoration(
         border: Border.all(
             color: widget.byDefault
+                // ignore: deprecated_member_use
                 ? AppColors.containerBorder.withOpacity(0.4)
                 : widget.isError
                     ? AppColors.redText

@@ -174,6 +174,7 @@ class _PostDetailsScreenState extends State<PostDetailNotification> {
                                           data.createdate ?? ''),
                                       style: textStyleW400(
                                         size.width * 0.035,
+                                        // ignore: deprecated_member_use
                                         AppColors.blackText.withOpacity(0.5),
                                       ),
                                     ),
@@ -538,6 +539,7 @@ class _PostDetailsScreenState extends State<PostDetailNotification> {
       text: text,
       style: textStyleW400(
         size.width * 0.035,
+        // ignore: deprecated_member_use
         AppColors.blackText.withOpacity(0.5),
       ),
       linkStyle: const TextStyle(

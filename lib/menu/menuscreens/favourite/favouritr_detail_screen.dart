@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -452,9 +454,7 @@ class _FavouritrDetailScreenState extends State<FavouritrDetailScreen> {
 }
 
 void _launchURL(String url) async {
-  // ignore: deprecated_member_use
   if (await canLaunch(url)) {
-    // ignore: deprecated_member_use
     await launch(url);
   } else {
     throw 'Could not launch $url';

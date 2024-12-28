@@ -1508,6 +1508,7 @@ class _UserQuestionState extends State<UserQuestionCopy> {
                                           style: textStyleW400(
                                               size.width * 0.028,
                                               AppColors.blackText
+                                                  // ignore: deprecated_member_use
                                                   .withOpacity(0.8)),
                                         ),
                                         8.sbw,
@@ -1516,6 +1517,7 @@ class _UserQuestionState extends State<UserQuestionCopy> {
                                           style: textStyleW400(
                                               size.width * 0.032,
                                               AppColors.blackText
+                                                  // ignore: deprecated_member_use
                                                   .withOpacity(0.8)),
                                         ),
                                       ],

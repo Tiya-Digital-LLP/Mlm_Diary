@@ -1481,13 +1481,17 @@ class _QuestionState extends State<Question> {
                                   Text(
                                     postTimeFormatter
                                         .formatPostTime(post.creatdate ?? ''),
-                                    style: textStyleW400(size.width * 0.028,
+                                    style: textStyleW400(
+                                        size.width * 0.028,
+                                        // ignore: deprecated_member_use
                                         AppColors.blackText.withOpacity(0.8)),
                                   ),
                                   8.sbw,
                                   Text(
                                     'asked a question',
-                                    style: textStyleW400(size.width * 0.032,
+                                    style: textStyleW400(
+                                        size.width * 0.032,
+                                        // ignore: deprecated_member_use
                                         AppColors.blackText.withOpacity(0.8)),
                                   ),
                                 ],

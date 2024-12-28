@@ -2,7 +2,8 @@
 class Assets {
   Assets._();
 
-  static const String fontsMetropolisRegular = 'assets/fonts/Metropolis-Regular.otf';
+  static const String fontsMetropolisRegular =
+      'assets/fonts/Metropolis-Regular.otf';
   static const String fontsSatoshiRegular = 'assets/fonts/Satoshi-Regular.otf';
   static const String imagesAdminlogo = 'assets/images/adminlogo.png';
   static const String imagesAdwithus1 = 'assets/images/Adwithus1.png';
@@ -18,7 +19,8 @@ class Assets {
   static const String imagesLogo = 'assets/images/logo.png';
   static const String imagesLogoutCheck = 'assets/images/logout_check.png';
   static const String imagesMessage = 'assets/images/message.png';
-  static const String imagesSelectedCircle = 'assets/images/selected_circle.png';
+  static const String imagesSelectedCircle =
+      'assets/images/selected_circle.png';
   static const String imagesSplashImage = 'assets/images/splash_image.png';
   static const String imagesSquare = 'assets/images/square.png';
   static const String imagesTrueCircle = 'assets/images/true_circle.png';
@@ -38,7 +40,9 @@ class Assets {
   static const String svgClassified = 'assets/svg/classified.svg';
   static const String svgClipboardText = 'assets/svg/clipboard-text.svg';
   static const String svgComment = 'assets/svg/comment.svg';
-  static const String svgContactUsBgImage = 'assets/svg/Contact_us_bg_image.svg';
+  static const String svgCompany = 'assets/svg/company.svg';
+  static const String svgContactUsBgImage =
+      'assets/svg/Contact_us_bg_image.svg';
   static const String svgDatabase = 'assets/svg/database.svg';
   static const String svgDelete = 'assets/svg/Delete.svg';
   static const String svgDocumentText = 'assets/svg/document-text.svg';
@@ -53,11 +57,14 @@ class Assets {
   static const String svgInstagram = 'assets/svg/Instagram.svg';
   static const String svgLike = 'assets/svg/like.svg';
   static const String svgLogosFacebook = 'assets/svg/logos_facebook.svg';
-  static const String svgLogosLinkedinIcon = 'assets/svg/logos_linkedin-icon.svg';
-  static const String svgLogosWhatsappIcon = 'assets/svg/logos_whatsapp-icon.svg';
+  static const String svgLogosLinkedinIcon =
+      'assets/svg/logos_linkedin-icon.svg';
+  static const String svgLogosWhatsappIcon =
+      'assets/svg/logos_whatsapp-icon.svg';
   static const String svgMessageIcon = 'assets/svg/message_icon.svg';
   static const String svgMessageQuestion = 'assets/svg/message-question.svg';
-  static const String svgMobileIconContactUs = 'assets/svg/Mobile_icon_contactUs.svg';
+  static const String svgMobileIconContactUs =
+      'assets/svg/Mobile_icon_contactUs.svg';
   static const String svgNotificationBing = 'assets/svg/notification-bing.svg';
   static const String svgOurMission = 'assets/svg/Our_mission.svg';
   static const String svgOurVision = 'assets/svg/Our_vision.svg';
@@ -85,7 +92,7 @@ class Assets {
   static const String svgVideo = 'assets/svg/Video.svg';
   static const String svgVideoOctagon = 'assets/svg/video-octagon.svg';
   static const String svgView = 'assets/svg/view.svg';
+  static const String svgWebsite = 'assets/svg/website.svg';
   static const String svgWhatsappIcon = 'assets/svg/whatsapp_icon.svg';
   static const String svgYoutube = 'assets/svg/Youtube.svg';
-
 }

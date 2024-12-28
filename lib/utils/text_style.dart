@@ -39,6 +39,7 @@ TextStyle textStyleW400(double size, Color color) {
 
 BoxShadow customBoxShadow() {
   return BoxShadow(
+    // ignore: deprecated_member_use
     color: AppColors.primaryColor.withOpacity(0.10),
     blurRadius: 13,
     offset: const Offset(0, 0),

@@ -373,6 +373,7 @@ class UserProfileController extends GetxController {
 
   Future<void> fetchUserAllPost(int page, String userId) async {
     isLoading.value = true;
+    postallList.clear();
 
     String device = Platform.isAndroid
         ? 'android'
@@ -428,7 +429,7 @@ class UserProfileController extends GetxController {
         final List<GetUserAllPostData> newData = allpostEntity.data ?? [];
         if (newData.isNotEmpty) {
           if (page == 1) {
-            postallList.clear(); // Clear existing data for new user
+            postallList.clear();
           }
           postallList.addAll(newData);
           isEndOfData.value = newData.length < 10;

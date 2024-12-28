@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:mlmdiary/classified/add_classified.dart';
 import 'package:mlmdiary/classified/classified_detail_screen.dart';
 import 'package:mlmdiary/classified/classified_detail_notification.dart';
+import 'package:mlmdiary/classified/classified_swipe_detail.dart';
 import 'package:mlmdiary/classified/custom/add_comapany_classfied.dart';
 import 'package:mlmdiary/database/database.dart';
 import 'package:mlmdiary/firstscreen/first_screen.dart';
@@ -135,6 +136,12 @@ class AppPages {
     GetPage(
       name: Routes.mlmclassifieddetailcopy,
       page: () => ClassifiedDetailNotification(
+        key: UniqueKey(),
+      ),
+    ),
+    GetPage(
+      name: Routes.mlmclassifieddetailswipe,
+      page: () => ClassifiedSwipeDetail(
         key: UniqueKey(),
       ),
     ),

@@ -198,13 +198,16 @@ class _FavouritrCardState extends State<QuestionHomeCard> {
                             ),
                             style: textStyleW400(
                               size.width * 0.035,
+                              // ignore: deprecated_member_use
                               AppColors.blackText.withOpacity(0.5),
                             ),
                           ),
                           8.sbw,
                           Text(
                             'asked a question',
-                            style: textStyleW400(size.width * 0.028,
+                            style: textStyleW400(
+                                size.width * 0.028,
+                                // ignore: deprecated_member_use
                                 AppColors.blackText.withOpacity(0.8)),
                           )
                         ],

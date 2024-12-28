@@ -99,6 +99,7 @@ class _MlmcompaniesCardState extends State<MlmCompaniesCard> {
                 decoration: BoxDecoration(
                   border: Border.all(
                     width: 1.5,
+                    // ignore: deprecated_member_use
                     color: AppColors.grey.withOpacity(0.5),
                   ),
                   borderRadius: const BorderRadius.all(
@@ -137,6 +138,7 @@ class _MlmcompaniesCardState extends State<MlmCompaniesCard> {
                       widget.location,
                       style: textStyleW400(
                         size.width * 0.032,
+                        // ignore: deprecated_member_use
                         AppColors.blackText.withOpacity(0.5),
                       ),
                       maxLines: 2,

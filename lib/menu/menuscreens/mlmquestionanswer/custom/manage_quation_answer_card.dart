@@ -132,13 +132,17 @@ class _ManageQuestionCardState extends State<ManageQuestionCard> {
                         children: [
                           Text(
                             postTimeFormatter.formatPostTime(widget.dateTime),
-                            style: textStyleW400(size.width * 0.028,
+                            style: textStyleW400(
+                                size.width * 0.028,
+                                // ignore: deprecated_member_use
                                 AppColors.blackText.withOpacity(0.8)),
                           ),
                           8.sbw,
                           Text(
                             'asked a question',
-                            style: textStyleW400(size.width * 0.028,
+                            style: textStyleW400(
+                                size.width * 0.028,
+                                // ignore: deprecated_member_use
                                 AppColors.blackText.withOpacity(0.8)),
                           )
                         ],
@@ -157,7 +161,9 @@ class _ManageQuestionCardState extends State<ManageQuestionCard> {
                   alignment: Alignment.topLeft,
                   child: Text(
                     widget.postCaption,
-                    style: textStyleW400(size.width * 0.035,
+                    style: textStyleW400(
+                        size.width * 0.035,
+                        // ignore: deprecated_member_use
                         AppColors.blackText.withOpacity(0.8)),
                   ),
                 )

@@ -12,7 +12,6 @@ import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
-import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
@@ -185,6 +184,7 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
                                         ),
                                         style: textStyleW400(
                                           size.width * 0.035,
+                                          // ignore: deprecated_member_use
                                           AppColors.blackText.withOpacity(0.5),
                                         ),
                                       ),
@@ -339,131 +339,7 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
                               ],
                             ),
                           ),
-                          5.sbh,
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(14),
-                              color: AppColors.white,
-                              border: const Border(
-                                  bottom: BorderSide(color: Colors.grey)),
-                            ),
-                          ),
-                          5.sbh,
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Text(
-                                          'Phone',
-                                          style: textStyleW400(
-                                              size.width * 0.035,
-                                              AppColors.grey),
-                                        ),
-                                      ],
-                                    ),
-                                    3.sbh,
-                                    InkWell(
-                                      onTap: () {
-                                        final String? countryCode =
-                                            post.userData?.countrycode1;
-                                        final String? mobileNumber =
-                                            post.userData?.mobile;
 
-                                        if (mobileNumber == null ||
-                                            mobileNumber.isEmpty) {
-                                          showToasterrorborder(
-                                              'No Any Url Found', context);
-                                          if (kDebugMode) {
-                                            print('Tap without number');
-                                          }
-                                        } else {
-                                          final Uri phoneUri = Uri(
-                                            scheme: 'tel',
-                                            path: '$countryCode$mobileNumber',
-                                          );
-                                          launchUrl(phoneUri);
-                                          if (kDebugMode) {
-                                            print(
-                                                'Tap with number: $countryCode$mobileNumber');
-                                          }
-                                        }
-                                      },
-                                      child: Text(
-                                        '+${post.userData?.countrycode1 ?? 'N/A'} - ${post.userData?.mobile ?? 'N/A'}',
-                                        style: textStyleW400(size.width * 0.032,
-                                            AppColors.blackText),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Text(
-                                            'Email',
-                                            style: textStyleW400(
-                                                size.width * 0.035,
-                                                AppColors.grey),
-                                          ),
-                                        ],
-                                      ),
-                                      3.sbh,
-                                      InkWell(
-                                        onTap: () {
-                                          final String? email =
-                                              post.userData?.email;
-
-                                          if (email != null &&
-                                              email.isNotEmpty) {
-                                            final Uri emailUri = Uri(
-                                              scheme: 'mailto',
-                                              path: email,
-                                            );
-                                            launchUrl(emailUri);
-                                            if (kDebugMode) {
-                                              print('Tap with email: $email');
-                                            }
-                                          } else {
-                                            showToasterrorborder(
-                                                'No Email Found', context);
-                                            if (kDebugMode) {
-                                              print('Tap without email');
-                                            }
-                                          }
-                                        },
-                                        child: Text(
-                                          post.userData!.email?.isNotEmpty ==
-                                                  true
-                                              ? post.userData!.email!
-                                              : 'N/A',
-                                          style: textStyleW400(
-                                              size.width * 0.032,
-                                              AppColors.blackText),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
                           5.sbh,
                           Container(
                             decoration: BoxDecoration(
@@ -497,6 +373,7 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
                                       : 'N/A',
                                   style: textStyleW400(
                                     size.width * 0.035,
+                                    // ignore: deprecated_member_use
                                     AppColors.blackText.withOpacity(0.5),
                                   ),
                                   linkStyle: const TextStyle(

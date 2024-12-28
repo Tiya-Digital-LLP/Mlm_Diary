@@ -15,6 +15,7 @@ import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
 import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_shimmer_classified.dart';
+import 'package:mlmdiary/widgets/custon_test_app_bar.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:mlmdiary/widgets/remimaining_count_controller./remaining_count.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -57,53 +58,12 @@ class _MlmBlogState extends State<MlmBlog> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(
-        scrolledUnderElevation: 0,
-        centerTitle: true,
-        leading: Padding(
-          padding: EdgeInsets.all(size.height * 0.012),
-          child: Align(
-            alignment: Alignment.topLeft,
-            child: InkWell(
-              onTap: () {
-                Get.back();
-              },
-              customBorder: const CircleBorder(),
-              child: SvgPicture.asset(Assets.svgBack),
-            ),
-          ),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: Text(
-          'MLM Blog',
-          style: TextStyle(
-            fontWeight: FontWeight.w700,
-            fontSize: size.width * 0.048,
-            color: Colors.black,
-            fontFamily: Assets.fontsSatoshiRegular,
-          ),
-        ),
-        actions: [
-          InkWell(
-            onTap: () async {
-              if (position.isEmpty) {
-                await videoController.fetchVideo('', context);
-                Get.toNamed(Routes.tutorialvideo, arguments: {'position': ''});
-              } else if (position == 'blog') {
-                await videoController.fetchVideo('blog', context);
-                Get.toNamed(Routes.tutorialvideo,
-                    arguments: {'position': 'blog'});
-              }
-            },
-            child: SvgPicture.asset(
-              Assets.svgPlay,
-              height: size.width * 0.08,
-              width: size.width * 0.08,
-            ),
-          ),
-          const SizedBox(width: 18),
-        ],
+      appBar: CustonTestAppBar(
+        size: MediaQuery.of(context).size,
+        titleText: 'MLM Blog',
+        onTap: () {},
+        position: position,
+        homeScreenController: homeScreenController,
       ),
       body: RefreshIndicator(
         backgroundColor: AppColors.primaryColor,

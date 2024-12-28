@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mlmdiary/firstscreen/home_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/accountsetting/controller/account_setting_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/accountsetting/custom/custom_login_details_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/accountsetting/custom/custom_social.dart';
 import 'package:mlmdiary/menu/menuscreens/accountsetting/custom/custom_userinfo.dart';
+import 'package:mlmdiary/menu/menuscreens/tutorialvideo/controller/tutorial_video_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/text_style.dart';
-import 'package:mlmdiary/widgets/custom_back_button.dart';
+import 'package:mlmdiary/widgets/custon_test_app_bar.dart';
 
 class AccountSetting extends StatefulWidget {
   const AccountSetting({super.key});
@@ -20,11 +22,18 @@ class _AccountSettingState extends State<AccountSetting>
   late TabController _tabController;
   final AccountSeetingController controller =
       Get.put(AccountSeetingController());
+  final HomeScreenController homeScreenController =
+      Get.put(HomeScreenController());
+  final TutorialVideoController videoController =
+      Get.put(TutorialVideoController());
+
+  static const String position = 'account_setting';
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    videoController.fetchVideo(position, context);
   }
 
   @override
@@ -32,27 +41,12 @@ class _AccountSettingState extends State<AccountSetting>
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: AppColors.background,
-        appBar: AppBar(
-          scrolledUnderElevation: 0,
-          centerTitle: true,
-          backgroundColor: Colors.white,
-          leading: Padding(
-            padding: EdgeInsets.all(size.height * 0.012),
-            child: const Align(
-              alignment: Alignment.topLeft,
-              child: CustomBackButton(),
-            ),
-          ),
-          elevation: 0,
-          title: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Account Settings',
-                style: textStyleW700(size.width * 0.048, AppColors.blackText),
-              ),
-            ],
-          ),
+        appBar: CustonTestAppBar(
+          size: MediaQuery.of(context).size,
+          titleText: 'Account Settings',
+          onTap: () {},
+          position: position,
+          homeScreenController: homeScreenController,
         ),
         body: Column(
           children: [

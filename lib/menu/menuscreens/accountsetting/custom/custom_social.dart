@@ -39,6 +39,18 @@ class _CustomSocialState extends State<CustomSocial> {
               () => Column(
                 children: [
                   buildSocialInput(
+                    controller: controller.perwebsite.value,
+                    asset: Assets.svgWebsite,
+                    hintText: "Copy & Paste Personal URL",
+                  ),
+                  15.sbh,
+                  buildSocialInput(
+                    controller: controller.compwebsite.value,
+                    asset: Assets.svgCompany,
+                    hintText: "Copy & Paste Company URL",
+                  ),
+                  15.sbh,
+                  buildSocialInput(
                     controller: controller.instat.value,
                     asset: Assets.svgInstagram,
                     hintText: "Copy & Paste Instagram URL",
@@ -110,7 +122,9 @@ class _CustomSocialState extends State<CustomSocial> {
           SizedBox(
             height: 30,
             width: 50,
-            child: SvgPicture.asset(asset),
+            child: SvgPicture.asset(
+              asset,
+            ),
           ),
           Container(
             padding: const EdgeInsets.only(bottom: 3.0),

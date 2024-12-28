@@ -42,6 +42,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
         decoration: BoxDecoration(
           border: Border.all(
             color: widget.byDefault
+                // ignore: deprecated_member_use
                 ? AppColors.containerBorder.withOpacity(0.4)
                 : widget.isError
                     ? AppColors.redText
@@ -51,6 +52,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
           color: AppColors.white,
           boxShadow: [
             BoxShadow(
+              // ignore: deprecated_member_use
               color: AppColors.blackText.withOpacity(0.12),
               offset: const Offset(5.0, 5.0),
               blurRadius: 10.0,

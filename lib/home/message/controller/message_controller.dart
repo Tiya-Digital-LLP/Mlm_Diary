@@ -85,15 +85,20 @@ class MessageController extends GetxController {
     }
   }
 
-  Future<void> fetchMyChatDetail(String chatId) async {
-    // Start loading
-    isLoading(true);
+  Future<void> fetchMyChatDetail(String? chatId) async {
+    // Clear list and stop execution if chatId is null
+    if (chatId == null) {
+      chatdetailsList.clear();
+      if (kDebugMode) {
+        print('Chat ID is null, clearing chat details list');
+      }
+      return;
+    }
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
 
     if (apiToken == null || apiToken.isEmpty) {
-      isLoading(false);
       if (kDebugMode) {
         print('No API token found');
       }
@@ -156,9 +161,6 @@ class MessageController extends GetxController {
       if (kDebugMode) {
         print('Error: $e');
       }
-    } finally {
-      // Stop loading after data fetch
-      isLoading(false);
     }
   }
 
@@ -269,6 +271,7 @@ class MessageController extends GetxController {
         // Check if response contains 'status' key with value 1
         if (jsonBody['status'] == 1) {
           fetchMyChat();
+          Get.back();
           if (kDebugMode) {
             print('Chat Deleted successfully');
           }
@@ -294,16 +297,11 @@ class MessageController extends GetxController {
     }
   }
 
-  Future<void> fecthNewChat(
-    int lastId,
-    String chatId,
-  ) async {
-    isLoading(true);
-
+  Future<void> fetchNewChat(int lastId, String chatId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
     String? apiToken = prefs.getString(Constants.accessToken);
     String device = Platform.isAndroid ? 'android' : 'ios';
+
     try {
       var uri = Uri.parse('${Constants.baseUrl}${Constants.sendnewchat}');
       var request = http.MultipartRequest('POST', uri);
@@ -313,49 +311,82 @@ class MessageController extends GetxController {
       request.fields['last_id'] = lastId.toString();
 
       if (kDebugMode) {
-        print('api_token : $apiToken');
-        print('device : $device');
-        print('chat_id : $chatId');
-        print('last_id : $lastId');
+        print('api_token: $apiToken');
+        print('device: $device');
+        print('chat_id: $chatId');
+        print('last_id: $lastId');
       }
 
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
 
+      if (kDebugMode) {
+        print('fetchNewChat: ${response.body}');
+      }
+
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonBody = json.decode(response.body);
 
-        // Check if response contains 'success' or 'error' keys
         if (jsonBody.containsKey('success')) {
-          // Handle success scenario
           if (kDebugMode) {
             print('Chat sent successfully');
           }
         } else if (jsonBody.containsKey('error')) {
-          // Handle failure scenario
           if (kDebugMode) {
             print('Failed to send chat: ${jsonBody['error']}');
           }
         } else {
-          // Handle unexpected response format
-          if (kDebugMode) {
-            print('Failed to send chat: Unexpected response format');
-            print('Response body: $jsonBody');
+          try {
+            // Check if mychatoverview is a Map or List and handle accordingly
+            if (jsonBody['mychatoverview'] is Map<String, dynamic>) {
+              GetMyChatDetailEntity chatDetailEntity =
+                  GetMyChatDetailEntity.fromJson(jsonBody);
+
+              if (kDebugMode) {
+                print('Fetched Chat Details: ${chatDetailEntity.toString()}');
+              }
+
+              var chatOverview = chatDetailEntity.mychatoverview;
+              if (chatOverview != null && chatOverview.data != null) {
+                // Add new chats to the list and ensure UI is updated
+                chatdetailsList.addAll(chatOverview.data!);
+                if (kDebugMode) {
+                  print('Chat Data Added: ${chatOverview.data}');
+                }
+              }
+            } else if (jsonBody['mychatoverview'] is List) {
+              List<dynamic> chatOverviewList = jsonBody['mychatoverview'];
+              if (chatOverviewList.isNotEmpty) {
+                for (var chat in chatOverviewList) {
+                  GetMyChatDetailEntity chatDetailEntity =
+                      GetMyChatDetailEntity.fromJson(
+                          chat as Map<String, dynamic>);
+
+                  if (chatDetailEntity.mychatoverview?.data != null) {
+                    chatdetailsList
+                        .addAll(chatDetailEntity.mychatoverview!.data!);
+                  }
+                }
+                if (kDebugMode) {
+                  print('Multiple Chat Data Added');
+                }
+              }
+            }
+          } catch (e) {
+            if (kDebugMode) {
+              print('Error parsing chat details: $e');
+            }
           }
         }
       } else {
-        // Handle HTTP error status codes
         if (kDebugMode) {
           print('Failed to send chat. Status Code: ${response.statusCode}');
         }
       }
     } catch (e) {
-      // Handle exceptions thrown during request or parsing
       if (kDebugMode) {
         print('Error sending chat: $e');
       }
-    } finally {
-      isLoading(false);
     }
   }
 }

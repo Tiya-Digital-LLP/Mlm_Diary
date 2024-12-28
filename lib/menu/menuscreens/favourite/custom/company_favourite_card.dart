@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -335,7 +337,6 @@ class _CompanieFaviouriteCardState extends State<CompanieFaviouriteCard> {
                           width: size.height * 0.028,
                           child: SvgPicture.asset(
                             Assets.svgSend,
-                            // ignore: deprecated_member_use
                             color: AppColors.blackText,
                           ),
                         ),
