@@ -114,6 +114,7 @@ class _MlmClassifiedState extends State<ManageClassified> {
                       commentcount: post.totalcomment ?? 0,
                       likedbyuser: post.likedByUser ?? false,
                       bookmarkedbyuser: post.bookmarkedByUser ?? false,
+                      isPopular: post.popular == 'Y',
                     ),
                   ),
                 );

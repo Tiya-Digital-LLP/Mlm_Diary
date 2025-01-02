@@ -256,7 +256,7 @@ class ClasifiedController extends GetxController {
         // Replace old data with the fetched post
         classifiedDetailList.clear(); // Ensure old data is cleared
         classifiedDetailList.add(firstPost);
-            } else {
+      } else {
         if (kDebugMode) {
           print("Error: ${response.body}");
         }

@@ -92,7 +92,11 @@ class _ContactUsState extends State<ContactUs> {
                   Assets.svgContactUsBgImage,
                   height: 150,
                 ),
-                select_sub_dropdown(controller.listitem2, 'Select Subject'),
+                select_sub_dropdown(
+                  controller.listitem2.cast<String>(),
+                  'Select Subject',
+                  'Select Subject',
+                ),
                 SizedBox(
                   height: size.height * 0.010,
                 ),
@@ -228,7 +232,15 @@ class _ContactUsState extends State<ContactUs> {
                     controller.emailValidation();
                     controller.mobileValidation();
                     controller.messageValidation();
-                    if (controller.name.value.text.isEmpty) {
+
+                    if (controller.selectedItem.value.isEmpty) {
+                      controller.dropItemError.value =
+                          true; // Explicitly set the error state
+                      showToasterrorborder(
+                        "Please select an item from the dropdown.",
+                        context,
+                      );
+                    } else if (controller.name.value.text.isEmpty) {
                       showToasterrorborder(
                         "Name field cannot be empty.",
                         context,
@@ -269,6 +281,7 @@ class _ContactUsState extends State<ContactUs> {
                         context,
                       );
                     } else {
+                      controller.dropItemError.value = false;
                       controller.contactus(context);
                     }
                   },
@@ -328,187 +341,193 @@ class _ContactUsState extends State<ContactUs> {
                   ),
                 ),
                 10.sbh,
-                Obx(() {
-                  final mlmSocial =
-                      profileController.mlmSocial.value.sitesetting;
-                  final profile =
-                      profileController.userProfile.value.userProfile;
+                Obx(
+                  () {
+                    final mlmSocial =
+                        profileController.mlmSocial.value.sitesetting;
+                    final profile =
+                        profileController.userProfile.value.userProfile;
 
-                  if (controller.isLoading.value) {
-                    return Center(
-                        child: CustomLottieAnimation(
-                      child: Lottie.asset(
-                        Assets.lottieLottie,
-                      ),
-                    ));
-                  }
+                    if (controller.isLoading.value) {
+                      return Center(
+                          child: CustomLottieAnimation(
+                        child: Lottie.asset(
+                          Assets.lottieLottie,
+                        ),
+                      ));
+                    }
 
-                  return Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(vertical: 5),
-                      decoration: ShapeDecoration(
-                          color: AppColors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(13.05),
-                          ),
-                          shadows: [customBoxShadow()]),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Text(
-                            'Follow MLM Diary',
-                            style: textStyleW500(
-                                size.width * 0.030, AppColors.blackText),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              IconButton(
-                                padding: EdgeInsets.zero,
-                                onPressed: () async {
-                                  if (mlmSocial!.whatsapp != null) {
-                                    final String phoneNumber =
-                                        mlmSocial.whatsapp!;
-                                    final String name = profile!.name ?? 'N/A';
-                                    String message =
-                                        "Hello, I am $name. I want to know regarding MLM Diary App.";
-                                    final Uri whatsappUri = Uri.parse(
-                                        "https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}");
+                    return Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        decoration: ShapeDecoration(
+                            color: AppColors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(13.05),
+                            ),
+                            shadows: [customBoxShadow()]),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text(
+                              'Follow MLM Diary',
+                              style: textStyleW500(
+                                  size.width * 0.030, AppColors.blackText),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                IconButton(
+                                  padding: EdgeInsets.zero,
+                                  onPressed: () async {
+                                    if (mlmSocial!.whatsapp != null) {
+                                      final String phoneNumber =
+                                          mlmSocial.whatsapp!;
+                                      final String name =
+                                          profile!.name ?? 'N/A';
+                                      String message =
+                                          "Hello, I am $name. I want to know regarding MLM Diary App.";
+                                      final Uri whatsappUri = Uri.parse(
+                                          "https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}");
 
-                                    if (await canLaunchUrl(whatsappUri)) {
-                                      await launchUrl(whatsappUri);
-                                      if (kDebugMode) {
-                                        print('URL: $whatsappUri');
+                                      if (await canLaunchUrl(whatsappUri)) {
+                                        await launchUrl(whatsappUri);
+                                        if (kDebugMode) {
+                                          print('URL: $whatsappUri');
+                                        }
+                                      } else {
+                                        if (kDebugMode) {
+                                          print(
+                                              'Could not launch $whatsappUri');
+                                        }
+                                        showToasterrorborder(
+                                            "Could not launch WhatsApp",
+                                            // ignore: use_build_context_synchronously
+                                            context);
                                       }
                                     } else {
-                                      if (kDebugMode) {
-                                        print('Could not launch $whatsappUri');
-                                      }
                                       showToasterrorborder(
-                                          "Could not launch WhatsApp",
-                                          // ignore: use_build_context_synchronously
-                                          context);
+                                          "No Any Url Found", context);
                                     }
-                                  } else {
-                                    showToasterrorborder(
-                                        "No Any Url Found", context);
-                                  }
-                                },
-                                icon: SvgPicture.asset(
-                                    Assets.svgLogosWhatsappIcon,
-                                    height: 26,
-                                    width: 26),
-                              ),
-                              IconButton(
-                                padding: EdgeInsets.zero,
-                                onPressed: () {
-                                  if (mlmSocial!.facebookLink != null) {
-                                    _launchURL(
-                                        mlmSocial.facebookLink.toString());
-                                    if (kDebugMode) {
-                                      print('URL: ${mlmSocial.facebookLink}');
+                                  },
+                                  icon: SvgPicture.asset(
+                                      Assets.svgLogosWhatsappIcon,
+                                      height: 26,
+                                      width: 26),
+                                ),
+                                IconButton(
+                                  padding: EdgeInsets.zero,
+                                  onPressed: () {
+                                    if (mlmSocial!.facebookLink != null) {
+                                      _launchURL(
+                                          mlmSocial.facebookLink.toString());
+                                      if (kDebugMode) {
+                                        print('URL: ${mlmSocial.facebookLink}');
+                                      }
+                                    } else {
+                                      showToasterrorborder(
+                                          "No Any Url Fond", context);
                                     }
-                                  } else {
-                                    showToasterrorborder(
-                                        "No Any Url Fond", context);
-                                  }
-                                },
-                                icon: SvgPicture.asset(Assets.svgLogosFacebook,
-                                    height: 26, width: 26),
-                              ),
-                              IconButton(
-                                padding: EdgeInsets.zero,
-                                onPressed: () {
-                                  if (mlmSocial!.intagramLink != null) {
-                                    _launchURL(
-                                        mlmSocial.intagramLink.toString());
-                                    if (kDebugMode) {
-                                      print('URL: ${mlmSocial.intagramLink}');
+                                  },
+                                  icon: SvgPicture.asset(
+                                      Assets.svgLogosFacebook,
+                                      height: 26,
+                                      width: 26),
+                                ),
+                                IconButton(
+                                  padding: EdgeInsets.zero,
+                                  onPressed: () {
+                                    if (mlmSocial!.intagramLink != null) {
+                                      _launchURL(
+                                          mlmSocial.intagramLink.toString());
+                                      if (kDebugMode) {
+                                        print('URL: ${mlmSocial.intagramLink}');
+                                      }
+                                    } else {
+                                      showToasterrorborder(
+                                          "No Any Url Fond", context);
                                     }
-                                  } else {
-                                    showToasterrorborder(
-                                        "No Any Url Fond", context);
-                                  }
-                                },
-                                icon: SvgPicture.asset(Assets.svgInstagram,
-                                    height: 26, width: 26),
-                              ),
-                              IconButton(
-                                padding: EdgeInsets.zero,
-                                onPressed: () {
-                                  if (mlmSocial!.linkedinLink != null) {
-                                    _launchURL(
-                                        mlmSocial.linkedinLink.toString());
-                                    if (kDebugMode) {
-                                      print('URL: ${mlmSocial.linkedinLink}');
+                                  },
+                                  icon: SvgPicture.asset(Assets.svgInstagram,
+                                      height: 26, width: 26),
+                                ),
+                                IconButton(
+                                  padding: EdgeInsets.zero,
+                                  onPressed: () {
+                                    if (mlmSocial!.linkedinLink != null) {
+                                      _launchURL(
+                                          mlmSocial.linkedinLink.toString());
+                                      if (kDebugMode) {
+                                        print('URL: ${mlmSocial.linkedinLink}');
+                                      }
+                                    } else {
+                                      showToasterrorborder(
+                                          "No Any Url Fond", context);
                                     }
-                                  } else {
-                                    showToasterrorborder(
-                                        "No Any Url Fond", context);
-                                  }
-                                },
-                                icon: SvgPicture.asset(
-                                    Assets.svgLogosLinkedinIcon,
-                                    height: 26,
-                                    width: 26),
-                              ),
-                              IconButton(
-                                padding: EdgeInsets.zero,
-                                onPressed: () {
-                                  if (mlmSocial!.youtubeLink != null) {
-                                    _launchURL(
-                                        mlmSocial.youtubeLink.toString());
-                                    if (kDebugMode) {
-                                      print('URL: ${mlmSocial.youtubeLink}');
+                                  },
+                                  icon: SvgPicture.asset(
+                                      Assets.svgLogosLinkedinIcon,
+                                      height: 26,
+                                      width: 26),
+                                ),
+                                IconButton(
+                                  padding: EdgeInsets.zero,
+                                  onPressed: () {
+                                    if (mlmSocial!.youtubeLink != null) {
+                                      _launchURL(
+                                          mlmSocial.youtubeLink.toString());
+                                      if (kDebugMode) {
+                                        print('URL: ${mlmSocial.youtubeLink}');
+                                      }
+                                    } else {
+                                      showToasterrorborder(
+                                          "No Any Url Fond", context);
                                     }
-                                  } else {
-                                    showToasterrorborder(
-                                        "No Any Url Fond", context);
-                                  }
-                                },
-                                icon: SvgPicture.asset(Assets.svgYoutube,
-                                    height: 26, width: 26),
-                              ),
-                              IconButton(
-                                padding: EdgeInsets.zero,
-                                onPressed: () {
-                                  if (mlmSocial!.telegramLink != null) {
-                                    _launchURL(
-                                        mlmSocial.telegramLink.toString());
-                                    if (kDebugMode) {
-                                      print('URL: ${mlmSocial.telegramLink}');
+                                  },
+                                  icon: SvgPicture.asset(Assets.svgYoutube,
+                                      height: 26, width: 26),
+                                ),
+                                IconButton(
+                                  padding: EdgeInsets.zero,
+                                  onPressed: () {
+                                    if (mlmSocial!.telegramLink != null) {
+                                      _launchURL(
+                                          mlmSocial.telegramLink.toString());
+                                      if (kDebugMode) {
+                                        print('URL: ${mlmSocial.telegramLink}');
+                                      }
+                                    } else {
+                                      showToasterrorborder(
+                                          "No Any Url Fond", context);
                                     }
-                                  } else {
-                                    showToasterrorborder(
-                                        "No Any Url Fond", context);
-                                  }
-                                },
-                                icon: SvgPicture.asset(Assets.svgTelegram,
-                                    height: 26, width: 26),
-                              ),
-                              IconButton(
-                                padding: EdgeInsets.zero,
-                                onPressed: () {
-                                  if (mlmSocial!.twitterLink != null) {
-                                    _launchURL(
-                                        mlmSocial.twitterLink.toString());
-                                    if (kDebugMode) {
-                                      print('URL: ${mlmSocial.twitterLink}');
+                                  },
+                                  icon: SvgPicture.asset(Assets.svgTelegram,
+                                      height: 26, width: 26),
+                                ),
+                                IconButton(
+                                  padding: EdgeInsets.zero,
+                                  onPressed: () {
+                                    if (mlmSocial!.twitterLink != null) {
+                                      _launchURL(
+                                          mlmSocial.twitterLink.toString());
+                                      if (kDebugMode) {
+                                        print('URL: ${mlmSocial.twitterLink}');
+                                      }
+                                    } else {
+                                      showToasterrorborder(
+                                          "No Any Url Fond", context);
                                     }
-                                  } else {
-                                    showToasterrorborder(
-                                        "No Any Url Fond", context);
-                                  }
-                                },
-                                icon: SvgPicture.asset(Assets.svgTwitter,
-                                    height: 26, width: 26),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ));
-                }),
+                                  },
+                                  icon: SvgPicture.asset(Assets.svgTwitter,
+                                      height: 26, width: 26),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ));
+                  },
+                ),
               ],
             ),
           ),
@@ -518,54 +537,67 @@ class _ContactUsState extends State<ContactUs> {
   }
 
   // ignore: non_constant_identifier_names
-  Widget select_sub_dropdown(List listitem, String hint) {
+  Widget select_sub_dropdown(List<String> listitem, String hint, String label) {
     final Size size = MediaQuery.of(context).size;
 
     return Container(
-      height: 58,
       decoration: BoxDecoration(
         border: Border.all(
-            width: 1, color: AppColors.containerBorder.withOpacity(0.4)),
+          width: 1,
+          color: controller.dropItemError.value
+              ? AppColors.redText
+              : (controller.selectedItem.value.isNotEmpty
+                  ? AppColors.greenBorder
+                  : AppColors.containerBorder.withOpacity(0.4)),
+        ),
         borderRadius: BorderRadius.circular(15.0),
         color: AppColors.white,
       ),
-      child: Obx(() => Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: DropdownButton(
-              value: controller.selectedItem.isNotEmpty
-                  ? controller.selectedItem.value
-                  : null,
-              hint: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Text(
-                  hint,
-                  style: textStyleW500(
-                      size.width * 0.04, AppColors.blackText.withOpacity(0.6)),
-                ),
-              ),
-              dropdownColor: AppColors.white,
-              icon: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Icon(Icons.arrow_drop_down),
-              ),
-              iconSize: 30,
-              isExpanded: true,
-              items: listitem.map((valueItem) {
-                return DropdownMenuItem(
-                  value: valueItem,
-                  child: Text(
-                    valueItem,
-                    style:
-                        textStyleW500(size.width * 0.030, AppColors.blackText),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Obx(() => DropdownButtonHideUnderline(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: DropdownButton<String>(
+                    value: controller.selectedItem.isNotEmpty
+                        ? controller.selectedItem.value
+                        : null,
+                    hint: controller.selectedItem.isEmpty
+                        ? Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Text(
+                              hint,
+                              style: textStyleW500(size.width * 0.04,
+                                  AppColors.blackText.withOpacity(0.6)),
+                            ),
+                          )
+                        : null,
+                    dropdownColor: AppColors.white,
+                    icon: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Icon(Icons.arrow_drop_down),
+                    ),
+                    iconSize: 30,
+                    isExpanded: true,
+                    items: listitem.map((valueItem) {
+                      return DropdownMenuItem<String>(
+                        value: valueItem,
+                        child: Text(
+                          valueItem,
+                          style: textStyleW500(
+                              size.width * 0.04, AppColors.blackText),
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      controller.selectedItem.value = value.toString();
+                    },
                   ),
-                );
-              }).toList(),
-              onChanged: (value) {
-                controller.selectedItem.value = value.toString();
-              },
-              underline: const SizedBox.shrink(),
-            ),
-          )),
+                ),
+              )),
+        ],
+      ),
     );
   }
 

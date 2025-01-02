@@ -188,7 +188,7 @@ class _ClassifiedScreenState extends State<ClassifiedScreen> {
                                         await SharedPreferences.getInstance();
                                     prefs.getString(Constants.accessToken);
                                     Get.toNamed(
-                                      Routes.mlmclassifieddetailswipe,
+                                      Routes.mlmclassifieddetail,
                                       arguments: post,
                                     );
                                   },

@@ -18,6 +18,7 @@ import 'package:mlmdiary/classified/custom/add_comapany_classfied.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_category_entity.dart';
 import 'package:mlmdiary/generated/get_sub_category_entity.dart';
+import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
@@ -400,10 +401,29 @@ class _AddClassifiedState extends State<AddClassified> {
                     isLoading: controller.isLoading,
                   ),
                   20.sbh,
-                  Text(
-                    'If you keep editing your Classified, it will be the first show. You can Add only One Classified and if you want to Add more than One Classified then you have to Pay.',
-                    style:
-                        textStyleW500(size.width * 0.030, AppColors.blackText),
+                  GestureDetector(
+                    onTap: () {
+                      Get.toNamed(Routes.terms);
+                    },
+                    child: Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                            text:
+                                "If you keep editing your Classified, it will be the first show. You can Add only One Classified and if you want to Add more than One Classified then you have to Pay.",
+                            style: textStyleW500(
+                                size.width * 0.030, AppColors.blackText),
+                          ),
+                          TextSpan(
+                            text: "Read More",
+                            style: TextStyle(
+                              decoration: TextDecoration.none,
+                              color: AppColors.primaryColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ],
               ),

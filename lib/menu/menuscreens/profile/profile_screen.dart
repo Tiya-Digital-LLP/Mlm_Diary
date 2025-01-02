@@ -661,94 +661,124 @@ class _ProfileScreenState extends State<ProfileScreen>
   }
 
   Widget buildTabBarView() {
+    final Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Obx(() {
-        if (userProfileController.views.isEmpty) {
-          return const Center(child: Text('No Views'));
-        }
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              width: 80,
+              height: 6,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                // ignore: deprecated_member_use
+                color: AppColors.grey.withOpacity(0.5),
+              ),
+            ),
+          ),
+          3.sbh,
+          Text(
+            'Profile Visits',
+            style: textStyleW700(size.width * 0.043, AppColors.blackText),
+          ),
+          3.sbh,
+          Expanded(
+            child: Obx(() {
+              if (userProfileController.views.isEmpty) {
+                return const Center(child: Text('No Views'));
+              }
 
-        return ListView.builder(
-          controller: _viewersScrollController,
-          itemCount: userProfileController.views.length,
-          itemBuilder: (context, index) {
-            var viewers = userProfileController.views[index];
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: InkWell(
-                onTap: () async {
-                  Get.toNamed(Routes.userprofilescreen, arguments: {
-                    'user_id': viewers.id,
-                  })!
-                      .then((_) {
-                    _refreshViews(viewers.id);
-                  });
+              return ListView.builder(
+                controller: _viewersScrollController,
+                itemCount: userProfileController.views.length,
+                itemBuilder: (context, index) {
+                  var viewers = userProfileController.views[index];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: InkWell(
+                      onTap: () async {
+                        Get.toNamed(Routes.userprofilescreen, arguments: {
+                          'user_id': viewers.id,
+                        })!
+                            .then((_) {
+                          _refreshViews(viewers.id);
+                        });
 
-                  await userProfileController.fetchUserAllPost(
-                    1,
-                    viewers.id.toString(),
+                        await userProfileController.fetchUserAllPost(
+                          1,
+                          viewers.id.toString(),
+                        );
+                      },
+                      child: Card(
+                        color: Colors.white,
+                        elevation: 9,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    width: 30,
+                                    height: 30,
+                                    decoration: ShapeDecoration(
+                                      image: DecorationImage(
+                                        image: viewers
+                                                    .userimageUrl.isNotEmpty ==
+                                                true
+                                            ? NetworkImage(viewers.userimageUrl)
+                                            : const AssetImage(
+                                                    'assets/more.png')
+                                                as ImageProvider,
+                                        fit: BoxFit.cover,
+                                      ),
+                                      shape: const OvalBorder(),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        viewers.name,
+                                        style: const TextStyle(
+                                          fontSize: 14.0,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      Text(
+                                        viewers.immlm,
+                                        style: TextStyle(
+                                          color: AppColors.blackText,
+                                          fontSize: 12.0,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              const Icon(
+                                Icons.arrow_right,
+                                size: 30,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                   );
                 },
-                child: Card(
-                  color: Colors.white,
-                  elevation: 9,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              width: 30,
-                              height: 30,
-                              decoration: ShapeDecoration(
-                                image: DecorationImage(
-                                  image: viewers.userimageUrl.isNotEmpty == true
-                                      ? NetworkImage(viewers.userimageUrl)
-                                      : const AssetImage('assets/more.png')
-                                          as ImageProvider,
-                                  fit: BoxFit.cover,
-                                ),
-                                shape: const OvalBorder(),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  viewers.name,
-                                  style: const TextStyle(
-                                    fontSize: 14.0,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                Text(
-                                  viewers.immlm,
-                                  style: TextStyle(
-                                    color: AppColors.blackText,
-                                    fontSize: 12.0,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        const Icon(
-                          Icons.arrow_right,
-                          size: 30,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
-        );
-      }),
+              );
+            }),
+          ),
+        ],
+      ),
     );
   }
 

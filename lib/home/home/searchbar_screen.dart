@@ -6,6 +6,7 @@ import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/database/controller/database_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/home/home/controller/homescreen_controller.dart';
+import 'package:mlmdiary/home/home/controller/searchbar_controller.dart';
 import 'package:mlmdiary/home/home/custom/blog_home_card.dart';
 import 'package:mlmdiary/home/home/custom/classified_home_card.dart';
 import 'package:mlmdiary/home/home/custom/company_home_card.dart';
@@ -57,6 +58,8 @@ class _SearchBarAppState extends State<SearchBarApp> {
       Get.put(UserProfileController());
   final FavouriteController favouriteController =
       Get.put(FavouriteController());
+  final SearchbarController searchbarController =
+      Get.put(SearchbarController());
   @override
   void initState() {
     super.initState();
@@ -67,9 +70,9 @@ class _SearchBarAppState extends State<SearchBarApp> {
 
   Future<void> _refreshData() async {
     try {
-      controller.isEndOfData.value = false;
-      controller.homeList.clear();
-      await controller.getHome(
+      searchbarController.isEndOfData.value = false;
+      searchbarController.homeList.clear();
+      await searchbarController.getHome(
         1,
       );
     } catch (error) {
@@ -117,7 +120,7 @@ class _SearchBarAppState extends State<SearchBarApp> {
               SizedBox(
                 width: double.infinity,
                 child: CustomSearchInput(
-                  controller: controller.search,
+                  controller: searchbarController.search,
                   onSubmitted: (value) {
                     WidgetsBinding.instance.focusManager.primaryFocus
                         ?.unfocus();
@@ -133,8 +136,8 @@ class _SearchBarAppState extends State<SearchBarApp> {
               10.sbh,
               Expanded(
                 child: Obx(() {
-                  if (controller.isLoading.value &&
-                      controller.homeList.isEmpty) {
+                  if (searchbarController.isLoading.value &&
+                      searchbarController.homeList.isEmpty) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: ListView.builder(
@@ -148,7 +151,7 @@ class _SearchBarAppState extends State<SearchBarApp> {
                       ),
                     );
                   }
-                  if (controller.homeList.isEmpty) {
+                  if (searchbarController.homeList.isEmpty) {
                     return const Center(
                       child: Text(
                         'Data not found',
@@ -162,10 +165,10 @@ class _SearchBarAppState extends State<SearchBarApp> {
                   }
                   return ListView.builder(
                     shrinkWrap: true,
-                    itemCount: controller.homeList.length +
-                        (controller.isLoading.value ? 1 : 0),
+                    itemCount: searchbarController.homeList.length +
+                        (searchbarController.isLoading.value ? 1 : 0),
                     itemBuilder: (context, index) {
-                      if (index == controller.homeList.length) {
+                      if (index == searchbarController.homeList.length) {
                         return Center(
                             child: CustomLottieAnimation(
                           child: Lottie.asset(
@@ -173,7 +176,7 @@ class _SearchBarAppState extends State<SearchBarApp> {
                           ),
                         ));
                       }
-                      final post = controller.homeList[index];
+                      final post = searchbarController.homeList[index];
                       String location =
                           '${post.city ?? ''}, ${post.state ?? ''}, ${post.country ?? ''}'
                               .trim();
@@ -460,7 +463,7 @@ class _SearchBarAppState extends State<SearchBarApp> {
       child: ListView.builder(
         shrinkWrap: false,
         scrollDirection: Axis.horizontal,
-        itemCount: controller.types.length,
+        itemCount: searchbarController.types.length,
         itemBuilder: (context, index) {
           return Padding(
             padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
@@ -471,15 +474,15 @@ class _SearchBarAppState extends State<SearchBarApp> {
                 Obx(
                   () => ChoiceChip(
                     label: Text(
-                      controller.types[index],
+                      searchbarController.types[index],
                     ),
-                    selected: controller.selectedType.value ==
-                        controller.types[index],
+                    selected: searchbarController.selectedType.value ==
+                        searchbarController.types[index],
                     selectedColor: AppColors.blackText,
                     onSelected: (bool selected) {
-                      controller.selectedType.value =
-                          selected ? controller.types[index] : 'All';
-                      controller.getHome(
+                      searchbarController.selectedType.value =
+                          selected ? searchbarController.types[index] : 'All';
+                      searchbarController.getHome(
                         1,
                       );
                     },
@@ -492,8 +495,8 @@ class _SearchBarAppState extends State<SearchBarApp> {
                       color: AppColors.blackText,
                       fontFamily: 'assets/fonst/Metropolis-Black.otf',
                     ).copyWith(
-                      color: controller.selectedType.value ==
-                              controller.types[index]
+                      color: searchbarController.selectedType.value ==
+                              searchbarController.types[index]
                           ? Colors.white
                           : Colors.black,
                     ),

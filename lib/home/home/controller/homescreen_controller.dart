@@ -35,23 +35,6 @@ class HomeController extends GetxController {
   RxList<MutualFriendsData> mutualFriendList = RxList<MutualFriendsData>();
 
   final ScrollController scrollController = ScrollController();
-  final search = TextEditingController();
-  var selectedType = 'All'.obs;
-  final List<String> types = [
-    'All',
-    'Blog',
-    'Database',
-    'News',
-    'Classified',
-    'Post',
-    'Company',
-    'Question',
-    'Video',
-  ];
-
-  void setSelectedType(String type) {
-    selectedType.value = type;
-  }
 
   late WebViewController webController;
   RxBool isload = true.obs;
@@ -728,8 +711,6 @@ class HomeController extends GetxController {
       'api_token': apiToken.toString(),
       'device': device,
       'page': page.toString(),
-      'search': search.value.text,
-      'type': selectedType.value == 'All' ? '' : selectedType.value,
     };
 
     try {

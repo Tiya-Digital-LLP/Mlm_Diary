@@ -9,7 +9,7 @@ class CustomThreeDotAnimation extends StatelessWidget {
   const CustomThreeDotAnimation({
     super.key,
     required this.child,
-    this.width = 70,
+    this.width = 100,
     this.height = 70,
     this.fit = BoxFit.cover,
   });

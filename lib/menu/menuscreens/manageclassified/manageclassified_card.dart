@@ -2,6 +2,7 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/classified/custom/custom_commment.dart';
@@ -32,6 +33,7 @@ class ManageClassifiedCard extends StatefulWidget {
     required this.commentcount,
     required this.likedbyuser,
     required this.bookmarkedbyuser,
+    required this.isPopular,
   });
   final String userImage;
   final String userName;
@@ -50,6 +52,7 @@ class ManageClassifiedCard extends StatefulWidget {
   final int commentcount;
   final bool likedbyuser;
   final bool bookmarkedbyuser;
+  final bool isPopular;
 
   @override
   State<ManageClassifiedCard> createState() => _ManageClassifiedCardState();
@@ -89,6 +92,10 @@ class _ManageClassifiedCardState extends State<ManageClassifiedCard> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
         color: AppColors.white,
+        border: Border.all(
+          color: widget.isPopular ? Colors.yellow : Colors.transparent,
+          width: 3.0,
+        ),
       ),
       child: Column(
         children: [
@@ -111,15 +118,38 @@ class _ManageClassifiedCardState extends State<ManageClassifiedCard> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        widget.postTitle,
-                        style: textStyleW700(
-                            size.width * 0.038, AppColors.blackText),
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Html(
+                          data: widget.postTitle,
+                          style: {
+                            "html": Style(
+                              lineHeight: const LineHeight(1),
+                              maxLines: 1,
+                              fontFamily: fontFamily,
+                              fontWeight: FontWeight.w700,
+                              fontSize: FontSize.medium,
+                              color: AppColors.blackText,
+                            ),
+                          },
+                        ),
                       ),
-                      Text(
-                        widget.postCaption,
-                        style: textStyleW400(size.width * 0.035,
-                            AppColors.blackText.withOpacity(0.8)),
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Html(
+                          data: widget.postCaption,
+                          style: {
+                            "html": Style(
+                              lineHeight: const LineHeight(1.2),
+                              maxLines: 2,
+                              fontFamily: fontFamily,
+                              fontWeight: FontWeight.w500,
+                              fontSize: FontSize.small,
+                              color: AppColors.blackText,
+                              textOverflow: TextOverflow.ellipsis,
+                            ),
+                          },
+                        ),
                       ),
                     ],
                   ),

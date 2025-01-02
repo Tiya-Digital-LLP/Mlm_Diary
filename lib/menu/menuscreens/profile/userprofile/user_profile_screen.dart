@@ -1032,7 +1032,8 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                             onTap: () {
                               showModalBottomSheet(
                                 context: context,
-                                builder: (context) => buildTabBarView(),
+                                builder: (context) =>
+                                    buildTabBarView(initialIndex: 0),
                               );
                             },
                             child: Column(
@@ -1059,7 +1060,8 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                             onTap: () {
                               showModalBottomSheet(
                                 context: context,
-                                builder: (context) => buildTabBarView(),
+                                builder: (context) =>
+                                    buildTabBarView(initialIndex: 1),
                               );
                             },
                             child: Column(
@@ -1084,7 +1086,8 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                         onTap: () async {
                           showModalBottomSheet(
                             context: context,
-                            builder: (context) => buildTabBarView(),
+                            builder: (context) =>
+                                buildTabBarView(initialIndex: 2),
                           );
                         },
                         child: Column(
@@ -1230,9 +1233,11 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                               : '+$countryCode';
 
                       if (userProfile != null && userProfile.name != null) {
-                        final String name = userProfile.name.toString();
+                        final String username = post.name.toString();
+
+                        final String yourname = userProfile.name.toString();
                         String message =
-                            "Hello, I am $name. I want to know regarding MLM Diary App.";
+                            "Hello $username, I’m $yourname. I saw your profile on MLM Diary and would love to know more about you. Looking forward to connecting!";
 
                         final Uri whatsappUri = Uri.parse(
                             "https://wa.me/${formattedCountryCode.replaceAll(' ', '')}$phoneNumber?text=${Uri.encodeComponent(message)}");
@@ -1268,9 +1273,10 @@ class _UserProfileScreenState extends State<UserProfileScreen>
     });
   }
 
-  Widget buildTabBarView() {
+  Widget buildTabBarView({int initialIndex = 0}) {
     return DefaultTabController(
       length: 3,
+      initialIndex: initialIndex,
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(

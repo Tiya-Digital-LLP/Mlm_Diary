@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/custom_news_comment.dart';
@@ -11,12 +12,12 @@ import 'package:mlmdiary/menu/menuscreens/news/news_like_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
-import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 import 'package:mlmdiary/widgets/image_preview_user_image.dart';
+import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:text_link/text_link.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:html/dom.dart' as dom;
@@ -39,6 +40,10 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen> {
 // like
   late RxBool isLiked;
   late RxInt likeCount;
+
+  late PageController pageController;
+  int currentPage = 0;
+  int totalItems = 0;
 // bookmark
   late RxBool isBookmarked;
   late RxInt bookmarkCount;
@@ -73,6 +78,8 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen> {
   @override
   void initState() {
     super.initState();
+    pageController = PageController(initialPage: currentPage);
+
     post = Get.arguments;
     if (post != null && post.id != null) {
       controller.getNews(
@@ -98,376 +105,307 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen> {
         titleText: 'MLM News',
         onTap: () {},
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14),
-                  color: AppColors.white,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      child: InkWell(
-                        onTap: () async {
-                          Get.toNamed(Routes.userprofilescreen, arguments: {
-                            'user_id': post.userId ?? 0,
-                          });
-                          await userProfileController.fetchUserAllPost(
-                            1,
-                            post.userId.toString(),
-                          );
-                        },
-                        child: Row(
-                          children: [
-                            ClipOval(
-                              child: CachedNetworkImage(
-                                imageUrl: post.userData!.imagePath ?? '',
-                                height: 60.0,
-                                width: 60.0,
-                                fit: BoxFit.cover,
-                                errorWidget: (context, url, error) =>
-                                    Image.asset(Assets.imagesAdminlogo),
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      post.userData!.name ?? '',
-                                      style: textStyleW700(size.width * 0.043,
-                                          AppColors.blackText),
-                                    ),
-                                    const SizedBox(
-                                      width: 07,
-                                    ),
-                                  ],
-                                ),
-                                Text(
-                                  postTimeFormatter.formatPostTime(
-                                    DateTime.parse(post.createdate ?? '')
-                                            .isAtSameMomentAs(DateTime.parse(
-                                                post.datemodified ?? ''))
-                                        ? post.createdate ?? ''
-                                        : post.datemodified ?? '',
-                                  ),
-                                  style: textStyleW400(
-                                    size.width * 0.035,
-                                    // ignore: deprecated_member_use
-                                    AppColors.blackText.withOpacity(0.5),
-                                  ),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: size.height * 0.012,
-                    ),
-                    // if (post.imageUrl.isNotEmpty &&
-                    //     Uri.tryParse(post.imageUrl)?.hasAbsolutePath == true)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: InkWell(
-                        onTap: () {
-                          _showFullScreenImageDialog(context);
-                        },
-                        child: SizedBox(
-                          height: size.height * 0.26,
-                          width: size.width,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12.0),
-                            child: Image.network(
-                              post.imageUrl,
-                              fit: BoxFit.fill,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Image.asset(
-                                  Assets.imagesLogo,
-                                  fit: BoxFit.fill,
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                      ),
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: Html(
-                          data: post.title,
-                          style: {
-                            "html": Style(
-                              lineHeight: const LineHeight(1),
-                              maxLines: 1,
-                              fontFamily: fontFamily,
-                              fontWeight: FontWeight.w700,
-                              fontSize: FontSize.medium,
-                              color: AppColors.blackText,
-                            ),
-                          },
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: size.height * 0.01,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                      ),
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          '${post.category} | ${post.subcategory}',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            color: AppColors.blackText,
-                            fontSize: size.width * 0.035,
-                          ),
-                        ),
-                      ),
-                    ),
-                    5.sbh,
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        color: AppColors.white,
-                        border: const Border(
-                            bottom: BorderSide(color: Colors.grey)),
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
+      body: PageView.builder(
+        controller: pageController,
+        itemCount: controller.newsList.length,
+        onPageChanged: (index) {
+          setState(() {
+            currentPage = index;
+          });
+
+          if (kDebugMode) {
+            print("Page changed to: $index");
+          }
+          if (index >= 0 && index < controller.newsList.length) {
+            post = controller.newsList[index];
+            if (kDebugMode) {
+              print("Selected post: ${post.id}");
+            }
+            controller.getNews(
+              post.id ?? 0,
+            );
+          }
+        },
+        itemBuilder: (context, index) {
+          return controller.isLoading.value
+              ? SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(14),
+                            color: AppColors.white,
                           ),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    'Phone',
-                                    style: textStyleW400(
-                                        size.width * 0.035, AppColors.grey),
-                                  ),
-                                ],
-                              ),
-                              3.sbh,
-                              InkWell(
-                                onTap: () {
-                                  final String? countryCode =
-                                      post.userData?.countrycode1;
-                                  final String? mobileNumber =
-                                      post.userData?.mobile;
-
-                                  if (mobileNumber == null ||
-                                      mobileNumber.isEmpty) {
-                                    showToasterrorborder(
-                                        'No Any Url Found', context);
-                                    if (kDebugMode) {
-                                      print('Tap without number');
-                                    }
-                                  } else {
-                                    final Uri phoneUri = Uri(
-                                      scheme: 'tel',
-                                      path:
-                                          '$countryCode$mobileNumber', // Combine country code and mobile
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
+                                child: InkWell(
+                                  onTap: () async {
+                                    Get.toNamed(Routes.userprofilescreen,
+                                        arguments: {
+                                          'user_id': post.userId ?? 0,
+                                        });
+                                    await userProfileController
+                                        .fetchUserAllPost(
+                                      1,
+                                      post.userId.toString(),
                                     );
-                                    launchUrl(phoneUri);
-                                    if (kDebugMode) {
-                                      print(
-                                          'Tap with number: $countryCode$mobileNumber');
-                                    }
-                                  }
-                                },
-                                child: Text(
-                                  '${post.userData?.countrycode1 ?? 'N/A'} - ${post.userData?.mobile ?? 'N/A'}',
-                                  style: textStyleW400(
-                                      size.width * 0.032, AppColors.blackText),
+                                  },
+                                  child: Row(
+                                    children: [
+                                      ClipOval(
+                                        child: CachedNetworkImage(
+                                          imageUrl:
+                                              post.userData!.imagePath ?? '',
+                                          height: 60.0,
+                                          width: 60.0,
+                                          fit: BoxFit.cover,
+                                          errorWidget: (context, url, error) =>
+                                              Image.asset(
+                                                  Assets.imagesAdminlogo),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(
+                                                post.userData!.name ?? '',
+                                                style: textStyleW700(
+                                                    size.width * 0.043,
+                                                    AppColors.blackText),
+                                              ),
+                                              const SizedBox(
+                                                width: 07,
+                                              ),
+                                            ],
+                                          ),
+                                          Text(
+                                            postTimeFormatter.formatPostTime(
+                                              DateTime.parse(
+                                                          post.createdate ?? '')
+                                                      .isAtSameMomentAs(
+                                                          DateTime.parse(
+                                                              post.datemodified ??
+                                                                  ''))
+                                                  ? post.createdate ?? ''
+                                                  : post.datemodified ?? '',
+                                            ),
+                                            style: textStyleW400(
+                                              size.width * 0.035,
+                                              AppColors.blackText
+                                                  // ignore: deprecated_member_use
+                                                  .withOpacity(0.5),
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
                                 ),
-                              )
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
+                              ),
+                              SizedBox(
+                                height: size.height * 0.012,
+                              ),
+                              // if (post.imageUrl.isNotEmpty &&
+                              //     Uri.tryParse(post.imageUrl)?.hasAbsolutePath == true)
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                child: InkWell(
+                                  onTap: () {
+                                    _showFullScreenImageDialog(context);
+                                  },
+                                  child: SizedBox(
+                                    height: size.height * 0.26,
+                                    width: size.width,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(12.0),
+                                      child: Image.network(
+                                        post.imageUrl,
+                                        fit: BoxFit.fill,
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                          return Image.asset(
+                                            Assets.imagesLogo,
+                                            fit: BoxFit.fill,
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                ),
+                                child: Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Html(
+                                    data: post.title,
+                                    style: {
+                                      "html": Style(
+                                        lineHeight: const LineHeight(1),
+                                        maxLines: 1,
+                                        fontFamily: fontFamily,
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: FontSize.medium,
+                                        color: AppColors.blackText,
+                                      ),
+                                    },
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: size.height * 0.01,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                ),
+                                child: Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Text(
+                                    '${post.category} | ${post.subcategory}',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      color: AppColors.blackText,
+                                      fontSize: size.width * 0.035,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              5.sbh,
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(14),
+                                  color: AppColors.white,
+                                  border: const Border(
+                                      bottom: BorderSide(color: Colors.grey)),
+                                ),
+                              ),
+
+                              5.sbh,
+
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      'Email',
+                                    Row(
+                                      children: [
+                                        Text(
+                                          'Website',
+                                          style: textStyleW400(
+                                              size.width * 0.035,
+                                              AppColors.grey),
+                                        ),
+                                        const SizedBox(
+                                          width: 07,
+                                        ),
+                                      ],
+                                    ),
+                                    LinkText(
+                                      text: post.website?.isNotEmpty == true
+                                          ? post.website
+                                          : 'N/A',
                                       style: textStyleW400(
-                                          size.width * 0.035, AppColors.grey),
+                                        size.width * 0.035,
+                                        // ignore: deprecated_member_use
+                                        AppColors.blackText.withOpacity(0.5),
+                                      ),
+                                      linkStyle: const TextStyle(
+                                        color: Colors.blue,
+                                        decoration: TextDecoration.underline,
+                                      ),
                                     ),
                                   ],
                                 ),
-                                3.sbh,
-                                InkWell(
-                                  onTap: () {
-                                    final String? email = post.userData?.email;
-
-                                    if (email != null && email.isNotEmpty) {
-                                      final Uri emailUri = Uri(
-                                        scheme: 'mailto',
-                                        path: email,
-                                      );
-                                      launchUrl(emailUri);
-                                      if (kDebugMode) {
-                                        print('Tap with email: $email');
+                              ),
+                              5.sbh,
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(14),
+                                  color: AppColors.white,
+                                  border: const Border(
+                                      bottom: BorderSide(color: Colors.grey)),
+                                ),
+                              ),
+                              5.sbh,
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                ),
+                                child: Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Html(
+                                    data: post.description,
+                                    style: {
+                                      "table": Style(
+                                        backgroundColor: const Color.fromARGB(
+                                            0x50, 0xee, 0xee, 0xee),
+                                      ),
+                                      "tr": Style(
+                                        border: const Border(
+                                            bottom:
+                                                BorderSide(color: Colors.grey)),
+                                      ),
+                                      "th": Style(
+                                        backgroundColor: Colors.grey,
+                                      ),
+                                      "td": Style(
+                                        alignment: Alignment.topLeft,
+                                      ),
+                                      'h5': Style(
+                                        maxLines: 2,
+                                        textOverflow: TextOverflow.ellipsis,
+                                      ),
+                                    },
+                                    onLinkTap: (String? url,
+                                        Map<String, String> attributes,
+                                        dom.Element? element) {
+                                      if (url != null) {
+                                        if (kDebugMode) {
+                                          print("Opening $url...");
+                                        }
+                                        // Use url_launcher to open the URL
+                                        _launchUrl(url);
                                       }
-                                    } else {
-                                      showToasterrorborder(
-                                          'No Email Found', context);
-                                      if (kDebugMode) {
-                                        print('Tap without email');
-                                      }
-                                    }
-                                  },
-                                  child: Text(
-                                    post.userData!.email?.isNotEmpty == true
-                                        ? post.userData!.email!
-                                        : 'N/A',
-                                    style: textStyleW400(size.width * 0.032,
-                                        AppColors.blackText),
+                                    },
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    5.sbh,
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        color: AppColors.white,
-                        border: const Border(
-                            bottom: BorderSide(color: Colors.grey)),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                'Website',
-                                style: textStyleW400(
-                                    size.width * 0.035, AppColors.grey),
                               ),
-                              const SizedBox(
-                                width: 07,
+                              SizedBox(
+                                height: size.height * 0.017,
                               ),
                             ],
                           ),
-                          LinkText(
-                            text: post.website?.isNotEmpty == true
-                                ? post.website
-                                : 'N/A',
-                            style: textStyleW400(
-                              size.width * 0.035,
-                              // ignore: deprecated_member_use
-                              AppColors.blackText.withOpacity(0.5),
-                            ),
-                            linkStyle: const TextStyle(
-                              color: Colors.blue,
-                              decoration: TextDecoration.underline,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    5.sbh,
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        color: AppColors.white,
-                        border: const Border(
-                            bottom: BorderSide(color: Colors.grey)),
-                      ),
-                    ),
-                    5.sbh,
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                      ),
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: Html(
-                          data: post.description,
-                          style: {
-                            "table": Style(
-                              backgroundColor:
-                                  const Color.fromARGB(0x50, 0xee, 0xee, 0xee),
-                            ),
-                            "tr": Style(
-                              border: const Border(
-                                  bottom: BorderSide(color: Colors.grey)),
-                            ),
-                            "th": Style(
-                              backgroundColor: Colors.grey,
-                            ),
-                            "td": Style(
-                              alignment: Alignment.topLeft,
-                            ),
-                            'h5': Style(
-                              maxLines: 2,
-                              textOverflow: TextOverflow.ellipsis,
-                            ),
-                          },
-                          onLinkTap: (String? url,
-                              Map<String, String> attributes,
-                              dom.Element? element) {
-                            if (url != null) {
-                              if (kDebugMode) {
-                                print("Opening $url...");
-                              }
-                              // Use url_launcher to open the URL
-                              _launchUrl(url);
-                            }
-                          },
                         ),
                       ),
+                    ],
+                  ),
+                )
+              : Center(
+                  child: CustomLottieAnimation(
+                    child: Lottie.asset(
+                      Assets.lottieLottie,
                     ),
-                    SizedBox(
-                      height: size.height * 0.017,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
+                  ),
+                );
+        },
       ),
       bottomNavigationBar: Container(
           padding: const EdgeInsets.all(16.0),

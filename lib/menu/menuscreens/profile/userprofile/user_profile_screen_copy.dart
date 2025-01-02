@@ -386,11 +386,12 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                                 countryCode.startsWith('+')
                                     ? countryCode
                                     : '+$countryCode';
-
-                            final String name = userProfile!.name.toString();
+                            final String username = post.name.toString();
+                            final String yourname =
+                                userProfile!.name.toString();
 
                             String message =
-                                "Hello, I am $name. I want to know regarding MLM Diary App.";
+                                "Hello $username, I’m $yourname. I saw your profile on MLM Diary and would love to know more about you. Looking forward to connecting!";
                             final Uri whatsappUri = Uri.parse(
                                 "https://wa.me/${formattedCountryCode.replaceAll(' ', '')}$phoneNumber?text=${Uri.encodeComponent(message)}");
 

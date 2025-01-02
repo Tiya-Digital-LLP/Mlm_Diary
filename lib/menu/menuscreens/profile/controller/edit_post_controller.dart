@@ -286,7 +286,6 @@ class EditPostController extends GetxController {
         final response = await http.Response.fromStream(streamedResponse);
 
         if (response.statusCode == 200) {
-          // Print the raw response body
           if (kDebugMode) {
             print('Raw Response Body: ${response.body}');
           }

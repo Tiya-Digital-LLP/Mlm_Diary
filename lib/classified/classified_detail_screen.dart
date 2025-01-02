@@ -44,6 +44,10 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
   late RxBool isBookmarked;
   late RxInt bookmarkCount;
 
+  late PageController pageController;
+  int currentPage = 0;
+  int totalItems = 0;
+
   void initializeLikes() {
     isLiked = RxBool(controller.classifiedList[0].likedByUser ?? false);
     likeCount = RxInt(controller.classifiedList[0].totallike ?? 0);
@@ -85,6 +89,8 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
   @override
   void initState() {
     super.initState();
+    pageController = PageController(initialPage: currentPage);
+
     post = Get.arguments;
     if (post != null && post.id != null) {
       controller.getClassified(1);
@@ -110,349 +116,382 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
         titleText: 'MLM Classified',
         onTap: () {},
       ),
-      body: controller.isLoading.value
-          ? SingleChildScrollView(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        color: AppColors.white,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 8),
-                            child: InkWell(
-                              onTap: () async {
-                                Get.toNamed(
-                                  Routes.userprofilescreen,
-                                  arguments: {
-                                    'user_id': post.userId,
+      body: PageView.builder(
+        controller: pageController,
+        itemCount: controller.classifiedList.length,
+        onPageChanged: (index) {
+          setState(() {
+            currentPage = index;
+          });
+
+          if (kDebugMode) {
+            print("Page changed to: $index");
+          }
+          if (index >= 0 && index < controller.classifiedList.length) {
+            post = controller.classifiedList[index];
+            if (kDebugMode) {
+              print("Selected post: ${post.id}");
+            }
+            controller.getClassified(post.id ?? 0);
+          }
+        },
+        itemBuilder: (context, index) {
+          return controller.isLoading.value
+              ? SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(14),
+                            color: AppColors.white,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
+                                child: InkWell(
+                                  onTap: () async {
+                                    Get.toNamed(
+                                      Routes.userprofilescreen,
+                                      arguments: {
+                                        'user_id': post.userId,
+                                      },
+                                    );
+                                    await userProfileController
+                                        .fetchUserAllPost(
+                                      1,
+                                      post.userId.toString(),
+                                    );
                                   },
-                                );
-                                await userProfileController.fetchUserAllPost(
-                                  1,
-                                  post.userId.toString(),
-                                );
-                              },
-                              child: Row(
-                                children: [
-                                  ClipOval(
-                                    child: CachedNetworkImage(
-                                      imageUrl: post.userData!.imagePath ?? '',
-                                      height: 60.0,
-                                      width: 60.0,
-                                      fit: BoxFit.cover,
-                                      errorWidget: (context, url, error) =>
-                                          Image.asset(Assets.imagesAdminlogo),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                  child: Row(
                                     children: [
-                                      Row(
+                                      ClipOval(
+                                        child: CachedNetworkImage(
+                                          imageUrl:
+                                              post.userData!.imagePath ?? '',
+                                          height: 60.0,
+                                          width: 60.0,
+                                          fit: BoxFit.cover,
+                                          errorWidget: (context, url, error) =>
+                                              Image.asset(
+                                                  Assets.imagesAdminlogo),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            post.userData!.name ?? '',
-                                            style: textStyleW700(
-                                                size.width * 0.043,
-                                                AppColors.blackText),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                post.userData!.name ?? '',
+                                                style: textStyleW700(
+                                                    size.width * 0.043,
+                                                    AppColors.blackText),
+                                              ),
+                                              const SizedBox(
+                                                width: 07,
+                                              ),
+                                            ],
                                           ),
-                                          const SizedBox(
-                                            width: 07,
+                                          Text(
+                                            postTimeFormatter.formatPostTime(
+                                              DateTime.parse(
+                                                          post.createdate ?? '')
+                                                      .isAtSameMomentAs(
+                                                          DateTime.parse(
+                                                              post.datemodified ??
+                                                                  ''))
+                                                  ? post.createdate ?? ''
+                                                  : post.datemodified ?? '',
+                                            ),
+                                            style: textStyleW400(
+                                              size.width * 0.035,
+                                              AppColors.blackText
+                                                  // ignore: deprecated_member_use
+                                                  .withOpacity(0.5),
+                                            ),
                                           ),
                                         ],
-                                      ),
-                                      Text(
-                                        postTimeFormatter.formatPostTime(
-                                          DateTime.parse(post.createdate ?? '')
-                                                  .isAtSameMomentAs(
-                                                      DateTime.parse(
-                                                          post.datemodified ??
-                                                              ''))
-                                              ? post.createdate ?? ''
-                                              : post.datemodified ?? '',
-                                        ),
-                                        style: textStyleW400(
-                                          size.width * 0.035,
-                                          // ignore: deprecated_member_use
-                                          AppColors.blackText.withOpacity(0.5),
-                                        ),
-                                      ),
+                                      )
                                     ],
-                                  )
-                                ],
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: size.height * 0.012,
-                          ),
-                          // if (post.imageUrl.isNotEmpty &&
-                          //     Uri.tryParse(post.imageUrl)?.hasAbsolutePath ==
-                          //         true)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: InkWell(
-                              onTap: () {
-                                _showFullScreenImageDialog(context);
-                              },
-                              child: SizedBox(
-                                height: size.height * 0.26,
-                                width: size.width,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  child: Image.network(
-                                    post.imageUrl,
-                                    fit: BoxFit.fill,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Image.asset(
-                                        Assets.imagesLogo,
+                              SizedBox(
+                                height: size.height * 0.012,
+                              ),
+                              // if (post.imageUrl.isNotEmpty &&
+                              //     Uri.tryParse(post.imageUrl)?.hasAbsolutePath ==
+                              //         true)
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                child: InkWell(
+                                  onTap: () {
+                                    _showFullScreenImageDialog(context);
+                                  },
+                                  child: SizedBox(
+                                    height: size.height * 0.26,
+                                    width: size.width,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(12.0),
+                                      child: Image.network(
+                                        post.imageUrl,
                                         fit: BoxFit.fill,
-                                      );
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                          return Image.asset(
+                                            Assets.imagesLogo,
+                                            fit: BoxFit.fill,
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                ),
+                                child: Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Html(
+                                    data: post.title,
+                                    style: {
+                                      "html": Style(
+                                        lineHeight: const LineHeight(1),
+                                        maxLines: 1,
+                                        fontFamily: fontFamily,
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: FontSize.medium,
+                                        color: AppColors.blackText,
+                                      ),
                                     },
                                   ),
                                 ),
                               ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                            ),
-                            child: Align(
-                              alignment: Alignment.topLeft,
-                              child: Html(
-                                data: post.title,
-                                style: {
-                                  "html": Style(
-                                    lineHeight: const LineHeight(1),
-                                    maxLines: 1,
-                                    fontFamily: fontFamily,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: FontSize.medium,
-                                    color: AppColors.blackText,
+                              SizedBox(
+                                height: size.height * 0.01,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                ),
+                                child: Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Text(
+                                    '${post.category} | ${post.subcategory}',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      color: AppColors.blackText,
+                                      fontSize: size.width * 0.035,
+                                    ),
                                   ),
-                                },
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: size.height * 0.01,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                            ),
-                            child: Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                '${post.category} | ${post.subcategory}',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  color: AppColors.blackText,
-                                  fontSize: size.width * 0.035,
                                 ),
                               ),
-                            ),
-                          ),
-                          5.sbh,
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(14),
-                              color: AppColors.white,
-                              border: const Border(
-                                  bottom: BorderSide(color: Colors.grey)),
-                            ),
-                          ),
-                          5.sbh,
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
+                              5.sbh,
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(14),
+                                  color: AppColors.white,
+                                  border: const Border(
+                                      bottom: BorderSide(color: Colors.grey)),
+                                ),
+                              ),
+                              5.sbh,
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
+                                    Row(
+                                      children: [
+                                        Text(
+                                          'Company',
+                                          style: textStyleW400(
+                                              size.width * 0.035,
+                                              AppColors.grey),
+                                        ),
+                                      ],
+                                    ),
+                                    3.sbh,
                                     Text(
-                                      'Company',
-                                      style: textStyleW400(
-                                          size.width * 0.035, AppColors.grey),
+                                      post.company?.isNotEmpty == true
+                                          ? post.company
+                                          : 'N/A',
+                                      style: textStyleW400(size.width * 0.032,
+                                          AppColors.blackText),
                                     ),
                                   ],
                                 ),
-                                3.sbh,
-                                Text(
-                                  post.company?.isNotEmpty == true
-                                      ? post.company
-                                      : 'N/A',
-                                  style: textStyleW400(
-                                      size.width * 0.032, AppColors.blackText),
+                              ),
+                              5.sbh,
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(14),
+                                  color: AppColors.white,
+                                  border: const Border(
+                                      bottom: BorderSide(color: Colors.grey)),
                                 ),
-                              ],
-                            ),
-                          ),
-                          5.sbh,
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(14),
-                              color: AppColors.white,
-                              border: const Border(
-                                  bottom: BorderSide(color: Colors.grey)),
-                            ),
-                          ),
-                          5.sbh,
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
+                              ),
+                              5.sbh,
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
+                                    Row(
+                                      children: [
+                                        Text(
+                                          'Location',
+                                          style: textStyleW400(
+                                              size.width * 0.035,
+                                              AppColors.grey),
+                                        ),
+                                      ],
+                                    ),
+                                    3.sbh,
                                     Text(
-                                      'Location',
-                                      style: textStyleW400(
-                                          size.width * 0.035, AppColors.grey),
+                                      post.location?.isNotEmpty == true
+                                          ? post.location
+                                          : 'N/A',
+                                      style: textStyleW400(size.width * 0.035,
+                                          AppColors.blackText),
                                     ),
                                   ],
                                 ),
-                                3.sbh,
-                                Text(
-                                  post.location?.isNotEmpty == true
-                                      ? post.location
-                                      : 'N/A',
-                                  style: textStyleW400(
-                                      size.width * 0.035, AppColors.blackText),
-                                ),
-                              ],
-                            ),
-                          ),
+                              ),
 
-                          5.sbh,
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(14),
-                              color: AppColors.white,
-                              border: const Border(
-                                  bottom: BorderSide(color: Colors.grey)),
-                            ),
-                          ),
-                          5.sbh,
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
+                              5.sbh,
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(14),
+                                  color: AppColors.white,
+                                  border: const Border(
+                                      bottom: BorderSide(color: Colors.grey)),
+                                ),
+                              ),
+                              5.sbh,
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      'Website',
+                                    Row(
+                                      children: [
+                                        Text(
+                                          'Website',
+                                          style: textStyleW400(
+                                              size.width * 0.035,
+                                              AppColors.grey),
+                                        ),
+                                      ],
+                                    ),
+                                    3.sbh,
+                                    LinkText(
+                                      text: post.website?.isNotEmpty == true
+                                          ? post.website
+                                          : 'N/A',
                                       style: textStyleW400(
-                                          size.width * 0.035, AppColors.grey),
+                                        size.width * 0.035,
+                                        // ignore: deprecated_member_use
+                                        AppColors.blackText.withOpacity(0.5),
+                                      ),
+                                      linkStyle: const TextStyle(
+                                        color: Colors.blue,
+                                        decoration: TextDecoration.underline,
+                                      ),
                                     ),
                                   ],
                                 ),
-                                3.sbh,
-                                LinkText(
-                                  text: post.website?.isNotEmpty == true
-                                      ? post.website
-                                      : 'N/A',
-                                  style: textStyleW400(
-                                    size.width * 0.035,
-                                    // ignore: deprecated_member_use
-                                    AppColors.blackText.withOpacity(0.5),
-                                  ),
-                                  linkStyle: const TextStyle(
-                                    color: Colors.blue,
-                                    decoration: TextDecoration.underline,
+                              ),
+                              5.sbh,
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(14),
+                                  color: AppColors.white,
+                                  border: const Border(
+                                      bottom: BorderSide(color: Colors.grey)),
+                                ),
+                              ),
+                              5.sbh,
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                ),
+                                child: Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Html(
+                                    data: post.description,
+                                    style: {
+                                      "table": Style(
+                                        backgroundColor: const Color.fromARGB(
+                                            0x50, 0xee, 0xee, 0xee),
+                                      ),
+                                      "tr": Style(
+                                        border: const Border(
+                                            bottom:
+                                                BorderSide(color: Colors.grey)),
+                                      ),
+                                      "th": Style(
+                                        backgroundColor: Colors.grey,
+                                      ),
+                                      "td": Style(
+                                        alignment: Alignment.topLeft,
+                                      ),
+                                      'h5': Style(
+                                        maxLines: 2,
+                                        textOverflow: TextOverflow.ellipsis,
+                                      ),
+                                    },
+                                    onLinkTap: (String? url,
+                                        Map<String, String> attributes,
+                                        dom.Element? element) {
+                                      if (url != null) {
+                                        if (kDebugMode) {
+                                          print("Opening $url...");
+                                        }
+                                        // Use url_launcher to open the URL
+                                        _launchUrl(url);
+                                      }
+                                    },
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
-                          5.sbh,
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(14),
-                              color: AppColors.white,
-                              border: const Border(
-                                  bottom: BorderSide(color: Colors.grey)),
-                            ),
-                          ),
-                          5.sbh,
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                            ),
-                            child: Align(
-                              alignment: Alignment.topLeft,
-                              child: Html(
-                                data: post.description,
-                                style: {
-                                  "table": Style(
-                                    backgroundColor: const Color.fromARGB(
-                                        0x50, 0xee, 0xee, 0xee),
-                                  ),
-                                  "tr": Style(
-                                    border: const Border(
-                                        bottom: BorderSide(color: Colors.grey)),
-                                  ),
-                                  "th": Style(
-                                    backgroundColor: Colors.grey,
-                                  ),
-                                  "td": Style(
-                                    alignment: Alignment.topLeft,
-                                  ),
-                                  'h5': Style(
-                                    maxLines: 2,
-                                    textOverflow: TextOverflow.ellipsis,
-                                  ),
-                                },
-                                onLinkTap: (String? url,
-                                    Map<String, String> attributes,
-                                    dom.Element? element) {
-                                  if (url != null) {
-                                    if (kDebugMode) {
-                                      print("Opening $url...");
-                                    }
-                                    // Use url_launcher to open the URL
-                                    _launchUrl(url);
-                                  }
-                                },
                               ),
-                            ),
+                              SizedBox(
+                                height: size.height * 0.017,
+                              ),
+                            ],
                           ),
-                          SizedBox(
-                            height: size.height * 0.017,
-                          ),
-                        ],
+                        ),
                       ),
+                    ],
+                  ),
+                )
+              : Center(
+                  child: CustomLottieAnimation(
+                    child: Lottie.asset(
+                      Assets.lottieLottie,
                     ),
                   ),
-                ],
-              ),
-            )
-          : Center(
-              child: CustomLottieAnimation(
-                child: Lottie.asset(
-                  Assets.lottieLottie,
-                ),
-              ),
-            ),
+                );
+        },
+      ),
       bottomNavigationBar: Container(
           padding: const EdgeInsets.all(16.0),
           decoration: BoxDecoration(

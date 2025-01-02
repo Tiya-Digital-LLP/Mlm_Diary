@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
@@ -139,18 +140,39 @@ class _ManageNewsCardState extends State<ManageNewsCard> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        widget.postTitle,
-                        style: textStyleW700(
-                            size.width * 0.038, AppColors.blackText),
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Html(
+                          data: widget.postTitle,
+                          style: {
+                            "html": Style(
+                              lineHeight: const LineHeight(1),
+                              maxLines: 1,
+                              fontFamily: fontFamily,
+                              fontWeight: FontWeight.w700,
+                              fontSize: FontSize.medium,
+                              color: AppColors.blackText,
+                            ),
+                          },
+                        ),
                       ),
-                      Text(
-                        widget.postCaption,
-                        style: textStyleW400(
-                            size.width * 0.035,
-                            // ignore: deprecated_member_use
-                            AppColors.blackText.withOpacity(0.8)),
-                      )
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Html(
+                          data: widget.postCaption,
+                          style: {
+                            "html": Style(
+                              lineHeight: const LineHeight(1.2),
+                              maxLines: 2,
+                              fontFamily: fontFamily,
+                              fontWeight: FontWeight.w500,
+                              fontSize: FontSize.small,
+                              color: AppColors.blackText,
+                              textOverflow: TextOverflow.ellipsis,
+                            ),
+                          },
+                        ),
+                      ),
                     ],
                   ),
                 ),

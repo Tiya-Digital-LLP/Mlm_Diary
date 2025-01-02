@@ -278,13 +278,7 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: Row(
               children: [
-                IconButton(
-                  icon: SvgPicture.asset(
-                    Assets.svgPlusIcon,
-                    height: 40,
-                  ),
-                  onPressed: () {},
-                ),
+                10.sbw,
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(
@@ -302,7 +296,10 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.send, color: AppColors.primaryColor),
+                  icon: Icon(
+                    Icons.send,
+                    color: AppColors.primaryColor,
+                  ),
                   onPressed: () {
                     messageController.sendChat(
                       toId: post.toid.toString(),

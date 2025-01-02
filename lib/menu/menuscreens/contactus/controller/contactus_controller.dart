@@ -27,6 +27,7 @@ class ContactusController extends GetxController {
   RxBool emailError = false.obs;
   RxBool companyError = false.obs;
   RxBool messageError = false.obs;
+  RxBool dropItemError = false.obs;
 
   RxBool nameError = false.obs;
   var userProfile = GetUserProfileEntity().obs;
@@ -140,7 +141,8 @@ class ContactusController extends GetxController {
           if (kDebugMode) {
             print("Response body from ConatactUs: $jsonBody");
           }
-          // Parse response and update UI as needed
+
+          showToastverifedborder('Your inquiry has been saved', context);
         } else {
           if (kDebugMode) {
             print(

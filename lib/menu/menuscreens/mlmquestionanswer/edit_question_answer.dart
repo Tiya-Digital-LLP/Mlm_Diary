@@ -178,12 +178,6 @@ class _EditQuestionAnswerState extends State<EditQuestionAnswer> {
                     text: 'Submit',
                     isLoading: controller.isLoading,
                   ),
-                  20.sbh,
-                  Text(
-                    'If you keep editing your Classified, it will be the first show. You can Add only One Classified and if you want to Add more than One Classified then you have to Pay.',
-                    style:
-                        textStyleW500(size.width * 0.030, AppColors.blackText),
-                  ),
                 ],
               ),
             ),

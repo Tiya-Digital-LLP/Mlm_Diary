@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/custom_company_comment.dart';
@@ -15,6 +16,7 @@ import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
+import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:text_link/text_link.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:html/dom.dart' as dom;
@@ -35,9 +37,16 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
   late RxInt likeCount;
 // bookmark
   late RxBool isBookmarked;
+
+  late PageController pageController;
+  int currentPage = 0;
+  int totalItems = 0;
+
   @override
   void initState() {
     super.initState();
+    pageController = PageController(initialPage: currentPage);
+
     post = Get.arguments;
     if (post != null && post.id != null) {
       controller.getAdminCompany(1);
@@ -86,447 +95,525 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
         size: MediaQuery.of(context).size,
         titleText: 'MLM Companies',
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(14),
-                      color: AppColors.white,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 10),
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ClipOval(
-                                  child: CachedNetworkImage(
-                                    imageUrl: post.imageUrl ?? '',
-                                    height: 60.0,
-                                    width: 60.0,
-                                    fit: BoxFit.cover,
-                                    errorWidget: (context, url, error) =>
-                                        Image.asset(Assets.imagesAdminlogo),
-                                  ),
-                                ),
-                              ]),
-                        ),
-                        SizedBox(
-                          height: size.height * 0.01,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                          ),
-                          child: Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              post.title ?? 'N/A',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.blackText,
-                                fontSize: size.width * 0.040,
-                              ),
-                            ),
-                          ),
-                        ),
-                        5.sbh,
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    'Location',
-                                    style: textStyleW400(
-                                        size.width * 0.035, AppColors.grey),
-                                  ),
-                                  const SizedBox(
-                                    width: 07,
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                post.location ?? 'N/A',
-                                style: textStyleW400(
-                                    size.width * 0.035, AppColors.blackText),
-                              ),
-                            ],
-                          ),
-                        ),
-                        10.sbh,
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(14),
-                            color: AppColors.white,
-                            border: const Border(
-                                bottom: BorderSide(color: Colors.grey)),
-                          ),
-                        ),
-                        10.sbh,
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Text(
-                                          'Phone',
-                                          style: textStyleW400(
-                                              size.width * 0.035,
-                                              AppColors.grey),
-                                        ),
-                                        const SizedBox(
-                                          width: 07,
-                                        ),
-                                      ],
-                                    ),
-                                    InkWell(
-                                      onTap: () {
-                                        final String? mobileNumber = post.phone;
+      body: PageView.builder(
+        controller: pageController,
+        itemCount: controller.companyAdminList.length,
+        onPageChanged: (index) {
+          setState(() {
+            currentPage = index;
+          });
 
-                                        if (mobileNumber == null ||
-                                            mobileNumber.isEmpty) {
-                                          showToasterrorborder(
-                                              'No Any Url Found', context);
-                                          if (kDebugMode) {
-                                            print('Tap without number');
-                                          }
-                                        } else {
-                                          final Uri phoneUri = Uri(
-                                            scheme: 'tel',
-                                            path: mobileNumber,
-                                          );
-                                          launchUrl(phoneUri);
-                                          if (kDebugMode) {
-                                            print(
-                                                'Tap with number: $mobileNumber');
-                                          }
-                                        }
-                                      },
+          if (kDebugMode) {
+            print("Page changed to: $index");
+          }
+          if (index >= 0 && index < controller.companyAdminList.length) {
+            post = controller.companyAdminList[index];
+            if (kDebugMode) {
+              print("Selected post: ${post.id}");
+            }
+            controller.getAdminCompany(1);
+          }
+        },
+        itemBuilder: (context, index) {
+          return controller.isLoading.value
+              ? SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(14),
+                                color: AppColors.white,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16, vertical: 10),
+                                    child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          ClipOval(
+                                            child: CachedNetworkImage(
+                                              imageUrl: post.imageUrl ?? '',
+                                              height: 60.0,
+                                              width: 60.0,
+                                              fit: BoxFit.cover,
+                                              errorWidget: (context, url,
+                                                      error) =>
+                                                  Image.asset(
+                                                      Assets.imagesAdminlogo),
+                                            ),
+                                          ),
+                                        ]),
+                                  ),
+                                  SizedBox(
+                                    height: size.height * 0.01,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                    ),
+                                    child: Align(
+                                      alignment: Alignment.topLeft,
                                       child: Text(
-                                        '${post.phone ?? 'N/A'}',
-                                        style: textStyleW400(size.width * 0.032,
-                                            AppColors.blackText),
+                                        post.title ?? 'N/A',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w700,
+                                          color: AppColors.blackText,
+                                          fontSize: size.width * 0.040,
+                                        ),
                                       ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
+                                    ),
+                                  ),
+                                  5.sbh,
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text(
+                                              'Location',
+                                              style: textStyleW400(
+                                                  size.width * 0.035,
+                                                  AppColors.grey),
+                                            ),
+                                            const SizedBox(
+                                              width: 07,
+                                            ),
+                                          ],
+                                        ),
+                                        Text(
+                                          post.location ?? 'N/A',
+                                          style: textStyleW400(
+                                              size.width * 0.035,
+                                              AppColors.blackText),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  10.sbh,
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(14),
+                                      color: AppColors.white,
+                                      border: const Border(
+                                          bottom:
+                                              BorderSide(color: Colors.grey)),
+                                    ),
+                                  ),
+                                  10.sbh,
                                   Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
-                                        'Email',
-                                        style: textStyleW400(
-                                            size.width * 0.035, AppColors.grey),
+                                      Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 16,
+                                          ),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    'Phone',
+                                                    style: textStyleW400(
+                                                        size.width * 0.035,
+                                                        AppColors.grey),
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 07,
+                                                  ),
+                                                ],
+                                              ),
+                                              InkWell(
+                                                onTap: () {
+                                                  final String? mobileNumber =
+                                                      post.phone;
+
+                                                  if (mobileNumber == null ||
+                                                      mobileNumber.isEmpty) {
+                                                    showToasterrorborder(
+                                                        'No Any Url Found',
+                                                        context);
+                                                    if (kDebugMode) {
+                                                      print(
+                                                          'Tap without number');
+                                                    }
+                                                  } else {
+                                                    final Uri phoneUri = Uri(
+                                                      scheme: 'tel',
+                                                      path: mobileNumber,
+                                                    );
+                                                    launchUrl(phoneUri);
+                                                    if (kDebugMode) {
+                                                      print(
+                                                          'Tap with number: $mobileNumber');
+                                                    }
+                                                  }
+                                                },
+                                                child: Text(
+                                                  '${post.phone ?? 'N/A'}',
+                                                  style: textStyleW400(
+                                                      size.width * 0.032,
+                                                      AppColors.blackText),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
                                       ),
-                                      const SizedBox(
-                                        width: 07,
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 16,
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  'Email',
+                                                  style: textStyleW400(
+                                                      size.width * 0.035,
+                                                      AppColors.grey),
+                                                ),
+                                                const SizedBox(
+                                                  width: 07,
+                                                ),
+                                              ],
+                                            ),
+                                            InkWell(
+                                              onTap: () {
+                                                final String? email =
+                                                    post.email;
+
+                                                if (email != null &&
+                                                    email.isNotEmpty) {
+                                                  final Uri emailUri = Uri(
+                                                    scheme: 'mailto',
+                                                    path: email,
+                                                  );
+                                                  launchUrl(emailUri);
+                                                  if (kDebugMode) {
+                                                    print(
+                                                        'Tap with email: $email');
+                                                  }
+                                                } else {
+                                                  showToasterrorborder(
+                                                      'No Email Found',
+                                                      context);
+                                                  if (kDebugMode) {
+                                                    print('Tap without email');
+                                                  }
+                                                }
+                                              },
+                                              child: Text(
+                                                post.email?.isNotEmpty == true
+                                                    ? post.email!
+                                                    : 'N/A',
+                                                style: textStyleW400(
+                                                    size.width * 0.032,
+                                                    AppColors.blackText),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ],
                                   ),
-                                  InkWell(
-                                    onTap: () {
-                                      final String? email = post.email;
-
-                                      if (email != null && email.isNotEmpty) {
-                                        final Uri emailUri = Uri(
-                                          scheme: 'mailto',
-                                          path: email,
-                                        );
-                                        launchUrl(emailUri);
-                                        if (kDebugMode) {
-                                          print('Tap with email: $email');
-                                        }
-                                      } else {
-                                        showToasterrorborder(
-                                            'No Email Found', context);
-                                        if (kDebugMode) {
-                                          print('Tap without email');
-                                        }
-                                      }
-                                    },
-                                    child: Text(
-                                      post.email?.isNotEmpty == true
-                                          ? post.email!
-                                          : 'N/A',
-                                      style: textStyleW400(size.width * 0.032,
-                                          AppColors.blackText),
+                                  10.sbh,
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(14),
+                                      color: AppColors.white,
+                                      border: const Border(
+                                          bottom:
+                                              BorderSide(color: Colors.grey)),
                                     ),
+                                  ),
+                                  10.sbh,
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 16),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    'Website',
+                                                    style: textStyleW400(
+                                                        size.width * 0.035,
+                                                        AppColors.grey),
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 07,
+                                                  ),
+                                                ],
+                                              ),
+                                              LinkText(
+                                                text:
+                                                    post.website?.isNotEmpty ==
+                                                            true
+                                                        ? post.website
+                                                        : 'N/A',
+                                                style: textStyleW400(
+                                                  size.width * 0.035,
+                                                  AppColors.blackText
+                                                      .withOpacity(0.5),
+                                                ),
+                                                linkStyle: const TextStyle(
+                                                  color: Colors.blue,
+                                                  decoration:
+                                                      TextDecoration.underline,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 16,
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                InkWell(
+                                                    onTap: () {
+                                                      if (post.fblink != null) {
+                                                        _launchURL(post.fblink
+                                                            .toString());
+                                                        if (kDebugMode) {
+                                                          print(
+                                                              'URL: ${post.fblink}');
+                                                        }
+                                                      } else {
+                                                        showToasterrorborder(
+                                                            "No Any Url Fond",
+                                                            context);
+                                                      }
+                                                    },
+                                                    child: SvgPicture.asset(
+                                                        Assets
+                                                            .svgLogosFacebook)),
+                                                12.sbw,
+                                                InkWell(
+                                                    onTap: () {
+                                                      if (post.inlink != null) {
+                                                        _launchURL(post.inlink
+                                                            .toString());
+                                                        if (kDebugMode) {
+                                                          print(
+                                                              'URL: ${post.inlink}');
+                                                        }
+                                                      } else {
+                                                        showToasterrorborder(
+                                                            "No Any Url Fond",
+                                                            context);
+                                                      }
+                                                    },
+                                                    child: SvgPicture.asset(
+                                                        Assets.svgInstagram)),
+                                                12.sbw,
+                                                InkWell(
+                                                  onTap: () {
+                                                    if (post.liklink != null) {
+                                                      _launchURL(post.liklink
+                                                          .toString());
+                                                      if (kDebugMode) {
+                                                        print(
+                                                            'URL: ${post.liklink}');
+                                                      }
+                                                    } else {
+                                                      showToasterrorborder(
+                                                          "No Any Url Fond",
+                                                          context);
+                                                    }
+                                                  },
+                                                  child: SvgPicture.asset(Assets
+                                                      .svgLogosLinkedinIcon),
+                                                ),
+                                                12.sbw,
+                                                InkWell(
+                                                    onTap: () {
+                                                      if (post.youlink !=
+                                                          null) {
+                                                        _launchURL(post.youlink
+                                                            .toString());
+                                                        if (kDebugMode) {
+                                                          print(
+                                                              'URL: ${post.youlink}');
+                                                        }
+                                                      } else {
+                                                        showToasterrorborder(
+                                                            "No Any Url Fond",
+                                                            context);
+                                                      }
+                                                    },
+                                                    child: SvgPicture.asset(
+                                                        Assets.svgYoutube)),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  10.sbh,
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(14),
+                                      color: AppColors.white,
+                                      border: const Border(
+                                          bottom:
+                                              BorderSide(color: Colors.grey)),
+                                    ),
+                                  ),
+                                  10.sbh,
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          postTimeFormatter.formatPostTime(
+                                              post.createdate ?? ''),
+                                          style: textStyleW400(
+                                              size.width * 0.035,
+                                              AppColors.blackText
+                                                  .withOpacity(0.8)),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: size.height * 0.017,
                                   ),
                                 ],
                               ),
                             ),
-                          ],
-                        ),
-                        10.sbh,
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(14),
-                            color: AppColors.white,
-                            border: const Border(
-                                bottom: BorderSide(color: Colors.grey)),
                           ),
-                        ),
-                        10.sbh,
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(14),
+                                color: AppColors.white,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'Website',
+                                          'About Your Business',
                                           style: textStyleW400(
                                               size.width * 0.035,
                                               AppColors.grey),
                                         ),
-                                        const SizedBox(
-                                          width: 07,
+                                        5.sbh,
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                          ),
+                                          child: Align(
+                                            alignment: Alignment.topLeft,
+                                            child: Html(
+                                              data: post.description,
+                                              style: {
+                                                "table": Style(
+                                                  backgroundColor:
+                                                      const Color.fromARGB(0x50,
+                                                          0xee, 0xee, 0xee),
+                                                ),
+                                                "tr": Style(
+                                                  border: const Border(
+                                                      bottom: BorderSide(
+                                                          color: Colors.grey)),
+                                                ),
+                                                "th": Style(
+                                                  backgroundColor: Colors.grey,
+                                                ),
+                                                "td": Style(
+                                                  alignment: Alignment.topLeft,
+                                                ),
+                                                'h5': Style(
+                                                  maxLines: 2,
+                                                  textOverflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              },
+                                              onLinkTap: (String? url,
+                                                  Map<String, String>
+                                                      attributes,
+                                                  dom.Element? element) {
+                                                if (url != null) {
+                                                  if (kDebugMode) {
+                                                    print("Opening $url...");
+                                                  }
+                                                  // Use url_launcher to open the URL
+                                                  _launchUrl(url);
+                                                }
+                                              },
+                                            ),
+                                          ),
                                         ),
                                       ],
                                     ),
-                                    LinkText(
-                                      text: post.website?.isNotEmpty == true
-                                          ? post.website
-                                          : 'N/A',
-                                      style: textStyleW400(
-                                        size.width * 0.035,
-                                        AppColors.blackText.withOpacity(0.5),
-                                      ),
-                                      linkStyle: const TextStyle(
-                                        color: Colors.blue,
-                                        decoration: TextDecoration.underline,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      InkWell(
-                                          onTap: () {
-                                            if (post.fblink != null) {
-                                              _launchURL(
-                                                  post.fblink.toString());
-                                              if (kDebugMode) {
-                                                print('URL: ${post.fblink}');
-                                              }
-                                            } else {
-                                              showToasterrorborder(
-                                                  "No Any Url Fond", context);
-                                            }
-                                          },
-                                          child: SvgPicture.asset(
-                                              Assets.svgLogosFacebook)),
-                                      12.sbw,
-                                      InkWell(
-                                          onTap: () {
-                                            if (post.inlink != null) {
-                                              _launchURL(
-                                                  post.inlink.toString());
-                                              if (kDebugMode) {
-                                                print('URL: ${post.inlink}');
-                                              }
-                                            } else {
-                                              showToasterrorborder(
-                                                  "No Any Url Fond", context);
-                                            }
-                                          },
-                                          child: SvgPicture.asset(
-                                              Assets.svgInstagram)),
-                                      12.sbw,
-                                      InkWell(
-                                        onTap: () {
-                                          if (post.liklink != null) {
-                                            _launchURL(post.liklink.toString());
-                                            if (kDebugMode) {
-                                              print('URL: ${post.liklink}');
-                                            }
-                                          } else {
-                                            showToasterrorborder(
-                                                "No Any Url Fond", context);
-                                          }
-                                        },
-                                        child: SvgPicture.asset(
-                                            Assets.svgLogosLinkedinIcon),
-                                      ),
-                                      12.sbw,
-                                      InkWell(
-                                          onTap: () {
-                                            if (post.youlink != null) {
-                                              _launchURL(
-                                                  post.youlink.toString());
-                                              if (kDebugMode) {
-                                                print('URL: ${post.youlink}');
-                                              }
-                                            } else {
-                                              showToasterrorborder(
-                                                  "No Any Url Fond", context);
-                                            }
-                                          },
-                                          child: SvgPicture.asset(
-                                              Assets.svgYoutube)),
-                                    ],
                                   ),
                                 ],
                               ),
                             ),
-                          ],
-                        ),
-                        10.sbh,
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(14),
-                            color: AppColors.white,
-                            border: const Border(
-                                bottom: BorderSide(color: Colors.grey)),
                           ),
-                        ),
-                        10.sbh,
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                postTimeFormatter
-                                    .formatPostTime(post.createdate ?? ''),
-                                style: textStyleW400(size.width * 0.035,
-                                    AppColors.blackText.withOpacity(0.8)),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: size.height * 0.017,
-                        ),
-                      ],
+                        ],
+                      ),
+                    ],
+                  ),
+                )
+              : Center(
+                  child: CustomLottieAnimation(
+                    child: Lottie.asset(
+                      Assets.lottieLottie,
                     ),
                   ),
-                ),
-              ],
-            ),
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(14),
-                      color: AppColors.white,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'About Your Business',
-                                style: textStyleW400(
-                                    size.width * 0.035, AppColors.grey),
-                              ),
-                              5.sbh,
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                ),
-                                child: Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Html(
-                                    data: post.description,
-                                    style: {
-                                      "table": Style(
-                                        backgroundColor: const Color.fromARGB(
-                                            0x50, 0xee, 0xee, 0xee),
-                                      ),
-                                      "tr": Style(
-                                        border: const Border(
-                                            bottom:
-                                                BorderSide(color: Colors.grey)),
-                                      ),
-                                      "th": Style(
-                                        backgroundColor: Colors.grey,
-                                      ),
-                                      "td": Style(
-                                        alignment: Alignment.topLeft,
-                                      ),
-                                      'h5': Style(
-                                        maxLines: 2,
-                                        textOverflow: TextOverflow.ellipsis,
-                                      ),
-                                    },
-                                    onLinkTap: (String? url,
-                                        Map<String, String> attributes,
-                                        dom.Element? element) {
-                                      if (url != null) {
-                                        if (kDebugMode) {
-                                          print("Opening $url...");
-                                        }
-                                        // Use url_launcher to open the URL
-                                        _launchUrl(url);
-                                      }
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
+                );
+        },
       ),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.all(16.0),

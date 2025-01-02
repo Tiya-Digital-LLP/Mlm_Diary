@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:app_links/app_links.dart';
 import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
@@ -7,11 +8,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
 import 'package:mlmdiary/notificationhandle/notification_handler.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
@@ -54,6 +57,7 @@ void main() async {
   if (kDebugMode) {
     print('appstartedbyfacebook');
   }
+
   runApp(const ToastificationWrapper(child: MyApp()));
 }
 
@@ -66,12 +70,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
   static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   static FirebaseAnalyticsObserver observer =
       FirebaseAnalyticsObserver(analytics: analytics);
+  final ClasifiedController controller = Get.put(ClasifiedController());
 
   final ManageNewsController manageNewsController =
       Get.put(ManageNewsController());
@@ -82,9 +86,14 @@ class _MyAppState extends State<MyApp> {
   final NotificationHandler notificationHandler =
       Get.put(NotificationHandler());
 
+  late AppLinks _appLinks;
+  StreamSubscription<Uri?>? _linkStreamSubscription;
+
   @override
   void initState() {
     super.initState();
+
+    _initializeDeepLinks();
 
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
@@ -124,6 +133,94 @@ class _MyAppState extends State<MyApp> {
     });
 
     _checkInitialMessage();
+  }
+
+  Future<void> _initializeDeepLinks() async {
+    _appLinks = AppLinks();
+
+    final Uri? initialLink = await _appLinks.getInitialLink();
+    if (initialLink != null) {
+      _navigateToScreen(initialLink);
+    }
+
+    _linkStreamSubscription = _appLinks.uriLinkStream.listen((Uri? uri) {
+      if (uri != null) {
+        _navigateToScreen(uri);
+      }
+    }, onError: (error) {
+      if (kDebugMode) {
+        print('Error receiving deep link: $error');
+      }
+      // ignore: use_build_context_synchronously
+      showToastverifedborder('Error receiving deep link: $error', context);
+    });
+  }
+
+  void _navigateToScreen(Uri link) {
+    // Print the entire Uri to understand its structure
+    if (kDebugMode) {
+      debugPrint('Received link: $link');
+      debugPrint('Query Parameters: ${link.queryParameters}');
+    }
+
+    final String? screen = link.queryParameters['screen'];
+    final String? dataString = link.queryParameters['data'];
+
+    // Print the screen and dataString values
+    if (kDebugMode) {
+      debugPrint('Screen parameter: $screen');
+      debugPrint('Data parameter: $dataString');
+    }
+
+    if (screen != null && screen.isNotEmpty) {
+      if (dataString != null && dataString.isNotEmpty) {
+        final int data = int.tryParse(dataString) ?? 0;
+
+        // Print the parsed data value
+        if (kDebugMode) {
+          debugPrint('Parsed data value: $data');
+        }
+
+        if (data != 0) {
+          switch (screen) {
+            case 'Classified':
+              controller.fetchClassifiedDetail(
+                data,
+                // ignore: use_build_context_synchronously
+                context,
+              );
+              Get.toNamed(
+                Routes.mlmclassifieddetailtest,
+                arguments: data,
+              );
+              break;
+
+            default:
+              if (kDebugMode) {
+                debugPrint('Unknown screen type: $screen');
+              }
+          }
+        } else {
+          if (kDebugMode) {
+            debugPrint('Invalid or missing data');
+          }
+        }
+      } else {
+        if (kDebugMode) {
+          debugPrint('Screen data is missing');
+        }
+      }
+    } else {
+      if (kDebugMode) {
+        debugPrint('Screen parameter is missing in the deep link');
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _linkStreamSubscription?.cancel();
+    super.dispose();
   }
 
   Future<void> _checkInitialMessage() async {
@@ -208,7 +305,6 @@ class _MyAppState extends State<MyApp> {
       // ignore: deprecated_member_use
       data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
       child: GetMaterialApp(
-        navigatorKey: navigatorKey,
         title: 'MLM Diary',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),

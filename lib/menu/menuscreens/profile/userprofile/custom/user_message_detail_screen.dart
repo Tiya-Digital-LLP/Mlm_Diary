@@ -302,10 +302,6 @@ class _UserMessageDetailScreenState extends State<UserMessageDetailScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: Row(
               children: [
-                SvgPicture.asset(
-                  Assets.svgPlusIcon,
-                  height: 40,
-                ),
                 10.sbw,
                 Expanded(
                   child: Container(

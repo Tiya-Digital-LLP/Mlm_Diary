@@ -29,6 +29,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
+				<string>mlmdiary</string>
 				<string>com.mlm.mlmdiary</string>
 				<string>fb907153864102367</string>
 			</array>
@@ -47,6 +48,10 @@
 	<string>MLM DIARY APP</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<false/>
+	 <key>FirebaseDynamicLinksCustomDomains</key>
+    <array>
+        <string>https://mlmdiary.page.link</string>
+    </array>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>razorpay</string>

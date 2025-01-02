@@ -120,7 +120,7 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
                 ],
               ),
             ),
-            30.sbh,
+            10.sbh,
             Expanded(
               child: TabBarView(
                 controller: _tabController,
@@ -166,7 +166,7 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
             },
           ),
         ),
-        20.sbh,
+        5.sbh,
         Expanded(
           child: RefreshIndicator(
             onRefresh: _refreshFollowers,
@@ -186,22 +186,23 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
                       return FollowerWithShimmerLoader(context);
                     }
                     final follower = controller.followers[index];
-                    return Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: Row(
-                          children: [
-                            InkWell(
-                              onTap: () async {
-                                Get.toNamed(Routes.userprofilescreen,
-                                    arguments: {'user_id': follower.id});
-                                await userProfileController.fetchUserAllPost(
-                                  1,
-                                  follower.id.toString(),
-                                );
-                              },
-                              child: ClipOval(
+                    return Card(
+                      elevation: 0,
+                      color: Colors.white,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: InkWell(
+                          onTap: () async {
+                            Get.toNamed(Routes.userprofilescreen,
+                                arguments: {'user_id': follower.id});
+                            await userProfileController.fetchUserAllPost(
+                              1,
+                              follower.id.toString(),
+                            );
+                          },
+                          child: Row(
+                            children: [
+                              ClipOval(
                                 child: CachedNetworkImage(
                                   imageUrl: follower.imageUrl ??
                                       Assets.imagesAdminlogo,
@@ -212,44 +213,74 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
                                       const Icon(Icons.error),
                                 ),
                               ),
-                            ),
-                            20.sbw,
-                            Expanded(
-                              child: Text(
-                                follower.name ?? 'Unknown',
-                                style: textStyleW700(
-                                    size.width * 0.030, AppColors.blackText),
-                              ),
-                            ),
-                            Expanded(
-                              child: Obx(() {
-                                // Use controller.followProfileStatusMap to determine the follow status
-                                bool? isFollowing = controller
-                                        .followProfileStatusMap[follower.id] ??
-                                    follower.isFollowing;
-
-                                return ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: isFollowing!
-                                        ? AppColors.primaryColor
-                                        : Colors.grey,
-                                  ),
-                                  onPressed: () {
-                                    // Toggle the follow status and update the map
-                                    controller.toggleProfileFollow(
-                                        follower.id ?? 0, context);
-                                  },
-                                  child: Text(
-                                    isFollowing ? 'Following' : 'Follow',
-                                    style: textStyleW700(
-                                      MediaQuery.of(context).size.width * 0.030,
-                                      AppColors.white,
+                              20.sbw,
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      follower.name ?? 'Unknown',
+                                      style: textStyleW700(size.width * 0.030,
+                                          AppColors.blackText),
+                                      maxLines: 1,
                                     ),
-                                  ),
-                                );
-                              }),
-                            )
-                          ],
+                                    Text(
+                                      '${follower.city ?? 'Unknown'}, ${follower.state ?? 'Unknown'}, ${follower.country ?? 'Unknown'}',
+                                      style: textStyleW500(size.width * 0.030,
+                                          AppColors.blackText),
+                                      maxLines: 1,
+                                    ),
+                                    Text(
+                                      follower.immlm ?? 'Unknown',
+                                      style: textStyleW700(
+                                        size.width * 0.030,
+                                        AppColors.blackText,
+                                      ),
+                                      maxLines: 1,
+                                    ),
+                                    Text(
+                                      follower.plan ?? 'Unknown',
+                                      style: textStyleW500(
+                                        size.width * 0.030,
+                                        AppColors.blackText,
+                                      ),
+                                      maxLines: 1,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                width: 100,
+                                height: 30,
+                                child: Obx(() {
+                                  bool? isFollowing =
+                                      controller.followProfileStatusMap[
+                                              follower.id] ??
+                                          follower.isFollowing;
+
+                                  return ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: isFollowing!
+                                          ? AppColors.primaryColor
+                                          : Colors.grey,
+                                    ),
+                                    onPressed: () {
+                                      controller.toggleProfileFollow(
+                                          follower.id ?? 0, context);
+                                    },
+                                    child: Text(
+                                      isFollowing ? 'Following' : 'Follow',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w800,
+                                        fontSize: 10,
+                                      ),
+                                    ),
+                                  );
+                                }),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     );
@@ -281,7 +312,7 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
             },
           ),
         ),
-        20.sbh,
+        5.sbh,
         Expanded(
           child: RefreshIndicator(
             onRefresh: _refreshFollowing,
@@ -301,22 +332,23 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
                       return FollowerWithShimmerLoader(context);
                     }
                     final following = controller.following[index];
-                    return Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: Row(
-                          children: [
-                            InkWell(
-                              onTap: () async {
-                                Get.toNamed(Routes.userprofilescreen,
-                                    arguments: {'user_id': following.id});
-                                await userProfileController.fetchUserAllPost(
-                                  1,
-                                  following.id.toString(),
-                                );
-                              },
-                              child: ClipOval(
+                    return Card(
+                      elevation: 0,
+                      color: Colors.white,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: InkWell(
+                          onTap: () async {
+                            Get.toNamed(Routes.userprofilescreen,
+                                arguments: {'user_id': following.id});
+                            await userProfileController.fetchUserAllPost(
+                              1,
+                              following.id.toString(),
+                            );
+                          },
+                          child: Row(
+                            children: [
+                              ClipOval(
                                 child: CachedNetworkImage(
                                   imageUrl: following.imageUrl ??
                                       Assets.imagesAdminlogo,
@@ -327,45 +359,75 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
                                       const Icon(Icons.error),
                                 ),
                               ),
-                            ),
-                            20.sbw,
-                            Expanded(
-                              child: Text(
-                                following.name ?? 'Unknown',
-                                style: textStyleW700(
-                                    size.width * 0.030, AppColors.blackText),
-                              ),
-                            ),
-                            Expanded(
-                              child: Obx(() {
-                                // Use controller.followProfileStatusMap to determine the follow status
-                                bool? isFollowing = controller
-                                        .followProfileStatusMap[following.id] ??
-                                    following.isFollowing;
-
-                                return ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: isFollowing!
-                                        ? AppColors.primaryColor
-                                        : Colors.grey,
-                                  ),
-                                  onPressed: () {
-                                    // Toggle the follow status and update the map
-                                    controller.toggleProfileFollow(
-                                        following.id ?? 0, context);
-                                    _refreshFollowing();
-                                  },
-                                  child: Text(
-                                    isFollowing ? 'Following' : 'Follow',
-                                    style: textStyleW700(
-                                      MediaQuery.of(context).size.width * 0.030,
-                                      AppColors.white,
+                              20.sbw,
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      following.name ?? 'Unknown',
+                                      style: textStyleW700(size.width * 0.030,
+                                          AppColors.blackText),
+                                      maxLines: 1,
                                     ),
-                                  ),
-                                );
-                              }),
-                            )
-                          ],
+                                    Text(
+                                      '${following.city ?? 'Unknown'}, ${following.state ?? 'Unknown'}, ${following.country ?? 'Unknown'}',
+                                      style: textStyleW500(size.width * 0.030,
+                                          AppColors.blackText),
+                                      maxLines: 1,
+                                    ),
+                                    Text(
+                                      following.immlm ?? 'Unknown',
+                                      style: textStyleW700(
+                                        size.width * 0.030,
+                                        AppColors.blackText,
+                                      ),
+                                      maxLines: 1,
+                                    ),
+                                    Text(
+                                      following.plan ?? 'Unknown',
+                                      style: textStyleW500(
+                                        size.width * 0.030,
+                                        AppColors.blackText,
+                                      ),
+                                      maxLines: 1,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                width: 100,
+                                height: 30,
+                                child: Obx(() {
+                                  bool? isFollowing =
+                                      controller.followProfileStatusMap[
+                                              following.id] ??
+                                          following.isFollowing;
+
+                                  return ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: isFollowing!
+                                          ? AppColors.primaryColor
+                                          : Colors.grey,
+                                    ),
+                                    onPressed: () {
+                                      controller.toggleProfileFollow(
+                                          following.id ?? 0, context);
+                                      _refreshFollowing();
+                                    },
+                                    child: Text(
+                                      isFollowing ? 'Following' : 'Follow',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w800,
+                                        fontSize: 10,
+                                      ),
+                                    ),
+                                  );
+                                }),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     );
