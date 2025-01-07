@@ -14,7 +14,8 @@ class BorderTextField extends StatelessWidget {
   final ValueChanged<String>? onChanged;
   final double height;
   final int? maxLength;
-  final Widget? suffixIcon; // Add this line
+  final Widget? suffixIcon;
+  final bool? enableToolbar; // Added toolbar option
 
   const BorderTextField({
     super.key,
@@ -29,6 +30,7 @@ class BorderTextField extends StatelessWidget {
     this.height = 65.0,
     this.maxLength,
     this.suffixIcon,
+    this.enableToolbar = true, // Default value is true
   });
 
   @override
@@ -39,12 +41,13 @@ class BorderTextField extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(
         border: Border.all(
-            color: byDefault
-                // ignore: deprecated_member_use
-                ? AppColors.containerBorder.withOpacity(0.4)
-                : isError
-                    ? AppColors.redText
-                    : AppColors.greenBorder),
+          color: byDefault
+              // ignore: deprecated_member_use
+              ? AppColors.containerBorder.withOpacity(0.4)
+              : isError
+                  ? AppColors.redText
+                  : AppColors.greenBorder,
+        ),
         borderRadius: BorderRadius.circular(14),
         color: AppColors.white,
       ),
@@ -58,6 +61,8 @@ class BorderTextField extends StatelessWidget {
                   cursorHeight: 15,
                   autocorrect: false,
                   readOnly: readOnly,
+                  enableInteractiveSelection:
+                      enableToolbar ?? true, // Control toolbar visibility
                   keyboardType: keyboard,
                   inputFormatters: textInputType,
                   onChanged: onChanged,

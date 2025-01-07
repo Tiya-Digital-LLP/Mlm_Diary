@@ -13,6 +13,7 @@ class CustomNameTextField extends StatelessWidget {
   final TextInputType keyboard;
   final ValueChanged<String>? onChanged;
   final double height;
+  final bool? enableToolbar; // Added toolbar option
 
   const CustomNameTextField({
     super.key,
@@ -25,6 +26,7 @@ class CustomNameTextField extends StatelessWidget {
     required this.byDefault,
     this.onChanged,
     this.height = 80.0,
+    this.enableToolbar = true,
   });
 
   @override
@@ -54,6 +56,7 @@ class CustomNameTextField extends StatelessWidget {
             cursorHeight: 20,
             autocorrect: false,
             readOnly: readOnly,
+            enableInteractiveSelection: enableToolbar ?? true,
             keyboardType: keyboard,
             inputFormatters: textInputType,
             textInputAction: TextInputAction.next,
@@ -69,7 +72,6 @@ class CustomNameTextField extends StatelessWidget {
               ),
               border: InputBorder.none,
             ),
-            enableInteractiveSelection: false,
           ),
         ),
       ),

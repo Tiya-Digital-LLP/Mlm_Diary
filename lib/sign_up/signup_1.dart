@@ -170,6 +170,7 @@ class _SignupPageState extends State<SignupPage> {
                           controller: controller.name.value,
                           isError: controller.nameError.value,
                           byDefault: !controller.isNameTyping.value,
+                          enableToolbar: false,
                           onChanged: (value) {
                             if (value.trim().isEmpty) {
                               controller.nameError.value = true;

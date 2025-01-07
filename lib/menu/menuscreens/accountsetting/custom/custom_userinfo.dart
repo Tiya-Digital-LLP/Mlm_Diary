@@ -189,6 +189,7 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                   controller: controller.name.value,
                   height: 58,
                   byDefault: !controller.isNameTyping.value,
+                  enableToolbar: false,
                 ),
               ),
               10.sbh,

@@ -1115,32 +1115,33 @@ class _HomeScreenState extends State<HomeScreen> {
                     currentPageNotifier.value = index;
                   },
                 ),
-          Positioned(
-            bottom: 10,
-            right: 10,
-            child: ValueListenableBuilder<int>(
-              valueListenable: currentPageNotifier,
-              builder: (context, currentPage, child) {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(banners.length, (index) {
-                    return Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                      width: 8.0,
-                      height: 8.0,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: currentPage == index
-                            ? AppColors.primaryColor
-                            // ignore: deprecated_member_use
-                            : Colors.white.withOpacity(0.5),
-                      ),
-                    );
-                  }),
-                );
-              },
+          if (banners.length > 1)
+            Positioned(
+              bottom: 10,
+              right: 10,
+              child: ValueListenableBuilder<int>(
+                valueListenable: currentPageNotifier,
+                builder: (context, currentPage, child) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(banners.length, (index) {
+                      return Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                        width: 8.0,
+                        height: 8.0,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: currentPage == index
+                              ? AppColors.primaryColor
+                              // ignore: deprecated_member_use
+                              : Colors.white.withOpacity(0.5),
+                        ),
+                      );
+                    }),
+                  );
+                },
+              ),
             ),
-          ),
         ],
       ),
     );
