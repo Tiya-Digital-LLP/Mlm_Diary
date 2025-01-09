@@ -108,15 +108,9 @@ class _PlanandCompanyState extends State<PlanandCompany> {
                       child: SizedBox(
                         width: double.infinity,
                         child: CustomSearchInput(
-                          controller: controller.search,
-                          onSubmitted: (value) {
-                            controller.companyList.clear();
-                            controller.isEndOfData.value = false;
-                            controller.fetchSelectedCompanyList(1);
-                          },
-                          onChanged: (value) {
-                            _refreshDataCompany();
-                          },
+                          controller: controller.searchcompany,
+                          onSubmitted: (value) {},
+                          onChanged: (value) {},
                         ),
                       ),
                     ),
@@ -124,11 +118,11 @@ class _PlanandCompanyState extends State<PlanandCompany> {
                       child: RefreshIndicator(
                         onRefresh: _refreshDataCompany,
                         child: ListView.builder(
-                          itemCount: controller.companyList.length +
+                          itemCount: controller.filterdcompanyList.length +
                               (controller.isLoading.value ? 1 : 0),
                           controller: controller.scrollController,
                           itemBuilder: (context, index) {
-                            if (index == controller.companyList.length) {
+                            if (index == controller.filterdcompanyList.length) {
                               return Center(
                                 child: CustomLottieAnimation(
                                   child: Lottie.asset(
@@ -138,7 +132,7 @@ class _PlanandCompanyState extends State<PlanandCompany> {
                               );
                             }
 
-                            final post = controller.companyList[index];
+                            final post = controller.filterdcompanyList[index];
                             return Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 2),
@@ -188,9 +182,7 @@ class _PlanandCompanyState extends State<PlanandCompany> {
               if (controller.isLoading.value) {
                 return Center(
                   child: CustomLottieAnimation(
-                    child: Lottie.asset(
-                      Assets.lottieLottie,
-                    ),
+                    child: Lottie.asset(Assets.lottieLottie),
                   ),
                 );
               }
@@ -203,21 +195,18 @@ class _PlanandCompanyState extends State<PlanandCompany> {
                       width: double.infinity,
                       child: CustomSearchInput(
                         controller: controller.search,
-                        onSubmitted: (value) {
-                          _refreshData();
-                        },
-                        onChanged: (value) {
-                          _refreshData();
-                        },
+                        onChanged: (value) {},
+                        onSubmitted: (value) {},
                       ),
                     ),
                   ),
                   Expanded(
                     child: RefreshIndicator(
-                      onRefresh: _refreshData,
+                      onRefresh: controller.fetchSelectedPlanList,
                       child: ListView.builder(
-                        itemCount: controller.planList.length,
+                        itemCount: controller.filteredPlanList.length,
                         itemBuilder: (context, index) {
+                          final plan = controller.filteredPlanList[index];
                           return Column(
                             children: [
                               Padding(
@@ -230,10 +219,7 @@ class _PlanandCompanyState extends State<PlanandCompany> {
                                     color: AppColors.white,
                                     child: GestureDetector(
                                       onTap: () {
-                                        // User-initiated selection
-                                        controller.togglePlanSelected(
-                                          index,
-                                        );
+                                        controller.togglePlanSelected(index);
                                       },
                                       child: Padding(
                                         padding: const EdgeInsets.symmetric(
@@ -244,20 +230,21 @@ class _PlanandCompanyState extends State<PlanandCompany> {
                                               () => GestureDetector(
                                                 onTap: () {
                                                   controller.togglePlanSelected(
-                                                      index);
+                                                      index); // This will toggle the selection state
                                                 },
                                                 child: Image.asset(
                                                   controller.isPlanSelectedList[
                                                           index]
-                                                      ? Assets.imagesTrueCircle
-                                                      : Assets.imagesCircle,
+                                                      ? Assets
+                                                          .imagesTrueCircle // Image when selected
+                                                      : Assets
+                                                          .imagesCircle, // Image when not selected
                                                 ),
                                               ),
                                             ),
                                             15.sbw,
                                             Text(
-                                              controller.planList[index].name ??
-                                                  '',
+                                              plan.name ?? '',
                                               style: textStyleW700(
                                                   size.width * 0.036,
                                                   AppColors.blackText),

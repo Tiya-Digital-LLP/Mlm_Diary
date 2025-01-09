@@ -409,8 +409,7 @@ class AccountSeetingController extends GetxController {
           if (kDebugMode) {
             print("Response body from update Profile: $jsonBody");
           }
-          // Check if all fields in the response are true (you may need to adjust this condition based on the actual response structure)
-          if (jsonBody['success'] == 1) {
+          if (jsonBody['result'] == 1) {
             toastification.show(
               context: context,
               alignment: Alignment.bottomCenter,
@@ -429,7 +428,7 @@ class AccountSeetingController extends GetxController {
 
             Get.back();
             fetchUserProfile();
-          } else if (jsonBody['success'] == 0) {
+          } else if (jsonBody['result'] == 0) {
             toastification.show(
               context: context,
               alignment: Alignment.bottomCenter,

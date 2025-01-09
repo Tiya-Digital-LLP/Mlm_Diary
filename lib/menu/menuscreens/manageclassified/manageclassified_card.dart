@@ -362,7 +362,9 @@ class _ManageClassifiedCardState extends State<ManageClassifiedCard> {
                           arguments: widget.classifiedId,
                         );
                         widget.controller.fetchClassifiedDetail(
-                            widget.classifiedId, context);
+                          widget.classifiedId,
+                          context,
+                        );
                       },
                       child: Ink(
                         height: size.height * 0.030,

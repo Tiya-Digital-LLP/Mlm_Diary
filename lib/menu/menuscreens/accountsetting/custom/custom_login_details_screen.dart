@@ -595,23 +595,20 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
             ),
           ],
         ),
-        Column(
-          children: [
-            InkWell(
-                onTap: () {
-                  LogoutDialog.show(context, () {
-                    controller.deleteAccount(context);
-                  });
-                },
-                child: Text(
-                  'Delete Account',
-                  style: textStyleW400(
-                    size.width * 0.032,
-                    // ignore: deprecated_member_use
-                    AppColors.redText.withOpacity(0.5),
-                  ),
-                ))
-          ],
+        InkWell(
+          onTap: () {
+            LogoutDialog.show(context, () {
+              controller.deleteAccount(context);
+            });
+          },
+          child: Text(
+            'Delete Account',
+            style: textStyleW400(
+              size.width * 0.032,
+              // ignore: deprecated_member_use
+              AppColors.redText.withOpacity(0.5),
+            ),
+          ),
         )
       ],
     );

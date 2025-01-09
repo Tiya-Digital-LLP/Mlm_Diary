@@ -14,7 +14,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class IntrestController extends GetxController {
   RxList<GetPlanWithSelectedPlan> planList = RxList<GetPlanWithSelectedPlan>();
+  RxList<GetPlanWithSelectedPlan> filteredPlanList =
+      RxList<GetPlanWithSelectedPlan>();
   RxList<GetCompanyWithSelectedCompany> companyList =
+      RxList<GetCompanyWithSelectedCompany>();
+  RxList<GetCompanyWithSelectedCompany> filterdcompanyList =
       RxList<GetCompanyWithSelectedCompany>();
 
   final RxList<bool> isPlanSelectedList = RxList<bool>([]);
@@ -31,9 +35,35 @@ class IntrestController extends GetxController {
   var isEndOfData = false.obs;
 
   final search = TextEditingController();
+  final searchcompany = TextEditingController();
+
   late SharedPreferences prefs;
   @override
   void onInit() {
+    // Debounce search input to reduce API calls
+    search.addListener(() {
+      String query = search.text.trim().toLowerCase();
+      if (query.isEmpty) {
+        filteredPlanList.assignAll(planList);
+      } else {
+        filteredPlanList.assignAll(
+          planList.where(
+              (plan) => plan.name?.toLowerCase().contains(query) ?? false),
+        );
+      }
+    });
+    // Debounce search input to reduce API calls
+    searchcompany.addListener(() {
+      String query = searchcompany.text.trim().toLowerCase();
+      if (query.isEmpty) {
+        filterdcompanyList.assignAll(companyList);
+      } else {
+        filterdcompanyList.assignAll(
+          companyList.where(
+              (plan) => plan.name?.toLowerCase().contains(query) ?? false),
+        );
+      }
+    });
     fetchSelectedPlanList();
     fetchSelectedCompanyList(1);
     scrollController.addListener(() {
@@ -49,59 +79,33 @@ class IntrestController extends GetxController {
 
   Future<void> fetchSelectedPlanList() async {
     isLoading.value = true;
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? apiToken = prefs.getString(Constants.accessToken);
-    String device = Platform.isAndroid ? 'android' : 'ios';
-    if (kDebugMode) {
-      print('Device Name: $device');
-    }
     try {
-      var connectivityResult = await Connectivity().checkConnectivity();
-      // ignore: unrelated_type_equality_checks
-      if (connectivityResult != ConnectivityResult.none) {
-        var uri = Uri.parse(
-            '${Constants.baseUrl}${Constants.getplanlistwithselected}');
-        var request = http.MultipartRequest('POST', uri);
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? apiToken = prefs.getString(Constants.accessToken);
 
-        request.fields['api_token'] = apiToken ?? '';
-        request.fields['device'] = device;
-        request.fields['search'] = search.value.text;
+      var uri =
+          Uri.parse('${Constants.baseUrl}${Constants.getplanlistwithselected}');
+      var request = http.MultipartRequest('POST', uri);
+      request.fields['api_token'] = apiToken ?? '';
+      request.fields['search'] = search.text;
 
-        final streamedResponse = await request.send();
-        final response = await http.Response.fromStream(streamedResponse);
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
 
-        if (response.statusCode == 200) {
-          final Map<String, dynamic> jsonBody = jsonDecode(response.body);
-          if (kDebugMode) {
-            print("Response body: $jsonBody");
-          }
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonBody = jsonDecode(response.body);
+        final planListWithSelectedEntity =
+            GetPlanWithSelectedEntity.fromJson(jsonBody);
 
-          final planListWithSelectedEntity =
-              GetPlanWithSelectedEntity.fromJson(jsonBody);
+        if (planListWithSelectedEntity.status == 1) {
+          planList.value = planListWithSelectedEntity.plan ?? [];
+          filteredPlanList.assignAll(planList);
 
-          if (planListWithSelectedEntity.status == 1) {
-            if (kDebugMode) {
-              print("Plan list fetched successfully");
-            }
-
-            planList.value = planListWithSelectedEntity.plan ?? [];
-            isPlanSelectedList.assignAll(List<bool>.generate(
-                planList.length, (index) => planList[index].selected ?? false));
-
-            if (kDebugMode) {
-              print("Plan list: $planList");
-            }
-          } else {
-            // Handle error when status is not 1
-          }
-        } else {
-          if (kDebugMode) {
-            print(
-                "HTTP error: Failed to fetch plan list. Status code: ${response.statusCode}");
-          }
+          // Initialize isPlanSelectedList based on the 'selected' field of each plan
+          isPlanSelectedList.assignAll(
+            planList.map((plan) => plan.selected ?? false).toList(),
+          );
         }
-      } else {
-        //
       }
     } catch (e) {
       if (kDebugMode) {
@@ -113,12 +117,11 @@ class IntrestController extends GetxController {
   }
 
   Future<void> fetchSelectedCompanyList(int page) async {
-    isLoading.value = true;
+    isLoading.value = true; // Set loading to true to prevent duplicate requests
 
     if (page == 1) {
-      // Clear the companyList and other related lists if fetching the first page
       companyList.clear();
-      isCompanySelectedList.clear();
+      filterdcompanyList.clear();
       isEndOfData.value = false;
     }
 
@@ -126,13 +129,8 @@ class IntrestController extends GetxController {
     String? apiToken = prefs.getString(Constants.accessToken);
     String device = Platform.isAndroid ? 'android' : 'ios';
 
-    if (kDebugMode) {
-      print('Device Name: $device');
-    }
-
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
-
       // ignore: unrelated_type_equality_checks
       if (connectivityResult != ConnectivityResult.none) {
         var uri = Uri.parse(
@@ -149,45 +147,30 @@ class IntrestController extends GetxController {
 
         if (response.statusCode == 200) {
           final Map<String, dynamic> jsonBody = jsonDecode(response.body);
-          if (kDebugMode) {
-            print("Response body: $jsonBody");
-          }
 
           final companyListWithSelectedEntity =
               GetCompanyWithSelectedEntity.fromJson(jsonBody);
 
           if (companyListWithSelectedEntity.status == 1) {
-            if (kDebugMode) {
-              print("Company list fetched successfully");
-            }
+            List<GetCompanyWithSelectedCompany> newCompanies =
+                companyListWithSelectedEntity.company ?? [];
 
-            if (companyListWithSelectedEntity.company == null ||
-                companyListWithSelectedEntity.company!.isEmpty) {
+            if (newCompanies.isEmpty) {
               isEndOfData.value = true;
             } else {
-              companyList.addAll(companyListWithSelectedEntity.company!);
-              isCompanySelectedList.addAll(
-                List<bool>.generate(
-                  companyListWithSelectedEntity.company!.length,
-                  (index) =>
-                      companyListWithSelectedEntity.company![index].selected ??
-                      false,
-                ),
-              );
-            }
+              companyList.addAll(newCompanies);
+              filterdcompanyList.assignAll(companyList);
 
-            if (kDebugMode) {
-              print("Company list: $companyList");
-            }
-          } else {
-            if (kDebugMode) {
-              print("Error: ${companyListWithSelectedEntity.status}");
+              isCompanySelectedList.assignAll(
+                companyList
+                    .map((company) => company.selected ?? false)
+                    .toList(),
+              );
             }
           }
         } else {
           if (kDebugMode) {
-            print(
-                "HTTP error: Failed to fetch company list. Status code: ${response.statusCode}");
+            print("HTTP error: ${response.statusCode}");
           }
         }
       } else {
@@ -231,7 +214,7 @@ class IntrestController extends GetxController {
           if (kDebugMode) {
             print("Update user plan response: $jsonBody");
           }
-
+          showToastverifedborder('Plan updated successfully', context);
           // Process your response here if needed
         } else {
           if (kDebugMode) {
@@ -278,8 +261,7 @@ class IntrestController extends GetxController {
           if (kDebugMode) {
             print("Update  Company response: $jsonBody");
           }
-
-          // Process your response here if needed
+          showToastverifedborder('Company updated successfully', context);
         } else {
           if (kDebugMode) {
             print(
@@ -347,14 +329,17 @@ class IntrestController extends GetxController {
   }
 
   void togglePlanSelected(int index) {
+    // Toggle the selection in isPlanSelectedList
     isPlanSelectedList[index] = !isPlanSelectedList[index];
 
+    // Update the selectedCountPlan based on the selection
     if (isPlanSelectedList[index]) {
       selectedCountPlan++;
     } else {
       selectedCountPlan--;
     }
 
+    // Update the selected field of the plan in planList
     planList[index].selected = isPlanSelectedList[index];
   }
 
