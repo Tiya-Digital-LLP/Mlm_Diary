@@ -131,7 +131,7 @@ class _ClassidiedDetailsScreenCopyState
                               children: [
                                 ClipOval(
                                   child: CachedNetworkImage(
-                                    imageUrl: data.userData.imagePath,
+                                    imageUrl: data.userData!.imagePath!,
                                     height: 60.0,
                                     width: 60.0,
                                     fit: BoxFit.cover,
@@ -148,7 +148,7 @@ class _ClassidiedDetailsScreenCopyState
                                     Row(
                                       children: [
                                         Text(
-                                          data.userData.name,
+                                          data.userData!.name!,
                                           style: textStyleW700(
                                               size.width * 0.043,
                                               AppColors.blackText),
@@ -160,12 +160,12 @@ class _ClassidiedDetailsScreenCopyState
                                     ),
                                     Text(
                                       postTimeFormatter.formatPostTime(
-                                        DateTime.parse(data.createdate)
+                                        DateTime.parse(data.createdate!)
                                                 .isAtSameMomentAs(
                                                     DateTime.parse(
-                                                        data.datemodified))
-                                            ? data.createdate
-                                            : data.datemodified,
+                                                        data.datemodified!))
+                                            ? data.createdate!
+                                            : data.datemodified!,
                                       ),
                                       style: textStyleW400(
                                         size.width * 0.035,
@@ -288,8 +288,8 @@ class _ClassidiedDetailsScreenCopyState
                               ),
                               3.sbh,
                               Text(
-                                data.company.isNotEmpty == true
-                                    ? data.company
+                                data.company!.isNotEmpty == true
+                                    ? data.company!
                                     : 'N/A',
                                 style: textStyleW400(
                                     size.width * 0.032, AppColors.blackText),
@@ -325,9 +325,9 @@ class _ClassidiedDetailsScreenCopyState
                               ),
                               3.sbh,
                               Text(
-                                '${data.city.isNotEmpty == true ? data.city : "N/A"} '
-                                '${data.state.isNotEmpty == true ? data.state : ""} '
-                                '${data.country.isNotEmpty == true ? data.country : ""}',
+                                '${data.city!.isNotEmpty == true ? data.city : "N/A"} '
+                                '${data.state!.isNotEmpty == true ? data.state : ""} '
+                                '${data.country!.isNotEmpty == true ? data.country : ""}',
                                 style: textStyleW400(
                                     size.width * 0.032, AppColors.blackText),
                               ),
@@ -362,8 +362,8 @@ class _ClassidiedDetailsScreenCopyState
                               ),
                               3.sbh,
                               LinkText(
-                                text: data.website.isNotEmpty == true
-                                    ? data.website
+                                text: data.website!.isNotEmpty == true
+                                    ? data.website!
                                     : "Website is not provided",
                                 style: textStyleW400(
                                   size.width * 0.035,
@@ -485,7 +485,7 @@ class _ClassidiedDetailsScreenCopyState
                                     ? likeCount.value + 1
                                     : likeCount.value - 1;
 
-                                await controller.toggleLike(data.id, context);
+                                await controller.toggleLike(data.id!, context);
                               },
                               child: Icon(
                                 // Observe like status
@@ -510,7 +510,7 @@ class _ClassidiedDetailsScreenCopyState
                             : InkWell(
                                 onTap: () async {
                                   await controller.fetchLikeListClassified(
-                                      data.id, context);
+                                      data.id!, context);
                                   // ignore: use_build_context_synchronously
                                   showLikeList(context);
                                 },
@@ -528,7 +528,7 @@ class _ClassidiedDetailsScreenCopyState
                             GestureDetector(
                               onTap: () => showFullScreenDialog(
                                 context,
-                                data.id,
+                                data.id!,
                               ),
                               child: SizedBox(
                                 height: size.height * 0.028,
@@ -577,7 +577,7 @@ class _ClassidiedDetailsScreenCopyState
                                 isBookmarked.value = newBookmarkedValue;
 
                                 await controller.toggleBookMark(
-                                    data.id, context);
+                                    data.id!, context);
                               },
                               child: SvgPicture.asset(
                                 isBookmarked.value
@@ -593,7 +593,7 @@ class _ClassidiedDetailsScreenCopyState
                         ),
                         InkWell(
                           onTap: () {
-                            Share.share(data.fullUrl);
+                            Share.share(data.fullUrl!);
                           },
                           child: SizedBox(
                             height: size.height * 0.028,

@@ -7,7 +7,6 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
-import 'package:mlmdiary/classified/get_blog_list_entity.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/blog_liked_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
@@ -15,20 +14,22 @@ import 'package:mlmdiary/menu/menuscreens/blog/custom_blog_comment.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
-import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
+import 'package:mlmdiary/widgets/dynamiclink/dynamic_link.dart';
 import 'package:mlmdiary/widgets/image_preview_user_image.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:text_link/text_link.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:html/dom.dart' as dom;
 
 class BlogDetailNotification extends StatefulWidget {
-  const BlogDetailNotification({
-    required Key key,
-  }) : super(key: key);
+  final int blogId;
+
+  const BlogDetailNotification({super.key, required this.blogId});
 
   @override
   State<BlogDetailNotification> createState() => _BlogDetailScreenState();
@@ -36,7 +37,6 @@ class BlogDetailNotification extends StatefulWidget {
 
 class _BlogDetailScreenState extends State<BlogDetailNotification> {
   final ManageBlogController controller = Get.put(ManageBlogController());
-  dynamic post;
   final UserProfileController userProfileController =
       Get.put(UserProfileController());
   PostTimeFormatter postTimeFormatter = PostTimeFormatter();
@@ -48,34 +48,24 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
   late RxBool isBookmarked;
   late RxInt bookmarkCount;
 
-  void toggleLike() async {
+  void toggleLike(int blogId) async {
     bool newLikedValue = !isLiked.value;
     isLiked.value = newLikedValue;
     likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
 
-    await controller.toggleLike(post.id, context);
+    await controller.toggleLike(blogId, context);
   }
 
   @override
   void initState() {
     super.initState();
-    final arguments = Get.arguments as Map<String, dynamic>?;
     initializeLikes();
     initializeBookmarks();
-    if (arguments != null) {
-      post = GetBlogListData.fromJson(arguments);
-      if (post != null) {
-        final int postId = post!.id ?? 0;
-        if (postId != 0) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            controller.getBlog(
-              postId,
-            );
-            controller.countViewBlog(postId, context);
-          });
-        }
-      }
-    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.fetchBlogDetail(widget.blogId, context);
+      controller.countViewBlog(widget.blogId, context);
+    });
   }
 
   void initializeLikes() {
@@ -111,7 +101,7 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
         if (controller.blogList.isEmpty) {
           return const Center(child: Text('No data available.'));
         } else {
-          final data = controller.blogList.first;
+          final post = controller.blogDetailList.first;
           return SingleChildScrollView(
             child: Column(
               children: [
@@ -125,7 +115,7 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        if (data.userData!.name != null) ...[
+                        if (post.userData!.name != null) ...[
                           Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 8),
@@ -142,14 +132,14 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
                               },
                               child: Row(
                                 children: [
-                                  if (data.userData!.imagePath!.isNotEmpty &&
-                                      Uri.tryParse(data.userData!.imagePath!)
+                                  if (post.userData!.imagePath!.isNotEmpty &&
+                                      Uri.tryParse(post.userData!.imagePath!)
                                               ?.hasAbsolutePath ==
                                           true)
                                     ClipOval(
                                       child: CachedNetworkImage(
                                         imageUrl:
-                                            data.userData!.imagePath ?? '',
+                                            post.userData!.imagePath ?? '',
                                         height: 60.0,
                                         width: 60.0,
                                         fit: BoxFit.cover,
@@ -167,7 +157,7 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
                                       Row(
                                         children: [
                                           Text(
-                                            data.userData!.name!,
+                                            post.userData!.name!,
                                             style: textStyleW700(
                                                 size.width * 0.043,
                                                 AppColors.blackText),
@@ -179,7 +169,7 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
                                       ),
                                       Text(
                                         postTimeFormatter.formatPostTime(
-                                            data.createdate ?? ''),
+                                            post.createdate ?? ''),
                                         style: textStyleW400(
                                             size.width * 0.035,
                                             AppColors.blackText
@@ -205,7 +195,7 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
                                   context: context,
                                   builder: (BuildContext context) {
                                     return FullScreenImageDialog(
-                                        imageUrl: data.imageUrl.toString());
+                                        imageUrl: post.imageUrl.toString());
                                   },
                                 );
                               },
@@ -215,7 +205,7 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(12.0),
                                   child: Image.network(
-                                    data.imageUrl.toString(),
+                                    post.imageUrl.toString(),
                                     fit: BoxFit.fill,
                                     errorBuilder: (context, error, stackTrace) {
                                       return Image.asset(
@@ -238,7 +228,7 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
                             child: Align(
                               alignment: Alignment.topLeft,
                               child: Html(
-                                data: data.title,
+                                data: post.title,
                                 style: {
                                   "html": Style(
                                     lineHeight: const LineHeight(1),
@@ -263,7 +253,7 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
                             child: Align(
                               alignment: Alignment.topLeft,
                               child: Text(
-                                '${data.category} | ${data.subcategory}',
+                                '${post.category} | ${post.subcategory}',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w400,
                                   color: AppColors.blackText,
@@ -281,134 +271,9 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
                                   bottom: BorderSide(color: Colors.grey)),
                             ),
                           ),
-                          5.sbh,
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Text(
-                                            'Phone',
-                                            style: textStyleW400(
-                                                size.width * 0.035,
-                                                AppColors.grey),
-                                          ),
-                                          const SizedBox(
-                                            width: 07,
-                                          ),
-                                        ],
-                                      ),
-                                      InkWell(
-                                        onTap: () {
-                                          final String? countryCode =
-                                              data.userData!.countrycode1;
-                                          final String? mobileNumber =
-                                              data.userData!.mobile;
 
-                                          if (mobileNumber == null ||
-                                              mobileNumber.isEmpty) {
-                                            showToasterrorborder(
-                                                'No Any Url Found', context);
-                                            if (kDebugMode) {
-                                              print('Tap without number');
-                                            }
-                                          } else {
-                                            final Uri phoneUri = Uri(
-                                              scheme: 'tel',
-                                              path:
-                                                  '$countryCode$mobileNumber', // Combine country code and mobile
-                                            );
-                                            launchUrl(phoneUri);
-                                            if (kDebugMode) {
-                                              print(
-                                                  'Tap with number: $countryCode$mobileNumber');
-                                            }
-                                          }
-                                        },
-                                        child: Text(
-                                          '${data.userData!.countrycode1 ?? 'N/A'} - ${data.userData!.mobile ?? 'N/A'}',
-                                          style: textStyleW400(
-                                              size.width * 0.035,
-                                              AppColors.blackText),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Text(
-                                          'Email',
-                                          style: textStyleW400(
-                                              size.width * 0.035,
-                                              AppColors.grey),
-                                        ),
-                                        const SizedBox(
-                                          width: 07,
-                                        ),
-                                      ],
-                                    ),
-                                    InkWell(
-                                      onTap: () {
-                                        final String? email =
-                                            data.userData!.email;
-
-                                        if (email != null && email.isNotEmpty) {
-                                          final Uri emailUri = Uri(
-                                            scheme: 'mailto',
-                                            path: email,
-                                          );
-                                          launchUrl(emailUri);
-                                          if (kDebugMode) {
-                                            print('Tap with email: $email');
-                                          }
-                                        } else {
-                                          showToasterrorborder(
-                                              'No Email Found', context);
-                                          if (kDebugMode) {
-                                            print('Tap without email');
-                                          }
-                                        }
-                                      },
-                                      child: Text(
-                                        data.userData!.email?.isNotEmpty == true
-                                            ? data.userData!.email!
-                                            : 'N/A',
-                                        style: textStyleW400(size.width * 0.035,
-                                            AppColors.blackText),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
                           5.sbh,
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(14),
-                              color: AppColors.white,
-                              border: const Border(
-                                  bottom: BorderSide(color: Colors.grey)),
-                            ),
-                          ),
+
                           Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 16,
@@ -426,8 +291,8 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
                                   ],
                                 ),
                                 LinkText(
-                                  text: data.website?.isNotEmpty == true
-                                      ? data.website!
+                                  text: post.website?.isNotEmpty == true
+                                      ? post.website!
                                       : 'N/A',
                                   style: textStyleW400(
                                     size.width * 0.035,
@@ -442,6 +307,57 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
                             ),
                           ),
                           5.sbh,
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(14),
+                              color: AppColors.white,
+                              border: const Border(
+                                  bottom: BorderSide(color: Colors.grey)),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                            ),
+                            child: Align(
+                              alignment: Alignment.topLeft,
+                              child: Html(
+                                data: post.description,
+                                style: {
+                                  "table": Style(
+                                    backgroundColor: const Color.fromARGB(
+                                        0x50, 0xee, 0xee, 0xee),
+                                  ),
+                                  "tr": Style(
+                                    border: const Border(
+                                        bottom: BorderSide(color: Colors.grey)),
+                                  ),
+                                  "th": Style(
+                                    backgroundColor: Colors.grey,
+                                  ),
+                                  "td": Style(
+                                    alignment: Alignment.topLeft,
+                                  ),
+                                  'h5': Style(
+                                    maxLines: 2,
+                                    textOverflow: TextOverflow.ellipsis,
+                                  ),
+                                },
+                                onLinkTap: (String? url,
+                                    Map<String, String> attributes,
+                                    dom.Element? element) {
+                                  if (url != null) {
+                                    if (kDebugMode) {
+                                      print("Opening $url...");
+                                    }
+                                    // Use url_launcher to open the URL
+                                    _launchUrl(url);
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+
                           SizedBox(
                             height: size.height * 0.017,
                           ),
@@ -464,10 +380,10 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
               ),
             ),
           );
-        } else if (controller.blogList.isEmpty) {
+        } else if (controller.blogDetailList.isEmpty) {
           return const Center(child: Text('No data available.'));
         } else {
-          final data = controller.blogList.first;
+          final post = controller.blogDetailList.first;
           return Container(
             padding: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
@@ -499,7 +415,7 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
                                   : likeCount.value - 1;
 
                               await controller.toggleLike(
-                                  data.id ?? 0, context);
+                                  post.id ?? 0, context);
                             },
                             child: Icon(
                               // Observe like status
@@ -521,7 +437,7 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
                           ? const SizedBox.shrink()
                           : InkWell(
                               onTap: () {
-                                showLikeList(context);
+                                showLikeList(context, post.id ?? 0);
                               },
                               child: Text(
                                 '${likeCount.value}',
@@ -537,7 +453,7 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
                           GestureDetector(
                             onTap: () => showFullScreenDialogBlog(
                               context,
-                              data.id!,
+                              post.id!,
                             ),
                             child: SizedBox(
                               height: size.height * 0.028,
@@ -547,7 +463,7 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
                           ),
                           5.sbw,
                           Text(
-                            '${data.totalcomment}',
+                            '${post.totalcomment}',
                             style: TextStyle(
                               fontFamily: "Metropolis",
                               fontWeight: FontWeight.w600,
@@ -568,7 +484,7 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
                         width: 7,
                       ),
                       Text(
-                        data.pgcnt.toString(),
+                        post.pgcnt.toString(),
                         style: textStyleW600(
                             size.width * 0.040, AppColors.blackText),
                       ),
@@ -589,7 +505,7 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
                                   : bookmarkCount.value - 1;
 
                               await controller.toggleBookMark(
-                                  data.id ?? 0, context);
+                                  post.id ?? 0, context);
                             },
                             child: SvgPicture.asset(
                               isBookmarked.value
@@ -603,10 +519,35 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
                       const SizedBox(
                         width: 10,
                       ),
-                      SizedBox(
-                        height: size.height * 0.028,
-                        width: size.height * 0.028,
-                        child: SvgPicture.asset(Assets.svgSend),
+                      InkWell(
+                        onTap: () async {
+                          try {
+                            final dynamicLink = await createDynamicLink(
+                              post.fullUrl!,
+                              'Blog',
+                              post.id.toString(),
+                            );
+
+                            debugPrint('Generated Dynamic Link: $dynamicLink');
+                            await Share.share(dynamicLink);
+                          } catch (e) {
+                            debugPrint('Error sharing link: $e');
+                            // ignore: use_build_context_synchronously
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  content: Text(
+                                      "Error creating or sharing link: $e")),
+                            );
+                          }
+                        },
+                        child: SizedBox(
+                          height: size.height * 0.028,
+                          width: size.height * 0.028,
+                          child: SvgPicture.asset(
+                            Assets.svgSend,
+                            color: AppColors.blackText,
+                          ),
+                        ),
                       ),
                       const SizedBox(
                         width: 10,
@@ -622,18 +563,27 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
     );
   }
 
-  void showLikeList(BuildContext context) {
+  // Define the _launchUrl method
+  Future<void> _launchUrl(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url); // Old launch method for non-web
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  void showLikeList(BuildContext context, int blogId) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
         // Fetch like list after bottom sheet is shown
-        fetchLikeList();
+        fetchLikeList(blogId);
         return const BlogLikedListContent();
       },
     );
   }
 
-  void fetchLikeList() async {
-    await controller.fetchLikeListBlog(post.id ?? 0, context);
+  void fetchLikeList(int blogId) async {
+    await controller.fetchLikeListBlog(blogId, context);
   }
 }

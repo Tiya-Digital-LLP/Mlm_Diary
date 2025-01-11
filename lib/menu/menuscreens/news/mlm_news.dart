@@ -240,6 +240,7 @@ class _MlmNewsScreenState extends State<MlmNews> {
                                 controller: controller,
                                 viewcounts: post.pgcnt ?? 0,
                                 bookmarkCount: post.totalbookmark ?? 0,
+                                url: post.fullUrl ?? '',
                                 commentcount: post.totalcomment ?? 0,
                                 likedbyuser: post.likedByUser ?? false,
                                 bookmarkedbyuser:

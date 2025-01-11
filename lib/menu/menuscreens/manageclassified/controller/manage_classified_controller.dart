@@ -164,23 +164,23 @@ class ManageClasifiedController extends GetxController {
         final GetClassifiedDetailEntity classifiedDetailEntity =
             GetClassifiedDetailEntity.fromJson(responseData);
 
-        final GetClassifiedDetailData firstPost = classifiedDetailEntity.data;
+        final GetClassifiedDetailData firstPost = classifiedDetailEntity.data!;
 
         // Update fields with new data
         title.value.text = firstPost.title.toString();
-        companyName.value.text = firstPost.company;
-        discription.value.text = firstPost.description;
-        url.value.text = firstPost.website;
-        userImage.value = firstPost.imagePath;
-        city.value.text = firstPost.city;
-        state.value.text = firstPost.state;
-        country.value.text = firstPost.country;
+        companyName.value.text = firstPost.company!;
+        discription.value.text = firstPost.description!;
+        url.value.text = firstPost.website!;
+        userImage.value = firstPost.imagePath!;
+        city.value.text = firstPost.city!;
+        state.value.text = firstPost.state!;
+        country.value.text = firstPost.country!;
         location.value.text =
             '${firstPost.city}, ${firstPost.state}, ${firstPost.country}'
                 .trim()
                 .replaceAll(RegExp(r',\s*$'), '');
         // Handle category selection (using categoryId as int)
-        int? categoryId = int.tryParse(firstPost.category);
+        int? categoryId = int.tryParse(firstPost.category!);
 
         if (categoryId != null) {
           if (kDebugMode) {
@@ -213,7 +213,7 @@ class ManageClasifiedController extends GetxController {
         }
 
         // Handle subcategory selection (using subcategoryId as int)
-        int? subcategoryId = int.tryParse(firstPost.subcategory);
+        int? subcategoryId = int.tryParse(firstPost.subcategory!);
 
         if (subcategoryId != null) {
           if (kDebugMode) {
@@ -614,7 +614,7 @@ class ManageClasifiedController extends GetxController {
   //updateclassified
 
   Future<void> updateClassified(
-       File? imageFile, int classifiedId, context) async {
+      File? imageFile, int classifiedId, context) async {
     isLoading(true);
     String device = '';
     if (Platform.isAndroid) {

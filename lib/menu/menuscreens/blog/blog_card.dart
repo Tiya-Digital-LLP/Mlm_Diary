@@ -15,6 +15,8 @@ import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
+import 'package:mlmdiary/widgets/dynamiclink/dynamic_link.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class BlogCard extends StatefulWidget {
@@ -30,6 +32,8 @@ class BlogCard extends StatefulWidget {
   final int viewcounts;
   final int bookmarkCount;
   final String image;
+  final String url;
+
   final int commentcount;
   final bool likedbyuser;
   final bool bookmarkedbyuser;
@@ -52,6 +56,7 @@ class BlogCard extends StatefulWidget {
     required this.bookmarkedbyuser,
     required this.postCaption,
     required this.updatedateTime,
+    required this.url,
   });
 
   @override
@@ -337,10 +342,35 @@ class _BlogCardState extends State<BlogCard> {
                     const SizedBox(
                       width: 10,
                     ),
-                    SizedBox(
-                      height: size.height * 0.028,
-                      width: size.height * 0.028,
-                      child: SvgPicture.asset(Assets.svgSend),
+                    InkWell(
+                      onTap: () async {
+                        try {
+                          final dynamicLink = await createDynamicLink(
+                            widget.url,
+                            'Blog',
+                            widget.blogId.toString(),
+                          );
+
+                          debugPrint('Generated Dynamic Link: $dynamicLink');
+                          await Share.share(dynamicLink);
+                        } catch (e) {
+                          debugPrint('Error sharing link: $e');
+                          // ignore: use_build_context_synchronously
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content:
+                                    Text("Error creating or sharing link: $e")),
+                          );
+                        }
+                      },
+                      child: SizedBox(
+                        height: size.height * 0.028,
+                        width: size.height * 0.028,
+                        child: SvgPicture.asset(
+                          Assets.svgSend,
+                          color: AppColors.blackText,
+                        ),
+                      ),
                     ),
                     const SizedBox(
                       width: 10,

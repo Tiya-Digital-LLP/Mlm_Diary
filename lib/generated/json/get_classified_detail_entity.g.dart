@@ -20,7 +20,7 @@ Map<String, dynamic> $GetClassifiedDetailEntityToJson(
     GetClassifiedDetailEntity entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
   data['status'] = entity.status;
-  data['data'] = entity.data.toJson();
+  data['data'] = entity.data?.toJson();
   return data;
 }
 
@@ -62,11 +62,13 @@ GetClassifiedDetailData $GetClassifiedDetailDataFromJson(
   if (company != null) {
     getClassifiedDetailData.company = company;
   }
-  final dynamic premiumsdate = json['premiumsdate'];
+  final String? premiumsdate = jsonConvert.convert<String>(
+      json['premiumsdate']);
   if (premiumsdate != null) {
     getClassifiedDetailData.premiumsdate = premiumsdate;
   }
-  final dynamic premiumedate = json['premiumedate'];
+  final String? premiumedate = jsonConvert.convert<String>(
+      json['premiumedate']);
   if (premiumedate != null) {
     getClassifiedDetailData.premiumedate = premiumedate;
   }
@@ -98,6 +100,10 @@ GetClassifiedDetailData $GetClassifiedDetailDataFromJson(
   final String? website = jsonConvert.convert<String>(json['website']);
   if (website != null) {
     getClassifiedDetailData.website = website;
+  }
+  final String? location = jsonConvert.convert<String>(json['location']);
+  if (location != null) {
+    getClassifiedDetailData.location = location;
   }
   final String? city = jsonConvert.convert<String>(json['city']);
   if (city != null) {
@@ -164,6 +170,10 @@ GetClassifiedDetailData $GetClassifiedDetailDataFromJson(
   if (fullUrl != null) {
     getClassifiedDetailData.fullUrl = fullUrl;
   }
+  final int? userId = jsonConvert.convert<int>(json['user_id']);
+  if (userId != null) {
+    getClassifiedDetailData.userId = userId;
+  }
   final String? imageUrl = jsonConvert.convert<String>(json['image_url']);
   if (imageUrl != null) {
     getClassifiedDetailData.imageUrl = imageUrl;
@@ -198,6 +208,7 @@ Map<String, dynamic> $GetClassifiedDetailDataToJson(
   data['subcategory'] = entity.subcategory;
   data['popular'] = entity.popular;
   data['website'] = entity.website;
+  data['location'] = entity.location;
   data['city'] = entity.city;
   data['state'] = entity.state;
   data['country'] = entity.country;
@@ -211,8 +222,9 @@ Map<String, dynamic> $GetClassifiedDetailDataToJson(
   data['bookmarked_by_user'] = entity.bookmarkedByUser;
   data['category_name'] = entity.categoryName;
   data['subcategory_name'] = entity.subcategoryName;
-  data['user_data'] = entity.userData.toJson();
+  data['user_data'] = entity.userData?.toJson();
   data['full_url'] = entity.fullUrl;
+  data['user_id'] = entity.userId;
   data['image_url'] = entity.imageUrl;
   data['image_path'] = entity.imagePath;
   data['image_thum_path'] = entity.imageThumPath;
@@ -227,8 +239,8 @@ extension GetClassifiedDetailDataExtension on GetClassifiedDetailData {
     String? description,
     int? pgcnt,
     String? company,
-    dynamic premiumsdate,
-    dynamic premiumedate,
+    String? premiumsdate,
+    String? premiumedate,
     String? datemodified,
     String? createdate,
     String? category,
@@ -236,6 +248,7 @@ extension GetClassifiedDetailDataExtension on GetClassifiedDetailData {
     String? subcategory,
     String? popular,
     String? website,
+    String? location,
     String? city,
     String? state,
     String? country,
@@ -251,6 +264,7 @@ extension GetClassifiedDetailDataExtension on GetClassifiedDetailData {
     String? subcategoryName,
     GetClassifiedDetailDataUserData? userData,
     String? fullUrl,
+    int? userId,
     String? imageUrl,
     String? imagePath,
     String? imageThumPath,
@@ -271,6 +285,7 @@ extension GetClassifiedDetailDataExtension on GetClassifiedDetailData {
       ..subcategory = subcategory ?? this.subcategory
       ..popular = popular ?? this.popular
       ..website = website ?? this.website
+      ..location = location ?? this.location
       ..city = city ?? this.city
       ..state = state ?? this.state
       ..country = country ?? this.country
@@ -286,6 +301,7 @@ extension GetClassifiedDetailDataExtension on GetClassifiedDetailData {
       ..subcategoryName = subcategoryName ?? this.subcategoryName
       ..userData = userData ?? this.userData
       ..fullUrl = fullUrl ?? this.fullUrl
+      ..userId = userId ?? this.userId
       ..imageUrl = imageUrl ?? this.imageUrl
       ..imagePath = imagePath ?? this.imagePath
       ..imageThumPath = imageThumPath ?? this.imageThumPath;

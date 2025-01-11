@@ -252,7 +252,7 @@ class ClasifiedController extends GetxController {
         final GetClassifiedDetailEntity classifiedDetailEntity =
             GetClassifiedDetailEntity.fromJson(responseData);
 
-        final GetClassifiedDetailData firstPost = classifiedDetailEntity.data;
+        final GetClassifiedDetailData firstPost = classifiedDetailEntity.data!;
         // Replace old data with the fetched post
         classifiedDetailList.clear(); // Ensure old data is cleared
         classifiedDetailList.add(firstPost);

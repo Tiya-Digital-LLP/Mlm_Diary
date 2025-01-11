@@ -1,149 +1,136 @@
 import 'package:mlmdiary/generated/json/base/json_convert_content.dart';
-import 'package:mlmdiary/generated/get_news_list_entity.dart';
+import 'package:mlmdiary/generated/get_news_detail_entity.dart';
 
-GetNewsListEntity $GetNewsListEntityFromJson(Map<String, dynamic> json) {
-  final GetNewsListEntity getNewsListEntity = GetNewsListEntity();
+GetNewsDetailEntity $GetNewsDetailEntityFromJson(Map<String, dynamic> json) {
+  final GetNewsDetailEntity getNewsDetailEntity = GetNewsDetailEntity();
   final int? status = jsonConvert.convert<int>(json['status']);
   if (status != null) {
-    getNewsListEntity.status = status;
+    getNewsDetailEntity.status = status;
   }
-  final String? message = jsonConvert.convert<String>(json['message']);
-  if (message != null) {
-    getNewsListEntity.message = message;
-  }
-  final List<GetNewsListData>? data = (json['data'] as List<dynamic>?)
-      ?.map(
-          (e) => jsonConvert.convert<GetNewsListData>(e) as GetNewsListData)
-      .toList();
+  final GetNewsDetailData? data = jsonConvert.convert<GetNewsDetailData>(
+      json['data']);
   if (data != null) {
-    getNewsListEntity.data = data;
+    getNewsDetailEntity.data = data;
   }
-  return getNewsListEntity;
+  return getNewsDetailEntity;
 }
 
-Map<String, dynamic> $GetNewsListEntityToJson(GetNewsListEntity entity) {
+Map<String, dynamic> $GetNewsDetailEntityToJson(GetNewsDetailEntity entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
   data['status'] = entity.status;
-  data['message'] = entity.message;
-  data['data'] = entity.data?.map((v) => v.toJson()).toList();
+  data['data'] = entity.data?.toJson();
   return data;
 }
 
-extension GetNewsListEntityExtension on GetNewsListEntity {
-  GetNewsListEntity copyWith({
+extension GetNewsDetailEntityExtension on GetNewsDetailEntity {
+  GetNewsDetailEntity copyWith({
     int? status,
-    String? message,
-    List<GetNewsListData>? data,
+    GetNewsDetailData? data,
   }) {
-    return GetNewsListEntity()
+    return GetNewsDetailEntity()
       ..status = status ?? this.status
-      ..message = message ?? this.message
       ..data = data ?? this.data;
   }
 }
 
-GetNewsListData $GetNewsListDataFromJson(Map<String, dynamic> json) {
-  final GetNewsListData getNewsListData = GetNewsListData();
+GetNewsDetailData $GetNewsDetailDataFromJson(Map<String, dynamic> json) {
+  final GetNewsDetailData getNewsDetailData = GetNewsDetailData();
   final int? id = jsonConvert.convert<int>(json['id']);
   if (id != null) {
-    getNewsListData.id = id;
+    getNewsDetailData.id = id;
   }
   final String? title = jsonConvert.convert<String>(json['title']);
   if (title != null) {
-    getNewsListData.title = title;
+    getNewsDetailData.title = title;
   }
   final String? photo = jsonConvert.convert<String>(json['photo']);
   if (photo != null) {
-    getNewsListData.photo = photo;
+    getNewsDetailData.photo = photo;
   }
   final String? description = jsonConvert.convert<String>(json['description']);
   if (description != null) {
-    getNewsListData.description = description;
+    getNewsDetailData.description = description;
   }
   final int? pgcnt = jsonConvert.convert<int>(json['pgcnt']);
   if (pgcnt != null) {
-    getNewsListData.pgcnt = pgcnt;
+    getNewsDetailData.pgcnt = pgcnt;
   }
   final String? createdate = jsonConvert.convert<String>(json['createdate']);
   if (createdate != null) {
-    getNewsListData.createdate = createdate;
+    getNewsDetailData.createdate = createdate;
   }
   final String? datemodified = jsonConvert.convert<String>(
       json['datemodified']);
   if (datemodified != null) {
-    getNewsListData.datemodified = datemodified;
+    getNewsDetailData.datemodified = datemodified;
   }
   final String? category = jsonConvert.convert<String>(json['category']);
   if (category != null) {
-    getNewsListData.category = category;
+    getNewsDetailData.category = category;
   }
   final int? creatby = jsonConvert.convert<int>(json['creatby']);
   if (creatby != null) {
-    getNewsListData.creatby = creatby;
+    getNewsDetailData.creatby = creatby;
   }
   final int? status = jsonConvert.convert<int>(json['status']);
   if (status != null) {
-    getNewsListData.status = status;
+    getNewsDetailData.status = status;
   }
   final String? subcategory = jsonConvert.convert<String>(json['subcategory']);
   if (subcategory != null) {
-    getNewsListData.subcategory = subcategory;
+    getNewsDetailData.subcategory = subcategory;
   }
   final String? website = jsonConvert.convert<String>(json['website']);
   if (website != null) {
-    getNewsListData.website = website;
+    getNewsDetailData.website = website;
   }
   final String? urlcomponent = jsonConvert.convert<String>(
       json['urlcomponent']);
   if (urlcomponent != null) {
-    getNewsListData.urlcomponent = urlcomponent;
+    getNewsDetailData.urlcomponent = urlcomponent;
   }
   final int? totallike = jsonConvert.convert<int>(json['totallike']);
   if (totallike != null) {
-    getNewsListData.totallike = totallike;
+    getNewsDetailData.totallike = totallike;
   }
   final int? totalbookmark = jsonConvert.convert<int>(json['totalbookmark']);
   if (totalbookmark != null) {
-    getNewsListData.totalbookmark = totalbookmark;
+    getNewsDetailData.totalbookmark = totalbookmark;
   }
   final int? totalcomment = jsonConvert.convert<int>(json['totalcomment']);
   if (totalcomment != null) {
-    getNewsListData.totalcomment = totalcomment;
+    getNewsDetailData.totalcomment = totalcomment;
+  }
+  final String? fullUrl = jsonConvert.convert<String>(json['full_url']);
+  if (fullUrl != null) {
+    getNewsDetailData.fullUrl = fullUrl;
+  }
+  final String? imageUrl = jsonConvert.convert<String>(json['image_url']);
+  if (imageUrl != null) {
+    getNewsDetailData.imageUrl = imageUrl;
   }
   final bool? likedByUser = jsonConvert.convert<bool>(json['liked_by_user']);
   if (likedByUser != null) {
-    getNewsListData.likedByUser = likedByUser;
+    getNewsDetailData.likedByUser = likedByUser;
   }
   final bool? bookmarkedByUser = jsonConvert.convert<bool>(
       json['bookmarked_by_user']);
   if (bookmarkedByUser != null) {
-    getNewsListData.bookmarkedByUser = bookmarkedByUser;
+    getNewsDetailData.bookmarkedByUser = bookmarkedByUser;
   }
-  final GetNewsListDataUserData? userData = jsonConvert.convert<
-      GetNewsListDataUserData>(json['user_data']);
+  final GetNewsDetailDataUserData? userData = jsonConvert.convert<
+      GetNewsDetailDataUserData>(json['user_data']);
   if (userData != null) {
-    getNewsListData.userData = userData;
-  }
-  final String? imageUrl = jsonConvert.convert<String>(json['image_url']);
-  if (imageUrl != null) {
-    getNewsListData.imageUrl = imageUrl;
-  }
-  final int? userId = jsonConvert.convert<int>(json['user_id']);
-  if (userId != null) {
-    getNewsListData.userId = userId;
-  }
-  final String? fullUrl = jsonConvert.convert<String>(json['full_url']);
-  if (fullUrl != null) {
-    getNewsListData.fullUrl = fullUrl;
+    getNewsDetailData.userData = userData;
   }
   final String? imagePath = jsonConvert.convert<String>(json['image_path']);
   if (imagePath != null) {
-    getNewsListData.imagePath = imagePath;
+    getNewsDetailData.imagePath = imagePath;
   }
-  return getNewsListData;
+  return getNewsDetailData;
 }
 
-Map<String, dynamic> $GetNewsListDataToJson(GetNewsListData entity) {
+Map<String, dynamic> $GetNewsDetailDataToJson(GetNewsDetailData entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
   data['id'] = entity.id;
   data['title'] = entity.title;
@@ -161,18 +148,17 @@ Map<String, dynamic> $GetNewsListDataToJson(GetNewsListData entity) {
   data['totallike'] = entity.totallike;
   data['totalbookmark'] = entity.totalbookmark;
   data['totalcomment'] = entity.totalcomment;
+  data['full_url'] = entity.fullUrl;
+  data['image_url'] = entity.imageUrl;
   data['liked_by_user'] = entity.likedByUser;
   data['bookmarked_by_user'] = entity.bookmarkedByUser;
   data['user_data'] = entity.userData?.toJson();
-  data['image_url'] = entity.imageUrl;
-  data['user_id'] = entity.userId;
-  data['full_url'] = entity.fullUrl;
   data['image_path'] = entity.imagePath;
   return data;
 }
 
-extension GetNewsListDataExtension on GetNewsListData {
-  GetNewsListData copyWith({
+extension GetNewsDetailDataExtension on GetNewsDetailData {
+  GetNewsDetailData copyWith({
     int? id,
     String? title,
     String? photo,
@@ -189,15 +175,14 @@ extension GetNewsListDataExtension on GetNewsListData {
     int? totallike,
     int? totalbookmark,
     int? totalcomment,
+    String? fullUrl,
+    String? imageUrl,
     bool? likedByUser,
     bool? bookmarkedByUser,
-    GetNewsListDataUserData? userData,
-    String? imageUrl,
-    int? userId,
-    String? fullUrl,
+    GetNewsDetailDataUserData? userData,
     String? imagePath,
   }) {
-    return GetNewsListData()
+    return GetNewsDetailData()
       ..id = id ?? this.id
       ..title = title ?? this.title
       ..photo = photo ?? this.photo
@@ -214,59 +199,53 @@ extension GetNewsListDataExtension on GetNewsListData {
       ..totallike = totallike ?? this.totallike
       ..totalbookmark = totalbookmark ?? this.totalbookmark
       ..totalcomment = totalcomment ?? this.totalcomment
+      ..fullUrl = fullUrl ?? this.fullUrl
+      ..imageUrl = imageUrl ?? this.imageUrl
       ..likedByUser = likedByUser ?? this.likedByUser
       ..bookmarkedByUser = bookmarkedByUser ?? this.bookmarkedByUser
       ..userData = userData ?? this.userData
-      ..imageUrl = imageUrl ?? this.imageUrl
-      ..userId = userId ?? this.userId
-      ..fullUrl = fullUrl ?? this.fullUrl
       ..imagePath = imagePath ?? this.imagePath;
   }
 }
 
-GetNewsListDataUserData $GetNewsListDataUserDataFromJson(
+GetNewsDetailDataUserData $GetNewsDetailDataUserDataFromJson(
     Map<String, dynamic> json) {
-  final GetNewsListDataUserData getNewsListDataUserData = GetNewsListDataUserData();
-  final int? id = jsonConvert.convert<int>(json['id']);
-  if (id != null) {
-    getNewsListDataUserData.id = id;
-  }
+  final GetNewsDetailDataUserData getNewsDetailDataUserData = GetNewsDetailDataUserData();
   final String? name = jsonConvert.convert<String>(json['name']);
   if (name != null) {
-    getNewsListDataUserData.name = name;
+    getNewsDetailDataUserData.name = name;
   }
   final String? userimage = jsonConvert.convert<String>(json['userimage']);
   if (userimage != null) {
-    getNewsListDataUserData.userimage = userimage;
+    getNewsDetailDataUserData.userimage = userimage;
   }
   final String? email = jsonConvert.convert<String>(json['email']);
   if (email != null) {
-    getNewsListDataUserData.email = email;
+    getNewsDetailDataUserData.email = email;
   }
   final dynamic mobile = json['mobile'];
   if (mobile != null) {
-    getNewsListDataUserData.mobile = mobile;
+    getNewsDetailDataUserData.mobile = mobile;
   }
   final dynamic countrycode1 = json['countrycode1'];
   if (countrycode1 != null) {
-    getNewsListDataUserData.countrycode1 = countrycode1;
+    getNewsDetailDataUserData.countrycode1 = countrycode1;
   }
   final String? imagePath = jsonConvert.convert<String>(json['image_path']);
   if (imagePath != null) {
-    getNewsListDataUserData.imagePath = imagePath;
+    getNewsDetailDataUserData.imagePath = imagePath;
   }
   final String? imageThumPath = jsonConvert.convert<String>(
       json['image_thum_path']);
   if (imageThumPath != null) {
-    getNewsListDataUserData.imageThumPath = imageThumPath;
+    getNewsDetailDataUserData.imageThumPath = imageThumPath;
   }
-  return getNewsListDataUserData;
+  return getNewsDetailDataUserData;
 }
 
-Map<String, dynamic> $GetNewsListDataUserDataToJson(
-    GetNewsListDataUserData entity) {
+Map<String, dynamic> $GetNewsDetailDataUserDataToJson(
+    GetNewsDetailDataUserData entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
-  data['id'] = entity.id;
   data['name'] = entity.name;
   data['userimage'] = entity.userimage;
   data['email'] = entity.email;
@@ -277,9 +256,8 @@ Map<String, dynamic> $GetNewsListDataUserDataToJson(
   return data;
 }
 
-extension GetNewsListDataUserDataExtension on GetNewsListDataUserData {
-  GetNewsListDataUserData copyWith({
-    int? id,
+extension GetNewsDetailDataUserDataExtension on GetNewsDetailDataUserData {
+  GetNewsDetailDataUserData copyWith({
     String? name,
     String? userimage,
     String? email,
@@ -288,8 +266,7 @@ extension GetNewsListDataUserDataExtension on GetNewsListDataUserData {
     String? imagePath,
     String? imageThumPath,
   }) {
-    return GetNewsListDataUserData()
-      ..id = id ?? this.id
+    return GetNewsDetailDataUserData()
       ..name = name ?? this.name
       ..userimage = userimage ?? this.userimage
       ..email = email ?? this.email

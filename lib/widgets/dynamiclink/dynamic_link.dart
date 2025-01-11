@@ -15,8 +15,14 @@ Future<String> createDynamicLink(
     ),
   );
 
-  final Uri dynamicUrl =
-      // ignore: deprecated_member_use
-      await FirebaseDynamicLinks.instance.buildLink(parameters);
-  return dynamicUrl.toString();
+  try {
+    // Generate a short dynamic link
+    final ShortDynamicLink shortLink =
+        // ignore: deprecated_member_use
+        await FirebaseDynamicLinks.instance.buildShortLink(parameters);
+
+    return shortLink.shortUrl.toString();
+  } catch (e) {
+    throw Exception("Failed to create dynamic link: $e");
+  }
 }

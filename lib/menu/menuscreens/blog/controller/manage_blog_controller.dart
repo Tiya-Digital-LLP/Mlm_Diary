@@ -8,7 +8,6 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http_parser/http_parser.dart';
-import 'package:mlmdiary/classified/get_blog_list_entity.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/add_comment_blog_entity.dart';
 import 'package:mlmdiary/generated/assets.dart';
@@ -17,6 +16,8 @@ import 'package:mlmdiary/generated/blog_count_view_entity.dart';
 import 'package:mlmdiary/generated/blog_like_list_entity.dart';
 import 'package:mlmdiary/generated/edit_comment_entity.dart';
 import 'package:mlmdiary/generated/get_blog_comment_entity.dart';
+import 'package:mlmdiary/generated/get_blog_detail_entity.dart';
+import 'package:mlmdiary/generated/get_blog_list_entity.dart';
 
 import 'package:mlmdiary/generated/get_category_entity.dart';
 import 'package:mlmdiary/generated/get_sub_category_entity.dart';
@@ -46,6 +47,7 @@ class ManageBlogController extends GetxController {
 
   RxList<MyBlogListData> myBlogList = <MyBlogListData>[].obs;
   RxList<GetBlogListData> blogList = RxList<GetBlogListData>();
+  RxList<GetBlogDetailData> blogDetailList = <GetBlogDetailData>[].obs;
 
   RxList<BlogLikeListData> blogLikeList = RxList<BlogLikeListData>();
 
@@ -195,6 +197,67 @@ class ManageBlogController extends GetxController {
       }
     } finally {
       isLoading(false);
+    }
+  }
+
+  Future<void> fetchBlogDetail(int blogId, context) async {
+    isLoading.value = true;
+    String device =
+        Platform.isAndroid ? 'android' : (Platform.isIOS ? 'ios' : '');
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+
+    try {
+      var connectivityResult = await (Connectivity().checkConnectivity());
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult == ConnectivityResult.none) {
+        showToasterrorborder("No internet connection", context);
+        isLoading.value = false;
+        return;
+      }
+
+      Map<String, String> queryParams = {
+        'api_token': apiToken ?? '',
+        'device': device,
+        'blog_id': blogId.toString(),
+      };
+
+      if (kDebugMode) {
+        print('api_token: $apiToken');
+        print('device: $device');
+        print('blogId: $blogId');
+      }
+
+      Uri uri = Uri.parse(Constants.baseUrl + Constants.blogdetail)
+          .replace(queryParameters: queryParams);
+
+      final response = await http.post(uri);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        if (kDebugMode) {
+          print(json.encode(responseData));
+        } // Print entire response data
+
+        final GetBlogDetailEntity blogDetailEntity =
+            GetBlogDetailEntity.fromJson(responseData);
+
+        final GetBlogDetailData firstPost = blogDetailEntity.data!;
+        // Replace old data with the fetched post
+        blogDetailList.clear(); // Ensure old data is cleared
+        blogDetailList.add(firstPost);
+      } else {
+        if (kDebugMode) {
+          print("Error: ${response.body}");
+        }
+      }
+    } catch (error) {
+      if (kDebugMode) {
+        print("Error: $error");
+      }
+    } finally {
+      isLoading.value = false;
     }
   }
 

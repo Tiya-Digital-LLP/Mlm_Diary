@@ -260,9 +260,10 @@ class AppPages {
     ),
     GetPage(
       name: Routes.newsdetailsnotification,
-      page: () => NewsDetailsNotification(
-        key: UniqueKey(),
-      ),
+      page: () {
+        final int newsId = Get.arguments;
+        return NewsDetailsNotification(newsId: newsId);
+      },
     ),
     GetPage(
       name: Routes.manageblog,
@@ -304,9 +305,10 @@ class AppPages {
     ),
     GetPage(
       name: Routes.blogdetailsnotification,
-      page: () => BlogDetailNotification(
-        key: UniqueKey(),
-      ),
+      page: () {
+        final int blogId = Get.arguments;
+        return BlogDetailNotification(blogId: blogId);
+      },
     ),
     GetPage(
       name: Routes.advertising,

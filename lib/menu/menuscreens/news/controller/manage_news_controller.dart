@@ -16,6 +16,7 @@ import 'package:mlmdiary/generated/bookmark_news_entity.dart';
 import 'package:mlmdiary/generated/edit_comment_entity.dart';
 import 'package:mlmdiary/generated/get_category_entity.dart';
 import 'package:mlmdiary/generated/get_comment_news_entity.dart';
+import 'package:mlmdiary/generated/get_news_detail_entity.dart';
 import 'package:mlmdiary/generated/get_news_list_entity.dart';
 import 'package:mlmdiary/generated/get_sub_category_entity.dart';
 import 'package:mlmdiary/generated/liked_news_entity.dart';
@@ -45,6 +46,7 @@ class ManageNewsController extends GetxController {
 
   RxList<MyNewsData> myNewsList = <MyNewsData>[].obs;
   RxList<GetNewsListData> newsList = <GetNewsListData>[].obs;
+  RxList<GetNewsDetailData> newsDetailList = <GetNewsDetailData>[].obs;
 
   RxList<NewsLikeListData> newsLikeList = RxList<NewsLikeListData>();
 // news comment
@@ -170,6 +172,67 @@ class ManageNewsController extends GetxController {
       }
     } finally {
       isLoading(false);
+    }
+  }
+
+  Future<void> fetchNewsDetail(int newsId, context) async {
+    isLoading.value = true;
+    String device =
+        Platform.isAndroid ? 'android' : (Platform.isIOS ? 'ios' : '');
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+
+    try {
+      var connectivityResult = await (Connectivity().checkConnectivity());
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult == ConnectivityResult.none) {
+        showToasterrorborder("No internet connection", context);
+        isLoading.value = false;
+        return;
+      }
+
+      Map<String, String> queryParams = {
+        'api_token': apiToken ?? '',
+        'device': device,
+        'news_id': newsId.toString(),
+      };
+
+      if (kDebugMode) {
+        print('api_token: $apiToken');
+        print('device: $device');
+        print('news_id: $newsId');
+      }
+
+      Uri uri = Uri.parse(Constants.baseUrl + Constants.newsdetail)
+          .replace(queryParameters: queryParams);
+
+      final response = await http.post(uri);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        if (kDebugMode) {
+          print(json.encode(responseData));
+        } // Print entire response data
+
+        final GetNewsDetailEntity newsDetailEntity =
+            GetNewsDetailEntity.fromJson(responseData);
+
+        final GetNewsDetailData firstPost = newsDetailEntity.data!;
+        // Replace old data with the fetched post
+        newsDetailList.clear(); // Ensure old data is cleared
+        newsDetailList.add(firstPost);
+      } else {
+        if (kDebugMode) {
+          print("Error: ${response.body}");
+        }
+      }
+    } catch (error) {
+      if (kDebugMode) {
+        print("Error: $error");
+      }
+    } finally {
+      isLoading.value = false;
     }
   }
 

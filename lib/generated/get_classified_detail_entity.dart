@@ -5,8 +5,8 @@ export 'package:mlmdiary/generated/json/get_classified_detail_entity.g.dart';
 
 @JsonSerializable()
 class GetClassifiedDetailEntity {
-	late int status;
-	late GetClassifiedDetailData data;
+	int? status = 0;
+	GetClassifiedDetailData? data;
 
 	GetClassifiedDetailEntity();
 
@@ -22,48 +22,51 @@ class GetClassifiedDetailEntity {
 
 @JsonSerializable()
 class GetClassifiedDetailData {
-	late int id;
-	late String title;
-	late String image;
-	late String description;
-	late int pgcnt;
-	late String company;
-	dynamic premiumsdate;
-	dynamic premiumedate;
-	late String datemodified;
-	late String createdate;
-	late String category;
-	late int creatby;
-	late String subcategory;
-	late String popular;
-	late String website;
-	late String city;
-	late String state;
-	late String country;
-	late String lat;
-	late String lng;
-	late String urlcomponent;
-	late int totallike;
-	late int totalbookmark;
-	late int totalcomment;
+	int? id = 0;
+	String? title = '';
+	String? image = '';
+	String? description = '';
+	int? pgcnt = 0;
+	String? company = '';
+	String? premiumsdate = '';
+	String? premiumedate = '';
+	String? datemodified = '';
+	String? createdate = '';
+	String? category = '';
+	int? creatby = 0;
+	String? subcategory = '';
+	String? popular = '';
+	String? website = '';
+	String? location = '';
+	String? city = '';
+	String? state = '';
+	String? country = '';
+	String? lat = '';
+	String? lng = '';
+	String? urlcomponent = '';
+	int? totallike = 0;
+	int? totalbookmark = 0;
+	int? totalcomment = 0;
 	@JSONField(name: "liked_by_user")
-	late bool likedByUser;
+	bool? likedByUser = false;
 	@JSONField(name: "bookmarked_by_user")
-	late bool bookmarkedByUser;
+	bool? bookmarkedByUser = false;
 	@JSONField(name: "category_name")
-	late String categoryName;
+	String? categoryName = '';
 	@JSONField(name: "subcategory_name")
-	late String subcategoryName;
+	String? subcategoryName = '';
 	@JSONField(name: "user_data")
-	late GetClassifiedDetailDataUserData userData;
+	GetClassifiedDetailDataUserData? userData;
 	@JSONField(name: "full_url")
-	late String fullUrl;
+	String? fullUrl = '';
+	@JSONField(name: "user_id")
+	int? userId = 0;
 	@JSONField(name: "image_url")
-	late String imageUrl;
+	String? imageUrl = '';
 	@JSONField(name: "image_path")
-	late String imagePath;
+	String? imagePath = '';
 	@JSONField(name: "image_thum_path")
-	late String imageThumPath;
+	String? imageThumPath = '';
 
 	GetClassifiedDetailData();
 
@@ -79,15 +82,15 @@ class GetClassifiedDetailData {
 
 @JsonSerializable()
 class GetClassifiedDetailDataUserData {
-	late String name;
-	late String userimage;
-	late String email;
-	late String mobile;
-	late String countrycode1;
+	String? name = '';
+	String? userimage = '';
+	String? email = '';
+	String? mobile = '';
+	String? countrycode1 = '';
 	@JSONField(name: "image_path")
-	late String imagePath;
+	String? imagePath = '';
 	@JSONField(name: "image_thum_path")
-	late String imageThumPath;
+	String? imageThumPath = '';
 
 	GetClassifiedDetailDataUserData();
 

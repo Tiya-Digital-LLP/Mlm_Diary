@@ -75,7 +75,8 @@ class _MyAppState extends State<MyApp> {
   static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   static FirebaseAnalyticsObserver observer =
       FirebaseAnalyticsObserver(analytics: analytics);
-  final ClasifiedController controller = Get.put(ClasifiedController());
+  final ClasifiedController clasifiedController =
+      Get.put(ClasifiedController());
 
   final ManageNewsController manageNewsController =
       Get.put(ManageNewsController());
@@ -184,13 +185,24 @@ class _MyAppState extends State<MyApp> {
         if (data != 0) {
           switch (screen) {
             case 'Classified':
-              controller.fetchClassifiedDetail(
+              clasifiedController.fetchClassifiedDetail(
                 data,
                 // ignore: use_build_context_synchronously
                 context,
               );
               Get.toNamed(
                 Routes.mlmclassifieddetailtest,
+                arguments: data,
+              );
+              break;
+            case 'Blog':
+              manageBlogController.fetchBlogDetail(
+                data,
+                // ignore: use_build_context_synchronously
+                context,
+              );
+              Get.toNamed(
+                Routes.blogdetailsnotification,
                 arguments: data,
               );
               break;

@@ -199,6 +199,7 @@ class _MlmBlogState extends State<MlmBlog> {
                                   likedbyuser: post.likedByUser ?? false,
                                   bookmarkedbyuser:
                                       post.bookmarkedByUser ?? false,
+                                  url: post.fullUrl ?? '',
                                 ),
                               ),
                             );

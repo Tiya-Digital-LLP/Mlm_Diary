@@ -35,9 +35,14 @@ class PostNavigationHandler {
   Future<void> handleTap() async {
     switch (post.postType) {
       case 'classified':
-        Get.toNamed(Routes.mlmclassifieddetailcopy, arguments: {'id': post.id});
+        Get.toNamed(
+          Routes.mlmclassifieddetailtest,
+          arguments: post.postid,
+        );
         classifiedController.fetchClassifiedDetail(
-            post.postid ?? 0, Get.context);
+          post.postid ?? 0,
+          Get.context,
+        );
         break;
 
       case 'user_post':

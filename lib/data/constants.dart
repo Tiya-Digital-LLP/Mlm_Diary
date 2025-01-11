@@ -84,6 +84,8 @@ class Constants {
   static const String boostontopclassifiedpremium =
       "/classified/request_for_paid_classified";
   static const String classifieddetail = "/getClassifiedDetail";
+  static const String newsdetail = "/getnews_detail";
+  static const String blogdetail = "/getblog_detail";
 
   static const String getadmincompany = "/getmlmcompany";
   static const String countviewcompany = "/countview_company";

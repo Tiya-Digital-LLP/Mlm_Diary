@@ -1,19 +1,19 @@
 import 'package:mlmdiary/generated/json/base/json_field.dart';
-import 'package:mlmdiary/generated/json/get_news_list_entity.g.dart';
+import 'package:mlmdiary/generated/json/get_blog_list_entity.g.dart';
 import 'dart:convert';
-export 'package:mlmdiary/generated/json/get_news_list_entity.g.dart';
+export 'package:mlmdiary/generated/json/get_blog_list_entity.g.dart';
 
 @JsonSerializable()
-class GetNewsListEntity {
+class GetBlogListEntity {
 	int? status = 0;
 	String? message = '';
-	List<GetNewsListData>? data = [];
+	List<GetBlogListData>? data = [];
 
-	GetNewsListEntity();
+	GetBlogListEntity();
 
-	factory GetNewsListEntity.fromJson(Map<String, dynamic> json) => $GetNewsListEntityFromJson(json);
+	factory GetBlogListEntity.fromJson(Map<String, dynamic> json) => $GetBlogListEntityFromJson(json);
 
-	Map<String, dynamic> toJson() => $GetNewsListEntityToJson(this);
+	Map<String, dynamic> toJson() => $GetBlogListEntityToJson(this);
 
 	@override
 	String toString() {
@@ -22,17 +22,17 @@ class GetNewsListEntity {
 }
 
 @JsonSerializable()
-class GetNewsListData {
+class GetBlogListData {
 	int? id = 0;
 	String? title = '';
-	String? photo = '';
+	String? image = '';
 	String? description = '';
 	int? pgcnt = 0;
 	String? createdate = '';
 	String? datemodified = '';
 	String? category = '';
-	int? creatby = 0;
-	int? status = 0;
+	@JSONField(name: "user_id")
+	int? userId = 0;
 	String? subcategory = '';
 	String? website = '';
 	String? urlcomponent = '';
@@ -44,21 +44,19 @@ class GetNewsListData {
 	@JSONField(name: "bookmarked_by_user")
 	bool? bookmarkedByUser = false;
 	@JSONField(name: "user_data")
-	GetNewsListDataUserData? userData;
+	GetBlogListDataUserData? userData;
 	@JSONField(name: "image_url")
 	String? imageUrl = '';
-	@JSONField(name: "user_id")
-	int? userId = 0;
 	@JSONField(name: "full_url")
 	String? fullUrl = '';
 	@JSONField(name: "image_path")
 	String? imagePath = '';
 
-	GetNewsListData();
+	GetBlogListData();
 
-	factory GetNewsListData.fromJson(Map<String, dynamic> json) => $GetNewsListDataFromJson(json);
+	factory GetBlogListData.fromJson(Map<String, dynamic> json) => $GetBlogListDataFromJson(json);
 
-	Map<String, dynamic> toJson() => $GetNewsListDataToJson(this);
+	Map<String, dynamic> toJson() => $GetBlogListDataToJson(this);
 
 	@override
 	String toString() {
@@ -67,23 +65,26 @@ class GetNewsListData {
 }
 
 @JsonSerializable()
-class GetNewsListDataUserData {
+class GetBlogListDataUserData {
 	int? id = 0;
 	String? name = '';
 	String? userimage = '';
 	String? email = '';
 	dynamic mobile;
 	dynamic countrycode1;
+	String? company = '';
+	String? country = '';
+	String? city = '';
 	@JSONField(name: "image_path")
 	String? imagePath = '';
 	@JSONField(name: "image_thum_path")
 	String? imageThumPath = '';
 
-	GetNewsListDataUserData();
+	GetBlogListDataUserData();
 
-	factory GetNewsListDataUserData.fromJson(Map<String, dynamic> json) => $GetNewsListDataUserDataFromJson(json);
+	factory GetBlogListDataUserData.fromJson(Map<String, dynamic> json) => $GetBlogListDataUserDataFromJson(json);
 
-	Map<String, dynamic> toJson() => $GetNewsListDataUserDataToJson(this);
+	Map<String, dynamic> toJson() => $GetBlogListDataUserDataToJson(this);
 
 	@override
 	String toString() {

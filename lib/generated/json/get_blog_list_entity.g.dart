@@ -1,5 +1,5 @@
 import 'package:mlmdiary/generated/json/base/json_convert_content.dart';
-import 'package:mlmdiary/classified/get_blog_list_entity.dart';
+import 'package:mlmdiary/generated/get_blog_list_entity.dart';
 
 GetBlogListEntity $GetBlogListEntityFromJson(Map<String, dynamic> json) {
   final GetBlogListEntity getBlogListEntity = GetBlogListEntity();
@@ -124,6 +124,10 @@ GetBlogListData $GetBlogListDataFromJson(Map<String, dynamic> json) {
   if (imageUrl != null) {
     getBlogListData.imageUrl = imageUrl;
   }
+  final String? fullUrl = jsonConvert.convert<String>(json['full_url']);
+  if (fullUrl != null) {
+    getBlogListData.fullUrl = fullUrl;
+  }
   final String? imagePath = jsonConvert.convert<String>(json['image_path']);
   if (imagePath != null) {
     getBlogListData.imagePath = imagePath;
@@ -152,6 +156,7 @@ Map<String, dynamic> $GetBlogListDataToJson(GetBlogListData entity) {
   data['bookmarked_by_user'] = entity.bookmarkedByUser;
   data['user_data'] = entity.userData?.toJson();
   data['image_url'] = entity.imageUrl;
+  data['full_url'] = entity.fullUrl;
   data['image_path'] = entity.imagePath;
   return data;
 }
@@ -177,6 +182,7 @@ extension GetBlogListDataExtension on GetBlogListData {
     bool? bookmarkedByUser,
     GetBlogListDataUserData? userData,
     String? imageUrl,
+    String? fullUrl,
     String? imagePath,
   }) {
     return GetBlogListData()
@@ -199,6 +205,7 @@ extension GetBlogListDataExtension on GetBlogListData {
       ..bookmarkedByUser = bookmarkedByUser ?? this.bookmarkedByUser
       ..userData = userData ?? this.userData
       ..imageUrl = imageUrl ?? this.imageUrl
+      ..fullUrl = fullUrl ?? this.fullUrl
       ..imagePath = imagePath ?? this.imagePath;
   }
 }

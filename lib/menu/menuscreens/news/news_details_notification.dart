@@ -6,28 +6,27 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
-import 'package:mlmdiary/generated/get_news_list_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/custom_news_comment.dart';
 import 'package:mlmdiary/menu/menuscreens/news/news_like_list_content.dart';
-import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
-import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
+import 'package:mlmdiary/widgets/dynamiclink/dynamic_link.dart';
 import 'package:mlmdiary/widgets/image_preview_user_image.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:text_link/text_link.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:html/dom.dart' as dom;
 
 class NewsDetailsNotification extends StatefulWidget {
-  const NewsDetailsNotification({
-    required Key key,
-  }) : super(key: key);
+  final int newsId;
+
+  const NewsDetailsNotification({super.key, required this.newsId});
 
   @override
   State<NewsDetailsNotification> createState() => _MyNewsDetailScreenState();
@@ -35,10 +34,8 @@ class NewsDetailsNotification extends StatefulWidget {
 
 class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
   final ManageNewsController controller = Get.put(ManageNewsController());
-  dynamic post;
   PostTimeFormatter postTimeFormatter = PostTimeFormatter();
-  final UserProfileController userProfileController =
-      Get.put(UserProfileController());
+
 // like
   late RxBool isLiked;
   late RxInt likeCount;
@@ -50,23 +47,13 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
   void initState() {
     super.initState();
 
-    final arguments = Get.arguments as Map<String, dynamic>?;
     initializeLikes();
     initializeBookmarks();
-    if (arguments != null) {
-      post = GetNewsListData.fromJson(arguments);
-      if (post != null) {
-        final int postId = post!.id ?? 0;
-        if (postId != 0) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            controller.getNews(
-              postId,
-            );
-            controller.countViewNews(postId, context);
-          });
-        }
-      }
-    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.fetchNewsDetail(widget.newsId, context);
+      controller.countViewNews(widget.newsId, context);
+    });
   }
 
   void initializeLikes() {
@@ -99,10 +86,10 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
         onTap: () {},
       ),
       body: Obx(() {
-        if (controller.newsList.isEmpty) {
+        if (controller.newsDetailList.isEmpty) {
           return const Center(child: Text('No data available.'));
         } else {
-          final data = controller.newsList.first;
+          final post = controller.newsDetailList.first;
           return SingleChildScrollView(
             child: Column(
               children: [
@@ -121,23 +108,23 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
                               horizontal: 16, vertical: 8),
                           child: InkWell(
                             onTap: () async {
-                              Get.toNamed(Routes.userprofilescreen, arguments: {
-                                'user_id': post.userId ?? 0,
-                              });
-                              await userProfileController.fetchUserAllPost(
-                                1,
-                                post.userId.toString(),
-                              );
+                              // Get.toNamed(Routes.userprofilescreen, arguments: {
+                              //   'user_id': post.userId ?? 0,
+                              // });
+                              // await userProfileController.fetchUserAllPost(
+                              //   1,
+                              //   post.userId.toString(),
+                              // );
                             },
                             child: Row(
                               children: [
-                                if (data.userData!.imagePath!.isNotEmpty &&
-                                    Uri.tryParse(data.imageUrl!)
+                                if (post.userData!.imagePath!.isNotEmpty &&
+                                    Uri.tryParse(post.imageUrl!)
                                             ?.hasAbsolutePath ==
                                         true)
                                   ClipOval(
                                     child: CachedNetworkImage(
-                                      imageUrl: data.userData!.imagePath ?? '',
+                                      imageUrl: post.userData!.imagePath ?? '',
                                       height: 60.0,
                                       width: 60.0,
                                       fit: BoxFit.cover,
@@ -154,7 +141,7 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
                                     Row(
                                       children: [
                                         Text(
-                                          data.userData!.name ?? '',
+                                          post.userData!.name ?? '',
                                           style: textStyleW700(
                                               size.width * 0.043,
                                               AppColors.blackText),
@@ -166,7 +153,7 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
                                     ),
                                     Text(
                                       postTimeFormatter.formatPostTime(
-                                          data.createdate ?? ''),
+                                          post.createdate ?? ''),
                                       style: textStyleW400(
                                           size.width * 0.035,
                                           // ignore: deprecated_member_use
@@ -181,8 +168,8 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
                         SizedBox(
                           height: size.height * 0.012,
                         ),
-                        if (data.imageUrl!.isNotEmpty &&
-                            Uri.tryParse(data.imageUrl!)?.hasAbsolutePath ==
+                        if (post.imageUrl!.isNotEmpty &&
+                            Uri.tryParse(post.imageUrl!)?.hasAbsolutePath ==
                                 true)
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -192,7 +179,7 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
                                   context: context,
                                   builder: (BuildContext context) {
                                     return FullScreenImageDialog(
-                                        imageUrl: data.imageUrl.toString());
+                                        imageUrl: post.imageUrl.toString());
                                   },
                                 );
                               },
@@ -202,7 +189,7 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(12.0),
                                   child: Image.network(
-                                    data.imageUrl.toString(),
+                                    post.imageUrl.toString(),
                                     fit: BoxFit.fill,
                                     errorBuilder: (context, error, stackTrace) {
                                       return Image.asset(
@@ -225,7 +212,7 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
                           child: Align(
                             alignment: Alignment.topLeft,
                             child: Html(
-                              data: data.title,
+                              data: post.title,
                               style: {
                                 "html": Style(
                                   lineHeight: const LineHeight(1),
@@ -249,7 +236,7 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
                           child: Align(
                             alignment: Alignment.topLeft,
                             child: Text(
-                              '${data.category} | ${data.subcategory}',
+                              '${post.category} | ${post.subcategory}',
                               style: TextStyle(
                                 fontWeight: FontWeight.w400,
                                 color: AppColors.blackText,
@@ -292,9 +279,9 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
                                   InkWell(
                                     onTap: () {
                                       final String? countryCode =
-                                          data.userData!.countrycode1;
+                                          post.userData!.countrycode1;
                                       final String? mobileNumber =
-                                          data.userData!.mobile;
+                                          post.userData!.mobile;
 
                                       if (mobileNumber == null ||
                                           mobileNumber.isEmpty) {
@@ -317,7 +304,7 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
                                       }
                                     },
                                     child: Text(
-                                      '${data.userData!.countrycode1 ?? 'N/A'} - ${data.userData!.mobile ?? 'N/A'}',
+                                      '${post.userData!.countrycode1 ?? 'N/A'} - ${post.userData!.mobile ?? 'N/A'}',
                                       style: textStyleW400(size.width * 0.032,
                                           AppColors.blackText),
                                     ),
@@ -347,7 +334,7 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
                                   InkWell(
                                     onTap: () {
                                       final String? email =
-                                          data.userData!.email;
+                                          post.userData!.email;
 
                                       if (email != null && email.isNotEmpty) {
                                         final Uri emailUri = Uri(
@@ -367,8 +354,8 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
                                       }
                                     },
                                     child: Text(
-                                      data.userData!.email?.isNotEmpty == true
-                                          ? data.userData!.email!
+                                      post.userData!.email?.isNotEmpty == true
+                                          ? post.userData!.email!
                                           : 'N/A',
                                       style: textStyleW400(size.width * 0.035,
                                           AppColors.blackText),
@@ -408,8 +395,8 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
                                 ],
                               ),
                               LinkText(
-                                text: data.website?.isNotEmpty == true
-                                    ? data.website!
+                                text: post.website?.isNotEmpty == true
+                                    ? post.website!
                                     : 'N/A',
                                 style: textStyleW400(
                                   size.width * 0.035,
@@ -441,7 +428,7 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
                           child: Align(
                             alignment: Alignment.topLeft,
                             child: Html(
-                              data: data.description,
+                              data: post.description,
                               style: {
                                 "table": Style(
                                   backgroundColor: const Color.fromARGB(
@@ -497,10 +484,10 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
               ),
             ),
           );
-        } else if (controller.newsList.isEmpty) {
+        } else if (controller.newsDetailList.isEmpty) {
           return const Center(child: Text('No data available.'));
         } else {
-          final data = controller.newsList.first;
+          final post = controller.newsDetailList.first;
           return Container(
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
@@ -532,7 +519,7 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
                                     : likeCount.value - 1;
 
                                 await controller.toggleLike(
-                                    data.id ?? 0, context);
+                                    post.id ?? 0, context);
                               },
                               child: Icon(
                                 // Observe like status
@@ -554,7 +541,7 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
                             ? const SizedBox.shrink()
                             : InkWell(
                                 onTap: () {
-                                  showLikeList(context);
+                                  showLikeList(context, post.id ?? 0);
                                 },
                                 child: Text(
                                   '${likeCount.value}',
@@ -570,7 +557,7 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
                             GestureDetector(
                               onTap: () => showFullScreenDialogNews(
                                 context,
-                                data.id!,
+                                post.id!,
                               ),
                               child: SizedBox(
                                 height: size.height * 0.028,
@@ -580,7 +567,7 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
                             ),
                             5.sbw,
                             Text(
-                              '${data.totalcomment}',
+                              '${post.totalcomment}',
                               style: TextStyle(
                                 fontFamily: "Metropolis",
                                 fontWeight: FontWeight.w600,
@@ -601,7 +588,7 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
                           width: 7,
                         ),
                         Text(
-                          data.pgcnt.toString(),
+                          post.pgcnt.toString(),
                           style: textStyleW600(
                               size.width * 0.040, AppColors.blackText),
                         ),
@@ -622,7 +609,7 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
                                     : bookmarkCount.value - 1;
 
                                 await controller.toggleBookMark(
-                                    data.id ?? 0, context);
+                                    post.id ?? 0, context);
                               },
                               child: SvgPicture.asset(
                                 isBookmarked.value
@@ -633,16 +620,38 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
                             ),
                           ),
                         ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        SizedBox(
-                          height: size.height * 0.028,
-                          width: size.height * 0.028,
-                          child: SvgPicture.asset(Assets.svgSend),
-                        ),
-                        const SizedBox(
-                          width: 10,
+                        10.sbw,
+                        InkWell(
+                          onTap: () async {
+                            try {
+                              final dynamicLink = await createDynamicLink(
+                                post.fullUrl ?? '',
+                                'News',
+                                post.id.toString(),
+                              );
+
+                              debugPrint(
+                                  'Generated Dynamic Link: $dynamicLink');
+                              await Share.share(dynamicLink);
+                            } catch (e) {
+                              debugPrint('Error sharing link: $e');
+                              // ignore: use_build_context_synchronously
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content: Text(
+                                        "Error creating or sharing link: $e")),
+                              );
+                            }
+                          },
+                          child: SizedBox(
+                            height: size.height * 0.028,
+                            width: size.height * 0.028,
+                            child: SvgPicture.asset(
+                              Assets.svgSend,
+                              // ignore: deprecated_member_use
+                              color: AppColors.blackText,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -665,18 +674,18 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
     }
   }
 
-  void showLikeList(BuildContext context) {
+  void showLikeList(BuildContext context, int newsId) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
         // Fetch like list after bottom sheet is shown
-        fetchLikeList();
+        fetchLikeList(newsId);
         return const NewsLikeListContent();
       },
     );
   }
 
-  void fetchLikeList() async {
-    await controller.fetchLikeListNews(post.id ?? 0, context);
+  void fetchLikeList(int newsId) async {
+    await controller.fetchLikeListNews(newsId, context);
   }
 }
