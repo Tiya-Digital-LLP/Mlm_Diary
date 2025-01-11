@@ -11,6 +11,7 @@ import 'package:mlmdiary/menu/menuscreens/mlmcompanies/custom_company_comment.da
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
+import 'package:mlmdiary/widgets/dynamiclink/dynamic_link.dart';
 import 'package:share_plus/share_plus.dart';
 
 class MlmCompaniesCard extends StatefulWidget {
@@ -26,6 +27,8 @@ class MlmCompaniesCard extends StatefulWidget {
   final bool likedbyuser;
   final bool bookmarkedbyuser;
   final CompanyController controller;
+  final String url;
+
   const MlmCompaniesCard({
     super.key,
     required this.userImage,
@@ -40,6 +43,7 @@ class MlmCompaniesCard extends StatefulWidget {
     required this.commentcount,
     required this.likedbyuser,
     required this.bookmarkedbyuser,
+    required this.url,
   });
 
   @override
@@ -272,8 +276,25 @@ class _MlmcompaniesCardState extends State<MlmCompaniesCard> {
                     width: 10,
                   ),
                   InkWell(
-                    onTap: () {
-                      Share.share(widget.shareurl);
+                    onTap: () async {
+                      try {
+                        final dynamicLink = await createDynamicLink(
+                          widget.url,
+                          'Company',
+                          widget.companyId.toString(),
+                        );
+
+                        debugPrint('Generated Dynamic Link: $dynamicLink');
+                        await Share.share(dynamicLink);
+                      } catch (e) {
+                        debugPrint('Error sharing link: $e');
+                        // ignore: use_build_context_synchronously
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content:
+                                  Text("Error creating or sharing link: $e")),
+                        );
+                      }
                     },
                     child: SizedBox(
                       height: size.height * 0.028,

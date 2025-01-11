@@ -14,7 +14,9 @@ import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
+import 'package:mlmdiary/widgets/dynamiclink/dynamic_link.dart';
 import 'package:mlmdiary/widgets/image_preview_user_image.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:text_link/text_link.dart';
 // ignore: library_prefixes
 import 'package:html/parser.dart' as htmlParser;
@@ -512,10 +514,36 @@ class _NewsDetailScreenState extends State<MyPostDetailScreen> {
                     const SizedBox(
                       width: 10,
                     ),
-                    SizedBox(
-                      height: size.height * 0.028,
-                      width: size.height * 0.028,
-                      child: SvgPicture.asset(Assets.svgSend),
+                    InkWell(
+                      onTap: () async {
+                        try {
+                          final dynamicLink = await createDynamicLink(
+                            'https://www.mlmdiary.com/',
+                            'Post',
+                            post.id.toString(),
+                          );
+
+                          debugPrint('Generated Dynamic Link: $dynamicLink');
+                          await Share.share(dynamicLink);
+                        } catch (e) {
+                          debugPrint('Error sharing link: $e');
+                          // ignore: use_build_context_synchronously
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content:
+                                    Text("Error creating or sharing link: $e")),
+                          );
+                        }
+                      },
+                      child: SizedBox(
+                        height: size.height * 0.028,
+                        width: size.height * 0.028,
+                        child: SvgPicture.asset(
+                          Assets.svgSend,
+                          // ignore: deprecated_member_use
+                          color: AppColors.blackText,
+                        ),
+                      ),
                     ),
                     const SizedBox(
                       width: 10,

@@ -207,6 +207,33 @@ class _MyAppState extends State<MyApp> {
               );
               break;
 
+            case 'News':
+              manageNewsController.fetchNewsDetail(
+                data,
+                // ignore: use_build_context_synchronously
+                context,
+              );
+              Get.toNamed(
+                Routes.newsdetailsnotification,
+                arguments: data,
+              );
+              break;
+
+            case 'Company':
+              Get.toNamed(
+                Routes.mlmcompanies,
+                arguments: data,
+              );
+              break;
+
+            case 'Post':
+              editPostController.fetchPostDetail(data, context);
+              Get.toNamed(
+                Routes.postdetailnotification,
+                arguments: data,
+              );
+              break;
+
             default:
               if (kDebugMode) {
                 debugPrint('Unknown screen type: $screen');

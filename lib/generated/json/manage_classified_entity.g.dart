@@ -85,7 +85,7 @@ ManageClassifiedData $ManageClassifiedDataFromJson(Map<String, dynamic> json) {
   if (category != null) {
     manageClassifiedData.category = category;
   }
-  final String? creatby = jsonConvert.convert<String>(json['creatby']);
+  final int? creatby = jsonConvert.convert<int>(json['creatby']);
   if (creatby != null) {
     manageClassifiedData.creatby = creatby;
   }
@@ -113,11 +113,11 @@ ManageClassifiedData $ManageClassifiedDataFromJson(Map<String, dynamic> json) {
   if (country != null) {
     manageClassifiedData.country = country;
   }
-  final dynamic lat = json['lat'];
+  final String? lat = jsonConvert.convert<String>(json['lat']);
   if (lat != null) {
     manageClassifiedData.lat = lat;
   }
-  final dynamic lng = json['lng'];
+  final String? lng = jsonConvert.convert<String>(json['lng']);
   if (lng != null) {
     manageClassifiedData.lng = lng;
   }
@@ -152,6 +152,10 @@ ManageClassifiedData $ManageClassifiedDataFromJson(Map<String, dynamic> json) {
       ManageClassifiedDataUserData>(json['user_data']);
   if (userData != null) {
     manageClassifiedData.userData = userData;
+  }
+  final String? fullUrl = jsonConvert.convert<String>(json['full_url']);
+  if (fullUrl != null) {
+    manageClassifiedData.fullUrl = fullUrl;
   }
   final String? imagePath = jsonConvert.convert<String>(json['image_path']);
   if (imagePath != null) {
@@ -194,6 +198,7 @@ Map<String, dynamic> $ManageClassifiedDataToJson(ManageClassifiedData entity) {
   data['liked_by_user'] = entity.likedByUser;
   data['bookmarked_by_user'] = entity.bookmarkedByUser;
   data['user_data'] = entity.userData?.toJson();
+  data['full_url'] = entity.fullUrl;
   data['image_path'] = entity.imagePath;
   data['image_thum_path'] = entity.imageThumPath;
   return data;
@@ -212,15 +217,15 @@ extension ManageClassifiedDataExtension on ManageClassifiedData {
     String? datemodified,
     String? datecreated,
     String? category,
-    String? creatby,
+    int? creatby,
     String? subcategory,
     String? popular,
     String? website,
     String? city,
     String? state,
     String? country,
-    dynamic lat,
-    dynamic lng,
+    String? lat,
+    String? lng,
     int? userRequestedForPaid,
     String? urlcomponent,
     int? totallike,
@@ -228,6 +233,7 @@ extension ManageClassifiedDataExtension on ManageClassifiedData {
     bool? likedByUser,
     bool? bookmarkedByUser,
     ManageClassifiedDataUserData? userData,
+    String? fullUrl,
     String? imagePath,
     String? imageThumPath,
   }) {
@@ -259,6 +265,7 @@ extension ManageClassifiedDataExtension on ManageClassifiedData {
       ..likedByUser = likedByUser ?? this.likedByUser
       ..bookmarkedByUser = bookmarkedByUser ?? this.bookmarkedByUser
       ..userData = userData ?? this.userData
+      ..fullUrl = fullUrl ?? this.fullUrl
       ..imagePath = imagePath ?? this.imagePath
       ..imageThumPath = imageThumPath ?? this.imageThumPath;
   }

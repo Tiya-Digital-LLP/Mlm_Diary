@@ -185,6 +185,7 @@ class _MlmCompaniesState extends State<MlmCompanies> {
                             commentcount: post.totalcomment ?? 0,
                             likedbyuser: post.likedByUser ?? false,
                             bookmarkedbyuser: post.bookmarkedByUser ?? false,
+                            url: post.fullUrl ?? '',
                           ),
                         ),
                       );

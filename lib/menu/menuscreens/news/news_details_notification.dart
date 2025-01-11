@@ -10,7 +10,6 @@ import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller
 import 'package:mlmdiary/menu/menuscreens/news/custom_news_comment.dart';
 import 'package:mlmdiary/menu/menuscreens/news/news_like_list_content.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
-import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
@@ -57,9 +56,9 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
   }
 
   void initializeLikes() {
-    if (controller.newsList.isNotEmpty) {
-      isLiked = RxBool(controller.newsList[0].likedByUser ?? false);
-      likeCount = RxInt(controller.newsList[0].totallike ?? 0);
+    if (controller.newsDetailList.isNotEmpty) {
+      isLiked = RxBool(controller.newsDetailList[0].likedByUser ?? false);
+      likeCount = RxInt(controller.newsDetailList[0].totallike ?? 0);
     } else {
       isLiked = RxBool(false);
       likeCount = RxInt(0);
@@ -67,8 +66,9 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
   }
 
   void initializeBookmarks() {
-    if (controller.newsList.isNotEmpty) {
-      isBookmarked = RxBool(controller.newsList[0].bookmarkedByUser ?? false);
+    if (controller.newsDetailList.isNotEmpty) {
+      isBookmarked =
+          RxBool(controller.newsDetailList[0].bookmarkedByUser ?? false);
     } else {
       isBookmarked = RxBool(false);
     }
@@ -118,20 +118,16 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
                             },
                             child: Row(
                               children: [
-                                if (post.userData!.imagePath!.isNotEmpty &&
-                                    Uri.tryParse(post.imageUrl!)
-                                            ?.hasAbsolutePath ==
-                                        true)
-                                  ClipOval(
-                                    child: CachedNetworkImage(
-                                      imageUrl: post.userData!.imagePath ?? '',
-                                      height: 60.0,
-                                      width: 60.0,
-                                      fit: BoxFit.cover,
-                                      errorWidget: (context, url, error) =>
-                                          Image.asset(Assets.imagesAdminlogo),
-                                    ),
+                                ClipOval(
+                                  child: CachedNetworkImage(
+                                    imageUrl: post.userData!.imagePath ?? '',
+                                    height: 60.0,
+                                    width: 60.0,
+                                    fit: BoxFit.cover,
+                                    errorWidget: (context, url, error) =>
+                                        Image.asset(Assets.imagesAdminlogo),
                                   ),
+                                ),
                                 const SizedBox(
                                   width: 10,
                                 ),
@@ -168,40 +164,37 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
                         SizedBox(
                           height: size.height * 0.012,
                         ),
-                        if (post.imageUrl!.isNotEmpty &&
-                            Uri.tryParse(post.imageUrl!)?.hasAbsolutePath ==
-                                true)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: InkWell(
-                              onTap: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return FullScreenImageDialog(
-                                        imageUrl: post.imageUrl.toString());
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: InkWell(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return FullScreenImageDialog(
+                                      imageUrl: post.imageUrl.toString());
+                                },
+                              );
+                            },
+                            child: SizedBox(
+                              height: size.height * 0.26,
+                              width: size.width,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(12.0),
+                                child: Image.network(
+                                  post.imageUrl.toString(),
+                                  fit: BoxFit.fill,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Image.asset(
+                                      Assets.imagesLogo,
+                                      fit: BoxFit.fill,
+                                    );
                                   },
-                                );
-                              },
-                              child: SizedBox(
-                                height: size.height * 0.26,
-                                width: size.width,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  child: Image.network(
-                                    post.imageUrl.toString(),
-                                    fit: BoxFit.fill,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Image.asset(
-                                        Assets.imagesLogo,
-                                        fit: BoxFit.fill,
-                                      );
-                                    },
-                                  ),
                                 ),
                               ),
                             ),
                           ),
+                        ),
                         SizedBox(
                           height: size.height * 0.01,
                         ),
@@ -254,127 +247,7 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
                                 bottom: BorderSide(color: Colors.grey)),
                           ),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        'Phone',
-                                        style: textStyleW400(
-                                            size.width * 0.035, AppColors.grey),
-                                      ),
-                                      const SizedBox(
-                                        width: 07,
-                                      ),
-                                    ],
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      final String? countryCode =
-                                          post.userData!.countrycode1;
-                                      final String? mobileNumber =
-                                          post.userData!.mobile;
-
-                                      if (mobileNumber == null ||
-                                          mobileNumber.isEmpty) {
-                                        showToasterrorborder(
-                                            'No Any Url Found', context);
-                                        if (kDebugMode) {
-                                          print('Tap without number');
-                                        }
-                                      } else {
-                                        final Uri phoneUri = Uri(
-                                          scheme: 'tel',
-                                          path:
-                                              '$countryCode$mobileNumber', // Combine country code and mobile
-                                        );
-                                        launchUrl(phoneUri);
-                                        if (kDebugMode) {
-                                          print(
-                                              'Tap with number: $countryCode$mobileNumber');
-                                        }
-                                      }
-                                    },
-                                    child: Text(
-                                      '${post.userData!.countrycode1 ?? 'N/A'} - ${post.userData!.mobile ?? 'N/A'}',
-                                      style: textStyleW400(size.width * 0.032,
-                                          AppColors.blackText),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        'Email',
-                                        style: textStyleW400(
-                                            size.width * 0.035, AppColors.grey),
-                                      ),
-                                      const SizedBox(
-                                        width: 07,
-                                      ),
-                                    ],
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      final String? email =
-                                          post.userData!.email;
-
-                                      if (email != null && email.isNotEmpty) {
-                                        final Uri emailUri = Uri(
-                                          scheme: 'mailto',
-                                          path: email,
-                                        );
-                                        launchUrl(emailUri);
-                                        if (kDebugMode) {
-                                          print('Tap with email: $email');
-                                        }
-                                      } else {
-                                        showToasterrorborder(
-                                            'No Email Found', context);
-                                        if (kDebugMode) {
-                                          print('Tap without email');
-                                        }
-                                      }
-                                    },
-                                    child: Text(
-                                      post.userData!.email?.isNotEmpty == true
-                                          ? post.userData!.email!
-                                          : 'N/A',
-                                      style: textStyleW400(size.width * 0.035,
-                                          AppColors.blackText),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
                         5.sbh,
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(14),
-                            color: AppColors.white,
-                            border: const Border(
-                                bottom: BorderSide(color: Colors.grey)),
-                          ),
-                        ),
                         Padding(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 16,

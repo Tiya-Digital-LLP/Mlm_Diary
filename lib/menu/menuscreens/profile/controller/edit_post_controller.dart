@@ -16,6 +16,7 @@ import 'package:mlmdiary/generated/get_user_post_comment_entity.dart';
 import 'package:mlmdiary/generated/get_user_profile_entity.dart';
 import 'package:mlmdiary/generated/my_post_list_entity.dart';
 import 'package:mlmdiary/generated/post_bookmark_entity.dart';
+import 'package:mlmdiary/generated/post_detail_entity.dart';
 import 'package:mlmdiary/generated/post_like_entity.dart';
 import 'package:mlmdiary/generated/post_like_list_entity.dart';
 import 'package:mlmdiary/generated/profile_bookmark_entity.dart';
@@ -34,6 +35,7 @@ class EditPostController extends GetxController {
   RxList<PostLikeListData> postLikeList = RxList<PostLikeListData>();
   RxList<GetPostData> getpostList = <GetPostData>[].obs;
   var userProfile = GetUserProfileEntity().obs;
+  RxList<PostDetailData> postDetailList = <PostDetailData>[].obs;
 
   // Post comment
   RxList<GetUserPostCommentData> getCommentList =
@@ -77,6 +79,66 @@ class EditPostController extends GetxController {
       postError(true);
     } else {
       postError(false);
+    }
+  }
+
+  Future<void> fetchPostDetail(int postId, context) async {
+    isLoading.value = true;
+    String device =
+        Platform.isAndroid ? 'android' : (Platform.isIOS ? 'ios' : '');
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+
+    try {
+      var connectivityResult = await (Connectivity().checkConnectivity());
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult == ConnectivityResult.none) {
+        showToasterrorborder("No internet connection", context);
+        isLoading.value = false;
+        return;
+      }
+
+      Map<String, String> queryParams = {
+        'api_token': apiToken ?? '',
+        'device': device,
+        'post_id': postId.toString(),
+      };
+
+      if (kDebugMode) {
+        print('api_token: $apiToken');
+        print('device: $device');
+        print('post_id: $postId');
+      }
+
+      Uri uri = Uri.parse(Constants.baseUrl + Constants.postdetail)
+          .replace(queryParameters: queryParams);
+
+      final response = await http.post(uri);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        if (kDebugMode) {
+          print(json.encode(responseData));
+        }
+
+        final PostDetailEntity classifiedDetailEntity =
+            PostDetailEntity.fromJson(responseData);
+
+        final PostDetailData firstPost = classifiedDetailEntity.data!;
+        postDetailList.clear();
+        postDetailList.add(firstPost);
+      } else {
+        if (kDebugMode) {
+          print("Error: ${response.body}");
+        }
+      }
+    } catch (error) {
+      if (kDebugMode) {
+        print("Error: $error");
+      }
+    } finally {
+      isLoading.value = false;
     }
   }
 

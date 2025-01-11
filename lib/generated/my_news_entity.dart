@@ -49,6 +49,8 @@ class MyNewsData {
 	String? categoryName = '';
 	@JSONField(name: "subcategory_name")
 	String? subcategoryName = '';
+	@JSONField(name: "full_url")
+	String? fullUrl = '';
 	@JSONField(name: "image_path")
 	String? imagePath = '';
 

@@ -101,7 +101,7 @@ class _MlmClassifiedState extends State<ManageClassified> {
                     child: ManageClassifiedCard(
                       onDelete: () => deletePost(index),
                       userImage: post.imagePath ?? '',
-                      userName: post.creatby ?? '',
+                      userName: post.creatby.toString(),
                       postTitle: post.title ?? '',
                       dateTime: post.datecreated ?? '',
                       postCaption: post.description ?? '',

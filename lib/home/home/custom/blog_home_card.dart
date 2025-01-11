@@ -23,6 +23,7 @@ import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
+import 'package:mlmdiary/widgets/dynamiclink/dynamic_link.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -399,8 +400,25 @@ class _FavouritrCardState extends State<BlogHomeCard> {
                       ),
                       10.sbw,
                       InkWell(
-                        onTap: () {
-                          Share.share(widget.url);
+                        onTap: () async {
+                          try {
+                            final dynamicLink = await createDynamicLink(
+                              widget.url,
+                              'Blog',
+                              widget.bookmarkId.toString(),
+                            );
+
+                            debugPrint('Generated Dynamic Link: $dynamicLink');
+                            await Share.share(dynamicLink);
+                          } catch (e) {
+                            debugPrint('Error sharing link: $e');
+                            // ignore: use_build_context_synchronously
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  content: Text(
+                                      "Error creating or sharing link: $e")),
+                            );
+                          }
                         },
                         child: SizedBox(
                           height: size.height * 0.028,

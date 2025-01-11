@@ -4,7 +4,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/classified/classified_like_list_content.dart';
 import 'package:mlmdiary/generated/assets.dart';
-import 'package:mlmdiary/generated/get_post_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/custom/custom_post_comment.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
@@ -14,13 +13,16 @@ import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
+import 'package:mlmdiary/widgets/dynamiclink/dynamic_link.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:text_link/text_link.dart';
 // ignore: library_prefixes
 import 'package:html/parser.dart' as htmlParser;
 
 class PostDetailNotification extends StatefulWidget {
-  const PostDetailNotification({super.key});
+  final int postId;
+
+  const PostDetailNotification({super.key, required this.postId});
 
   @override
   State<PostDetailNotification> createState() => _PostDetailsScreenState();
@@ -30,7 +32,6 @@ class _PostDetailsScreenState extends State<PostDetailNotification> {
   final EditPostController controller = Get.put(EditPostController());
   final UserProfileController userProfileController =
       Get.put(UserProfileController());
-  dynamic post;
 
   PostTimeFormatter postTimeFormatter = PostTimeFormatter();
 
@@ -46,29 +47,22 @@ class _PostDetailsScreenState extends State<PostDetailNotification> {
     isLiked.value = newLikedValue;
     likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
 
-    await controller.toggleLike(post.id ?? 0, context);
+    await controller.toggleLike(widget.postId, context);
   }
 
   @override
   void initState() {
     super.initState();
-    final arguments = Get.arguments as Map<String, dynamic>?;
     initializeLikes();
     initializeBookmarks();
-    if (arguments != null) {
-      post = GetPostData.fromJson(arguments);
-      if (post != null) {
-        final int postId = post!.id ?? 0;
-        if (postId != 0) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            controller.fetchPost(
-              postId,
-            );
-            controller.countViewUserProfile(postId, context);
-          });
-        }
-      }
-    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.fetchPostDetail(
+        widget.postId,
+        context,
+      );
+      controller.countViewUserProfile(widget.postId, context);
+    });
 
     // ignore: unrelated_type_equality_checks
     controller.likeCountMap == 0;
@@ -107,10 +101,10 @@ class _PostDetailsScreenState extends State<PostDetailNotification> {
         onTap: () {},
       ),
       body: Obx(() {
-        if (controller.getpostList.isEmpty) {
+        if (controller.postDetailList.isEmpty) {
           return const Center(child: Text('No data available.'));
         } else {
-          final data = controller.getpostList.first;
+          final post = controller.postDetailList.first;
           return SingleChildScrollView(
             child: Column(
               children: [
@@ -135,14 +129,14 @@ class _PostDetailsScreenState extends State<PostDetailNotification> {
                               );
                               await userProfileController.fetchUserAllPost(
                                 1,
-                                post.id ?? 0,
+                                post.id.toString(),
                               );
                             },
                             child: Row(
                               children: [
                                 ClipOval(
                                   child: CachedNetworkImage(
-                                    imageUrl: data.userData!.imagePath ?? '',
+                                    imageUrl: post.userData!.imagePath ?? '',
                                     height: 60.0,
                                     width: 60.0,
                                     fit: BoxFit.cover,
@@ -159,7 +153,7 @@ class _PostDetailsScreenState extends State<PostDetailNotification> {
                                     Row(
                                       children: [
                                         Text(
-                                          data.userData!.name ?? '',
+                                          post.userData!.name ?? '',
                                           style: textStyleW700(
                                               size.width * 0.043,
                                               AppColors.blackText),
@@ -171,7 +165,7 @@ class _PostDetailsScreenState extends State<PostDetailNotification> {
                                     ),
                                     Text(
                                       postTimeFormatter.formatPostTime(
-                                          data.createdate ?? ''),
+                                          post.createdate ?? ''),
                                       style: textStyleW400(
                                         size.width * 0.035,
                                         // ignore: deprecated_member_use
@@ -198,7 +192,7 @@ class _PostDetailsScreenState extends State<PostDetailNotification> {
                               borderRadius: BorderRadius.circular(15),
                             ),
                             child: CachedNetworkImage(
-                              imageUrl: data.attachmentPath ?? '',
+                              imageUrl: post.attachmentPath ?? '',
                               height: 97,
                               width: 105,
                               fit: BoxFit.fill,
@@ -216,7 +210,7 @@ class _PostDetailsScreenState extends State<PostDetailNotification> {
                           ),
                           child: Align(
                             alignment: Alignment.topLeft,
-                            child: _buildHtmlContent(data.comments ?? '', size),
+                            child: _buildHtmlContent(post.comments ?? '', size),
                           ),
                         ),
                         SizedBox(
@@ -250,7 +244,7 @@ class _PostDetailsScreenState extends State<PostDetailNotification> {
                               ),
                               3.sbh,
                               Text(
-                                '${data.userData!.city},${data.userData!.state},${data.userData!.country}',
+                                '${post.userData!.city},${post.userData!.state},${post.userData!.country}',
                                 style: textStyleW400(
                                     size.width * 0.035, AppColors.blackText),
                               ),
@@ -288,7 +282,7 @@ class _PostDetailsScreenState extends State<PostDetailNotification> {
                                   ),
                                   3.sbh,
                                   Text(
-                                    '${data.userData!.countrycode1} - ${data.userData!.mobile}',
+                                    '${post.userData!.countrycode1} - ${post.userData!.mobile}',
                                     style: textStyleW400(size.width * 0.032,
                                         AppColors.blackText),
                                   ),
@@ -315,7 +309,7 @@ class _PostDetailsScreenState extends State<PostDetailNotification> {
                                     ),
                                     3.sbh,
                                     Text(
-                                      '${data.userData!.email}',
+                                      '${post.userData!.email}',
                                       style: textStyleW400(size.width * 0.032,
                                           AppColors.blackText),
                                     ),
@@ -348,10 +342,10 @@ class _PostDetailsScreenState extends State<PostDetailNotification> {
         }
       }),
       bottomNavigationBar: Obx(() {
-        if (controller.getpostList.isEmpty) {
+        if (controller.postDetailList.isEmpty) {
           return const Center(child: Text('No data available.'));
         } else {
-          final data = controller.getpostList.first;
+          final post = controller.postDetailList.first;
           return Container(
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
@@ -383,7 +377,7 @@ class _PostDetailsScreenState extends State<PostDetailNotification> {
                                     : likeCount.value - 1;
 
                                 await controller.toggleLike(
-                                    data.id ?? 0, context);
+                                    post.id ?? 0, context);
                               },
                               child: Icon(
                                 // Observe like status
@@ -407,7 +401,7 @@ class _PostDetailsScreenState extends State<PostDetailNotification> {
                             ? const SizedBox.shrink()
                             : InkWell(
                                 onTap: () {
-                                  showLikeList(context);
+                                  showLikeList(context, post.id ?? 0);
                                 },
                                 child: Text(
                                   '${likeCount.value}',
@@ -423,7 +417,7 @@ class _PostDetailsScreenState extends State<PostDetailNotification> {
                             GestureDetector(
                               onTap: () => showFullScreenDialogPost(
                                 context,
-                                post.id!,
+                                widget.postId,
                               ),
                               child: SizedBox(
                                 height: size.height * 0.028,
@@ -433,7 +427,7 @@ class _PostDetailsScreenState extends State<PostDetailNotification> {
                             ),
                             5.sbw,
                             Text(
-                              '${data.totalcomment}',
+                              '${post.totalcomment}',
                               style: TextStyle(
                                 fontFamily: "Metropolis",
                                 fontWeight: FontWeight.w600,
@@ -454,7 +448,7 @@ class _PostDetailsScreenState extends State<PostDetailNotification> {
                           width: 7,
                         ),
                         Text(
-                          data.pgcnt.toString(),
+                          post.pgcnt.toString(),
                           style: textStyleW600(
                               size.width * 0.040, AppColors.blackText),
                         ),
@@ -475,7 +469,7 @@ class _PostDetailsScreenState extends State<PostDetailNotification> {
                                     : bookmarkCount.value - 1;
 
                                 await controller.toggleBookMark(
-                                    data.id ?? 0, context);
+                                    post.id ?? 0, context);
                               },
                               child: SvgPicture.asset(
                                 isBookmarked.value
@@ -490,8 +484,26 @@ class _PostDetailsScreenState extends State<PostDetailNotification> {
                           width: 10,
                         ),
                         InkWell(
-                          onTap: () {
-                            Share.share(data.fullUrl ?? '');
+                          onTap: () async {
+                            try {
+                              final dynamicLink = await createDynamicLink(
+                                'https://www.mlmdiary.com/',
+                                'Post',
+                                post.id.toString(),
+                              );
+
+                              debugPrint(
+                                  'Generated Dynamic Link: $dynamicLink');
+                              await Share.share(dynamicLink);
+                            } catch (e) {
+                              debugPrint('Error sharing link: $e');
+                              // ignore: use_build_context_synchronously
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content: Text(
+                                        "Error creating or sharing link: $e")),
+                              );
+                            }
                           },
                           child: SizedBox(
                             height: size.height * 0.028,
@@ -516,19 +528,19 @@ class _PostDetailsScreenState extends State<PostDetailNotification> {
     );
   }
 
-  void showLikeList(BuildContext context) {
+  void showLikeList(BuildContext context, int postId) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
         // Fetch like list after bottom sheet is shown
-        fetchLikeList();
+        fetchLikeList(postId);
         return const ClassifiedLikedListContent();
       },
     );
   }
 
-  void fetchLikeList() async {
-    await controller.fetchLikeListPost(post.id ?? 0, context);
+  void fetchLikeList(int postId) async {
+    await controller.fetchLikeListPost(postId, context);
   }
 
   Widget _buildHtmlContent(String htmlContent, Size size) {

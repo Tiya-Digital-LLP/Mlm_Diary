@@ -33,15 +33,15 @@ class ManageClassifiedData {
 	String? datemodified = '';
 	String? datecreated = '';
 	String? category = '';
-	String? creatby = '';
+	int? creatby = 0;
 	String? subcategory = '';
 	String? popular = '';
 	String? website = '';
 	String? city = '';
 	String? state = '';
 	String? country = '';
-	dynamic lat;
-	dynamic lng;
+	String? lat = '';
+	String? lng = '';
 	@JSONField(name: "user_requested_for_paid")
 	int? userRequestedForPaid = 0;
 	String? urlcomponent = '';
@@ -53,6 +53,8 @@ class ManageClassifiedData {
 	bool? bookmarkedByUser = false;
 	@JSONField(name: "user_data")
 	ManageClassifiedDataUserData? userData;
+	@JSONField(name: "full_url")
+	String? fullUrl = '';
 	@JSONField(name: "image_path")
 	String? imagePath = '';
 	@JSONField(name: "image_thum_path")

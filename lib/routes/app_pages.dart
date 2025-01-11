@@ -381,7 +381,10 @@ class AppPages {
     ),
     GetPage(
       name: Routes.postdetailnotification,
-      page: () => const PostDetailNotification(),
+      page: () {
+        final int postId = Get.arguments;
+        return PostDetailNotification(postId: postId);
+      },
     ),
     GetPage(
       name: Routes.mypostdetails,

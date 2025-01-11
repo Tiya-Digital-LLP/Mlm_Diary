@@ -104,6 +104,7 @@ import 'package:mlmdiary/generated/news_like_list_entity.dart';
 import 'package:mlmdiary/generated/notification_count_entity.dart';
 import 'package:mlmdiary/generated/post_bookmark_entity.dart';
 import 'package:mlmdiary/generated/post_count_view_entity.dart';
+import 'package:mlmdiary/generated/post_detail_entity.dart';
 import 'package:mlmdiary/generated/post_like_entity.dart';
 import 'package:mlmdiary/generated/post_like_list_entity.dart';
 import 'package:mlmdiary/generated/profile_bookmark_entity.dart';
@@ -1078,6 +1079,18 @@ class JsonConvert {
       return data.map<PostCountViewEntity>((Map<String, dynamic> e) =>
           PostCountViewEntity.fromJson(e)).toList() as M;
     }
+    if (<PostDetailEntity>[] is M) {
+      return data.map<PostDetailEntity>((Map<String, dynamic> e) =>
+          PostDetailEntity.fromJson(e)).toList() as M;
+    }
+    if (<PostDetailData>[] is M) {
+      return data.map<PostDetailData>((Map<String, dynamic> e) =>
+          PostDetailData.fromJson(e)).toList() as M;
+    }
+    if (<PostDetailDataUserData>[] is M) {
+      return data.map<PostDetailDataUserData>((Map<String, dynamic> e) =>
+          PostDetailDataUserData.fromJson(e)).toList() as M;
+    }
     if (<PostLikeEntity>[] is M) {
       return data.map<PostLikeEntity>((Map<String, dynamic> e) =>
           PostLikeEntity.fromJson(e)).toList() as M;
@@ -1475,6 +1488,9 @@ class JsonConvertClassCollection {
     (NotificationCountEntity).toString(): NotificationCountEntity.fromJson,
     (PostBookmarkEntity).toString(): PostBookmarkEntity.fromJson,
     (PostCountViewEntity).toString(): PostCountViewEntity.fromJson,
+    (PostDetailEntity).toString(): PostDetailEntity.fromJson,
+    (PostDetailData).toString(): PostDetailData.fromJson,
+    (PostDetailDataUserData).toString(): PostDetailDataUserData.fromJson,
     (PostLikeEntity).toString(): PostLikeEntity.fromJson,
     (PostLikeListEntity).toString(): PostLikeListEntity.fromJson,
     (PostLikeListData).toString(): PostLikeListData.fromJson,

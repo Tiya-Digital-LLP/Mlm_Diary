@@ -132,6 +132,10 @@ MyNewsData $MyNewsDataFromJson(Map<String, dynamic> json) {
   if (subcategoryName != null) {
     myNewsData.subcategoryName = subcategoryName;
   }
+  final String? fullUrl = jsonConvert.convert<String>(json['full_url']);
+  if (fullUrl != null) {
+    myNewsData.fullUrl = fullUrl;
+  }
   final String? imagePath = jsonConvert.convert<String>(json['image_path']);
   if (imagePath != null) {
     myNewsData.imagePath = imagePath;
@@ -162,6 +166,7 @@ Map<String, dynamic> $MyNewsDataToJson(MyNewsData entity) {
   data['user_data'] = entity.userData?.toJson();
   data['category_name'] = entity.categoryName;
   data['subcategory_name'] = entity.subcategoryName;
+  data['full_url'] = entity.fullUrl;
   data['image_path'] = entity.imagePath;
   return data;
 }
@@ -189,6 +194,7 @@ extension MyNewsDataExtension on MyNewsData {
     MyNewsDataUserData? userData,
     String? categoryName,
     String? subcategoryName,
+    String? fullUrl,
     String? imagePath,
   }) {
     return MyNewsData()
@@ -213,6 +219,7 @@ extension MyNewsDataExtension on MyNewsData {
       ..userData = userData ?? this.userData
       ..categoryName = categoryName ?? this.categoryName
       ..subcategoryName = subcategoryName ?? this.subcategoryName
+      ..fullUrl = fullUrl ?? this.fullUrl
       ..imagePath = imagePath ?? this.imagePath;
   }
 }
