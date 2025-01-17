@@ -282,6 +282,8 @@ class QuestionAnswerController extends GetxController {
   }
 
   Future<void> getAnswers(int page, int answerId) async {
+    answerList.clear();
+
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
