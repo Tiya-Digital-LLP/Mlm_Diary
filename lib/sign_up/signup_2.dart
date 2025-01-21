@@ -244,7 +244,7 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                         height: 58,
                         keyboard: TextInputType.name,
                         textInputType: const [],
-                        hint: "Company Name",
+                        hint: "Company Name *",
                         readOnly: !controller.companyNameOnly.value,
                         controller: controller.companyName.value,
                         isError: controller.comapnyNameError.value,
@@ -274,7 +274,7 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                       () => BorderContainer(
                         isError: controller.planTypeError.value,
                         byDefault: !controller.isPlanTyping.value,
-                        height: 58,
+                        height: 68,
                         child: TextField(
                           controller:
                               controller.getSelectedPlanOptionsTextController(),
@@ -288,7 +288,7 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                               size.width * 0.04, AppColors.blackText),
                           cursorColor: AppColors.blackText,
                           decoration: InputDecoration(
-                            labelText: "Select Plan",
+                            labelText: "Select Plan *",
                             labelStyle: const TextStyle(
                               color: Colors.black,
                             ),

@@ -13,6 +13,7 @@ import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/bookmark_user_entity.dart';
 import 'package:mlmdiary/generated/classified_count_view_entity.dart';
 import 'package:mlmdiary/generated/classified_like_list_entity.dart';
+import 'package:mlmdiary/generated/classified_view_list_entity.dart';
 import 'package:mlmdiary/generated/edit_comment_entity.dart';
 import 'package:mlmdiary/generated/get_category_entity.dart';
 import 'package:mlmdiary/generated/get_classified_detail_entity.dart';
@@ -113,6 +114,9 @@ class ClasifiedController extends GetxController {
 
   RxList<ClassifiedLikeListData> classifiedLikeList =
       RxList<ClassifiedLikeListData>();
+
+  RxList<ClassifiedViewListData> classifiedViewList =
+      RxList<ClassifiedViewListData>();
 
   final List<String> types = [
     'blog',
@@ -852,7 +856,6 @@ class ClasifiedController extends GetxController {
     isLoading(true);
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
-      // Log connectivity result
       if (kDebugMode) {
         print('Connectivity result: $connectivityResult');
       }
@@ -867,7 +870,6 @@ class ClasifiedController extends GetxController {
         request.fields['device'] = device;
         request.fields['classified_id'] = classifiedId.toString();
 
-        // Log request details
         if (kDebugMode) {
           print('Request URL: $uri');
           print('Request fields: ${request.fields}');
@@ -876,7 +878,6 @@ class ClasifiedController extends GetxController {
         final streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);
 
-        // Log response status code
         if (kDebugMode) {
           print('Response status code: ${response.statusCode}');
         }
@@ -885,7 +886,6 @@ class ClasifiedController extends GetxController {
           var data = jsonDecode(response.body);
           var status = data['status'];
 
-          // Log response body
           if (kDebugMode) {
             print('Response body: ${response.body}');
           }
@@ -895,38 +895,110 @@ class ClasifiedController extends GetxController {
                 ClassifiedLikeListEntity.fromJson(data);
             classifiedLikeList.value = classifiedLikeListEntity.data ?? [];
 
-            // Log parsed data
             if (kDebugMode) {
               print('Parsed entity: $classifiedLikeListEntity');
             }
           } else {
             var message = data['message'];
 
-            // Log failure message
             if (kDebugMode) {
               print('Failed to fetch likelist classified: $message');
             }
           }
         } else {
-          // Log error response
           if (kDebugMode) {
             print('Error: ${response.body}');
           }
         }
       } else {
-        // Log no internet connection
         showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
-      // Log exception
       if (kDebugMode) {
         print('Error: $e');
       }
     } finally {
       isLoading(false);
-      // Log end of method execution
       if (kDebugMode) {
         print('Finished fetchLikeListClassified method');
+      }
+    }
+  }
+
+  // like_list_classified
+  Future<void> fetchViewListClassified(int classifiedId, context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = Platform.isAndroid ? 'android' : 'ios';
+
+    isLoading(true);
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      if (kDebugMode) {
+        print('Connectivity result: $connectivityResult');
+      }
+
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri =
+            Uri.parse('${Constants.baseUrl}${Constants.viewlistclassified}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['classified_id'] = classifiedId.toString();
+
+        if (kDebugMode) {
+          print('Request URL: $uri');
+          print('Request fields: ${request.fields}');
+        }
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (kDebugMode) {
+          print('Response status code: ${response.statusCode}');
+        }
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var status = data['status'];
+
+          if (kDebugMode) {
+            print('Response body: ${response.body}');
+          }
+
+          if (status == 1) {
+            var classifiedViewListEntity =
+                ClassifiedViewListEntity.fromJson(data);
+            classifiedViewList.value = classifiedViewListEntity.data ?? [];
+
+            if (kDebugMode) {
+              print('Parsed entity: $classifiedViewListEntity');
+            }
+          } else {
+            var message = data['message'];
+
+            if (kDebugMode) {
+              print('Failed to fetch likelist classified: $message');
+            }
+          }
+        } else {
+          if (kDebugMode) {
+            print('Error: ${response.body}');
+          }
+        }
+      } else {
+        showToasterrorborder("No internet connection", context);
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error: $e');
+      }
+    } finally {
+      isLoading(false);
+      if (kDebugMode) {
+        print('Finished fetchViewListClassified method');
       }
     }
   }

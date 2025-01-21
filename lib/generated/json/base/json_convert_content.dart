@@ -31,6 +31,7 @@ import 'package:mlmdiary/generated/change_email_entity.dart';
 import 'package:mlmdiary/generated/change_password_entity.dart';
 import 'package:mlmdiary/generated/classified_count_view_entity.dart';
 import 'package:mlmdiary/generated/classified_like_list_entity.dart';
+import 'package:mlmdiary/generated/classified_view_list_entity.dart';
 import 'package:mlmdiary/generated/company_count_view_entity.dart';
 import 'package:mlmdiary/generated/count_view_question_entity.dart';
 import 'package:mlmdiary/generated/database_detail_entity.dart';
@@ -441,6 +442,19 @@ class JsonConvert {
     if (<ClassifiedLikeListDataUserData>[] is M) {
       return data.map<ClassifiedLikeListDataUserData>((
           Map<String, dynamic> e) => ClassifiedLikeListDataUserData.fromJson(e))
+          .toList() as M;
+    }
+    if (<ClassifiedViewListEntity>[] is M) {
+      return data.map<ClassifiedViewListEntity>((Map<String, dynamic> e) =>
+          ClassifiedViewListEntity.fromJson(e)).toList() as M;
+    }
+    if (<ClassifiedViewListData>[] is M) {
+      return data.map<ClassifiedViewListData>((Map<String, dynamic> e) =>
+          ClassifiedViewListData.fromJson(e)).toList() as M;
+    }
+    if (<ClassifiedViewListDataUserData>[] is M) {
+      return data.map<ClassifiedViewListDataUserData>((
+          Map<String, dynamic> e) => ClassifiedViewListDataUserData.fromJson(e))
           .toList() as M;
     }
     if (<CompanyCountViewEntity>[] is M) {
@@ -1304,6 +1318,10 @@ class JsonConvertClassCollection {
     (ClassifiedLikeListEntity).toString(): ClassifiedLikeListEntity.fromJson,
     (ClassifiedLikeListData).toString(): ClassifiedLikeListData.fromJson,
     (ClassifiedLikeListDataUserData).toString(): ClassifiedLikeListDataUserData
+        .fromJson,
+    (ClassifiedViewListEntity).toString(): ClassifiedViewListEntity.fromJson,
+    (ClassifiedViewListData).toString(): ClassifiedViewListData.fromJson,
+    (ClassifiedViewListDataUserData).toString(): ClassifiedViewListDataUserData
         .fromJson,
     (CompanyCountViewEntity).toString(): CompanyCountViewEntity.fromJson,
     (CountViewQuestionEntity).toString(): CountViewQuestionEntity.fromJson,

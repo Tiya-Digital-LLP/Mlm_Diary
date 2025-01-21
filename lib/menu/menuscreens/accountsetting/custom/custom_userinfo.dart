@@ -147,7 +147,7 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
               Obx(
                 () => BorderContainer(
                   isError: controller.mlmTypeError.value,
-                  height: 58,
+                  height: 68,
                   child: TextField(
                     controller: controller.getSelectedOptionsTextController(),
                     readOnly: true,
@@ -163,7 +163,7 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                       labelStyle: const TextStyle(
                         color: Colors.black,
                       ),
-                      labelText: "I am a MLM*",
+                      labelText: "I am a MLM *",
                       contentPadding: const EdgeInsets.symmetric(
                         vertical: 5,
                         horizontal: 2,

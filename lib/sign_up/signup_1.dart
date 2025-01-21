@@ -121,7 +121,7 @@ class _SignupPageState extends State<SignupPage> {
                         () => BorderContainer(
                           isError: controller.mlmTypeError.value,
                           byDefault: !controller.isMlmTyping.value,
-                          height: 58,
+                          height: 68,
                           child: TextField(
                             controller:
                                 controller.getSelectedOptionsTextController(),
@@ -136,7 +136,7 @@ class _SignupPageState extends State<SignupPage> {
                                 size.width * 0.04, AppColors.blackText),
                             cursorColor: AppColors.blackText,
                             decoration: InputDecoration(
-                              labelText: "I am a MLM",
+                              labelText: "I am a MLM *",
                               labelStyle: const TextStyle(
                                 color: Colors.black,
                               ),
@@ -165,7 +165,7 @@ class _SignupPageState extends State<SignupPage> {
                                 RegExp(r"[a-zA-Z\s]+")),
                             LengthLimitingTextInputFormatter(25),
                           ],
-                          hint: "Your Name",
+                          hint: "Your Name *",
                           readOnly: controller.nameReadOnly.value,
                           controller: controller.name.value,
                           isError: controller.nameError.value,
@@ -231,7 +231,7 @@ class _SignupPageState extends State<SignupPage> {
                               child: Obx(
                                 () => CustomMobileField(
                                   height: 58,
-                                  hint: "Mobile Number",
+                                  hint: "Mobile Number *",
                                   readOnly: controller.mobileReadOnly.value,
                                   controller: controller.mobile.value,
                                   textInputType: [
@@ -266,7 +266,7 @@ class _SignupPageState extends State<SignupPage> {
                                     BorderTextField(
                                       controller: controller.email.value,
                                       readOnly: controller.emailReadOnly.value,
-                                      hint: "Email Address",
+                                      hint: "Email Address *",
                                       textInputType: const [],
                                       keyboard: TextInputType.emailAddress,
                                       isError: controller.emailError.value,
@@ -294,7 +294,7 @@ class _SignupPageState extends State<SignupPage> {
                                                     PasswordBorderTextField(
                                                         controller: controller
                                                             .password.value,
-                                                        hint: "Your Password",
+                                                        hint: "Your Password *",
                                                         textInputType: const [],
                                                         keyboard:
                                                             TextInputType.text,
@@ -321,7 +321,7 @@ class _SignupPageState extends State<SignupPage> {
                                                           .confirmPassword
                                                           .value,
                                                       hint:
-                                                          "Confirm Your Password",
+                                                          "Confirm Your Password *",
                                                       textInputType: const [],
                                                       isError: controller
                                                           .confirmPasswordError

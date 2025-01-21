@@ -71,6 +71,8 @@ class Constants {
   static const String updateclassified = "/updateclassified";
   static const String delteclassified = "/deleteclassified";
   static const String likelistclassified = "/classified/likelist";
+  static const String viewlistclassified = "/classified/viewlist";
+
   static const String countviewclassified = "/countview_classified";
   static const String getcommentclassified = "/getclassified_comment";
   static const String addcommentreply = "/add_classified_comment";

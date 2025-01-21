@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:mlmdiary/classified/classified_like_list_content.dart';
+import 'package:mlmdiary/classified/classified_view_list_content.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/classified/custom/custom_commment.dart';
 import 'package:mlmdiary/data/constants.dart';
@@ -395,14 +396,22 @@ class _FavouritrCardState extends State<ClassifiedHomeCard> {
                         width: size.height * 0.028,
                         child: SvgPicture.asset(Assets.svgView),
                       ),
-                      8.sbw,
-                      Text(
-                        '${widget.viewcounts}',
-                        style: TextStyle(
-                            fontFamily: "Metropolis",
-                            fontWeight: FontWeight.w600,
-                            fontSize: size.width * 0.038),
-                      ),
+                      6.sbw,
+                      widget.viewcounts == 0
+                          ? const SizedBox.shrink()
+                          : InkWell(
+                              onTap: () {
+                                showViewList(context);
+                              },
+                              child: Text(
+                                '${widget.viewcounts}',
+                                style: TextStyle(
+                                  fontFamily: "Metropolis",
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: size.width * 0.038,
+                                ),
+                              ),
+                            ),
                     ],
                   ),
                   Row(
@@ -478,5 +487,20 @@ class _FavouritrCardState extends State<ClassifiedHomeCard> {
   void fetchLikeList() async {
     await widget.clasifiedController
         .fetchLikeListClassified(widget.bookmarkId, context);
+  }
+
+  void showViewList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        fetchViewList();
+        return const ClassifiedViewListContent();
+      },
+    );
+  }
+
+  void fetchViewList() async {
+    await widget.clasifiedController
+        .fetchViewListClassified(widget.classifiedId, context);
   }
 }
