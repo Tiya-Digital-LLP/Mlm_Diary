@@ -26,7 +26,8 @@ class MyPostListData {
 	int? id = 0;
 	String? comments = '';
 	String? attachment = '';
-	dynamic datemodified;
+	int? pgcnt = 0;
+	String? datemodified = '';
 	String? createdate = '';
 	String? comtype = '';
 	String? userid = '';

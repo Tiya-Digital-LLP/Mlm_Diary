@@ -56,7 +56,12 @@ MyPostListData $MyPostListDataFromJson(Map<String, dynamic> json) {
   if (attachment != null) {
     myPostListData.attachment = attachment;
   }
-  final dynamic datemodified = json['datemodified'];
+  final int? pgcnt = jsonConvert.convert<int>(json['pgcnt']);
+  if (pgcnt != null) {
+    myPostListData.pgcnt = pgcnt;
+  }
+  final String? datemodified = jsonConvert.convert<String>(
+      json['datemodified']);
   if (datemodified != null) {
     myPostListData.datemodified = datemodified;
   }
@@ -111,6 +116,7 @@ Map<String, dynamic> $MyPostListDataToJson(MyPostListData entity) {
   data['id'] = entity.id;
   data['comments'] = entity.comments;
   data['attachment'] = entity.attachment;
+  data['pgcnt'] = entity.pgcnt;
   data['datemodified'] = entity.datemodified;
   data['createdate'] = entity.createdate;
   data['comtype'] = entity.comtype;
@@ -130,7 +136,8 @@ extension MyPostListDataExtension on MyPostListData {
     int? id,
     String? comments,
     String? attachment,
-    dynamic datemodified,
+    int? pgcnt,
+    String? datemodified,
     String? createdate,
     String? comtype,
     String? userid,
@@ -146,6 +153,7 @@ extension MyPostListDataExtension on MyPostListData {
       ..id = id ?? this.id
       ..comments = comments ?? this.comments
       ..attachment = attachment ?? this.attachment
+      ..pgcnt = pgcnt ?? this.pgcnt
       ..datemodified = datemodified ?? this.datemodified
       ..createdate = createdate ?? this.createdate
       ..comtype = comtype ?? this.comtype

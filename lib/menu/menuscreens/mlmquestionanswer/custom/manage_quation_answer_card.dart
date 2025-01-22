@@ -239,30 +239,35 @@ class _ManageQuestionCardState extends State<ManageQuestionCard> {
                     const SizedBox(
                       width: 15,
                     ),
-                    Row(
-                      children: [
-                        SizedBox(
-                          height: size.height * 0.028,
-                          width: size.height * 0.028,
-                          child: SvgPicture.asset(Assets.svgView),
-                        ),
-                        6.sbw,
-                        widget.viewcounts == 0
-                            ? const SizedBox.shrink()
-                            : InkWell(
-                                onTap: () {
-                                  showViewList(context);
-                                },
-                                child: Text(
-                                  '${widget.viewcounts}',
-                                  style: TextStyle(
-                                    fontFamily: "Metropolis",
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: size.width * 0.038,
+                    InkWell(
+                      onTap: () {
+                        showViewList(context);
+                      },
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            height: size.height * 0.028,
+                            width: size.height * 0.028,
+                            child: SvgPicture.asset(Assets.svgView),
+                          ),
+                          6.sbw,
+                          widget.viewcounts == 0
+                              ? const SizedBox.shrink()
+                              : InkWell(
+                                  onTap: () {
+                                    showViewList(context);
+                                  },
+                                  child: Text(
+                                    '${widget.viewcounts}',
+                                    style: TextStyle(
+                                      fontFamily: "Metropolis",
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: size.width * 0.038,
+                                    ),
                                   ),
                                 ),
-                              ),
-                      ],
+                        ],
+                      ),
                     ),
                   ],
                 ),

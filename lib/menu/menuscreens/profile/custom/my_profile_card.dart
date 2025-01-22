@@ -7,6 +7,7 @@ import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/custom/custom_post_comment.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/custom/post_like_list_content.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/userprofile/custom/post_view_list_content.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
@@ -24,6 +25,8 @@ class MyProfileCard extends StatefulWidget {
   final VoidCallback onDelete;
   final String dateTime;
   final int likedCount;
+  final int viewCount;
+
   final int postId;
   final EditPostController controller;
   final int bookmarkCount;
@@ -44,6 +47,7 @@ class MyProfileCard extends StatefulWidget {
     required this.bookmarkCount,
     required this.commentcount,
     required this.updatedateTime,
+    required this.viewCount,
   });
 
   @override
@@ -273,20 +277,35 @@ class _MyProfileCardState extends State<MyProfileCard> {
                       const SizedBox(
                         width: 15,
                       ),
-                      SizedBox(
-                        height: size.height * 0.028,
-                        width: size.height * 0.028,
-                        child: SvgPicture.asset(Assets.svgView),
-                      ),
-                      const SizedBox(
-                        width: 7,
-                      ),
-                      Text(
-                        "286",
-                        style: TextStyle(
-                            fontFamily: "Metropolis",
-                            fontWeight: FontWeight.w600,
-                            fontSize: size.width * 0.045),
+                      InkWell(
+                        onTap: () {
+                          showViewList(context);
+                        },
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              height: size.height * 0.028,
+                              width: size.height * 0.028,
+                              child: SvgPicture.asset(Assets.svgView),
+                            ),
+                            6.sbw,
+                            widget.viewCount == 0
+                                ? const SizedBox.shrink()
+                                : InkWell(
+                                    onTap: () {
+                                      showViewList(context);
+                                    },
+                                    child: Text(
+                                      '${widget.viewCount}',
+                                      style: TextStyle(
+                                        fontFamily: "Metropolis",
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: size.width * 0.038,
+                                      ),
+                                    ),
+                                  ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -411,5 +430,19 @@ class _MyProfileCardState extends State<MyProfileCard> {
 
   void fetchLikeList() async {
     await widget.controller.fetchLikeListPost(widget.postId, context);
+  }
+
+  void showViewList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        fetchViewList();
+        return const PostViewListContent();
+      },
+    );
+  }
+
+  void fetchViewList() async {
+    await widget.controller.fetchViewListPost(widget.postId, context);
   }
 }
