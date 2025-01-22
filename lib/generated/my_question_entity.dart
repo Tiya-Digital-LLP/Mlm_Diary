@@ -29,7 +29,7 @@ class MyQuestionQuestions {
 	String? subcategory = '';
 	String? creatdate = '';
 	@JSONField(name: "user_id")
-	String? userId = '';
+	int? userId = 0;
 	int? pgcnt = 0;
 	int? totallike = 0;
 	int? totalbookmark = 0;
@@ -39,6 +39,8 @@ class MyQuestionQuestions {
 	int? userbookmarked = 0;
 	@JSONField(name: "user_data")
 	MyQuestionQuestionsUserData? userData;
+	@JSONField(name: "full_url")
+	String? fullUrl = '';
 
 	MyQuestionQuestions();
 

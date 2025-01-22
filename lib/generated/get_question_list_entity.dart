@@ -35,6 +35,8 @@ class GetQuestionListQuestions {
 	int? totalbookmark = 0;
 	@JSONField(name: "totalquestion_answer")
 	int? totalquestionAnswer = 0;
+	@JSONField(name: "full_url")
+	String? fullUrl = '';
 	@JSONField(name: "user_data")
 	GetQuestionListQuestionsUserData? userData;
 	@JSONField(name: "liked_by_user")

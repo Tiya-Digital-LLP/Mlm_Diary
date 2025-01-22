@@ -66,7 +66,7 @@ MyQuestionQuestions $MyQuestionQuestionsFromJson(Map<String, dynamic> json) {
   if (creatdate != null) {
     myQuestionQuestions.creatdate = creatdate;
   }
-  final String? userId = jsonConvert.convert<String>(json['user_id']);
+  final int? userId = jsonConvert.convert<int>(json['user_id']);
   if (userId != null) {
     myQuestionQuestions.userId = userId;
   }
@@ -100,6 +100,10 @@ MyQuestionQuestions $MyQuestionQuestionsFromJson(Map<String, dynamic> json) {
   if (userData != null) {
     myQuestionQuestions.userData = userData;
   }
+  final String? fullUrl = jsonConvert.convert<String>(json['full_url']);
+  if (fullUrl != null) {
+    myQuestionQuestions.fullUrl = fullUrl;
+  }
   return myQuestionQuestions;
 }
 
@@ -118,6 +122,7 @@ Map<String, dynamic> $MyQuestionQuestionsToJson(MyQuestionQuestions entity) {
   data['userliked'] = entity.userliked;
   data['userbookmarked'] = entity.userbookmarked;
   data['user_data'] = entity.userData?.toJson();
+  data['full_url'] = entity.fullUrl;
   return data;
 }
 
@@ -128,7 +133,7 @@ extension MyQuestionQuestionsExtension on MyQuestionQuestions {
     String? category,
     String? subcategory,
     String? creatdate,
-    String? userId,
+    int? userId,
     int? pgcnt,
     int? totallike,
     int? totalbookmark,
@@ -136,6 +141,7 @@ extension MyQuestionQuestionsExtension on MyQuestionQuestions {
     int? userliked,
     int? userbookmarked,
     MyQuestionQuestionsUserData? userData,
+    String? fullUrl,
   }) {
     return MyQuestionQuestions()
       ..id = id ?? this.id
@@ -150,7 +156,8 @@ extension MyQuestionQuestionsExtension on MyQuestionQuestions {
       ..totalquestionAnswer = totalquestionAnswer ?? this.totalquestionAnswer
       ..userliked = userliked ?? this.userliked
       ..userbookmarked = userbookmarked ?? this.userbookmarked
-      ..userData = userData ?? this.userData;
+      ..userData = userData ?? this.userData
+      ..fullUrl = fullUrl ?? this.fullUrl;
   }
 }
 

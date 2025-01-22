@@ -89,6 +89,10 @@ GetQuestionListQuestions $GetQuestionListQuestionsFromJson(
   if (totalquestionAnswer != null) {
     getQuestionListQuestions.totalquestionAnswer = totalquestionAnswer;
   }
+  final String? fullUrl = jsonConvert.convert<String>(json['full_url']);
+  if (fullUrl != null) {
+    getQuestionListQuestions.fullUrl = fullUrl;
+  }
   final GetQuestionListQuestionsUserData? userData = jsonConvert.convert<
       GetQuestionListQuestionsUserData>(json['user_data']);
   if (userData != null) {
@@ -119,6 +123,7 @@ Map<String, dynamic> $GetQuestionListQuestionsToJson(
   data['totallike'] = entity.totallike;
   data['totalbookmark'] = entity.totalbookmark;
   data['totalquestion_answer'] = entity.totalquestionAnswer;
+  data['full_url'] = entity.fullUrl;
   data['user_data'] = entity.userData?.toJson();
   data['liked_by_user'] = entity.likedByUser;
   data['bookmarked_by_user'] = entity.bookmarkedByUser;
@@ -137,6 +142,7 @@ extension GetQuestionListQuestionsExtension on GetQuestionListQuestions {
     int? totallike,
     int? totalbookmark,
     int? totalquestionAnswer,
+    String? fullUrl,
     GetQuestionListQuestionsUserData? userData,
     bool? likedByUser,
     bool? bookmarkedByUser,
@@ -152,6 +158,7 @@ extension GetQuestionListQuestionsExtension on GetQuestionListQuestions {
       ..totallike = totallike ?? this.totallike
       ..totalbookmark = totalbookmark ?? this.totalbookmark
       ..totalquestionAnswer = totalquestionAnswer ?? this.totalquestionAnswer
+      ..fullUrl = fullUrl ?? this.fullUrl
       ..userData = userData ?? this.userData
       ..likedByUser = likedByUser ?? this.likedByUser
       ..bookmarkedByUser = bookmarkedByUser ?? this.bookmarkedByUser;

@@ -234,6 +234,13 @@ class _MyAppState extends State<MyApp> {
               );
               break;
 
+            case 'Question':
+              Get.toNamed(
+                Routes.quationanswer,
+                arguments: data,
+              );
+              break;
+
             default:
               if (kDebugMode) {
                 debugPrint('Unknown screen type: $screen');

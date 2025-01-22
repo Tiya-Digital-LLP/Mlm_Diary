@@ -217,6 +217,7 @@ class _QuationAnswerState extends State<QuationAnswer> {
                                 bookmarkedbyuser:
                                     post.bookmarkedByUser ?? false,
                                 answerCount: post.totalquestionAnswer ?? 0,
+                                url: post.fullUrl ?? '',
                               ),
                             ),
                           );
