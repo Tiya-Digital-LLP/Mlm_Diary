@@ -563,7 +563,7 @@ class _ClassidiedDetailsScreenCopyState
                                 ? const SizedBox.shrink()
                                 : InkWell(
                                     onTap: () {
-                                      showViewList(context);
+                                      showViewList(context, data.id!);
                                     },
                                     child: Text(
                                       '${data.pgcnt}',
@@ -651,11 +651,13 @@ class _ClassidiedDetailsScreenCopyState
     );
   }
 
-  void showViewList(BuildContext context) {
+  void showViewList(BuildContext context, int classifiedId) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return const ClassifiedViewListContent();
+        return ClassifiedViewListContent(
+          clasiifiedId: classifiedId,
+        );
       },
     );
   }

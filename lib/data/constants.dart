@@ -72,6 +72,8 @@ class Constants {
   static const String delteclassified = "/deleteclassified";
   static const String likelistclassified = "/classified/likelist";
   static const String viewlistclassified = "/classified/viewlist";
+  static const String likelistcompany = "/company/likelist";
+  static const String viewlistcompany = "/company/viewlist";
 
   static const String countviewclassified = "/countview_classified";
   static const String getcommentclassified = "/getclassified_comment";
@@ -105,6 +107,8 @@ class Constants {
   static const String mynews = "/mynewslist";
   static const String getnews = "/getnews";
   static const String likelistnews = "/news/likelist";
+  static const String viewlistnews = "/news/viewlist";
+
   static const String countviewnews = "/countview_news";
   static const String deletenews = "/deletenews";
   static const String updatenews = "/updatenews";
@@ -122,6 +126,8 @@ class Constants {
   static const String updateblog = "/updateblog";
   static const String getblog = "/getblog";
   static const String likelistblog = "/blog/likelist";
+  static const String viewlistblog = "/blog/viewlist";
+
   static const String countviewblog = "/countview_blog";
   static const String getcommentblog = "/getblog_comment";
   static const String getcommentpost = "/getuserpost_comment";
@@ -140,6 +146,8 @@ class Constants {
   static const String deletepost = "/deleteuserpost";
   static const String bookmarkpost = "/addfavoritepost";
   static const String likelistpost = "/post/likelist";
+  static const String viewlistpost = "/post/viewlist";
+
   static const String profileBookmark = "/bookmark_database";
   static const String profileFollow = "/follow";
   static const String getFollowers = "/getfollowers";
@@ -154,6 +162,8 @@ class Constants {
   static const String getanswer = "/getanswers";
   static const String addanswer = "/addanswer";
   static const String likelistquestion = "/question/likelist";
+  static const String viewlistquestion = "/question/viewlist";
+
   static const String countviewquestion = "/countview_question";
   static const String questionBookmark = "/addfavoritequestion";
   static const String likedquestion = "/addlikequestion";

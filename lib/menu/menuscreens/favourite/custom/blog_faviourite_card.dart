@@ -9,6 +9,7 @@ import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/blog_liked_list_content.dart';
+import 'package:mlmdiary/menu/menuscreens/blog/blog_view_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/custom_blog_comment.dart';
 import 'package:mlmdiary/menu/menuscreens/favourite/controller/favourite_controller.dart';
@@ -342,14 +343,22 @@ class _FavouritrCardState extends State<BlogFaviouriteCard> {
                         width: size.height * 0.028,
                         child: SvgPicture.asset(Assets.svgView),
                       ),
-                      8.sbw,
-                      Text(
-                        '${widget.viewcounts}',
-                        style: TextStyle(
-                            fontFamily: "Metropolis",
-                            fontWeight: FontWeight.w600,
-                            fontSize: size.width * 0.038),
-                      ),
+                      6.sbw,
+                      widget.viewcounts == 0
+                          ? const SizedBox.shrink()
+                          : InkWell(
+                              onTap: () {
+                                showViewList(context);
+                              },
+                              child: Text(
+                                '${widget.viewcounts}',
+                                style: TextStyle(
+                                  fontFamily: "Metropolis",
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: size.width * 0.038,
+                                ),
+                              ),
+                            ),
                     ],
                   ),
                   Row(
@@ -403,5 +412,20 @@ class _FavouritrCardState extends State<BlogFaviouriteCard> {
   void fetchLikeList() async {
     await widget.manageBlogController
         .fetchLikeListBlog(widget.bookmarkId, context);
+  }
+
+  void showViewList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        fetchViewList();
+        return const BlogViewListContent();
+      },
+    );
+  }
+
+  void fetchViewList() async {
+    await widget.manageBlogController
+        .fetchViewListBlog(widget.bookmarkId, context);
   }
 }

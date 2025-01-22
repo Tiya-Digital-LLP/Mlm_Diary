@@ -8,6 +8,8 @@ import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_admin_company_entity.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmcompanies/company_like_list_content.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmcompanies/company_view_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/custom_company_comment.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
@@ -594,7 +596,9 @@ class _MlmCompaniesDetailsState extends State<MlmcompanyNotificationDetail> {
                       likeCount.value == 0
                           ? const SizedBox.shrink()
                           : InkWell(
-                              onTap: () {},
+                              onTap: () {
+                                showLikeList(context);
+                              },
                               child: Text(
                                 '${likeCount.value}',
                                 style: textStyleW600(
@@ -632,18 +636,30 @@ class _MlmCompaniesDetailsState extends State<MlmcompanyNotificationDetail> {
                       const SizedBox(
                         width: 15,
                       ),
-                      SizedBox(
-                        height: size.height * 0.028,
-                        width: size.height * 0.028,
-                        child: SvgPicture.asset(Assets.svgView),
-                      ),
-                      const SizedBox(
-                        width: 7,
-                      ),
-                      Text(
-                        data.pgcnt.toString(),
-                        style: textStyleW600(
-                            size.width * 0.040, AppColors.blackText),
+                      Row(
+                        children: [
+                          SizedBox(
+                            height: size.height * 0.028,
+                            width: size.height * 0.028,
+                            child: SvgPicture.asset(Assets.svgView),
+                          ),
+                          6.sbw,
+                          data.pgcnt == 0
+                              ? const SizedBox.shrink()
+                              : InkWell(
+                                  onTap: () {
+                                    showViewList(context);
+                                  },
+                                  child: Text(
+                                    '${data.pgcnt}',
+                                    style: TextStyle(
+                                      fontFamily: "Metropolis",
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: size.width * 0.038,
+                                    ),
+                                  ),
+                                ),
+                        ],
                       ),
                     ],
                   ),
@@ -716,6 +732,34 @@ class _MlmCompaniesDetailsState extends State<MlmcompanyNotificationDetail> {
         }
       }),
     );
+  }
+
+  void showLikeList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        fetchLikeList();
+        return const CompanyLikeListContent();
+      },
+    );
+  }
+
+  void fetchLikeList() async {
+    await controller.fetchLikeListCompany(post.id ?? 0, context);
+  }
+
+  void showViewList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        fetchViewList();
+        return const CompanyViewListContent();
+      },
+    );
+  }
+
+  void fetchViewList() async {
+    await controller.fetchViewListCompany(post.id ?? 0, context);
   }
 
   Widget _buildHtmlContent(String htmlContent, Size size) {

@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/blog_liked_list_content.dart';
+import 'package:mlmdiary/menu/menuscreens/blog/blog_view_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/custom_blog_comment.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
@@ -475,18 +476,30 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
                       const SizedBox(
                         width: 15,
                       ),
-                      SizedBox(
-                        height: size.height * 0.028,
-                        width: size.height * 0.028,
-                        child: SvgPicture.asset(Assets.svgView),
-                      ),
-                      const SizedBox(
-                        width: 7,
-                      ),
-                      Text(
-                        post.pgcnt.toString(),
-                        style: textStyleW600(
-                            size.width * 0.040, AppColors.blackText),
+                      Row(
+                        children: [
+                          SizedBox(
+                            height: size.height * 0.028,
+                            width: size.height * 0.028,
+                            child: SvgPicture.asset(Assets.svgView),
+                          ),
+                          6.sbw,
+                          post.pgcnt == 0
+                              ? const SizedBox.shrink()
+                              : InkWell(
+                                  onTap: () {
+                                    showViewList(context);
+                                  },
+                                  child: Text(
+                                    '${post.pgcnt}',
+                                    style: TextStyle(
+                                      fontFamily: "Metropolis",
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: size.width * 0.038,
+                                    ),
+                                  ),
+                                ),
+                        ],
                       ),
                     ],
                   ),
@@ -585,5 +598,19 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
 
   void fetchLikeList(int blogId) async {
     await controller.fetchLikeListBlog(blogId, context);
+  }
+
+  void showViewList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        fetchViewList();
+        return const BlogViewListContent();
+      },
+    );
+  }
+
+  void fetchViewList() async {
+    await controller.fetchViewListBlog(widget.blogId, context);
   }
 }

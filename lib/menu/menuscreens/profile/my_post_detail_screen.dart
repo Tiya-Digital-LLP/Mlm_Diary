@@ -4,9 +4,9 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/my_post_list_entity.dart';
-import 'package:mlmdiary/menu/menuscreens/news/news_like_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/custom/custom_post_comment.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/custom/post_like_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
@@ -571,7 +571,7 @@ class _NewsDetailScreenState extends State<MyPostDetailScreen> {
       builder: (BuildContext context) {
         // Fetch like list after bottom sheet is shown
         fetchLikeList();
-        return const NewsLikeListContent();
+        return const PostLikeListContent();
       },
     );
   }

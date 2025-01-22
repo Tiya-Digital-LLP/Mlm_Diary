@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/question_like_list_content.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/question_view_list_content.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
@@ -238,20 +239,30 @@ class _ManageQuestionCardState extends State<ManageQuestionCard> {
                     const SizedBox(
                       width: 15,
                     ),
-                    SizedBox(
-                      height: size.height * 0.028,
-                      width: size.height * 0.028,
-                      child: SvgPicture.asset(Assets.svgView),
-                    ),
-                    const SizedBox(
-                      width: 7,
-                    ),
-                    Text(
-                      '${widget.viewcounts}',
-                      style: TextStyle(
-                          fontFamily: "Metropolis",
-                          fontWeight: FontWeight.w600,
-                          fontSize: size.width * 0.045),
+                    Row(
+                      children: [
+                        SizedBox(
+                          height: size.height * 0.028,
+                          width: size.height * 0.028,
+                          child: SvgPicture.asset(Assets.svgView),
+                        ),
+                        6.sbw,
+                        widget.viewcounts == 0
+                            ? const SizedBox.shrink()
+                            : InkWell(
+                                onTap: () {
+                                  showViewList(context);
+                                },
+                                child: Text(
+                                  '${widget.viewcounts}',
+                                  style: TextStyle(
+                                    fontFamily: "Metropolis",
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: size.width * 0.038,
+                                  ),
+                                ),
+                              ),
+                      ],
                     ),
                   ],
                 ),
@@ -323,5 +334,19 @@ class _ManageQuestionCardState extends State<ManageQuestionCard> {
 
   void fetchLikeList() async {
     await widget.controller.fetchLikeListQuestion(widget.questionId, context);
+  }
+
+  void showViewList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        fetchViewList();
+        return const QuestionViewListContent();
+      },
+    );
+  }
+
+  void fetchViewList() async {
+    await widget.controller.fetchViewListQuestion(widget.questionId, context);
   }
 }

@@ -12,6 +12,7 @@ import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/custom/custom_post_comment.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/userprofile/custom/post_view_list_content.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -314,14 +315,22 @@ class _FavouritrCardState extends State<PostUserCard> {
                         width: size.height * 0.028,
                         child: SvgPicture.asset(Assets.svgView),
                       ),
-                      8.sbw,
-                      Text(
-                        '${widget.viewcounts}',
-                        style: TextStyle(
-                            fontFamily: "Metropolis",
-                            fontWeight: FontWeight.w600,
-                            fontSize: size.width * 0.038),
-                      ),
+                      6.sbw,
+                      widget.viewcounts == 0
+                          ? const SizedBox.shrink()
+                          : InkWell(
+                              onTap: () {
+                                showViewList(context);
+                              },
+                              child: Text(
+                                '${widget.viewcounts}',
+                                style: TextStyle(
+                                  fontFamily: "Metropolis",
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: size.width * 0.038,
+                                ),
+                              ),
+                            ),
                     ],
                   ),
                   Row(
@@ -382,5 +391,20 @@ class _FavouritrCardState extends State<PostUserCard> {
         ),
       ),
     );
+  }
+
+  void showViewList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        fetchViewList();
+        return const PostViewListContent();
+      },
+    );
+  }
+
+  void fetchViewList() async {
+    await widget.editpostController
+        .fetchViewListPost(widget.bookmarkId, context);
   }
 }

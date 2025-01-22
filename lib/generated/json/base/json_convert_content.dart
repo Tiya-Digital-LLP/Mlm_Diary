@@ -89,6 +89,7 @@ import 'package:mlmdiary/generated/get_user_type_entity.dart';
 import 'package:mlmdiary/generated/get_video_list_entity.dart';
 import 'package:mlmdiary/generated/get_views_entity.dart';
 import 'package:mlmdiary/generated/l_iked_blog_entity.dart';
+import 'package:mlmdiary/generated/like_list_company_entity.dart';
 import 'package:mlmdiary/generated/liked_news_entity.dart';
 import 'package:mlmdiary/generated/liked_user_entity.dart';
 import 'package:mlmdiary/generated/login_entity.dart';
@@ -129,6 +130,11 @@ import 'package:mlmdiary/generated/user_profile_count_view_entity.dart';
 import 'package:mlmdiary/generated/user_register_entity_entity.dart';
 import 'package:mlmdiary/generated/verify_phone_otp_entity.dart';
 import 'package:mlmdiary/generated/version_check_entity.dart';
+import 'package:mlmdiary/generated/view_company_list_entity.dart';
+import 'package:mlmdiary/generated/view_post_list_entity.dart';
+import 'package:mlmdiary/generated/view_question_list_entity.dart';
+import 'package:mlmdiary/generated/views_blog_list_entity.dart';
+import 'package:mlmdiary/generated/views_news_list_entity.dart';
 
 JsonConvert jsonConvert = JsonConvert();
 
@@ -973,6 +979,18 @@ class JsonConvert {
       return data.map<LIkedBlogEntity>((Map<String, dynamic> e) =>
           LIkedBlogEntity.fromJson(e)).toList() as M;
     }
+    if (<LikeListCompanyEntity>[] is M) {
+      return data.map<LikeListCompanyEntity>((Map<String, dynamic> e) =>
+          LikeListCompanyEntity.fromJson(e)).toList() as M;
+    }
+    if (<LikeListCompanyData>[] is M) {
+      return data.map<LikeListCompanyData>((Map<String, dynamic> e) =>
+          LikeListCompanyData.fromJson(e)).toList() as M;
+    }
+    if (<LikeListCompanyDataUserData>[] is M) {
+      return data.map<LikeListCompanyDataUserData>((Map<String, dynamic> e) =>
+          LikeListCompanyDataUserData.fromJson(e)).toList() as M;
+    }
     if (<LikedNewsEntity>[] is M) {
       return data.map<LikedNewsEntity>((Map<String, dynamic> e) =>
           LikedNewsEntity.fromJson(e)).toList() as M;
@@ -1250,6 +1268,66 @@ class JsonConvert {
       return data.map<VersionCheckEntity>((Map<String, dynamic> e) =>
           VersionCheckEntity.fromJson(e)).toList() as M;
     }
+    if (<ViewCompanyListEntity>[] is M) {
+      return data.map<ViewCompanyListEntity>((Map<String, dynamic> e) =>
+          ViewCompanyListEntity.fromJson(e)).toList() as M;
+    }
+    if (<ViewCompanyListData>[] is M) {
+      return data.map<ViewCompanyListData>((Map<String, dynamic> e) =>
+          ViewCompanyListData.fromJson(e)).toList() as M;
+    }
+    if (<ViewCompanyListDataUserData>[] is M) {
+      return data.map<ViewCompanyListDataUserData>((Map<String, dynamic> e) =>
+          ViewCompanyListDataUserData.fromJson(e)).toList() as M;
+    }
+    if (<ViewPostListEntity>[] is M) {
+      return data.map<ViewPostListEntity>((Map<String, dynamic> e) =>
+          ViewPostListEntity.fromJson(e)).toList() as M;
+    }
+    if (<ViewPostListData>[] is M) {
+      return data.map<ViewPostListData>((Map<String, dynamic> e) =>
+          ViewPostListData.fromJson(e)).toList() as M;
+    }
+    if (<ViewPostListDataUserData>[] is M) {
+      return data.map<ViewPostListDataUserData>((Map<String, dynamic> e) =>
+          ViewPostListDataUserData.fromJson(e)).toList() as M;
+    }
+    if (<ViewQuestionListEntity>[] is M) {
+      return data.map<ViewQuestionListEntity>((Map<String, dynamic> e) =>
+          ViewQuestionListEntity.fromJson(e)).toList() as M;
+    }
+    if (<ViewQuestionListData>[] is M) {
+      return data.map<ViewQuestionListData>((Map<String, dynamic> e) =>
+          ViewQuestionListData.fromJson(e)).toList() as M;
+    }
+    if (<ViewQuestionListDataUserData>[] is M) {
+      return data.map<ViewQuestionListDataUserData>((Map<String, dynamic> e) =>
+          ViewQuestionListDataUserData.fromJson(e)).toList() as M;
+    }
+    if (<ViewsBlogListEntity>[] is M) {
+      return data.map<ViewsBlogListEntity>((Map<String, dynamic> e) =>
+          ViewsBlogListEntity.fromJson(e)).toList() as M;
+    }
+    if (<ViewsBlogListData>[] is M) {
+      return data.map<ViewsBlogListData>((Map<String, dynamic> e) =>
+          ViewsBlogListData.fromJson(e)).toList() as M;
+    }
+    if (<ViewsBlogListDataUserData>[] is M) {
+      return data.map<ViewsBlogListDataUserData>((Map<String, dynamic> e) =>
+          ViewsBlogListDataUserData.fromJson(e)).toList() as M;
+    }
+    if (<ViewsNewsListEntity>[] is M) {
+      return data.map<ViewsNewsListEntity>((Map<String, dynamic> e) =>
+          ViewsNewsListEntity.fromJson(e)).toList() as M;
+    }
+    if (<ViewsNewsListData>[] is M) {
+      return data.map<ViewsNewsListData>((Map<String, dynamic> e) =>
+          ViewsNewsListData.fromJson(e)).toList() as M;
+    }
+    if (<ViewsNewsListDataUserData>[] is M) {
+      return data.map<ViewsNewsListDataUserData>((Map<String, dynamic> e) =>
+          ViewsNewsListDataUserData.fromJson(e)).toList() as M;
+    }
 
     debugPrint("$M not found");
 
@@ -1474,6 +1552,10 @@ class JsonConvertClassCollection {
     (GetViewsEntity).toString(): GetViewsEntity.fromJson,
     (GetViewsData).toString(): GetViewsData.fromJson,
     (LIkedBlogEntity).toString(): LIkedBlogEntity.fromJson,
+    (LikeListCompanyEntity).toString(): LikeListCompanyEntity.fromJson,
+    (LikeListCompanyData).toString(): LikeListCompanyData.fromJson,
+    (LikeListCompanyDataUserData).toString(): LikeListCompanyDataUserData
+        .fromJson,
     (LikedNewsEntity).toString(): LikedNewsEntity.fromJson,
     (LikedUserEntity).toString(): LikedUserEntity.fromJson,
     (LoginEntity).toString(): LoginEntity.fromJson,
@@ -1551,6 +1633,23 @@ class JsonConvertClassCollection {
     (UserRegisterEntityEntity).toString(): UserRegisterEntityEntity.fromJson,
     (VerifyPhoneOtpEntity).toString(): VerifyPhoneOtpEntity.fromJson,
     (VersionCheckEntity).toString(): VersionCheckEntity.fromJson,
+    (ViewCompanyListEntity).toString(): ViewCompanyListEntity.fromJson,
+    (ViewCompanyListData).toString(): ViewCompanyListData.fromJson,
+    (ViewCompanyListDataUserData).toString(): ViewCompanyListDataUserData
+        .fromJson,
+    (ViewPostListEntity).toString(): ViewPostListEntity.fromJson,
+    (ViewPostListData).toString(): ViewPostListData.fromJson,
+    (ViewPostListDataUserData).toString(): ViewPostListDataUserData.fromJson,
+    (ViewQuestionListEntity).toString(): ViewQuestionListEntity.fromJson,
+    (ViewQuestionListData).toString(): ViewQuestionListData.fromJson,
+    (ViewQuestionListDataUserData).toString(): ViewQuestionListDataUserData
+        .fromJson,
+    (ViewsBlogListEntity).toString(): ViewsBlogListEntity.fromJson,
+    (ViewsBlogListData).toString(): ViewsBlogListData.fromJson,
+    (ViewsBlogListDataUserData).toString(): ViewsBlogListDataUserData.fromJson,
+    (ViewsNewsListEntity).toString(): ViewsNewsListEntity.fromJson,
+    (ViewsNewsListData).toString(): ViewsNewsListData.fromJson,
+    (ViewsNewsListDataUserData).toString(): ViewsNewsListDataUserData.fromJson,
   };
 
   bool containsKey(String type) {

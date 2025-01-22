@@ -555,7 +555,7 @@ class _ClassidiedDetailsScreenState extends State<ClassifiedDetailTestScreen> {
                             ? const SizedBox.shrink()
                             : InkWell(
                                 onTap: () {
-                                  showViewList(context);
+                                  showViewList(context, post.id!);
                                 },
                                 child: Text(
                                   '${post.pgcnt}',
@@ -663,18 +663,20 @@ class _ClassidiedDetailsScreenState extends State<ClassifiedDetailTestScreen> {
     );
   }
 
-  void showViewList(BuildContext context) {
+  void showViewList(BuildContext context, int classifiedId) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
         fetchViewList();
-        return const ClassifiedViewListContent();
+        return ClassifiedViewListContent(
+          clasiifiedId: classifiedId,
+        );
       },
     );
   }
 
   void fetchViewList() async {
-    await controller.fetchViewListClassified(widget.classifiedId, context);
+    await controller.fetchViewListClassified(widget.classifiedId, 1, context);
   }
 
   // Define the _launchUrl method

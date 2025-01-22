@@ -11,7 +11,8 @@ import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 
 class ClassifiedViewListContent extends StatefulWidget {
-  const ClassifiedViewListContent({super.key});
+  final int clasiifiedId;
+  const ClassifiedViewListContent({super.key, required this.clasiifiedId});
 
   @override
   State<ClassifiedViewListContent> createState() =>
@@ -22,10 +23,29 @@ class _ClassifiedViewListContentState extends State<ClassifiedViewListContent> {
   final ClasifiedController controller = Get.put(ClasifiedController());
   final UserProfileController userProfileController =
       Get.put(UserProfileController());
+  final ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
+    scrollController.addListener(() {
+      if (scrollController.position.pixels ==
+              scrollController.position.maxScrollExtent &&
+          !controller.isEndOfData.value) {
+        int nextPage = (controller.classifiedViewList.length ~/ 10) + 1;
+        controller.fetchViewListClassified(
+          widget.clasiifiedId,
+          nextPage,
+          context,
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -67,41 +87,83 @@ class _ClassifiedViewListContentState extends State<ClassifiedViewListContent> {
                     ),
                     10.sbh,
                     Expanded(
-                      child: ListView.builder(
-                        itemCount: controller.classifiedViewList.length,
-                        itemBuilder: (context, index) {
-                          var item = controller.classifiedViewList[index];
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 8.0, horizontal: 16.0),
-                            child: InkWell(
-                              onTap: () async {
-                                Get.toNamed(Routes.userprofilescreen,
-                                    arguments: {
-                                      'user_id': item.userId ?? 0,
-                                    });
-                                await userProfileController.fetchUserAllPost(
-                                  1,
-                                  item.userId.toString(),
-                                );
-                              },
-                              child: Row(
-                                children: [
-                                  CircleAvatar(
-                                    backgroundImage: NetworkImage(
-                                        item.userData?.imagePath ?? ''),
-                                  ),
-                                  8.sbw,
-                                  Expanded(
-                                    child: Text(
-                                      item.userData?.name ?? 'Unknown',
-                                      style: textStyleW500(size.width * 0.032,
-                                          AppColors.blackText),
-                                    ),
-                                  )
-                                ],
+                      child: Obx(
+                        () {
+                          if (controller.isLoading.value &&
+                              controller.classifiedViewList.isEmpty) {
+                            return Center(
+                              child: CustomLottieAnimation(
+                                child: Lottie.asset(
+                                  Assets.lottieLottie,
+                                ),
                               ),
-                            ),
+                            );
+                          }
+
+                          if (controller.classifiedViewList.isEmpty) {
+                            return const Center(
+                              child: Text(
+                                'Data not found',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            );
+                          }
+
+                          return ListView.builder(
+                            controller: controller.scrollController,
+                            itemCount: controller.classifiedViewList.length +
+                                (controller.isLoading.value ? 1 : 0),
+                            itemBuilder: (context, index) {
+                              if (index ==
+                                  controller.classifiedViewList.length) {
+                                return Center(
+                                  child: CustomLottieAnimation(
+                                    child: Lottie.asset(
+                                      Assets.lottieLottie,
+                                    ),
+                                  ),
+                                );
+                              }
+                              var item = controller.classifiedViewList[index];
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 8.0, horizontal: 16.0),
+                                child: InkWell(
+                                  onTap: () async {
+                                    Get.toNamed(Routes.userprofilescreen,
+                                        arguments: {
+                                          'user_id': item.userId ?? 0,
+                                        });
+                                    await userProfileController
+                                        .fetchUserAllPost(
+                                      1,
+                                      item.userId.toString(),
+                                    );
+                                  },
+                                  child: Row(
+                                    children: [
+                                      CircleAvatar(
+                                        backgroundImage: NetworkImage(
+                                            item.userData?.imagePath ?? ''),
+                                      ),
+                                      8.sbw,
+                                      Expanded(
+                                        child: Text(
+                                          item.userData?.name ?? 'Unknown',
+                                          style: textStyleW500(
+                                              size.width * 0.032,
+                                              AppColors.blackText),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
                           );
                         },
                       ),

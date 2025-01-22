@@ -7,6 +7,7 @@ import 'package:mlmdiary/generated/my_news_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/news/custom_news_comment.dart';
 import 'package:mlmdiary/menu/menuscreens/news/news_like_list_content.dart';
+import 'package:mlmdiary/menu/menuscreens/news/news_view_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
@@ -516,18 +517,30 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
                     const SizedBox(
                       width: 15,
                     ),
-                    SizedBox(
-                      height: size.height * 0.028,
-                      width: size.height * 0.028,
-                      child: SvgPicture.asset(Assets.svgView),
-                    ),
-                    const SizedBox(
-                      width: 7,
-                    ),
-                    Text(
-                      post.pgcnt.toString(),
-                      style: textStyleW600(
-                          size.width * 0.040, AppColors.blackText),
+                    Row(
+                      children: [
+                        SizedBox(
+                          height: size.height * 0.028,
+                          width: size.height * 0.028,
+                          child: SvgPicture.asset(Assets.svgView),
+                        ),
+                        6.sbw,
+                        post.pgcnt == 0
+                            ? const SizedBox.shrink()
+                            : InkWell(
+                                onTap: () {
+                                  showViewList(context);
+                                },
+                                child: Text(
+                                  '${post.pgcnt ?? 0}',
+                                  style: TextStyle(
+                                    fontFamily: "Metropolis",
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: size.width * 0.038,
+                                  ),
+                                ),
+                              ),
+                      ],
                     ),
                   ],
                 ),
@@ -615,6 +628,20 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
 
   void fetchLikeList() async {
     await controller.fetchLikeListNews(post.id ?? 0, context);
+  }
+
+  void showViewList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        fetchViewList();
+        return const NewsViewListContent();
+      },
+    );
+  }
+
+  void fetchViewList() async {
+    await controller.fetchViewListNews(post.id ?? 0, context);
   }
 
   Widget _buildHtmlContent(String htmlContent, Size size) {

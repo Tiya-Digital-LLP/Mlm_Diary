@@ -8,6 +8,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmcompanies/company_like_list_content.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmcompanies/company_view_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/custom_company_comment.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
@@ -666,9 +668,11 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
                         (controller.likeCountMap[post.id] ?? 0);
 
                     return InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        showLikeList(context);
+                      },
                       child: Text(
-                        totalLikes.toString(),
+                        '$totalLikes',
                         style: textStyleW600(
                             size.width * 0.038, AppColors.blackText),
                       ),
@@ -705,18 +709,30 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
                   const SizedBox(
                     width: 15,
                   ),
-                  SizedBox(
-                    height: size.height * 0.028,
-                    width: size.height * 0.028,
-                    child: SvgPicture.asset(Assets.svgView),
-                  ),
-                  const SizedBox(
-                    width: 7,
-                  ),
-                  Text(
-                    post.pgcnt.toString(),
-                    style:
-                        textStyleW600(size.width * 0.040, AppColors.blackText),
+                  Row(
+                    children: [
+                      SizedBox(
+                        height: size.height * 0.028,
+                        width: size.height * 0.028,
+                        child: SvgPicture.asset(Assets.svgView),
+                      ),
+                      6.sbw,
+                      post.pgcnt == 0
+                          ? const SizedBox.shrink()
+                          : InkWell(
+                              onTap: () {
+                                showViewList(context);
+                              },
+                              child: Text(
+                                '${post.pgcnt}',
+                                style: TextStyle(
+                                  fontFamily: "Metropolis",
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: size.width * 0.038,
+                                ),
+                              ),
+                            ),
+                    ],
                   ),
                 ],
               ),
@@ -797,5 +813,33 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails> {
     } else {
       throw 'Could not launch $url';
     }
+  }
+
+  void showLikeList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        fetchLikeList();
+        return const CompanyLikeListContent();
+      },
+    );
+  }
+
+  void fetchLikeList() async {
+    await controller.fetchLikeListCompany(post.id ?? 0, context);
+  }
+
+  void showViewList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        fetchViewList();
+        return const CompanyViewListContent();
+      },
+    );
+  }
+
+  void fetchViewList() async {
+    await controller.fetchViewListCompany(post.id ?? 0, context);
   }
 }

@@ -23,6 +23,7 @@ import 'package:mlmdiary/generated/liked_news_entity.dart';
 import 'package:mlmdiary/generated/my_news_entity.dart';
 import 'package:mlmdiary/generated/news_count_view_entity.dart';
 import 'package:mlmdiary/generated/news_like_list_entity.dart';
+import 'package:mlmdiary/generated/views_news_list_entity.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 
 import 'package:mlmdiary/utils/custom_toast.dart';
@@ -49,6 +50,8 @@ class ManageNewsController extends GetxController {
   RxList<GetNewsDetailData> newsDetailList = <GetNewsDetailData>[].obs;
 
   RxList<NewsLikeListData> newsLikeList = RxList<NewsLikeListData>();
+  RxList<ViewsNewsListData> newsViewList = RxList<ViewsNewsListData>();
+
 // news comment
   RxList<GetCommentNewsData> getCommentList = <GetCommentNewsData>[].obs;
   Rx<TextEditingController> commment = TextEditingController().obs;
@@ -918,6 +921,92 @@ class ManageNewsController extends GetxController {
       // Log end of method execution
       if (kDebugMode) {
         print('Finished fetchLikeListClassified method');
+      }
+    }
+  }
+
+  // like_list_classified
+  Future<void> fetchViewListNews(int classifiedId, context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = Platform.isAndroid ? 'android' : 'ios';
+
+    isLoading(true);
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // Log connectivity result
+      if (kDebugMode) {
+        print('Connectivity result: $connectivityResult');
+      }
+
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri = Uri.parse('${Constants.baseUrl}${Constants.viewlistnews}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['news_id'] = classifiedId.toString();
+
+        // Log request details
+        if (kDebugMode) {
+          print('Request URL: $uri');
+          print('Request fields: ${request.fields}');
+        }
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        // Log response status code
+        if (kDebugMode) {
+          print('Response status code: ${response.statusCode}');
+        }
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var status = data['status'];
+
+          // Log response body
+          if (kDebugMode) {
+            print('Response body: ${response.body}');
+          }
+
+          if (status == 1) {
+            var newsViewListEntity = ViewsNewsListEntity.fromJson(data);
+            newsViewList.value = newsViewListEntity.data ?? [];
+
+            // Log parsed data
+            if (kDebugMode) {
+              print('Parsed entity: $newsViewListEntity');
+            }
+          } else {
+            var message = data['message'];
+
+            // Log failure message
+            if (kDebugMode) {
+              print('Failed to fetch newsViewList classified: $message');
+            }
+          }
+        } else {
+          // Log error response
+          if (kDebugMode) {
+            print('Error: ${response.body}');
+          }
+        }
+      } else {
+        // Log no internet connection
+        showToasterrorborder("No internet connection", context);
+      }
+    } catch (e) {
+      // Log exception
+      if (kDebugMode) {
+        print('Error: $e');
+      }
+    } finally {
+      isLoading(false);
+      // Log end of method execution
+      if (kDebugMode) {
+        print('Finished newsViewList method');
       }
     }
   }

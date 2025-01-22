@@ -21,6 +21,7 @@ import 'package:mlmdiary/generated/my_question_entity.dart';
 import 'package:mlmdiary/generated/question_like_entity.dart';
 import 'package:mlmdiary/generated/question_like_list_entity.dart';
 import 'package:mlmdiary/generated/update_answer_entity.dart';
+import 'package:mlmdiary/generated/view_question_list_entity.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:http/http.dart' as http;
@@ -48,6 +49,9 @@ class QuestionAnswerController extends GetxController {
 
   RxList<QuestionLikeListData> questionLikeList =
       RxList<QuestionLikeListData>();
+
+  RxList<ViewQuestionListData> questionViewList =
+      RxList<ViewQuestionListData>();
 
   final search = TextEditingController();
 
@@ -1384,6 +1388,92 @@ class QuestionAnswerController extends GetxController {
       // Log end of method execution
       if (kDebugMode) {
         print('Finished fetchLikeListBlog method');
+      }
+    }
+  }
+
+  // view_list_question
+  Future<void> fetchViewListQuestion(int questionId, context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = Platform.isAndroid ? 'android' : 'ios';
+
+    isLoading(true);
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // Log connectivity result
+      if (kDebugMode) {
+        print('Connectivity result: $connectivityResult');
+      }
+
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri =
+            Uri.parse('${Constants.baseUrl}${Constants.viewlistquestion}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['question_id'] = questionId.toString();
+
+        // Log request details
+        if (kDebugMode) {
+          print('Request URL: $uri');
+          print('Request fields: ${request.fields}');
+        }
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        // Log response status code
+        if (kDebugMode) {
+          print('Response status code: ${response.statusCode}');
+        }
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var status = data['status'];
+
+          // Log response body
+          if (kDebugMode) {
+            print('Response body: ${response.body}');
+          }
+
+          if (status == 1) {
+            var questionViewListEntity = ViewQuestionListEntity.fromJson(data);
+            questionViewList.value = questionViewListEntity.data ?? [];
+
+            // Log parsed data
+            if (kDebugMode) {
+              print('Parsed entity: $questionViewListEntity');
+            }
+          } else {
+            var message = data['message'];
+
+            // Log failure message
+            if (kDebugMode) {
+              print('Failed to fetch fetchViewListQuestion: $message');
+            }
+          }
+        } else {
+          // Log error response
+          if (kDebugMode) {
+            print('Error: ${response.body}');
+          }
+        }
+      } else {
+        showToasterrorborder("No internet connection", context);
+      }
+    } catch (e) {
+      // Log exception
+      if (kDebugMode) {
+        print('Error: $e');
+      }
+    } finally {
+      isLoading(false);
+      // Log end of method execution
+      if (kDebugMode) {
+        print('Finished fetchViewListQuestion method');
       }
     }
   }

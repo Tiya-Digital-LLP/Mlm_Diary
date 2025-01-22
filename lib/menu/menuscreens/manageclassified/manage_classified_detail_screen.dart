@@ -4,6 +4,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:mlmdiary/classified/classified_like_list_content.dart';
+import 'package:mlmdiary/classified/classified_view_list_content.dart';
 import 'package:mlmdiary/classified/custom/custom_commment.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/manage_classified_entity.dart';
@@ -395,7 +397,9 @@ class _ClassidiedDetailsScreenState
                     likeCount.value == 0
                         ? const SizedBox.shrink()
                         : InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              showLikeList(context);
+                            },
                             child: Text(
                               '${likeCount.value}',
                               style: textStyleW600(
@@ -432,18 +436,30 @@ class _ClassidiedDetailsScreenState
                     const SizedBox(
                       width: 15,
                     ),
-                    SizedBox(
-                      height: size.height * 0.028,
-                      width: size.height * 0.028,
-                      child: SvgPicture.asset(Assets.svgView),
-                    ),
-                    const SizedBox(
-                      width: 7,
-                    ),
-                    Text(
-                      post.pgcnt.toString(),
-                      style: textStyleW600(
-                          size.width * 0.040, AppColors.blackText),
+                    Row(
+                      children: [
+                        SizedBox(
+                          height: size.height * 0.028,
+                          width: size.height * 0.028,
+                          child: SvgPicture.asset(Assets.svgView),
+                        ),
+                        6.sbw,
+                        post.pgcnt == 0
+                            ? const SizedBox.shrink()
+                            : InkWell(
+                                onTap: () {
+                                  showViewList(context);
+                                },
+                                child: Text(
+                                  '${post.pgcnt}',
+                                  style: TextStyle(
+                                    fontFamily: "Metropolis",
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: size.width * 0.038,
+                                  ),
+                                ),
+                              ),
+                      ],
                     ),
                   ],
                 ),
@@ -506,6 +522,36 @@ class _ClassidiedDetailsScreenState
             ),
           )),
     );
+  }
+
+  void showLikeList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        fetchLikeList();
+        return const ClassifiedLikedListContent();
+      },
+    );
+  }
+
+  void fetchLikeList() async {
+    await controller.fetchLikeListClassified(post.id ?? 0, context);
+  }
+
+  void showViewList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        fetchViewList();
+        return ClassifiedViewListContent(
+          clasiifiedId: post.id ?? 0,
+        );
+      },
+    );
+  }
+
+  void fetchViewList() async {
+    await controller.fetchViewListClassified(post.id ?? 0, context);
   }
 
   void _showFullScreenImageDialog(BuildContext context) {

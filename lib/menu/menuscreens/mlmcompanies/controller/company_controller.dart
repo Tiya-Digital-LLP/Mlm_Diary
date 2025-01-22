@@ -15,7 +15,9 @@ import 'package:mlmdiary/generated/company_count_view_entity.dart';
 import 'package:mlmdiary/generated/edit_comment_entity.dart';
 import 'package:mlmdiary/generated/get_admin_company_entity.dart';
 import 'package:mlmdiary/generated/get_company_comment_entity.dart';
+import 'package:mlmdiary/generated/like_list_company_entity.dart';
 import 'package:mlmdiary/generated/mlm_like_company_entity.dart';
+import 'package:mlmdiary/generated/view_company_list_entity.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -43,6 +45,9 @@ class CompanyController extends GetxController {
   // Company comment
   RxList<GetCompanyCommentData> getCommentList = <GetCompanyCommentData>[].obs;
   Rx<TextEditingController> commment = TextEditingController().obs;
+
+  RxList<ViewCompanyListData> companyViewList = RxList<ViewCompanyListData>();
+  RxList<LikeListCompanyData> companyLikeList = RxList<LikeListCompanyData>();
 
   @override
   void onInit() {
@@ -188,6 +193,158 @@ class CompanyController extends GetxController {
       }
     } finally {
       isLoading(false);
+    }
+  }
+
+  // like_list_company
+  Future<void> fetchLikeListCompany(int companyId, context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = Platform.isAndroid ? 'android' : 'ios';
+
+    isLoading(true);
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      if (kDebugMode) {
+        print('Connectivity result: $connectivityResult');
+      }
+
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri = Uri.parse('${Constants.baseUrl}${Constants.likelistcompany}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['company_id'] = companyId.toString();
+
+        if (kDebugMode) {
+          print('Request URL: $uri');
+          print('Request fields: ${request.fields}');
+        }
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (kDebugMode) {
+          print('Response status code: ${response.statusCode}');
+        }
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var status = data['status'];
+
+          if (kDebugMode) {
+            print('Response body: ${response.body}');
+          }
+
+          if (status == 1) {
+            var companyLikeListEntity = LikeListCompanyEntity.fromJson(data);
+            companyLikeList.value = companyLikeListEntity.data ?? [];
+
+            if (kDebugMode) {
+              print('Parsed entity: $companyLikeListEntity');
+            }
+          } else {
+            var message = data['message'];
+
+            if (kDebugMode) {
+              print('Failed to fetch companyViewList: $message');
+            }
+          }
+        } else {
+          if (kDebugMode) {
+            print('Error: ${response.body}');
+          }
+        }
+      } else {
+        showToasterrorborder("No internet connection", context);
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error: $e');
+      }
+    } finally {
+      isLoading(false);
+      if (kDebugMode) {
+        print('Finished fetchViewListCompany method');
+      }
+    }
+  }
+
+  // view_list_company
+  Future<void> fetchViewListCompany(int companyId, context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = Platform.isAndroid ? 'android' : 'ios';
+
+    isLoading(true);
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      if (kDebugMode) {
+        print('Connectivity result: $connectivityResult');
+      }
+
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri = Uri.parse('${Constants.baseUrl}${Constants.viewlistcompany}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['company_id'] = companyId.toString();
+
+        if (kDebugMode) {
+          print('Request URL: $uri');
+          print('Request fields: ${request.fields}');
+        }
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (kDebugMode) {
+          print('Response status code: ${response.statusCode}');
+        }
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var status = data['status'];
+
+          if (kDebugMode) {
+            print('Response body: ${response.body}');
+          }
+
+          if (status == 1) {
+            var companyViewListEntity = ViewCompanyListEntity.fromJson(data);
+            companyViewList.value = companyViewListEntity.data ?? [];
+
+            if (kDebugMode) {
+              print('Parsed entity: $companyViewListEntity');
+            }
+          } else {
+            var message = data['message'];
+
+            if (kDebugMode) {
+              print('Failed to fetch fetchViewListCompany: $message');
+            }
+          }
+        } else {
+          if (kDebugMode) {
+            print('Error: ${response.body}');
+          }
+        }
+      } else {
+        showToasterrorborder("No internet connection", context);
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error: $e');
+      }
+    } finally {
+      isLoading(false);
+      if (kDebugMode) {
+        print('Finished fetchViewListCompany method');
+      }
     }
   }
 

@@ -9,6 +9,7 @@ import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/home/home/custom/sign_up_dialog.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/blog_liked_list_content.dart';
+import 'package:mlmdiary/menu/menuscreens/blog/blog_view_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/custom_blog_comment.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
@@ -304,20 +305,30 @@ class _BlogCardState extends State<BlogCard> {
                       ],
                     ),
                     15.sbw,
-                    SizedBox(
-                      height: size.height * 0.028,
-                      width: size.height * 0.028,
-                      child: SvgPicture.asset(Assets.svgView),
-                    ),
-                    const SizedBox(
-                      width: 7,
-                    ),
-                    Text(
-                      '${widget.viewcounts}',
-                      style: TextStyle(
-                          fontFamily: "Metropolis",
-                          fontWeight: FontWeight.w600,
-                          fontSize: size.width * 0.038),
+                    Row(
+                      children: [
+                        SizedBox(
+                          height: size.height * 0.028,
+                          width: size.height * 0.028,
+                          child: SvgPicture.asset(Assets.svgView),
+                        ),
+                        6.sbw,
+                        widget.viewcounts == 0
+                            ? const SizedBox.shrink()
+                            : InkWell(
+                                onTap: () {
+                                  showViewList(context);
+                                },
+                                child: Text(
+                                  '${widget.viewcounts}',
+                                  style: TextStyle(
+                                    fontFamily: "Metropolis",
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: size.width * 0.038,
+                                  ),
+                                ),
+                              ),
+                      ],
                     ),
                   ],
                 ),
@@ -397,6 +408,20 @@ class _BlogCardState extends State<BlogCard> {
 
   void fetchLikeList() async {
     await widget.controller.fetchLikeListBlog(widget.blogId, context);
+  }
+
+  void showViewList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        fetchViewList();
+        return const BlogViewListContent();
+      },
+    );
+  }
+
+  void fetchViewList() async {
+    await widget.controller.fetchViewListBlog(widget.blogId, context);
   }
 }
 

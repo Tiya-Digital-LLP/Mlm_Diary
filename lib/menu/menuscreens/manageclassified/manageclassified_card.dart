@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:mlmdiary/classified/classified_like_list_content.dart';
+import 'package:mlmdiary/classified/classified_view_list_content.dart';
 import 'package:mlmdiary/classified/custom/custom_commment.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/manageclassified/controller/manage_classified_controller.dart';
@@ -188,10 +190,15 @@ class _ManageClassifiedCardState extends State<ManageClassifiedCard> {
                     ),
                     likeCount.value == 0
                         ? const SizedBox.shrink()
-                        : Text(
-                            likeCount.value.toString(),
-                            style: textStyleW600(
-                                size.width * 0.038, AppColors.blackText),
+                        : InkWell(
+                            onTap: () {
+                              showLikeList(context);
+                            },
+                            child: Text(
+                              '${likeCount.value}',
+                              style: textStyleW600(
+                                  size.width * 0.038, AppColors.blackText),
+                            ),
                           ),
                     const SizedBox(
                       width: 15,
@@ -223,20 +230,30 @@ class _ManageClassifiedCardState extends State<ManageClassifiedCard> {
                     const SizedBox(
                       width: 15,
                     ),
-                    SizedBox(
-                      height: size.height * 0.028,
-                      width: size.height * 0.028,
-                      child: SvgPicture.asset(Assets.svgView),
-                    ),
-                    const SizedBox(
-                      width: 7,
-                    ),
-                    Text(
-                      widget.viewcounts.toString(),
-                      style: TextStyle(
-                          fontFamily: "Metropolis",
-                          fontWeight: FontWeight.w600,
-                          fontSize: size.width * 0.038),
+                    Row(
+                      children: [
+                        SizedBox(
+                          height: size.height * 0.028,
+                          width: size.height * 0.028,
+                          child: SvgPicture.asset(Assets.svgView),
+                        ),
+                        6.sbw,
+                        widget.viewcounts == 0
+                            ? const SizedBox.shrink()
+                            : InkWell(
+                                onTap: () {
+                                  showViewList(context);
+                                },
+                                child: Text(
+                                  '${widget.viewcounts}',
+                                  style: TextStyle(
+                                    fontFamily: "Metropolis",
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: size.width * 0.038,
+                                  ),
+                                ),
+                              ),
+                      ],
                     ),
                   ],
                 ),
@@ -444,5 +461,37 @@ class _ManageClassifiedCardState extends State<ManageClassifiedCard> {
         ],
       ),
     );
+  }
+
+  void showLikeList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        fetchLikeList();
+        return const ClassifiedLikedListContent();
+      },
+    );
+  }
+
+  void fetchLikeList() async {
+    await widget.controller
+        .fetchLikeListClassified(widget.classifiedId, context);
+  }
+
+  void showViewList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        fetchViewList();
+        return ClassifiedViewListContent(
+          clasiifiedId: widget.classifiedId,
+        );
+      },
+    );
+  }
+
+  void fetchViewList() async {
+    await widget.controller
+        .fetchViewListClassified(widget.classifiedId, context);
   }
 }

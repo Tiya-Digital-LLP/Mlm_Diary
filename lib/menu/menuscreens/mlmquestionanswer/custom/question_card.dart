@@ -9,6 +9,7 @@ import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/home/home/custom/sign_up_dialog.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/question_like_list_content.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/question_view_list_content.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -25,6 +26,8 @@ class QuestionCard extends StatefulWidget {
   final QuestionAnswerController controller;
   final int bookmarkCount;
   final int likedCount;
+  final int answerCount;
+
   final bool likedbyuser;
   final bool bookmarkedbyuser;
 
@@ -41,6 +44,7 @@ class QuestionCard extends StatefulWidget {
     required this.likedCount,
     required this.likedbyuser,
     required this.bookmarkedbyuser,
+    required this.answerCount,
   });
 
   @override
@@ -240,7 +244,7 @@ class _QuestionCardState extends State<QuestionCard> {
                         width: 7,
                       ),
                       Text(
-                        "12",
+                        widget.answerCount.toString(),
                         style: TextStyle(
                             fontFamily: "Metropolis",
                             fontWeight: FontWeight.w600,
@@ -249,20 +253,30 @@ class _QuestionCardState extends State<QuestionCard> {
                       const SizedBox(
                         width: 15,
                       ),
-                      SizedBox(
-                        height: size.height * 0.028,
-                        width: size.height * 0.028,
-                        child: SvgPicture.asset(Assets.svgView),
-                      ),
-                      const SizedBox(
-                        width: 7,
-                      ),
-                      Text(
-                        '${widget.viewcounts}',
-                        style: TextStyle(
-                            fontFamily: "Metropolis",
-                            fontWeight: FontWeight.w600,
-                            fontSize: size.width * 0.045),
+                      Row(
+                        children: [
+                          SizedBox(
+                            height: size.height * 0.028,
+                            width: size.height * 0.028,
+                            child: SvgPicture.asset(Assets.svgView),
+                          ),
+                          6.sbw,
+                          widget.viewcounts == 0
+                              ? const SizedBox.shrink()
+                              : InkWell(
+                                  onTap: () {
+                                    showViewList(context);
+                                  },
+                                  child: Text(
+                                    '${widget.viewcounts}',
+                                    style: TextStyle(
+                                      fontFamily: "Metropolis",
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: size.width * 0.038,
+                                    ),
+                                  ),
+                                ),
+                        ],
                       ),
                     ],
                   ),
@@ -316,5 +330,19 @@ class _QuestionCardState extends State<QuestionCard> {
 
   void fetchLikeList() async {
     await widget.controller.fetchLikeListQuestion(widget.questionId, context);
+  }
+
+  void showViewList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        fetchViewList();
+        return const QuestionViewListContent();
+      },
+    );
+  }
+
+  void fetchViewList() async {
+    await widget.controller.fetchViewListQuestion(widget.questionId, context);
   }
 }

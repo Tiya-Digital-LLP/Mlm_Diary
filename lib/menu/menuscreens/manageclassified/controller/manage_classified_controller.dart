@@ -15,6 +15,8 @@ import 'package:mlmdiary/generated/bookmark_user_entity.dart';
 import 'package:mlmdiary/generated/boost_on_top_classified_entity.dart';
 import 'package:mlmdiary/generated/boost_on_top_classified_premium_entity.dart';
 import 'package:mlmdiary/generated/classified_count_view_entity.dart';
+import 'package:mlmdiary/generated/classified_like_list_entity.dart';
+import 'package:mlmdiary/generated/classified_view_list_entity.dart';
 import 'package:mlmdiary/generated/get_category_entity.dart';
 import 'package:mlmdiary/generated/get_classified_detail_entity.dart';
 import 'package:mlmdiary/generated/get_classified_entity.dart';
@@ -44,6 +46,10 @@ class ManageClasifiedController extends GetxController {
 
   // API data
   RxList<ManageClassifiedData> classifiedList = <ManageClassifiedData>[].obs;
+  RxList<ClassifiedLikeListData> classifiedLikeList =
+      RxList<ClassifiedLikeListData>();
+  RxList<ClassifiedViewListData> classifiedViewList =
+      RxList<ClassifiedViewListData>();
   RxBool isLoading = false.obs;
   var isLiked = false.obs;
   var isBookMarked = false.obs;
@@ -109,6 +115,162 @@ class ManageClasifiedController extends GetxController {
     super.onInit();
     fetchCategoryList();
     getClassified();
+  }
+
+  // like_list_classified
+  Future<void> fetchLikeListClassified(int classifiedId, context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = Platform.isAndroid ? 'android' : 'ios';
+
+    isLoading(true);
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      if (kDebugMode) {
+        print('Connectivity result: $connectivityResult');
+      }
+
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri =
+            Uri.parse('${Constants.baseUrl}${Constants.likelistclassified}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['classified_id'] = classifiedId.toString();
+
+        if (kDebugMode) {
+          print('Request URL: $uri');
+          print('Request fields: ${request.fields}');
+        }
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (kDebugMode) {
+          print('Response status code: ${response.statusCode}');
+        }
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var status = data['status'];
+
+          if (kDebugMode) {
+            print('Response body: ${response.body}');
+          }
+
+          if (status == 1) {
+            var classifiedLikeListEntity =
+                ClassifiedLikeListEntity.fromJson(data);
+            classifiedLikeList.value = classifiedLikeListEntity.data ?? [];
+
+            if (kDebugMode) {
+              print('Parsed entity: $classifiedLikeListEntity');
+            }
+          } else {
+            var message = data['message'];
+
+            if (kDebugMode) {
+              print('Failed to fetch likelist classified: $message');
+            }
+          }
+        } else {
+          if (kDebugMode) {
+            print('Error: ${response.body}');
+          }
+        }
+      } else {
+        showToasterrorborder("No internet connection", context);
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error: $e');
+      }
+    } finally {
+      isLoading(false);
+      if (kDebugMode) {
+        print('Finished fetchLikeListClassified method');
+      }
+    }
+  }
+
+  // View_list_classified
+  Future<void> fetchViewListClassified(int classifiedId, context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = Platform.isAndroid ? 'android' : 'ios';
+
+    isLoading(true);
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      if (kDebugMode) {
+        print('Connectivity result: $connectivityResult');
+      }
+
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri =
+            Uri.parse('${Constants.baseUrl}${Constants.viewlistclassified}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['classified_id'] = classifiedId.toString();
+
+        if (kDebugMode) {
+          print('Request URL: $uri');
+          print('Request fields: ${request.fields}');
+        }
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (kDebugMode) {
+          print('Response status code: ${response.statusCode}');
+        }
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var status = data['status'];
+
+          if (kDebugMode) {
+            print('Response body: ${response.body}');
+          }
+
+          if (status == 1) {
+            var classifiedViewListEntity =
+                ClassifiedViewListEntity.fromJson(data);
+            classifiedViewList.value = classifiedViewListEntity.data ?? [];
+
+            if (kDebugMode) {
+              print('Parsed entity: $classifiedViewListEntity');
+            }
+          } else {
+            var message = data['message'];
+
+            if (kDebugMode) {
+              print('Failed to fetch likelist classified: $message');
+            }
+          }
+        } else {
+          if (kDebugMode) {
+            print('Error: ${response.body}');
+          }
+        }
+      } else {
+        showToasterrorborder("No internet connection", context);
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error: $e');
+      }
+    } finally {
+      isLoading(false);
+      if (kDebugMode) {
+        print('Finished fetchViewListClassified method');
+      }
+    }
   }
 
   Future<void> fetchClassifiedDetail(int classfiedId, context) async {

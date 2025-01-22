@@ -424,13 +424,13 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
       context: context,
       builder: (BuildContext context) {
         fetchViewList();
-        return const ClassifiedViewListContent();
+        return ClassifiedViewListContent(clasiifiedId: widget.classifiedId);
       },
     );
   }
 
   void fetchViewList() async {
     await widget.controller
-        .fetchViewListClassified(widget.classifiedId, context);
+        .fetchViewListClassified(widget.classifiedId, 1, context);
   }
 }

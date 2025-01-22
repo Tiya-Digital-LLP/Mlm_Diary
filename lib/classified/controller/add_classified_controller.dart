@@ -925,8 +925,12 @@ class ClasifiedController extends GetxController {
     }
   }
 
-  // like_list_classified
-  Future<void> fetchViewListClassified(int classifiedId, context) async {
+  // view_list_classified
+  Future<void> fetchViewListClassified(
+    int classifiedId,
+    int page,
+    context,
+  ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
     String device = Platform.isAndroid ? 'android' : 'ios';
@@ -947,6 +951,7 @@ class ClasifiedController extends GetxController {
         request.fields['api_token'] = apiToken ?? '';
         request.fields['device'] = device;
         request.fields['classified_id'] = classifiedId.toString();
+        request.fields['page'] = page.toString();
 
         if (kDebugMode) {
           print('Request URL: $uri');
@@ -975,6 +980,20 @@ class ClasifiedController extends GetxController {
 
             if (kDebugMode) {
               print('Parsed entity: $classifiedViewListEntity');
+            }
+            if (classifiedViewListEntity.data != null &&
+                classifiedViewListEntity.data!.isNotEmpty) {
+              if (page == 1) {
+                classifiedViewList.value = classifiedViewListEntity.data!;
+              } else {
+                classifiedViewList.addAll(classifiedViewListEntity.data!);
+              }
+              isEndOfData(false);
+            } else {
+              if (page == 1) {
+                classifiedViewList.clear();
+              }
+              isEndOfData(true);
             }
           } else {
             var message = data['message'];

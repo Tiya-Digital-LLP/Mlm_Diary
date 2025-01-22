@@ -10,6 +10,8 @@ import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/favourite/controller/favourite_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmcompanies/company_like_list_content.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmcompanies/company_view_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/custom_company_comment.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
@@ -263,7 +265,9 @@ class _CompanieFaviouriteCardState extends State<CompanieFaviouriteCard> {
                         likeCount.value == 0
                             ? const SizedBox.shrink()
                             : InkWell(
-                                onTap: () {},
+                                onTap: () {
+                                  showLikeList(context);
+                                },
                                 child: Text(
                                   '${likeCount.value}',
                                   style: textStyleW600(
@@ -304,14 +308,22 @@ class _CompanieFaviouriteCardState extends State<CompanieFaviouriteCard> {
                         width: size.height * 0.028,
                         child: SvgPicture.asset(Assets.svgView),
                       ),
-                      8.sbw,
-                      Text(
-                        '${widget.viewcounts}',
-                        style: TextStyle(
-                            fontFamily: "Metropolis",
-                            fontWeight: FontWeight.w600,
-                            fontSize: size.width * 0.038),
-                      ),
+                      6.sbw,
+                      widget.viewcounts == 0
+                          ? const SizedBox.shrink()
+                          : InkWell(
+                              onTap: () {
+                                showViewList(context);
+                              },
+                              child: Text(
+                                '${widget.viewcounts}',
+                                style: TextStyle(
+                                  fontFamily: "Metropolis",
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: size.width * 0.038,
+                                ),
+                              ),
+                            ),
                     ],
                   ),
                   Row(
@@ -350,5 +362,35 @@ class _CompanieFaviouriteCardState extends State<CompanieFaviouriteCard> {
         ),
       ),
     );
+  }
+
+  void showLikeList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        fetchLikeList();
+        return const CompanyLikeListContent();
+      },
+    );
+  }
+
+  void fetchLikeList() async {
+    await widget.companyController
+        .fetchLikeListCompany(widget.bookmarkId, context);
+  }
+
+  void showViewList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        fetchViewList();
+        return const CompanyViewListContent();
+      },
+    );
+  }
+
+  void fetchViewList() async {
+    await widget.companyController
+        .fetchViewListCompany(widget.bookmarkId, context);
   }
 }

@@ -13,6 +13,7 @@ import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/question_like_list_content.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/question_view_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
@@ -298,14 +299,22 @@ class _FavouritrCardState extends State<QuestionHomeCard> {
                         width: size.height * 0.028,
                         child: SvgPicture.asset(Assets.svgView),
                       ),
-                      8.sbw,
-                      Text(
-                        '${widget.viewcounts}',
-                        style: TextStyle(
-                            fontFamily: "Metropolis",
-                            fontWeight: FontWeight.w600,
-                            fontSize: size.width * 0.038),
-                      ),
+                      6.sbw,
+                      widget.viewcounts == 0
+                          ? const SizedBox.shrink()
+                          : InkWell(
+                              onTap: () {
+                                showViewList(context);
+                              },
+                              child: Text(
+                                '${widget.viewcounts}',
+                                style: TextStyle(
+                                  fontFamily: "Metropolis",
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: size.width * 0.038,
+                                ),
+                              ),
+                            ),
                     ],
                   ),
                   Row(
@@ -367,5 +376,20 @@ class _FavouritrCardState extends State<QuestionHomeCard> {
   void fetchLikeList() async {
     await widget.questionAnswerController
         .fetchLikeListQuestion(widget.bookmarkId, context);
+  }
+
+  void showViewList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        fetchViewList();
+        return const QuestionViewListContent();
+      },
+    );
+  }
+
+  void fetchViewList() async {
+    await widget.questionAnswerController
+        .fetchViewListQuestion(widget.bookmarkId, context);
   }
 }

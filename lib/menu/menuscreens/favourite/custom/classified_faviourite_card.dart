@@ -440,13 +440,15 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard> {
       context: context,
       builder: (BuildContext context) {
         fetchViewList();
-        return const ClassifiedViewListContent();
+        return ClassifiedViewListContent(
+          clasiifiedId: widget.bookmarkId,
+        );
       },
     );
   }
 
   void fetchViewList() async {
     await widget.clasifiedController
-        .fetchViewListClassified(widget.bookmarkId, context);
+        .fetchViewListClassified(widget.bookmarkId, 1, context);
   }
 }

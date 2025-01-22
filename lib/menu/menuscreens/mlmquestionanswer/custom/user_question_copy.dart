@@ -12,6 +12,7 @@ import 'package:mlmdiary/generated/get_answers_entity.dart';
 import 'package:mlmdiary/generated/get_question_list_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/question_like_list_content.dart';
+import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/question_view_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
@@ -1617,7 +1618,7 @@ class _UserQuestionState extends State<UserQuestionCopy> {
                                 ),
                                 const SizedBox(width: 7),
                                 Text(
-                                  "12",
+                                  data.totalquestionAnswer.toString(),
                                   style: TextStyle(
                                     fontFamily: "Metropolis",
                                     fontWeight: FontWeight.w600,
@@ -1625,19 +1626,30 @@ class _UserQuestionState extends State<UserQuestionCopy> {
                                   ),
                                 ),
                                 const SizedBox(width: 15),
-                                SizedBox(
-                                  height: size.height * 0.028,
-                                  width: size.height * 0.028,
-                                  child: SvgPicture.asset(Assets.svgView),
-                                ),
-                                const SizedBox(width: 7),
-                                Text(
-                                  data.pgcnt.toString(),
-                                  style: TextStyle(
-                                    fontFamily: "Metropolis",
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: size.width * 0.045,
-                                  ),
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                      height: size.height * 0.028,
+                                      width: size.height * 0.028,
+                                      child: SvgPicture.asset(Assets.svgView),
+                                    ),
+                                    6.sbw,
+                                    data.pgcnt == 0
+                                        ? const SizedBox.shrink()
+                                        : InkWell(
+                                            onTap: () {
+                                              showViewList(context);
+                                            },
+                                            child: Text(
+                                              '${data.pgcnt}',
+                                              style: TextStyle(
+                                                fontFamily: "Metropolis",
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: size.width * 0.038,
+                                              ),
+                                            ),
+                                          ),
+                                  ],
                                 ),
                               ],
                             ),
@@ -1684,7 +1696,7 @@ class _UserQuestionState extends State<UserQuestionCopy> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          'Answer',
+                          'Answer(${data.totalquestionAnswer.toString()})',
                           style: textStyleW700(
                               size.width * 0.038, AppColors.blackText),
                         ),
@@ -1849,5 +1861,19 @@ class _UserQuestionState extends State<UserQuestionCopy> {
 
   void fetchLikeList() async {
     await controller.fetchLikeListQuestion(post.id ?? 0, context);
+  }
+
+  void showViewList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        fetchViewList();
+        return const QuestionViewListContent();
+      },
+    );
+  }
+
+  void fetchViewList() async {
+    await controller.fetchViewListQuestion(post.id ?? 0, context);
   }
 }

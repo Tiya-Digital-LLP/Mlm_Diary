@@ -710,12 +710,12 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
       context: context,
       builder: (BuildContext context) {
         fetchViewList();
-        return const ClassifiedViewListContent();
+        return ClassifiedViewListContent(clasiifiedId: post.id ?? 0);
       },
     );
   }
 
   void fetchViewList() async {
-    await controller.fetchViewListClassified(post.id ?? 0, context);
+    await controller.fetchViewListClassified(post.id ?? 0, 1, context);
   }
 }

@@ -216,6 +216,7 @@ class _QuationAnswerState extends State<QuationAnswer> {
                                 likedbyuser: post.likedByUser ?? false,
                                 bookmarkedbyuser:
                                     post.bookmarkedByUser ?? false,
+                                answerCount: post.totalquestionAnswer ?? 0,
                               ),
                             ),
                           );
