@@ -26,6 +26,7 @@ import 'package:mlmdiary/widgets/custom_shimmer_loader/profile_shimmer/axis_scro
 import 'package:mlmdiary/widgets/custom_shimmer_loader/profile_shimmer/personal_info_shimmer.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:scrollable_tab_view/scrollable_tab_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:io' as io;
@@ -41,7 +42,6 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen>
     with SingleTickerProviderStateMixin {
-  late TabController _tabController;
   final userProfile = Get.arguments as GetUserProfileUserProfile;
   final EditPostController controller = Get.put(EditPostController());
   final UserProfileController userProfileController =
@@ -72,7 +72,6 @@ class _ProfileScreenState extends State<ProfileScreen>
     Future.delayed(const Duration(seconds: 1), () {
       showShimmer.value = false;
     });
-    _tabController = TabController(length: 2, vsync: this);
     _viewersScrollController = ScrollController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _fetchUserIdAndRefreshViews();
@@ -133,53 +132,44 @@ class _ProfileScreenState extends State<ProfileScreen>
           ],
         ),
       ),
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: Column(
-              children: [
-                Container(
-                  color: AppColors.white,
-                  padding: const EdgeInsets.all(16.0),
-                  child: Obx(
-                    () => Column(
-                      children: [
-                        showShimmer.value
-                            ? const PersonalInfoShimmer()
-                            : personlaInfo(),
-                        20.sbh,
-                        showShimmer.value
-                            ? AxisScrollShimmer(
-                                width: size.width,
-                              )
-                            : axisScroll(),
-                      ],
-                    ),
-                  ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              color: AppColors.white,
+              padding: const EdgeInsets.all(16.0),
+              child: Obx(
+                () => Column(
+                  children: [
+                    showShimmer.value
+                        ? const PersonalInfoShimmer()
+                        : personlaInfo(),
+                    20.sbh,
+                    showShimmer.value
+                        ? AxisScrollShimmer(
+                            width: size.width,
+                          )
+                        : axisScroll(),
+                  ],
                 ),
-                const Divider(color: Colors.black26, height: 2.0),
-              ],
-            ),
-          ),
-          SliverPersistentHeader(
-            pinned: true,
-            delegate: _SliverAppBarDelegate(
-              TabBar(
-                indicatorSize: TabBarIndicatorSize.tab,
-                controller: _tabController,
-                indicatorColor: AppColors.primaryColor,
-                indicatorWeight: 1.5,
-                labelColor: AppColors.primaryColor,
-                tabs: [
-                  Tab(text: 'Posts (${userProfile.totalPost})'),
-                  const Tab(text: 'About Me'),
-                ],
               ),
             ),
-          ),
-          SliverFillRemaining(
-            child: TabBarView(
-              controller: _tabController,
+            const Divider(color: Colors.black26, height: 2.0),
+            ScrollableTab(
+              indicatorSize: TabBarIndicatorSize.tab,
+              indicatorColor: AppColors.primaryColor,
+              indicatorWeight: 1.5,
+              labelColor: AppColors.primaryColor,
+              dividerColor: Colors.grey,
+              onTap: (value) {
+                if (kDebugMode) {
+                  print('index $value');
+                }
+              },
+              tabs: [
+                Tab(text: 'Posts (${userProfile.totalPost})'),
+                const Tab(text: 'About Me'),
+              ],
               children: [
                 SingleChildScrollView(
                   child: Column(
@@ -262,8 +252,8 @@ class _ProfileScreenState extends State<ProfileScreen>
                 ),
               ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       floatingActionButton: Container(
         decoration: BoxDecoration(
@@ -990,29 +980,4 @@ class _ProfileScreenState extends State<ProfileScreen>
   //     });
   //   }
   // }
-}
-
-class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
-  _SliverAppBarDelegate(this._tabBar);
-
-  final TabBar _tabBar;
-
-  @override
-  double get minExtent => _tabBar.preferredSize.height;
-  @override
-  double get maxExtent => _tabBar.preferredSize.height;
-
-  @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(
-      color: Colors.white,
-      child: _tabBar,
-    );
-  }
-
-  @override
-  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
-    return false;
-  }
 }

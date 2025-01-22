@@ -434,7 +434,7 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
               indicatorWeight: 1.5,
               labelColor: AppColors.primaryColor,
               tabs: [
-                Tab(text: 'Posts (${post.followersCount})'),
+                Tab(text: 'Posts (${post.totalPost})'),
                 const Tab(text: 'About Me'),
               ],
             ),

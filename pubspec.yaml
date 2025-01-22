@@ -59,6 +59,7 @@ dependencies:
   pinput: ^5.0.0
   firebase_dynamic_links: ^6.0.5
   app_links: ^6.3.3
+  scrollable_tab_view: ^1.0.13
 
 
   

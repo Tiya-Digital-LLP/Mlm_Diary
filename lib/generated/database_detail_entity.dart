@@ -85,6 +85,8 @@ class DatabaseDetailData {
 	@JSONField(name: "is_approved")
 	int? isApproved = 0;
 	String? countrycode1 = '';
+	String? lat = '';
+	String? lng = '';
 	@JSONField(name: "followers_count")
 	int? followersCount = 0;
 	@JSONField(name: "following_count")
@@ -94,9 +96,11 @@ class DatabaseDetailData {
 	@JSONField(name: "fav_status")
 	bool? favStatus = false;
 	@JSONField(name: "chat_id")
-	dynamic chatId;
+	String? chatId = '';
 	@JSONField(name: "image_url")
 	String? imageUrl = '';
+	@JSONField(name: "total_post")
+	int? totalPost = 0;
 	@JSONField(name: "image_path")
 	String? imagePath = '';
 	@JSONField(name: "image_thum_path")

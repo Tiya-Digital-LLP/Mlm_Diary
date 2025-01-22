@@ -282,6 +282,14 @@ DatabaseDetailData $DatabaseDetailDataFromJson(Map<String, dynamic> json) {
   if (countrycode1 != null) {
     databaseDetailData.countrycode1 = countrycode1;
   }
+  final String? lat = jsonConvert.convert<String>(json['lat']);
+  if (lat != null) {
+    databaseDetailData.lat = lat;
+  }
+  final String? lng = jsonConvert.convert<String>(json['lng']);
+  if (lng != null) {
+    databaseDetailData.lng = lng;
+  }
   final int? followersCount = jsonConvert.convert<int>(json['followers_count']);
   if (followersCount != null) {
     databaseDetailData.followersCount = followersCount;
@@ -298,13 +306,17 @@ DatabaseDetailData $DatabaseDetailDataFromJson(Map<String, dynamic> json) {
   if (favStatus != null) {
     databaseDetailData.favStatus = favStatus;
   }
-  final dynamic chatId = json['chat_id'];
+  final String? chatId = jsonConvert.convert<String>(json['chat_id']);
   if (chatId != null) {
     databaseDetailData.chatId = chatId;
   }
   final String? imageUrl = jsonConvert.convert<String>(json['image_url']);
   if (imageUrl != null) {
     databaseDetailData.imageUrl = imageUrl;
+  }
+  final int? totalPost = jsonConvert.convert<int>(json['total_post']);
+  if (totalPost != null) {
+    databaseDetailData.totalPost = totalPost;
   }
   final String? imagePath = jsonConvert.convert<String>(json['image_path']);
   if (imagePath != null) {
@@ -379,12 +391,15 @@ Map<String, dynamic> $DatabaseDetailDataToJson(DatabaseDetailData entity) {
   data['proceeddate'] = entity.proceeddate;
   data['is_approved'] = entity.isApproved;
   data['countrycode1'] = entity.countrycode1;
+  data['lat'] = entity.lat;
+  data['lng'] = entity.lng;
   data['followers_count'] = entity.followersCount;
   data['following_count'] = entity.followingCount;
   data['follow_status'] = entity.followStatus;
   data['fav_status'] = entity.favStatus;
   data['chat_id'] = entity.chatId;
   data['image_url'] = entity.imageUrl;
+  data['total_post'] = entity.totalPost;
   data['image_path'] = entity.imagePath;
   data['image_thum_path'] = entity.imageThumPath;
   return data;
@@ -451,12 +466,15 @@ extension DatabaseDetailDataExtension on DatabaseDetailData {
     String? proceeddate,
     int? isApproved,
     String? countrycode1,
+    String? lat,
+    String? lng,
     int? followersCount,
     int? followingCount,
     bool? followStatus,
     bool? favStatus,
-    dynamic chatId,
+    String? chatId,
     String? imageUrl,
+    int? totalPost,
     String? imagePath,
     String? imageThumPath,
   }) {
@@ -520,12 +538,15 @@ extension DatabaseDetailDataExtension on DatabaseDetailData {
       ..proceeddate = proceeddate ?? this.proceeddate
       ..isApproved = isApproved ?? this.isApproved
       ..countrycode1 = countrycode1 ?? this.countrycode1
+      ..lat = lat ?? this.lat
+      ..lng = lng ?? this.lng
       ..followersCount = followersCount ?? this.followersCount
       ..followingCount = followingCount ?? this.followingCount
       ..followStatus = followStatus ?? this.followStatus
       ..favStatus = favStatus ?? this.favStatus
       ..chatId = chatId ?? this.chatId
       ..imageUrl = imageUrl ?? this.imageUrl
+      ..totalPost = totalPost ?? this.totalPost
       ..imagePath = imagePath ?? this.imagePath
       ..imageThumPath = imageThumPath ?? this.imageThumPath;
   }
