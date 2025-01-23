@@ -146,564 +146,571 @@ class _moreState extends State<MoreOptionScreen> {
             );
           }
           return SingleChildScrollView(
-              child: Padding(
-            padding: const EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
-            child: Column(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Get.toNamed(
-                      Routes.profilescreen,
-                      arguments: controller.userProfile.value.userProfile,
-                    );
-                  },
-                  child: Container(
-                    height: 75,
-                    padding: const EdgeInsets.only(left: 17),
-                    decoration: ShapeDecoration(
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(13.05),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
+              child: Column(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Get.toNamed(
+                        Routes.profilescreen,
+                        arguments: controller.userProfile.value.userProfile,
+                      );
+                    },
+                    child: Container(
+                      height: 75,
+                      padding: const EdgeInsets.only(left: 17),
+                      decoration: ShapeDecoration(
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(13.05),
+                        ),
+                        shadows: [customBoxShadow()],
                       ),
-                      shadows: [customBoxShadow()],
-                    ),
-                    child: Row(
-                      children: [
-                        if (userProfile.imagePath!.isNotEmpty &&
-                            Uri.tryParse(userProfile.imagePath!)
-                                    ?.hasAbsolutePath ==
-                                true)
-                          Container(
-                            height: 60,
-                            width: 60,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
+                      child: Row(
+                        children: [
+                          if (userProfile.imagePath!.isNotEmpty &&
+                              Uri.tryParse(userProfile.imagePath!)
+                                      ?.hasAbsolutePath ==
+                                  true)
+                            Container(
+                              height: 60,
+                              width: 60,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: ClipOval(
+                                child: Image.network(
+                                  '${userProfile.imagePath.toString()}?${DateTime.now().millisecondsSinceEpoch}',
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Image.asset(
+                                      Assets.imagesAdminlogo,
+                                      fit: BoxFit.fill,
+                                    );
+                                  },
+                                ),
+                              ),
                             ),
-                            child: ClipOval(
-                              child: Image.network(
-                                '${userProfile.imagePath.toString()}?${DateTime.now().millisecondsSinceEpoch}',
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Image.asset(
-                                    Assets.imagesAdminlogo,
-                                    fit: BoxFit.fill,
-                                  );
-                                },
+                          10.sbw,
+                          Obx(() {
+                            if (controller.isLoading.value) {
+                              return CustomLottieAnimation(
+                                child: Lottie.asset(
+                                  Assets.lottieLottie,
+                                ),
+                              );
+                            }
+
+                            return Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    userProfile.name ?? 'N/A',
+                                    style: textStyleW700(size.width * 0.040,
+                                        AppColors.blackText),
+                                  ),
+                                  Text(
+                                    userProfile.company ?? 'N/A',
+                                    style: textStyleW400(size.width * 0.032,
+                                        AppColors.blackText),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }),
+                        ],
+                      ),
+                    ),
+                  ),
+                  category(),
+                  GestureDetector(
+                    onTap: () {
+                      Get.toNamed(Routes.contactus);
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      padding: const EdgeInsets.fromLTRB(5.0, 0.0, 8.0, 0.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Card(
+                            elevation: 2,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(13.5),
+                            ),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(13.5)),
+                                boxShadow: [customBoxShadow()],
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(
+                                    height: 55,
+                                    child: Center(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Align(
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 20.0),
+                                              child: Text('Contact Us/Feedback',
+                                                  style: textStyleW700(
+                                                      size.width * 0.032,
+                                                      AppColors.blackText)),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  IconButton(
+                                      onPressed: () {
+                                        Get.toNamed(Routes.contactus);
+                                      },
+                                      icon: const Icon(
+                                        Icons.arrow_forward_ios_rounded,
+                                        size: 17,
+                                      )),
+                                ],
                               ),
                             ),
                           ),
-                        10.sbw,
-                        Obx(() {
-                          if (controller.isLoading.value) {
-                            return CustomLottieAnimation(
-                              child: Lottie.asset(
-                                Assets.lottieLottie,
-                              ),
-                            );
-                          }
-
-                          return Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  userProfile.name ?? 'N/A',
-                                  style: textStyleW700(
-                                      size.width * 0.040, AppColors.blackText),
-                                ),
-                                Text(
-                                  userProfile.company ?? 'N/A',
-                                  style: textStyleW400(
-                                      size.width * 0.032, AppColors.blackText),
-                                ),
-                              ],
-                            ),
-                          );
-                        }),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                category(),
-                GestureDetector(
-                  onTap: () {
-                    Get.toNamed(Routes.contactus);
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    padding: const EdgeInsets.fromLTRB(5.0, 0.0, 8.0, 0.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
+                  GestureDetector(
+                    onTap: () {
+                      Get.toNamed(Routes.aboutus);
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      padding: const EdgeInsets.fromLTRB(5.0, 0.0, 8.0, 0.0),
+                      child: Column(mainAxisSize: MainAxisSize.min, children: [
                         Card(
                           elevation: 2,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(13.5),
+                            borderRadius: BorderRadius.circular(13.05),
                           ),
                           child: Container(
-                            decoration: BoxDecoration(
+                            decoration: ShapeDecoration(
                               color: Colors.white,
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(13.5)),
-                              boxShadow: [customBoxShadow()],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(13.05),
+                              ),
+                              shadows: [customBoxShadow()],
                             ),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                SizedBox(
-                                  height: 55,
-                                  child: Center(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Align(
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 20.0),
-                                            child: Text('Contact Us/Feedback',
-                                                style: textStyleW700(
-                                                    size.width * 0.032,
-                                                    AppColors.blackText)),
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(
+                                    height: 55,
+                                    child: Center(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Align(
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 20.0),
+                                              child: Text('About MLM Diary',
+                                                  style: textStyleW700(
+                                                      size.width * 0.032,
+                                                      AppColors.blackText)),
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                                IconButton(
-                                    onPressed: () {
-                                      Get.toNamed(Routes.contactus);
-                                    },
-                                    icon: const Icon(
-                                      Icons.arrow_forward_ios_rounded,
-                                      size: 17,
-                                    )),
-                              ],
-                            ),
+                                  IconButton(
+                                      onPressed: () {
+                                        Get.toNamed(Routes.aboutus);
+                                      },
+                                      icon: const Icon(
+                                        Icons.arrow_forward_ios_rounded,
+                                        size: 17,
+                                      )),
+                                ]),
                           ),
+                        )
+                      ]),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Get.toNamed(Routes.notificatiosetting);
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      padding: const EdgeInsets.fromLTRB(5.0, 0.0, 8.0, 0.0),
+                      child: Column(mainAxisSize: MainAxisSize.min, children: [
+                        Card(
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(13.05),
+                          ),
+                          child: Container(
+                            decoration: ShapeDecoration(
+                              color: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(13.05),
+                              ),
+                              shadows: [customBoxShadow()],
+                            ),
+                            child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(
+                                    height: 55,
+                                    child: Center(
+                                      child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Align(
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 20.0),
+                                                child: Text(
+                                                    'Notification Settings',
+                                                    style: textStyleW700(
+                                                        size.width * 0.032,
+                                                        AppColors.blackText)),
+                                              ),
+                                            ),
+                                          ]),
+                                    ),
+                                  ),
+                                  IconButton(
+                                      onPressed: () {
+                                        Get.toNamed(Routes.notificatiosetting);
+                                      },
+                                      icon: const Icon(
+                                        Icons.arrow_forward_ios_rounded,
+                                        size: 17,
+                                      )),
+                                ]),
+                          ),
+                        )
+                      ]),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Get.toNamed(Routes.terms);
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      padding: const EdgeInsets.fromLTRB(5.0, 0.0, 8.0, 0.0),
+                      child: Column(mainAxisSize: MainAxisSize.min, children: [
+                        Card(
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(13.05),
+                          ),
+                          child: Container(
+                            decoration: ShapeDecoration(
+                              color: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(13.05),
+                              ),
+                              shadows: [customBoxShadow()],
+                            ),
+                            child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(
+                                    height: 55,
+                                    child: Center(
+                                      child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Align(
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 20.0),
+                                                child: Text('Terms & Condition',
+                                                    style: textStyleW700(
+                                                        size.width * 0.032,
+                                                        AppColors.blackText)),
+                                              ),
+                                            ),
+                                          ]),
+                                    ),
+                                  ),
+                                  IconButton(
+                                      onPressed: () {
+                                        Get.toNamed(Routes.terms);
+                                      },
+                                      icon: const Icon(
+                                        Icons.arrow_forward_ios_rounded,
+                                        size: 17,
+                                      )),
+                                ]),
+                          ),
+                        )
+                      ]),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      _showLogoutDialog(context);
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      padding: const EdgeInsets.fromLTRB(5.0, 0.0, 8.0, 0.0),
+                      child: Column(mainAxisSize: MainAxisSize.min, children: [
+                        Card(
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(13.05),
+                          ),
+                          child: Container(
+                            decoration: ShapeDecoration(
+                              color: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(13.05),
+                              ),
+                              shadows: [customBoxShadow()],
+                            ),
+                            child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(
+                                    height: 55,
+                                    child: Center(
+                                      child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Align(
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 20.0),
+                                                child: Text('Logout',
+                                                    style: textStyleW700(
+                                                        size.width * 0.032,
+                                                        AppColors.blackText)),
+                                              ),
+                                            ),
+                                          ]),
+                                    ),
+                                  ),
+                                  IconButton(
+                                      onPressed: () {
+                                        _showLogoutDialog(context);
+                                      },
+                                      icon: const Icon(
+                                        Icons.arrow_forward_ios_rounded,
+                                        size: 17,
+                                      )),
+                                ]),
+                          ),
+                        )
+                      ]),
+                    ),
+                  ),
+                  10.sbh,
+                  Center(
+                    child: Text(
+                      'Follow MLM DIARY',
+                      style: textStyleW700(
+                          size.width * 0.032, AppColors.blackText),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 0.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        InkWell(
+                          onTap: () async {
+                            // Debug print to check `mlmSocial.whatsapp`
+                            if (kDebugMode) {
+                              print(
+                                  'mlmSocial.whatsapp: ${mlmSocial?.whatsapp}');
+                            }
+                            final String? phoneNumber = mlmSocial
+                                ?.whatsapp; // Make nullable for debugging
+
+                            if (phoneNumber == null) {
+                              if (kDebugMode) {
+                                print('Error: phoneNumber is null');
+                              }
+                              showToasterrorborder(
+                                  "Phone number is not available", context);
+                              return;
+                            }
+
+                            // Debug print to check `userProfile.name`
+                            if (kDebugMode) {
+                              print('userProfile.name: ${userProfile.name}');
+                            }
+                            final String name = userProfile.name ?? 'N/A';
+
+                            String message =
+                                "Hello, I am $name. I want to know regarding MLM Diary App.";
+                            final Uri whatsappUri = Uri.parse(
+                                "https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}");
+                            if (kDebugMode) {
+                              print('Generated WhatsApp Link: $whatsappUri');
+                            }
+
+                            if (await canLaunchUrl(whatsappUri)) {
+                              await launchUrl(whatsappUri);
+                              if (kDebugMode) {
+                                print('URL: $whatsappUri');
+                              }
+                            } else {
+                              if (kDebugMode) {
+                                print('Could not launch $whatsappUri');
+                              }
+                              showToasterrorborder(
+                                  "Could not launch WhatsApp", context);
+                            }
+                          },
+                          child: SvgPicture.asset(Assets.svgLogosWhatsappIcon,
+                              height: 26, width: 26),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            if (mlmSocial!.facebookLink != null) {
+                              _launchURL(mlmSocial.facebookLink.toString());
+                              if (kDebugMode) {
+                                print('URL: ${mlmSocial.facebookLink}');
+                              }
+                            } else {
+                              showToasterrorborder("No Any Url Fond", context);
+                            }
+                          },
+                          child: SvgPicture.asset(Assets.svgLogosFacebook,
+                              height: 26, width: 26),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            if (mlmSocial!.intagramLink != null) {
+                              _launchURL(mlmSocial.intagramLink.toString());
+                              if (kDebugMode) {
+                                print('URL: ${mlmSocial.intagramLink}');
+                              }
+                            } else {
+                              showToasterrorborder("No Any Url Fond", context);
+                            }
+                          },
+                          child: SvgPicture.asset(Assets.svgInstagram,
+                              height: 26, width: 26),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            if (mlmSocial!.linkedinLink != null) {
+                              _launchURL(mlmSocial.linkedinLink.toString());
+                              if (kDebugMode) {
+                                print('URL: ${mlmSocial.linkedinLink}');
+                              }
+                            } else {
+                              showToasterrorborder("No Any Url Fond", context);
+                            }
+                          },
+                          child: SvgPicture.asset(Assets.svgLogosLinkedinIcon,
+                              height: 26, width: 26),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            if (mlmSocial!.youtubeLink != null) {
+                              _launchURL(mlmSocial.youtubeLink.toString());
+                              if (kDebugMode) {
+                                print('URL: ${mlmSocial.youtubeLink}');
+                              }
+                            } else {
+                              showToasterrorborder("No Any Url Fond", context);
+                            }
+                          },
+                          child: SvgPicture.asset(Assets.svgYoutube,
+                              height: 26, width: 26),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            if (mlmSocial!.telegramLink != null) {
+                              _launchURL(mlmSocial.telegramLink.toString());
+                              if (kDebugMode) {
+                                print('URL: ${mlmSocial.telegramLink}');
+                              }
+                            } else {
+                              showToasterrorborder("No Any Url Fond", context);
+                            }
+                          },
+                          child: SvgPicture.asset(Assets.svgTelegram,
+                              height: 26, width: 26),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            if (mlmSocial!.twitterLink != null) {
+                              _launchURL(mlmSocial.twitterLink.toString());
+                              if (kDebugMode) {
+                                print('URL: ${mlmSocial.twitterLink}');
+                              }
+                            } else {
+                              showToasterrorborder("No Any Url Fond", context);
+                            }
+                          },
+                          child: SvgPicture.asset(Assets.svgTwitter,
+                              height: 26, width: 26),
                         ),
                       ],
                     ),
                   ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Get.toNamed(Routes.aboutus);
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    padding: const EdgeInsets.fromLTRB(5.0, 0.0, 8.0, 0.0),
-                    child: Column(mainAxisSize: MainAxisSize.min, children: [
-                      Card(
-                        elevation: 2,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(13.05),
-                        ),
-                        child: Container(
-                          decoration: ShapeDecoration(
-                            color: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(13.05),
-                            ),
-                            shadows: [customBoxShadow()],
-                          ),
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                SizedBox(
-                                  height: 55,
-                                  child: Center(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Align(
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 20.0),
-                                            child: Text('About MLM Diary',
-                                                style: textStyleW700(
-                                                    size.width * 0.032,
-                                                    AppColors.blackText)),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                IconButton(
-                                    onPressed: () {
-                                      Get.toNamed(Routes.aboutus);
-                                    },
-                                    icon: const Icon(
-                                      Icons.arrow_forward_ios_rounded,
-                                      size: 17,
-                                    )),
-                              ]),
-                        ),
-                      )
-                    ]),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Get.toNamed(Routes.notificatiosetting);
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    padding: const EdgeInsets.fromLTRB(5.0, 0.0, 8.0, 0.0),
-                    child: Column(mainAxisSize: MainAxisSize.min, children: [
-                      Card(
-                        elevation: 2,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(13.05),
-                        ),
-                        child: Container(
-                          decoration: ShapeDecoration(
-                            color: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(13.05),
-                            ),
-                            shadows: [customBoxShadow()],
-                          ),
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                SizedBox(
-                                  height: 55,
-                                  child: Center(
-                                    child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Align(
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 20.0),
-                                              child: Text(
-                                                  'Notification Settings',
-                                                  style: textStyleW700(
-                                                      size.width * 0.032,
-                                                      AppColors.blackText)),
-                                            ),
-                                          ),
-                                        ]),
-                                  ),
-                                ),
-                                IconButton(
-                                    onPressed: () {
-                                      Get.toNamed(Routes.notificatiosetting);
-                                    },
-                                    icon: const Icon(
-                                      Icons.arrow_forward_ios_rounded,
-                                      size: 17,
-                                    )),
-                              ]),
-                        ),
-                      )
-                    ]),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Get.toNamed(Routes.terms);
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    padding: const EdgeInsets.fromLTRB(5.0, 0.0, 8.0, 0.0),
-                    child: Column(mainAxisSize: MainAxisSize.min, children: [
-                      Card(
-                        elevation: 2,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(13.05),
-                        ),
-                        child: Container(
-                          decoration: ShapeDecoration(
-                            color: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(13.05),
-                            ),
-                            shadows: [customBoxShadow()],
-                          ),
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                SizedBox(
-                                  height: 55,
-                                  child: Center(
-                                    child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Align(
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 20.0),
-                                              child: Text('Terms & Condition',
-                                                  style: textStyleW700(
-                                                      size.width * 0.032,
-                                                      AppColors.blackText)),
-                                            ),
-                                          ),
-                                        ]),
-                                  ),
-                                ),
-                                IconButton(
-                                    onPressed: () {
-                                      Get.toNamed(Routes.terms);
-                                    },
-                                    icon: const Icon(
-                                      Icons.arrow_forward_ios_rounded,
-                                      size: 17,
-                                    )),
-                              ]),
-                        ),
-                      )
-                    ]),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    _showLogoutDialog(context);
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    padding: const EdgeInsets.fromLTRB(5.0, 0.0, 8.0, 0.0),
-                    child: Column(mainAxisSize: MainAxisSize.min, children: [
-                      Card(
-                        elevation: 2,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(13.05),
-                        ),
-                        child: Container(
-                          decoration: ShapeDecoration(
-                            color: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(13.05),
-                            ),
-                            shadows: [customBoxShadow()],
-                          ),
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                SizedBox(
-                                  height: 55,
-                                  child: Center(
-                                    child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Align(
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 20.0),
-                                              child: Text('Logout',
-                                                  style: textStyleW700(
-                                                      size.width * 0.032,
-                                                      AppColors.blackText)),
-                                            ),
-                                          ),
-                                        ]),
-                                  ),
-                                ),
-                                IconButton(
-                                    onPressed: () {
-                                      _showLogoutDialog(context);
-                                    },
-                                    icon: const Icon(
-                                      Icons.arrow_forward_ios_rounded,
-                                      size: 17,
-                                    )),
-                              ]),
-                        ),
-                      )
-                    ]),
-                  ),
-                ),
-                10.sbh,
-                Center(
-                  child: Text(
-                    'Follow MLM DIARY',
-                    style:
-                        textStyleW700(size.width * 0.032, AppColors.blackText),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 0.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      InkWell(
-                        onTap: () async {
-                          // Debug print to check `mlmSocial.whatsapp`
-                          if (kDebugMode) {
-                            print('mlmSocial.whatsapp: ${mlmSocial?.whatsapp}');
-                          }
-                          final String? phoneNumber = mlmSocial
-                              ?.whatsapp; // Make nullable for debugging
-
-                          if (phoneNumber == null) {
-                            if (kDebugMode) {
-                              print('Error: phoneNumber is null');
-                            }
-                            showToasterrorborder(
-                                "Phone number is not available", context);
-                            return;
-                          }
-
-                          // Debug print to check `userProfile.name`
-                          if (kDebugMode) {
-                            print('userProfile.name: ${userProfile.name}');
-                          }
-                          final String name = userProfile.name ?? 'N/A';
-
-                          String message =
-                              "Hello, I am $name. I want to know regarding MLM Diary App.";
-                          final Uri whatsappUri = Uri.parse(
-                              "https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}");
-                          if (kDebugMode) {
-                            print('Generated WhatsApp Link: $whatsappUri');
-                          }
-
-                          if (await canLaunchUrl(whatsappUri)) {
-                            await launchUrl(whatsappUri);
-                            if (kDebugMode) {
-                              print('URL: $whatsappUri');
-                            }
-                          } else {
-                            if (kDebugMode) {
-                              print('Could not launch $whatsappUri');
-                            }
-                            showToasterrorborder(
-                                "Could not launch WhatsApp", context);
-                          }
-                        },
-                        child: SvgPicture.asset(Assets.svgLogosWhatsappIcon,
-                            height: 26, width: 26),
+                      Text(
+                        'App Version $appVersion',
+                        style: textStyleW500(
+                            size.width * 0.032, AppColors.blackText),
                       ),
-                      InkWell(
-                        onTap: () {
-                          if (mlmSocial!.facebookLink != null) {
-                            _launchURL(mlmSocial.facebookLink.toString());
-                            if (kDebugMode) {
-                              print('URL: ${mlmSocial.facebookLink}');
-                            }
-                          } else {
-                            showToasterrorborder("No Any Url Fond", context);
-                          }
+                      TextButton(
+                        onPressed: () {
+                          launchUrl(Uri.parse(link));
                         },
-                        child: SvgPicture.asset(Assets.svgLogosFacebook,
-                            height: 26, width: 26),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          if (mlmSocial!.intagramLink != null) {
-                            _launchURL(mlmSocial.intagramLink.toString());
-                            if (kDebugMode) {
-                              print('URL: ${mlmSocial.intagramLink}');
-                            }
-                          } else {
-                            showToasterrorborder("No Any Url Fond", context);
-                          }
-                        },
-                        child: SvgPicture.asset(Assets.svgInstagram,
-                            height: 26, width: 26),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          if (mlmSocial!.linkedinLink != null) {
-                            _launchURL(mlmSocial.linkedinLink.toString());
-                            if (kDebugMode) {
-                              print('URL: ${mlmSocial.linkedinLink}');
-                            }
-                          } else {
-                            showToasterrorborder("No Any Url Fond", context);
-                          }
-                        },
-                        child: SvgPicture.asset(Assets.svgLogosLinkedinIcon,
-                            height: 26, width: 26),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          if (mlmSocial!.youtubeLink != null) {
-                            _launchURL(mlmSocial.youtubeLink.toString());
-                            if (kDebugMode) {
-                              print('URL: ${mlmSocial.youtubeLink}');
-                            }
-                          } else {
-                            showToasterrorborder("No Any Url Fond", context);
-                          }
-                        },
-                        child: SvgPicture.asset(Assets.svgYoutube,
-                            height: 26, width: 26),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          if (mlmSocial!.telegramLink != null) {
-                            _launchURL(mlmSocial.telegramLink.toString());
-                            if (kDebugMode) {
-                              print('URL: ${mlmSocial.telegramLink}');
-                            }
-                          } else {
-                            showToasterrorborder("No Any Url Fond", context);
-                          }
-                        },
-                        child: SvgPicture.asset(Assets.svgTelegram,
-                            height: 26, width: 26),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          if (mlmSocial!.twitterLink != null) {
-                            _launchURL(mlmSocial.twitterLink.toString());
-                            if (kDebugMode) {
-                              print('URL: ${mlmSocial.twitterLink}');
-                            }
-                          } else {
-                            showToasterrorborder("No Any Url Fond", context);
-                          }
-                        },
-                        child: SvgPicture.asset(Assets.svgTwitter,
-                            height: 26, width: 26),
-                      ),
+                        child: Text(
+                          'Check Latest Update',
+                          style: textStyleW500(
+                              size.width * 0.032, AppColors.primaryColor),
+                        ),
+                      )
                     ],
                   ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'App Version $appVersion',
-                      style: textStyleW500(
-                          size.width * 0.032, AppColors.blackText),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        launchUrl(Uri.parse(link));
-                      },
-                      child: Text(
-                        'Check Latest Update',
-                        style: textStyleW500(
-                            size.width * 0.032, AppColors.primaryColor),
-                      ),
-                    )
-                  ],
-                ),
-              ],
+                ],
+              ),
             ),
-          ));
+          );
         }),
       ),
       bottomNavigationBar: Container(
