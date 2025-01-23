@@ -174,6 +174,7 @@ class _MessageState extends State<Message> {
                               controller: messageController,
                               datetime: post.createdAt ?? '',
                               readStatus: post.readStatus ?? 0,
+                              countUnread: post.countOfEnread ?? 0,
                             ),
                           ),
                         );

@@ -370,18 +370,23 @@ class _ClassidiedDetailsScreenState extends State<ClassifiedDetailTestScreen> {
                                   ],
                                 ),
                                 3.sbh,
-                                LinkText(
-                                  text: post.website!.isNotEmpty == true
-                                      ? post.website!
-                                      : 'N/A',
-                                  style: textStyleW400(
-                                    size.width * 0.035,
-                                    // ignore: deprecated_member_use
-                                    AppColors.blackText.withOpacity(0.5),
-                                  ),
-                                  linkStyle: const TextStyle(
-                                    color: Colors.blue,
-                                    decoration: TextDecoration.underline,
+                                InkWell(
+                                  onTap: () {
+                                    _launchURL(post.website.toString());
+                                  },
+                                  child: LinkText(
+                                    text: post.website!.isNotEmpty == true
+                                        ? post.website!
+                                        : 'N/A',
+                                    style: textStyleW400(
+                                      size.width * 0.035,
+                                      // ignore: deprecated_member_use
+                                      AppColors.blackText.withOpacity(0.5),
+                                    ),
+                                    linkStyle: const TextStyle(
+                                      color: Colors.blue,
+                                      decoration: TextDecoration.underline,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -433,7 +438,7 @@ class _ClassidiedDetailsScreenState extends State<ClassifiedDetailTestScreen> {
                                       print("Opening $url...");
                                     }
                                     // Use url_launcher to open the URL
-                                    _launchUrl(url);
+                                    _launchURL(url);
                                   }
                                 },
                               ),
@@ -684,14 +689,21 @@ class _ClassidiedDetailsScreenState extends State<ClassifiedDetailTestScreen> {
     await controller.fetchViewListClassified(widget.classifiedId, 1, context);
   }
 
-  // Define the _launchUrl method
-  Future<void> _launchUrl(String url) async {
-    // ignore: deprecated_member_use
-    if (await canLaunch(url)) {
-      // ignore: deprecated_member_use
-      await launch(url); // Old launch method for non-web
+  Future<void> _launchURL(String? url) async {
+    if (url != null && url.isNotEmpty) {
+      // Ensure the URL includes a scheme (http or https)
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://$url';
+      }
+
+      final Uri uri = Uri.parse(url);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else {
+        debugPrint('Could not launch $url');
+      }
     } else {
-      throw 'Could not launch $url';
+      debugPrint('Invalid or empty URL');
     }
   }
 }

@@ -13,6 +13,7 @@ class ChatCard extends StatefulWidget {
   final String postCaption;
   final String datetime;
   final int readStatus;
+  final int countUnread;
 
   final String chatId;
   final MessageController controller;
@@ -25,6 +26,7 @@ class ChatCard extends StatefulWidget {
     required this.chatId,
     required this.controller,
     required this.readStatus,
+    required this.countUnread,
   });
 
   @override
@@ -43,97 +45,123 @@ class _ChatCardState extends State<ChatCard> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: size.width * 0.035,
-        vertical: size.height * 0.01,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14),
-        color: AppColors.white,
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipOval(
-            child: Image.network(
-              widget.userImage.toString(),
-              height: 60.0,
-              width: 60.0,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Image.asset(
-                  Assets.imagesAdminlogo,
-                  fit: BoxFit.fill,
-                );
-              },
-            ),
+    return Stack(
+      children: [
+        Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: size.width * 0.035,
+            vertical: size.height * 0.01,
           ),
-          10.sbw,
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            color: AppColors.white,
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ClipOval(
+                child: Image.network(
+                  widget.userImage.toString(),
+                  height: 60.0,
+                  width: 60.0,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Image.asset(
+                      Assets.imagesAdminlogo,
+                      fit: BoxFit.fill,
+                    );
+                  },
+                ),
+              ),
+              10.sbw,
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        widget.userName,
-                        style: textStyleW700(
-                            size.width * 0.035, AppColors.blackText),
-                      ),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                widget.userName,
+                                style: textStyleW700(
+                                    size.width * 0.035, AppColors.blackText),
+                              ),
+                              5.sbw,
+                              if (widget.countUnread > 0)
+                                Container(
+                                  padding: const EdgeInsets.all(6),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.redText,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Text(
+                                    widget.countUnread.toString(),
+                                    style: textStyleW700(12, AppColors.white),
+                                  ),
+                                ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                postTimeFormatter
+                                    .formatPostTime(widget.datetime),
+                                style: textStyleW400(
+                                    size.width * 0.035,
+                                    // ignore: deprecated_member_use
+                                    AppColors.blackText.withOpacity(0.5)),
+                              ),
+                              3.sbw,
+                              Icon(
+                                Icons.arrow_forward_ios,
+                                size: 12,
+                                color: AppColors.grey,
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                      3.sbh,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            postTimeFormatter.formatPostTime(widget.datetime),
-                            style: textStyleW400(size.width * 0.035,
-                                // ignore: deprecated_member_use
-                                AppColors.blackText.withOpacity(0.5)),
+                            widget.postCaption,
+                            maxLines: 2,
+                            style: textStyleW700(
+                              size.width * 0.035,
+                              widget.readStatus == 0
+                                  // ignore: deprecated_member_use
+                                  ? AppColors.blackText.withOpacity(0.5)
+                                  // ignore: deprecated_member_use
+                                  : AppColors.blackText,
+                            ),
                           ),
-                          3.sbw,
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: 12,
-                            color: AppColors.grey,
-                          )
+                          IconButton(
+                            icon: Icon(
+                              Icons.delete,
+                              color: AppColors.redText,
+                            ),
+                            onPressed: () =>
+                                LogoutDialog.show(context, () async {
+                              widget.controller
+                                  .deleteChat(chatId: widget.chatId);
+                            }),
+                          ),
                         ],
                       ),
                     ],
                   ),
-                  3.sbh,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        widget.postCaption,
-                        maxLines: 2,
-                        style: textStyleW700(
-                          size.width * 0.035,
-                          widget.readStatus == 0
-                              ? AppColors.blackText
-                              // ignore: deprecated_member_use
-                              : AppColors.blackText.withOpacity(0.5),
-                        ),
-                      ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.delete,
-                          color: AppColors.redText,
-                        ),
-                        onPressed: () => LogoutDialog.show(context, () async {
-                          widget.controller.deleteChat(chatId: widget.chatId);
-                        }),
-                      ),
-                    ],
-                  ),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
