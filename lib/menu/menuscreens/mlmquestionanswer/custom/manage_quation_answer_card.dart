@@ -280,11 +280,11 @@ class _ManageQuestionCardState extends State<ManageQuestionCard> {
                     Material(
                       child: InkWell(
                         onTap: () async {
-                          await widget.controller
-                              .fetchMyQuestion(questionId: widget.questionId);
                           Get.toNamed(
                             Routes.editquestion,
                           );
+                          await widget.controller
+                              .fetchMyQuestion(questionId: widget.questionId);
                         },
                         child: Ink(
                           height: size.height * 0.030,

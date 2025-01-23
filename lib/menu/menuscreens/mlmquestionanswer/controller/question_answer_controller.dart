@@ -946,7 +946,7 @@ class QuestionAnswerController extends GetxController {
     }
   }
 
-  void updateUIWithQuestionData(MyQuestionQuestions blogData) {
+  Future<void> updateUIWithQuestionData(MyQuestionQuestions blogData) async {
     title.value.text = blogData.title ?? '';
 
     // Handle category selection (using categoryId as int)
@@ -973,7 +973,7 @@ class QuestionAnswerController extends GetxController {
           print('Category selected, ID: ${selectedCategoryId.value}');
         }
 
-        fetchSubCategoryList(categorylist[index].id!);
+        await fetchSubCategoryList(categorylist[index].id!);
       }
     } else {
       if (kDebugMode) {

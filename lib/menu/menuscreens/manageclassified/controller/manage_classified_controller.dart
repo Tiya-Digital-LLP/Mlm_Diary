@@ -366,7 +366,7 @@ class ManageClasifiedController extends GetxController {
               print('Category selected, ID: ${selectedCategoryId.value}');
             }
 
-            fetchSubCategoryList(categorylist[index].id!);
+            await fetchSubCategoryList(categorylist[index].id!);
           }
         } else {
           if (kDebugMode) {

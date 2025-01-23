@@ -58,15 +58,16 @@ GetUserAllPostData $GetUserAllPostDataFromJson(Map<String, dynamic> json) {
   if (urlcomponent != null) {
     getUserAllPostData.urlcomponent = urlcomponent;
   }
-  final dynamic company = json['company'];
+  final String? company = jsonConvert.convert<String>(json['company']);
   if (company != null) {
     getUserAllPostData.company = company;
   }
-  final dynamic popular = json['popular'];
+  final String? popular = jsonConvert.convert<String>(json['popular']);
   if (popular != null) {
     getUserAllPostData.popular = popular;
   }
-  final dynamic premiumsdate = json['premiumsdate'];
+  final String? premiumsdate = jsonConvert.convert<String>(
+      json['premiumsdate']);
   if (premiumsdate != null) {
     getUserAllPostData.premiumsdate = premiumsdate;
   }
@@ -82,7 +83,7 @@ GetUserAllPostData $GetUserAllPostDataFromJson(Map<String, dynamic> json) {
   if (description != null) {
     getUserAllPostData.description = description;
   }
-  final dynamic website = json['website'];
+  final String? website = jsonConvert.convert<String>(json['website']);
   if (website != null) {
     getUserAllPostData.website = website;
   }
@@ -106,7 +107,7 @@ GetUserAllPostData $GetUserAllPostDataFromJson(Map<String, dynamic> json) {
   if (pgcnt != null) {
     getUserAllPostData.pgcnt = pgcnt;
   }
-  final dynamic location = json['location'];
+  final String? location = jsonConvert.convert<String>(json['location']);
   if (location != null) {
     getUserAllPostData.location = location;
   }
@@ -114,7 +115,7 @@ GetUserAllPostData $GetUserAllPostDataFromJson(Map<String, dynamic> json) {
   if (image != null) {
     getUserAllPostData.image = image;
   }
-  final String? userId = jsonConvert.convert<String>(json['user_id']);
+  final int? userId = jsonConvert.convert<int>(json['user_id']);
   if (userId != null) {
     getUserAllPostData.userId = userId;
   }
@@ -228,21 +229,21 @@ extension GetUserAllPostDataExtension on GetUserAllPostData {
     int? id,
     String? title,
     String? urlcomponent,
-    dynamic company,
-    dynamic popular,
-    dynamic premiumsdate,
+    String? company,
+    String? popular,
+    String? premiumsdate,
     String? category,
     String? subcategory,
     String? description,
-    dynamic website,
+    String? website,
     dynamic email,
     dynamic phone,
     String? createdate,
     String? updatedAt,
     int? pgcnt,
-    dynamic location,
+    String? location,
     String? image,
-    String? userId,
+    int? userId,
     String? type,
     dynamic immlm,
     dynamic plan,

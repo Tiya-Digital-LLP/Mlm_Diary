@@ -26,23 +26,23 @@ class GetUserAllPostData {
 	int? id = 0;
 	String? title = '';
 	String? urlcomponent = '';
-	dynamic company;
-	dynamic popular;
-	dynamic premiumsdate;
+	String? company = '';
+	String? popular = '';
+	String? premiumsdate = '';
 	String? category = '';
 	String? subcategory = '';
 	String? description = '';
-	dynamic website;
+	String? website = '';
 	dynamic email;
 	dynamic phone;
 	String? createdate = '';
 	@JSONField(name: "updated_at")
 	String? updatedAt = '';
 	int? pgcnt = 0;
-	dynamic location;
+	String? location = '';
 	String? image = '';
 	@JSONField(name: "user_id")
-	String? userId = '';
+	int? userId = 0;
 	String? type = '';
 	dynamic immlm;
 	dynamic plan;

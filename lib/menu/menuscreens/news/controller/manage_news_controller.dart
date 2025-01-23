@@ -324,7 +324,7 @@ class ManageNewsController extends GetxController {
     }
   }
 
-  void updateUIWithBlogData(MyNewsData blogData) {
+  Future<void> updateUIWithBlogData(MyNewsData blogData) async {
     title.value.text = blogData.title ?? '';
     discription.value.text = blogData.description ?? '';
     url.value.text = blogData.website ?? '';
@@ -354,7 +354,7 @@ class ManageNewsController extends GetxController {
           print('Category selected, ID: ${selectedCategoryId.value}');
         }
 
-        fetchSubCategoryList(categorylist[index].id!);
+        await fetchSubCategoryList(categorylist[index].id!);
       }
     } else {
       if (kDebugMode) {

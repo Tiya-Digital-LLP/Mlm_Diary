@@ -134,37 +134,64 @@ class _ManageClassifiedPlusIconState extends State<ManageClassifiedPlusIcon> {
                     () => BorderContainer(
                       isError: controller.subCategoryError.value,
                       height: 58,
-                      child: TextField(
-                        controller:
-                            controller.getSelectedSubCategoryTextController(),
-                        readOnly: true,
-                        onTap: () {
-                          showSelectSubCategory(
-                            context,
-                            size,
-                            controller,
-                            controller.subcategoryList,
-                          );
-                          controller.mlmsubCategoryValidation();
-                        },
-                        style: textStyleW500(
-                            size.width * 0.04, AppColors.blackText),
-                        cursorColor: AppColors.blackText,
-                        decoration: InputDecoration(
-                            labelStyle: const TextStyle(
-                              color: Colors.black,
+                      child: controller.isLoading.value
+                          ? TextField(
+                              controller: controller
+                                  .getSelectedSubCategoryTextController(),
+                              readOnly: true,
+                              onTap: () async {},
+                              style: textStyleW500(
+                                  size.width * 0.04, AppColors.blackText),
+                              cursorColor: AppColors.blackText,
+                              decoration: InputDecoration(
+                                  labelStyle: const TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                  labelText: "Select Sub Category",
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 5.5,
+                                    horizontal: 2,
+                                  ),
+                                  border: InputBorder.none,
+                                  suffixIcon: Icon(
+                                    Icons.arrow_drop_down,
+                                    color: AppColors.blackText,
+                                  )),
+                            )
+                          : TextField(
+                              controller: controller
+                                  .getSelectedSubCategoryTextController(),
+                              readOnly: true,
+                              onTap: () async {
+                                await controller.fetchSubCategoryList(
+                                    controller.selectedCategoryId.value);
+                                showSelectSubCategory(
+                                  // ignore: use_build_context_synchronously
+                                  context,
+                                  size,
+                                  controller,
+                                  controller.subcategoryList,
+                                );
+                                controller.mlmsubCategoryValidation();
+                              },
+                              style: textStyleW500(
+                                  size.width * 0.04, AppColors.blackText),
+                              cursorColor: AppColors.blackText,
+                              decoration: InputDecoration(
+                                  labelStyle: const TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                  labelText: "Select Sub Category",
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 5.5,
+                                    horizontal: 2,
+                                  ),
+                                  border: InputBorder.none,
+                                  suffixIcon: Icon(
+                                    Icons.arrow_drop_down,
+                                    color: AppColors.blackText,
+                                  )),
                             ),
-                            labelText: "Select Sub Category",
-                            contentPadding: const EdgeInsets.symmetric(
-                              vertical: 5.5,
-                              horizontal: 2,
-                            ),
-                            border: InputBorder.none,
-                            suffixIcon: Icon(
-                              Icons.arrow_drop_down,
-                              color: AppColors.blackText,
-                            )),
-                      ),
                     ),
                   ),
                   10.sbh,

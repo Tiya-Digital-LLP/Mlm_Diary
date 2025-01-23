@@ -339,7 +339,7 @@ class ManageBlogController extends GetxController {
     }
   }
 
-  void updateUIWithBlogData(MyBlogListData blogData) {
+  Future<void> updateUIWithBlogData(MyBlogListData blogData) async {
     title.value.text = blogData.title ?? '';
     discription.value.text = blogData.description ?? '';
     url.value.text = blogData.website ?? '';
@@ -373,7 +373,7 @@ class ManageBlogController extends GetxController {
           print('Category selected, ID: ${selectedCategoryId.value}');
         }
 
-        fetchSubCategoryList(categorylist[index].id!);
+        await fetchSubCategoryList(categorylist[index].id!);
       }
     } else {
       if (kDebugMode) {
