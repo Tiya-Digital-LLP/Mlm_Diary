@@ -428,7 +428,8 @@ class _ProfileScreenState extends State<ProfileScreen>
                     hintStyle: TextStyle(
                       fontSize: 14.0,
                       fontWeight: FontWeight.w500,
-                      color: AppColors.blackText,
+                      // ignore: deprecated_member_use
+                      color: AppColors.blackText.withOpacity(0.5),
                     ),
                   ),
                 ),
@@ -530,7 +531,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                 top: 20,
                 right: 20,
                 child: IconButton(
-                  icon: const Icon(Icons.cancel, color: Colors.black),
+                  icon: const Icon(Icons.clear, color: Colors.black),
                   onPressed: () {
                     Get.back();
                   },

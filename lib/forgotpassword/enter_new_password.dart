@@ -76,7 +76,7 @@ class _EnterNewPasswordScreenState extends State<EnterNewPasswordScreen> {
               child: Obx(
                 () => PasswordBorderTextField(
                   controller: controller.password.value,
-                  hint: "Your Password",
+                  hint: "New Password",
                   textInputType: const [],
                   keyboard: TextInputType.text,
                   isError: controller.passwordError.value,
@@ -118,6 +118,8 @@ class _EnterNewPasswordScreenState extends State<EnterNewPasswordScreen> {
                 btnColor: AppColors.primaryColor,
                 titleColor: AppColors.white,
                 onTap: () {
+                  FocusScope.of(context).unfocus();
+
                   if (controller.password.value.text.isEmpty) {
                     showToasterrorborder("Please Enter Password", context);
                   } else if (controller.confirmPassword.value.text.isEmpty) {

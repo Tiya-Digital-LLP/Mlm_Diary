@@ -25,6 +25,7 @@ import 'package:mlmdiary/widgets/custom_name_text_field.dart';
 import 'package:mlmdiary/widgets/normal_button.dart';
 import 'package:mlmdiary/widgets/password_border_text_field.dart';
 import 'package:pinput/pinput.dart';
+import 'package:smart_auth/smart_auth.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -34,24 +35,42 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
-  final Rx<Country?> selectedCountry = Rx<Country?>(null);
-
   final SignupController controller = Get.put((SignupController()));
+  final smartAuth = SmartAuth();
+
+  void getSmsCode() async {
+    try {
+      final res = await smartAuth.getSmsCode(useUserConsentApi: true);
+      if (res.codeFound) {
+        debugPrint('userConsent success: ${res.code}');
+        controller.mobileOtp.value.text = res.code ?? '';
+      } else {
+        debugPrint('userConsent failed: ${res.toString()}');
+        debugPrint('Code Found: ${res.codeFound}');
+        debugPrint('SMS Received: ${res.sms}');
+        debugPrint('Was it successful?: ${res.succeed}');
+      }
+    } catch (e) {
+      debugPrint('Error occurred while getting SMS code: $e');
+    }
+  }
 
   @override
   void initState() {
+    getSmsCode();
     initCountry();
     super.initState();
   }
 
   void initCountry() async {
     Country? defaultCountry = await getCountryByCountryCode(context, 'IN');
-    selectedCountry.value = defaultCountry;
+    controller.selectedCountry.value = defaultCountry;
     if (kDebugMode) {
-      if (selectedCountry.value != null) {
-        print('Country name: ${selectedCountry.value!.name}');
-        print('Country calling code: ${selectedCountry.value!.callingCode}');
-        print('Country code: ${selectedCountry.value!}');
+      if (controller.selectedCountry.value != null) {
+        print('Country name: ${controller.selectedCountry.value!.name}');
+        print(
+            'Country calling code: ${controller.selectedCountry.value!.callingCode}');
+        print('Country code: ${controller.selectedCountry.value!}');
       } else {
         print('Country is null');
       }
@@ -59,8 +78,8 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   bool isDomesticPhoneNumber(String mobile) {
-    return selectedCountry.value != null &&
-        selectedCountry.value!.callingCode == '+91';
+    return controller.selectedCountry.value != null &&
+        controller.selectedCountry.value!.callingCode == '+91';
   }
 
   void sendOtp() {
@@ -76,7 +95,8 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   String getFormattedForeignNumberCountryCode() {
-    return selectedCountry.value?.callingCode.replaceAll('+', '') ?? '';
+    return controller.selectedCountry.value?.callingCode.replaceAll('+', '') ??
+        '';
   }
 
   @override
@@ -195,7 +215,8 @@ class _SignupPageState extends State<SignupPage> {
                                 height: 58,
                                 child: BorderContainer(
                                   height: 58,
-                                  child: selectedCountry.value == null
+                                  child: controller.selectedCountry.value ==
+                                          null
                                       ? Container()
                                       : Center(
                                           child: Row(
@@ -205,14 +226,15 @@ class _SignupPageState extends State<SignupPage> {
                                                 CrossAxisAlignment.center,
                                             children: [
                                               Image.asset(
-                                                selectedCountry.value!.flag,
+                                                controller.selectedCountry
+                                                    .value!.flag,
                                                 package: countryCodePackageName,
                                                 width: 25,
                                                 height: 25,
                                               ),
                                               8.sbw,
                                               Text(
-                                                selectedCountry
+                                                controller.selectedCountry
                                                     .value!.callingCode,
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
@@ -551,6 +573,31 @@ class _SignupPageState extends State<SignupPage> {
                                                                       .emailOtp
                                                                       .value
                                                                       .text = pin;
+
+                                                                  if (pin.length ==
+                                                                      6) {
+                                                                    String
+                                                                        email =
+                                                                        controller
+                                                                            .email
+                                                                            .value
+                                                                            .text;
+                                                                    int userId =
+                                                                        controller
+                                                                            .defaultUserId
+                                                                            .value;
+                                                                    String otp =
+                                                                        controller
+                                                                            .emailOtp
+                                                                            .value
+                                                                            .text;
+
+                                                                    controller.verifyEmail(
+                                                                        email,
+                                                                        userId,
+                                                                        otp,
+                                                                        context);
+                                                                  }
                                                                 },
                                                                 onSubmitted:
                                                                     (pin) {
@@ -736,7 +783,7 @@ class _SignupPageState extends State<SignupPage> {
                                                             ),
                                                             Text(
                                                               "Please check your email, and enter verification code below. You may need to check your Spam or Junk folder as well.",
-                                                              maxLines: 2,
+                                                              maxLines: 3,
                                                               textAlign:
                                                                   TextAlign
                                                                       .center,
@@ -810,6 +857,17 @@ class _SignupPageState extends State<SignupPage> {
                                                   onChanged: (pin) {
                                                     controller.mobileOtp.value
                                                         .text = pin;
+
+                                                    if (pin.length == 6) {
+                                                      FocusScope.of(context)
+                                                          .unfocus();
+                                                      controller.verifyPhoneOtp(
+                                                        controller.defaultUserId
+                                                            .value,
+                                                        pin,
+                                                        context,
+                                                      );
+                                                    }
                                                   },
                                                   onSubmitted: (pin) {
                                                     controller.mobileOtp.value
@@ -861,7 +919,8 @@ class _SignupPageState extends State<SignupPage> {
                                                               controller
                                                                   .defaultUserId
                                                                   .value,
-                                                              selectedCountry
+                                                              controller
+                                                                  .selectedCountry
                                                                   .value!
                                                                   .callingCode
                                                                   .replaceAll(
@@ -892,7 +951,7 @@ class _SignupPageState extends State<SignupPage> {
                                                       ),
                                                     )
                                                   : Text(
-                                                      'Resent OTP ${controller.timerValue.value} seconds',
+                                                      'Resend OTP ${controller.timerValue.value} seconds',
                                                       style: textStyleW500(
                                                           size.width * 0.042,
                                                           AppColors.blackText),
@@ -941,7 +1000,6 @@ class _SignupPageState extends State<SignupPage> {
                                                                   .value
                                                                   .text,
                                                               context);
-                                                      controller.stopTimer();
                                                     } catch (e) {
                                                       showToasterrorborder(
                                                           "Failed to Verify Mobile OTP",
@@ -974,40 +1032,48 @@ class _SignupPageState extends State<SignupPage> {
                                   controller.nameValidation(context);
                                   controller.mobileValidation();
 
-                                  if (controller.selectedCount.value == 0 &&
-                                      controller.name.value.text.isEmpty &&
-                                      controller.mobile.value.text.isEmpty) {
-                                    showToasterrorborder(
-                                        "This Field is Required", context);
-                                  } else if (controller.selectedCount.value <
-                                      1) {
+                                  if (controller.selectedCount.value == 0) {
                                     showToasterrorborder(
                                         "Please Select I am a MLM", context);
                                   } else if (controller
                                           .name.value.text.isEmpty ||
-                                      controller.nameError.value == true) {
+                                      controller.nameError.value) {
                                     showToasterrorborder(
                                         "Please Enter Your Name", context);
                                   } else if (controller
                                       .mobile.value.text.isEmpty) {
                                     showToasterrorborder(
                                         "Please Enter Mobile Number", context);
-                                  } else if (controller.nameError.value ==
-                                      true) {
+                                  } else if (controller.nameError.value) {
                                     showToasterrorborder(
                                         "Please Enter Valid Name", context);
-                                  } else if (controller
-                                          .mobile.value.text.length <
-                                      6) {
-                                    showToasterrorborder(
-                                        "Please Enter Valid Mobile Number",
-                                        context);
                                   } else {
+                                    if (controller.selectedCountry.value
+                                            ?.callingCode ==
+                                        '+91') {
+                                      if (controller.mobile.value.text.length !=
+                                          10) {
+                                        showToasterrorborder(
+                                            "Please Enter Valid 10-Digit Mobile Number",
+                                            context);
+                                        return;
+                                      }
+                                    } else {
+                                      if (controller.mobile.value.text.length <
+                                          6) {
+                                        showToasterrorborder(
+                                            "Please Enter Valid Mobile Number",
+                                            context);
+                                        return;
+                                      }
+                                    }
+
                                     sendOtp();
                                     controller.mobileOtpSend.value = true;
                                     controller.startTimer();
                                   }
                                 },
+
                                 isLoading: controller.isLoading,
                               ),
                       ),
@@ -1067,48 +1133,51 @@ class _SignupPageState extends State<SignupPage> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  itemCount: userTypes.length,
-                  itemBuilder: (context, index) {
-                    return Column(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            controller.toggleSelected(index, context);
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 16),
-                            child: Row(
-                              children: [
-                                Obx(
-                                  () => GestureDetector(
-                                    onTap: () {
-                                      controller.toggleSelected(index, context);
-                                    },
-                                    child: Image.asset(
-                                      controller.isTypeSelectedList[index]
-                                          ? Assets.imagesTrueCircle
-                                          : Assets.imagesCircle,
+                Obx(
+                  () => ListView.builder(
+                    shrinkWrap: true,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: userTypes.length,
+                    itemBuilder: (context, index) {
+                      return Column(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              controller.toggleSelected(index, context);
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 16),
+                              child: Row(
+                                children: [
+                                  Obx(
+                                    () => GestureDetector(
+                                      onTap: () {
+                                        controller.toggleSelected(
+                                            index, context);
+                                      },
+                                      child: Image.asset(
+                                        controller.isTypeSelectedList[index]
+                                            ? Assets.imagesTrueCircle
+                                            : Assets.imagesCircle,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                const SizedBox(width: 15),
-                                Text(
-                                  userTypes[index].name ?? '',
-                                  style: textStyleW500(
-                                      size.width * 0.041, AppColors.blackText),
-                                ),
-                              ],
+                                  const SizedBox(width: 15),
+                                  Text(
+                                    userTypes[index].name ?? '',
+                                    style: textStyleW500(size.width * 0.041,
+                                        AppColors.blackText),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 20),
-                      ],
-                    );
-                  },
+                          const SizedBox(height: 20),
+                        ],
+                      );
+                    },
+                  ),
                 ),
                 const SizedBox(height: 100),
                 Center(
@@ -1143,7 +1212,7 @@ class _SignupPageState extends State<SignupPage> {
     if (!controller.countryCodeReadOnly.value) {
       final country = await showCountryPickerSheet(Get.context!);
       if (country != null) {
-        selectedCountry.value = country;
+        controller.selectedCountry.value = country;
         if (country.callingCode != '+91') {
           _showNonIndiaPopup();
         }
@@ -1156,16 +1225,18 @@ class _SignupPageState extends State<SignupPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
           title: const Text('Country Selection'),
           content: const Text('You have selected a country other than India.'),
           actions: <Widget>[
-            TextButton(
+            NormalButton(
+              height: 45,
               onPressed: () {
-                Navigator.of(context).pop();
-                selectedCountry.refresh();
+                Get.back();
               },
-              child: const Text('OK'),
-            ),
+              text: 'OK',
+              isLoading: controller.isLoading,
+            )
           ],
         );
       },

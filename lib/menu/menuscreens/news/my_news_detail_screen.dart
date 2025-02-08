@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
@@ -19,8 +21,9 @@ import 'package:mlmdiary/widgets/dynamiclink/dynamic_link.dart';
 import 'package:mlmdiary/widgets/image_preview_user_image.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:text_link/text_link.dart';
-// ignore: library_prefixes
-import 'package:html/parser.dart' as htmlParser;
+import 'package:html/dom.dart' as dom;
+
+import 'package:url_launcher/url_launcher.dart';
 
 class MyNewsDetailScreen extends StatefulWidget {
   const MyNewsDetailScreen({
@@ -144,7 +147,7 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
                                 Row(
                                   children: [
                                     Text(
-                                      post.title ?? '',
+                                      post.userData!.name ?? '',
                                       style: textStyleW700(size.width * 0.043,
                                           AppColors.blackText),
                                     ),
@@ -207,11 +210,23 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
+                        horizontal: 8,
                       ),
                       child: Align(
                         alignment: Alignment.topLeft,
-                        child: _buildHtmlContent(post.description ?? '', size),
+                        child: Html(
+                          data: post.title,
+                          style: {
+                            "html": Style(
+                              lineHeight: const LineHeight(1),
+                              maxLines: 1,
+                              fontFamily: fontFamily,
+                              fontWeight: FontWeight.w700,
+                              fontSize: FontSize.medium,
+                              color: AppColors.blackText,
+                            ),
+                          },
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -253,149 +268,6 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
                           Row(
                             children: [
                               Text(
-                                'Company',
-                                style: textStyleW400(
-                                    size.width * 0.035, AppColors.grey),
-                              ),
-                              const SizedBox(
-                                width: 07,
-                              ),
-                            ],
-                          ),
-                          Text(
-                            post.userData!.company.toString(),
-                            style: textStyleW400(
-                                size.width * 0.035, AppColors.blackText),
-                          ),
-                        ],
-                      ),
-                    ),
-                    5.sbh,
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        color: AppColors.white,
-                        border: const Border(
-                            bottom: BorderSide(color: Colors.grey)),
-                      ),
-                    ),
-                    5.sbh,
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                'Location',
-                                style: textStyleW400(
-                                    size.width * 0.035, AppColors.grey),
-                              ),
-                              const SizedBox(
-                                width: 07,
-                              ),
-                            ],
-                          ),
-                          Text(
-                            post.userData!.fullAddress.toString(),
-                            style: textStyleW400(
-                                size.width * 0.035, AppColors.blackText),
-                          ),
-                        ],
-                      ),
-                    ),
-                    5.sbh,
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        color: AppColors.white,
-                        border: const Border(
-                            bottom: BorderSide(color: Colors.grey)),
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      'Phone',
-                                      style: textStyleW400(
-                                          size.width * 0.035, AppColors.grey),
-                                    ),
-                                    const SizedBox(
-                                      width: 07,
-                                    ),
-                                  ],
-                                ),
-                                Text(
-                                  '${post.userData!.countrycode1} - ${post.userData!.mobile}',
-                                  style: textStyleW400(
-                                      size.width * 0.035, AppColors.blackText),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    'Email',
-                                    style: textStyleW400(
-                                        size.width * 0.035, AppColors.grey),
-                                  ),
-                                  const SizedBox(
-                                    width: 07,
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                '${post.userData!.email}',
-                                style: textStyleW400(
-                                    size.width * 0.035, AppColors.blackText),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    5.sbh,
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        color: AppColors.white,
-                        border: const Border(
-                            bottom: BorderSide(color: Colors.grey)),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
                                 'Website',
                                 style: textStyleW400(
                                     size.width * 0.035, AppColors.grey),
@@ -418,6 +290,58 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
                             ),
                           ),
                         ],
+                      ),
+                    ),
+                    5.sbh,
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(14),
+                        color: AppColors.white,
+                        border: const Border(
+                            bottom: BorderSide(color: Colors.grey)),
+                      ),
+                    ),
+                    5.sbh,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                      ),
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        child: Html(
+                          data: post.description,
+                          style: {
+                            "table": Style(
+                              backgroundColor:
+                                  const Color.fromARGB(0x50, 0xee, 0xee, 0xee),
+                            ),
+                            "tr": Style(
+                              border: const Border(
+                                  bottom: BorderSide(color: Colors.grey)),
+                            ),
+                            "th": Style(
+                              backgroundColor: Colors.grey,
+                            ),
+                            "td": Style(
+                              alignment: Alignment.topLeft,
+                            ),
+                            'h5': Style(
+                              maxLines: 2,
+                              textOverflow: TextOverflow.ellipsis,
+                            ),
+                          },
+                          onLinkTap: (String? url,
+                              Map<String, String> attributes,
+                              dom.Element? element) {
+                            if (url != null) {
+                              if (kDebugMode) {
+                                print("Opening $url...");
+                              }
+                              // Use url_launcher to open the URL
+                              _launchURL(url);
+                            }
+                          },
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -611,6 +535,25 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
     );
   }
 
+  // Define the _launchUrl method
+  Future<void> _launchURL(String? url) async {
+    if (url != null && url.isNotEmpty) {
+      // Ensure the URL includes a scheme (http or https)
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://$url';
+      }
+
+      final Uri uri = Uri.parse(url);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else {
+        debugPrint('Could not launch $url');
+      }
+    } else {
+      debugPrint('Invalid or empty URL');
+    }
+  }
+
   void _showFullScreenImageDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -647,23 +590,5 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen> {
 
   void fetchViewList() async {
     await controller.fetchViewListNews(post.id ?? 0, context);
-  }
-
-  Widget _buildHtmlContent(String htmlContent, Size size) {
-    final parsedHtml = htmlParser.parse(htmlContent);
-    final text = parsedHtml.body?.text ?? '';
-
-    return LinkText(
-      text: text,
-      style: textStyleW400(
-        size.width * 0.035,
-        // ignore: deprecated_member_use
-        AppColors.blackText.withOpacity(0.5),
-      ),
-      linkStyle: const TextStyle(
-        color: Colors.blue,
-        decoration: TextDecoration.underline,
-      ),
-    );
   }
 }

@@ -353,13 +353,14 @@ class _MyAppState extends State<MyApp> {
       child: GetMaterialApp(
         title: 'MLM Diary',
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-          bottomSheetTheme: BottomSheetThemeData(
-            backgroundColor: AppColors.background,
-          ),
-          dialogBackgroundColor: Colors.white,
-        ),
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            useMaterial3: true,
+            bottomSheetTheme: BottomSheetThemeData(
+              backgroundColor: AppColors.background,
+            ),
+            dialogTheme: const DialogThemeData(
+              backgroundColor: Colors.white,
+            )),
         getPages: AppPages.routes,
         navigatorObservers: <NavigatorObserver>[observer],
         debugShowCheckedModeBanner: false,

@@ -1,7 +1,9 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/classified/classified_like_list_content.dart';
@@ -16,12 +18,12 @@ import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
-// ignore: library_prefixes
-import 'package:html/parser.dart' as htmlParser;
+import 'package:html/dom.dart' as dom;
 import 'package:mlmdiary/widgets/dynamiclink/dynamic_link.dart';
 import 'package:mlmdiary/widgets/image_preview_user_image.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:text_link/text_link.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../profile/userprofile/controller/user_profile_controller.dart';
 
@@ -211,7 +213,19 @@ class _ClassidiedDetailsScreenState
                       ),
                       child: Align(
                         alignment: Alignment.topLeft,
-                        child: _buildHtmlContent(post.description ?? '', size),
+                        child: Html(
+                          data: post.title,
+                          style: {
+                            "html": Style(
+                              lineHeight: const LineHeight(1),
+                              maxLines: 1,
+                              fontFamily: fontFamily,
+                              fontWeight: FontWeight.w700,
+                              fontSize: FontSize.medium,
+                              color: AppColors.blackText,
+                            ),
+                          },
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -330,18 +344,77 @@ class _ClassidiedDetailsScreenState
                             ],
                           ),
                           3.sbh,
-                          LinkText(
-                            text: post.website ?? '',
-                            style: textStyleW400(
-                              size.width * 0.035,
-                              AppColors.blackText.withOpacity(0.5),
-                            ),
-                            linkStyle: const TextStyle(
-                              color: Colors.blue,
-                              decoration: TextDecoration.underline,
+                          InkWell(
+                            onTap: () {
+                              _launchURL(post.website.toString());
+                            },
+                            child: LinkText(
+                              text: post.website!.isNotEmpty == true
+                                  ? post.website.toString()
+                                  : 'N/A',
+                              style: textStyleW400(
+                                size.width * 0.035,
+                                AppColors.blackText.withOpacity(0.5),
+                              ),
+                              linkStyle: const TextStyle(
+                                color: Colors.blue,
+                                decoration: TextDecoration.underline,
+                              ),
                             ),
                           ),
                         ],
+                      ),
+                    ),
+                    5.sbh,
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(14),
+                        color: AppColors.white,
+                        border: const Border(
+                            bottom: BorderSide(color: Colors.grey)),
+                      ),
+                    ),
+                    5.sbh,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                      ),
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        child: Html(
+                          data: post.description,
+                          style: {
+                            "table": Style(
+                              backgroundColor:
+                                  const Color.fromARGB(0x50, 0xee, 0xee, 0xee),
+                            ),
+                            "tr": Style(
+                              border: const Border(
+                                  bottom: BorderSide(color: Colors.grey)),
+                            ),
+                            "th": Style(
+                              backgroundColor: Colors.grey,
+                            ),
+                            "td": Style(
+                              alignment: Alignment.topLeft,
+                            ),
+                            'h5': Style(
+                              maxLines: 2,
+                              textOverflow: TextOverflow.ellipsis,
+                            ),
+                          },
+                          onLinkTap: (String? url,
+                              Map<String, String> attributes,
+                              dom.Element? element) {
+                            if (url != null) {
+                              if (kDebugMode) {
+                                print("Opening $url...");
+                              }
+                              // Use url_launcher to open the URL
+                              _launchURL(url);
+                            }
+                          },
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -568,20 +641,21 @@ class _ClassidiedDetailsScreenState
     );
   }
 
-  Widget _buildHtmlContent(String htmlContent, Size size) {
-    final parsedHtml = htmlParser.parse(htmlContent);
-    final text = parsedHtml.body?.text ?? '';
+  Future<void> _launchURL(String? url) async {
+    if (url != null && url.isNotEmpty) {
+      // Ensure the URL includes a scheme (http or https)
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://$url';
+      }
 
-    return LinkText(
-      text: text,
-      style: textStyleW400(
-        size.width * 0.035,
-        AppColors.blackText.withOpacity(0.5),
-      ),
-      linkStyle: const TextStyle(
-        color: Colors.blue,
-        decoration: TextDecoration.underline,
-      ),
-    );
+      final Uri uri = Uri.parse(url);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else {
+        debugPrint('Could not launch $url');
+      }
+    } else {
+      debugPrint('Invalid or empty URL');
+    }
   }
 }

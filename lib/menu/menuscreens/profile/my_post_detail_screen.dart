@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -11,6 +12,7 @@ import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_pr
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/custom/post_view_list_content.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
@@ -21,6 +23,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:text_link/text_link.dart';
 // ignore: library_prefixes
 import 'package:html/parser.dart' as htmlParser;
+import 'package:url_launcher/url_launcher.dart';
 
 class MyPostDetailScreen extends StatefulWidget {
   const MyPostDetailScreen({super.key});
@@ -319,11 +322,38 @@ class _NewsDetailScreenState extends State<MyPostDetailScreen> {
                                     ),
                                   ],
                                 ),
-                                Text(
-                                  '${post.userData!.countrycode1} - ${post.userData!.mobile}',
-                                  style: textStyleW400(
-                                      size.width * 0.035, AppColors.blackText),
-                                ),
+                                InkWell(
+                                  onTap: () {
+                                    final String? countryCode =
+                                        post.userData?.countrycode1;
+                                    final String? mobileNumber =
+                                        post.userData?.mobile;
+
+                                    if (mobileNumber == null ||
+                                        mobileNumber.isEmpty) {
+                                      showToasterrorborder(
+                                          'No Any Url Found', context);
+                                      if (kDebugMode) {
+                                        print('Tap without number');
+                                      }
+                                    } else {
+                                      final Uri phoneUri = Uri(
+                                        scheme: 'tel',
+                                        path: '+$countryCode$mobileNumber',
+                                      );
+                                      launchUrl(phoneUri);
+                                      if (kDebugMode) {
+                                        print(
+                                            'Tap with number: $countryCode$mobileNumber');
+                                      }
+                                    }
+                                  },
+                                  child: Text(
+                                    '+${post.userData?.countrycode1 ?? 'N/A'} - ${post.userData?.mobile ?? 'N/A'}',
+                                    style: textStyleW400(size.width * 0.032,
+                                        AppColors.blackText),
+                                  ),
+                                )
                               ],
                             ),
                           ),
@@ -347,10 +377,34 @@ class _NewsDetailScreenState extends State<MyPostDetailScreen> {
                                   ),
                                 ],
                               ),
-                              Text(
-                                '${post.userData!.email}',
-                                style: textStyleW400(
-                                    size.width * 0.035, AppColors.blackText),
+                              InkWell(
+                                onTap: () {
+                                  final String? email = post.userData?.email;
+
+                                  if (email != null && email.isNotEmpty) {
+                                    final Uri emailUri = Uri(
+                                      scheme: 'mailto',
+                                      path: email,
+                                    );
+                                    launchUrl(emailUri);
+                                    if (kDebugMode) {
+                                      print('Tap with email: $email');
+                                    }
+                                  } else {
+                                    showToasterrorborder(
+                                        'No Email Found', context);
+                                    if (kDebugMode) {
+                                      print('Tap without email');
+                                    }
+                                  }
+                                },
+                                child: Text(
+                                  post.userData!.email?.isNotEmpty == true
+                                      ? post.userData!.email!
+                                      : 'N/A',
+                                  style: textStyleW400(
+                                      size.width * 0.032, AppColors.blackText),
+                                ),
                               ),
                             ],
                           ),

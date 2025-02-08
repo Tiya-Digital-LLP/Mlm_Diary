@@ -163,7 +163,7 @@ class _StringMultilineTagsState extends State<AddCompany> {
                                             8.sbw,
                                             InkWell(
                                               child: Icon(
-                                                Icons.cancel,
+                                                Icons.clear,
                                                 size: 14.0,
                                                 color: AppColors.white,
                                               ),

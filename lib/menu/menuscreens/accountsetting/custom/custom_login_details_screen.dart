@@ -17,6 +17,7 @@ import 'package:mlmdiary/widgets/normal_button.dart';
 import 'package:mlmdiary/widgets/password_border_text_field.dart';
 import 'package:pinput/pinput.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smart_auth/smart_auth.dart';
 
 class CustomLoginDetailsScreen extends StatefulWidget {
   const CustomLoginDetailsScreen({super.key});
@@ -26,7 +27,6 @@ class CustomLoginDetailsScreen extends StatefulWidget {
 }
 
 class _LoginPageState extends State<CustomLoginDetailsScreen> {
-  final Rx<Country?> selectedCountry = Rx<Country?>(null);
   final AccountSeetingController controller =
       Get.put(AccountSeetingController());
 
@@ -36,8 +36,29 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
 
   int? userId;
 
+  final smartAuth = SmartAuth();
+
+  void getSmsCode() async {
+    try {
+      final res = await smartAuth.getSmsCode(useUserConsentApi: true);
+      if (res.codeFound) {
+        debugPrint('userConsent success: ${res.code}');
+        controller.mobileOtp.value.text = res.code ?? '';
+      } else {
+        debugPrint('userConsent failed: ${res.toString()}');
+        debugPrint('Code Found: ${res.codeFound}');
+        debugPrint('SMS Received: ${res.sms}');
+        debugPrint('Was it successful?: ${res.succeed}');
+      }
+    } catch (e) {
+      debugPrint('Error occurred while getting SMS code: $e');
+    }
+  }
+
   @override
   void initState() {
+    getSmsCode();
+
     initCountry();
     fetchUserId();
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -48,9 +69,9 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
 
   void initCountry() async {
     Country? defaultCountry = await getCountryByCountryCode(context, 'IN');
-    selectedCountry.value = defaultCountry;
+    controller.selectedCountry.value = defaultCountry;
     if (kDebugMode) {
-      print('Country: $selectedCountry');
+      print('Country: ${controller.selectedCountry}');
     }
   }
 
@@ -114,7 +135,7 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                       Row(
                         children: [
                           Image.asset(
-                            selectedCountry.value!.flag,
+                            controller.selectedCountry.value!.flag,
                             package: countryCodePackageName,
                             width: 20,
                             height: 20,
@@ -148,7 +169,8 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                     onTap: _onPressedShowBottomSheet,
                                     child: BorderContainer(
                                       height: 58,
-                                      child: selectedCountry.value == null
+                                      child: controller.selectedCountry.value ==
+                                              null
                                           ? Container()
                                           : Center(
                                               child: Row(
@@ -158,7 +180,8 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                                     CrossAxisAlignment.center,
                                                 children: [
                                                   Image.asset(
-                                                    selectedCountry.value!.flag,
+                                                    controller.selectedCountry
+                                                        .value!.flag,
                                                     package:
                                                         countryCodePackageName,
                                                     width: 25,
@@ -166,7 +189,7 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                                   ),
                                                   8.sbw,
                                                   Text(
-                                                    selectedCountry
+                                                    controller.selectedCountry
                                                         .value!.callingCode,
                                                     textAlign: TextAlign.center,
                                                     style: TextStyle(
@@ -217,10 +240,24 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                           controller:
                                               controller.mobileOtp.value,
                                           length: 4,
-                                          onChanged: (value) {
-                                            controller.mobileOtpValidation();
-                                            controller.isMobileOtpTyping.value =
-                                                true;
+                                          onChanged: (pin) {
+                                            controller.mobileOtp.value.text =
+                                                pin;
+
+                                            if (pin.length == 4) {
+                                              final mobileOtpText = controller
+                                                  .mobileOtp.value.text;
+                                              final countryText = controller
+                                                  .selectedCountry
+                                                  .value!
+                                                  .callingCode
+                                                  .replaceAll('+', '');
+
+                                              controller.updateVerifyPhoneOtp(
+                                                  mobileOtpText,
+                                                  countryText,
+                                                  context);
+                                            }
                                           },
                                           defaultPinTheme: PinTheme(
                                             width: 56,
@@ -255,10 +292,22 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                         NormalButton(
                                           onPressed: () {
                                             FocusScope.of(context).unfocus();
+
+                                            controller.mobileOtpValidation();
+
+                                            if (controller
+                                                .mobileOtpError.value) {
+                                              showToasterrorborder(
+                                                  "Please Enter OTP", context);
+                                              return;
+                                            }
+
                                             final mobileOtpText =
                                                 controller.mobileOtp.value.text;
-                                            final countryText = selectedCountry
-                                                .value!.callingCode;
+                                            final countryText = controller
+                                                .selectedCountry
+                                                .value!
+                                                .callingCode;
 
                                             controller.updateVerifyPhoneOtp(
                                                 mobileOtpText,
@@ -282,14 +331,49 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                   return NormalButton(
                                     onPressed: () {
                                       FocusScope.of(context).unfocus();
-                                      // Call your API function here
-                                      controller.sendPhoneOtp(
-                                          controller.mobile.value.text,
-                                          selectedCountry.value!.callingCode
+
+                                      controller.isMobileTyping.value = true;
+
+                                      controller.mobileValidation();
+
+                                      if (controller
+                                          .mobile.value.text.isEmpty) {
+                                        showToasterrorborder(
+                                            "Please Enter Mobile Number",
+                                            context);
+                                      } else {
+                                        if (controller.selectedCountry.value
+                                                ?.callingCode ==
+                                            '+91') {
+                                          if (controller
+                                                  .mobile.value.text.length !=
+                                              10) {
+                                            showToasterrorborder(
+                                                "Please Enter Valid 10-Digit Mobile Number",
+                                                context);
+                                            return;
+                                          }
+                                        } else {
+                                          if (controller
+                                                  .mobile.value.text.length <
+                                              6) {
+                                            showToasterrorborder(
+                                                "Please Enter Valid Mobile Number",
+                                                context);
+                                            return;
+                                          }
+                                        }
+
+                                        controller.sendPhoneOtp(
+                                          controller.mobile.value.text.trim(),
+                                          controller.selectedCountry.value!
+                                              .callingCode
                                               .replaceAll('+', ''),
-                                          context);
+                                          context,
+                                        );
+                                      }
                                     },
-                                    text: 'Send Otp',
+                                    text: 'Send OTP',
                                     isLoading: controller.isLoading,
                                   );
                                 } else {
@@ -369,12 +453,16 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                             children: [
                               Obx(
                                 () => BorderTextField(
-                                  keyboard: TextInputType.name,
-                                  textInputType: const [],
-                                  hint: "New Email Address",
                                   controller: controller.email.value,
+                                  hint: "Email Address *",
+                                  textInputType: const [],
+                                  keyboard: TextInputType.emailAddress,
+                                  isError: controller.emailError.value,
                                   byDefault: !controller.isEmailTyping.value,
-                                  height: 58,
+                                  onChanged: (value) {
+                                    controller.emailValidation();
+                                    controller.isEmailTyping.value = true;
+                                  },
                                 ),
                               ),
                               16.sbh,
@@ -385,10 +473,14 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                       Pinput(
                                         controller: controller.emailOtp.value,
                                         length: 4,
-                                        onChanged: (value) {
-                                          controller.emailOtpValidation();
-                                          controller.isemailOtpTyping.value =
-                                              true;
+                                        onChanged: (pin) {
+                                          controller.emailOtp.value.text = pin;
+
+                                          if (pin.length == 4) {
+                                            controller.updateVerifyEmailOtp(
+                                                controller.emailOtp.value.text,
+                                                context);
+                                          }
                                         },
                                         defaultPinTheme: PinTheme(
                                           width: 56,
@@ -423,9 +515,27 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                       NormalButton(
                                         onPressed: () {
                                           FocusScope.of(context).unfocus();
-                                          controller.updateVerifyEmailOtp(
-                                              controller.emailOtp.value.text,
-                                              context);
+                                          controller.isEmailOtpTyping.value =
+                                              true;
+
+                                          controller.emailOtpValidation();
+
+                                          if (controller
+                                              .emailOtp.value.text.isEmpty) {
+                                            showToasterrorborder(
+                                                "Please Enter Email OTP",
+                                                context);
+                                          } else if (controller
+                                                  .emailOtp.value.text.length <
+                                              6) {
+                                            showToasterrorborder(
+                                                "OTP Must be 4 Digits",
+                                                context);
+                                          } else {
+                                            controller.updateVerifyEmailOtp(
+                                                controller.emailOtp.value.text,
+                                                context);
+                                          }
                                         },
                                         text: 'Verify',
                                         isLoading: controller.isLoading,
@@ -437,14 +547,27 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                 }
                               }),
                               Obx(() {
-                                // Show button only if OTP field is hidden
                                 if (!controller.showEmailOtpField.value) {
                                   return NormalButton(
                                     onPressed: () {
                                       FocusScope.of(context).unfocus();
-                                      controller.updateEmail(context);
+                                      controller.isEmailTyping.value = true;
+
+                                      controller.emailValidation();
+
+                                      if (controller.email.value.text.isEmpty) {
+                                        showToasterrorborder(
+                                            "Please Enter Email", context);
+                                      } else if (controller.emailError.value ==
+                                          true) {
+                                        showToasterrorborder(
+                                            "Please Enter Valid Email",
+                                            context);
+                                      } else {
+                                        controller.updateEmail(context);
+                                      }
                                     },
-                                    text: 'Send Otp',
+                                    text: 'Send OTP',
                                     isLoading: controller.isLoading,
                                   );
                                 } else {
@@ -529,7 +652,7 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                               Obx(
                                 () => PasswordBorderTextField(
                                   controller: controller.password.value,
-                                  hint: "Your Password",
+                                  hint: "New Password",
                                   textInputType: const [],
                                   keyboard: TextInputType.text,
                                   isError: controller.passwordError.value,
@@ -545,7 +668,7 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                               Obx(
                                 () => PasswordBorderTextField(
                                   controller: controller.confirmPassword.value,
-                                  hint: "Confirm Your Password",
+                                  hint: "Confirm Password",
                                   textInputType: const [],
                                   isError:
                                       controller.confirmPasswordError.value,
@@ -564,14 +687,30 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                               NormalButton(
                                 onPressed: () {
                                   FocusScope.of(context).unfocus();
-                                  // Check if passwords match
-                                  if (controller.password.value.text !=
-                                      controller.confirmPassword.value.text) {
+
+                                  // Run validations
+                                  controller.passwordValidation();
+                                  controller.confirmPasswordValidation();
+
+                                  if (controller.password.value.text.isEmpty) {
                                     showToasterrorborder(
-                                        "Both Passwords Should be the Same.",
+                                        "Please enter a new password.",
+                                        context);
+                                  } else if (controller.passwordError.value) {
+                                    showToasterrorborder(
+                                        "Password must be at least 6 characters.",
+                                        context);
+                                  } else if (controller
+                                      .confirmPassword.value.text.isEmpty) {
+                                    showToasterrorborder(
+                                        "Please enter confirm password.",
+                                        context);
+                                  } else if (controller
+                                      .confirmPasswordError.value) {
+                                    showToasterrorborder(
+                                        "Confirm Password must be at least 6 characters and match Password.",
                                         context);
                                   } else {
-                                    // Call the method to send the change password request
                                     controller.sendChangePasswordRequest(
                                       context,
                                       userId!,
@@ -619,7 +758,7 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
       context,
     );
     if (country != null) {
-      selectedCountry.value = country;
+      controller.selectedCountry.value = country;
     }
   }
 }

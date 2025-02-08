@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:country_calling_code_picker/country.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -41,6 +42,8 @@ class SignupController extends GetxController {
   Rx<TextEditingController> companyName = TextEditingController().obs;
   Rx<TextEditingController> plan = TextEditingController().obs;
   Rx<TextEditingController> location = TextEditingController().obs;
+
+  final Rx<Country?> selectedCountry = Rx<Country?>(null);
 
   RxInt defaultUserId = RxInt(0);
 
@@ -117,7 +120,9 @@ class SignupController extends GetxController {
 
   Future<void> fetchUserTypes() async {
     try {
-      // Function to execute HTTP request if there's an internet connection
+      // Set loading to true before making the request
+      isLoading.value = true;
+
       Future<void> executeRequest() async {
         final response = await http
             .get(Uri.parse('${Constants.baseUrl}${Constants.getUserType}'));
@@ -151,18 +156,20 @@ class SignupController extends GetxController {
         }
       }
 
-      // Check for network connectivity before executing the request
       var connectivityResult = await Connectivity().checkConnectivity();
       // ignore: unrelated_type_equality_checks
       if (connectivityResult != ConnectivityResult.none) {
         await executeRequest();
       } else {
-        //
+        // Handle no internet connection
       }
     } catch (e) {
       if (kDebugMode) {
         print("An error occurred: $e");
       }
+    } finally {
+      // Set loading to false after the request is complete
+      isLoading.value = false;
     }
   }
 
@@ -383,9 +390,10 @@ class SignupController extends GetxController {
     }
   }
 
-  Future<void> verifyOtp(int userid, String countrycode, context) async {
+  Future<void> verifyOtp(
+      int userid, String countrycode, BuildContext context) async {
     if (kDebugMode) {
-      print("Verifying OTP for userId: $userid,");
+      print("Verifying OTP for userId: $userid");
     }
 
     // Function to execute HTTP request if there's an internet connection
@@ -422,7 +430,7 @@ class SignupController extends GetxController {
               type: ToastificationType.success,
               style: ToastificationStyle.flatColored,
               showProgressBar: false,
-              autoCloseDuration: const Duration(seconds: 3),
+              autoCloseDuration: const Duration(seconds: 5),
               icon: Image.asset(
                 Assets.imagesChecked,
                 height: 35,
@@ -437,7 +445,10 @@ class SignupController extends GetxController {
               mobileReadOnly.value = true;
               countryCodeReadOnly.value = true;
             }
-          } else if (jsonBody['status'] == 0) {
+          } else {
+            if (kDebugMode) {
+              print('${jsonBody['message']}');
+            }
             toastification.show(
               // ignore: use_build_context_synchronously
               context: context,
@@ -446,7 +457,7 @@ class SignupController extends GetxController {
               type: ToastificationType.error,
               style: ToastificationStyle.flatColored,
               showProgressBar: false,
-              autoCloseDuration: const Duration(seconds: 3),
+              autoCloseDuration: const Duration(seconds: 5),
               icon: Image.asset(
                 Assets.imagesCancel,
                 height: 35,
@@ -454,10 +465,6 @@ class SignupController extends GetxController {
               primaryColor: Colors.red,
               title: Text('${jsonBody['message']}'),
             );
-          } else {
-            if (kDebugMode) {
-              print("Failed to verify OTP: ${resentOtpEntity.message}");
-            }
           }
         } else {
           if (kDebugMode) {
@@ -472,13 +479,14 @@ class SignupController extends GetxController {
       }
     }
 
-    // Check for network connectivity before executing the request
     var connectivityResult = await Connectivity().checkConnectivity();
     // ignore: unrelated_type_equality_checks
     if (connectivityResult != ConnectivityResult.none) {
       await executeRequest();
     } else {
-      //
+      if (kDebugMode) {
+        print("No internet connection available.");
+      }
     }
   }
 
@@ -517,6 +525,7 @@ class SignupController extends GetxController {
               print(
                   "Phone OTP verification successful: ${verifyPhoneOtpEntity.message}");
             }
+            stopTimer();
 
             showEmailField.value = true;
             mobileReadOnly.value = true;
@@ -606,6 +615,7 @@ class SignupController extends GetxController {
               print(
                   "Email OTP sent successfully for email: ${emailOtpEntity.message}");
             }
+            showToastverifedborder('${jsonBody['message']}', context);
             emailOtpSend.value = true;
           } else if (jsonBody['status'] == 0) {
             showDialog(
@@ -794,7 +804,7 @@ class SignupController extends GetxController {
             }
             emailReadOnly.value = true;
             showPasswordField.value = true;
-          } else if (jsonBody['status'] == 0) {
+          } else {
             toastification.show(
               // ignore: use_build_context_synchronously
               context: context,
@@ -811,7 +821,6 @@ class SignupController extends GetxController {
               primaryColor: Colors.red,
               title: Text('${jsonBody['message']}'),
             );
-          } else {
             if (kDebugMode) {
               print("Failed to verify email: ${emailVerifyEntity.message}");
             }
@@ -982,11 +991,20 @@ class SignupController extends GetxController {
   }
 
   void mobileValidation() {
-    if (mobile.value.text.isEmpty || mobile.value.text.length <= 6) {
-      mobileError.value = true;
+    if (selectedCountry.value?.callingCode == '+91') {
+      if (mobile.value.text.isEmpty || mobile.value.text.length != 10) {
+        mobileError.value = true;
+      } else {
+        mobileError.value = false;
+      }
     } else {
-      mobileError.value = false;
+      if (mobile.value.text.isEmpty || mobile.value.text.length < 6) {
+        mobileError.value = true;
+      } else {
+        mobileError.value = false;
+      }
     }
+
     if (mobileError.value) {
       isMobileTyping.value = true;
     }

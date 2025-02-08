@@ -208,7 +208,8 @@ class LoginController extends GetxController {
         final response = await http.Response.fromStream(streamedResponse);
 
         if (response.statusCode == 200) {
-          // Clear SharedPreferences on successful logout
+          // ignore: use_build_context_synchronously
+          showToastverifedborder('Logout Succsessfully', context);
           await prefs.remove(Constants.accessToken);
           await prefs.remove(Constants.userId);
           await prefs.remove(Constants.isLoggedIn);

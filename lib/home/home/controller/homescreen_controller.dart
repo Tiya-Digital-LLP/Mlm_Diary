@@ -108,12 +108,8 @@ class HomeController extends GetxController {
         builder: (context, Offset offset, child) {
           return Transform.translate(
             offset: Offset(
-              offset.dx *
-                  Get.width *
-                  0.5, // Adjust the animation offset for horizontal
-              offset.dy *
-                  Get.height *
-                  0.5, // Adjust the animation offset for vertical
+              offset.dx * Get.width * 0.5,
+              offset.dy * Get.height * 0.5,
             ),
             child: child,
           );
@@ -121,7 +117,6 @@ class HomeController extends GetxController {
         // ignore: deprecated_member_use
         child: WillPopScope(
           onWillPop: () async {
-            // Animate back to bottom right when closing
             await Future.delayed(const Duration(milliseconds: 100));
             Get.back();
             return true;
@@ -187,13 +182,17 @@ class HomeController extends GetxController {
                     },
                   ),
                   Positioned(
-                    right: 0,
-                    top: 0,
-                    child: IconButton(
-                      icon: const Icon(Icons.cancel, color: Colors.red),
-                      onPressed: () {
-                        Get.back();
-                      },
+                    right: -10,
+                    top: -10,
+                    child: Material(
+                      color: Colors.transparent,
+                      child: IconButton(
+                        icon: const Icon(Icons.clear,
+                            color: Colors.red, size: 24),
+                        onPressed: () {
+                          Get.back();
+                        },
+                      ),
                     ),
                   ),
                   if (popupbanners.length > 1)

@@ -49,7 +49,7 @@ class FullScreenImageDialog extends StatelessWidget {
             top: 20,
             right: 20,
             child: IconButton(
-              icon: const Icon(Icons.cancel, color: Colors.black),
+              icon: const Icon(Icons.clear, color: Colors.black),
               onPressed: () {
                 Get.back(); // Close the dialog
               },

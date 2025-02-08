@@ -137,6 +137,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: NormalButton(
                               onPressed: () {
+                                FocusScope.of(context).unfocus();
                                 controller.emailValidation();
                                 if (controller.email.value.text.isEmpty) {
                                   showToasterrorborder(
@@ -237,6 +238,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                               child: NormalButton(
                                 text: "Submit",
                                 onPressed: () {
+                                  FocusScope.of(context).unfocus();
+
                                   controller.mobileValidation();
                                   if (controller.mobile.value.text.isEmpty) {
                                     showToasterrorborder(

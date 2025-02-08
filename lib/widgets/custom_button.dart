@@ -42,7 +42,7 @@ class CustomButton extends StatelessWidget {
           return isLoading.value
               ? CustomThreeDotAnimation(
                   child: Lottie.asset(
-                  Assets.lottieDotsanimation,
+                  Assets.lottieDotLottie,
                 ))
               : Text(
                   title,

@@ -10,6 +10,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   firebase_core
   scrollable_tab_view
   share_plus
+  smart_auth
   url_launcher_windows
 )
 

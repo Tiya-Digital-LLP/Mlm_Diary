@@ -54,7 +54,7 @@ class CustomToast extends StatelessWidget {
           GestureDetector(
             onTap: onClose,
             child: const Icon(
-              Icons.cancel_rounded,
+              Icons.clear_rounded,
             ),
           ),
         ],
@@ -75,7 +75,7 @@ void showToastverifedborder(
     type: ToastificationType.success,
     style: ToastificationStyle.flatColored,
     showProgressBar: false,
-    autoCloseDuration: const Duration(seconds: 3),
+    autoCloseDuration: const Duration(seconds: 5),
     icon: Image.asset(
       Assets.imagesChecked,
       height: 30,
@@ -98,7 +98,7 @@ void showToasterrorborder(
     type: ToastificationType.error,
     style: ToastificationStyle.flatColored,
     showProgressBar: false,
-    autoCloseDuration: const Duration(seconds: 3),
+    autoCloseDuration: const Duration(seconds: 5),
     icon: Image.asset(
       Assets.imagesCancel,
       height: 35,

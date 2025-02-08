@@ -904,7 +904,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                               top: 20,
                               right: 20,
                               child: IconButton(
-                                icon: const Icon(Icons.cancel,
+                                icon: const Icon(Icons.clear,
                                     color: Colors.black),
                                 onPressed: () {
                                   Get.back();

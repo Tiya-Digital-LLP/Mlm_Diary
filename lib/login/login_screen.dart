@@ -90,17 +90,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-                    15.sbh,
-                    InkWell(
-                      onTap: () {
-                        Get.toNamed(Routes.forgotPassword);
-                      },
-                      child: Text(
-                        "Forgot Password?",
-                        style: textStyleW500(
-                            size.width * 0.036, AppColors.redText),
-                      ),
-                    ),
                     20.sbh,
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -113,6 +102,37 @@ class _LoginScreenState extends State<LoginScreen> {
                         isLoading: controller.isLoading,
                       ),
                     ),
+                    15.sbh,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              Get.toNamed(Routes.forgotPassword);
+                            },
+                            child: Text(
+                              "Forgot Password?",
+                              style: textStyleW500(
+                                  size.width * 0.038, AppColors.primaryColor),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Get.toNamed(Routes.signUp);
+                            },
+                            child: Text(
+                              "Create Account",
+                              style: textStyleW500(
+                                size.width * 0.038,
+                                AppColors.primaryColor,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     Expanded(child: Container()),
                     if (Platform.isIOS)
                       InkWell(
@@ -122,43 +142,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Text(
                           'Skip',
                           style: textStyleW500(
-                              size.width * 0.036, AppColors.primaryColor),
-                        ),
-                      ),
-                    Expanded(child: Container()),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Don’t have account?",
-                          style: textStyleW500(
-                              size.width * 0.036, AppColors.blackText),
-                        ),
-                        5.sbw,
-                        GestureDetector(
-                          onTap: () {
-                            Get.toNamed(Routes.signUp);
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  color: AppColors.redText,
-                                  width: 2.0,
-                                ),
-                              ),
-                            ),
-                            child: Text(
-                              "Create Account",
-                              style: textStyleW500(
-                                size.width * 0.035,
-                                AppColors.redText,
-                              ),
-                            ),
+                            size.width * 0.036,
+                            // ignore: deprecated_member_use
+                            AppColors.primaryColor.withOpacity(0.5),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
                     SizedBox(
                       height: MediaQuery.of(context).padding.bottom + 10,
                     )

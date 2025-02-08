@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:country_calling_code_picker/country.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -20,8 +21,8 @@ import 'package:mlmdiary/generated/update_phone_verify_otp_entity.dart';
 import 'package:mlmdiary/generated/update_social_media_entity.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
-import 'package:mlmdiary/utils/common_toast.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
+import 'package:mlmdiary/utils/email_validator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toastification/toastification.dart';
 
@@ -62,6 +63,7 @@ class AccountSeetingController extends GetxController {
   final RxList<bool> isTypeSelectedList = RxList<bool>([]);
   RxList<GetPlanListPlan> planList = RxList<GetPlanListPlan>();
   RxList<GetUserTypeUsertype> userTypes = RxList<GetUserTypeUsertype>();
+  final Rx<Country?> selectedCountry = Rx<Country?>(null);
 
   RxBool isGenderToggle = true.obs;
   var isLoading = false.obs;
@@ -69,6 +71,7 @@ class AccountSeetingController extends GetxController {
 // FIELDS ERROR
   RxBool mlmTypeError = false.obs;
   RxBool planTypeError = false.obs;
+  RxBool emailError = false.obs;
 
   RxBool mobileError = false.obs;
   RxBool passwordError = false.obs;
@@ -85,6 +88,7 @@ class AccountSeetingController extends GetxController {
   RxBool isCompanyNameTyping = false.obs;
   RxBool isLocationTyping = false.obs;
   RxBool isEmailTyping = false.obs;
+  RxBool isEmailOtpTyping = false.obs;
 
   RxBool isAboutTyping = false.obs;
   RxBool isPasswordTyping = false.obs;
@@ -472,142 +476,167 @@ class AccountSeetingController extends GetxController {
     }
   }
 
-  Future<void> sendPhoneOtp(String mobile, String countryCode, context) async {
-    String device = '';
-    if (Platform.isAndroid) {
-      device = 'android';
-    } else if (Platform.isIOS) {
-      device = 'ios';
-    }
+  Future<void> sendPhoneOtp(
+      String mobile, String countryCode, BuildContext context) async {
+    if (isLoading.value) return; // Prevent multiple requests
+
+    isLoading.value = true; // Start loading
+
+    String device =
+        Platform.isAndroid ? 'android' : (Platform.isIOS ? 'ios' : 'unknown');
+
     if (kDebugMode) {
       print('Device Name: $device');
     }
+
     final prefs = await SharedPreferences.getInstance();
     final apiToken = prefs.getString(Constants.accessToken);
 
-    // Function to execute HTTP request if there's an internet connection
-    Future<void> executeRequest() async {
-      try {
-        final response = await http.post(
-          Uri.parse('${Constants.baseUrl}${Constants.sendphoneotp}'),
-          body: {
-            'api_token': apiToken,
-            'mobile': mobile,
-            'countryCode': countryCode,
-            'device': device,
-          },
-        );
-
-        if (kDebugMode) {
-          print('api_token: $apiToken');
-          print('mobile: $mobile');
-          print('countryCode: $countryCode');
-          print('device: $device');
-        }
-
-        if (response.statusCode == 200) {
-          final Map<String, dynamic> jsonBody = jsonDecode(response.body);
-          final otpEntity = UpdatePhoneNoEntity.fromJson(jsonBody);
-
-          if (otpEntity.status == 1) {
-            if (kDebugMode) {
-              print("OTP sent successfully: ${otpEntity.message}");
-            }
-            showPhoneOtpField.value = true;
-          } else {
-            if (kDebugMode) {
-              print("Failed to send OTP: ${otpEntity.message}");
-            }
-            showToasterrorborder("${otpEntity.message}", context);
-          }
-        } else {
-          if (kDebugMode) {
-            print(
-                "HTTP error: Failed to send OTP. Status code: ${response.statusCode}");
-          }
-          showPhoneOtpField.value = false;
-        }
-      } catch (e) {
-        if (kDebugMode) {
-          print("An error occurred: $e");
-        }
-      }
-    }
-
-    // Check for network connectivity before executing the request
+    // Check for network connectivity before making an API request
     var connectivityResult = await Connectivity().checkConnectivity();
     // ignore: unrelated_type_equality_checks
-    if (connectivityResult != ConnectivityResult.none) {
-      await executeRequest();
-    } else {
+    if (connectivityResult == ConnectivityResult.none) {
+      // ignore: use_build_context_synchronously
       showToasterrorborder("No internet connection", context);
+      isLoading.value = false;
+      return;
+    }
+
+    try {
+      final response = await http.post(
+        Uri.parse('${Constants.baseUrl}${Constants.sendphoneotp}'),
+        body: {
+          'api_token': apiToken,
+          'mobile': mobile,
+          'countryCode': countryCode,
+          'device': device,
+        },
+      );
+
+      if (kDebugMode) {
+        print('api_token: $apiToken');
+        print('mobile: $mobile');
+        print('countryCode: $countryCode');
+        print('device: $device');
+        print('Response status: ${response.statusCode}');
+        print('Response body: ${response.body}');
+      }
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonBody = jsonDecode(response.body);
+        final otpEntity = UpdatePhoneNoEntity.fromJson(jsonBody);
+
+        if (otpEntity.status == 1) {
+          if (kDebugMode) {
+            print("OTP sent successfully: ${otpEntity.message}");
+          }
+          // ignore: use_build_context_synchronously
+          showToastverifedborder('OTP sent successfully', context);
+          showPhoneOtpField.value = true;
+        } else {
+          if (kDebugMode) {
+            print("Failed to send OTP: ${otpEntity.message}");
+          }
+          // ignore: use_build_context_synchronously
+          showToasterrorborder(otpEntity.message!, context);
+        }
+      } else {
+        if (kDebugMode) {
+          print(
+              "HTTP error: Failed to send OTP. Status code: ${response.statusCode}");
+        }
+        showPhoneOtpField.value = false;
+        // ignore: use_build_context_synchronously
+        showToasterrorborder("Failed to send OTP. Please try again.", context);
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("An error occurred: $e");
+      }
+      showToasterrorborder(
+          "An unexpected error occurred. Please try again.",
+          // ignore: use_build_context_synchronously
+          context);
+    } finally {
+      isLoading.value = false; // Stop loading after request completes
     }
   }
 
   Future<void> updateVerifyPhoneOtp(
       String otp, String countryCode, context) async {
-    String device = '';
-    if (Platform.isAndroid) {
-      device = 'android';
-    } else if (Platform.isIOS) {
-      device = 'ios';
-    }
+    if (isLoading.value) return; // Prevent multiple requests
+
+    isLoading.value = true; // Start loading
+
+    String device =
+        Platform.isAndroid ? 'android' : (Platform.isIOS ? 'ios' : '');
+
     if (kDebugMode) {
       print('Device Name: $device');
     }
 
     final prefs = await SharedPreferences.getInstance();
-    final apiToken = prefs.getString(Constants.accessToken);
+    final apiToken = prefs.getString(Constants.accessToken) ?? "";
 
-    // Function to execute HTTP request if there's an internet connection
-    Future<void> executeRequest() async {
-      try {
-        final response = await http.post(
-          Uri.parse('${Constants.baseUrl}${Constants.updateverifphoneotp}'),
-          body: {
-            'api_token': apiToken,
-            'mobile': mobile.value.text,
-            'countryCode': countryCode,
-            'device': device,
-            'otp': otp,
-          },
-        );
-        if (response.statusCode == 200) {
-          final Map<String, dynamic> jsonBody = jsonDecode(response.body);
-          final verifyPhoneOtpEntity =
-              UpdatePhoneVerifyOtpEntity.fromJson(jsonBody);
-
-          if (verifyPhoneOtpEntity.status == 1) {
-            if (kDebugMode) {
-              print(
-                  "Phone OTP verification successful: ${verifyPhoneOtpEntity.message}");
-            }
-          } else {
-            if (kDebugMode) {
-              print(
-                  "Failed to verify phone OTP: ${verifyPhoneOtpEntity.message}");
-            }
-            ToastUtils.showToast("${verifyPhoneOtpEntity.message}");
-          }
-        } else {
-          if (kDebugMode) {
-            print("Error: ${response.body}");
-          }
-        }
-      } catch (e) {
-        if (kDebugMode) {
-          print("An error occurred: $e");
-        }
-      }
-    }
-
-    // Check for network connectivity before executing the request
+    // Check for network connectivity
     var connectivityResult = await Connectivity().checkConnectivity();
     // ignore: unrelated_type_equality_checks
-    if (connectivityResult != ConnectivityResult.none) {
-      await executeRequest();
-    } else {
+    if (connectivityResult == ConnectivityResult.none) {
       showToasterrorborder("No internet connection", context);
+      isLoading.value = false;
+      return;
+    }
+
+    try {
+      final response = await http.post(
+        Uri.parse('${Constants.baseUrl}${Constants.updateverifphoneotp}'),
+        body: {
+          'api_token': apiToken,
+          'mobile': mobile.value.text,
+          'countryCode': countryCode,
+          'device': device,
+          'otp': otp,
+        },
+      );
+
+      if (kDebugMode) {
+        print('API Token: $apiToken');
+        print('Mobile: ${mobile.value.text}');
+        print('Country Code: $countryCode');
+        print('Device: $device');
+        print('OTP: $otp');
+      }
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonBody = jsonDecode(response.body);
+        final verifyPhoneOtpEntity =
+            UpdatePhoneVerifyOtpEntity.fromJson(jsonBody);
+
+        if (verifyPhoneOtpEntity.status == 1) {
+          if (kDebugMode) {
+            print(
+                "Phone OTP verification successful: ${verifyPhoneOtpEntity.message}");
+          }
+          showToastverifedborder(verifyPhoneOtpEntity.message!, context);
+        } else {
+          if (kDebugMode) {
+            print(
+                "Failed to verify phone OTP: ${verifyPhoneOtpEntity.message}");
+          }
+          showToasterrorborder(verifyPhoneOtpEntity.message!, context);
+        }
+      } else {
+        if (kDebugMode) {
+          print("Error: ${response.body}");
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("An error occurred: $e");
+      }
+      showToasterrorborder("An error occurred. Please try again.", context);
+    } finally {
+      isLoading.value = false; // Stop loading after API call
     }
   }
 
@@ -665,6 +694,10 @@ class AccountSeetingController extends GetxController {
   }
 
   Future<void> updateEmail(BuildContext context) async {
+    if (isLoading.value) return;
+
+    isLoading.value = true; // Start loading
+
     String device = '';
     if (Platform.isAndroid) {
       device = 'android';
@@ -697,7 +730,9 @@ class AccountSeetingController extends GetxController {
             if (kDebugMode) {
               print("OTP sent successfully: ${otpemailEntity.messsage}");
             }
-            email.value.text = '';
+            // ignore: use_build_context_synchronously
+            showToastverifedborder('${jsonBody['message']}', context);
+
             showEmailOtpField.value = true;
           } else {
             if (kDebugMode) {
@@ -717,6 +752,8 @@ class AccountSeetingController extends GetxController {
         if (kDebugMode) {
           print("An error occurred: $e");
         }
+      } finally {
+        isLoading.value = false; // Stop loading after API call
       }
     }
 
@@ -733,6 +770,10 @@ class AccountSeetingController extends GetxController {
   }
 
   Future<void> updateVerifyEmailOtp(String otp, context) async {
+    if (isLoading.value) return; // Prevent multiple requests
+
+    isLoading.value = true; // Start loading
+
     String device = '';
     if (Platform.isAndroid) {
       device = 'android';
@@ -746,54 +787,53 @@ class AccountSeetingController extends GetxController {
     final prefs = await SharedPreferences.getInstance();
     final apiToken = prefs.getString(Constants.accessToken);
 
-    // Function to execute HTTP request if there's an internet connection
-    Future<void> executeRequest() async {
-      try {
-        final response = await http.post(
-          Uri.parse('${Constants.baseUrl}${Constants.updateemailphoneotp}'),
-          body: {
-            'api_token': apiToken,
-            'email': email.value.text,
-            'device': device,
-            'otp': otp,
-          },
-        );
-        if (response.statusCode == 200) {
-          final Map<String, dynamic> jsonBody = jsonDecode(response.body);
-          final verifyEmailOtpEntity =
-              UpdatePhoneVerifyOtpEntity.fromJson(jsonBody);
+    // Check for network connectivity
+    var connectivityResult = await Connectivity().checkConnectivity();
+    // ignore: unrelated_type_equality_checks
+    if (connectivityResult == ConnectivityResult.none) {
+      showToasterrorborder("No internet connection", context);
+      isLoading.value = false;
+      return;
+    }
+    try {
+      final response = await http.post(
+        Uri.parse('${Constants.baseUrl}${Constants.updateemailphoneotp}'),
+        body: {
+          'api_token': apiToken,
+          'email': email.value.text,
+          'device': device,
+          'otp': otp,
+        },
+      );
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonBody = jsonDecode(response.body);
+        final verifyEmailOtpEntity =
+            UpdatePhoneVerifyOtpEntity.fromJson(jsonBody);
 
-          if (verifyEmailOtpEntity.status == 1) {
-            if (kDebugMode) {
-              print(
-                  "Email OTP verification successful: ${verifyEmailOtpEntity.message}");
-            }
-          } else {
-            if (kDebugMode) {
-              print(
-                  "Failed to verify Email OTP: ${verifyEmailOtpEntity.message}");
-            }
+        if (verifyEmailOtpEntity.status == 1) {
+          if (kDebugMode) {
+            print(
+                "Email OTP verification successful: ${verifyEmailOtpEntity.message}");
           }
+          showToastverifedborder(verifyEmailOtpEntity.message!, context);
         } else {
           if (kDebugMode) {
             print(
-                "HTTP error: Failed to verify Email OTP. Status code: ${response.statusCode}");
+                "Failed to verify Email OTP: ${verifyEmailOtpEntity.message}");
           }
+          showToasterrorborder(verifyEmailOtpEntity.message!, context);
         }
-      } catch (e) {
+      } else {
         if (kDebugMode) {
-          print("An error occurred: $e");
+          print("Error: ${response.body}");
         }
       }
-    }
-
-    // Check for network connectivity before executing the request
-    var connectivityResult = await Connectivity().checkConnectivity();
-    // ignore: unrelated_type_equality_checks
-    if (connectivityResult != ConnectivityResult.none) {
-      await executeRequest();
-    } else {
-      showToasterrorborder("No internet connection", context);
+    } catch (e) {
+      if (kDebugMode) {
+        print("An error occurred: $e");
+      }
+    } finally {
+      isLoading.value = false; // Stop loading after API call
     }
   }
 
@@ -877,6 +917,9 @@ class AccountSeetingController extends GetxController {
 
   Future<void> sendChangePasswordRequest(
       BuildContext context, int userId, String newPassword) async {
+    if (isLoading.value) return; // Prevent multiple requests
+    isLoading.value = true; // Start loading
+
     try {
       if (kDebugMode) {
         print('Sending change password request...');
@@ -937,6 +980,8 @@ class AccountSeetingController extends GetxController {
       }
       // ignore: use_build_context_synchronously
       showToasterrorborder("An error occurred: $e", context);
+    } finally {
+      isLoading.value = false;
     }
   }
 
@@ -953,10 +998,23 @@ class AccountSeetingController extends GetxController {
   }
 
   void mobileOtpValidation() {
-    if (mobileOtp.value.text.isEmpty || mobileOtp.value.text.length < 6) {
+    if (mobileOtp.value.text.isEmpty || mobileOtp.value.text.length < 4) {
       mobileOtpError.value = true;
     } else {
       mobileOtpError.value = false;
+    }
+  }
+
+  void emailValidation() {
+    final bool isValid = EmailValidator.validate(email.value.text);
+
+    if (isValid == false) {
+      emailError.value = true;
+    } else {
+      emailError.value = false;
+    }
+    if (emailError.value) {
+      isEmailTyping.value = true;
     }
   }
 
@@ -966,13 +1024,28 @@ class AccountSeetingController extends GetxController {
     } else {
       emailOtpError.value = false;
     }
+    if (emailOtpError.value) {
+      isEmailOtpTyping.value = true;
+    }
   }
 
   void mobileValidation() {
-    if (mobile.value.text.isEmpty || mobile.value.text.length <= 6) {
-      mobileError.value = true;
+    if (selectedCountry.value?.callingCode == '+91') {
+      if (mobile.value.text.isEmpty || mobile.value.text.length != 10) {
+        mobileError.value = true;
+      } else {
+        mobileError.value = false;
+      }
     } else {
-      mobileError.value = false;
+      if (mobile.value.text.isEmpty || mobile.value.text.length < 6) {
+        mobileError.value = true;
+      } else {
+        mobileError.value = false;
+      }
+    }
+
+    if (mobileError.value) {
+      isMobileTyping.value = true;
     }
   }
 
@@ -1001,6 +1074,9 @@ class AccountSeetingController extends GetxController {
     } else {
       passwordError.value = false;
     }
+    if (passwordError.value) {
+      isPasswordTyping.value = true;
+    }
   }
 
   void confirmPasswordValidation() {
@@ -1010,6 +1086,9 @@ class AccountSeetingController extends GetxController {
       confirmPasswordError.value = true;
     } else {
       confirmPasswordError.value = false;
+    }
+    if (confirmPasswordError.value) {
+      isConfirmPasswordTyping.value = true;
     }
   }
 

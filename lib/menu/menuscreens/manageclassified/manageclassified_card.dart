@@ -296,7 +296,7 @@ class _ManageClassifiedCardState extends State<ManageClassifiedCard> {
                                         ),
                                         child: Center(
                                           child: Icon(
-                                            Icons.cancel_outlined,
+                                            Icons.clear_outlined,
                                             size: 80,
                                             color: AppColors.redText,
                                           ),

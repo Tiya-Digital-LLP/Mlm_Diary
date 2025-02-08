@@ -3,8 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:html_unescape/html_unescape.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/firstscreen/home_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/terms&condition/controller/terms_controller.dart';
@@ -12,7 +10,6 @@ import 'package:mlmdiary/menu/menuscreens/tutorialvideo/controller/tutorial_vide
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
-import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:mlmdiary/widgets/normal_button.dart';
 
 class Advertising extends StatefulWidget {
@@ -173,92 +170,6 @@ class _AdwithusState extends State<Advertising>
             child: Column(
               children: [
                 category(),
-                Text(
-                  'Terms & Condition',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: size.width * 0.048,
-                    color: Colors.black,
-                    fontFamily: Assets.fontsSatoshiRegular,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(25.0),
-                    ),
-                    child: TabBar(
-                      indicatorSize: TabBarIndicatorSize.tab,
-                      dividerColor: Colors.transparent,
-                      controller: _tabController,
-                      indicator: BoxDecoration(
-                        borderRadius: BorderRadius.circular(42.26),
-                        color: AppColors.primaryColor,
-                      ),
-                      labelColor: Colors.white,
-                      unselectedLabelColor: Colors.black,
-                      tabs: const [
-                        Tab(text: 'Blog'),
-                        Tab(text: 'Classified'),
-                        Tab(text: 'News'),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SliverFillRemaining(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(
-                    'This is our Blog',
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Builder(
-                    builder: (context) {
-                      return Obx(() {
-                        if (_termsController.isLoading.value) {
-                          return CustomLottieAnimation(
-                            child: Lottie.asset(Assets.lottieLottie),
-                          );
-                        } else if (_termsController.termsAndConditions.value !=
-                            null) {
-                          return Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              HtmlUnescape().convert(_termsController
-                                  .termsAndConditions.value
-                                  .toString()),
-                            ),
-                          );
-                        } else {
-                          return const Text(
-                            'Failed to load terms and conditions',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16.0,
-                              color: Colors.red,
-                            ),
-                          );
-                        }
-                      });
-                    },
-                  ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(
-                    'This is our News',
-                  ),
-                ),
               ],
             ),
           ),

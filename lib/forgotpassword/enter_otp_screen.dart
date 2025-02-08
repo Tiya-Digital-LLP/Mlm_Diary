@@ -122,12 +122,10 @@ class _EnterOTPScreenState extends State<EnterOTPScreen> {
                 btnColor: AppColors.primaryColor,
                 titleColor: AppColors.white,
                 onTap: () {
-                  // Perform OTP validation
+                  FocusScope.of(context).unfocus();
                   if (enteredOtp.length != 6) {
-                    // Show error message for invalid OTP length
-                    showToasterrorborder('OTP is Incrorrect', context);
+                    showToasterrorborder('Please Enter OTP First', context);
                   } else if (enteredOtp != otp.toString()) {
-                    // Show error message for incorrect OTP
                     showDialog(
                       context: context,
                       builder: (context) {

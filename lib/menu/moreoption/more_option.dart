@@ -19,6 +19,7 @@ import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:flutter/material.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
+import 'package:mlmdiary/widgets/normal_button.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -942,20 +943,15 @@ class _moreState extends State<MoreOptionScreen> {
                                 ))),
                         5.sbw,
                         Expanded(
-                            child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.primaryColor,
-                                  shadowColor: AppColors.primaryColor,
-                                  elevation: 3,
-                                ),
-                                onPressed: () async {
-                                  await loginController.logout(context);
-                                },
-                                child: Text(
-                                  'Logout',
-                                  style: textStyleW700(
-                                      size.width * 0.035, AppColors.white),
-                                ))),
+                          child: NormalButton(
+                            height: 40,
+                            onPressed: () async {
+                              await loginController.logout(context);
+                            },
+                            text: 'Logout',
+                            isLoading: loginController.isLoading,
+                          ),
+                        )
                       ],
                     ),
                   ],

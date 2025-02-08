@@ -59,7 +59,7 @@ class NormalButton extends StatelessWidget {
               child: isLoading.value
                   ? CustomThreeDotAnimation(
                       child: Lottie.asset(
-                      Assets.lottieDotsanimation,
+                      Assets.lottieDotLottie,
                     ))
                   : icon == null
                       ? Text(
