@@ -13,7 +13,7 @@ import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controlle
 import 'package:mlmdiary/menu/menuscreens/profile/custom/custom_post_comment.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/custom/post_like_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
-import 'package:mlmdiary/menu/menuscreens/profile/userprofile/custom/post_view_list_content.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/custom/post_view_list_content.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -78,16 +78,21 @@ class PostUserCard extends StatefulWidget {
   State<PostUserCard> createState() => _FavouritrCardState();
 }
 
-class _FavouritrCardState extends State<PostUserCard> {
+class _FavouritrCardState extends State<PostUserCard>
+    with SingleTickerProviderStateMixin {
   late PostTimeFormatter postTimeFormatter;
   late RxBool isLiked;
   late RxInt likeCount;
 
   late RxBool isBookmarked;
 
+  late TabController _tabController;
+
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+
     postTimeFormatter = PostTimeFormatter();
     initializeLikes();
 
@@ -276,7 +281,7 @@ class _FavouritrCardState extends State<PostUserCard> {
                             ? const SizedBox.shrink()
                             : InkWell(
                                 onTap: () {
-                                  showLikeList(context);
+                                  showLikeAndViewList(context, 0);
                                 },
                                 child: Text(
                                   '${likeCount.value}',
@@ -313,7 +318,7 @@ class _FavouritrCardState extends State<PostUserCard> {
                   ),
                   InkWell(
                     onTap: () {
-                      showViewList(context);
+                      showLikeAndViewList(context, 1);
                     },
                     child: Row(
                       children: [
@@ -327,7 +332,7 @@ class _FavouritrCardState extends State<PostUserCard> {
                             ? const SizedBox.shrink()
                             : InkWell(
                                 onTap: () {
-                                  showViewList(context);
+                                  showLikeAndViewList(context, 1);
                                 },
                                 child: Text(
                                   '${widget.viewcounts}',
@@ -401,34 +406,41 @@ class _FavouritrCardState extends State<PostUserCard> {
     );
   }
 
-  void showViewList(BuildContext context) {
+  void showLikeAndViewList(BuildContext context, int index) {
+    _tabController.index = index;
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        fetchViewList();
-        return const PostViewListContent();
+        return ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+          child: Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              centerTitle: true,
+              backgroundColor: Colors.white,
+              title: TabBar(
+                indicatorColor: Colors.transparent,
+                dividerColor: AppColors.grey,
+                labelStyle: TextStyle(
+                  color: AppColors.primaryColor,
+                ),
+                controller: _tabController,
+                tabs: const [
+                  Tab(text: "Likes"),
+                  Tab(text: "Views"),
+                ],
+              ),
+            ),
+            body: TabBarView(
+              controller: _tabController,
+              children: [
+                PostLikeListContent(postId: widget.bookmarkId),
+                PostViewListContent(postId: widget.bookmarkId),
+              ],
+            ),
+          ),
+        );
       },
     );
-  }
-
-  void fetchViewList() async {
-    await widget.editpostController
-        .fetchViewListPost(widget.bookmarkId, context);
-  }
-
-  void showLikeList(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        // Fetch like list after bottom sheet is shown
-        fetchLikeList();
-        return const PostLikeListContent();
-      },
-    );
-  }
-
-  void fetchLikeList() async {
-    await widget.editpostController
-        .fetchLikeListPost(widget.bookmarkId, context);
   }
 }

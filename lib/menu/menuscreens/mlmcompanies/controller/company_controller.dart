@@ -49,6 +49,9 @@ class CompanyController extends GetxController {
   RxList<ViewCompanyListData> companyViewList = RxList<ViewCompanyListData>();
   RxList<LikeListCompanyData> companyLikeList = RxList<LikeListCompanyData>();
 
+  var isEndOfCompanyLikeListData = false.obs;
+  var isEndOfCompanyViewListData = false.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -197,7 +200,7 @@ class CompanyController extends GetxController {
   }
 
   // like_list_company
-  Future<void> fetchLikeListCompany(int companyId, context) async {
+  Future<void> fetchLikeListCompany(int companyId, int page, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
     String device = Platform.isAndroid ? 'android' : 'ios';
@@ -217,6 +220,7 @@ class CompanyController extends GetxController {
         request.fields['api_token'] = apiToken ?? '';
         request.fields['device'] = device;
         request.fields['company_id'] = companyId.toString();
+        request.fields['page'] = page.toString();
 
         if (kDebugMode) {
           print('Request URL: $uri');
@@ -232,29 +236,27 @@ class CompanyController extends GetxController {
 
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
-          var status = data['status'];
 
           if (kDebugMode) {
             print('Response body: ${response.body}');
           }
 
-          if (status == 1) {
-            var companyLikeListEntity = LikeListCompanyEntity.fromJson(data);
-            companyLikeList.value = companyLikeListEntity.data ?? [];
+          var companyLikeListEntity = LikeListCompanyEntity.fromJson(data);
+          companyLikeList.value = companyLikeListEntity.data ?? [];
 
-            if (kDebugMode) {
-              print('Parsed entity: $companyLikeListEntity');
+          if (companyLikeListEntity.data != null &&
+              companyLikeListEntity.data!.isNotEmpty) {
+            if (page == 1) {
+              companyLikeList.clear();
+              companyLikeList.value = companyLikeListEntity.data!;
+            } else {
+              companyLikeList.addAll(companyLikeListEntity.data!);
             }
           } else {
-            var message = data['message'];
-
-            if (kDebugMode) {
-              print('Failed to fetch companyViewList: $message');
+            if (page == 1) {
+              companyLikeList.clear();
             }
-          }
-        } else {
-          if (kDebugMode) {
-            print('Error: ${response.body}');
+            isEndOfCompanyLikeListData(true);
           }
         }
       } else {
@@ -273,7 +275,7 @@ class CompanyController extends GetxController {
   }
 
   // view_list_company
-  Future<void> fetchViewListCompany(int companyId, context) async {
+  Future<void> fetchViewListCompany(int companyId, int page, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
     String device = Platform.isAndroid ? 'android' : 'ios';
@@ -293,6 +295,7 @@ class CompanyController extends GetxController {
         request.fields['api_token'] = apiToken ?? '';
         request.fields['device'] = device;
         request.fields['company_id'] = companyId.toString();
+        request.fields['page'] = page.toString();
 
         if (kDebugMode) {
           print('Request URL: $uri');
@@ -308,25 +311,25 @@ class CompanyController extends GetxController {
 
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
-          var status = data['status'];
 
           if (kDebugMode) {
             print('Response body: ${response.body}');
           }
 
-          if (status == 1) {
-            var companyViewListEntity = ViewCompanyListEntity.fromJson(data);
-            companyViewList.value = companyViewListEntity.data ?? [];
+          var companyViewListEntity = ViewCompanyListEntity.fromJson(data);
 
-            if (kDebugMode) {
-              print('Parsed entity: $companyViewListEntity');
+          if (companyViewListEntity.data != null &&
+              companyViewListEntity.data!.isNotEmpty) {
+            if (page == 1) {
+              companyViewList.value = companyViewListEntity.data!;
+            } else {
+              companyViewList.addAll(companyViewListEntity.data!);
             }
           } else {
-            var message = data['message'];
-
-            if (kDebugMode) {
-              print('Failed to fetch fetchViewListCompany: $message');
+            if (page == 1) {
+              companyViewList.clear();
             }
+            isEndOfCompanyViewListData(true);
           }
         } else {
           if (kDebugMode) {

@@ -111,6 +111,8 @@ class ClasifiedController extends GetxController {
 
   int page = 1;
   var isEndOfData = false.obs;
+  var isEndOfClassifiedLikeListData = false.obs;
+  var isEndOfClassifiedViewListData = false.obs;
 
   RxList<ClassifiedLikeListData> classifiedLikeList =
       RxList<ClassifiedLikeListData>();
@@ -848,12 +850,14 @@ class ClasifiedController extends GetxController {
   }
 
 // like_list_classified
-  Future<void> fetchLikeListClassified(int classifiedId, context) async {
+  Future<void> fetchLikeListClassified(
+      int classifiedId, int page, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
     String device = Platform.isAndroid ? 'android' : 'ios';
 
     isLoading(true);
+
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
       if (kDebugMode) {
@@ -869,6 +873,7 @@ class ClasifiedController extends GetxController {
         request.fields['api_token'] = apiToken ?? '';
         request.fields['device'] = device;
         request.fields['classified_id'] = classifiedId.toString();
+        request.fields['page'] = page.toString();
 
         if (kDebugMode) {
           print('Request URL: $uri');
@@ -884,26 +889,26 @@ class ClasifiedController extends GetxController {
 
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
-          var status = data['status'];
 
           if (kDebugMode) {
             print('Response body: ${response.body}');
           }
+          var classifiedLikeListEntity =
+              ClassifiedLikeListEntity.fromJson(data);
 
-          if (status == 1) {
-            var classifiedLikeListEntity =
-                ClassifiedLikeListEntity.fromJson(data);
-            classifiedLikeList.value = classifiedLikeListEntity.data ?? [];
-
-            if (kDebugMode) {
-              print('Parsed entity: $classifiedLikeListEntity');
+          if (classifiedLikeListEntity.data != null &&
+              classifiedLikeListEntity.data!.isNotEmpty) {
+            if (page == 1) {
+              classifiedLikeList.clear();
+              classifiedLikeList.value = classifiedLikeListEntity.data!;
+            } else {
+              classifiedLikeList.addAll(classifiedLikeListEntity.data!);
             }
           } else {
-            var message = data['message'];
-
-            if (kDebugMode) {
-              print('Failed to fetch likelist classified: $message');
+            if (page == 1) {
+              classifiedLikeList.clear();
             }
+            isEndOfClassifiedLikeListData(true);
           }
         } else {
           if (kDebugMode) {
@@ -967,40 +972,26 @@ class ClasifiedController extends GetxController {
 
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
-          var status = data['status'];
 
           if (kDebugMode) {
             print('Response body: ${response.body}');
           }
 
-          if (status == 1) {
-            var classifiedViewListEntity =
-                ClassifiedViewListEntity.fromJson(data);
-            classifiedViewList.value = classifiedViewListEntity.data ?? [];
+          var classifiedViewListEntity =
+              ClassifiedViewListEntity.fromJson(data);
 
-            if (kDebugMode) {
-              print('Parsed entity: $classifiedViewListEntity');
-            }
-            if (classifiedViewListEntity.data != null &&
-                classifiedViewListEntity.data!.isNotEmpty) {
-              if (page == 1) {
-                classifiedViewList.value = classifiedViewListEntity.data!;
-              } else {
-                classifiedViewList.addAll(classifiedViewListEntity.data!);
-              }
-              isEndOfData(false);
+          if (classifiedViewListEntity.data != null &&
+              classifiedViewListEntity.data!.isNotEmpty) {
+            if (page == 1) {
+              classifiedViewList.value = classifiedViewListEntity.data!;
             } else {
-              if (page == 1) {
-                classifiedViewList.clear();
-              }
-              isEndOfData(true);
+              classifiedViewList.addAll(classifiedViewListEntity.data!);
             }
           } else {
-            var message = data['message'];
-
-            if (kDebugMode) {
-              print('Failed to fetch likelist classified: $message');
+            if (page == 1) {
+              classifiedViewList.clear();
             }
+            isEndOfClassifiedViewListData(true);
           }
         } else {
           if (kDebugMode) {

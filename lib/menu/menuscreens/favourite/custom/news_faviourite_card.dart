@@ -77,16 +77,20 @@ class NewsFaviouriteCard extends StatefulWidget {
   State<NewsFaviouriteCard> createState() => _FavouritrCardState();
 }
 
-class _FavouritrCardState extends State<NewsFaviouriteCard> {
+class _FavouritrCardState extends State<NewsFaviouriteCard>
+    with SingleTickerProviderStateMixin {
   late PostTimeFormatter postTimeFormatter;
   late RxBool isLiked;
   late RxInt likeCount;
 
   late bool isBookmarked;
+  late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+
     postTimeFormatter = PostTimeFormatter();
     initializeLikes();
 
@@ -308,7 +312,7 @@ class _FavouritrCardState extends State<NewsFaviouriteCard> {
                             ? const SizedBox.shrink()
                             : InkWell(
                                 onTap: () {
-                                  showLikeList(context);
+                                  showLikeAndViewList(context, 0);
                                 },
                                 child: Text(
                                   '${likeCount.value}',
@@ -345,7 +349,7 @@ class _FavouritrCardState extends State<NewsFaviouriteCard> {
                   ),
                   InkWell(
                     onTap: () {
-                      showViewList(context);
+                      showLikeAndViewList(context, 1);
                     },
                     child: Row(
                       children: [
@@ -359,7 +363,7 @@ class _FavouritrCardState extends State<NewsFaviouriteCard> {
                             ? const SizedBox.shrink()
                             : InkWell(
                                 onTap: () {
-                                  showViewList(context);
+                                  showLikeAndViewList(context, 1);
                                 },
                                 child: Text(
                                   '${widget.viewcounts}',
@@ -411,33 +415,41 @@ class _FavouritrCardState extends State<NewsFaviouriteCard> {
     );
   }
 
-  void showLikeList(BuildContext context) {
+  void showLikeAndViewList(BuildContext context, int index) {
+    _tabController.index = index;
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        fetchLikeList();
-        return const NewsLikeListContent();
+        return ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+          child: Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              centerTitle: true,
+              backgroundColor: Colors.white,
+              title: TabBar(
+                indicatorColor: Colors.transparent,
+                dividerColor: AppColors.grey,
+                labelStyle: TextStyle(
+                  color: AppColors.primaryColor,
+                ),
+                controller: _tabController,
+                tabs: const [
+                  Tab(text: "Likes"),
+                  Tab(text: "Views"),
+                ],
+              ),
+            ),
+            body: TabBarView(
+              controller: _tabController,
+              children: [
+                NewsLikeListContent(newsId: widget.bookmarkId),
+                NewsViewListContent(newsId: widget.bookmarkId),
+              ],
+            ),
+          ),
+        );
       },
     );
-  }
-
-  void fetchLikeList() async {
-    await widget.manageNewsController
-        .fetchLikeListNews(widget.bookmarkId, context);
-  }
-
-  void showViewList(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        fetchViewList();
-        return const NewsViewListContent();
-      },
-    );
-  }
-
-  void fetchViewList() async {
-    await widget.manageNewsController
-        .fetchViewListNews(widget.bookmarkId, context);
   }
 }

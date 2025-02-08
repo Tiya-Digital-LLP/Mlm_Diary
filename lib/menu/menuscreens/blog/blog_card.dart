@@ -64,7 +64,8 @@ class BlogCard extends StatefulWidget {
   State<BlogCard> createState() => _BlogCardState();
 }
 
-class _BlogCardState extends State<BlogCard> {
+class _BlogCardState extends State<BlogCard>
+    with SingleTickerProviderStateMixin {
   late RxBool isLiked;
   late RxBool isBookmarked;
 
@@ -73,9 +74,13 @@ class _BlogCardState extends State<BlogCard> {
 
   late PostTimeFormatter postTimeFormatter;
 
+  late TabController _tabController;
+
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+
     postTimeFormatter = PostTimeFormatter();
     initializeLikes();
     initializeBookmarks();
@@ -265,7 +270,7 @@ class _BlogCardState extends State<BlogCard> {
                         ? const SizedBox.shrink()
                         : InkWell(
                             onTap: () {
-                              showLikeList(context);
+                              showLikeAndViewList(context, 0);
                             },
                             child: Text(
                               '${likeCount.value}',
@@ -307,7 +312,7 @@ class _BlogCardState extends State<BlogCard> {
                     15.sbw,
                     InkWell(
                       onTap: () {
-                        showViewList(context);
+                        showLikeAndViewList(context, 1);
                       },
                       child: Row(
                         children: [
@@ -321,7 +326,7 @@ class _BlogCardState extends State<BlogCard> {
                               ? const SizedBox.shrink()
                               : InkWell(
                                   onTap: () {
-                                    showViewList(context);
+                                    showLikeAndViewList(context, 1);
                                   },
                                   child: Text(
                                     '${widget.viewcounts}',
@@ -401,32 +406,42 @@ class _BlogCardState extends State<BlogCard> {
     });
   }
 
-  void showLikeList(BuildContext context) {
+  void showLikeAndViewList(BuildContext context, int index) {
+    _tabController.index = index;
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        fetchLikeList();
-        return const BlogLikedListContent();
+        return ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+          child: Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              centerTitle: true,
+              backgroundColor: Colors.white,
+              title: TabBar(
+                indicatorColor: Colors.transparent,
+                dividerColor: AppColors.grey,
+                labelStyle: TextStyle(
+                  color: AppColors.primaryColor,
+                ),
+                controller: _tabController,
+                tabs: const [
+                  Tab(text: "Likes"),
+                  Tab(text: "Views"),
+                ],
+              ),
+            ),
+            body: TabBarView(
+              controller: _tabController,
+              children: [
+                BlogLikedListContent(blogId: widget.blogId),
+                BlogViewListContent(blogId: widget.blogId),
+              ],
+            ),
+          ),
+        );
       },
     );
-  }
-
-  void fetchLikeList() async {
-    await widget.controller.fetchLikeListBlog(widget.blogId, context);
-  }
-
-  void showViewList(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        fetchViewList();
-        return const BlogViewListContent();
-      },
-    );
-  }
-
-  void fetchViewList() async {
-    await widget.controller.fetchViewListBlog(widget.blogId, context);
   }
 }
 

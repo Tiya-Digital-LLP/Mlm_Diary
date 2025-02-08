@@ -36,11 +36,14 @@ class BlogDetailNotification extends StatefulWidget {
   State<BlogDetailNotification> createState() => _BlogDetailScreenState();
 }
 
-class _BlogDetailScreenState extends State<BlogDetailNotification> {
+class _BlogDetailScreenState extends State<BlogDetailNotification>
+    with SingleTickerProviderStateMixin {
   final ManageBlogController controller = Get.put(ManageBlogController());
   final UserProfileController userProfileController =
       Get.put(UserProfileController());
   PostTimeFormatter postTimeFormatter = PostTimeFormatter();
+
+  late TabController _tabController;
 
   // like
   late RxBool isLiked;
@@ -60,6 +63,8 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+
     initializeLikes();
     initializeBookmarks();
 
@@ -443,7 +448,7 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
                           ? const SizedBox.shrink()
                           : InkWell(
                               onTap: () {
-                                showLikeList(context, post.id ?? 0);
+                                showLikeAndViewList(context, 0);
                               },
                               child: Text(
                                 '${likeCount.value}',
@@ -483,7 +488,7 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
                       ),
                       InkWell(
                         onTap: () {
-                          showViewList(context);
+                          showLikeAndViewList(context, 1);
                         },
                         child: Row(
                           children: [
@@ -497,7 +502,7 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
                                 ? const SizedBox.shrink()
                                 : InkWell(
                                     onTap: () {
-                                      showViewList(context);
+                                      showLikeAndViewList(context, 1);
                                     },
                                     child: Text(
                                       '${post.pgcnt}',
@@ -604,32 +609,41 @@ class _BlogDetailScreenState extends State<BlogDetailNotification> {
     }
   }
 
-  void showLikeList(BuildContext context, int blogId) {
+  void showLikeAndViewList(BuildContext context, int index) {
+    _tabController.index = index;
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        // Fetch like list after bottom sheet is shown
-        fetchLikeList(blogId);
-        return const BlogLikedListContent();
+        return ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+          child: Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              centerTitle: true,
+              backgroundColor: Colors.white,
+              title: TabBar(
+                indicatorColor: Colors.transparent,
+                dividerColor: AppColors.grey,
+                labelStyle: TextStyle(
+                  color: AppColors.primaryColor,
+                ),
+                controller: _tabController,
+                tabs: const [
+                  Tab(text: "Likes"),
+                  Tab(text: "Views"),
+                ],
+              ),
+            ),
+            body: TabBarView(
+              controller: _tabController,
+              children: [
+                BlogLikedListContent(blogId: widget.blogId),
+                BlogViewListContent(blogId: widget.blogId),
+              ],
+            ),
+          ),
+        );
       },
     );
-  }
-
-  void fetchLikeList(int blogId) async {
-    await controller.fetchLikeListBlog(blogId, context);
-  }
-
-  void showViewList(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        fetchViewList();
-        return const BlogViewListContent();
-      },
-    );
-  }
-
-  void fetchViewList() async {
-    await controller.fetchViewListBlog(widget.blogId, context);
   }
 }

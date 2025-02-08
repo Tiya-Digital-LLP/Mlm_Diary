@@ -35,8 +35,8 @@ class ManageClassifiedDetailsScreen extends StatefulWidget {
       _ClassidiedDetailsScreenState();
 }
 
-class _ClassidiedDetailsScreenState
-    extends State<ManageClassifiedDetailsScreen> {
+class _ClassidiedDetailsScreenState extends State<ManageClassifiedDetailsScreen>
+    with SingleTickerProviderStateMixin {
   final ManageClasifiedController controller =
       Get.put(ManageClasifiedController());
   final post = Get.arguments as ManageClassifiedData;
@@ -82,9 +82,13 @@ class _ClassidiedDetailsScreenState
     );
   }
 
+  late TabController _tabController;
+
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+
     initializeLikes();
     initializeBookmarks();
   }
@@ -471,7 +475,7 @@ class _ClassidiedDetailsScreenState
                         ? const SizedBox.shrink()
                         : InkWell(
                             onTap: () {
-                              showLikeList(context);
+                              showLikeAndViewList(context, 0);
                             },
                             child: Text(
                               '${likeCount.value}',
@@ -511,7 +515,7 @@ class _ClassidiedDetailsScreenState
                     ),
                     InkWell(
                       onTap: () {
-                        showViewList(context);
+                        showLikeAndViewList(context, 1);
                       },
                       child: Row(
                         children: [
@@ -525,7 +529,7 @@ class _ClassidiedDetailsScreenState
                               ? const SizedBox.shrink()
                               : InkWell(
                                   onTap: () {
-                                    showViewList(context);
+                                    showLikeAndViewList(context, 1);
                                   },
                                   child: Text(
                                     '${post.pgcnt}',
@@ -602,34 +606,42 @@ class _ClassidiedDetailsScreenState
     );
   }
 
-  void showLikeList(BuildContext context) {
+  void showLikeAndViewList(BuildContext context, int index) {
+    _tabController.index = index;
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        fetchLikeList();
-        return const ClassifiedLikedListContent();
-      },
-    );
-  }
-
-  void fetchLikeList() async {
-    await controller.fetchLikeListClassified(post.id ?? 0, context);
-  }
-
-  void showViewList(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        fetchViewList();
-        return ClassifiedViewListContent(
-          clasiifiedId: post.id ?? 0,
+        return ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+          child: Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              centerTitle: true,
+              backgroundColor: Colors.white,
+              title: TabBar(
+                indicatorColor: Colors.transparent,
+                dividerColor: AppColors.grey,
+                labelStyle: TextStyle(
+                  color: AppColors.primaryColor,
+                ),
+                controller: _tabController,
+                tabs: const [
+                  Tab(text: "Likes"),
+                  Tab(text: "Views"),
+                ],
+              ),
+            ),
+            body: TabBarView(
+              controller: _tabController,
+              children: [
+                ClassifiedLikedListContent(classifiedId: post.id ?? 0),
+                ClassifiedViewListContent(clasiifiedId: post.id ?? 0),
+              ],
+            ),
+          ),
         );
       },
     );
-  }
-
-  void fetchViewList() async {
-    await controller.fetchViewListClassified(post.id ?? 0, context);
   }
 
   void _showFullScreenImageDialog(BuildContext context) {

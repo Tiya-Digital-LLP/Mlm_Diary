@@ -2,40 +2,40 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
-import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
-import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 
-class CompanyViewListContent extends StatefulWidget {
-  final int companyId;
+class PostViewListContent extends StatefulWidget {
+  final int postId;
 
-  const CompanyViewListContent({super.key, required this.companyId});
+  const PostViewListContent({super.key, required this.postId});
 
   @override
-  State<CompanyViewListContent> createState() => _CompanyViewListContentState();
+  State<PostViewListContent> createState() => _PostViewListContentState();
 }
 
-class _CompanyViewListContentState extends State<CompanyViewListContent> {
-  final CompanyController controller = Get.put(CompanyController());
+class _PostViewListContentState extends State<PostViewListContent> {
+  final EditPostController controller = Get.put(EditPostController());
+
+  final ScrollController scrollController = ScrollController();
   final UserProfileController userProfileController =
       Get.put(UserProfileController());
-  final ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    controller.fetchViewListCompany(widget.companyId, 1, context);
+    controller.fetchViewListPost(widget.postId, 1, context);
     scrollController.addListener(() {
       if (scrollController.position.pixels ==
               scrollController.position.maxScrollExtent &&
-          !controller.isEndOfCompanyViewListData.value &&
+          !controller.isEndOfPostViewListData.value &&
           !controller.isLoading.value) {
-        int nextPage = (controller.companyViewList.length ~/ 10) + 1;
-        controller.fetchViewListCompany(widget.companyId, nextPage, context);
+        int nextPage = (controller.postviewList.length ~/ 10) + 1;
+        controller.fetchViewListPost(widget.postId, nextPage, context);
       }
     });
   }
@@ -54,7 +54,7 @@ class _CompanyViewListContentState extends State<CompanyViewListContent> {
               child: Obx(
                 () {
                   if (controller.isLoading.value &&
-                      controller.companyViewList.isEmpty) {
+                      controller.postviewList.isEmpty) {
                     return Center(
                       child: CustomLottieAnimation(
                         child: Lottie.asset(Assets.lottieLottie),
@@ -62,7 +62,7 @@ class _CompanyViewListContentState extends State<CompanyViewListContent> {
                     );
                   }
 
-                  if (controller.companyViewList.isEmpty) {
+                  if (controller.postviewList.isEmpty) {
                     return Center(
                       child: Text(
                         "No Data Found",
@@ -73,36 +73,26 @@ class _CompanyViewListContentState extends State<CompanyViewListContent> {
                   }
 
                   return ListView.builder(
-                    controller: scrollController,
-                    itemCount: controller.companyViewList.length +
-                        (controller.isLoading.value ? 1 : 0),
-                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: controller.postviewList.length,
                     itemBuilder: (context, index) {
-                      if (index == controller.companyViewList.length) {
-                        return Center(
-                          child: CustomLottieAnimation(
-                            child: Lottie.asset(Assets.lottieLottie),
-                          ),
-                        );
-                      }
-                      final item = controller.companyViewList[index];
+                      var item = controller.postviewList[index];
                       return Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 8.0, horizontal: 16.0),
                         child: InkWell(
                           onTap: () async {
-                            Get.toNamed(Routes.userprofilescreen, arguments: {
-                              'user_id': item.userId ?? 0,
-                            });
-                            await userProfileController.fetchUserAllPost(
-                              1,
-                              item.userId.toString(),
-                            );
+                            // Get.toNamed(Routes.userprofilescreen,
+                            //     arguments: {
+                            //       'user_id': item.userid ?? 0,
+                            //     });
+                            // await userProfileController.fetchUserAllPost(
+                            //   1,
+                            //   item.userid.toString(),
+                            // );
                           },
                           child: Row(
                             children: [
                               CircleAvatar(
-                                radius: 25,
                                 backgroundImage: NetworkImage(
                                     item.userData?.imagePath ?? ''),
                               ),

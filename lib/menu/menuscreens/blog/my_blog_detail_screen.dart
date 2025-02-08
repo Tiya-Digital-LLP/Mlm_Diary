@@ -33,16 +33,22 @@ class MyBlogDetailScreen extends StatefulWidget {
   State<MyBlogDetailScreen> createState() => _MyBlogDetailScreenState();
 }
 
-class _MyBlogDetailScreenState extends State<MyBlogDetailScreen> {
+class _MyBlogDetailScreenState extends State<MyBlogDetailScreen>
+    with SingleTickerProviderStateMixin {
   final ManageBlogController controller = Get.put(ManageBlogController());
   final post = Get.arguments as MyBlogListData;
 
   PostTimeFormatter postTimeFormatter = PostTimeFormatter();
   final UserProfileController userProfileController =
       Get.put(UserProfileController());
+
+  late TabController _tabController;
+
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+
     initializeLikes();
     initializeBookmarks();
   }
@@ -397,7 +403,7 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen> {
 
                     return InkWell(
                       onTap: () {
-                        showLikeList(context);
+                        showLikeAndViewList(context, 1);
                       },
                       child: Text(
                         totalLikes.toString(),
@@ -438,7 +444,7 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen> {
                   ),
                   InkWell(
                     onTap: () {
-                      showViewList(context);
+                      showLikeAndViewList(context, 1);
                     },
                     child: Row(
                       children: [
@@ -452,7 +458,7 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen> {
                             ? const SizedBox.shrink()
                             : InkWell(
                                 onTap: () {
-                                  showViewList(context);
+                                  showLikeAndViewList(context, 1);
                                 },
                                 child: Text(
                                   '${post.pgcnt}',
@@ -558,32 +564,41 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen> {
     );
   }
 
-  void showLikeList(BuildContext context) {
+  void showLikeAndViewList(BuildContext context, int index) {
+    _tabController.index = index;
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        // Fetch like list after bottom sheet is shown
-        fetchLikeList();
-        return const BlogLikedListContent();
+        return ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+          child: Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              centerTitle: true,
+              backgroundColor: Colors.white,
+              title: TabBar(
+                indicatorColor: Colors.transparent,
+                dividerColor: AppColors.grey,
+                labelStyle: TextStyle(
+                  color: AppColors.primaryColor,
+                ),
+                controller: _tabController,
+                tabs: const [
+                  Tab(text: "Likes"),
+                  Tab(text: "Views"),
+                ],
+              ),
+            ),
+            body: TabBarView(
+              controller: _tabController,
+              children: [
+                BlogLikedListContent(blogId: post.articleId ?? 0),
+                BlogViewListContent(blogId: post.articleId ?? 0),
+              ],
+            ),
+          ),
+        );
       },
     );
-  }
-
-  void fetchLikeList() async {
-    await controller.fetchLikeListBlog(post.articleId ?? 0, context);
-  }
-
-  void showViewList(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        fetchViewList();
-        return const BlogViewListContent();
-      },
-    );
-  }
-
-  void fetchViewList() async {
-    await controller.fetchViewListBlog(post.articleId ?? 0, context);
   }
 }

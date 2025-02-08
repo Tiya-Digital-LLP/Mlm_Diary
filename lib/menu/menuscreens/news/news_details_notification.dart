@@ -32,7 +32,8 @@ class NewsDetailsNotification extends StatefulWidget {
   State<NewsDetailsNotification> createState() => _MyNewsDetailScreenState();
 }
 
-class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
+class _MyNewsDetailScreenState extends State<NewsDetailsNotification>
+    with SingleTickerProviderStateMixin {
   final ManageNewsController controller = Get.put(ManageNewsController());
   PostTimeFormatter postTimeFormatter = PostTimeFormatter();
 
@@ -42,10 +43,12 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
 // bookmark
   late RxBool isBookmarked;
   late RxInt bookmarkCount;
+  late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
 
     initializeLikes();
     initializeBookmarks();
@@ -420,7 +423,7 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
                             ? const SizedBox.shrink()
                             : InkWell(
                                 onTap: () {
-                                  showLikeList(context, post.id ?? 0);
+                                  showLikeAndViewList(context, 1);
                                 },
                                 child: Text(
                                   '${likeCount.value}',
@@ -460,7 +463,7 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
                         ),
                         InkWell(
                           onTap: () {
-                            showViewList(context);
+                            showLikeAndViewList(context, 1);
                           },
                           child: Row(
                             children: [
@@ -474,7 +477,7 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
                                   ? const SizedBox.shrink()
                                   : InkWell(
                                       onTap: () {
-                                        showViewList(context);
+                                        showLikeAndViewList(context, 1);
                                       },
                                       child: Text(
                                         '${post.pgcnt}',
@@ -577,32 +580,41 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification> {
     }
   }
 
-  void showLikeList(BuildContext context, int newsId) {
+  void showLikeAndViewList(BuildContext context, int index) {
+    _tabController.index = index;
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        // Fetch like list after bottom sheet is shown
-        fetchLikeList(newsId);
-        return const NewsLikeListContent();
+        return ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+          child: Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              centerTitle: true,
+              backgroundColor: Colors.white,
+              title: TabBar(
+                indicatorColor: Colors.transparent,
+                dividerColor: AppColors.grey,
+                labelStyle: TextStyle(
+                  color: AppColors.primaryColor,
+                ),
+                controller: _tabController,
+                tabs: const [
+                  Tab(text: "Likes"),
+                  Tab(text: "Views"),
+                ],
+              ),
+            ),
+            body: TabBarView(
+              controller: _tabController,
+              children: [
+                NewsLikeListContent(newsId: widget.newsId),
+                NewsViewListContent(newsId: widget.newsId),
+              ],
+            ),
+          ),
+        );
       },
     );
-  }
-
-  void fetchLikeList(int newsId) async {
-    await controller.fetchLikeListNews(newsId, context);
-  }
-
-  void showViewList(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        fetchViewList();
-        return const NewsViewListContent();
-      },
-    );
-  }
-
-  void fetchViewList() async {
-    await controller.fetchViewListNews(widget.newsId, context);
   }
 }

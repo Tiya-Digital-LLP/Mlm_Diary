@@ -46,17 +46,21 @@ class ManageQuestionCard extends StatefulWidget {
   State<ManageQuestionCard> createState() => _ManageQuestionCardState();
 }
 
-class _ManageQuestionCardState extends State<ManageQuestionCard> {
+class _ManageQuestionCardState extends State<ManageQuestionCard>
+    with SingleTickerProviderStateMixin {
   late PostTimeFormatter postTimeFormatter;
   late RxBool isLiked;
   late RxBool isBookmarked;
 
   late RxInt likeCount;
   late RxInt bookmarkCount;
+  late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+
     postTimeFormatter = PostTimeFormatter();
     initializeBookmarks();
     initializeLikes();
@@ -211,7 +215,7 @@ class _ManageQuestionCardState extends State<ManageQuestionCard> {
                               ? const SizedBox.shrink()
                               : InkWell(
                                   onTap: () {
-                                    showLikeList(context);
+                                    showLikeAndViewList(context, 0);
                                   },
                                   child: Text(
                                     '${likeCount.value}',
@@ -245,7 +249,7 @@ class _ManageQuestionCardState extends State<ManageQuestionCard> {
                     ),
                     InkWell(
                       onTap: () {
-                        showViewList(context);
+                        showLikeAndViewList(context, 1);
                       },
                       child: Row(
                         children: [
@@ -259,7 +263,7 @@ class _ManageQuestionCardState extends State<ManageQuestionCard> {
                               ? const SizedBox.shrink()
                               : InkWell(
                                   onTap: () {
-                                    showViewList(context);
+                                    showLikeAndViewList(context, 1);
                                   },
                                   child: Text(
                                     '${widget.viewcounts}',
@@ -357,31 +361,41 @@ class _ManageQuestionCardState extends State<ManageQuestionCard> {
     );
   }
 
-  void showLikeList(BuildContext context) {
+  void showLikeAndViewList(BuildContext context, int index) {
+    _tabController.index = index;
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        fetchLikeList();
-        return const QuestionLikeListContent();
+        return ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+          child: Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              centerTitle: true,
+              backgroundColor: Colors.white,
+              title: TabBar(
+                indicatorColor: Colors.transparent,
+                dividerColor: AppColors.grey,
+                labelStyle: TextStyle(
+                  color: AppColors.primaryColor,
+                ),
+                controller: _tabController,
+                tabs: const [
+                  Tab(text: "Likes"),
+                  Tab(text: "Views"),
+                ],
+              ),
+            ),
+            body: TabBarView(
+              controller: _tabController,
+              children: [
+                QuestionLikeListContent(questionId: widget.questionId),
+                QuestionViewListContent(questionId: widget.questionId),
+              ],
+            ),
+          ),
+        );
       },
     );
-  }
-
-  void fetchLikeList() async {
-    await widget.controller.fetchLikeListQuestion(widget.questionId, context);
-  }
-
-  void showViewList(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        fetchViewList();
-        return const QuestionViewListContent();
-      },
-    );
-  }
-
-  void fetchViewList() async {
-    await widget.controller.fetchViewListQuestion(widget.questionId, context);
   }
 }

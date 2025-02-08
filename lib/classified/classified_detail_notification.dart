@@ -34,12 +34,14 @@ class ClassifiedDetailNotification extends StatefulWidget {
 }
 
 class _ClassidiedDetailsScreenCopyState
-    extends State<ClassifiedDetailNotification> {
+    extends State<ClassifiedDetailNotification>
+    with SingleTickerProviderStateMixin {
   final ClasifiedController controller = Get.put(ClasifiedController());
   dynamic post;
   final UserProfileController userProfileController =
       Get.put(UserProfileController());
   PostTimeFormatter postTimeFormatter = PostTimeFormatter();
+  late TabController _tabController;
 
   // like
   late RxBool isLiked;
@@ -50,6 +52,8 @@ class _ClassidiedDetailsScreenCopyState
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+
     final arguments = Get.arguments as Map<String, dynamic>?;
     initializeLikes();
     initializeBookmarks();
@@ -515,10 +519,7 @@ class _ClassidiedDetailsScreenCopyState
                             ? const SizedBox.shrink()
                             : InkWell(
                                 onTap: () async {
-                                  await controller.fetchLikeListClassified(
-                                      data.id!, context);
-                                  // ignore: use_build_context_synchronously
-                                  showLikeList(context);
+                                  showLikeAndViewList(context, 0);
                                 },
                                 child: Text(
                                   '${likeCount.value}',
@@ -558,7 +559,7 @@ class _ClassidiedDetailsScreenCopyState
                         ),
                         InkWell(
                           onTap: () {
-                            showViewList(context, data.id!);
+                            showLikeAndViewList(context, 1);
                           },
                           child: Row(
                             children: [
@@ -572,7 +573,7 @@ class _ClassidiedDetailsScreenCopyState
                                   ? const SizedBox.shrink()
                                   : InkWell(
                                       onTap: () {
-                                        showViewList(context, data.id!);
+                                        showLikeAndViewList(context, 1);
                                       },
                                       child: Text(
                                         '${data.pgcnt}',
@@ -659,21 +660,39 @@ class _ClassidiedDetailsScreenCopyState
     }
   }
 
-  void showLikeList(BuildContext context) {
+  void showLikeAndViewList(BuildContext context, int index) {
+    _tabController.index = index;
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return const ClassifiedLikedListContent();
-      },
-    );
-  }
-
-  void showViewList(BuildContext context, int classifiedId) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return ClassifiedViewListContent(
-          clasiifiedId: classifiedId,
+        return ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+          child: Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              centerTitle: true,
+              backgroundColor: Colors.white,
+              title: TabBar(
+                indicatorColor: Colors.transparent,
+                dividerColor: AppColors.grey,
+                labelStyle: TextStyle(
+                  color: AppColors.primaryColor,
+                ),
+                controller: _tabController,
+                tabs: const [
+                  Tab(text: "Likes"),
+                  Tab(text: "Views"),
+                ],
+              ),
+            ),
+            body: TabBarView(
+              controller: _tabController,
+              children: [
+                ClassifiedLikedListContent(classifiedId: post!.id ?? 0),
+                ClassifiedViewListContent(clasiifiedId: post!.id ?? 0),
+              ],
+            ),
+          ),
         );
       },
     );

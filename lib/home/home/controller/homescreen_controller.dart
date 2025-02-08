@@ -584,15 +584,15 @@ class HomeController extends GetxController {
     EditPostController editpostController,
   ) {
     if (type == 'blog') {
-      manageBlogController.fetchLikeListBlog(homeId, context);
+      manageBlogController.fetchLikeListBlog(homeId, 1, context);
     } else if (type == 'news') {
-      manageNewsController.fetchLikeListNews(homeId, context);
+      manageNewsController.fetchLikeListNews(homeId, 1, context);
     } else if (type == 'classified') {
-      classifiedController.fetchLikeListClassified(homeId, context);
+      classifiedController.fetchLikeListClassified(homeId, 1, context);
     } else if (type == 'question') {
-      questionAnswerController.fetchLikeListQuestion(homeId, context);
+      questionAnswerController.fetchLikeListQuestion(homeId, 1, context);
     } else if (type == 'post') {
-      editpostController.fetchLikeListPost(homeId, context);
+      editpostController.fetchLikeListPost(homeId, 1, context);
     }
   }
 

@@ -33,7 +33,8 @@ class ClassidiedDetailsScreen extends StatefulWidget {
       _ClassidiedDetailsScreenState();
 }
 
-class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
+class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen>
+    with SingleTickerProviderStateMixin {
   final ClasifiedController controller = Get.put(ClasifiedController());
   dynamic post;
   final UserProfileController userProfileController =
@@ -49,6 +50,8 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
   late PageController pageController;
   int currentPage = 0;
   int totalItems = 0;
+
+  late TabController _tabController;
 
   void initializeLikes() {
     isLiked = RxBool(controller.classifiedList[0].likedByUser ?? false);
@@ -91,6 +94,8 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+
     pageController = PageController(initialPage: currentPage);
 
     post = Get.arguments;
@@ -547,7 +552,7 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
 
                       return InkWell(
                         onTap: () {
-                          showLikeList(context);
+                          showLikeAndViewList(context, 0);
                         },
                         child: Text(
                           totalLikes.toString(),
@@ -588,7 +593,7 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
                     ),
                     InkWell(
                       onTap: () {
-                        showViewList(context);
+                        showLikeAndViewList(context, 1);
                       },
                       child: Row(
                         children: [
@@ -602,7 +607,7 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
                               ? const SizedBox.shrink()
                               : InkWell(
                                   onTap: () {
-                                    showViewList(context);
+                                    showLikeAndViewList(context, 1);
                                   },
                                   child: Text(
                                     '${post.pgcnt ?? 0}',
@@ -707,32 +712,41 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen> {
     }
   }
 
-  void showLikeList(BuildContext context) {
+  void showLikeAndViewList(BuildContext context, int index) {
+    _tabController.index = index;
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        // Fetch like list after bottom sheet is shown
-        fetchLikeList();
-        return const ClassifiedLikedListContent();
+        return ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+          child: Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              centerTitle: true,
+              backgroundColor: Colors.white,
+              title: TabBar(
+                indicatorColor: Colors.transparent,
+                dividerColor: AppColors.grey,
+                labelStyle: TextStyle(
+                  color: AppColors.primaryColor,
+                ),
+                controller: _tabController,
+                tabs: const [
+                  Tab(text: "Likes"),
+                  Tab(text: "Views"),
+                ],
+              ),
+            ),
+            body: TabBarView(
+              controller: _tabController,
+              children: [
+                ClassifiedLikedListContent(classifiedId: post.id ?? 0),
+                ClassifiedViewListContent(clasiifiedId: post.id ?? 0),
+              ],
+            ),
+          ),
+        );
       },
     );
-  }
-
-  void fetchLikeList() async {
-    await controller.fetchLikeListClassified(post.id ?? 0, context);
-  }
-
-  void showViewList(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        fetchViewList();
-        return ClassifiedViewListContent(clasiifiedId: post.id ?? 0);
-      },
-    );
-  }
-
-  void fetchViewList() async {
-    await controller.fetchViewListClassified(post.id ?? 0, 1, context);
   }
 }

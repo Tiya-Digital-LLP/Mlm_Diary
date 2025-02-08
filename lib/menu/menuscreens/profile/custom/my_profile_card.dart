@@ -7,7 +7,7 @@ import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/custom/custom_post_comment.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/custom/post_like_list_content.dart';
-import 'package:mlmdiary/menu/menuscreens/profile/userprofile/custom/post_view_list_content.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/custom/post_view_list_content.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
@@ -62,6 +62,7 @@ class _MyProfileCardState extends State<MyProfileCard> {
 
   late RxInt likeCount;
   late RxInt bookmarkCount;
+  late TabController _tabController;
 
   @override
   void initState() {
@@ -239,7 +240,7 @@ class _MyProfileCardState extends State<MyProfileCard> {
                           ? const SizedBox.shrink()
                           : InkWell(
                               onTap: () {
-                                showLikeList(context);
+                                showLikeAndViewList(context, 0);
                               },
                               child: Text(
                                 '${likeCount.value}',
@@ -279,7 +280,7 @@ class _MyProfileCardState extends State<MyProfileCard> {
                       ),
                       InkWell(
                         onTap: () {
-                          showViewList(context);
+                          showLikeAndViewList(context, 1);
                         },
                         child: Row(
                           children: [
@@ -293,7 +294,7 @@ class _MyProfileCardState extends State<MyProfileCard> {
                                 ? const SizedBox.shrink()
                                 : InkWell(
                                     onTap: () {
-                                      showViewList(context);
+                                      showLikeAndViewList(context, 1);
                                     },
                                     child: Text(
                                       '${widget.viewCount}',
@@ -418,31 +419,41 @@ class _MyProfileCardState extends State<MyProfileCard> {
     );
   }
 
-  void showLikeList(BuildContext context) {
+  void showLikeAndViewList(BuildContext context, int index) {
+    _tabController.index = index;
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        fetchLikeList();
-        return const PostLikeListContent();
+        return ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+          child: Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              centerTitle: true,
+              backgroundColor: Colors.white,
+              title: TabBar(
+                indicatorColor: Colors.transparent,
+                dividerColor: AppColors.grey,
+                labelStyle: TextStyle(
+                  color: AppColors.primaryColor,
+                ),
+                controller: _tabController,
+                tabs: const [
+                  Tab(text: "Likes"),
+                  Tab(text: "Views"),
+                ],
+              ),
+            ),
+            body: TabBarView(
+              controller: _tabController,
+              children: [
+                PostLikeListContent(postId: widget.postId),
+                PostViewListContent(postId: widget.postId),
+              ],
+            ),
+          ),
+        );
       },
     );
-  }
-
-  void fetchLikeList() async {
-    await widget.controller.fetchLikeListPost(widget.postId, context);
-  }
-
-  void showViewList(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        fetchViewList();
-        return const PostViewListContent();
-      },
-    );
-  }
-
-  void fetchViewList() async {
-    await widget.controller.fetchViewListPost(widget.postId, context);
   }
 }

@@ -32,7 +32,8 @@ class MlmcompanyNotificationDetail extends StatefulWidget {
       _MlmCompaniesDetailsState();
 }
 
-class _MlmCompaniesDetailsState extends State<MlmcompanyNotificationDetail> {
+class _MlmCompaniesDetailsState extends State<MlmcompanyNotificationDetail>
+    with SingleTickerProviderStateMixin {
   final CompanyController controller = Get.put(CompanyController());
   dynamic post;
   final PostTimeFormatter postTimeFormatter = PostTimeFormatter();
@@ -41,9 +42,14 @@ class _MlmCompaniesDetailsState extends State<MlmcompanyNotificationDetail> {
   late RxInt likeCount;
 // bookmark
   late RxBool isBookmarked;
+
+  late TabController _tabController;
+
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+
     final arguments = Get.arguments as Map<String, dynamic>?;
     initializeLikes();
     initializeBookmarks();
@@ -597,7 +603,7 @@ class _MlmCompaniesDetailsState extends State<MlmcompanyNotificationDetail> {
                           ? const SizedBox.shrink()
                           : InkWell(
                               onTap: () {
-                                showLikeList(context);
+                                showLikeAndViewList(context, 0);
                               },
                               child: Text(
                                 '${likeCount.value}',
@@ -638,7 +644,7 @@ class _MlmCompaniesDetailsState extends State<MlmcompanyNotificationDetail> {
                       ),
                       InkWell(
                         onTap: () {
-                          showViewList(context);
+                          showLikeAndViewList(context, 1);
                         },
                         child: Row(
                           children: [
@@ -652,7 +658,7 @@ class _MlmCompaniesDetailsState extends State<MlmcompanyNotificationDetail> {
                                 ? const SizedBox.shrink()
                                 : InkWell(
                                     onTap: () {
-                                      showViewList(context);
+                                      showLikeAndViewList(context, 1);
                                     },
                                     child: Text(
                                       '${data.pgcnt}',
@@ -739,32 +745,42 @@ class _MlmCompaniesDetailsState extends State<MlmcompanyNotificationDetail> {
     );
   }
 
-  void showLikeList(BuildContext context) {
+  void showLikeAndViewList(BuildContext context, int index) {
+    _tabController.index = index;
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        fetchLikeList();
-        return const CompanyLikeListContent();
+        return ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+          child: Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              centerTitle: true,
+              backgroundColor: Colors.white,
+              title: TabBar(
+                indicatorColor: Colors.transparent,
+                dividerColor: AppColors.grey,
+                labelStyle: TextStyle(
+                  color: AppColors.primaryColor,
+                ),
+                controller: _tabController,
+                tabs: const [
+                  Tab(text: "Likes"),
+                  Tab(text: "Views"),
+                ],
+              ),
+            ),
+            body: TabBarView(
+              controller: _tabController,
+              children: [
+                CompanyLikeListContent(companyId: post!.id ?? 0),
+                CompanyViewListContent(companyId: post!.id ?? 0),
+              ],
+            ),
+          ),
+        );
       },
     );
-  }
-
-  void fetchLikeList() async {
-    await controller.fetchLikeListCompany(post.id ?? 0, context);
-  }
-
-  void showViewList(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        fetchViewList();
-        return const CompanyViewListContent();
-      },
-    );
-  }
-
-  void fetchViewList() async {
-    await controller.fetchViewListCompany(post.id ?? 0, context);
   }
 
   Widget _buildHtmlContent(String htmlContent, Size size) {

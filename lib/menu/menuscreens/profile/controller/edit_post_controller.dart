@@ -69,6 +69,9 @@ class EditPostController extends GetxController {
   var followProfileCountMap = <int, int>{}.obs;
   RxBool postError = false.obs;
 
+  var isEndOfPostLikeListData = false.obs;
+  var isEndOfPostViewListData = false.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -831,7 +834,7 @@ class EditPostController extends GetxController {
   }
 
   // like_list_blog
-  Future<void> fetchLikeListPost(int postId, context) async {
+  Future<void> fetchLikeListPost(int postId, int page, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
     String device = Platform.isAndroid ? 'android' : 'ios';
@@ -852,6 +855,7 @@ class EditPostController extends GetxController {
         request.fields['api_token'] = apiToken ?? '';
         request.fields['device'] = device;
         request.fields['post_id'] = postId.toString();
+        request.fields['page'] = page.toString();
 
         // Log request details
         if (kDebugMode) {
@@ -869,31 +873,29 @@ class EditPostController extends GetxController {
 
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
-          var status = data['status'];
 
           // Log response body
           if (kDebugMode) {
             print('Response body: ${response.body}');
           }
+          var postLikeListEntity = PostLikeListEntity.fromJson(data);
+          postLikeList.value = postLikeListEntity.data ?? [];
 
-          if (status == 1) {
-            var postLikeListEntity = PostLikeListEntity.fromJson(data);
-            postLikeList.value = postLikeListEntity.data ?? [];
-
-            // Log parsed data
-            if (kDebugMode) {
-              print('Parsed entity: $postLikeListEntity');
+          if (postLikeListEntity.data != null &&
+              postLikeListEntity.data!.isNotEmpty) {
+            if (page == 1) {
+              postLikeList.clear();
+              postLikeList.value = postLikeListEntity.data!;
+            } else {
+              postLikeList.addAll(postLikeListEntity.data!);
             }
           } else {
-            var message = data['message'];
-
-            // Log failure message
-            if (kDebugMode) {
-              print('Failed to fetch likelist Post: $message');
+            if (page == 1) {
+              postLikeList.clear();
             }
+            isEndOfPostLikeListData(true);
           }
         } else {
-          // Log error response
           if (kDebugMode) {
             print('Error: ${response.body}');
           }
@@ -902,13 +904,11 @@ class EditPostController extends GetxController {
         showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
-      // Log exception
       if (kDebugMode) {
         print('Error: $e');
       }
     } finally {
       isLoading(false);
-      // Log end of method execution
       if (kDebugMode) {
         print('Finished fetchLikeListPost method');
       }
@@ -916,7 +916,7 @@ class EditPostController extends GetxController {
   }
 
   // view_list_post
-  Future<void> fetchViewListPost(int postId, context) async {
+  Future<void> fetchViewListPost(int postId, int page, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
     String device = Platform.isAndroid ? 'android' : 'ios';
@@ -937,6 +937,7 @@ class EditPostController extends GetxController {
         request.fields['api_token'] = apiToken ?? '';
         request.fields['device'] = device;
         request.fields['post_id'] = postId.toString();
+        request.fields['page'] = page.toString();
 
         // Log request details
         if (kDebugMode) {
@@ -947,38 +948,34 @@ class EditPostController extends GetxController {
         final streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);
 
-        // Log response status code
         if (kDebugMode) {
           print('Response status code: ${response.statusCode}');
         }
 
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
-          var status = data['status'];
 
-          // Log response body
           if (kDebugMode) {
             print('Response body: ${response.body}');
           }
 
-          if (status == 1) {
-            var postViewListEntity = ViewPostListEntity.fromJson(data);
-            postviewList.value = postViewListEntity.data ?? [];
+          var postViewListEntity = ViewPostListEntity.fromJson(data);
+          postviewList.value = postViewListEntity.data ?? [];
 
-            // Log parsed data
-            if (kDebugMode) {
-              print('Parsed entity: $postViewListEntity');
+          if (postViewListEntity.data != null &&
+              postViewListEntity.data!.isNotEmpty) {
+            if (page == 1) {
+              postviewList.value = postViewListEntity.data!;
+            } else {
+              postviewList.addAll(postViewListEntity.data!);
             }
           } else {
-            var message = data['message'];
-
-            // Log failure message
-            if (kDebugMode) {
-              print('Failed to fetch fetchViewListPost: $message');
+            if (page == 1) {
+              postviewList.clear();
             }
+            isEndOfPostViewListData(true);
           }
         } else {
-          // Log error response
           if (kDebugMode) {
             print('Error: ${response.body}');
           }
@@ -987,13 +984,11 @@ class EditPostController extends GetxController {
         showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
-      // Log exception
       if (kDebugMode) {
         print('Error: $e');
       }
     } finally {
       isLoading(false);
-      // Log end of method execution
       if (kDebugMode) {
         print('Finished fetchViewListPost method');
       }

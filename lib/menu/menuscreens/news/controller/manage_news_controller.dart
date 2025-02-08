@@ -103,6 +103,9 @@ class ManageNewsController extends GetxController {
   var selectedCategoryId = 0.obs;
   var selectedSubCategoryId = 0.obs;
 
+  var isEndOfNewsLikeListData = false.obs;
+  var isEndOfNewsViewListData = false.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -840,7 +843,7 @@ class ManageNewsController extends GetxController {
   }
 
   // like_list_classified
-  Future<void> fetchLikeListNews(int classifiedId, context) async {
+  Future<void> fetchLikeListNews(int classifiedId, int page, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
     String device = Platform.isAndroid ? 'android' : 'ios';
@@ -861,6 +864,7 @@ class ManageNewsController extends GetxController {
         request.fields['api_token'] = apiToken ?? '';
         request.fields['device'] = device;
         request.fields['news_id'] = classifiedId.toString();
+        request.fields['page'] = page.toString();
 
         // Log request details
         if (kDebugMode) {
@@ -878,28 +882,28 @@ class ManageNewsController extends GetxController {
 
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
-          var status = data['status'];
 
           // Log response body
           if (kDebugMode) {
             print('Response body: ${response.body}');
           }
 
-          if (status == 1) {
-            var classifiedLikeListEntity = NewsLikeListEntity.fromJson(data);
-            newsLikeList.value = classifiedLikeListEntity.data ?? [];
+          var newsLikeListEntity = NewsLikeListEntity.fromJson(data);
+          newsLikeList.value = newsLikeListEntity.data ?? [];
 
-            // Log parsed data
-            if (kDebugMode) {
-              print('Parsed entity: $classifiedLikeListEntity');
+          if (newsLikeListEntity.data != null &&
+              newsLikeListEntity.data!.isNotEmpty) {
+            if (page == 1) {
+              newsLikeList.clear();
+              newsLikeList.value = newsLikeListEntity.data!;
+            } else {
+              newsLikeList.addAll(newsLikeListEntity.data!);
             }
           } else {
-            var message = data['message'];
-
-            // Log failure message
-            if (kDebugMode) {
-              print('Failed to fetch likelist classified: $message');
+            if (page == 1) {
+              newsLikeList.clear();
             }
+            isEndOfNewsLikeListData(true);
           }
         } else {
           // Log error response
@@ -926,7 +930,7 @@ class ManageNewsController extends GetxController {
   }
 
   // like_list_classified
-  Future<void> fetchViewListNews(int classifiedId, context) async {
+  Future<void> fetchViewListNews(int classifiedId, int page, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
     String device = Platform.isAndroid ? 'android' : 'ios';
@@ -964,47 +968,42 @@ class ManageNewsController extends GetxController {
 
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
-          var status = data['status'];
 
           // Log response body
           if (kDebugMode) {
             print('Response body: ${response.body}');
           }
 
-          if (status == 1) {
-            var newsViewListEntity = ViewsNewsListEntity.fromJson(data);
-            newsViewList.value = newsViewListEntity.data ?? [];
+          var newsViewListEntity = ViewsNewsListEntity.fromJson(data);
+          newsViewList.value = newsViewListEntity.data ?? [];
 
-            // Log parsed data
-            if (kDebugMode) {
-              print('Parsed entity: $newsViewListEntity');
+          if (newsViewListEntity.data != null &&
+              newsViewListEntity.data!.isNotEmpty) {
+            if (page == 1) {
+              newsViewList.value = newsViewListEntity.data!;
+            } else {
+              newsViewList.addAll(newsViewListEntity.data!);
             }
           } else {
-            var message = data['message'];
-
-            // Log failure message
-            if (kDebugMode) {
-              print('Failed to fetch newsViewList classified: $message');
+            if (page == 1) {
+              newsViewList.clear();
             }
+            isEndOfNewsViewListData(true);
           }
         } else {
-          // Log error response
           if (kDebugMode) {
             print('Error: ${response.body}');
           }
         }
       } else {
-        // Log no internet connection
         showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
-      // Log exception
       if (kDebugMode) {
         print('Error: $e');
       }
     } finally {
       isLoading(false);
-      // Log end of method execution
       if (kDebugMode) {
         print('Finished newsViewList method');
       }

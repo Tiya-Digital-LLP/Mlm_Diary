@@ -53,6 +53,9 @@ class QuestionAnswerController extends GetxController {
   RxList<ViewQuestionListData> questionViewList =
       RxList<ViewQuestionListData>();
 
+  var isEndOfQuestionAnswerLikeListData = false.obs;
+  var isEndOfQuestionAnswerViewListData = false.obs;
+
   final search = TextEditingController();
 
   //error
@@ -1307,7 +1310,7 @@ class QuestionAnswerController extends GetxController {
   }
 
   // like_list_question
-  Future<void> fetchLikeListQuestion(int questionId, context) async {
+  Future<void> fetchLikeListQuestion(int questionId, int page, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
     String device = Platform.isAndroid ? 'android' : 'ios';
@@ -1329,6 +1332,7 @@ class QuestionAnswerController extends GetxController {
         request.fields['api_token'] = apiToken ?? '';
         request.fields['device'] = device;
         request.fields['question_id'] = questionId.toString();
+        request.fields['page'] = page.toString();
 
         // Log request details
         if (kDebugMode) {
@@ -1346,31 +1350,29 @@ class QuestionAnswerController extends GetxController {
 
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
-          var status = data['status'];
 
           // Log response body
           if (kDebugMode) {
             print('Response body: ${response.body}');
           }
 
-          if (status == 1) {
-            var questionLikeListEntity = QuestionLikeListEntity.fromJson(data);
-            questionLikeList.value = questionLikeListEntity.data ?? [];
+          var questionLikeListEntity = QuestionLikeListEntity.fromJson(data);
 
-            // Log parsed data
-            if (kDebugMode) {
-              print('Parsed entity: $questionLikeListEntity');
+          if (questionLikeListEntity.data != null &&
+              questionLikeListEntity.data!.isNotEmpty) {
+            if (page == 1) {
+              questionLikeList.clear();
+              questionLikeList.value = questionLikeListEntity.data!;
+            } else {
+              questionLikeList.addAll(questionLikeListEntity.data!);
             }
           } else {
-            var message = data['message'];
-
-            // Log failure message
-            if (kDebugMode) {
-              print('Failed to fetch likelist Question: $message');
+            if (page == 1) {
+              questionLikeList.clear();
             }
+            isEndOfQuestionAnswerLikeListData(true);
           }
         } else {
-          // Log error response
           if (kDebugMode) {
             print('Error: ${response.body}');
           }
@@ -1379,13 +1381,11 @@ class QuestionAnswerController extends GetxController {
         showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
-      // Log exception
       if (kDebugMode) {
         print('Error: $e');
       }
     } finally {
       isLoading(false);
-      // Log end of method execution
       if (kDebugMode) {
         print('Finished fetchLikeListBlog method');
       }
@@ -1393,7 +1393,7 @@ class QuestionAnswerController extends GetxController {
   }
 
   // view_list_question
-  Future<void> fetchViewListQuestion(int questionId, context) async {
+  Future<void> fetchViewListQuestion(int questionId, int page, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
     String device = Platform.isAndroid ? 'android' : 'ios';
@@ -1415,6 +1415,7 @@ class QuestionAnswerController extends GetxController {
         request.fields['api_token'] = apiToken ?? '';
         request.fields['device'] = device;
         request.fields['question_id'] = questionId.toString();
+        request.fields['page'] = page.toString();
 
         // Log request details
         if (kDebugMode) {
@@ -1432,31 +1433,28 @@ class QuestionAnswerController extends GetxController {
 
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
-          var status = data['status'];
 
           // Log response body
           if (kDebugMode) {
             print('Response body: ${response.body}');
           }
 
-          if (status == 1) {
-            var questionViewListEntity = ViewQuestionListEntity.fromJson(data);
-            questionViewList.value = questionViewListEntity.data ?? [];
+          var questionViewListEntity = ViewQuestionListEntity.fromJson(data);
 
-            // Log parsed data
-            if (kDebugMode) {
-              print('Parsed entity: $questionViewListEntity');
+          if (questionViewListEntity.data != null &&
+              questionViewListEntity.data!.isNotEmpty) {
+            if (page == 1) {
+              questionViewList.value = questionViewListEntity.data!;
+            } else {
+              questionViewList.addAll(questionViewListEntity.data!);
             }
           } else {
-            var message = data['message'];
-
-            // Log failure message
-            if (kDebugMode) {
-              print('Failed to fetch fetchViewListQuestion: $message');
+            if (page == 1) {
+              questionViewList.clear();
             }
+            isEndOfQuestionAnswerViewListData(true);
           }
         } else {
-          // Log error response
           if (kDebugMode) {
             print('Error: ${response.body}');
           }
@@ -1465,13 +1463,11 @@ class QuestionAnswerController extends GetxController {
         showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
-      // Log exception
       if (kDebugMode) {
         print('Error: $e');
       }
     } finally {
       isLoading(false);
-      // Log end of method execution
       if (kDebugMode) {
         print('Finished fetchViewListQuestion method');
       }

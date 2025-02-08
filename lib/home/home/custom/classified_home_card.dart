@@ -12,15 +12,11 @@ import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/home/home/controller/homescreen_controller.dart';
 import 'package:mlmdiary/home/home/custom/sign_up_dialog.dart';
-import 'package:mlmdiary/menu/menuscreens/blog/blog_liked_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/controller/company_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
-import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/question_like_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
-import 'package:mlmdiary/menu/menuscreens/news/news_like_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
-import 'package:mlmdiary/menu/menuscreens/profile/custom/post_like_list_content.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
@@ -91,16 +87,20 @@ class ClassifiedHomeCard extends StatefulWidget {
   State<ClassifiedHomeCard> createState() => _FavouritrCardState();
 }
 
-class _FavouritrCardState extends State<ClassifiedHomeCard> {
+class _FavouritrCardState extends State<ClassifiedHomeCard>
+    with SingleTickerProviderStateMixin {
   late PostTimeFormatter postTimeFormatter;
   late RxBool isLiked;
   late RxInt likeCount;
 
   late RxBool isBookmarked;
+  late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+
     postTimeFormatter = PostTimeFormatter();
     initializeLikes();
     initializeBookmarks();
@@ -163,23 +163,6 @@ class _FavouritrCardState extends State<ClassifiedHomeCard> {
       widget.questionAnswerController,
       widget.editpostController,
     );
-  }
-
-  Widget getLikeListContent(String type) {
-    switch (type) {
-      case 'classified':
-        return const ClassifiedLikedListContent();
-      case 'news':
-        return const NewsLikeListContent();
-      case 'post':
-        return const PostLikeListContent();
-      case 'question':
-        return const QuestionLikeListContent();
-      case 'blog':
-        return const BlogLikedListContent();
-      default:
-        return const SizedBox();
-    }
   }
 
   @override
@@ -354,7 +337,7 @@ class _FavouritrCardState extends State<ClassifiedHomeCard> {
                             ? const SizedBox.shrink()
                             : InkWell(
                                 onTap: () {
-                                  showLikeList(context);
+                                  showLikeAndViewList(context, 0);
                                 },
                                 child: Text(
                                   '${likeCount.value}',
@@ -391,7 +374,7 @@ class _FavouritrCardState extends State<ClassifiedHomeCard> {
                   ),
                   InkWell(
                     onTap: () {
-                      showViewList(context);
+                      showLikeAndViewList(context, 1);
                     },
                     child: Row(
                       children: [
@@ -405,7 +388,7 @@ class _FavouritrCardState extends State<ClassifiedHomeCard> {
                             ? const SizedBox.shrink()
                             : InkWell(
                                 onTap: () {
-                                  showViewList(context);
+                                  showLikeAndViewList(context, 1);
                                 },
                                 child: Text(
                                   '${widget.viewcounts}',
@@ -479,35 +462,41 @@ class _FavouritrCardState extends State<ClassifiedHomeCard> {
     );
   }
 
-  void showLikeList(BuildContext context) {
+  void showLikeAndViewList(BuildContext context, int index) {
+    _tabController.index = index;
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        fetchLikeList();
-        return const ClassifiedLikedListContent();
-      },
-    );
-  }
-
-  void fetchLikeList() async {
-    await widget.clasifiedController
-        .fetchLikeListClassified(widget.bookmarkId, context);
-  }
-
-  void showViewList(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        fetchViewList();
-        return ClassifiedViewListContent(
-          clasiifiedId: widget.bookmarkId,
+        return ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+          child: Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              centerTitle: true,
+              backgroundColor: Colors.white,
+              title: TabBar(
+                indicatorColor: Colors.transparent,
+                dividerColor: AppColors.grey,
+                labelStyle: TextStyle(
+                  color: AppColors.primaryColor,
+                ),
+                controller: _tabController,
+                tabs: const [
+                  Tab(text: "Likes"),
+                  Tab(text: "Views"),
+                ],
+              ),
+            ),
+            body: TabBarView(
+              controller: _tabController,
+              children: [
+                ClassifiedLikedListContent(classifiedId: widget.classifiedId),
+                ClassifiedViewListContent(clasiifiedId: widget.classifiedId),
+              ],
+            ),
+          ),
         );
       },
     );
-  }
-
-  void fetchViewList() async {
-    await widget.clasifiedController
-        .fetchViewListClassified(widget.classifiedId, 1, context);
   }
 }

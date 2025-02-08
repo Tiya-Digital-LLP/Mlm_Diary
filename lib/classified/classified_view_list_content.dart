@@ -28,16 +28,15 @@ class _ClassifiedViewListContentState extends State<ClassifiedViewListContent> {
   @override
   void initState() {
     super.initState();
+    controller.fetchViewListClassified(widget.clasiifiedId, 1, context);
     scrollController.addListener(() {
       if (scrollController.position.pixels ==
               scrollController.position.maxScrollExtent &&
-          !controller.isEndOfData.value) {
+          !controller.isEndOfClassifiedViewListData.value &&
+          !controller.isLoading.value) {
         int nextPage = (controller.classifiedViewList.length ~/ 10) + 1;
         controller.fetchViewListClassified(
-          widget.clasiifiedId,
-          nextPage,
-          context,
-        );
+            widget.clasiifiedId, nextPage, context);
       }
     });
   }
@@ -51,156 +50,141 @@ class _ClassifiedViewListContentState extends State<ClassifiedViewListContent> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    return Obx(
-      () => controller.isLoading.value
-          ? Center(
-              child: CustomLottieAnimation(
-              child: Lottie.asset(
-                Assets.lottieLottie,
-              ),
-            ))
-          : Container(
-              color: AppColors.white,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        width: 80,
-                        height: 6,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          // ignore: deprecated_member_use
-                          color: AppColors.grey.withOpacity(0.5),
+
+    return Container(
+      color: AppColors.white,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Expanded(
+              child: Obx(() {
+                if (controller.isLoading.value &&
+                    controller.classifiedViewList.isEmpty) {
+                  return Center(
+                    child: CustomLottieAnimation(
+                      child: Lottie.asset(Assets.lottieLottie),
+                    ),
+                  );
+                }
+
+                if (controller.classifiedViewList.isEmpty) {
+                  return Center(
+                    child: Text(
+                      "No Data Found",
+                      style:
+                          textStyleW500(size.width * 0.04, AppColors.blackText),
+                    ),
+                  );
+                }
+
+                return ListView.builder(
+                  controller: scrollController,
+                  itemCount: controller.classifiedViewList.length +
+                      (controller.isLoading.value ? 1 : 0),
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    if (index == controller.classifiedViewList.length) {
+                      return Center(
+                        child: CustomLottieAnimation(
+                          child: Lottie.asset(Assets.lottieLottie),
                         ),
-                      ),
-                    ),
-                    Center(
-                      child: Text(
-                        'Views',
-                        style: textStyleW700(
-                            size.width * 0.043, AppColors.blackText),
-                      ),
-                    ),
-                    10.sbh,
-                    Expanded(
-                      child: Obx(
-                        () {
-                          if (controller.isLoading.value &&
-                              controller.classifiedViewList.isEmpty) {
-                            return Center(
-                              child: CustomLottieAnimation(
-                                child: Lottie.asset(
-                                  Assets.lottieLottie,
+                      );
+                    }
+
+                    final item = controller.classifiedViewList[index];
+                    return Card(
+                      color: Colors.white,
+                      elevation: 4,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 16.0),
+                        child: InkWell(
+                          onTap: () async {
+                            Get.toNamed(Routes.userprofilescreen, arguments: {
+                              'user_id': item.userId ?? 0,
+                            });
+                            await userProfileController.fetchUserAllPost(
+                                1, item.userId.toString());
+                          },
+                          child: Row(
+                            children: [
+                              CircleAvatar(
+                                radius: 25,
+                                backgroundImage: NetworkImage(
+                                  item.userData?.imagePath ?? '',
                                 ),
                               ),
-                            );
-                          }
-
-                          if (controller.classifiedViewList.isEmpty) {
-                            return const Center(
-                              child: Text(
-                                'Data not found',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            );
-                          }
-
-                          return ListView.builder(
-                            controller: controller.scrollController,
-                            itemCount: controller.classifiedViewList.length +
-                                (controller.isLoading.value ? 1 : 0),
-                            itemBuilder: (context, index) {
-                              if (index ==
-                                  controller.classifiedViewList.length) {
-                                return Center(
-                                  child: CustomLottieAnimation(
-                                    child: Lottie.asset(
-                                      Assets.lottieLottie,
+                              8.sbw,
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      item.userData?.name ?? 'Unknown',
+                                      style: textStyleW500(size.width * 0.034,
+                                          AppColors.blackText),
                                     ),
-                                  ),
-                                );
-                              }
-                              var item = controller.classifiedViewList[index];
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 8.0, horizontal: 16.0),
-                                child: InkWell(
-                                  onTap: () async {
-                                    Get.toNamed(Routes.userprofilescreen,
-                                        arguments: {
-                                          'user_id': item.userId ?? 0,
-                                        });
-                                    await userProfileController
-                                        .fetchUserAllPost(
-                                      1,
-                                      item.userId.toString(),
-                                    );
-                                  },
-                                  child: Row(
-                                    children: [
-                                      CircleAvatar(
-                                        backgroundImage: NetworkImage(
-                                            item.userData?.imagePath ?? ''),
-                                      ),
-                                      8.sbw,
-                                      Expanded(
-                                        child: Text(
-                                          item.userData?.name ?? 'Unknown',
-                                          style: textStyleW500(
-                                              size.width * 0.032,
-                                              AppColors.blackText),
-                                        ),
-                                      )
-                                    ],
-                                  ),
+                                    2.sbh,
+                                    Text(
+                                      'Ahemdabad, Gujarat, India',
+                                      style: textStyleW500(
+                                          size.width * 0.030,
+                                          AppColors.blackText
+                                              // ignore: deprecated_member_use
+                                              .withOpacity(0.6)),
+                                    ),
+                                    2.sbh,
+                                    Text(
+                                      'Leader',
+                                      style: textStyleW500(size.width * 0.030,
+                                          AppColors.blackText),
+                                    ),
+                                  ],
                                 ),
-                              );
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: SizedBox(
-                              width: double.infinity,
-                              child: OutlinedButton(
-                                onPressed: () {
-                                  Get.back();
-                                },
-                                style: OutlinedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12.0),
-                                  ),
-                                  side: BorderSide(color: AppColors.redText),
-                                ),
-                                child: Text(
-                                  'Cancel',
-                                  style: textStyleW700(
-                                      size.width * 0.04, AppColors.redText),
-                                ),
-                              ),
-                            ),
+                              )
+                            ],
                           ),
                         ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+                      ),
+                    );
+                  },
+                );
+              }),
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton(
+                        onPressed: () {
+                          Get.back();
+                        },
+                        style: OutlinedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          side: BorderSide(color: AppColors.redText),
+                        ),
+                        child: Text(
+                          'Cancel',
+                          style: textStyleW700(
+                              size.width * 0.04, AppColors.redText),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

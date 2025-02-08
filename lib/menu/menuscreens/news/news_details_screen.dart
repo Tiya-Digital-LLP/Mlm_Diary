@@ -34,7 +34,8 @@ class NewsDetailScreen extends StatefulWidget {
   State<NewsDetailScreen> createState() => _MyNewsDetailScreenState();
 }
 
-class _MyNewsDetailScreenState extends State<NewsDetailScreen> {
+class _MyNewsDetailScreenState extends State<NewsDetailScreen>
+    with SingleTickerProviderStateMixin {
   final ManageNewsController controller = Get.put(ManageNewsController());
   dynamic post;
   PostTimeFormatter postTimeFormatter = PostTimeFormatter();
@@ -78,9 +79,13 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen> {
     await controller.toggleBookMark(post.id, context);
   }
 
+  late TabController _tabController;
+
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+
     pageController = PageController(initialPage: currentPage);
 
     post = Get.arguments;
@@ -463,7 +468,7 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen> {
 
                       return InkWell(
                         onTap: () {
-                          showLikeList(context);
+                          showLikeAndViewList(context, 0);
                         },
                         child: Text(
                           totalLikes.toString(),
@@ -504,7 +509,7 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen> {
                     ),
                     InkWell(
                       onTap: () {
-                        showViewList(context);
+                        showLikeAndViewList(context, 1);
                       },
                       child: Row(
                         children: [
@@ -518,7 +523,7 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen> {
                               ? const SizedBox.shrink()
                               : InkWell(
                                   onTap: () {
-                                    showViewList(context);
+                                    showLikeAndViewList(context, 1);
                                   },
                                   child: Text(
                                     '${post.pgcnt}',
@@ -624,32 +629,41 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen> {
     );
   }
 
-  void showLikeList(BuildContext context) {
+  void showLikeAndViewList(BuildContext context, int index) {
+    _tabController.index = index;
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        // Fetch like list after bottom sheet is shown
-        fetchLikeList();
-        return const NewsLikeListContent();
+        return ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+          child: Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              centerTitle: true,
+              backgroundColor: Colors.white,
+              title: TabBar(
+                indicatorColor: Colors.transparent,
+                dividerColor: AppColors.grey,
+                labelStyle: TextStyle(
+                  color: AppColors.primaryColor,
+                ),
+                controller: _tabController,
+                tabs: const [
+                  Tab(text: "Likes"),
+                  Tab(text: "Views"),
+                ],
+              ),
+            ),
+            body: TabBarView(
+              controller: _tabController,
+              children: [
+                NewsLikeListContent(newsId: post.id),
+                NewsViewListContent(newsId: post.id),
+              ],
+            ),
+          ),
+        );
       },
     );
-  }
-
-  void fetchLikeList() async {
-    await controller.fetchLikeListNews(post.id ?? 0, context);
-  }
-
-  void showViewList(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        fetchViewList();
-        return const NewsViewListContent();
-      },
-    );
-  }
-
-  void fetchViewList() async {
-    await controller.fetchViewListNews(post.id ?? 0, context);
   }
 }

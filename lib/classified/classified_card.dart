@@ -63,16 +63,20 @@ class ClassifiedCard extends StatefulWidget {
   State<ClassifiedCard> createState() => _ClassifiedCardState();
 }
 
-class _ClassifiedCardState extends State<ClassifiedCard> {
+class _ClassifiedCardState extends State<ClassifiedCard>
+    with SingleTickerProviderStateMixin {
   late RxBool isLiked;
   late RxBool isBookmarked;
   late RxInt likeCount;
   late RxInt bookmarkCount;
   late PostTimeFormatter postTimeFormatter;
 
+  late TabController _tabController;
+
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
     postTimeFormatter = PostTimeFormatter();
     initializeLikes();
     initializeBookmarks();
@@ -280,7 +284,7 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
                         ? const SizedBox.shrink()
                         : InkWell(
                             onTap: () {
-                              showLikeList(context);
+                              showLikeAndViewList(context, 0);
                             },
                             child: Text(
                               '${likeCount.value}',
@@ -322,7 +326,7 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
                     15.sbw,
                     InkWell(
                       onTap: () {
-                        showViewList(context);
+                        showLikeAndViewList(context, 1);
                       },
                       child: Row(
                         children: [
@@ -336,7 +340,7 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
                               ? const SizedBox.shrink()
                               : InkWell(
                                   onTap: () {
-                                    showViewList(context);
+                                    showLikeAndViewList(context, 1);
                                   },
                                   child: Text(
                                     '${widget.viewcounts}',
@@ -409,33 +413,41 @@ class _ClassifiedCardState extends State<ClassifiedCard> {
     });
   }
 
-  void showLikeList(BuildContext context) {
+  void showLikeAndViewList(BuildContext context, int index) {
+    _tabController.index = index;
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        fetchLikeList();
-        return const ClassifiedLikedListContent();
+        return ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+          child: Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              centerTitle: true,
+              backgroundColor: Colors.white,
+              title: TabBar(
+                indicatorColor: Colors.transparent,
+                dividerColor: AppColors.grey,
+                labelStyle: TextStyle(
+                  color: AppColors.primaryColor,
+                ),
+                controller: _tabController,
+                tabs: const [
+                  Tab(text: "Likes"),
+                  Tab(text: "Views"),
+                ],
+              ),
+            ),
+            body: TabBarView(
+              controller: _tabController,
+              children: [
+                ClassifiedLikedListContent(classifiedId: widget.classifiedId),
+                ClassifiedViewListContent(clasiifiedId: widget.classifiedId),
+              ],
+            ),
+          ),
+        );
       },
     );
-  }
-
-  void fetchLikeList() async {
-    await widget.controller
-        .fetchLikeListClassified(widget.classifiedId, context);
-  }
-
-  void showViewList(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        fetchViewList();
-        return ClassifiedViewListContent(clasiifiedId: widget.classifiedId);
-      },
-    );
-  }
-
-  void fetchViewList() async {
-    await widget.controller
-        .fetchViewListClassified(widget.classifiedId, 1, context);
   }
 }

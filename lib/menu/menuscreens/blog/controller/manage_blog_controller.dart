@@ -89,10 +89,12 @@ class ManageBlogController extends GetxController {
   // READ ONLY FIELDS
   RxBool titleReadOnly = false.obs;
 
+  var isEndOfBlogLikeListData = false.obs;
+  var isEndOfBlogViewListData = false.obs;
+
   //scrollercontroller
   final ScrollController scrollController = ScrollController();
 
-  int page = 1;
   var isEndOfData = false.obs;
   final search = TextEditingController();
 
@@ -918,7 +920,7 @@ class ManageBlogController extends GetxController {
   }
 
   // like_list_blog
-  Future<void> fetchLikeListBlog(int blogId, context) async {
+  Future<void> fetchLikeListBlog(int blogId, int page, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
     String device = Platform.isAndroid ? 'android' : 'ios';
@@ -939,6 +941,7 @@ class ManageBlogController extends GetxController {
         request.fields['api_token'] = apiToken ?? '';
         request.fields['device'] = device;
         request.fields['blog_id'] = blogId.toString();
+        request.fields['page'] = page.toString();
 
         // Log request details
         if (kDebugMode) {
@@ -956,28 +959,28 @@ class ManageBlogController extends GetxController {
 
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
-          var status = data['status'];
 
           // Log response body
           if (kDebugMode) {
             print('Response body: ${response.body}');
           }
 
-          if (status == 1) {
-            var classifiedLikeListEntity = BlogLikeListEntity.fromJson(data);
-            blogLikeList.value = classifiedLikeListEntity.data ?? [];
+          var blogLikeListEntity = BlogLikeListEntity.fromJson(data);
+          blogLikeList.value = blogLikeListEntity.data ?? [];
 
-            // Log parsed data
-            if (kDebugMode) {
-              print('Parsed entity: $classifiedLikeListEntity');
+          if (blogLikeListEntity.data != null &&
+              blogLikeListEntity.data!.isNotEmpty) {
+            if (page == 1) {
+              blogLikeList.clear();
+              blogLikeList.value = blogLikeListEntity.data!;
+            } else {
+              blogLikeList.addAll(blogLikeListEntity.data!);
             }
           } else {
-            var message = data['message'];
-
-            // Log failure message
-            if (kDebugMode) {
-              print('Failed to fetch likelist Blog: $message');
+            if (page == 1) {
+              blogLikeList.clear();
             }
+            isEndOfBlogLikeListData(true);
           }
         } else {
           // Log error response
@@ -1004,7 +1007,7 @@ class ManageBlogController extends GetxController {
   }
 
   // like_list_blog
-  Future<void> fetchViewListBlog(int blogId, context) async {
+  Future<void> fetchViewListBlog(int blogId, int page, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
     String device = Platform.isAndroid ? 'android' : 'ios';
@@ -1025,8 +1028,8 @@ class ManageBlogController extends GetxController {
         request.fields['api_token'] = apiToken ?? '';
         request.fields['device'] = device;
         request.fields['blog_id'] = blogId.toString();
+        request.fields['page'] = page.toString();
 
-        // Log request details
         if (kDebugMode) {
           print('Request URL: $uri');
           print('Request fields: ${request.fields}');
@@ -1042,47 +1045,41 @@ class ManageBlogController extends GetxController {
 
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
-          var status = data['status'];
 
-          // Log response body
           if (kDebugMode) {
             print('Response body: ${response.body}');
           }
 
-          if (status == 1) {
-            var blogViewsListEntity = ViewsBlogListEntity.fromJson(data);
-            blogViewList.value = blogViewsListEntity.data ?? [];
+          var blogViewsListEntity = ViewsBlogListEntity.fromJson(data);
+          blogViewList.value = blogViewsListEntity.data ?? [];
 
-            // Log parsed data
-            if (kDebugMode) {
-              print('Parsed entity: $blogViewsListEntity');
+          if (blogViewsListEntity.data != null &&
+              blogViewsListEntity.data!.isNotEmpty) {
+            if (page == 1) {
+              blogViewList.value = blogViewsListEntity.data!;
+            } else {
+              blogViewList.addAll(blogViewsListEntity.data!);
             }
           } else {
-            var message = data['message'];
-
-            // Log failure message
-            if (kDebugMode) {
-              print('Failed to fetch blogViewList Blog: $message');
+            if (page == 1) {
+              blogViewList.clear();
             }
+            isEndOfBlogViewListData(true);
           }
         } else {
-          // Log error response
           if (kDebugMode) {
             print('Error: ${response.body}');
           }
         }
       } else {
-        // Log no internet connection
         showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
-      // Log exception
       if (kDebugMode) {
         print('Error: $e');
       }
     } finally {
       isLoading(false);
-      // Log end of method execution
       if (kDebugMode) {
         print('Finished blogViewList method');
       }

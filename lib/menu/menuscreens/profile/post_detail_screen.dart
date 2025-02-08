@@ -11,7 +11,7 @@ import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controlle
 import 'package:mlmdiary/menu/menuscreens/profile/custom/custom_post_comment.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/custom/post_like_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
-import 'package:mlmdiary/menu/menuscreens/profile/userprofile/custom/post_view_list_content.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/custom/post_view_list_content.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
@@ -33,7 +33,8 @@ class PostDetailScreen extends StatefulWidget {
   State<PostDetailScreen> createState() => _PostDetailsScreenState();
 }
 
-class _PostDetailsScreenState extends State<PostDetailScreen> {
+class _PostDetailsScreenState extends State<PostDetailScreen>
+    with SingleTickerProviderStateMixin {
   final EditPostController controller = Get.put(EditPostController());
   final UserProfileController userProfileController =
       Get.put(UserProfileController());
@@ -75,9 +76,13 @@ class _PostDetailsScreenState extends State<PostDetailScreen> {
     await controller.toggleBookMark(post.id ?? 0, context);
   }
 
+  late TabController _tabController;
+
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+
     post = Get.arguments;
     if (post != null && post.id != null) {
       controller.fetchPost(post.id ?? 0);
@@ -529,7 +534,7 @@ class _PostDetailsScreenState extends State<PostDetailScreen> {
 
                       return InkWell(
                         onTap: () {
-                          showLikeList(context);
+                          showLikeAndViewList(context, 0);
                         },
                         child: Text(
                           totalLikes.toString(),
@@ -570,7 +575,7 @@ class _PostDetailsScreenState extends State<PostDetailScreen> {
                     ),
                     InkWell(
                       onTap: () {
-                        showViewList(context);
+                        showLikeAndViewList(context, 1);
                       },
                       child: Row(
                         children: [
@@ -584,7 +589,7 @@ class _PostDetailsScreenState extends State<PostDetailScreen> {
                               ? const SizedBox.shrink()
                               : InkWell(
                                   onTap: () {
-                                    showViewList(context);
+                                    showLikeAndViewList(context, 1);
                                   },
                                   child: Text(
                                     '${post.pgcnt}',
@@ -688,32 +693,41 @@ class _PostDetailsScreenState extends State<PostDetailScreen> {
     );
   }
 
-  void showLikeList(BuildContext context) {
+  void showLikeAndViewList(BuildContext context, int index) {
+    _tabController.index = index;
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        // Fetch like list after bottom sheet is shown
-        fetchLikeList();
-        return const PostLikeListContent();
+        return ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+          child: Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              centerTitle: true,
+              backgroundColor: Colors.white,
+              title: TabBar(
+                indicatorColor: Colors.transparent,
+                dividerColor: AppColors.grey,
+                labelStyle: TextStyle(
+                  color: AppColors.primaryColor,
+                ),
+                controller: _tabController,
+                tabs: const [
+                  Tab(text: "Likes"),
+                  Tab(text: "Views"),
+                ],
+              ),
+            ),
+            body: TabBarView(
+              controller: _tabController,
+              children: [
+                PostLikeListContent(postId: post.id ?? 0),
+                PostViewListContent(postId: post.id ?? 0),
+              ],
+            ),
+          ),
+        );
       },
     );
-  }
-
-  void fetchLikeList() async {
-    await controller.fetchLikeListPost(post.id ?? 0, context);
-  }
-
-  void showViewList(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        fetchViewList();
-        return const PostViewListContent();
-      },
-    );
-  }
-
-  void fetchViewList() async {
-    await controller.fetchViewListPost(post.id ?? 0, context);
   }
 }

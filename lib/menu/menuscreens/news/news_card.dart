@@ -63,7 +63,8 @@ class NewsCard extends StatefulWidget {
   State<NewsCard> createState() => _NewsCardState();
 }
 
-class _NewsCardState extends State<NewsCard> {
+class _NewsCardState extends State<NewsCard>
+    with SingleTickerProviderStateMixin {
   late RxBool isLiked;
   late RxBool isBookmarked;
 
@@ -74,6 +75,8 @@ class _NewsCardState extends State<NewsCard> {
 
   bool showCommentBox = false;
 
+  late TabController _tabController;
+
   void toggleCommentBox() {
     setState(() {
       showCommentBox = !showCommentBox;
@@ -83,6 +86,8 @@ class _NewsCardState extends State<NewsCard> {
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+
     postTimeFormatter = PostTimeFormatter();
     initializeLikes();
     initializeBookmarks();
@@ -267,7 +272,7 @@ class _NewsCardState extends State<NewsCard> {
                         ? const SizedBox.shrink()
                         : InkWell(
                             onTap: () {
-                              showLikeList(context);
+                              showLikeAndViewList(context, 0);
                             },
                             child: Text(
                               '${likeCount.value}',
@@ -309,7 +314,7 @@ class _NewsCardState extends State<NewsCard> {
                     15.sbw,
                     InkWell(
                       onTap: () {
-                        showViewList(context);
+                        showLikeAndViewList(context, 1);
                       },
                       child: Row(
                         children: [
@@ -323,7 +328,7 @@ class _NewsCardState extends State<NewsCard> {
                               ? const SizedBox.shrink()
                               : InkWell(
                                   onTap: () {
-                                    showViewList(context);
+                                    showLikeAndViewList(context, 1);
                                   },
                                   child: Text(
                                     '${widget.viewcounts}',
@@ -401,33 +406,42 @@ class _NewsCardState extends State<NewsCard> {
     });
   }
 
-  void showLikeList(BuildContext context) {
+  void showLikeAndViewList(BuildContext context, int index) {
+    _tabController.index = index;
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        // Fetch like list after bottom sheet is shown
-        fetchLikeList();
-        return const NewsLikeListContent();
+        return ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+          child: Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              centerTitle: true,
+              backgroundColor: Colors.white,
+              title: TabBar(
+                indicatorColor: Colors.transparent,
+                dividerColor: AppColors.grey,
+                labelStyle: TextStyle(
+                  color: AppColors.primaryColor,
+                ),
+                controller: _tabController,
+                tabs: const [
+                  Tab(text: "Likes"),
+                  Tab(text: "Views"),
+                ],
+              ),
+            ),
+            body: TabBarView(
+              controller: _tabController,
+              children: [
+                NewsLikeListContent(newsId: widget.newsId),
+                NewsViewListContent(newsId: widget.newsId),
+              ],
+            ),
+          ),
+        );
       },
     );
-  }
-
-  void fetchLikeList() async {
-    await widget.controller.fetchLikeListNews(widget.newsId, context);
-  }
-
-  void showViewList(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        fetchViewList();
-        return const NewsViewListContent();
-      },
-    );
-  }
-
-  void fetchViewList() async {
-    await widget.controller.fetchViewListNews(widget.newsId, context);
   }
 }
 
