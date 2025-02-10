@@ -64,12 +64,11 @@ class ProfileController extends GetxController {
         // Set userProfile state
         userProfile(userProfileEntity);
         userId.value = userProfileEntity.userProfile!.id.toString();
-// Fetch and store user image
         final String? userImageUrl = userProfileEntity.userProfile?.imagePath;
         if (userImageUrl != null && userImageUrl.isNotEmpty) {
-          userImage = userImageUrl; // Update `userImage` with the fetched URL
+          userImage = userImageUrl;
         } else {
-          userImage = ''; // Handle the case where there's no image
+          userImage = '';
         }
 
         if (kDebugMode) {
