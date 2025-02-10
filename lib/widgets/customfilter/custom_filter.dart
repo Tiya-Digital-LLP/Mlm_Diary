@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
 import 'package:flutter_google_places_hoc081098/google_maps_webservice_places.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:get/get.dart';
 // ignore: depend_on_referenced_packages
 import 'package:google_api_headers/google_api_headers.dart';
@@ -13,6 +13,7 @@ import 'package:mlmdiary/generated/get_user_type_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/accountsetting/controller/account_setting_controller.dart';
 import 'package:mlmdiary/sign_up/controller/signup_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/company_border_textfield.dart';
@@ -209,9 +210,9 @@ class _MyWidgetState extends State<BottomSheetContent> {
                     ),
                     onFieldSubmitted: (value) {
                       if (value.isEmpty) {
-                        Fluttertoast.showToast(
-                          timeInSecForIosWeb: 2,
-                          msg: 'Please Search and Save your Business Location',
+                        showToasterrorborder(
+                          'Please Search and Save your Business Location',
+                          context,
                         );
                       } else if (value.isNotEmpty) {
                         // Handle submission if needed
@@ -415,13 +416,9 @@ void showBottomSheetFuncPlan(
                     if (controller.selectedCountPlan > 0) {
                       Get.back();
                     } else {
-                      Fluttertoast.showToast(
-                        msg: "Please select at least one field.",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        backgroundColor: Colors.red,
-                        textColor: Colors.white,
-                        fontSize: 16.0,
+                      showToasterrorborder(
+                        'Please select at least one field',
+                        context,
                       );
                     }
                   },
@@ -533,13 +530,9 @@ void showBottomSheetFunc(
                     if (controller.selectedCount > 0) {
                       Get.back();
                     } else {
-                      Fluttertoast.showToast(
-                        msg: "Please select at least one field.",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        backgroundColor: Colors.red,
-                        textColor: Colors.white,
-                        fontSize: 16.0,
+                      showToasterrorborder(
+                        'Please select at least one field',
+                        context,
                       );
                     }
                   },

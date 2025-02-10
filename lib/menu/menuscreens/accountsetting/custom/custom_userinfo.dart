@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
 import 'package:flutter_google_places_hoc081098/google_maps_webservice_places.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:get/get.dart';
 // ignore: depend_on_referenced_packages
 import 'package:google_api_headers/google_api_headers.dart';
@@ -435,9 +435,9 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                   },
                   onFieldSubmitted: (value) {
                     if (value.isEmpty) {
-                      Fluttertoast.showToast(
-                          timeInSecForIosWeb: 2,
-                          msg: 'Please Search and Save your Business Location');
+                      showToastverifedborder(
+                          'Please Search and Save your Business Location',
+                          context);
                       setState(() {
                         controller.validateAddress();
                       });
@@ -634,7 +634,8 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
       }
 
       if (fileSizeInKB > 5000) {
-        Fluttertoast.showToast(msg: 'Please Select an image below 5 MB');
+        // ignore: use_build_context_synchronously
+        showToasterrorborder('Please Select an image below 5 MB', context);
         return;
       }
 
@@ -642,7 +643,8 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
       io.File? croppedFile = await _cropImage(imageFile);
 
       if (croppedFile == null) {
-        Fluttertoast.showToast(msg: 'Failed to crop image');
+        // ignore: use_build_context_synchronously
+        showToasterrorborder('Failed to crop image', context);
         return;
       }
 
@@ -659,7 +661,8 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
         processedFile = await _compressImage(croppedFile);
 
         if (processedFile == null) {
-          Fluttertoast.showToast(msg: 'Failed to compress image');
+          // ignore: use_build_context_synchronously
+          showToasterrorborder('Failed to compress image', context);
           if (kDebugMode) {
             print('Failed to compress image');
           }
@@ -877,13 +880,9 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                       if (controller.isTypeSelectedList.contains(true)) {
                         Get.back();
                       } else {
-                        Fluttertoast.showToast(
-                          msg: "Please select at least one field.",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white,
-                          fontSize: 16.0,
+                        showToasterrorborder(
+                          "Please select at least one field.",
+                          context,
                         );
                       }
                     },
@@ -998,13 +997,9 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                       if (controller.selectedCountPlan > 0) {
                         Get.back();
                       } else {
-                        Fluttertoast.showToast(
-                          msg: "Please select at least one field.",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white,
-                          fontSize: 16.0,
+                        showToasterrorborder(
+                          "Please select at least one field.",
+                          context,
                         );
                       }
                     },

@@ -6,7 +6,6 @@ import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.
 import 'package:flutter_google_places_hoc081098/google_maps_webservice_places.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 // ignore: depend_on_referenced_packages
 import 'package:google_api_headers/google_api_headers.dart';
@@ -319,15 +318,16 @@ class _AddClassifiedState extends State<AddClassified> {
                           setState(() {
                             controller.locationValidation();
                           });
-                        } else {}
+                        } else {
+                          //
+                        }
                         return null;
                       },
                       onFieldSubmitted: (value) {
                         if (value.isEmpty) {
-                          Fluttertoast.showToast(
-                              timeInSecForIosWeb: 2,
-                              msg:
-                                  'Please Search and Save your Business Location');
+                          showToasterrorborder(
+                              'Please Search and Save your Business Location',
+                              context);
                           setState(() {
                             controller.locationValidation();
                           });
@@ -538,7 +538,8 @@ class _AddClassifiedState extends State<AddClassified> {
       }
 
       if (fileSizeInKB > 5000) {
-        Fluttertoast.showToast(msg: 'Please Select an image below 5 MB');
+        // ignore: use_build_context_synchronously
+        showToasterrorborder('Please Select an image below 5 MB', context);
         return;
       }
 
@@ -547,7 +548,8 @@ class _AddClassifiedState extends State<AddClassified> {
       if (fileSizeInKB > 250) {
         processedFile = await _cropImage(imageFile);
         if (processedFile == null) {
-          Fluttertoast.showToast(msg: 'Please select an image');
+          // ignore: use_build_context_synchronously
+          showToasterrorborder('Please select an image', context);
           if (kDebugMode) {
             print('failed to compress image');
           }
@@ -769,14 +771,8 @@ void showSelectCategory(
                       if (controller.selectedCountCategory > 0) {
                         Get.back();
                       } else {
-                        Fluttertoast.showToast(
-                          msg: "Please select at least one category.",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white,
-                          fontSize: 16.0,
-                        );
+                        showToasterrorborder(
+                            'Please select at least one category.', context);
                       }
                     },
                     isLoading: controller.isLoading,
@@ -875,14 +871,9 @@ void showSelectSubCategory(
                                   .isSubCategorySelectedList[index]) {
                                 controller.toggleSubCategorySelected(index);
                               } else {
-                                Fluttertoast.showToast(
-                                  msg: "Please select only one Sub category.",
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.BOTTOM,
-                                  backgroundColor: Colors.red,
-                                  textColor: Colors.white,
-                                  fontSize: 16.0,
-                                );
+                                showToasterrorborder(
+                                    'Please select only one Sub category.',
+                                    context);
                               }
                             },
                             child: Padding(
@@ -898,15 +889,9 @@ void showSelectSubCategory(
                                           controller
                                               .toggleSubCategorySelected(index);
                                         } else {
-                                          Fluttertoast.showToast(
-                                            msg:
-                                                "Please select only one Sub category.",
-                                            toastLength: Toast.LENGTH_SHORT,
-                                            gravity: ToastGravity.BOTTOM,
-                                            backgroundColor: Colors.red,
-                                            textColor: Colors.white,
-                                            fontSize: 16.0,
-                                          );
+                                          showToasterrorborder(
+                                              'Please select only one Sub category.',
+                                              context);
                                         }
                                       },
                                       child: Image.asset(
@@ -942,14 +927,8 @@ void showSelectSubCategory(
                       if (controller.selectedCountSubCategory > 0) {
                         Get.back();
                       } else {
-                        Fluttertoast.showToast(
-                          msg: "Please select at least one field.",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white,
-                          fontSize: 16.0,
-                        );
+                        showToasterrorborder(
+                            'Please select at least one field.', context);
                       }
                     },
                     isLoading: controller.isLoading,

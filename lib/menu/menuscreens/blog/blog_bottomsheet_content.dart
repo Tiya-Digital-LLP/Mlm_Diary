@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_category_entity.dart';
 import 'package:mlmdiary/generated/get_sub_category_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_border_container.dart';
@@ -244,14 +245,9 @@ void showSelectCategory(
                                 controller.toggleCategorySelected(
                                     index, context);
                               } else {
-                                Fluttertoast.showToast(
-                                  msg: "Please select only one category.",
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.BOTTOM,
-                                  backgroundColor: Colors.red,
-                                  textColor: Colors.white,
-                                  fontSize: 16.0,
-                                );
+                                showToasterrorborder(
+                                    "Please select only one category.",
+                                    context);
                               }
                             },
                             child: Padding(
@@ -267,15 +263,9 @@ void showSelectCategory(
                                           controller.toggleCategorySelected(
                                               index, context);
                                         } else {
-                                          Fluttertoast.showToast(
-                                            msg:
-                                                "Please select only one category.",
-                                            toastLength: Toast.LENGTH_SHORT,
-                                            gravity: ToastGravity.BOTTOM,
-                                            backgroundColor: Colors.red,
-                                            textColor: Colors.white,
-                                            fontSize: 16.0,
-                                          );
+                                          showToasterrorborder(
+                                              "Please select only one category.",
+                                              context);
                                         }
                                       },
                                       child: Image.asset(
@@ -309,14 +299,8 @@ void showSelectCategory(
                     if (controller.selectedCountCategory > 0) {
                       Get.back();
                     } else {
-                      Fluttertoast.showToast(
-                        msg: "Please select at least one field.",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        backgroundColor: Colors.red,
-                        textColor: Colors.white,
-                        fontSize: 16.0,
-                      );
+                      showToasterrorborder(
+                          "Please select at least one field.", context);
                     }
                   },
                   isLoading: controller.isLoading,
@@ -389,14 +373,9 @@ void showSelectSubCategory(
                             if (!controller.isSubCategorySelectedList[index]) {
                               controller.toggleSubCategorySelected(index);
                             } else {
-                              Fluttertoast.showToast(
-                                msg: "Please select only one Sub category.",
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.BOTTOM,
-                                backgroundColor: Colors.red,
-                                textColor: Colors.white,
-                                fontSize: 16.0,
-                              );
+                              showToasterrorborder(
+                                  "Please select only one Sub category.",
+                                  context);
                             }
                           },
                           child: Padding(
@@ -412,14 +391,9 @@ void showSelectSubCategory(
                                         controller
                                             .toggleSubCategorySelected(index);
                                       } else {
-                                        Fluttertoast.showToast(
-                                          msg:
-                                              "Please select only one Sub category.",
-                                          toastLength: Toast.LENGTH_SHORT,
-                                          gravity: ToastGravity.BOTTOM,
-                                          backgroundColor: Colors.red,
-                                          textColor: Colors.white,
-                                          fontSize: 16.0,
+                                        showToasterrorborder(
+                                          "Please select only one Sub category.",
+                                          context,
                                         );
                                       }
                                     },
@@ -456,13 +430,9 @@ void showSelectSubCategory(
                     if (controller.selectedCountSubCategory > 0) {
                       Get.back();
                     } else {
-                      Fluttertoast.showToast(
-                        msg: "Please select at least one field.",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        backgroundColor: Colors.red,
-                        textColor: Colors.white,
-                        fontSize: 16.0,
+                      showToasterrorborder(
+                        "Please select at least one field.",
+                        context,
                       );
                     }
                   },

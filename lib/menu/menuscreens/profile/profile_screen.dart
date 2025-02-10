@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -111,7 +111,7 @@ class _ProfileScreenState extends State<ProfileScreen>
     final Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.white,
       appBar: AppBar(
         scrolledUnderElevation: 0,
         centerTitle: true,
@@ -175,70 +175,68 @@ class _ProfileScreenState extends State<ProfileScreen>
                   child: Column(
                     children: [
                       posts(),
-                      Container(
-                        color: AppColors.background,
-                        child: Obx(() {
-                          if (controller.isLoading.value &&
-                              controller.myPostList.isEmpty) {
-                            return Center(
-                                child: CustomLottieAnimation(
-                              child: Lottie.asset(
-                                Assets.lottieLottie,
-                              ),
-                            ));
-                          }
+                      8.sbh,
+                      Obx(() {
+                        if (controller.isLoading.value &&
+                            controller.myPostList.isEmpty) {
+                          return Center(
+                              child: CustomLottieAnimation(
+                            child: Lottie.asset(
+                              Assets.lottieLottie,
+                            ),
+                          ));
+                        }
 
-                          if (controller.myPostList.isEmpty) {
-                            return Center(
-                              child: Text(
-                                controller.isLoading.value
-                                    ? 'Loading...'
-                                    : 'Data not found',
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
+                        if (controller.myPostList.isEmpty) {
+                          return Center(
+                            child: Text(
+                              controller.isLoading.value
+                                  ? 'Loading...'
+                                  : 'Data not found',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
                               ),
-                            );
-                          }
-                          return ListView.builder(
-                              padding: EdgeInsets.zero,
-                              physics: const NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: controller.myPostList.length,
-                              itemBuilder: (context, index) {
-                                final post = controller.myPostList[index];
-                                return Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 8),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Get.toNamed(
-                                        Routes.mypostdetails,
-                                        arguments: post,
-                                      );
-                                    },
-                                    child: MyProfileCard(
-                                      updatedateTime: post.datemodified ?? '',
-                                      onDelete: () => deletePost(index),
-                                      userImage: post.userData!.imagePath ?? '',
-                                      userName: post.userData!.name ?? '',
-                                      postCaption: post.comments ?? '',
-                                      postImage: post.attachmentPath ?? '',
-                                      dateTime: post.createdate ?? '',
-                                      likedCount: post.totallike ?? 0,
-                                      postId: post.id ?? 0,
-                                      controller: controller,
-                                      bookmarkCount: post.totalbookmark ?? 0,
-                                      commentcount: post.totalcomment ?? 0,
-                                      viewCount: post.pgcnt ?? 0,
-                                    ),
+                            ),
+                          );
+                        }
+                        return ListView.builder(
+                            padding: EdgeInsets.zero,
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: controller.myPostList.length,
+                            itemBuilder: (context, index) {
+                              final post = controller.myPostList[index];
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 12),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Get.toNamed(
+                                      Routes.mypostdetails,
+                                      arguments: post,
+                                    );
+                                  },
+                                  child: MyProfileCard(
+                                    updatedateTime: post.datemodified ?? '',
+                                    onDelete: () => deletePost(index),
+                                    userImage: post.userData!.imagePath ?? '',
+                                    userName: post.userData!.name ?? '',
+                                    postCaption: post.comments ?? '',
+                                    postImage: post.attachmentPath ?? '',
+                                    dateTime: post.createdate ?? '',
+                                    likedCount: post.totallike ?? 0,
+                                    postId: post.id ?? 0,
+                                    controller: controller,
+                                    bookmarkCount: post.totalbookmark ?? 0,
+                                    commentcount: post.totalcomment ?? 0,
+                                    viewCount: post.pgcnt ?? 0,
                                   ),
-                                );
-                              });
-                        }),
-                      ),
+                                ),
+                              );
+                            });
+                      }),
                     ],
                   ),
                 ),
@@ -271,13 +269,18 @@ class _ProfileScreenState extends State<ProfileScreen>
 
   Widget posts() {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
       child: SizedBox(
         width: double.infinity,
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12.0),
             color: AppColors.white,
+            border: Border.all(
+              // Add border here
+              color: Colors.black26, // Change color as needed
+              width: 1.0,
+            ),
           ),
           height: 65,
           child: Row(
@@ -345,64 +348,6 @@ class _ProfileScreenState extends State<ProfileScreen>
                                     ],
                                   ),
                           ),
-                          // InkWell(
-                          //   onTap: () {
-                          //     if (file.value == null &&
-                          //         videoFile.value == null) {
-                          //       _selectVideo();
-                          //     } else {
-                          //       showToasterrorborder(
-                          //           'Select only one image or video',
-                          //           context);
-                          //     }
-                          //   },
-                          //   child: videoFile.value == null
-                          //       ? SvgPicture.asset(
-                          //           Assets.svgVideo,
-                          //           height: 30,
-                          //         )
-                          //       : Stack(
-                          //           children: [
-                          //             ClipRRect(
-                          //               borderRadius:
-                          //                   BorderRadius
-                          //                       .circular(
-                          //                           13.05),
-                          //               child: AspectRatio(
-                          //                 aspectRatio:
-                          //                     _videoPlayerController
-                          //                         .value
-                          //                         .aspectRatio,
-                          //                 child: VideoPlayer(
-                          //                     _videoPlayerController),
-                          //               ),
-                          //             ),
-                          //             Positioned(
-                          //               top: -2,
-                          //               right: 0,
-                          //               child:
-                          //                   GestureDetector(
-                          //                 onTap: () {
-                          //                   setState(() {
-                          //                     videoList.remove(
-                          //                         videoFile
-                          //                             .value);
-                          //                     videoFile
-                          //                             .value =
-                          //                         null;
-                          //                   });
-                          //                 },
-                          //                 child: Icon(
-                          //                   Icons.delete,
-                          //                   color: AppColors
-                          //                       .redText,
-                          //                   size: 16,
-                          //                 ),
-                          //               ),
-                          //             ),
-                          //           ],
-                          //         ),
-                          // ),
                           10.sbw,
                           InkWell(
                             onTap: () {
@@ -854,7 +799,8 @@ class _ProfileScreenState extends State<ProfileScreen>
       }
 
       if (fileSizeInKB > 5000) {
-        Fluttertoast.showToast(msg: 'Please Select an image below 5 MB');
+        // ignore: use_build_context_synchronously
+        showToasterrorborder('Please Select an image below 5 MB', context);
         return;
       }
 
@@ -863,7 +809,8 @@ class _ProfileScreenState extends State<ProfileScreen>
       if (fileSizeInKB > 250) {
         processedFile = await _cropImage(imageFile);
         if (processedFile == null) {
-          Fluttertoast.showToast(msg: 'Please select an image');
+          // ignore: use_build_context_synchronously
+          showToasterrorborder('Please select an image', context);
           if (kDebugMode) {
             print('failed to compress image');
           }
@@ -956,29 +903,4 @@ class _ProfileScreenState extends State<ProfileScreen>
 
     return compressedFile;
   }
-
-  // void _selectVideo() async {
-  //   final pickedFile = await _picker.pickVideo(source: ImageSource.gallery);
-
-  //   if (pickedFile != null) {
-  //     io.File video = io.File(pickedFile.path);
-  //     setState(() {
-  //       videoFile.value = video;
-  //       _videoPlayerController = VideoPlayerController.file(video)
-  //         ..initialize().then((_) {
-  //           // Play the video immediately after initialization
-  //           _videoPlayerController.play();
-  //           // Listen for video playback status changes
-  //           _videoPlayerController.addListener(() {
-  //             if (_videoPlayerController.value.position ==
-  //                 _videoPlayerController.value.duration) {
-  //               // If the video reaches the end, seek to the beginning and play again
-  //               _videoPlayerController.seekTo(Duration.zero);
-  //               _videoPlayerController.play();
-  //             }
-  //           });
-  //         });
-  //     });
-  //   }
-  // }
 }

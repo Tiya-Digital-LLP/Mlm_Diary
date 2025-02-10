@@ -11,6 +11,9 @@ class ProfileController extends GetxController {
   var isLoading = false.obs;
   var userProfile = GetUserProfileEntity().obs;
   var mlmSocial = MlmSocialMediaEntity().obs;
+  RxList<GetUserProfileUserProfile> userProfiles =
+      RxList<GetUserProfileUserProfile>();
+
   var userId = ''.obs;
   String userImage = '';
 

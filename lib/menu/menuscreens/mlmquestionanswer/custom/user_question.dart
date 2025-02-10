@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/data/constants.dart';
@@ -15,6 +15,7 @@ import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/question_view
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_profile_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
@@ -393,11 +394,8 @@ class _UserQuestionState extends State<UserQuestion>
                         child: GestureDetector(
                           onTap: () async {
                             if (controller.commment.value.text.isEmpty) {
-                              Fluttertoast.showToast(
-                                msg: "Please enter your reply",
-                                toastLength: Toast.LENGTH_LONG,
-                                gravity: ToastGravity.BOTTOM,
-                              );
+                              showToasterrorborder(
+                                  "Please enter your reply", context);
                               return;
                             }
 

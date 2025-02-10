@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -920,7 +919,7 @@ class ManageClasifiedController extends GetxController {
   }
 
   //like
-  Future<void> likedUser(int classifiedId) async {
+  Future<void> likedUser(int classifiedId, BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
     String device = Platform.isAndroid ? 'android' : 'ios';
@@ -954,37 +953,26 @@ class ManageClasifiedController extends GetxController {
             likeCountMap[classifiedId] = (likeCountMap[classifiedId] ?? 0) - 1;
           }
 
-          Fluttertoast.showToast(
-            msg: message!,
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
+          showToasterrorborder(
+            message!,
+            // ignore: use_build_context_synchronously
+            context,
           );
         } else {
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+          //
         }
       } else {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-        );
+        // ignore: use_build_context_synchronously
+        showToasterrorborder("No internet connection", context);
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
+      //
     } finally {
       isLoading(false);
     }
   }
 
-  Future<void> toggleLike(int classifiedId) async {
+  Future<void> toggleLike(int classifiedId, BuildContext context) async {
     bool isLiked = likedStatusMap[classifiedId] ?? false;
     isLiked = !isLiked;
     likedStatusMap[classifiedId] = isLiked;
@@ -992,7 +980,7 @@ class ManageClasifiedController extends GetxController {
         classifiedId, (value) => isLiked ? value + 1 : value - 1,
         ifAbsent: () => isLiked ? 1 : 0);
 
-    await likedUser(classifiedId);
+    await likedUser(classifiedId, context);
   }
 
   // Delete-Classified
@@ -1041,31 +1029,20 @@ class ManageClasifiedController extends GetxController {
             print('data from delete classified: $data');
           }
         } else {
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
           if (kDebugMode) {
             print('Error: ${response.body}');
           }
         }
       } else {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
+        showToasterrorborder(
+          "No internet connection",
+          context,
         );
         if (kDebugMode) {
           print('No internet connection');
         }
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
       if (kDebugMode) {
         print('Error: $e');
       }
@@ -1112,11 +1089,8 @@ class ManageClasifiedController extends GetxController {
           if (kDebugMode) {
             print('Success: $countViewClassifiedEntity');
           }
-          Fluttertoast.showToast(
-            msg: "Success: $countViewClassifiedEntity",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+
+          showToastverifedborder("$countViewClassifiedEntity", context);
         } else {
           //
         }
@@ -1131,7 +1105,7 @@ class ManageClasifiedController extends GetxController {
   }
 
   // Bookmark
-  Future<void> bookmarkUser(int classifiedId) async {
+  Future<void> bookmarkUser(int classifiedId, BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
 
@@ -1168,37 +1142,29 @@ class ManageClasifiedController extends GetxController {
                 (bookmarkCountMap[classifiedId] ?? 0) - 1;
           }
 
-          Fluttertoast.showToast(
-            msg: message!,
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
+          showToasterrorborder(
+            message!,
+            // ignore: use_build_context_synchronously
+            context,
           );
         } else {
-          Fluttertoast.showToast(
-            msg: "Error: ${response.body}",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-          );
+          //
         }
       } else {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
+        showToasterrorborder(
+          "No internet connection",
+          // ignore: use_build_context_synchronously
+          context,
         );
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
+      //
     } finally {
       isLoading(false);
     }
   }
 
-  Future<void> toggleBookMark(int classifiedId) async {
+  Future<void> toggleBookMark(int classifiedId, BuildContext context) async {
     bool isBookmark = bookmarkStatusMap[classifiedId] ?? false;
     isBookmark = !isBookmark;
     bookmarkStatusMap[classifiedId] = isBookmark;
@@ -1206,7 +1172,7 @@ class ManageClasifiedController extends GetxController {
         classifiedId, (value) => isBookmark ? value + 1 : value - 1,
         ifAbsent: () => isBookmark ? 1 : 0);
 
-    await bookmarkUser(classifiedId);
+    await bookmarkUser(classifiedId, context);
   }
 
   Future<void> boostOnTopClassified(int classifiedId, context) async {

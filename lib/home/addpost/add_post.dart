@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -398,7 +398,8 @@ class _AddPostState extends State<AddPost> {
       }
 
       if (fileSizeInKB > 5000) {
-        Fluttertoast.showToast(msg: 'Please Select an image below 5 MB');
+        // ignore: use_build_context_synchronously
+        showToasterrorborder('Please Select an image below 5 MB', context);
         return;
       }
 
@@ -407,7 +408,8 @@ class _AddPostState extends State<AddPost> {
       if (fileSizeInKB > 250) {
         processedFile = await _cropImage(imageFile);
         if (processedFile == null) {
-          Fluttertoast.showToast(msg: 'Please select an image');
+          // ignore: use_build_context_synchronously
+          showToasterrorborder('Please select an image', context);
           if (kDebugMode) {
             print('failed to compress image');
           }

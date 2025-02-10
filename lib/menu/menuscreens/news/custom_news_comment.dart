@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/data/constants.dart';
@@ -271,11 +271,8 @@ class _CommentDialogState extends State<CommentDialogNews> {
                                   onTap: () async {
                                     if (controller
                                         .commment.value.text.isEmpty) {
-                                      Fluttertoast.showToast(
-                                        msg: "Please enter your reply",
-                                        toastLength: Toast.LENGTH_LONG,
-                                        gravity: ToastGravity.BOTTOM,
-                                      );
+                                      showToasterrorborder(
+                                          "Please enter your reply", context);
                                       return;
                                     }
 
@@ -911,11 +908,8 @@ class _CommentDialogState extends State<CommentDialogNews> {
                               child: GestureDetector(
                                 onTap: () async {
                                   if (controller.commment.value.text.isEmpty) {
-                                    Fluttertoast.showToast(
-                                      msg: "Please enter your reply",
-                                      toastLength: Toast.LENGTH_LONG,
-                                      gravity: ToastGravity.BOTTOM,
-                                    );
+                                    showToasterrorborder(
+                                        "Please enter your reply", context);
                                     return;
                                   }
 

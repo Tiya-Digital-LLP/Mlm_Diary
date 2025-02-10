@@ -1,7 +1,7 @@
 import 'dart:io' as io;
 
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
@@ -336,14 +336,8 @@ class _AddClassifiedState extends State<AddQuestionAnswer> {
                         if (controller.selectedCountCategory > 0) {
                           Get.back();
                         } else {
-                          Fluttertoast.showToast(
-                            msg: "Please select at least one category.",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.BOTTOM,
-                            backgroundColor: Colors.red,
-                            textColor: Colors.white,
-                            fontSize: 16.0,
-                          );
+                          showToasterrorborder(
+                              "Please select at least one category.", context);
                         }
                       },
                       isLoading: controller.isLoading,
@@ -442,14 +436,9 @@ class _AddClassifiedState extends State<AddQuestionAnswer> {
                                     .isSubCategorySelectedList[index]) {
                                   controller.toggleSubCategorySelected(index);
                                 } else {
-                                  Fluttertoast.showToast(
-                                    msg: "Please select only one Sub category.",
-                                    toastLength: Toast.LENGTH_SHORT,
-                                    gravity: ToastGravity.BOTTOM,
-                                    backgroundColor: Colors.red,
-                                    textColor: Colors.white,
-                                    fontSize: 16.0,
-                                  );
+                                  showToasterrorborder(
+                                      "Please select only one Sub category.",
+                                      context);
                                 }
                               },
                               child: Padding(
@@ -467,14 +456,9 @@ class _AddClassifiedState extends State<AddQuestionAnswer> {
                                                 .toggleSubCategorySelected(
                                                     index);
                                           } else {
-                                            Fluttertoast.showToast(
-                                              msg:
-                                                  "Please select only one Sub category.",
-                                              toastLength: Toast.LENGTH_SHORT,
-                                              gravity: ToastGravity.BOTTOM,
-                                              backgroundColor: Colors.red,
-                                              textColor: Colors.white,
-                                              fontSize: 16.0,
+                                            showToasterrorborder(
+                                              "Please select only one Sub category.",
+                                              context,
                                             );
                                           }
                                         },
@@ -511,13 +495,9 @@ class _AddClassifiedState extends State<AddQuestionAnswer> {
                         if (controller.selectedCountSubCategory > 0) {
                           Get.back();
                         } else {
-                          Fluttertoast.showToast(
-                            msg: "Please select at least one field.",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.BOTTOM,
-                            backgroundColor: Colors.red,
-                            textColor: Colors.white,
-                            fontSize: 16.0,
+                          showToasterrorborder(
+                            "Please select at least one field.",
+                            context,
                           );
                         }
                       },

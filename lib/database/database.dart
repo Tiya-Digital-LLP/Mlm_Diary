@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
 import 'package:flutter_google_places_hoc081098/google_maps_webservice_places.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:get/get.dart';
 // ignore: depend_on_referenced_packages
 import 'package:google_api_headers/google_api_headers.dart';
@@ -16,6 +16,7 @@ import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_pr
 import 'package:mlmdiary/menu/menuscreens/tutorialvideo/controller/tutorial_video_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_shimmer_database.dart';
 import 'package:mlmdiary/widgets/customfilter/custom_filter.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
@@ -184,10 +185,10 @@ class _DatabaseState extends State<DatabaseScreen> {
                             },
                             onFieldSubmitted: (value) {
                               if (value.isEmpty) {
-                                Fluttertoast.showToast(
-                                    timeInSecForIosWeb: 2,
-                                    msg:
-                                        'Please Search and Save your Business Location');
+                                showToasterrorborder(
+                                    "Please Search and Save your Business Location",
+                                    context);
+
                                 setState(() {
                                   controller.clasifiedController
                                       .locationValidation();

@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -373,14 +373,16 @@ class _ManageBlogPlusIconState extends State<ManageBlogPlusIcon> {
       io.File imageFile = io.File(pickedFile.path);
 
       if (imageFile.lengthSync() / 1024 > 5000) {
-        Fluttertoast.showToast(msg: 'Please select an image below 5 MB');
+        // ignore: use_build_context_synchronously
+        showToasterrorborder('Please select an image below 5 MB', context);
         return;
       }
 
       // Crop image
       io.File? croppedFile = await _cropImage(imageFile);
       if (croppedFile == null || croppedFile.lengthSync() == 0) {
-        Fluttertoast.showToast(msg: 'Image cropping failed');
+        // ignore: use_build_context_synchronously
+        showToasterrorborder('Image cropping failed', context);
         return;
       }
       if (kDebugMode) {
@@ -390,7 +392,8 @@ class _ManageBlogPlusIconState extends State<ManageBlogPlusIcon> {
       // Compress image
       io.File? compressedFile = await _compressImage(croppedFile);
       if (compressedFile == null || compressedFile.lengthSync() == 0) {
-        Fluttertoast.showToast(msg: 'Image compression failed');
+        // ignore: use_build_context_synchronously
+        showToasterrorborder('Image compression failed', context);
         return;
       }
       if (kDebugMode) {
@@ -413,11 +416,15 @@ class _ManageBlogPlusIconState extends State<ManageBlogPlusIcon> {
         if (kDebugMode) {
           print('Temporary file saving failed');
         }
-        Fluttertoast.showToast(
-            msg: 'Failed to save the image. Please try again.');
+        showToasterrorborder(
+            // ignore: use_build_context_synchronously
+            'Failed to save the image. Please try again.',
+            // ignore: use_build_context_synchronously
+            context);
       }
     } else {
-      Fluttertoast.showToast(msg: 'Please select an image');
+      // ignore: use_build_context_synchronously
+      showToasterrorborder('Please select an image', context);
     }
   }
 
@@ -601,13 +608,9 @@ void showSelectCategory(
                       if (controller.selectedCountCategory > 0) {
                         Get.back();
                       } else {
-                        Fluttertoast.showToast(
-                          msg: "Please select at least one field.",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white,
-                          fontSize: 16.0,
+                        showToasterrorborder(
+                          "Please select at least one field.",
+                          context,
                         );
                       }
                     },
@@ -707,13 +710,9 @@ void showSelectSubCategory(
                                   .isSubCategorySelectedList[index]) {
                                 controller.toggleSubCategorySelected(index);
                               } else {
-                                Fluttertoast.showToast(
-                                  msg: "Please select only one Sub category.",
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.BOTTOM,
-                                  backgroundColor: Colors.red,
-                                  textColor: Colors.white,
-                                  fontSize: 16.0,
+                                showToasterrorborder(
+                                  "Please select only one Sub category.",
+                                  context,
                                 );
                               }
                             },
@@ -730,14 +729,9 @@ void showSelectSubCategory(
                                           controller
                                               .toggleSubCategorySelected(index);
                                         } else {
-                                          Fluttertoast.showToast(
-                                            msg:
-                                                "Please select only one Sub category.",
-                                            toastLength: Toast.LENGTH_SHORT,
-                                            gravity: ToastGravity.BOTTOM,
-                                            backgroundColor: Colors.red,
-                                            textColor: Colors.white,
-                                            fontSize: 16.0,
+                                          showToasterrorborder(
+                                            "Please select only one Sub category.",
+                                            context,
                                           );
                                         }
                                       },
@@ -774,13 +768,9 @@ void showSelectSubCategory(
                       if (controller.selectedCountSubCategory > 0) {
                         Get.back();
                       } else {
-                        Fluttertoast.showToast(
-                          msg: "Please select at least one field.",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white,
-                          fontSize: 16.0,
+                        showToasterrorborder(
+                          "Please select at least one field.",
+                          context,
                         );
                       }
                     },

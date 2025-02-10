@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -381,7 +381,8 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
       double fileSizeInKB = fileSizeInBytes / 1024;
 
       if (fileSizeInKB > 5000) {
-        Fluttertoast.showToast(msg: 'Please select an image below 5 MB');
+        // ignore: use_build_context_synchronously
+        showToasterrorborder('Please select an image below 5 MB', context);
         return;
       }
 
@@ -392,7 +393,8 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
         if (croppedFileSizeInKB > 250) {
           croppedFile = await _compressImage(croppedFile);
           if (croppedFile == null) {
-            Fluttertoast.showToast(msg: 'Image compression failed');
+            // ignore: use_build_context_synchronously
+            showToasterrorborder('Image compression failed', context);
             return;
           }
         }
@@ -406,10 +408,12 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
         file.value = tempFile; // Update file observable with new file
         Get.back();
       } else {
-        Fluttertoast.showToast(msg: 'Image cropping failed');
+        // ignore: use_build_context_synchronously
+        showToasterrorborder('Image cropping failed', context);
       }
     } else {
-      Fluttertoast.showToast(msg: 'Please select an image');
+      // ignore: use_build_context_synchronously
+      showToasterrorborder('Please select an image', context);
     }
   }
 
@@ -593,13 +597,9 @@ void showSelectCategory(
                       if (controller.selectedCountCategory > 0) {
                         Get.back();
                       } else {
-                        Fluttertoast.showToast(
-                          msg: "Please select at least one field.",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white,
-                          fontSize: 16.0,
+                        showToasterrorborder(
+                          "Please select at least one field.",
+                          context,
                         );
                       }
                     },
@@ -699,13 +699,9 @@ void showSelectSubCategory(
                                   .isSubCategorySelectedList[index]) {
                                 controller.toggleSubCategorySelected(index);
                               } else {
-                                Fluttertoast.showToast(
-                                  msg: "Please select only one Sub category.",
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.BOTTOM,
-                                  backgroundColor: Colors.red,
-                                  textColor: Colors.white,
-                                  fontSize: 16.0,
+                                showToasterrorborder(
+                                  "Please select only one Sub category.",
+                                  context,
                                 );
                               }
                             },
@@ -722,14 +718,9 @@ void showSelectSubCategory(
                                           controller
                                               .toggleSubCategorySelected(index);
                                         } else {
-                                          Fluttertoast.showToast(
-                                            msg:
-                                                "Please select only one Sub category.",
-                                            toastLength: Toast.LENGTH_SHORT,
-                                            gravity: ToastGravity.BOTTOM,
-                                            backgroundColor: Colors.red,
-                                            textColor: Colors.white,
-                                            fontSize: 16.0,
+                                          showToasterrorborder(
+                                            "Please select only one Sub category.",
+                                            context,
                                           );
                                         }
                                       },
@@ -766,13 +757,9 @@ void showSelectSubCategory(
                       if (controller.selectedCountSubCategory > 0) {
                         Get.back();
                       } else {
-                        Fluttertoast.showToast(
-                          msg: "Please select at least one field.",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white,
-                          fontSize: 16.0,
+                        showToasterrorborder(
+                          "Please select at least one field.",
+                          context,
                         );
                       }
                     },

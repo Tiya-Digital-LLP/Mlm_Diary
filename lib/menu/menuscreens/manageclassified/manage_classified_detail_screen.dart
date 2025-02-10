@@ -66,9 +66,7 @@ class _ClassidiedDetailsScreenState extends State<ManageClassifiedDetailsScreen>
     isLiked.value = newLikedValue;
     likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
 
-    await controller.toggleLike(
-      post.id ?? 0,
-    );
+    await controller.toggleLike(post.id ?? 0, context);
   }
 
   void toggleBookmark() async {
@@ -77,9 +75,7 @@ class _ClassidiedDetailsScreenState extends State<ManageClassifiedDetailsScreen>
     bookmarkCount.value =
         newBookmarkedValue ? bookmarkCount.value + 1 : bookmarkCount.value - 1;
 
-    await controller.toggleBookMark(
-      post.id ?? 0,
-    );
+    await controller.toggleBookMark(post.id ?? 0, context);
   }
 
   late TabController _tabController;

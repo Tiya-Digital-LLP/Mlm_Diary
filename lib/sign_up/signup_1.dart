@@ -6,7 +6,7 @@ import 'package:country_calling_code_picker/functions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_user_type_entity.dart';
@@ -1187,14 +1187,8 @@ class _SignupPageState extends State<SignupPage> {
                       if (controller.selectedCount > 0) {
                         Get.back();
                       } else {
-                        Fluttertoast.showToast(
-                          msg: "Please select at least one field.",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white,
-                          fontSize: 16.0,
-                        );
+                        showToasterrorborder(
+                            "Please select at least one field.", context);
                       }
                     },
                     isLoading: controller.isLoading,

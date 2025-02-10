@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
 import 'package:flutter_google_places_hoc081098/google_maps_webservice_places.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:get/get.dart';
 // ignore: depend_on_referenced_packages
 import 'package:google_api_headers/google_api_headers.dart';
@@ -406,10 +406,9 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                         },
                         onFieldSubmitted: (value) {
                           if (value.isEmpty) {
-                            Fluttertoast.showToast(
-                                timeInSecForIosWeb: 2,
-                                msg:
-                                    'Please Search and Save your Business Location');
+                            showToasterrorborder(
+                                'Please Search and Save your Business Location',
+                                context);
                             setState(() {
                               controller.locationValidation();
                             });
@@ -646,7 +645,8 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
       }
 
       if (fileSizeInKB > 5000) {
-        Fluttertoast.showToast(msg: 'Please Select an image below 5 MB');
+        // ignore: use_build_context_synchronously
+        showToasterrorborder('Please Select an image below 5 MB', context);
         return;
       }
 
@@ -654,7 +654,8 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
       io.File? croppedFile = await _cropImage(imageFile);
 
       if (croppedFile == null) {
-        Fluttertoast.showToast(msg: 'Failed to crop image');
+        // ignore: use_build_context_synchronously
+        showToasterrorborder('Failed to crop image', context);
         return;
       }
 
@@ -671,7 +672,8 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
         processedFile = await _compressImage(croppedFile);
 
         if (processedFile == null) {
-          Fluttertoast.showToast(msg: 'Failed to compress image');
+          // ignore: use_build_context_synchronously
+          showToasterrorborder('Failed to compress image', context);
           if (kDebugMode) {
             print('Failed to compress image');
           }

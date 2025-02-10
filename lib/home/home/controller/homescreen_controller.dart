@@ -21,6 +21,7 @@ import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controlle
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
+import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -77,10 +78,8 @@ class HomeController extends GetxController {
       viewportFraction: 1,
     );
 
-    // ValueNotifier to keep track of the current page
     ValueNotifier<int> currentPageNotifier = ValueNotifier<int>(0);
 
-    // Timer to auto-slide every 6 seconds
     Timer.periodic(const Duration(seconds: 6), (Timer timer) {
       int currentPage = currentPageNotifier.value;
       if (currentPage < popupbanners.length - 1) {
@@ -89,7 +88,6 @@ class HomeController extends GetxController {
         currentPageNotifier.value = 0;
       }
 
-      // Animate to the next page
       pageController.animateToPage(
         currentPageNotifier.value,
         duration: const Duration(milliseconds: 300),
@@ -125,105 +123,105 @@ class HomeController extends GetxController {
             child: Container(
               width: Get.width * 0.6,
               height: Get.height * 0.5,
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16.0),
               ),
-              child: Stack(
+              child: Column(
                 children: [
-                  PageView.builder(
-                    controller: pageController,
-                    itemCount: popupbanners.length,
-                    itemBuilder: (context, index) {
-                      final banner = popupbanners[index];
-                      return GestureDetector(
-                        onTap: () async {
-                          SharedPreferences prefs =
-                              await SharedPreferences.getInstance();
-                          prefs.getString(Constants.accessToken);
-                          if (banner.weblink == null ||
-                              banner.weblink!.isEmpty) {
-                            // ignore: use_build_context_synchronously
-                            showToasterrorborder('No Any Url Found', context);
-                          } else {
-                            launchUrl(
-                              Uri.parse(banner.weblink.toString()),
-                              mode: LaunchMode.externalApplication,
-                            );
-                            // ignore: use_build_context_synchronously
-                            bannerClick(banner.id ?? 0, context);
-                          }
-                        },
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10.0),
-                          child: banner.weblink == null ||
-                                  banner.weblink!.isEmpty
-                              ? Center(
-                                  child: Text(
-                                    'Banner not available',
-                                    style: textStyleW700(
-                                      MediaQuery.of(context).size.width * 0.048,
-                                      AppColors.blackText,
-                                    ).copyWith(
-                                      decoration: TextDecoration.none,
-                                    ),
-                                  ),
-                                )
-                              : Image.network(
-                                  banner.image ?? '',
-                                  fit: BoxFit.fill,
-                                ),
-                        ),
-                      );
-                    },
-                    onPageChanged: (index) {
-                      currentPageNotifier.value = index;
-                    },
-                  ),
-                  Positioned(
-                    right: -10,
-                    top: -10,
-                    child: Material(
-                      color: Colors.transparent,
-                      child: IconButton(
-                        icon: const Icon(Icons.clear,
-                            color: Colors.red, size: 24),
-                        onPressed: () {
+                  6.sbh,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      GestureDetector(
+                        child: const Icon(Icons.clear,
+                            color: Colors.black, size: 24),
+                        onTap: () {
                           Get.back();
                         },
                       ),
+                    ],
+                  ),
+                  3.sbh,
+                  Expanded(
+                    child: PageView.builder(
+                      controller: pageController,
+                      itemCount: popupbanners.length,
+                      itemBuilder: (context, index) {
+                        final banner = popupbanners[index];
+                        return GestureDetector(
+                          onTap: () async {
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            prefs.getString(Constants.accessToken);
+                            if (banner.weblink == null ||
+                                banner.weblink!.isEmpty) {
+                              // ignore: use_build_context_synchronously
+                              showToasterrorborder('No Any Url Found', context);
+                            } else {
+                              launchUrl(
+                                Uri.parse(banner.weblink.toString()),
+                                mode: LaunchMode.externalApplication,
+                              );
+                              // ignore: use_build_context_synchronously
+                              bannerClick(banner.id ?? 0, context);
+                            }
+                          },
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10.0),
+                            child: banner.weblink == null ||
+                                    banner.weblink!.isEmpty
+                                ? Center(
+                                    child: Text(
+                                      'Banner not available',
+                                      style: textStyleW700(
+                                        MediaQuery.of(context).size.width *
+                                            0.048,
+                                        AppColors.blackText,
+                                      ).copyWith(
+                                        decoration: TextDecoration.none,
+                                      ),
+                                    ),
+                                  )
+                                : Image.network(
+                                    banner.image ?? '',
+                                    fit: BoxFit.fill,
+                                  ),
+                          ),
+                        );
+                      },
+                      onPageChanged: (index) {
+                        currentPageNotifier.value = index;
+                      },
                     ),
                   ),
+                  3.sbh,
                   if (popupbanners.length > 1)
-                    Positioned(
-                      bottom: 10,
-                      right: 10,
-                      child: ValueListenableBuilder<int>(
-                        valueListenable: currentPageNotifier,
-                        builder: (context, currentPage, child) {
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children:
-                                List.generate(popupbanners.length, (index) {
-                              return Container(
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 4.0),
-                                width: 8.0,
-                                height: 8.0,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: currentPage == index
-                                      ? AppColors.primaryColor
-                                      // ignore: deprecated_member_use
-                                      : Colors.white.withOpacity(0.5),
-                                ),
-                              );
-                            }),
-                          );
-                        },
-                      ),
+                    ValueListenableBuilder<int>(
+                      valueListenable: currentPageNotifier,
+                      builder: (context, currentPage, child) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: List.generate(popupbanners.length, (index) {
+                            return Container(
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 4.0),
+                              width: 8.0,
+                              height: 8.0,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: currentPage == index
+                                    ? AppColors.primaryColor
+                                    // ignore: deprecated_member_use
+                                    : Colors.white.withOpacity(0.5),
+                              ),
+                            );
+                          }),
+                        );
+                      },
                     ),
+                  6.sbh,
                 ],
               ),
             ),

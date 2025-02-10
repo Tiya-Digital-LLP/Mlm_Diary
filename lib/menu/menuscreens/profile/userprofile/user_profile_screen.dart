@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
@@ -133,11 +133,6 @@ class _UserProfileScreenState extends State<UserProfileScreen>
       await editPostController.toggleProfileFollow(userId, context);
     } catch (e) {
       // Handle API errors
-      Fluttertoast.showToast(
-        msg: "Error: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-      );
     }
   }
 
@@ -199,7 +194,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
     final Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.white,
       appBar: AppBar(
         scrolledUnderElevation: 0,
         centerTitle: true,
@@ -242,12 +237,6 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                     );
                   } catch (e) {
                     isBookmarked.value = originalState;
-
-                    Fluttertoast.showToast(
-                      msg: "Error: $e",
-                      toastLength: Toast.LENGTH_LONG,
-                      gravity: ToastGravity.BOTTOM,
-                    );
                   }
                 },
               ),
