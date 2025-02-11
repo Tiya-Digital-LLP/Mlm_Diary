@@ -31,6 +31,8 @@ class EditPostController extends GetxController {
   Rx<TextEditingController> comments = TextEditingController().obs;
   Rx<TextEditingController> editcomments = TextEditingController().obs;
 
+  var borderColor = Colors.grey.obs;
+
   var isLoading = false.obs;
   RxList<MyPostListData> myPostList = <MyPostListData>[].obs;
   RxList<PostLikeListData> postLikeList = RxList<PostLikeListData>();
@@ -191,8 +193,7 @@ class EditPostController extends GetxController {
     }
   }
 
-  Future<void> addPost(
-      {required File? imageFile, required File? videoFile, context}) async {
+  Future<void> addPost({required File? imageFile, context}) async {
     isLoading(true);
     String device = Platform.isAndroid ? 'android' : 'ios';
 
@@ -213,15 +214,12 @@ class EditPostController extends GetxController {
         request.fields['api_token'] = apiToken ?? '';
         request.fields['comments'] = comments.value.text;
 
-        if (imageFile != null && videoFile != null) {
+        if (imageFile != null) {
           request.fields['comtype'] = 'Photo';
           request.fields['attachment'] = 'Photo';
         } else if (imageFile != null) {
           request.fields['comtype'] = 'Photo';
           request.fields['attachment'] = 'Photo';
-        } else if (videoFile != null) {
-          request.fields['comtype'] = 'Video';
-          request.fields['attachment'] = 'Video';
         } else {
           request.fields['comtype'] = 'Status';
           request.fields['attachment'] = 'Status';
@@ -234,18 +232,6 @@ class EditPostController extends GetxController {
               imageFile.readAsBytes().asStream(),
               imageFile.lengthSync(),
               filename: 'image.jpg',
-            ),
-          );
-        }
-
-        if (videoFile != null) {
-          request.files.add(
-            http.MultipartFile(
-              'attechment',
-              videoFile.readAsBytes().asStream(),
-              videoFile.lengthSync(),
-              filename: 'video.mp4',
-              contentType: MediaType('video', 'mp4'),
             ),
           );
         }
@@ -493,6 +479,87 @@ class EditPostController extends GetxController {
       }
     } catch (error) {
       // Handle network or parsing errors
+      showToasterrorborder("An error occurred: $error", context);
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> fetchTestMyPost(
+    int page,
+    context,
+    int postId,
+  ) async {
+    isLoading.value = true;
+    String device = '';
+    if (Platform.isAndroid) {
+      device = 'android';
+    } else if (Platform.isIOS) {
+      device = 'ios';
+    }
+    if (kDebugMode) {
+      print('Device Name: $device');
+    }
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+
+    try {
+      // Check internet connection
+      var connectivityResult = await (Connectivity().checkConnectivity());
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult == ConnectivityResult.none) {
+        showToasterrorborder("No internet connection", context);
+        isLoading.value = false;
+        return;
+      }
+
+      // Prepare query parameters
+      Map<String, String> formData = {
+        'api_token': apiToken ?? '',
+        'device': device,
+        'page': page.toString(),
+        'post_id': postId.toString(),
+      };
+
+      // Build URL
+      Uri uri = Uri.parse(Constants.baseUrl + Constants.mypost);
+      final response = await http.post(uri, body: formData);
+
+      if (response.statusCode == 200) {
+        // Parse JSON data
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        final MyPostListEntity mypostEntity =
+            MyPostListEntity.fromJson(responseData);
+
+        if (kDebugMode) {
+          print('manage Post data: $responseData');
+        }
+
+        // Store ID using SharedPreferences
+        final List<MyPostListData> myPostData = mypostEntity.data ?? [];
+        if (myPostData.isNotEmpty) {
+          final MyPostListData firstPost = myPostData[0];
+
+          editcomments.value.text = firstPost.comments ?? '';
+          userImage.value = firstPost.attachmentPath ?? '';
+          userImage1.value = firstPost.attachment ?? '';
+        }
+
+        if (kDebugMode) {
+          print('userImage from fetchMyPost: $userImage');
+          print('userImage1 from fetchMyPost: $userImage1');
+        }
+
+        if (page == 1) {
+          myPostList.clear();
+        }
+
+        myPostList.addAll(mypostEntity.data ?? []);
+      } else {
+        showToasterrorborder("Failed to fetch data", context);
+      }
+    } catch (error) {
       showToasterrorborder("An error occurred: $error", context);
     } finally {
       isLoading.value = false;

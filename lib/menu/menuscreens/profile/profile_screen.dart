@@ -354,7 +354,6 @@ class _ProfileScreenState extends State<ProfileScreen>
                               FocusScope.of(context).unfocus();
                               controller.addPost(
                                 imageFile: file.value,
-                                videoFile: videoFile.value,
                               );
                             },
                             child: Text(

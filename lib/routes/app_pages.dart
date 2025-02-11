@@ -197,7 +197,10 @@ class AppPages {
     ),
     GetPage(
       name: Routes.userprofilescreencopy,
-      page: () => const UserProfileScreenCopy(),
+      page: () {
+        final int userId = Get.arguments;
+        return UserProfileScreenCopy(userId: userId);
+      },
     ),
     GetPage(
       name: Routes.accountsettingscreen,

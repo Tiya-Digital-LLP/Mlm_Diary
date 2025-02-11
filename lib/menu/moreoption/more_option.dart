@@ -11,6 +11,7 @@ import 'package:mlmdiary/firstscreen/home_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/login/controller/login_controller.dart';
 import 'package:mlmdiary/menu/controller/profile_controller.dart';
+import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
 import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_shimmer_more.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
@@ -64,6 +65,8 @@ const List<Choice> choices = <Choice>[
 
 class _moreState extends State<MoreOptionScreen> {
   final ProfileController controller = Get.put(ProfileController());
+  final EditPostController editPostController = Get.put(EditPostController());
+
   final LoginController loginController = Get.put(LoginController());
   final HomeScreenController homeScreenController =
       Get.put(HomeScreenController());
@@ -153,9 +156,20 @@ class _moreState extends State<MoreOptionScreen> {
                 children: [
                   GestureDetector(
                     onTap: () {
+                      // Get.toNamed(
+                      //   Routes.profilescreen,
+                      //   arguments: controller.userProfile.value.userProfile,
+                      // );
                       Get.toNamed(
-                        Routes.profilescreen,
-                        arguments: controller.userProfile.value.userProfile,
+                        Routes.userprofilescreencopy,
+                        arguments:
+                            controller.userProfile.value.userProfile!.id ?? 0,
+                      );
+                      controller.fetchTestUserProfile();
+                      editPostController.fetchTestMyPost(
+                        1,
+                        context,
+                        controller.userProfile.value.userProfile!.id ?? 0,
                       );
                     },
                     child: Container(

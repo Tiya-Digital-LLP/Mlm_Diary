@@ -14,6 +14,8 @@ class ProfileController extends GetxController {
   RxList<GetUserProfileUserProfile> userProfiles =
       RxList<GetUserProfileUserProfile>();
 
+  var post = 0.obs;
+
   var userId = ''.obs;
   String userImage = '';
 
@@ -78,6 +80,65 @@ class ProfileController extends GetxController {
         if (kDebugMode) {
           print('userId from fetchUserProfile: $userId');
         }
+      } else {
+        if (kDebugMode) {
+          print("Error: ${response.body}");
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error: $e");
+      }
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<void> fetchTestUserProfile() async {
+    isLoading(true);
+
+    final prefs = await SharedPreferences.getInstance();
+    final apiToken = prefs.getString(Constants.accessToken);
+
+    if (apiToken == null || apiToken.isEmpty) {
+      // Handle the case where there is no token
+      isLoading(false);
+      return;
+    }
+
+    try {
+      final response = await http.post(
+        Uri.parse('${Constants.baseUrl}${Constants.userprofile}'),
+        body: {
+          'api_token': apiToken,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        final userProfileEntity = GetUserProfileEntity.fromJson(responseData);
+
+        if (userProfileEntity.userProfile != null) {
+          final GetUserProfileUserProfile firstPost =
+              userProfileEntity.userProfile!;
+
+          post.value = firstPost.totalPost ?? 0;
+          if (kDebugMode) {
+            print('postcount: $post');
+          }
+        } else {
+          if (kDebugMode) {
+            print("User profile is null");
+          }
+        }
+
+        // Ensure this list is updated in controller
+        userProfiles.clear();
+        if (userProfileEntity.userProfile != null) {
+          userProfiles.add(userProfileEntity.userProfile!);
+        }
+
+        isLoading(false);
       } else {
         if (kDebugMode) {
           print("Error: ${response.body}");

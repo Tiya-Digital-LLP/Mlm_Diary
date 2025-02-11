@@ -130,6 +130,9 @@ class ClasifiedController extends GetxController {
 
   var selectedCategoryId = 0.obs;
   var selectedSubCategoryId = 0.obs;
+  
+  var selectedPostIndex = 0.obs;
+  int currentPage = 1;
 
   @override
   void onInit() {
@@ -502,7 +505,7 @@ class ClasifiedController extends GetxController {
           var getClassifiedEntity = GetClassifiedEntity.fromJson(data);
 
           if (kDebugMode) {
-            print('Success: $getClassifiedEntity');
+            print('getClassified Data: ${getClassifiedEntity.data}');
           }
 
           if (getClassifiedEntity.data != null &&
@@ -526,6 +529,67 @@ class ClasifiedController extends GetxController {
         }
       } else {
         //
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error: $e');
+      }
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<void> getTestClassified(int page, {int? classifiedId}) async {
+    isLoading(true);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = Platform.isAndroid ? 'android' : 'ios';
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri = Uri.parse('${Constants.baseUrl}${Constants.getclassified}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['page'] = page.toString();
+        request.fields['search'] = search.value.text;
+        request.fields['category'] = selectedCategoryId.value.toString();
+        request.fields['subcategory'] = selectedSubCategoryId.value.toString();
+
+        if (classifiedId != null) {
+          request.fields['classified_id'] = classifiedId.toString();
+        }
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var getClassifiedEntity = GetClassifiedEntity.fromJson(data);
+
+          if (getClassifiedEntity.data != null &&
+              getClassifiedEntity.data!.isNotEmpty) {
+            if (page == 1) {
+              classifiedList.value = getClassifiedEntity.data!;
+            } else {
+              classifiedList.addAll(getClassifiedEntity.data!);
+            }
+            isEndOfData(false);
+          } else {
+            if (page == 1) {
+              classifiedList.clear();
+            }
+            isEndOfData(true);
+          }
+        } else {
+          if (kDebugMode) {
+            print("Response body: ${response.body}");
+          }
+        }
       }
     } catch (e) {
       if (kDebugMode) {

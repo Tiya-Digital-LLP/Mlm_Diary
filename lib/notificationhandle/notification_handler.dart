@@ -72,13 +72,14 @@ class NotificationHandler {
           // Classified
 
           case 'classified':
-            if (kDebugMode) {
-              print('Navigating to classified with post_id: $postId');
-            }
-
-            Get.toNamed(Routes.mlmclassifieddetailcopy, arguments: {
-              'id': postId,
-            });
+            Get.toNamed(
+              Routes.mlmclassifieddetailtest,
+              arguments: postId,
+            );
+            clasifiedController.fetchClassifiedDetail(
+              postId,
+              Get.context,
+            );
             break;
 
           // News
