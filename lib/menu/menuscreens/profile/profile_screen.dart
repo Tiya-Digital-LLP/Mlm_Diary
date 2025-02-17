@@ -99,8 +99,7 @@ class _ProfileScreenState extends State<ProfileScreen>
   Future<void> _loadMoreViewers(int userId) async {
     if (!isFetchingViewrs) {
       isFetchingViewrs = true;
-      int nextPage = (userProfileController.views.length ~/ 10) +
-          1; // Assuming 10 items per page
+      int nextPage = (userProfileController.views.length ~/ 10) + 1;
       await userProfileController.getViews(nextPage, userId);
       isFetchingViewrs = false;
     }

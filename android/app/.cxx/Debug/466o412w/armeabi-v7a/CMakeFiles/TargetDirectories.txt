@@ -1,0 +1,2 @@
+/Users/chandrakantviradiya/Documents/mlmdiary 15022024/android/app/.cxx/Debug/466o412w/armeabi-v7a/CMakeFiles/edit_cache.dir
+/Users/chandrakantviradiya/Documents/mlmdiary 15022024/android/app/.cxx/Debug/466o412w/armeabi-v7a/CMakeFiles/rebuild_cache.dir

@@ -972,14 +972,12 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                                   .comments.value.text.isEmpty) {
                                 showToasterrorborder(
                                     'Please First Write Something', context);
-                                editPostController.comments
-                                    .refresh(); // Update UI
+                                editPostController.comments.refresh();
                               } else {
                                 editPostController.addPost(
                                   imageFile: file.value,
                                 );
-                                editPostController.comments
-                                    .refresh(); // Update UI after posting
+                                editPostController.comments.refresh();
                               }
                             },
                             child: Row(
@@ -1112,7 +1110,7 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
     } else {
       // ignore: use_build_context_synchronously
       showToasterrorborder('Please select an image', context);
-      return; // Exit function if no image is selected
+      return;
     }
   }
 
