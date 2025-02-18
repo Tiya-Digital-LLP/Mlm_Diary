@@ -680,7 +680,7 @@ class ClasifiedController extends GetxController {
           var bookmarkUserEntity = BookmarkUserEntity.fromJson(data);
           var message = bookmarkUserEntity.message;
 
-          // Update the liked status and like count based on the message
+            // Update the liked status and like count based on the message
           if (message == 'You have bookmark this classified') {
             bookmarkStatusMap[classifiedId] = true;
             bookmarkCountMap[classifiedId] =

@@ -43,6 +43,8 @@ class Constants {
   static const String savecompany = "/user/savecompany";
   static const String login = "/user/login";
   static const String forgotpassword = "/user/forgotpassword_otp";
+  static const String verifyforgotpassword = "/user/verify_forgotpassword_otp";
+
   static const String changepassword = "/user/changepassword";
   static const String termsandcondition = "/termscondition";
   static const String aboutus = "/aboutus";

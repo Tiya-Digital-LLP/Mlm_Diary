@@ -124,6 +124,34 @@ class AccountSeetingController extends GetxController {
     super.onInit();
   }
 
+  void resetValuesMobile() {
+    mobile.value.clear();
+    mobileOtp.value.clear();
+    isMobileTyping.value = false;
+    mobileError.value = false;
+    mobileOtpError.value = false;
+    showPhoneOtpField.value = false;
+  }
+
+  void resetValuesEmail() {
+    email.value.clear();
+    emailOtp.value.clear();
+    isEmailTyping.value = false;
+    emailError.value = false;
+    emailOtpError.value = false;
+    showEmailOtpField.value = false;
+  }
+
+  void resetValuesPassword() {
+    password.value.clear();
+    confirmPassword.value.clear();
+    isPasswordTyping.value = false;
+    isConfirmPasswordTyping.value = false;
+
+    passwordError.value = false;
+    confirmPasswordError.value = false;
+  }
+
   Future<void> fetchUserProfile() async {
     isLoading(true);
 
@@ -478,9 +506,9 @@ class AccountSeetingController extends GetxController {
 
   Future<void> sendPhoneOtp(
       String mobile, String countryCode, BuildContext context) async {
-    if (isLoading.value) return; // Prevent multiple requests
+    if (isLoading.value) return;
 
-    isLoading.value = true; // Start loading
+    isLoading.value = true;
 
     String device =
         Platform.isAndroid ? 'android' : (Platform.isIOS ? 'ios' : 'unknown');
@@ -492,7 +520,6 @@ class AccountSeetingController extends GetxController {
     final prefs = await SharedPreferences.getInstance();
     final apiToken = prefs.getString(Constants.accessToken);
 
-    // Check for network connectivity before making an API request
     var connectivityResult = await Connectivity().checkConnectivity();
     // ignore: unrelated_type_equality_checks
     if (connectivityResult == ConnectivityResult.none) {
@@ -530,8 +557,10 @@ class AccountSeetingController extends GetxController {
           if (kDebugMode) {
             print("OTP sent successfully: ${otpEntity.message}");
           }
-          // ignore: use_build_context_synchronously
-          showToastverifedborder('OTP sent successfully', context);
+          showToastverifedborder(
+              'OTP Sent Successfully on WhatsApp or Message',
+              // ignore: use_build_context_synchronously
+              context);
           showPhoneOtpField.value = true;
         } else {
           if (kDebugMode) {
@@ -564,9 +593,9 @@ class AccountSeetingController extends GetxController {
 
   Future<void> updateVerifyPhoneOtp(
       String otp, String countryCode, context) async {
-    if (isLoading.value) return; // Prevent multiple requests
+    if (isLoading.value) return;
 
-    isLoading.value = true; // Start loading
+    isLoading.value = true;
 
     String device =
         Platform.isAndroid ? 'android' : (Platform.isIOS ? 'ios' : '');
@@ -578,7 +607,6 @@ class AccountSeetingController extends GetxController {
     final prefs = await SharedPreferences.getInstance();
     final apiToken = prefs.getString(Constants.accessToken) ?? "";
 
-    // Check for network connectivity
     var connectivityResult = await Connectivity().checkConnectivity();
     // ignore: unrelated_type_equality_checks
     if (connectivityResult == ConnectivityResult.none) {
@@ -613,6 +641,7 @@ class AccountSeetingController extends GetxController {
             UpdatePhoneVerifyOtpEntity.fromJson(jsonBody);
 
         if (verifyPhoneOtpEntity.status == 1) {
+          stopTimer();
           if (kDebugMode) {
             print(
                 "Phone OTP verification successful: ${verifyPhoneOtpEntity.message}");
@@ -727,11 +756,12 @@ class AccountSeetingController extends GetxController {
           final otpemailEntity = ChangeEmailEntity.fromJson(jsonBody);
 
           if (otpemailEntity.result == 1) {
-            if (kDebugMode) {
-              print("OTP sent successfully: ${otpemailEntity.messsage}");
-            }
-            // ignore: use_build_context_synchronously
-            showToastverifedborder('${jsonBody['message']}', context);
+            startTimer();
+
+            showToastverifedborder(
+                'updateEmailOTP Sent Successfully Please Check Your Email',
+                // ignore: use_build_context_synchronously
+                context);
 
             showEmailOtpField.value = true;
           } else {

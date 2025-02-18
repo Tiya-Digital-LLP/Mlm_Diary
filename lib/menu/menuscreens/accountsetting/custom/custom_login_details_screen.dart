@@ -118,6 +118,9 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                             InkWell(
                               onTap: () {
                                 isChanging.toggle();
+                                if (!isChanging.value) {
+                                  controller.resetValuesMobile();
+                                }
                               },
                               child: Obx(() => Text(
                                     isChanging.value ? 'Cancel' : 'Change',
@@ -288,6 +291,89 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                             ),
                                           ),
                                         ),
+                                        10.sbh,
+                                        Obx(
+                                          () => (controller.timerValue.value ==
+                                                  0)
+                                              ? GestureDetector(
+                                                  onTap: () async {
+                                                    FocusScope.of(context)
+                                                        .unfocus();
+                                                    controller.isMobileTyping
+                                                        .value = true;
+                                                    controller
+                                                        .mobileValidation();
+
+                                                    if (controller.mobile.value
+                                                        .text.isEmpty) {
+                                                      showToasterrorborder(
+                                                          "Please Enter Mobile Number",
+                                                          context);
+                                                    } else {
+                                                      if (controller
+                                                              .selectedCountry
+                                                              .value
+                                                              ?.callingCode ==
+                                                          '+91') {
+                                                        if (controller
+                                                                .mobile
+                                                                .value
+                                                                .text
+                                                                .length !=
+                                                            10) {
+                                                          showToasterrorborder(
+                                                              "Please Enter Valid 10-Digit Mobile Number",
+                                                              context);
+                                                          return;
+                                                        }
+                                                      } else {
+                                                        if (controller
+                                                                .mobile
+                                                                .value
+                                                                .text
+                                                                .length <
+                                                            6) {
+                                                          showToasterrorborder(
+                                                              "Please Enter Valid Mobile Number",
+                                                              context);
+                                                          return;
+                                                        }
+                                                      }
+
+                                                      await controller
+                                                          .sendPhoneOtp(
+                                                        controller
+                                                            .mobile.value.text
+                                                            .trim(),
+                                                        controller
+                                                            .selectedCountry
+                                                            .value!
+                                                            .callingCode
+                                                            .replaceAll(
+                                                                '+', ''),
+                                                        context,
+                                                      );
+                                                      controller.timerValue
+                                                          .value = 30;
+                                                      controller.stopTimer();
+                                                      controller.startTimer();
+                                                    }
+                                                  },
+                                                  child: Text(
+                                                    "Resend OTP",
+                                                    style: textStyleW500(
+                                                      size.width * 0.042,
+                                                      AppColors.primaryColor,
+                                                    ),
+                                                  ),
+                                                )
+                                              : Text(
+                                                  'Resend OTP ${controller.timerValue.value} seconds',
+                                                  style: textStyleW500(
+                                                      size.width * 0.042,
+                                                      AppColors.blackText),
+                                                ),
+                                        ),
                                         16.sbh,
                                         NormalButton(
                                           onPressed: () {
@@ -371,6 +457,8 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                               .replaceAll('+', ''),
                                           context,
                                         );
+                                        controller.timerValue.value = 30;
+                                        controller.startTimer();
                                       }
                                     },
                                     text: 'Send OTP',
@@ -422,6 +510,9 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                             InkWell(
                               onTap: () {
                                 isChangingEmail.toggle();
+                                if (!isChangingEmail.value) {
+                                  controller.resetValuesEmail();
+                                }
                               },
                               child: Obx(() => Text(
                                     isChangingEmail.value ? 'Cancel' : 'Change',
@@ -511,30 +602,73 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                           ),
                                         ),
                                       ),
+                                      10.sbh,
+                                      Obx(
+                                        () => (controller.timerValue.value == 0)
+                                            ? GestureDetector(
+                                                onTap: () {
+                                                  FocusScope.of(context)
+                                                      .unfocus();
+                                                  controller.isEmailTyping
+                                                      .value = true;
+
+                                                  controller.emailValidation();
+
+                                                  if (controller.email.value
+                                                      .text.isEmpty) {
+                                                    showToasterrorborder(
+                                                        "Please Enter Email",
+                                                        context);
+                                                  } else if (controller
+                                                          .emailError.value ==
+                                                      true) {
+                                                    showToasterrorborder(
+                                                        "Please Enter Valid Email",
+                                                        context);
+                                                  } else {
+                                                    controller
+                                                        .updateEmail(context);
+                                                    controller
+                                                        .timerValue.value = 30;
+                                                    controller.stopTimer();
+                                                    controller.startTimer();
+                                                  }
+                                                },
+                                                child: Text(
+                                                  "Resend OTP",
+                                                  style: textStyleW500(
+                                                    size.width * 0.042,
+                                                    AppColors.primaryColor,
+                                                  ),
+                                                ),
+                                              )
+                                            : Text(
+                                                'Resend OTP ${controller.timerValue.value} seconds',
+                                                style: textStyleW500(
+                                                    size.width * 0.042,
+                                                    AppColors.blackText),
+                                              ),
+                                      ),
                                       16.sbh,
                                       NormalButton(
                                         onPressed: () {
                                           FocusScope.of(context).unfocus();
-                                          controller.isEmailOtpTyping.value =
-                                              true;
+                                          controller.isEmailTyping.value = true;
 
-                                          controller.emailOtpValidation();
+                                          controller.emailValidation();
 
                                           if (controller
-                                              .emailOtp.value.text.isEmpty) {
+                                              .email.value.text.isEmpty) {
                                             showToasterrorborder(
-                                                "Please Enter Email OTP",
-                                                context);
+                                                "Please Enter Email", context);
                                           } else if (controller
-                                                  .emailOtp.value.text.length <
-                                              6) {
+                                                  .emailError.value ==
+                                              true) {
                                             showToasterrorborder(
-                                                "OTP Must be 4 Digits",
+                                                "Please Enter Valid Email",
                                                 context);
                                           } else {
-                                            controller.updateVerifyEmailOtp(
-                                                controller.emailOtp.value.text,
-                                                context);
+                                            controller.updateEmail(context);
                                           }
                                         },
                                         text: 'Verify',
@@ -565,6 +699,8 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                             context);
                                       } else {
                                         controller.updateEmail(context);
+                                        controller.timerValue.value = 30;
+                                        controller.startTimer();
                                       }
                                     },
                                     text: 'Send OTP',
@@ -616,6 +752,9 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                             InkWell(
                               onTap: () {
                                 isChangingPassword.toggle();
+                                if (!isChangingPassword.value) {
+                                  controller.resetValuesPassword();
+                                }
                               },
                               child: Obx(
                                 () => Text(

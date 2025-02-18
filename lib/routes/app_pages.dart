@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/classified/add_classified.dart';
 import 'package:mlmdiary/classified/classified_detail_screen.dart';
@@ -50,7 +50,6 @@ import 'package:mlmdiary/menu/menuscreens/news/mlm_news.dart';
 import 'package:mlmdiary/menu/menuscreens/news/my_news_detail_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/news/news_details_notification.dart';
 import 'package:mlmdiary/menu/menuscreens/news/news_details_screen.dart';
-import 'package:mlmdiary/menu/menuscreens/plan&companyintrest/custom/add_company.dart';
 import 'package:mlmdiary/menu/menuscreens/plan&companyintrest/planandcompanyintrest.dart';
 import 'package:mlmdiary/menu/menuscreens/premiumplan/premium_plan.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/edit_post.dart';
@@ -88,7 +87,21 @@ class AppPages {
     ),
     GetPage(
       name: Routes.otp,
-      page: () => const EnterOTPScreen(),
+      page: () {
+        if (kDebugMode) {
+          print('Arguments type: ${Get.arguments.runtimeType}');
+          print('Arguments content: ${Get.arguments}');
+        }
+
+        final arguments = Get.arguments as Map<String, dynamic>;
+        return EnterOTPScreen(
+          email: arguments['email'] as String,
+          phone: arguments['phone'] as String,
+          countrycode: arguments['countrycode'] as String,
+          otp: arguments['otp'] as int,
+          userId: arguments['userId'] as int,
+        );
+      },
     ),
     GetPage(
       name: Routes.resetPassword,
@@ -369,10 +382,6 @@ class AppPages {
       page: () => FavouritrDetailScreen(
         key: UniqueKey(),
       ),
-    ),
-    GetPage(
-      name: Routes.addcompany,
-      page: () => const AddCompany(),
     ),
     GetPage(
       name: Routes.addcompanyclassified,

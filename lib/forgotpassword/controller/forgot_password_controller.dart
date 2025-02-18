@@ -1,9 +1,12 @@
+import 'dart:async';
 import 'dart:convert';
+import 'package:country_calling_code_picker/country.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:mlmdiary/data/constants.dart';
+import 'package:mlmdiary/forgotpassword/enter_otp_screen.dart';
 import 'package:mlmdiary/generated/forgot_password_entity.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
@@ -26,6 +29,8 @@ class ForgotPasswordController extends GetxController {
   RxBool mobileError = false.obs;
   var isLoading = false.obs;
 
+  final Rx<Country?> selectedCountry = Rx<Country?>(null);
+
   void emailValidation() {
     String emailPattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
     RegExp regex = RegExp(emailPattern);
@@ -38,11 +43,20 @@ class ForgotPasswordController extends GetxController {
   }
 
   void mobileValidation() {
-    if (mobile.value.text.isEmpty || mobile.value.text.length <= 6) {
-      mobileError.value = true;
+    if (selectedCountry.value?.callingCode == '+91') {
+      if (mobile.value.text.isEmpty || mobile.value.text.length != 10) {
+        mobileError.value = true;
+      } else {
+        mobileError.value = false;
+      }
     } else {
-      mobileError.value = false;
+      if (mobile.value.text.isEmpty || mobile.value.text.length < 6) {
+        mobileError.value = true;
+      } else {
+        mobileError.value = false;
+      }
     }
+
     if (mobileError.value) {
       isMobileTyping.value = true;
     }
@@ -77,6 +91,7 @@ class ForgotPasswordController extends GetxController {
 
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
+
         ForgotPasswordEntity forgotPasswordEntity =
             ForgotPasswordEntity.fromJson(responseData);
         if (forgotPasswordEntity.result == 1) {
@@ -85,20 +100,15 @@ class ForgotPasswordController extends GetxController {
               "Please Check Your Email or Mobile for OTP",
               // ignore: use_build_context_synchronously
               context);
-          if (forgotPasswordEntity.userId != null) {
-          } else {
-            showToasterrorborder(
-                "User ID is null, cannot save to shared preferences",
-                // ignore: use_build_context_synchronously
-                context);
-          }
 
-          Get.toNamed(
-            Routes.otp,
-            arguments: {
-              'otp': forgotPasswordEntity.userOtp,
-              'userId': forgotPasswordEntity.userId,
-            },
+          Get.to(
+            () => EnterOTPScreen(
+              otp: forgotPasswordEntity.userOtp ?? 0,
+              userId: forgotPasswordEntity.userId ?? 0,
+              email: email.value.text,
+              phone: mobile.value.text,
+              countrycode: countryCode,
+            ),
           );
         } else {
           showToasterrorborder(
@@ -117,6 +127,55 @@ class ForgotPasswordController extends GetxController {
         print('Error: $e');
       }
     } finally {
+      isLoading(false);
+    }
+  }
+
+  Future verifyForgotPasswordRequest(
+      context, String countryCode, String otp, int userId) async {
+    if (kDebugMode) {
+      print("Start loading");
+    }
+    isLoading(true);
+    try {
+      final response = await http.post(
+        Uri.parse('${Constants.baseUrl}${Constants.verifyforgotpassword}'),
+        body: {
+          'email': email.value.text,
+          'mobile': mobile.value.text,
+          'countrycode': countryCode.toString(),
+          'otp': otp.toString(),
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+
+        ForgotPasswordEntity forgotPasswordEntity =
+            ForgotPasswordEntity.fromJson(responseData);
+        if (forgotPasswordEntity.result == 1) {
+          showToastverifedborder(
+              'OTP is Verified. Please Set Password', context);
+          Get.offNamed(Routes.resetPassword, arguments: {'userId': userId});
+          stopTimer();
+        } else {
+          showToasterrorborder(
+              forgotPasswordEntity.message ?? "Forgot password request failed",
+              context);
+        }
+      } else {
+        showToasterrorborder(
+            "Forgot password request failed: ${response.reasonPhrase}",
+            context);
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error verifyForgotPasswordRequest: $e');
+      }
+    } finally {
+      if (kDebugMode) {
+        print("Stop loading");
+      }
       isLoading(false);
     }
   }
@@ -173,5 +232,29 @@ class ForgotPasswordController extends GetxController {
         print('Error: $e');
       }
     }
+  }
+
+  final RxInt timerValue = 30.obs;
+  Timer? _timer;
+
+  void startTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (timerValue.value > 0) {
+        timerValue.value--;
+      } else {
+        _timer?.cancel();
+      }
+    });
+  }
+
+  void stopTimer() {
+    _timer?.cancel();
+    timerValue.value = 30;
+  }
+
+  @override
+  void onClose() {
+    _timer?.cancel();
+    super.onClose();
   }
 }

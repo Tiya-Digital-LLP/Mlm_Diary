@@ -566,7 +566,7 @@ class _SignupPageState extends State<SignupPage> {
                                                                     controller
                                                                         .emailOtp
                                                                         .value,
-                                                                length: 6,
+                                                                length: 4,
                                                                 onChanged:
                                                                     (pin) {
                                                                   controller
@@ -575,7 +575,7 @@ class _SignupPageState extends State<SignupPage> {
                                                                       .text = pin;
 
                                                                   if (pin.length ==
-                                                                      6) {
+                                                                      4) {
                                                                     String
                                                                         email =
                                                                         controller
@@ -686,9 +686,6 @@ class _SignupPageState extends State<SignupPage> {
                                                                             .value = 30;
                                                                         controller
                                                                             .startTimer();
-                                                                        showToastverifedborder(
-                                                                            "Email OTP Resend Successfully",
-                                                                            context);
                                                                       } else {
                                                                         showToasterrorborder(
                                                                             "Please enter a valid email",
@@ -743,7 +740,7 @@ class _SignupPageState extends State<SignupPage> {
                                                                         .value
                                                                         .text
                                                                         .length <
-                                                                    6) {
+                                                                    4) {
                                                                   showToasterrorborder(
                                                                       "OTP Must be 6 Digits",
                                                                       context);
@@ -826,9 +823,6 @@ class _SignupPageState extends State<SignupPage> {
                                                       "Please Enter Valid Email",
                                                       context);
                                                 } else {
-                                                  showToastverifedborder(
-                                                      "Email OTP Sent Successfully",
-                                                      context);
                                                   controller.sendEmailOtp(
                                                       email, userId, context);
                                                   controller.emailOtpSend
@@ -853,12 +847,12 @@ class _SignupPageState extends State<SignupPage> {
                                                 child: Pinput(
                                                   controller: controller
                                                       .mobileOtp.value,
-                                                  length: 6,
+                                                  length: 4,
                                                   onChanged: (pin) {
                                                     controller.mobileOtp.value
                                                         .text = pin;
 
-                                                    if (pin.length == 6) {
+                                                    if (pin.length == 4) {
                                                       FocusScope.of(context)
                                                           .unfocus();
                                                       controller.verifyPhoneOtp(
@@ -982,7 +976,7 @@ class _SignupPageState extends State<SignupPage> {
                                                           .value
                                                           .text
                                                           .length <
-                                                      6) {
+                                                      4) {
                                                     showToasterrorborder(
                                                         "Mobile OTP Must be 6 Digits",
                                                         context);

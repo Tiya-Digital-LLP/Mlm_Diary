@@ -233,8 +233,6 @@ class FavouriteController extends GetxController {
     String? apiToken = prefs.getString(Constants.accessToken);
 
     try {
-      favouriteList.clear();
-
       var connectivityResult = await (Connectivity().checkConnectivity());
       // ignore: unrelated_type_equality_checks
       if (connectivityResult == ConnectivityResult.none) {

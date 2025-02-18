@@ -55,8 +55,6 @@ class _ProfileScreenState extends State<ProfileScreen>
   static List<io.File> imagesList = <io.File>[];
   final ImagePicker _picker = ImagePicker();
 
-  Rx<io.File?> videoFile = Rx<io.File?>(null);
-
   RxBool isFollowing = false.obs;
   final ProfileController profileController = Get.put(ProfileController());
   void deletePost(int index) async {
@@ -299,8 +297,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                         children: [
                           InkWell(
                             onTap: () {
-                              if (file.value == null &&
-                                  videoFile.value == null) {
+                              if (file.value == null) {
                                 showModalBottomSheet(
                                   backgroundColor: Colors.white,
                                   context: context,
@@ -332,10 +329,12 @@ class _ProfileScreenState extends State<ProfileScreen>
                                         right: 0,
                                         child: GestureDetector(
                                           onTap: () {
-                                            setState(() {
-                                              imagesList.remove(file.value);
-                                              file.value = null;
-                                            });
+                                            setState(
+                                              () {
+                                                imagesList.remove(file.value);
+                                                file.value = null;
+                                              },
+                                            );
                                           },
                                           child: Icon(
                                             Icons.delete,

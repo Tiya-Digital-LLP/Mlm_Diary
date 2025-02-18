@@ -32,12 +32,6 @@ class _AddPostState extends State<EditPost> {
   static List<io.File> imagesList = <io.File>[];
   final ImagePicker _picker = ImagePicker();
 
-  // video
-  // late VideoPlayerController _videoPlayerController;
-  // static List<io.File> videoList = <io.File>[];
-
-  Rx<io.File?> videoFile = Rx<io.File?>(null);
-
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -261,7 +255,7 @@ class _AddPostState extends State<EditPost> {
                   children: [
                     InkWell(
                       onTap: () {
-                        if (file.value == null && videoFile.value == null) {
+                        if (file.value == null) {
                           showModalBottomSheet(
                             backgroundColor: Colors.white,
                             context: context,
@@ -285,6 +279,7 @@ class _AddPostState extends State<EditPost> {
                           backgroundColor: AppColors.primaryColor,
                         ),
                         onPressed: () {
+                          FocusScope.of(context).unfocus();
                           controller.editPost(
                             file.value,
                             widget.postId,

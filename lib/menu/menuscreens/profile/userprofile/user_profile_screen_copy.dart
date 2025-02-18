@@ -965,35 +965,48 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                                   ),
                           ),
                           10.sbw,
-                          InkWell(
-                            onTap: () {
-                              FocusScope.of(context).unfocus();
-                              if (editPostController
-                                  .comments.value.text.isEmpty) {
-                                showToasterrorborder(
-                                    'Please First Write Something', context);
-                                editPostController.comments.refresh();
-                              } else {
-                                editPostController.addPost(
-                                  imageFile: file.value,
-                                );
-                                editPostController.comments.refresh();
-                              }
-                            },
-                            child: Row(
-                              children: [
-                                Text(
-                                  'Post',
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.blackText,
-                                  ),
-                                ),
-                                const Icon(Icons.arrow_right)
-                              ],
-                            ),
-                          ),
+                          Obx(() {
+                            return InkWell(
+                              onTap: editPostController.isLoadingPostbtn.value
+                                  ? null
+                                  : () {
+                                      FocusScope.of(context).unfocus();
+                                      if (editPostController
+                                          .comments.value.text.isEmpty) {
+                                        showToasterrorborder(
+                                            'Please First Write Something',
+                                            context);
+                                        editPostController.comments.refresh();
+                                      } else {
+                                        editPostController.addPost(
+                                            imageFile: file.value);
+                                        editPostController.comments.refresh();
+                                      }
+                                    },
+                              child: Row(
+                                children: [
+                                  editPostController.isLoadingPostbtn.value
+                                      ? SizedBox(
+                                          width: 20,
+                                          height: 20,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: AppColors.blackText,
+                                          ),
+                                        )
+                                      : Text(
+                                          'Post',
+                                          style: TextStyle(
+                                            fontSize: 16.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: AppColors.blackText,
+                                          ),
+                                        ),
+                                  const Icon(Icons.arrow_right),
+                                ],
+                              ),
+                            );
+                          }),
                         ],
                       ),
                     ),

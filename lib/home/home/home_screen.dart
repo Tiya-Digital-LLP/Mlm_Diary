@@ -40,6 +40,7 @@ import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_shimmer_classified.dart';
 import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_shimmer_user_card.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
+import 'package:mlmdiary/widgets/normal_button.dart';
 import 'package:mlmdiary/widgets/remimaining_count_controller./remaining_count.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
@@ -233,62 +234,9 @@ class _HomeScreenState extends State<HomeScreen> {
         onWillPop: () async {
           if (backPressedCount == 0) {
             backPressedCount++;
-            showModalBottomSheet(
-              context: context,
-              builder: (context) {
-                return Container(
-                  padding: const EdgeInsets.all(16.0),
-                  height: 125.0,
-                  decoration: BoxDecoration(
-                      color: AppColors.white,
-                      borderRadius: BorderRadius.circular(12)),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Align(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          "MLM Diary",
-                          style: TextStyle(fontSize: 18.0),
-                        ),
-                      ),
-                      const Align(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          "Are you sure you want to exit the App?",
-                          style: TextStyle(fontSize: 12.0),
-                        ),
-                      ),
-                      const Spacer(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          TextButton(
-                            onPressed: () {
-                              Get.back();
-                            },
-                            child: Text(
-                              "Cancel",
-                              style: TextStyle(color: AppColors.primaryColor),
-                            ),
-                          ),
-                          8.sbw,
-                          TextButton(
-                            onPressed: () {
-                              SystemNavigator.pop();
-                            },
-                            child: Text(
-                              "Okay",
-                              style: TextStyle(color: AppColors.primaryColor),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              },
-            );
+
+            _showLogoutDialog(context);
+
             return false;
           } else {
             return true;
@@ -847,6 +795,98 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
         icon: SvgPicture.asset(Assets.svgPlusIcon),
       ),
+    );
+  }
+
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        final Size size = MediaQuery.of(context).size;
+
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          contentPadding: EdgeInsets.zero,
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: double.infinity,
+                height: 100,
+                decoration: BoxDecoration(
+                  color: AppColors.primaryColor,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(12),
+                    topRight: Radius.circular(12),
+                  ),
+                ),
+                child: Center(
+                  child: Image.asset(
+                    Assets.imagesLogoutCheck,
+                    height: 50,
+                  ),
+                ),
+              ),
+              16.sbh,
+              Column(
+                children: [
+                  Text(
+                    'Are you sure?',
+                    style: textStyleW700(
+                      size.width * 0.040,
+                      AppColors.blackText,
+                    ),
+                  ),
+                  5.sbh,
+                  Text(
+                    'Do You Want to Exit the App?',
+                    style: textStyleW400(
+                      size.width * 0.035,
+                      AppColors.blackText,
+                    ),
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                            child: TextButton(
+                                style: ElevatedButton.styleFrom(),
+                                onPressed: () {
+                                  Get.back();
+                                },
+                                child: Text(
+                                  'Cancel',
+                                  style: textStyleW700(
+                                      size.width * 0.035, AppColors.blackText),
+                                ))),
+                        5.sbw,
+                        Expanded(
+                          child: NormalButton(
+                            height: 30,
+                            onPressed: () async {
+                              SystemNavigator.pop();
+                            },
+                            text: 'Okay',
+                            isLoading: controller.isLoading,
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 

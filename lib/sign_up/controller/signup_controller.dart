@@ -186,8 +186,8 @@ class SignupController extends GetxController {
     mobile.value.clear();
   }
 
-  Future<void> sendDomesticPhoneOtp(String mobile, String name,
-      String countryCode, BuildContext context) async {
+  Future<void> sendDomesticPhoneOtp(
+      String mobile, String name, String countryCode, context) async {
     isLoading(true);
     String device = '';
     if (Platform.isAndroid) {
@@ -232,7 +232,6 @@ class SignupController extends GetxController {
               print("Domestic OTP sent successfully: ${otpEntity.message}");
             }
             toastification.show(
-              // ignore: use_build_context_synchronously
               context: context,
               alignment: Alignment.bottomCenter,
               backgroundColor: AppColors.white,
@@ -251,29 +250,10 @@ class SignupController extends GetxController {
 
             setDefaultUserId(otpEntity.userId);
           } else if (jsonBody['status'] == 0) {
-            // Show a popup and navigate to the login screen
-            showDialog(
-              // ignore: use_build_context_synchronously
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: const Text('Error'),
-                  content: Text('${jsonBody['message']}'),
-                  actions: <Widget>[
-                    TextButton(
-                      child: const Text('Okay'),
-                      onPressed: () {
-                        Get.back();
-                        Get.toNamed(
-                            Routes.login); // Navigate to the login screen
-                      },
-                    ),
-                  ],
-                );
-              },
-            );
+            showToasterrorborder('${jsonBody['message']}', context);
+
             showMobileotpField.value = false;
-            isMobileOtpScreenVisible.value = false; // Hide the OTP entry column
+            isMobileOtpScreenVisible.value = false;
           } else {
             if (kDebugMode) {
               print("Failed to send domestic OTP: ${otpEntity.message}");
@@ -525,28 +505,14 @@ class SignupController extends GetxController {
               print(
                   "Phone OTP verification successful: ${verifyPhoneOtpEntity.message}");
             }
+            showToastverifedborder('Your Phone Number is Verified', context);
             stopTimer();
 
             showEmailField.value = true;
             mobileReadOnly.value = true;
             countryCodeReadOnly.value = true;
           } else if (jsonBody['status'] == 0) {
-            toastification.show(
-              // ignore: use_build_context_synchronously
-              context: context,
-              alignment: Alignment.bottomCenter,
-              backgroundColor: AppColors.white,
-              type: ToastificationType.error,
-              style: ToastificationStyle.flatColored,
-              showProgressBar: false,
-              autoCloseDuration: const Duration(seconds: 3),
-              icon: Image.asset(
-                Assets.imagesCancel,
-                height: 35,
-              ),
-              primaryColor: Colors.red,
-              title: Text('${jsonBody['message']}'),
-            );
+            showToasterrorborder('${jsonBody['message']}', context);
           } else {
             if (kDebugMode) {
               print(
@@ -611,32 +577,12 @@ class SignupController extends GetxController {
           final emailOtpEntity = EmailOtpEntity.fromJson(jsonBody);
 
           if (emailOtpEntity.status == 1) {
-            if (kDebugMode) {
-              print(
-                  "Email OTP sent successfully for email: ${emailOtpEntity.message}");
-            }
-            showToastverifedborder('${jsonBody['message']}', context);
+            showToastverifedborder(
+                'Email OTP sent successfully for email', context);
             emailOtpSend.value = true;
           } else if (jsonBody['status'] == 0) {
-            showDialog(
-              // ignore: use_build_context_synchronously
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: const Text('Error'),
-                  content: Text('${jsonBody['message']}'),
-                  actions: <Widget>[
-                    TextButton(
-                      child: const Text('Okay'),
-                      onPressed: () {
-                        Get.back();
-                        Get.toNamed(Routes.login);
-                      },
-                    ),
-                  ],
-                );
-              },
-            );
+            showToasterrorborder('${jsonBody['message']}', context);
+
             isEmailOtpScreenVisible.value = false;
           } else {
             if (kDebugMode) {
@@ -646,7 +592,6 @@ class SignupController extends GetxController {
             emailOtpSend.value = false;
           }
         } else {
-          // Handle HTTP error
           if (kDebugMode) {
             print(
                 "HTTP error: Failed to send Email OTP. Status code: ${response.statusCode}");
@@ -655,7 +600,6 @@ class SignupController extends GetxController {
           emailOtpSend.value = false;
         }
       } catch (e) {
-        // Handle other errors
         if (kDebugMode) {
           print("An error occurred: $e");
         }
@@ -802,25 +746,11 @@ class SignupController extends GetxController {
               print(
                   "Email verified successfully: ${emailVerifyEntity.message}");
             }
+            showToastverifedborder('Your Email is Verified', context);
             emailReadOnly.value = true;
             showPasswordField.value = true;
           } else {
-            toastification.show(
-              // ignore: use_build_context_synchronously
-              context: context,
-              alignment: Alignment.bottomCenter,
-              backgroundColor: AppColors.white,
-              type: ToastificationType.error,
-              style: ToastificationStyle.flatColored,
-              showProgressBar: false,
-              autoCloseDuration: const Duration(seconds: 3),
-              icon: Image.asset(
-                Assets.imagesCancel,
-                height: 35,
-              ),
-              primaryColor: Colors.red,
-              title: Text('${jsonBody['message']}'),
-            );
+            showToastverifedborder('${jsonBody['message']}', context);
             if (kDebugMode) {
               print("Failed to verify email: ${emailVerifyEntity.message}");
             }

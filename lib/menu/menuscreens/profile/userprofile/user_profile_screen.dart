@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/database/controller/database_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
@@ -31,7 +30,7 @@ import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_shimmer_classified
 import 'package:mlmdiary/widgets/custom_shimmer_loader/profile_shimmer/axis_scroll_shimmer.dart';
 import 'package:mlmdiary/widgets/custom_shimmer_loader/profile_shimmer/axis_scroll_social_shimmer.dart';
 import 'package:mlmdiary/widgets/custom_shimmer_loader/profile_shimmer/personal_info_shimmer.dart';
-import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
+import 'package:scrollable_tab_view/scrollable_tab_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class UserProfileScreen extends StatefulWidget {
@@ -61,8 +60,6 @@ class _UserProfileScreenState extends State<UserProfileScreen>
   final ProfileController profileController = Get.put(ProfileController());
   RxBool isExpanded = true.obs;
 
-  late TabController _tabController;
-
   RxBool isBookmarked = false.obs;
   late ScrollController _viewersScrollController;
   late ScrollController _followersScrollController;
@@ -79,7 +76,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
     super.initState();
     final int userId = Get.arguments['user_id'] as int;
 
-    Future.delayed(const Duration(seconds: 1), () {
+    Future.delayed(const Duration(seconds: 3), () {
       showShimmer.value = false;
     });
 
@@ -114,21 +111,16 @@ class _UserProfileScreenState extends State<UserProfileScreen>
         _loadMoreViewers(userId);
       }
     });
-
-    _tabController = TabController(length: 2, vsync: this);
   }
 
   void _toggleFollow(int userId) async {
     try {
-      // Fetch current follow status
       bool followStatus = await _fetchFollowStatus(userId);
 
-      // Defer the state update
       WidgetsBinding.instance.addPostFrameCallback((_) {
         isFollowing.value = !followStatus;
       });
 
-      // Call the API to toggle the follow status
       // ignore: use_build_context_synchronously
       await editPostController.toggleProfileFollow(userId, context);
     } catch (e) {
@@ -249,305 +241,284 @@ class _UserProfileScreenState extends State<UserProfileScreen>
             ? controller.mlmDetailsDatabaseList[0]
             : null;
         return post != null
-            ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    color: AppColors.white,
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        showShimmer.value
-                            ? const PersonalInfoShimmer()
-                            : personlaInfo(),
-                        5.sbh,
-                        showShimmer.value
-                            ? AxisScrollShimmer(
-                                width: size.width,
-                              )
-                            : axisScroll(),
-                        15.sbh,
-                        axisScrollsocial(),
-                      ],
+            ? SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      color: AppColors.white,
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          showShimmer.value
+                              ? const PersonalInfoShimmer()
+                              : personlaInfo(),
+                          5.sbh,
+                          showShimmer.value
+                              ? AxisScrollShimmer(
+                                  width: size.width,
+                                )
+                              : axisScroll(),
+                          15.sbh,
+                          axisScrollsocial(),
+                        ],
+                      ),
                     ),
-                  ),
-                  const Divider(color: Colors.black26, height: 2.0),
-                  Container(
-                    color: AppColors.white,
-                    child: TabBar(
+                    const Divider(color: Colors.black26, height: 2.0),
+                    ScrollableTab(
                       indicatorSize: TabBarIndicatorSize.tab,
-                      controller: _tabController,
                       indicatorColor: AppColors.primaryColor,
                       indicatorWeight: 1.5,
                       labelColor: AppColors.primaryColor,
+                      dividerColor: Colors.grey,
+                      onTap: (value) {
+                        if (kDebugMode) {
+                          print('index $value');
+                        }
+                      },
                       tabs: [
-                        Tab(text: 'Posts (${post.totalPost})'),
+                        Tab(text: 'Posts ${post.totalPost}'),
                         const Tab(text: 'About Me'),
                       ],
-                    ),
-                  ),
-                  Expanded(
-                    child: TabBarView(
-                      controller: _tabController,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              top: 20, left: 16, right: 16),
-                          child: CustomScrollView(
-                            slivers: [
+                        SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              10.sbh,
                               Obx(() {
                                 if (controller.isLoading.value &&
                                     userProfileController.postallList.isEmpty) {
-                                  return SliverToBoxAdapter(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8),
-                                      child: ListView.builder(
-                                        physics:
-                                            const AlwaysScrollableScrollPhysics(),
-                                        itemCount: 4,
-                                        shrinkWrap: true,
-                                        itemBuilder: (context, index) {
-                                          return const CustomShimmerClassified(
-                                              width: 175, height: 240);
-                                        },
-                                      ),
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8),
+                                    child: ListView.builder(
+                                      physics:
+                                          const AlwaysScrollableScrollPhysics(),
+                                      itemCount: 4,
+                                      shrinkWrap: true,
+                                      itemBuilder: (context, index) {
+                                        return const CustomShimmerClassified(
+                                            width: 175, height: 240);
+                                      },
                                     ),
                                   );
                                 }
                                 if (userProfileController.postallList.isEmpty) {
-                                  return const SliverToBoxAdapter(
-                                    child: Center(
-                                      child: Text(
-                                        'Data not found',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black,
-                                        ),
+                                  return const Center(
+                                    child: Text(
+                                      'Data not found',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
                                       ),
                                     ),
                                   );
                                 }
-                                return SliverList(
-                                  delegate: SliverChildBuilderDelegate(
-                                    (context, index) {
-                                      if (index ==
-                                          userProfileController
-                                              .postallList.length) {
-                                        return Center(
-                                          child: CustomLottieAnimation(
-                                            child: Lottie.asset(
-                                              Assets.lottieLottie,
-                                            ),
-                                          ),
+                                return ListView.builder(
+                                  padding: EdgeInsets.zero,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount:
+                                      userProfileController.postallList.length,
+                                  itemBuilder: (context, index) {
+                                    final post = userProfileController
+                                        .postallList[index];
+                                    Widget cardWidget;
+                                    switch (post.type) {
+                                      case 'classified':
+                                        cardWidget = ClassifiedUserCard(
+                                          updatedateTime:
+                                              post.datemodified ?? '',
+                                          userImage:
+                                              post.userData?.imagePath ?? '',
+                                          userName: post.userData?.name ?? '',
+                                          postTitle: post.title ?? '',
+                                          postCaption: post.description ?? '',
+                                          postImage: post.imageUrl ?? '',
+                                          dateTime: post.createdate ?? '',
+                                          viewcounts: post.pgcnt ?? 0,
+                                          userProfileController:
+                                              userProfileController,
+                                          bookmarkId: post.id ?? 0,
+                                          url: post.urlcomponent ?? '',
+                                          type: post.type ?? '',
+                                          manageBlogController:
+                                              manageBlogController,
+                                          manageNewsController:
+                                              manageNewsController,
+                                          clasifiedController:
+                                              clasifiedController,
+                                          editpostController:
+                                              editPostController,
+                                          questionAnswerController:
+                                              questionAnswerController,
+                                          likedbyuser:
+                                              post.likedByUser ?? false,
+                                          bookmarkedbyuser:
+                                              post.bookmarkByUser ?? false,
+                                          likecount: post.totallike ?? 0,
+                                          classifiedId: post.id ?? 0,
+                                          commentcount: post.totalcomment ?? 0,
+                                          isPopular: post.popular == 'Y',
                                         );
-                                      }
-                                      final post = userProfileController
-                                          .postallList[index];
-                                      Widget cardWidget;
-                                      switch (post.type) {
-                                        case 'classified':
-                                          cardWidget = ClassifiedUserCard(
-                                            updatedateTime:
-                                                post.datemodified ?? '',
-                                            userImage:
-                                                post.userData?.imagePath ?? '',
-                                            userName: post.userData?.name ?? '',
-                                            postTitle: post.title ?? '',
-                                            postCaption: post.description ?? '',
-                                            postImage: post.imageUrl ?? '',
-                                            dateTime: post.createdate ?? '',
-                                            viewcounts: post.pgcnt ?? 0,
-                                            userProfileController:
-                                                userProfileController,
-                                            bookmarkId: post.id ?? 0,
-                                            url: post.urlcomponent ?? '',
-                                            type: post.type ?? '',
-                                            manageBlogController:
-                                                manageBlogController,
-                                            manageNewsController:
-                                                manageNewsController,
-                                            clasifiedController:
-                                                clasifiedController,
-                                            editpostController:
-                                                editPostController,
-                                            questionAnswerController:
-                                                questionAnswerController,
-                                            likedbyuser:
-                                                post.likedByUser ?? false,
-                                            bookmarkedbyuser:
-                                                post.bookmarkByUser ?? false,
-                                            likecount: post.totallike ?? 0,
-                                            classifiedId: post.id ?? 0,
-                                            commentcount:
-                                                post.totalcomment ?? 0,
-                                            isPopular: post.popular == 'Y',
-                                          );
-                                          break;
+                                        break;
 
-                                        case 'blog':
-                                          cardWidget = BlogUserCard(
-                                            updatedateTime:
-                                                post.datemodified ?? '',
-                                            userImage:
-                                                post.userData?.imagePath ?? '',
-                                            userName: post.userData?.name ?? '',
-                                            postTitle: post.title ?? '',
-                                            postCaption: post.description ?? '',
-                                            postImage: post.imageUrl ?? '',
-                                            dateTime: post.createdate ?? '',
-                                            viewcounts: post.pgcnt ?? 0,
-                                            userProfileController:
-                                                userProfileController,
-                                            bookmarkId: post.id ?? 0,
-                                            url: post.urlcomponent ?? '',
-                                            type: post.type ?? '',
-                                            manageBlogController:
-                                                manageBlogController,
-                                            manageNewsController:
-                                                manageNewsController,
-                                            clasifiedController:
-                                                clasifiedController,
-                                            editpostController:
-                                                editPostController,
-                                            questionAnswerController:
-                                                questionAnswerController,
-                                            likedbyuser:
-                                                post.likedByUser ?? false,
-                                            likedCount: post.totallike ?? 0,
-                                            commentcount:
-                                                post.totalcomment ?? 0,
-                                            bookmarkedbyuser:
-                                                post.bookmarkByUser ?? false,
-                                          );
-                                          break;
-                                        case 'news':
-                                          cardWidget = NewsUserCard(
-                                            updatedateTime:
-                                                post.datemodified ?? '',
-                                            userImage:
-                                                post.userData?.imagePath ?? '',
-                                            userName: post.userData?.name ?? '',
-                                            postTitle: post.title ?? '',
-                                            postCaption: post.description ?? '',
-                                            postImage: post.imageUrl ?? '',
-                                            dateTime: post.createdate ?? '',
-                                            viewcounts: post.pgcnt ?? 0,
-                                            userProfileController:
-                                                userProfileController,
-                                            bookmarkId: post.id ?? 0,
-                                            url: post.urlcomponent ?? '',
-                                            type: post.type ?? '',
-                                            manageBlogController:
-                                                manageBlogController,
-                                            manageNewsController:
-                                                manageNewsController,
-                                            clasifiedController:
-                                                clasifiedController,
-                                            editpostController:
-                                                editPostController,
-                                            questionAnswerController:
-                                                questionAnswerController,
-                                            likedbyuser:
-                                                post.likedByUser ?? false,
-                                            commentcount:
-                                                post.totalcomment ?? 0,
-                                            likedCount: post.totallike ?? 0,
-                                            bookmarkedbyuser:
-                                                post.bookmarkByUser ?? false,
-                                          );
-                                          break;
+                                      case 'blog':
+                                        cardWidget = BlogUserCard(
+                                          updatedateTime:
+                                              post.datemodified ?? '',
+                                          userImage:
+                                              post.userData?.imagePath ?? '',
+                                          userName: post.userData?.name ?? '',
+                                          postTitle: post.title ?? '',
+                                          postCaption: post.description ?? '',
+                                          postImage: post.imageUrl ?? '',
+                                          dateTime: post.createdate ?? '',
+                                          viewcounts: post.pgcnt ?? 0,
+                                          userProfileController:
+                                              userProfileController,
+                                          bookmarkId: post.id ?? 0,
+                                          url: post.urlcomponent ?? '',
+                                          type: post.type ?? '',
+                                          manageBlogController:
+                                              manageBlogController,
+                                          manageNewsController:
+                                              manageNewsController,
+                                          clasifiedController:
+                                              clasifiedController,
+                                          editpostController:
+                                              editPostController,
+                                          questionAnswerController:
+                                              questionAnswerController,
+                                          likedbyuser:
+                                              post.likedByUser ?? false,
+                                          likedCount: post.totallike ?? 0,
+                                          commentcount: post.totalcomment ?? 0,
+                                          bookmarkedbyuser:
+                                              post.bookmarkByUser ?? false,
+                                        );
+                                        break;
+                                      case 'news':
+                                        cardWidget = NewsUserCard(
+                                          updatedateTime:
+                                              post.datemodified ?? '',
+                                          userImage:
+                                              post.userData?.imagePath ?? '',
+                                          userName: post.userData?.name ?? '',
+                                          postTitle: post.title ?? '',
+                                          postCaption: post.description ?? '',
+                                          postImage: post.imageUrl ?? '',
+                                          dateTime: post.createdate ?? '',
+                                          viewcounts: post.pgcnt ?? 0,
+                                          userProfileController:
+                                              userProfileController,
+                                          bookmarkId: post.id ?? 0,
+                                          url: post.urlcomponent ?? '',
+                                          type: post.type ?? '',
+                                          manageBlogController:
+                                              manageBlogController,
+                                          manageNewsController:
+                                              manageNewsController,
+                                          clasifiedController:
+                                              clasifiedController,
+                                          editpostController:
+                                              editPostController,
+                                          questionAnswerController:
+                                              questionAnswerController,
+                                          likedbyuser:
+                                              post.likedByUser ?? false,
+                                          commentcount: post.totalcomment ?? 0,
+                                          likedCount: post.totallike ?? 0,
+                                          bookmarkedbyuser:
+                                              post.bookmarkByUser ?? false,
+                                        );
+                                        break;
 
-                                        case 'question':
-                                          cardWidget = QuestionUserCard(
-                                            updatedateTime:
-                                                post.datemodified ?? '',
-                                            userImage:
-                                                post.userData?.imagePath ?? '',
-                                            userName: post.userData?.name ?? '',
-                                            postTitle: post.title ?? '',
-                                            postCaption: post.description ?? '',
-                                            postImage: post.imageUrl ?? '',
-                                            dateTime: post.createdate ?? '',
-                                            viewcounts: post.pgcnt ?? 0,
-                                            userProfileController:
-                                                userProfileController,
-                                            bookmarkId: post.id ?? 0,
-                                            url: post.urlcomponent ?? '',
-                                            type: post.type ?? '',
-                                            manageBlogController:
-                                                manageBlogController,
-                                            manageNewsController:
-                                                manageNewsController,
-                                            clasifiedController:
-                                                clasifiedController,
-                                            editpostController:
-                                                editPostController,
-                                            questionAnswerController:
-                                                questionAnswerController,
-                                            likedbyuser:
-                                                post.likedByUser ?? false,
-                                            likedCount: post.totallike ?? 0,
-                                            bookmarkedbyuser:
-                                                post.bookmarkByUser ?? false,
-                                          );
-                                          break;
-                                        case 'post':
-                                          cardWidget = PostUserCard(
-                                            updatedateTime:
-                                                post.datemodified ?? '',
-                                            userImage:
-                                                post.userData?.imagePath ?? '',
-                                            userName: post.userData?.name ?? '',
-                                            postTitle: post.title ?? '',
-                                            postCaption: post.description ?? '',
-                                            postImage: post.imageUrl ?? '',
-                                            dateTime: post.createdate ?? '',
-                                            viewcounts: post.pgcnt ?? 0,
-                                            userProfileController:
-                                                userProfileController,
-                                            bookmarkId: post.id ?? 0,
-                                            url: post.urlcomponent ?? '',
-                                            type: post.type ?? '',
-                                            manageBlogController:
-                                                manageBlogController,
-                                            manageNewsController:
-                                                manageNewsController,
-                                            clasifiedController:
-                                                clasifiedController,
-                                            editpostController:
-                                                editPostController,
-                                            questionAnswerController:
-                                                questionAnswerController,
-                                            likedbyuser:
-                                                post.likedByUser ?? false,
-                                            likecount: post.totallike ?? 0,
-                                            commentcount:
-                                                post.totalcomment ?? 0,
-                                            likedCount: post.totallike ?? 0,
-                                            bookmarkedbyuser:
-                                                post.bookmarkByUser ?? false,
-                                          );
-                                          break;
-                                        default:
-                                          cardWidget = const SizedBox();
-                                      }
-                                      return Padding(
-                                        padding: const EdgeInsets.only(
-                                            bottom: 12, left: 16, right: 16),
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            _navigateToDetails(post);
-                                          },
-                                          child: cardWidget,
-                                        ),
-                                      );
-                                    },
-                                    childCount: userProfileController
-                                            .postallList.length +
-                                        (controller.isLoading.value ? 1 : 0),
-                                  ),
+                                      case 'question':
+                                        cardWidget = QuestionUserCard(
+                                          updatedateTime:
+                                              post.datemodified ?? '',
+                                          userImage:
+                                              post.userData?.imagePath ?? '',
+                                          userName: post.userData?.name ?? '',
+                                          postTitle: post.title ?? '',
+                                          postCaption: post.description ?? '',
+                                          postImage: post.imageUrl ?? '',
+                                          dateTime: post.createdate ?? '',
+                                          viewcounts: post.pgcnt ?? 0,
+                                          userProfileController:
+                                              userProfileController,
+                                          bookmarkId: post.id ?? 0,
+                                          url: post.urlcomponent ?? '',
+                                          type: post.type ?? '',
+                                          manageBlogController:
+                                              manageBlogController,
+                                          manageNewsController:
+                                              manageNewsController,
+                                          clasifiedController:
+                                              clasifiedController,
+                                          editpostController:
+                                              editPostController,
+                                          questionAnswerController:
+                                              questionAnswerController,
+                                          likedbyuser:
+                                              post.likedByUser ?? false,
+                                          likedCount: post.totallike ?? 0,
+                                          bookmarkedbyuser:
+                                              post.bookmarkByUser ?? false,
+                                        );
+                                        break;
+                                      case 'post':
+                                        cardWidget = PostUserCard(
+                                          updatedateTime:
+                                              post.datemodified ?? '',
+                                          userImage:
+                                              post.userData?.imagePath ?? '',
+                                          userName: post.userData?.name ?? '',
+                                          postTitle: post.title ?? '',
+                                          postCaption: post.description ?? '',
+                                          postImage: post.imageUrl ?? '',
+                                          dateTime: post.createdate ?? '',
+                                          viewcounts: post.pgcnt ?? 0,
+                                          userProfileController:
+                                              userProfileController,
+                                          bookmarkId: post.id ?? 0,
+                                          url: post.urlcomponent ?? '',
+                                          type: post.type ?? '',
+                                          manageBlogController:
+                                              manageBlogController,
+                                          manageNewsController:
+                                              manageNewsController,
+                                          clasifiedController:
+                                              clasifiedController,
+                                          editpostController:
+                                              editPostController,
+                                          questionAnswerController:
+                                              questionAnswerController,
+                                          likedbyuser:
+                                              post.likedByUser ?? false,
+                                          likecount: post.totallike ?? 0,
+                                          commentcount: post.totalcomment ?? 0,
+                                          likedCount: post.totallike ?? 0,
+                                          bookmarkedbyuser:
+                                              post.bookmarkByUser ?? false,
+                                        );
+                                        break;
+                                      default:
+                                        cardWidget = const SizedBox();
+                                    }
+                                    return Padding(
+                                      padding: const EdgeInsets.only(
+                                          bottom: 12, left: 16, right: 16),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          _navigateToDetails(post);
+                                        },
+                                        child: cardWidget,
+                                      ),
+                                    );
+                                  },
                                 );
                               }),
                             ],
@@ -837,10 +808,12 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                         ),
                       ],
                     ),
-                  ),
-                ],
+                  ],
+                ),
               )
-            : const Center(child: Text('No data available'));
+            : const Center(
+                child: Text('No data available'),
+              );
       }),
     );
   }

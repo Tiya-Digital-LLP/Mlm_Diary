@@ -5,14 +5,14 @@ class CustomSearchAddCompany extends StatefulWidget {
   final TextEditingController controller;
   final Function(String) onSubmitted;
   final Function(String) onChanged;
-  final List<String> suggestions; // New parameter for suggestions
+  final List<String> suggestions;
 
   const CustomSearchAddCompany({
     super.key,
     required this.controller,
     required this.onSubmitted,
     required this.onChanged,
-    required this.suggestions, // Initialize the suggestions parameter
+    required this.suggestions,
   });
 
   @override
@@ -24,6 +24,22 @@ class _CustomSearchInputState extends State<CustomSearchAddCompany> {
   bool showSuggestions = false;
 
   @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(_updateSuffixIcon);
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_updateSuffixIcon);
+    super.dispose();
+  }
+
+  void _updateSuffixIcon() {
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
@@ -31,7 +47,6 @@ class _CustomSearchInputState extends State<CustomSearchAddCompany> {
         color: AppColors.white,
       ),
       height: 40,
-      margin: const EdgeInsets.only(left: 6.0),
       width: MediaQuery.of(context).size.width / 2.2,
       child: Stack(
         children: [
@@ -40,17 +55,27 @@ class _CustomSearchInputState extends State<CustomSearchAddCompany> {
             controller: widget.controller,
             textInputAction: TextInputAction.search,
             decoration: InputDecoration(
-              contentPadding: const EdgeInsets.only(top: -4),
               border: InputBorder.none,
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
               prefixIconConstraints: const BoxConstraints(minWidth: 24),
               prefixIcon: Padding(
-                padding: const EdgeInsets.only(right: 5.0, left: 5.0),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: Icon(
                   Icons.search,
                   color: AppColors.blackText,
                   size: 20,
                 ),
               ),
+              suffixIcon: widget.controller.text.isNotEmpty
+                  ? IconButton(
+                      icon: Icon(Icons.add,
+                          color: AppColors.primaryColor, size: 20),
+                      onPressed: () {
+                        widget.onSubmitted(widget.controller.text);
+                      },
+                    )
+                  : null,
               hintText: 'Search',
               hintStyle: TextStyle(
                 fontSize: 14.0,

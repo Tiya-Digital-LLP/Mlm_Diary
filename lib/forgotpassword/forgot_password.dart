@@ -29,7 +29,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
   final ForgotPasswordController controller =
       Get.put(ForgotPasswordController());
   late TabController _tabController;
-  final Rx<Country?> selectedCountry = Rx<Country?>(null);
 
   @override
   void initState() {
@@ -40,12 +39,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
 
   void initCountry() async {
     Country? defaultCountry = await getCountryByCountryCode(context, 'IN');
-    selectedCountry.value = defaultCountry;
+    controller.selectedCountry.value = defaultCountry;
     if (kDebugMode) {
-      if (selectedCountry.value != null) {
-        print('Country name: ${selectedCountry.value!.name}');
-        print('Country calling code: ${selectedCountry.value!.callingCode}');
-        print('Country code: ${selectedCountry.value!}');
+      if (controller.selectedCountry.value != null) {
+        print('Country name: ${controller.selectedCountry.value!.name}');
+        print(
+            'Country calling code: ${controller.selectedCountry.value!.callingCode}');
+        print('Country code: ${controller.selectedCountry.value!}');
       } else {
         print('Country is null');
       }
@@ -54,7 +54,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
 
   String getFormattedCountryCode() {
     // Removes the '+' sign from the country code
-    return selectedCountry.value?.callingCode.replaceAll('+', '') ?? '';
+    return controller.selectedCountry.value?.callingCode.replaceAll('+', '') ??
+        '';
   }
 
   @override
@@ -144,7 +145,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                                       "Please Enter Email", context);
                                 } else {
                                   controller.sendForgotPasswordRequest(
-                                      context, getFormattedCountryCode());
+                                    context,
+                                    getFormattedCountryCode(),
+                                    
+                                  );
+
+                                  controller.startTimer();
                                 }
                               },
                               text: 'Submit',
@@ -169,7 +175,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                                       height: 58,
                                       child: BorderContainer(
                                         height: 58,
-                                        child: selectedCountry.value == null
+                                        child: controller
+                                                    .selectedCountry.value ==
+                                                null
                                             ? Container()
                                             : Center(
                                                 child: Row(
@@ -179,7 +187,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                                                       CrossAxisAlignment.center,
                                                   children: [
                                                     Image.asset(
-                                                      selectedCountry
+                                                      controller.selectedCountry
                                                           .value!.flag,
                                                       package:
                                                           countryCodePackageName,
@@ -188,7 +196,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                                                     ),
                                                     8.sbw,
                                                     Text(
-                                                      selectedCountry
+                                                      controller.selectedCountry
                                                           .value!.callingCode,
                                                       textAlign:
                                                           TextAlign.center,
@@ -246,7 +254,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                                         "Please Enter Mobile", context);
                                   } else {
                                     controller.sendForgotPasswordRequest(
-                                        context, getFormattedCountryCode());
+                                      context,
+                                      getFormattedCountryCode(),
+                                    );
+                                    controller.startTimer();
                                   }
                                 },
                                 isLoading: controller.isLoading,
@@ -267,7 +278,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
   void _onPressedShowBottomSheet() async {
     final country = await showCountryPickerSheet(context);
     if (country != null) {
-      selectedCountry.value = country;
+      controller.selectedCountry.value = country;
     }
   }
 }

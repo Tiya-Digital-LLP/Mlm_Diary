@@ -1,18 +1,30 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
+import 'package:mlmdiary/forgotpassword/controller/forgot_password_controller.dart';
 import 'package:mlmdiary/generated/assets.dart';
-import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
+import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
-import 'package:mlmdiary/widgets/custom_button.dart';
+import 'package:mlmdiary/widgets/loader/custom_three_dot_animation.dart';
+import 'package:pinput/pinput.dart';
 
 class EnterOTPScreen extends StatefulWidget {
+  final String email;
+  final String phone;
+  final String countrycode;
+  final int otp;
+  final int userId;
+
   const EnterOTPScreen({
     super.key,
+    required this.otp,
+    required this.userId,
+    required this.email,
+    required this.phone,
+    required this.countrycode,
   });
 
   @override
@@ -20,31 +32,18 @@ class EnterOTPScreen extends StatefulWidget {
 }
 
 class _EnterOTPScreenState extends State<EnterOTPScreen> {
-  late int otp;
-  late int userId;
-  String enteredOtp = '';
-
-  var isLoading = false.obs;
+  final TextEditingController otpController = TextEditingController();
+  final ForgotPasswordController controller =
+      Get.put(ForgotPasswordController());
 
   @override
   void initState() {
     super.initState();
-    // Retrieve arguments
-    final Map<String, dynamic>? args = Get.arguments;
-    if (args != null) {
-      otp = args['otp'];
-      userId = args['userId'];
-    } else {
-      // Handle if arguments are not available
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    if (kDebugMode) {
-      print('userId: $userId, otp: $otp');
-    }
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -66,96 +65,158 @@ class _EnterOTPScreenState extends State<EnterOTPScreen> {
               width: size.height * 0.16,
               child: Image.asset(Assets.imagesMessage),
             ),
-            SizedBox(
-              height: size.height * 0.02,
-            ),
+            SizedBox(height: size.height * 0.02),
             Text(
               "OTP Verification",
               style: textStyleW700(size.width * 0.075, AppColors.blackText),
             ),
-            SizedBox(
-              height: size.height * 0.02,
-            ),
-            OtpTextField(
-              numberOfFields: 6,
-              onSubmit: (String verificationCode) {
-                // Verify OTP
-                if (verificationCode == otp.toString()) {
-                  showToastverifedborder(
-                      'OTP is Verified Please Set Password', context);
-                  Get.offNamed(Routes.resetPassword,
-                      arguments: {'userId': userId});
+            SizedBox(height: size.height * 0.02),
+            Pinput(
+              controller: otpController,
+              length: 4,
+              onChanged: (String verificationCode) {
+                if (verificationCode.length == 4) {
+                  _verifyOtp(verificationCode, context);
                 } else {
-                  showToasterrorborder('OTP is Incrorrect', context);
+                  // Handle other cases if needed
                 }
               },
+              onSubmitted: (String verificationCode) {
+                if (verificationCode.length == 4) {
+                  _verifyOtp(verificationCode, context);
+                } else {
+                  // Handle other cases if needed
+                }
+              },
+              defaultPinTheme: PinTheme(
+                width: 56,
+                height: 56,
+                textStyle: const TextStyle(
+                  fontSize: 22,
+                  color: Colors.black,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              focusedPinTheme: PinTheme(
+                width: 56,
+                height: 56,
+                textStyle: const TextStyle(
+                  fontSize: 22,
+                  color: Colors.blue,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.blue),
+                ),
+              ),
             ),
-            SizedBox(
-              height: size.height * 0.03,
-            ),
+            SizedBox(height: size.height * 0.03),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Did’t Received the OTP?",
+                  "Didn’t Receive the OTP?",
                   style: textStyleW400(size.width * 0.042, AppColors.blackText),
                 ),
                 const Text("  "),
-                Text(
-                  "Resend",
-                  style: TextStyle(
-                    decoration: TextDecoration.underline,
-                    fontSize: size.width * 0.042,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.redText,
-                  ),
-                ),
+                Obx(
+                  () => (controller.timerValue.value == 0)
+                      ? GestureDetector(
+                          onTap: () {
+                            FocusScope.of(context).unfocus();
+
+                            controller.sendForgotPasswordRequest(
+                              context,
+                              getFormattedCountryCode(),
+                            );
+                            controller.timerValue.value = 30;
+                            controller.startTimer();
+                          },
+                          child: Text(
+                            "Resend",
+                            style: textStyleW500(
+                                size.width * 0.042, AppColors.primaryColor),
+                          ),
+                        )
+                      : Text(
+                          '${controller.timerValue.value} seconds',
+                          style: textStyleW500(
+                              size.width * 0.042, AppColors.blackText),
+                        ),
+                )
               ],
             ),
-            SizedBox(
-              height: size.height * 0.03,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: CustomButton(
-                title: "Verify",
-                btnColor: AppColors.primaryColor,
-                titleColor: AppColors.white,
-                onTap: () {
-                  FocusScope.of(context).unfocus();
-                  if (enteredOtp.length != 6) {
-                    showToasterrorborder('Please Enter OTP First', context);
-                  } else if (enteredOtp != otp.toString()) {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: const Text('Error'),
-                          content: const Text('Invalid OTP. Please try again.'),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Text('OK'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  } else {
-                    showToastverifedborder(
-                        'OTP is Verified Please Set Password', context);
-                    Get.offNamed(Routes.resetPassword,
-                        arguments: {'userId': userId});
-                  }
-                },
-                isLoading: isLoading,
-              ),
-            ),
+            SizedBox(height: size.height * 0.03),
+            Obx(() {
+              return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      FocusScope.of(context).unfocus();
+                      _verifyOtp(otpController.text, context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      backgroundColor: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      elevation: 0,
+                      shadowColor: Colors.transparent,
+                    ),
+                    child: Ink(
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryColor,
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: Container(
+                        width: double.infinity,
+                        height: 60,
+                        alignment: Alignment.center,
+                        child: controller.isLoading.value
+                            ? CustomThreeDotAnimation(
+                                child: Lottie.asset(Assets.lottieDotLottie),
+                              )
+                            : Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  8.sbw,
+                                  const Text(
+                                    'Verify',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w700,
+                                        fontFamily: Assets.fontsSatoshiRegular,
+                                        color: Colors.white),
+                                  ),
+                                ],
+                              ),
+                      ),
+                    ),
+                  ));
+            })
           ],
         ),
       ),
     );
+  }
+
+  String getFormattedCountryCode() {
+    // Removes the '+' sign from the country code
+    return controller.selectedCountry.value?.callingCode.replaceAll('+', '') ??
+        '';
+  }
+
+  void _verifyOtp(String verificationCode, BuildContext context) {
+    if (verificationCode.length != 4) {
+      showToasterrorborder('Please Enter OTP', context);
+    } else {
+      controller.verifyForgotPasswordRequest(context, widget.countrycode,
+          otpController.value.text.toString(), widget.userId);
+    }
   }
 }
