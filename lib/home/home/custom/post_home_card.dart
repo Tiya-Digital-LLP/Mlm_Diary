@@ -260,8 +260,6 @@ class _FavouritrCardState extends State<PostHomeCard>
                 },
               ),
             ),
-            // if (widget.postImage.isNotEmpty &&
-            //     Uri.tryParse(widget.postImage)?.hasAbsolutePath == true)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 6),
               child: SizedBox(
@@ -269,15 +267,9 @@ class _FavouritrCardState extends State<PostHomeCard>
                 width: size.width,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12.0),
-                  child: Image.network(
-                    widget.postImage,
+                  child: CachedNetworkImage(
+                    imageUrl: widget.postImage,
                     fit: BoxFit.fill,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Image.asset(
-                        Assets.imagesLogo,
-                        fit: BoxFit.fill,
-                      );
-                    },
                   ),
                 ),
               ),

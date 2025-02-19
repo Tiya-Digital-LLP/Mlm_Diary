@@ -91,26 +91,37 @@ extension ViewsNewsListDataExtension on ViewsNewsListData {
 ViewsNewsListDataUserData $ViewsNewsListDataUserDataFromJson(
     Map<String, dynamic> json) {
   final ViewsNewsListDataUserData viewsNewsListDataUserData = ViewsNewsListDataUserData();
+  final dynamic id = json['id'];
+  if (id != null) {
+    viewsNewsListDataUserData.id = id;
+  }
   final String? name = jsonConvert.convert<String>(json['name']);
   if (name != null) {
     viewsNewsListDataUserData.name = name;
   }
-  final String? userimage = jsonConvert.convert<String>(json['userimage']);
+  final dynamic userimage = json['userimage'];
   if (userimage != null) {
     viewsNewsListDataUserData.userimage = userimage;
   }
-  final int? id = jsonConvert.convert<int>(json['id']);
-  if (id != null) {
-    viewsNewsListDataUserData.id = id;
-  }
-  final String? imagePath = jsonConvert.convert<String>(json['image_path']);
+  final dynamic imagePath = json['image_path'];
   if (imagePath != null) {
     viewsNewsListDataUserData.imagePath = imagePath;
   }
-  final String? imageThumPath = jsonConvert.convert<String>(
-      json['image_thum_path']);
-  if (imageThumPath != null) {
-    viewsNewsListDataUserData.imageThumPath = imageThumPath;
+  final dynamic immlm = json['immlm'];
+  if (immlm != null) {
+    viewsNewsListDataUserData.immlm = immlm;
+  }
+  final dynamic city = json['city'];
+  if (city != null) {
+    viewsNewsListDataUserData.city = city;
+  }
+  final dynamic state = json['state'];
+  if (state != null) {
+    viewsNewsListDataUserData.state = state;
+  }
+  final dynamic country = json['country'];
+  if (country != null) {
+    viewsNewsListDataUserData.country = country;
   }
   return viewsNewsListDataUserData;
 }
@@ -118,27 +129,36 @@ ViewsNewsListDataUserData $ViewsNewsListDataUserDataFromJson(
 Map<String, dynamic> $ViewsNewsListDataUserDataToJson(
     ViewsNewsListDataUserData entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
+  data['id'] = entity.id;
   data['name'] = entity.name;
   data['userimage'] = entity.userimage;
-  data['id'] = entity.id;
   data['image_path'] = entity.imagePath;
-  data['image_thum_path'] = entity.imageThumPath;
+  data['immlm'] = entity.immlm;
+  data['city'] = entity.city;
+  data['state'] = entity.state;
+  data['country'] = entity.country;
   return data;
 }
 
 extension ViewsNewsListDataUserDataExtension on ViewsNewsListDataUserData {
   ViewsNewsListDataUserData copyWith({
+    dynamic id,
     String? name,
-    String? userimage,
-    int? id,
-    String? imagePath,
-    String? imageThumPath,
+    dynamic userimage,
+    dynamic imagePath,
+    dynamic immlm,
+    dynamic city,
+    dynamic state,
+    dynamic country,
   }) {
     return ViewsNewsListDataUserData()
+      ..id = id ?? this.id
       ..name = name ?? this.name
       ..userimage = userimage ?? this.userimage
-      ..id = id ?? this.id
       ..imagePath = imagePath ?? this.imagePath
-      ..imageThumPath = imageThumPath ?? this.imageThumPath;
+      ..immlm = immlm ?? this.immlm
+      ..city = city ?? this.city
+      ..state = state ?? this.state
+      ..country = country ?? this.country;
   }
 }

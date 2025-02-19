@@ -296,15 +296,9 @@ class _FavouritrCardState extends State<ClassifiedHomeCard>
                   width: size.width,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12.0),
-                    child: Image.network(
-                      widget.postImage,
+                    child: CachedNetworkImage(
+                      imageUrl: widget.postImage,
                       fit: BoxFit.fill,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Image.asset(
-                          Assets.imagesLogo,
-                          fit: BoxFit.fill,
-                        );
-                      },
                     ),
                   ),
                 ),

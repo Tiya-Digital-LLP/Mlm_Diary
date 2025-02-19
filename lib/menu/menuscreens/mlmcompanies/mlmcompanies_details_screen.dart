@@ -59,29 +59,35 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails>
     if (post != null && post.id != null) {
       controller.getAdminCompany(1);
     }
-    initializeLikes();
-    initializeBookmarks();
-    // ignore: unrelated_type_equality_checks
-    controller.likeCountMap == 0;
+    // Find index of the post in classifiedList
+    int postIndex =
+        controller.companyAdminList.indexWhere((item) => item.id == post.id);
+
+    // Ensure the index is valid before calling the methods
+    if (postIndex != -1) {
+      initializeLikes(postIndex);
+      initializeBookmarks(postIndex);
+    }
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.countViewCompany(post.id ?? 0, context);
     });
   }
 
-  void initializeLikes() {
-    isLiked = RxBool(controller.companyAdminList[0].likedByUser ?? false);
-    likeCount = RxInt(controller.companyAdminList[0].totallike ?? 0);
+  void initializeLikes(int index) {
+    isLiked = RxBool(controller.companyAdminList[index].likedByUser ?? false);
+    likeCount = RxInt(controller.companyAdminList[index].totallike ?? 0);
   }
 
-  void initializeBookmarks() {
+  void initializeBookmarks(int index) {
     isBookmarked =
-        RxBool(controller.companyAdminList[0].bookmarkedByUser ?? false);
+        RxBool(controller.companyAdminList[index].bookmarkedByUser ?? false);
   }
 
   void toggleLike() async {
-    bool newLikedValue = !isLiked.value;
-    isLiked.value = newLikedValue;
-    likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
+    bool newLikeValue = !isLiked.value;
+    isLiked.value = newLikeValue;
+    likeCount.value = newLikeValue ? likeCount.value + 1 : likeCount.value - 1;
 
     await controller.toggleLike(post.id ?? 0, context);
   }
@@ -109,18 +115,23 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails>
         onPageChanged: (index) {
           setState(() {
             currentPage = index;
+            post = controller.companyAdminList[index];
+
+            // Update isLiked and likeCount for the new post
+            initializeLikes(index);
+            initializeBookmarks(index);
           });
 
           if (kDebugMode) {
             print("Page changed to: $index");
+            print("Selected post: ${post.id}");
           }
-          if (index >= 0 && index < controller.companyAdminList.length) {
-            post = controller.companyAdminList[index];
-            if (kDebugMode) {
-              print("Selected post: ${post.id}");
-            }
-            controller.getAdminCompany(1);
+
+          if (kDebugMode) {
+            print("Page changed to: $index");
           }
+
+          controller.getAdminCompany(1);
         },
         itemBuilder: (context, index) {
           return controller.isLoading.value
@@ -647,36 +658,32 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails>
                       width: size.height * 0.028,
                       child: GestureDetector(
                         onTap: () {
-                          controller.toggleLike(post.id, context);
+                          toggleLike();
                         },
                         child: Icon(
-                          controller.likedStatusMap[post.id] == true
+                          isLiked.value
                               ? Icons.thumb_up
                               : Icons.thumb_up_off_alt_outlined,
-                          color: controller.likedStatusMap[post.id] == true
-                              ? AppColors.primaryColor
-                              : null,
+                          color: isLiked.value ? AppColors.primaryColor : null,
                           size: size.height * 0.032,
                         ),
                       ),
                     ),
                   ),
-
                   const SizedBox(
                     width: 7,
                   ),
-                  // ignore: unrelated_type_equality_checks
                   Obx(() {
-                    // Sum the original `post.totallike` with the reactive like count
-                    int totalLikes = post.totallike +
-                        (controller.likeCountMap[post.id] ?? 0);
+                    int postId = post.id ?? 0;
+                    int totalLikes = (post.totallike ?? 0) +
+                        (controller.likeCountMap[postId] ?? 0);
 
                     return InkWell(
                       onTap: () {
                         showLikeAndViewList(context, 0);
                       },
                       child: Text(
-                        '$totalLikes',
+                        totalLikes.toString(),
                         style: textStyleW600(
                             size.width * 0.038, AppColors.blackText),
                       ),
@@ -709,7 +716,6 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails>
                       ),
                     ],
                   ),
-
                   const SizedBox(
                     width: 15,
                   ),

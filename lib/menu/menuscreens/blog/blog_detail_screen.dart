@@ -56,14 +56,14 @@ class _BlogDetailScreenState extends State<BlogDetailScreen>
   int currentPage = 0;
   int totalItems = 0;
 
-  void initializeLikes() {
-    isLiked = RxBool(controller.blogList[0].likedByUser ?? false);
-    likeCount = RxInt(controller.blogList[0].totallike ?? 0);
+  void initializeLikes(int index) {
+    isLiked = RxBool(controller.blogList[index].likedByUser ?? false);
+    likeCount = RxInt(controller.blogList[index].totallike ?? 0);
   }
 
-  void initializeBookmarks() {
-    isBookmarked = RxBool(controller.blogList[0].bookmarkedByUser ?? false);
-    bookmarkCount = RxInt(controller.blogList[0].totalbookmark ?? 0);
+  void initializeBookmarks(int index) {
+    isBookmarked = RxBool(controller.blogList[index].bookmarkedByUser ?? false);
+    bookmarkCount = RxInt(controller.blogList[index].totalbookmark ?? 0);
   }
 
   void toggleLike() async {
@@ -71,7 +71,7 @@ class _BlogDetailScreenState extends State<BlogDetailScreen>
     isLiked.value = newLikedValue;
     likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
 
-    await controller.toggleLike(post.id, context);
+    await controller.toggleLike(post.id ?? 0, context);
   }
 
   void toggleBookmark() async {
@@ -80,7 +80,7 @@ class _BlogDetailScreenState extends State<BlogDetailScreen>
     bookmarkCount.value =
         newBookmarkedValue ? bookmarkCount.value + 1 : bookmarkCount.value - 1;
 
-    await controller.toggleBookMark(post.id, context);
+    await controller.toggleBookMark(post.id ?? 0, context);
   }
 
   late TabController _tabController;
@@ -94,12 +94,18 @@ class _BlogDetailScreenState extends State<BlogDetailScreen>
 
     post = Get.arguments;
     if (post != null && post.id != null) {
-      controller.getBlog(
-        post.id ?? 0,
-      );
+      controller.getBlog(1);
     }
-    initializeLikes();
-    initializeBookmarks();
+    // Find index of the post in classifiedList
+    int postIndex =
+        controller.blogList.indexWhere((item) => item.id == post.id);
+
+    // Ensure the index is valid before calling the methods
+    if (postIndex != -1) {
+      initializeLikes(postIndex);
+      initializeBookmarks(postIndex);
+    }
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.countViewBlog(post.id ?? 0, context);
     });
@@ -122,20 +128,19 @@ class _BlogDetailScreenState extends State<BlogDetailScreen>
         onPageChanged: (index) {
           setState(() {
             currentPage = index;
+            post = controller.blogList[index];
+
+            // Update isLiked and likeCount for the new post
+            initializeLikes(index);
+            initializeBookmarks(index);
           });
 
           if (kDebugMode) {
             print("Page changed to: $index");
+            print("Selected post: ${post.id}");
           }
-          if (index >= 0 && index < controller.blogList.length) {
-            post = controller.blogList[index];
-            if (kDebugMode) {
-              print("Selected post: ${post.id}");
-            }
-            controller.getBlog(
-              post.id ?? 0,
-            );
-          }
+
+          controller.getBlog(1);
         },
         itemBuilder: (context, index) {
           return controller.isLoading.value
@@ -245,16 +250,9 @@ class _BlogDetailScreenState extends State<BlogDetailScreen>
                                       child: ClipRRect(
                                         borderRadius:
                                             BorderRadius.circular(12.0),
-                                        child: Image.network(
-                                          post.imageUrl,
+                                        child: CachedNetworkImage(
+                                          imageUrl: post.imageUrl,
                                           fit: BoxFit.fill,
-                                          errorBuilder:
-                                              (context, error, stackTrace) {
-                                            return Image.asset(
-                                              Assets.imagesLogo,
-                                              fit: BoxFit.fill,
-                                            );
-                                          },
                                         ),
                                       ),
                                     ),
@@ -451,15 +449,13 @@ class _BlogDetailScreenState extends State<BlogDetailScreen>
                       width: size.height * 0.028,
                       child: GestureDetector(
                         onTap: () {
-                          controller.toggleLike(post.id, context);
+                          toggleLike();
                         },
                         child: Icon(
-                          controller.likedStatusMap[post.id] == true
+                          isLiked.value
                               ? Icons.thumb_up
                               : Icons.thumb_up_off_alt_outlined,
-                          color: controller.likedStatusMap[post.id] == true
-                              ? AppColors.primaryColor
-                              : null,
+                          color: isLiked.value ? AppColors.primaryColor : null,
                           size: size.height * 0.032,
                         ),
                       ),
@@ -469,8 +465,9 @@ class _BlogDetailScreenState extends State<BlogDetailScreen>
                     width: 7,
                   ),
                   Obx(() {
-                    int totalLikes = post.totallike +
-                        (controller.likeCountMap[post.id] ?? 0);
+                    int postId = post.id ?? 0;
+                    int totalLikes = (post.totallike ?? 0) +
+                        (controller.likeCountMap[postId] ?? 0);
 
                     return InkWell(
                       onTap: () {

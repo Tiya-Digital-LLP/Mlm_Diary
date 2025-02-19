@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
@@ -118,10 +119,18 @@ class _ClassifiedLikedListContentState
                             },
                             child: Row(
                               children: [
-                                CircleAvatar(
-                                  radius: 25,
-                                  backgroundImage: NetworkImage(
-                                    post.userData?.imagePath ?? '',
+                                ClipOval(
+                                  child: CachedNetworkImage(
+                                    imageUrl: post.userData?.imagePath ??
+                                        Assets.imagesAdminlogo,
+                                    fit: BoxFit.cover,
+                                    height: 50,
+                                    width: 50,
+                                    errorWidget: (context, url, error) =>
+                                        Image.asset(
+                                      Assets.imagesAdminlogo,
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 ),
                                 10.sbw,
@@ -131,24 +140,47 @@ class _ClassifiedLikedListContentState
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        post.userData?.name ?? 'Unknown',
+                                        (post.userData?.name?.isNotEmpty ??
+                                                false)
+                                            ? post.userData!.name!
+                                            : 'Not Type Name',
                                         style: textStyleW500(size.width * 0.034,
                                             AppColors.blackText),
                                       ),
                                       2.sbh,
                                       Text(
-                                        'Ahemdabad, Gujarat, India',
+                                        () {
+                                          final addressParts = [
+                                            post.userData?.city?.trim(),
+                                            post.userData?.state?.trim(),
+                                            post.userData?.country?.trim(),
+                                          ]
+                                              .where((e) =>
+                                                  e != null && e.isNotEmpty)
+                                              .toList();
+
+                                          return addressParts.isNotEmpty
+                                              ? addressParts.join(', ')
+                                              : 'Not Type Address';
+                                        }(),
                                         style: textStyleW500(
-                                            size.width * 0.030,
-                                            AppColors.blackText
-                                                // ignore: deprecated_member_use
-                                                .withOpacity(0.6)),
+                                          size.width * 0.030,
+                                          // ignore: deprecated_member_use
+                                          AppColors.blackText.withOpacity(0.6),
+                                        ),
                                       ),
                                       2.sbh,
                                       Text(
-                                        'Leader',
-                                        style: textStyleW500(size.width * 0.030,
-                                            AppColors.blackText),
+                                        (post.userData?.immlm
+                                                    ?.trim()
+                                                    .isNotEmpty ??
+                                                false)
+                                            ? post.userData!.immlm!.trim()
+                                            : 'Not Type IMMLM',
+                                        style: textStyleW500(
+                                          size.width * 0.030,
+                                          AppColors.blackText,
+                                        ),
                                       ),
                                     ],
                                   ),

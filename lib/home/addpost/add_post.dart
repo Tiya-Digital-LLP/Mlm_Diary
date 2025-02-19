@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -86,24 +87,11 @@ class _AddPostState extends State<AddPost> {
                         ClipOval(
                           clipBehavior: Clip.hardEdge,
                           child: controller.userImage.value.isNotEmpty
-                              ? Image.network(
-                                  controller.userImage.value,
+                              ? CachedNetworkImage(
+                                  imageUrl: controller.userImage.value,
                                   fit: BoxFit.cover,
                                   width: 50,
                                   height: 50,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    if (kDebugMode) {
-                                      print("Error loading image: $error");
-                                    }
-                                    return Container(
-                                      color: Colors.grey[200],
-                                      child: const Icon(
-                                        Icons.account_circle,
-                                        size: 50,
-                                        color: Colors.grey,
-                                      ),
-                                    );
-                                  },
                                 )
                               : Container(
                                   color: Colors.grey[200],

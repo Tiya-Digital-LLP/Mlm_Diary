@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
@@ -184,8 +185,8 @@ class HomeController extends GetxController {
                                       ),
                                     ),
                                   )
-                                : Image.network(
-                                    banner.image ?? '',
+                                : CachedNetworkImage(
+                                    imageUrl: banner.image ?? '',
                                     fit: BoxFit.fill,
                                   ),
                           ),

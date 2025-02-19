@@ -41,9 +41,9 @@ BlogLikeListData $BlogLikeListDataFromJson(Map<String, dynamic> json) {
   if (id != null) {
     blogLikeListData.id = id;
   }
-  final int? bid = jsonConvert.convert<int>(json['bid']);
-  if (bid != null) {
-    blogLikeListData.bid = bid;
+  final int? nid = jsonConvert.convert<int>(json['nid']);
+  if (nid != null) {
+    blogLikeListData.nid = nid;
   }
   final int? userid = jsonConvert.convert<int>(json['userid']);
   if (userid != null) {
@@ -65,7 +65,7 @@ BlogLikeListData $BlogLikeListDataFromJson(Map<String, dynamic> json) {
   if (ntype != null) {
     blogLikeListData.ntype = ntype;
   }
-  final String? distype = jsonConvert.convert<String>(json['distype']);
+  final dynamic distype = json['distype'];
   if (distype != null) {
     blogLikeListData.distype = distype;
   }
@@ -80,7 +80,7 @@ BlogLikeListData $BlogLikeListDataFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> $BlogLikeListDataToJson(BlogLikeListData entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
   data['id'] = entity.id;
-  data['bid'] = entity.bid;
+  data['nid'] = entity.nid;
   data['userid'] = entity.userid;
   data['addeddate'] = entity.addeddate;
   data['ipaddress'] = entity.ipaddress;
@@ -94,18 +94,18 @@ Map<String, dynamic> $BlogLikeListDataToJson(BlogLikeListData entity) {
 extension BlogLikeListDataExtension on BlogLikeListData {
   BlogLikeListData copyWith({
     int? id,
-    int? bid,
+    int? nid,
     int? userid,
     String? addeddate,
     String? ipaddress,
     String? type,
     String? ntype,
-    String? distype,
+    dynamic distype,
     BlogLikeListDataUserData? userData,
   }) {
     return BlogLikeListData()
       ..id = id ?? this.id
-      ..bid = bid ?? this.bid
+      ..nid = nid ?? this.nid
       ..userid = userid ?? this.userid
       ..addeddate = addeddate ?? this.addeddate
       ..ipaddress = ipaddress ?? this.ipaddress
@@ -119,6 +119,10 @@ extension BlogLikeListDataExtension on BlogLikeListData {
 BlogLikeListDataUserData $BlogLikeListDataUserDataFromJson(
     Map<String, dynamic> json) {
   final BlogLikeListDataUserData blogLikeListDataUserData = BlogLikeListDataUserData();
+  final int? id = jsonConvert.convert<int>(json['id']);
+  if (id != null) {
+    blogLikeListDataUserData.id = id;
+  }
   final String? name = jsonConvert.convert<String>(json['name']);
   if (name != null) {
     blogLikeListDataUserData.name = name;
@@ -127,9 +131,21 @@ BlogLikeListDataUserData $BlogLikeListDataUserDataFromJson(
   if (userimage != null) {
     blogLikeListDataUserData.userimage = userimage;
   }
-  final int? id = jsonConvert.convert<int>(json['id']);
-  if (id != null) {
-    blogLikeListDataUserData.id = id;
+  final String? immlm = jsonConvert.convert<String>(json['immlm']);
+  if (immlm != null) {
+    blogLikeListDataUserData.immlm = immlm;
+  }
+  final String? city = jsonConvert.convert<String>(json['city']);
+  if (city != null) {
+    blogLikeListDataUserData.city = city;
+  }
+  final String? state = jsonConvert.convert<String>(json['state']);
+  if (state != null) {
+    blogLikeListDataUserData.state = state;
+  }
+  final String? country = jsonConvert.convert<String>(json['country']);
+  if (country != null) {
+    blogLikeListDataUserData.country = country;
   }
   final String? imagePath = jsonConvert.convert<String>(json['image_path']);
   if (imagePath != null) {
@@ -146,9 +162,13 @@ BlogLikeListDataUserData $BlogLikeListDataUserDataFromJson(
 Map<String, dynamic> $BlogLikeListDataUserDataToJson(
     BlogLikeListDataUserData entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
+  data['id'] = entity.id;
   data['name'] = entity.name;
   data['userimage'] = entity.userimage;
-  data['id'] = entity.id;
+  data['immlm'] = entity.immlm;
+  data['city'] = entity.city;
+  data['state'] = entity.state;
+  data['country'] = entity.country;
   data['image_path'] = entity.imagePath;
   data['image_thum_path'] = entity.imageThumPath;
   return data;
@@ -156,16 +176,24 @@ Map<String, dynamic> $BlogLikeListDataUserDataToJson(
 
 extension BlogLikeListDataUserDataExtension on BlogLikeListDataUserData {
   BlogLikeListDataUserData copyWith({
+    int? id,
     String? name,
     String? userimage,
-    int? id,
+    String? immlm,
+    String? city,
+    String? state,
+    String? country,
     String? imagePath,
     String? imageThumPath,
   }) {
     return BlogLikeListDataUserData()
+      ..id = id ?? this.id
       ..name = name ?? this.name
       ..userimage = userimage ?? this.userimage
-      ..id = id ?? this.id
+      ..immlm = immlm ?? this.immlm
+      ..city = city ?? this.city
+      ..state = state ?? this.state
+      ..country = country ?? this.country
       ..imagePath = imagePath ?? this.imagePath
       ..imageThumPath = imageThumPath ?? this.imageThumPath;
   }

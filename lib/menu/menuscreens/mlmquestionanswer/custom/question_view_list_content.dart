@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
@@ -117,10 +118,19 @@ class _QuestionViewListContentState extends State<QuestionViewListContent> {
                             },
                             child: Row(
                               children: [
-                                CircleAvatar(
-                                  radius: 25,
-                                  backgroundImage: NetworkImage(
-                                      item.userData?.imagePath ?? ''),
+                                ClipOval(
+                                  child: CachedNetworkImage(
+                                    imageUrl: item.userData?.imagePath ??
+                                        Assets.imagesAdminlogo,
+                                    fit: BoxFit.cover,
+                                    height: 50,
+                                    width: 50,
+                                    errorWidget: (context, url, error) =>
+                                        Image.asset(
+                                      Assets.imagesAdminlogo,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
                                 ),
                                 8.sbw,
                                 Expanded(

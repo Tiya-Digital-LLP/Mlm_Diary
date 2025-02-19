@@ -200,15 +200,9 @@ class _PostDetailsScreenState extends State<PostDetailScreen>
                             width: size.width,
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(12.0),
-                              child: Image.network(
-                                post.imageUrl,
+                              child: CachedNetworkImage(
+                                imageUrl: post.imageUrl,
                                 fit: BoxFit.fill,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Image.asset(
-                                    Assets.imagesLogo,
-                                    fit: BoxFit.fill,
-                                  );
-                                },
                               ),
                             ),
                           ),

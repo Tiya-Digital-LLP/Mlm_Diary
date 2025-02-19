@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
@@ -86,55 +87,92 @@ class _CompanyViewListContentState extends State<CompanyViewListContent> {
                         );
                       }
                       final item = controller.companyViewList[index];
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8.0, horizontal: 16.0),
-                        child: InkWell(
-                          onTap: () async {
-                            Get.toNamed(Routes.userprofilescreen, arguments: {
-                              'user_id': item.userId ?? 0,
-                            });
-                            await userProfileController.fetchUserAllPost(
-                              1,
-                              item.userId.toString(),
-                            );
-                          },
-                          child: Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 25,
-                                backgroundImage: NetworkImage(
-                                    item.userData?.imagePath ?? ''),
-                              ),
-                              8.sbw,
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      item.userData?.name ?? 'Unknown',
-                                      style: textStyleW500(size.width * 0.034,
-                                          AppColors.blackText),
+                      return Card(
+                        color: Colors.white,
+                        elevation: 4,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8.0, horizontal: 16.0),
+                          child: InkWell(
+                            onTap: () async {
+                              Get.toNamed(Routes.userprofilescreen, arguments: {
+                                'user_id': item.userId ?? 0,
+                              });
+                              await userProfileController.fetchUserAllPost(
+                                1,
+                                item.userId.toString(),
+                              );
+                            },
+                            child: Row(
+                              children: [
+                                ClipOval(
+                                  child: CachedNetworkImage(
+                                    imageUrl: item.userData?.imagePath ??
+                                        Assets.imagesAdminlogo,
+                                    fit: BoxFit.cover,
+                                    height: 50,
+                                    width: 50,
+                                    errorWidget: (context, url, error) =>
+                                        Image.asset(
+                                      Assets.imagesAdminlogo,
+                                      fit: BoxFit.cover,
                                     ),
-                                    2.sbh,
-                                    Text(
-                                      'Ahemdabad, Gujarat, India',
-                                      style: textStyleW500(
-                                          size.width * 0.030,
-                                          AppColors.blackText
-                                              // ignore: deprecated_member_use
-                                              .withOpacity(0.6)),
-                                    ),
-                                    2.sbh,
-                                    Text(
-                                      'Leader',
-                                      style: textStyleW500(size.width * 0.030,
-                                          AppColors.blackText),
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                              )
-                            ],
+                                8.sbw,
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        (item.userData?.name?.isNotEmpty ??
+                                                false)
+                                            ? item.userData!.name!
+                                            : 'Not Type Name',
+                                        style: textStyleW500(size.width * 0.034,
+                                            AppColors.blackText),
+                                      ),
+                                      2.sbh,
+                                      Text(
+                                        () {
+                                          final addressParts = [
+                                            item.userData?.city?.trim(),
+                                            item.userData?.state?.trim(),
+                                            item.userData?.country?.trim(),
+                                          ]
+                                              .where((e) =>
+                                                  e != null && e.isNotEmpty)
+                                              .toList();
+
+                                          return addressParts.isNotEmpty
+                                              ? addressParts.join(', ')
+                                              : 'Not Type Address';
+                                        }(),
+                                        style: textStyleW500(
+                                          size.width * 0.030,
+                                          // ignore: deprecated_member_use
+                                          AppColors.blackText.withOpacity(0.6),
+                                        ),
+                                      ),
+                                      2.sbh,
+                                      Text(
+                                        (item.userData?.immlm
+                                                    ?.trim()
+                                                    .isNotEmpty ??
+                                                false)
+                                            ? item.userData!.immlm!.trim()
+                                            : 'Not Type IMMLM',
+                                        style: textStyleW500(
+                                          size.width * 0.030,
+                                          AppColors.blackText,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       );

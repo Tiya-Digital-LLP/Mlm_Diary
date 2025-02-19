@@ -193,8 +193,7 @@ class _ClassidiedDetailsScreenState extends State<ManageClassifiedDetailsScreen>
                             borderRadius: BorderRadius.circular(15),
                           ),
                           child: CachedNetworkImage(
-                            imageUrl:
-                                '${post.imagePath.toString()}?${DateTime.now().millisecondsSinceEpoch}',
+                            imageUrl: post.imagePath.toString(),
                             height: 97,
                             width: 105,
                             fit: BoxFit.fill,

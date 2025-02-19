@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -338,9 +339,17 @@ class _CommentDialogState extends State<CommentDialogPost> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CircleAvatar(
-                backgroundImage: NetworkImage(comment.userimage ?? ''),
-                radius: 20,
+              ClipOval(
+                child: CachedNetworkImage(
+                  imageUrl: comment.userimage ?? Assets.imagesAdminlogo,
+                  fit: BoxFit.cover,
+                  height: 50,
+                  width: 50,
+                  errorWidget: (context, url, error) => Image.asset(
+                    Assets.imagesAdminlogo,
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -590,9 +599,17 @@ class _CommentDialogState extends State<CommentDialogPost> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CircleAvatar(
-              backgroundImage: NetworkImage(reply.userimage ?? ''),
-              radius: 16,
+            ClipOval(
+              child: CachedNetworkImage(
+                imageUrl: reply.userimage ?? Assets.imagesAdminlogo,
+                fit: BoxFit.cover,
+                height: 50,
+                width: 50,
+                errorWidget: (context, url, error) => Image.asset(
+                  Assets.imagesAdminlogo,
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
             const SizedBox(width: 10),
             Expanded(
@@ -701,9 +718,17 @@ class _CommentDialogState extends State<CommentDialogPost> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Adjust layout as needed for nested replies
-            CircleAvatar(
-              backgroundImage: NetworkImage(reply.userimage ?? ''),
-              radius: 16,
+            ClipOval(
+              child: CachedNetworkImage(
+                imageUrl: reply.userimage ?? Assets.imagesAdminlogo,
+                fit: BoxFit.cover,
+                height: 50,
+                width: 50,
+                errorWidget: (context, url, error) => Image.asset(
+                  Assets.imagesAdminlogo,
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
             const SizedBox(width: 10),
             Expanded(

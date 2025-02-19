@@ -242,7 +242,6 @@ class CompanyController extends GetxController {
           }
 
           var companyLikeListEntity = LikeListCompanyEntity.fromJson(data);
-          companyLikeList.value = companyLikeListEntity.data ?? [];
 
           if (companyLikeListEntity.data != null &&
               companyLikeListEntity.data!.isNotEmpty) {

@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
@@ -75,16 +77,17 @@ class _SuggetionUserCardState extends State<SuggetionUserCard> {
                     ),
                     borderRadius: BorderRadius.circular(100),
                   ),
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundImage: widget.userImage.isNotEmpty &&
-                            Uri.tryParse(widget.userImage)?.hasAbsolutePath ==
-                                true
-                        ? NetworkImage(widget.userImage)
-                        : null,
-                    child: widget.userImage.isEmpty
-                        ? const Icon(Icons.person)
-                        : null,
+                  child: ClipOval(
+                    child: CachedNetworkImage(
+                      imageUrl: widget.userImage,
+                      fit: BoxFit.cover,
+                      height: 100,
+                      width: 100,
+                      errorWidget: (context, url, error) => Image.asset(
+                        Assets.imagesAdminlogo,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
                 ),
                 10.sbh,

@@ -1,5 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:mlmdiary/generated/assets.dart';
+
 import 'package:mlmdiary/home/message/controller/message_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
@@ -60,17 +61,11 @@ class _ChatCardState extends State<ChatCard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ClipOval(
-                child: Image.network(
-                  widget.userImage.toString(),
+                child: CachedNetworkImage(
+                  imageUrl: widget.userImage.toString(),
                   height: 60.0,
                   width: 60.0,
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Image.asset(
-                      Assets.imagesAdminlogo,
-                      fit: BoxFit.fill,
-                    );
-                  },
                 ),
               ),
               10.sbw,

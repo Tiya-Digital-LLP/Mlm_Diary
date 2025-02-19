@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -232,12 +233,9 @@ class _FavouritrCardState extends State<BlogUserCard>
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
                 ),
-                child: Image.network(
-                  widget.postImage,
+                child: CachedNetworkImage(
+                  imageUrl: widget.postImage,
                   fit: BoxFit.fill,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Image.asset(Assets.imagesLogo);
-                  },
                 ),
               ),
             10.sbh,

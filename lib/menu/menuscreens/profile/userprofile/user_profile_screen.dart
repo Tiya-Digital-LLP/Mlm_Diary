@@ -855,8 +855,8 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                               width: MediaQuery.of(context).size.width,
                               height: MediaQuery.of(context).size.height,
                               child: InteractiveViewer(
-                                child: Image.network(
-                                  '${post.imageUrl.toString()}?${DateTime.now().millisecondsSinceEpoch}',
+                                child: CachedNetworkImage(
+                                  imageUrl: post.imageUrl.toString(),
                                   fit: BoxFit.contain,
                                   width: MediaQuery.of(context).size.width,
                                 ),
@@ -1299,8 +1299,8 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                   Row(
                                     children: [
                                       Container(
-                                        width: 30,
-                                        height: 30,
+                                        width: 50,
+                                        height: 50,
                                         decoration: ShapeDecoration(
                                           image: DecorationImage(
                                             image: follower.imageUrl != null
@@ -1330,6 +1330,28 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                                 fontFamily:
                                                     'assets/fonst/Metropolis-Black.otf'),
                                           ),
+                                          2.sbh,
+                                          Text(
+                                            () {
+                                              final addressParts = [
+                                                follower.city?.trim(),
+                                                follower.state?.trim(),
+                                                follower.country?.trim(),
+                                              ]
+                                                  .where((e) =>
+                                                      e != null && e.isNotEmpty)
+                                                  .toList();
+
+                                              return addressParts.isNotEmpty
+                                                  ? addressParts.join(', ')
+                                                  : 'Not Type Address';
+                                            }(),
+                                            style: TextStyle(
+                                              color: AppColors.blackText,
+                                              fontSize: 12.0,
+                                            ),
+                                          ),
+                                          2.sbh,
                                           Text(
                                             follower.immlm ?? "Unknown",
                                             style: TextStyle(
@@ -1397,8 +1419,8 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                   Row(
                                     children: [
                                       Container(
-                                        width: 30,
-                                        height: 30,
+                                        width: 50,
+                                        height: 50,
                                         decoration: ShapeDecoration(
                                           image: DecorationImage(
                                             image: follow.imageUrl != null
@@ -1427,6 +1449,28 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                                 fontFamily:
                                                     'assets/fonst/Metropolis-Black.otf'),
                                           ),
+                                          2.sbh,
+                                          Text(
+                                            () {
+                                              final addressParts = [
+                                                follow.city?.trim(),
+                                                follow.state?.trim(),
+                                                follow.country?.trim(),
+                                              ]
+                                                  .where((e) =>
+                                                      e != null && e.isNotEmpty)
+                                                  .toList();
+
+                                              return addressParts.isNotEmpty
+                                                  ? addressParts.join(', ')
+                                                  : 'Not Type Address';
+                                            }(),
+                                            style: TextStyle(
+                                              color: AppColors.blackText,
+                                              fontSize: 12.0,
+                                            ),
+                                          ),
+                                          2.sbh,
                                           Text(
                                             follow.immlm ?? "Unknown",
                                             style: TextStyle(
@@ -1493,8 +1537,8 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                   Row(
                                     children: [
                                       Container(
-                                        width: 30,
-                                        height: 30,
+                                        width: 50,
+                                        height: 50,
                                         decoration: ShapeDecoration(
                                           image: DecorationImage(
                                             // ignore: unnecessary_null_comparison
@@ -1525,6 +1569,27 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                                 fontFamily:
                                                     'assets/fonst/Metropolis-Black.otf'),
                                           ),
+                                          2.sbh,
+                                          Text(
+                                            () {
+                                              final addressParts = [
+                                                viewers.city.trim(),
+                                                viewers.state.trim(),
+                                                viewers.country.trim(),
+                                              ]
+                                                  .where((e) => e.isNotEmpty)
+                                                  .toList();
+
+                                              return addressParts.isNotEmpty
+                                                  ? addressParts.join(', ')
+                                                  : 'Not Type Address';
+                                            }(),
+                                            style: TextStyle(
+                                              color: AppColors.blackText,
+                                              fontSize: 12.0,
+                                            ),
+                                          ),
+                                          2.sbh,
                                           Text(
                                             viewers.immlm,
                                             style: TextStyle(

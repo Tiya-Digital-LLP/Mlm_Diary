@@ -29,8 +29,8 @@ class NewsLikeListData {
 	String? ipaddress = '';
 	String? type = '';
 	String? ntype = '';
-	String? distype = '';
-	@JSONField(name: "user_data")
+	dynamic distype;
+	@JSONField(name: 'user_data')
 	NewsLikeListDataUserData? userData;
 
 	NewsLikeListData();
@@ -47,12 +47,16 @@ class NewsLikeListData {
 
 @JsonSerializable()
 class NewsLikeListDataUserData {
+	int? id = 0;
 	String? name = '';
 	String? userimage = '';
-	int? id = 0;
-	@JSONField(name: "image_path")
+	String? immlm = '';
+	String? city = '';
+	String? state = '';
+	String? country = '';
+	@JSONField(name: 'image_path')
 	String? imagePath = '';
-	@JSONField(name: "image_thum_path")
+	@JSONField(name: 'image_thum_path')
 	String? imageThumPath = '';
 
 	NewsLikeListDataUserData();

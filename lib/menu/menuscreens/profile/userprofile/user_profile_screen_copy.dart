@@ -544,8 +544,8 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                               width: MediaQuery.of(context).size.width,
                               height: MediaQuery.of(context).size.height,
                               child: InteractiveViewer(
-                                child: Image.network(
-                                  '${post.imagePath.toString()}?${DateTime.now().millisecondsSinceEpoch}',
+                                child: CachedNetworkImage(
+                                  imageUrl: post.imagePath.toString(),
                                   fit: BoxFit.contain,
                                   width: MediaQuery.of(context).size.width,
                                 ),
@@ -662,7 +662,8 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                         children: [
                           InkWell(
                             onTap: () {
-                              Get.toNamed(Routes.followers);
+                              Get.toNamed(Routes.followers,
+                                  arguments: {'initialIndex': 0});
                             },
                             child: Column(
                               children: [
@@ -686,7 +687,8 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                         children: [
                           InkWell(
                             onTap: () {
-                              Get.toNamed(Routes.followers);
+                              Get.toNamed(Routes.followers,
+                                  arguments: {'initialIndex': 1});
                             },
                             child: Column(
                               children: [
@@ -805,8 +807,8 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                               Row(
                                 children: [
                                   Container(
-                                    width: 30,
-                                    height: 30,
+                                    width: 50,
+                                    height: 50,
                                     decoration: ShapeDecoration(
                                       image: DecorationImage(
                                         image: viewers
@@ -834,6 +836,25 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                                           color: Colors.black,
                                         ),
                                       ),
+                                      2.sbh,
+                                      Text(
+                                        () {
+                                          final addressParts = [
+                                            viewers.city.trim(),
+                                            viewers.state.trim(),
+                                            viewers.country.trim(),
+                                          ].where((e) => e.isNotEmpty).toList();
+
+                                          return addressParts.isNotEmpty
+                                              ? addressParts.join(', ')
+                                              : 'Not Type Address';
+                                        }(),
+                                        style: TextStyle(
+                                          color: AppColors.blackText,
+                                          fontSize: 12.0,
+                                        ),
+                                      ),
+                                      2.sbh,
                                       Text(
                                         viewers.immlm,
                                         style: TextStyle(

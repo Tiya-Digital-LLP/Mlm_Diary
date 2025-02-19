@@ -23,14 +23,14 @@ class BlogLikeListEntity {
 @JsonSerializable()
 class BlogLikeListData {
 	int? id = 0;
-	int? bid = 0;
+	int? nid = 0;
 	int? userid = 0;
 	String? addeddate = '';
 	String? ipaddress = '';
 	String? type = '';
 	String? ntype = '';
-	String? distype = '';
-	@JSONField(name: "user_data")
+	dynamic distype;
+	@JSONField(name: 'user_data')
 	BlogLikeListDataUserData? userData;
 
 	BlogLikeListData();
@@ -47,12 +47,16 @@ class BlogLikeListData {
 
 @JsonSerializable()
 class BlogLikeListDataUserData {
+	int? id = 0;
 	String? name = '';
 	String? userimage = '';
-	int? id = 0;
-	@JSONField(name: "image_path")
+	String? immlm = '';
+	String? city = '';
+	String? state = '';
+	String? country = '';
+	@JSONField(name: 'image_path')
 	String? imagePath = '';
-	@JSONField(name: "image_thum_path")
+	@JSONField(name: 'image_thum_path')
 	String? imageThumPath = '';
 
 	BlogLikeListDataUserData();

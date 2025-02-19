@@ -130,7 +130,7 @@ class ClasifiedController extends GetxController {
 
   var selectedCategoryId = 0.obs;
   var selectedSubCategoryId = 0.obs;
-  
+
   var selectedPostIndex = 0.obs;
   int currentPage = 1;
 
@@ -497,12 +497,20 @@ class ClasifiedController extends GetxController {
         request.fields['category'] = selectedCategoryId.value.toString();
         request.fields['subcategory'] = selectedSubCategoryId.value.toString();
 
+        if (kDebugMode) {
+          print('Request Fields: ${request.fields}');
+        }
+
         final streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);
 
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
           var getClassifiedEntity = GetClassifiedEntity.fromJson(data);
+
+          if (kDebugMode) {
+            print('getClassified Data: ${response.body}');
+          }
 
           if (kDebugMode) {
             print('getClassified Data: ${getClassifiedEntity.data}');
@@ -680,7 +688,7 @@ class ClasifiedController extends GetxController {
           var bookmarkUserEntity = BookmarkUserEntity.fromJson(data);
           var message = bookmarkUserEntity.message;
 
-            // Update the liked status and like count based on the message
+          // Update the liked status and like count based on the message
           if (message == 'You have bookmark this classified') {
             bookmarkStatusMap[classifiedId] = true;
             bookmarkCountMap[classifiedId] =

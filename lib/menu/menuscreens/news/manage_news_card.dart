@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -133,14 +134,14 @@ class _ManageNewsCardState extends State<ManageNewsCard>
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Image.network(
-                  '${widget.userImage}?t=${DateTime.now().millisecondsSinceEpoch}',
-                  height: 97,
-                  width: 105,
-                  fit: BoxFit.fill,
-                  errorBuilder: (context, error, stackTrace) =>
-                      const Icon(Icons.error),
-                  headers: const {'Cache-Control': 'no-cache'},
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: CachedNetworkImage(
+                    imageUrl: widget.userImage,
+                    height: 97,
+                    width: 105,
+                    fit: BoxFit.fill,
+                  ),
                 ),
                 10.sbw,
                 Expanded(

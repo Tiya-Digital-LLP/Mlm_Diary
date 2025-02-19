@@ -30,7 +30,10 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
     super.initState();
     _refreshFollowers();
     _refreshFollowing();
-    _tabController = TabController(length: 2, vsync: this);
+
+    int initialIndex = Get.arguments?['initialIndex'] ?? 0;
+    _tabController =
+        TabController(length: 2, vsync: this, initialIndex: initialIndex);
     _tabController.addListener(_handleTabChange);
   }
 

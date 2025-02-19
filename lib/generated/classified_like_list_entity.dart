@@ -26,11 +26,11 @@ class ClassifiedLikeListData {
 	int? cid = 0;
 	int? userid = 0;
 	String? addeddate = '';
-	String? ipaddress = '';
+	dynamic ipaddress;
 	String? type = '';
 	String? ntype = '';
-	String? distype = '';
-	@JSONField(name: "user_data")
+	dynamic distype;
+	@JSONField(name: 'user_data')
 	ClassifiedLikeListDataUserData? userData;
 
 	ClassifiedLikeListData();
@@ -47,13 +47,17 @@ class ClassifiedLikeListData {
 
 @JsonSerializable()
 class ClassifiedLikeListDataUserData {
-	String? name = '';
-	String? userimage = '';
 	int? id = 0;
-	@JSONField(name: "image_path")
-	String? imagePath = '';
-	@JSONField(name: "image_thum_path")
-	String? imageThumPath = '';
+	String? name = '';
+	dynamic userimage;
+	String? immlm = '';
+	dynamic city;
+	dynamic state;
+	dynamic country;
+	@JSONField(name: 'image_path')
+	dynamic imagePath;
+	@JSONField(name: 'image_thum_path')
+	dynamic imageThumPath;
 
 	ClassifiedLikeListDataUserData();
 

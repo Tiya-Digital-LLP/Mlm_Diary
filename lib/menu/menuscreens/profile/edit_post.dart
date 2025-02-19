@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -76,24 +77,11 @@ class _AddPostState extends State<EditPost> {
                       ClipOval(
                         clipBehavior: Clip.hardEdge,
                         child: controller.userPostImage.value.isNotEmpty
-                            ? Image.network(
-                                controller.userPostImage.value,
+                            ? CachedNetworkImage(
+                                imageUrl: controller.userPostImage.value,
                                 fit: BoxFit.cover,
                                 width: 50,
                                 height: 50,
-                                errorBuilder: (context, error, stackTrace) {
-                                  if (kDebugMode) {
-                                    print("Error loading image: $error");
-                                  }
-                                  return Container(
-                                    color: Colors.grey[200],
-                                    child: const Icon(
-                                      Icons.account_circle,
-                                      size: 50,
-                                      color: Colors.grey,
-                                    ),
-                                  );
-                                },
                               )
                             : Container(
                                 color: Colors.grey[200],
@@ -164,8 +152,8 @@ class _AddPostState extends State<EditPost> {
                         ),
                       if (file.value == null &&
                           controller.userImage.value.isNotEmpty)
-                        Image.network(
-                          controller.userImage.value,
+                        CachedNetworkImage(
+                          imageUrl: controller.userImage.value,
                           height: 150,
                           width: double.infinity,
                           fit: BoxFit.cover,
@@ -278,14 +266,16 @@ class _AddPostState extends State<EditPost> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primaryColor,
                         ),
-                        onPressed: () {
-                          FocusScope.of(context).unfocus();
-                          controller.editPost(
-                            file.value,
-                            widget.postId,
-                            context,
-                          );
-                        },
+                        onPressed: controller.isLoading.value
+                            ? null
+                            : () {
+                                FocusScope.of(context).unfocus();
+                                controller.editPost(
+                                  file.value,
+                                  widget.postId,
+                                  context,
+                                );
+                              },
                         child: Text(
                           'Post Now',
                           style: textStyleW700(

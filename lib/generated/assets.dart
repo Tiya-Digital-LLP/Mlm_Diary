@@ -24,6 +24,7 @@ class Assets {
   static const String imagesSplashImage = 'assets/images/splash_image.png';
   static const String imagesSquare = 'assets/images/square.png';
   static const String imagesTrueCircle = 'assets/images/true_circle.png';
+  static const String imagesUploadImage = 'assets/images/Upload_Image.png';
   static const String lottieDotLottie = 'assets/lottie/Dot_Lottie.json';
   static const String lottieDotsanimation = 'assets/lottie/Dotsanimation.json';
   static const String lottieLottie = 'assets/lottie/Lottie.json';

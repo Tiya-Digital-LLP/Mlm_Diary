@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -172,12 +173,9 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard>
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: ClipOval(
-                      child: Image.network(
-                        widget.userImage,
+                      child: CachedNetworkImage(
+                        imageUrl: widget.userImage,
                         fit: BoxFit.fill,
-                        errorBuilder: (context, error, stackTrace) {
-                          return const SizedBox();
-                        },
                       ),
                     ),
                   ),
@@ -244,15 +242,9 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard>
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(12.0),
-                        child: Image.network(
-                          widget.postImage,
+                        child: CachedNetworkImage(
+                          imageUrl: widget.postImage,
                           fit: BoxFit.fill,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Image.asset(
-                              Assets.imagesLogo,
-                              fit: BoxFit.fill,
-                            );
-                          },
                         ),
                       ),
                     ),

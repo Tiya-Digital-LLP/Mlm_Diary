@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/home/notification/controller/notification_controller.dart';
@@ -55,17 +56,18 @@ class _ClassifiedCardState extends State<AdminNotificationCard> {
         color: AppColors.white,
       ),
       child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-        Container(
-          height: 75,
-          width: 75,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            image: DecorationImage(
-              image: NetworkImage(widget.image),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: CachedNetworkImage(
+            imageUrl: widget.image,
+            fit: BoxFit.cover,
+            height: 75,
+            width: 75,
+            errorWidget: (context, url, error) => Image.asset(
+              Assets.imagesAdminlogo,
               fit: BoxFit.cover,
             ),
           ),
-          child: widget.image.isEmpty ? const Icon(Icons.person) : null,
         ),
         16.sbw,
         Expanded(

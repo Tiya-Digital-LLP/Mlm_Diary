@@ -57,7 +57,7 @@ ClassifiedLikeListData $ClassifiedLikeListDataFromJson(
   if (addeddate != null) {
     classifiedLikeListData.addeddate = addeddate;
   }
-  final String? ipaddress = jsonConvert.convert<String>(json['ipaddress']);
+  final dynamic ipaddress = json['ipaddress'];
   if (ipaddress != null) {
     classifiedLikeListData.ipaddress = ipaddress;
   }
@@ -69,7 +69,7 @@ ClassifiedLikeListData $ClassifiedLikeListDataFromJson(
   if (ntype != null) {
     classifiedLikeListData.ntype = ntype;
   }
-  final String? distype = jsonConvert.convert<String>(json['distype']);
+  final dynamic distype = json['distype'];
   if (distype != null) {
     classifiedLikeListData.distype = distype;
   }
@@ -102,10 +102,10 @@ extension ClassifiedLikeListDataExtension on ClassifiedLikeListData {
     int? cid,
     int? userid,
     String? addeddate,
-    String? ipaddress,
+    dynamic ipaddress,
     String? type,
     String? ntype,
-    String? distype,
+    dynamic distype,
     ClassifiedLikeListDataUserData? userData,
   }) {
     return ClassifiedLikeListData()
@@ -124,24 +124,39 @@ extension ClassifiedLikeListDataExtension on ClassifiedLikeListData {
 ClassifiedLikeListDataUserData $ClassifiedLikeListDataUserDataFromJson(
     Map<String, dynamic> json) {
   final ClassifiedLikeListDataUserData classifiedLikeListDataUserData = ClassifiedLikeListDataUserData();
-  final String? name = jsonConvert.convert<String>(json['name']);
-  if (name != null) {
-    classifiedLikeListDataUserData.name = name;
-  }
-  final String? userimage = jsonConvert.convert<String>(json['userimage']);
-  if (userimage != null) {
-    classifiedLikeListDataUserData.userimage = userimage;
-  }
   final int? id = jsonConvert.convert<int>(json['id']);
   if (id != null) {
     classifiedLikeListDataUserData.id = id;
   }
-  final String? imagePath = jsonConvert.convert<String>(json['image_path']);
+  final String? name = jsonConvert.convert<String>(json['name']);
+  if (name != null) {
+    classifiedLikeListDataUserData.name = name;
+  }
+  final dynamic userimage = json['userimage'];
+  if (userimage != null) {
+    classifiedLikeListDataUserData.userimage = userimage;
+  }
+  final String? immlm = jsonConvert.convert<String>(json['immlm']);
+  if (immlm != null) {
+    classifiedLikeListDataUserData.immlm = immlm;
+  }
+  final dynamic city = json['city'];
+  if (city != null) {
+    classifiedLikeListDataUserData.city = city;
+  }
+  final dynamic state = json['state'];
+  if (state != null) {
+    classifiedLikeListDataUserData.state = state;
+  }
+  final dynamic country = json['country'];
+  if (country != null) {
+    classifiedLikeListDataUserData.country = country;
+  }
+  final dynamic imagePath = json['image_path'];
   if (imagePath != null) {
     classifiedLikeListDataUserData.imagePath = imagePath;
   }
-  final String? imageThumPath = jsonConvert.convert<String>(
-      json['image_thum_path']);
+  final dynamic imageThumPath = json['image_thum_path'];
   if (imageThumPath != null) {
     classifiedLikeListDataUserData.imageThumPath = imageThumPath;
   }
@@ -151,9 +166,13 @@ ClassifiedLikeListDataUserData $ClassifiedLikeListDataUserDataFromJson(
 Map<String, dynamic> $ClassifiedLikeListDataUserDataToJson(
     ClassifiedLikeListDataUserData entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
+  data['id'] = entity.id;
   data['name'] = entity.name;
   data['userimage'] = entity.userimage;
-  data['id'] = entity.id;
+  data['immlm'] = entity.immlm;
+  data['city'] = entity.city;
+  data['state'] = entity.state;
+  data['country'] = entity.country;
   data['image_path'] = entity.imagePath;
   data['image_thum_path'] = entity.imageThumPath;
   return data;
@@ -161,16 +180,24 @@ Map<String, dynamic> $ClassifiedLikeListDataUserDataToJson(
 
 extension ClassifiedLikeListDataUserDataExtension on ClassifiedLikeListDataUserData {
   ClassifiedLikeListDataUserData copyWith({
-    String? name,
-    String? userimage,
     int? id,
-    String? imagePath,
-    String? imageThumPath,
+    String? name,
+    dynamic userimage,
+    String? immlm,
+    dynamic city,
+    dynamic state,
+    dynamic country,
+    dynamic imagePath,
+    dynamic imageThumPath,
   }) {
     return ClassifiedLikeListDataUserData()
+      ..id = id ?? this.id
       ..name = name ?? this.name
       ..userimage = userimage ?? this.userimage
-      ..id = id ?? this.id
+      ..immlm = immlm ?? this.immlm
+      ..city = city ?? this.city
+      ..state = state ?? this.state
+      ..country = country ?? this.country
       ..imagePath = imagePath ?? this.imagePath
       ..imageThumPath = imageThumPath ?? this.imageThumPath;
   }

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
@@ -13,15 +14,14 @@ class FullScreenImageDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      insetPadding: EdgeInsets.zero, // Remove padding
-      backgroundColor: AppColors.background, // Make background transparent
+      insetPadding: EdgeInsets.zero,
+      backgroundColor: AppColors.background,
       child: Stack(
         children: [
           FutureBuilder(
             future: _fetchImage(imageUrl),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                // While loading, show a loading indicator
                 return Center(
                   child: CustomLottieAnimation(
                     child: Lottie.asset(
@@ -30,13 +30,11 @@ class FullScreenImageDialog extends StatelessWidget {
                   ),
                 );
               } else if (snapshot.hasError) {
-                // If there is an error, show an error message
                 return const Center(child: Text('Error loading image'));
               } else {
-                // If the image loads successfully, display it
                 return InteractiveViewer(
-                  child: Image.network(
-                    '$imageUrl?${DateTime.now().millisecondsSinceEpoch}',
+                  child: CachedNetworkImage(
+                    imageUrl: imageUrl,
                     fit: BoxFit.contain,
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height,
@@ -51,7 +49,7 @@ class FullScreenImageDialog extends StatelessWidget {
             child: IconButton(
               icon: const Icon(Icons.clear, color: Colors.black),
               onPressed: () {
-                Get.back(); // Close the dialog
+                Get.back();
               },
             ),
           ),
@@ -61,7 +59,6 @@ class FullScreenImageDialog extends StatelessWidget {
   }
 
   Future<void> _fetchImage(String url) async {
-    // Simulating network delay; you can also perform actual image loading here.
-    await Future.delayed(const Duration(seconds: 4));
+    await Future.delayed(const Duration(seconds: 1));
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:io' as io;
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -111,8 +112,8 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                                 )
                               : controller.userImage.value.isNotEmpty
                                   ? ClipOval(
-                                      child: Image.network(
-                                        controller.userImage.value,
+                                      child: CachedNetworkImage(
+                                        imageUrl: controller.userImage.value,
                                         height: 120,
                                         width: 120,
                                         fit: BoxFit.cover,

@@ -828,7 +828,7 @@ class ManageNewsController extends GetxController {
   }
 
   // like_list_classified
-  Future<void> fetchLikeListNews(int classifiedId, int page, context) async {
+  Future<void> fetchLikeListNews(int newsId, int page, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
     String device = Platform.isAndroid ? 'android' : 'ios';
@@ -848,7 +848,7 @@ class ManageNewsController extends GetxController {
 
         request.fields['api_token'] = apiToken ?? '';
         request.fields['device'] = device;
-        request.fields['news_id'] = classifiedId.toString();
+        request.fields['news_id'] = newsId.toString();
         request.fields['page'] = page.toString();
 
         // Log request details
@@ -874,7 +874,6 @@ class ManageNewsController extends GetxController {
           }
 
           var newsLikeListEntity = NewsLikeListEntity.fromJson(data);
-          newsLikeList.value = newsLikeListEntity.data ?? [];
 
           if (newsLikeListEntity.data != null &&
               newsLikeListEntity.data!.isNotEmpty) {

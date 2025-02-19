@@ -966,7 +966,6 @@ class ManageBlogController extends GetxController {
           }
 
           var blogLikeListEntity = BlogLikeListEntity.fromJson(data);
-          blogLikeList.value = blogLikeListEntity.data ?? [];
 
           if (blogLikeListEntity.data != null &&
               blogLikeListEntity.data!.isNotEmpty) {

@@ -65,7 +65,7 @@ NewsLikeListData $NewsLikeListDataFromJson(Map<String, dynamic> json) {
   if (ntype != null) {
     newsLikeListData.ntype = ntype;
   }
-  final String? distype = jsonConvert.convert<String>(json['distype']);
+  final dynamic distype = json['distype'];
   if (distype != null) {
     newsLikeListData.distype = distype;
   }
@@ -100,7 +100,7 @@ extension NewsLikeListDataExtension on NewsLikeListData {
     String? ipaddress,
     String? type,
     String? ntype,
-    String? distype,
+    dynamic distype,
     NewsLikeListDataUserData? userData,
   }) {
     return NewsLikeListData()
@@ -119,6 +119,10 @@ extension NewsLikeListDataExtension on NewsLikeListData {
 NewsLikeListDataUserData $NewsLikeListDataUserDataFromJson(
     Map<String, dynamic> json) {
   final NewsLikeListDataUserData newsLikeListDataUserData = NewsLikeListDataUserData();
+  final int? id = jsonConvert.convert<int>(json['id']);
+  if (id != null) {
+    newsLikeListDataUserData.id = id;
+  }
   final String? name = jsonConvert.convert<String>(json['name']);
   if (name != null) {
     newsLikeListDataUserData.name = name;
@@ -127,9 +131,21 @@ NewsLikeListDataUserData $NewsLikeListDataUserDataFromJson(
   if (userimage != null) {
     newsLikeListDataUserData.userimage = userimage;
   }
-  final int? id = jsonConvert.convert<int>(json['id']);
-  if (id != null) {
-    newsLikeListDataUserData.id = id;
+  final String? immlm = jsonConvert.convert<String>(json['immlm']);
+  if (immlm != null) {
+    newsLikeListDataUserData.immlm = immlm;
+  }
+  final String? city = jsonConvert.convert<String>(json['city']);
+  if (city != null) {
+    newsLikeListDataUserData.city = city;
+  }
+  final String? state = jsonConvert.convert<String>(json['state']);
+  if (state != null) {
+    newsLikeListDataUserData.state = state;
+  }
+  final String? country = jsonConvert.convert<String>(json['country']);
+  if (country != null) {
+    newsLikeListDataUserData.country = country;
   }
   final String? imagePath = jsonConvert.convert<String>(json['image_path']);
   if (imagePath != null) {
@@ -146,9 +162,13 @@ NewsLikeListDataUserData $NewsLikeListDataUserDataFromJson(
 Map<String, dynamic> $NewsLikeListDataUserDataToJson(
     NewsLikeListDataUserData entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
+  data['id'] = entity.id;
   data['name'] = entity.name;
   data['userimage'] = entity.userimage;
-  data['id'] = entity.id;
+  data['immlm'] = entity.immlm;
+  data['city'] = entity.city;
+  data['state'] = entity.state;
+  data['country'] = entity.country;
   data['image_path'] = entity.imagePath;
   data['image_thum_path'] = entity.imageThumPath;
   return data;
@@ -156,16 +176,24 @@ Map<String, dynamic> $NewsLikeListDataUserDataToJson(
 
 extension NewsLikeListDataUserDataExtension on NewsLikeListDataUserData {
   NewsLikeListDataUserData copyWith({
+    int? id,
     String? name,
     String? userimage,
-    int? id,
+    String? immlm,
+    String? city,
+    String? state,
+    String? country,
     String? imagePath,
     String? imageThumPath,
   }) {
     return NewsLikeListDataUserData()
+      ..id = id ?? this.id
       ..name = name ?? this.name
       ..userimage = userimage ?? this.userimage
-      ..id = id ?? this.id
+      ..immlm = immlm ?? this.immlm
+      ..city = city ?? this.city
+      ..state = state ?? this.state
+      ..country = country ?? this.country
       ..imagePath = imagePath ?? this.imagePath
       ..imageThumPath = imageThumPath ?? this.imageThumPath;
   }

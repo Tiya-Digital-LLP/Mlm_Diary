@@ -941,7 +941,6 @@ class EditPostController extends GetxController {
             print('Response body: ${response.body}');
           }
           var postLikeListEntity = PostLikeListEntity.fromJson(data);
-          postLikeList.value = postLikeListEntity.data ?? [];
 
           if (postLikeListEntity.data != null &&
               postLikeListEntity.data!.isNotEmpty) {

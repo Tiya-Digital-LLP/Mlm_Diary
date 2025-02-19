@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
@@ -143,15 +144,9 @@ class _QuestionCardState extends State<QuestionCard>
                         shape: BoxShape.circle,
                       ),
                       child: ClipOval(
-                        child: Image.network(
-                          widget.userImage,
+                        child: CachedNetworkImage(
+                          imageUrl: widget.userImage,
                           fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Image.asset(
-                              Assets.imagesAdminlogo,
-                              fit: BoxFit.cover,
-                            );
-                          },
                         ),
                       ),
                     ),

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -330,7 +331,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 userImage: controller
                                                         .mutualFriendList[index]
                                                         .imageUrl ??
-                                                    '',
+                                                    Assets.imagesAdminlogo,
                                                 name: controller
                                                         .mutualFriendList[index]
                                                         .title ??
@@ -1143,8 +1144,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10.0),
-                        child: Image.network(
-                          banner.image ?? '',
+                        child: CachedNetworkImage(
+                          imageUrl: banner.image ?? '',
                           fit: BoxFit.fill,
                           width: 2500.0,
                         ),

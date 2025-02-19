@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
@@ -138,15 +139,9 @@ class _FavouritrCardState extends State<DatabaseHomeCard> {
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: ClipOval(
-                      child: Image.network(
-                        widget.postImage,
+                      child: CachedNetworkImage(
+                        imageUrl: widget.postImage,
                         fit: BoxFit.fill,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Image.asset(
-                            Assets.imagesAdminlogo,
-                            fit: BoxFit.fill,
-                          );
-                        },
                       ),
                     ),
                   ),

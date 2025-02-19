@@ -65,7 +65,7 @@ PostLikeListData $PostLikeListDataFromJson(Map<String, dynamic> json) {
   if (ntype != null) {
     postLikeListData.ntype = ntype;
   }
-  final dynamic distype = json['distype'];
+  final String? distype = jsonConvert.convert<String>(json['distype']);
   if (distype != null) {
     postLikeListData.distype = distype;
   }
@@ -100,7 +100,7 @@ extension PostLikeListDataExtension on PostLikeListData {
     String? ipaddress,
     String? type,
     String? ntype,
-    dynamic distype,
+    String? distype,
     PostLikeListDataUserData? userData,
   }) {
     return PostLikeListData()
@@ -119,6 +119,10 @@ extension PostLikeListDataExtension on PostLikeListData {
 PostLikeListDataUserData $PostLikeListDataUserDataFromJson(
     Map<String, dynamic> json) {
   final PostLikeListDataUserData postLikeListDataUserData = PostLikeListDataUserData();
+  final int? id = jsonConvert.convert<int>(json['id']);
+  if (id != null) {
+    postLikeListDataUserData.id = id;
+  }
   final String? name = jsonConvert.convert<String>(json['name']);
   if (name != null) {
     postLikeListDataUserData.name = name;
@@ -127,9 +131,21 @@ PostLikeListDataUserData $PostLikeListDataUserDataFromJson(
   if (userimage != null) {
     postLikeListDataUserData.userimage = userimage;
   }
-  final int? id = jsonConvert.convert<int>(json['id']);
-  if (id != null) {
-    postLikeListDataUserData.id = id;
+  final String? immlm = jsonConvert.convert<String>(json['immlm']);
+  if (immlm != null) {
+    postLikeListDataUserData.immlm = immlm;
+  }
+  final String? city = jsonConvert.convert<String>(json['city']);
+  if (city != null) {
+    postLikeListDataUserData.city = city;
+  }
+  final String? state = jsonConvert.convert<String>(json['state']);
+  if (state != null) {
+    postLikeListDataUserData.state = state;
+  }
+  final String? country = jsonConvert.convert<String>(json['country']);
+  if (country != null) {
+    postLikeListDataUserData.country = country;
   }
   final String? imagePath = jsonConvert.convert<String>(json['image_path']);
   if (imagePath != null) {
@@ -146,9 +162,13 @@ PostLikeListDataUserData $PostLikeListDataUserDataFromJson(
 Map<String, dynamic> $PostLikeListDataUserDataToJson(
     PostLikeListDataUserData entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
+  data['id'] = entity.id;
   data['name'] = entity.name;
   data['userimage'] = entity.userimage;
-  data['id'] = entity.id;
+  data['immlm'] = entity.immlm;
+  data['city'] = entity.city;
+  data['state'] = entity.state;
+  data['country'] = entity.country;
   data['image_path'] = entity.imagePath;
   data['image_thum_path'] = entity.imageThumPath;
   return data;
@@ -156,16 +176,24 @@ Map<String, dynamic> $PostLikeListDataUserDataToJson(
 
 extension PostLikeListDataUserDataExtension on PostLikeListDataUserData {
   PostLikeListDataUserData copyWith({
+    int? id,
     String? name,
     String? userimage,
-    int? id,
+    String? immlm,
+    String? city,
+    String? state,
+    String? country,
     String? imagePath,
     String? imageThumPath,
   }) {
     return PostLikeListDataUserData()
+      ..id = id ?? this.id
       ..name = name ?? this.name
       ..userimage = userimage ?? this.userimage
-      ..id = id ?? this.id
+      ..immlm = immlm ?? this.immlm
+      ..city = city ?? this.city
+      ..state = state ?? this.state
+      ..country = country ?? this.country
       ..imagePath = imagePath ?? this.imagePath
       ..imageThumPath = imageThumPath ?? this.imageThumPath;
   }

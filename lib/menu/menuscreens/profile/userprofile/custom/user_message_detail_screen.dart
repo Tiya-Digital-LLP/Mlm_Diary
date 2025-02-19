@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -126,13 +127,11 @@ class _UserMessageDetailScreenState extends State<UserMessageDetailScreen> {
                   children: [
                     if (post != null && post['imageUrl'] != null) ...[
                       ClipOval(
-                        child: Image.network(
-                          post['imageUrl'],
+                        child: CachedNetworkImage(
+                          imageUrl: post['imageUrl'],
                           height: 30.0,
                           width: 30.0,
                           fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) =>
-                              const Icon(Icons.error),
                         ),
                       ),
                       10.sbw,
@@ -220,13 +219,11 @@ class _UserMessageDetailScreenState extends State<UserMessageDetailScreen> {
                           children: [
                             if (!isSender)
                               ClipOval(
-                                child: Image.network(
-                                  userImage ?? '',
+                                child: CachedNetworkImage(
+                                  imageUrl: userImage ?? '',
                                   height: 30.0,
                                   width: 30.0,
                                   fit: BoxFit.cover,
-                                  errorBuilder: (_, __, ___) =>
-                                      const Icon(Icons.error, size: 30),
                                 ),
                               ),
                             Flexible(
@@ -279,13 +276,11 @@ class _UserMessageDetailScreenState extends State<UserMessageDetailScreen> {
                             ),
                             if (isSender)
                               ClipOval(
-                                child: Image.network(
-                                  userImage ?? '',
+                                child: CachedNetworkImage(
+                                  imageUrl: userImage ?? '',
                                   height: 30.0,
                                   width: 30.0,
                                   fit: BoxFit.cover,
-                                  errorBuilder: (_, __, ___) =>
-                                      const Icon(Icons.error, size: 30),
                                 ),
                               ),
                           ],

@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -206,14 +207,14 @@ class _ManageBlogPlusIconState extends State<ManageBlogPlusIcon> {
                                     fit: BoxFit.cover,
                                   )
                                 : controller.userImage.value.isNotEmpty
-                                    ? Image.network(
-                                        '${controller.userImage.value}?t=${DateTime.now().millisecondsSinceEpoch}',
+                                    ? CachedNetworkImage(
+                                        imageUrl: controller.userImage.value,
                                         height: 100,
                                         width: double.infinity,
                                         fit: BoxFit.cover,
                                       )
                                     : Image.asset(
-                                        Assets.imagesLogo,
+                                        Assets.svgUploadImage,
                                         height: 100,
                                         width: double.infinity,
                                         fit: BoxFit.cover,

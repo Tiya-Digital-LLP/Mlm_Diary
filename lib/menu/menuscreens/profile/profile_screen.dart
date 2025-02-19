@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -402,15 +403,9 @@ class _ProfileScreenState extends State<ProfileScreen>
                 borderRadius: BorderRadius.circular(15),
               ),
               child: ClipOval(
-                child: Image.network(
-                  '${userProfile.imagePath.toString()}?${DateTime.now().millisecondsSinceEpoch}',
+                child: CachedNetworkImage(
+                  imageUrl: userProfile.imagePath.toString(),
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Image.asset(
-                      Assets.imagesAdminlogo,
-                      fit: BoxFit.cover,
-                    );
-                  },
                 ),
               ),
             ),
@@ -462,8 +457,8 @@ class _ProfileScreenState extends State<ProfileScreen>
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
                 child: InteractiveViewer(
-                  child: Image.network(
-                    '${userProfile.imagePath.toString()}?${DateTime.now().millisecondsSinceEpoch}',
+                  child: CachedNetworkImage(
+                    imageUrl: userProfile.imagePath.toString(),
                     fit: BoxFit.contain,
                     width: MediaQuery.of(context).size.width,
                   ),

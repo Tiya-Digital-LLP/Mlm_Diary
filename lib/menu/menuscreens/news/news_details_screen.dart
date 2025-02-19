@@ -52,22 +52,22 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen>
   late RxBool isBookmarked;
   late RxInt bookmarkCount;
 
-  void initializeLikes() {
-    isLiked = RxBool(controller.newsList[0].likedByUser ?? false);
-    likeCount = RxInt(controller.newsList[0].totallike ?? 0);
+  void initializeLikes(int index) {
+    isLiked = RxBool(controller.newsList[index].likedByUser ?? false);
+    likeCount = RxInt(controller.newsList[index].totallike ?? 0);
   }
 
-  void initializeBookmarks() {
-    isBookmarked = RxBool(controller.newsList[0].bookmarkedByUser ?? false);
-    bookmarkCount = RxInt(controller.newsList[0].totalbookmark ?? 0);
+  void initializeBookmarks(int index) {
+    isBookmarked = RxBool(controller.newsList[index].bookmarkedByUser ?? false);
+    bookmarkCount = RxInt(controller.newsList[index].totalbookmark ?? 0);
   }
 
   void toggleLike() async {
-    bool newLikedValue = !isLiked.value;
-    isLiked.value = newLikedValue;
-    likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
+    bool newLikeValue = !isLiked.value;
+    isLiked.value = newLikeValue;
+    likeCount.value = newLikeValue ? likeCount.value + 1 : likeCount.value - 1;
 
-    await controller.toggleLike(post.id, context);
+    await controller.toggleLike(post.id ?? 0, context);
   }
 
   void toggleBookmark() async {
@@ -76,7 +76,7 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen>
     bookmarkCount.value =
         newBookmarkedValue ? bookmarkCount.value + 1 : bookmarkCount.value - 1;
 
-    await controller.toggleBookMark(post.id, context);
+    await controller.toggleBookMark(post.id ?? 0, context);
   }
 
   late TabController _tabController;
@@ -90,13 +90,18 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen>
 
     post = Get.arguments;
     if (post != null && post.id != null) {
-      controller.getNews(
-        post.id ?? 0,
-      );
+      controller.getNews(1);
     }
 
-    initializeLikes();
-    initializeBookmarks();
+    // Find index of the post in classifiedList
+    int postIndex =
+        controller.newsList.indexWhere((item) => item.id == post.id);
+
+    // Ensure the index is valid before calling the methods
+    if (postIndex != -1) {
+      initializeLikes(postIndex);
+      initializeBookmarks(postIndex);
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.countViewNews(post.id ?? 0, context);
     });
@@ -119,20 +124,17 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen>
         onPageChanged: (index) {
           setState(() {
             currentPage = index;
-          });
+            post = controller.newsList[index];
 
+            // Update isLiked and likeCount for the new post
+            initializeLikes(index);
+            initializeBookmarks(index);
+          });
           if (kDebugMode) {
             print("Page changed to: $index");
+            print("Selected post: ${post.id}");
           }
-          if (index >= 0 && index < controller.newsList.length) {
-            post = controller.newsList[index];
-            if (kDebugMode) {
-              print("Selected post: ${post.id}");
-            }
-            controller.getNews(
-              post.id ?? 0,
-            );
-          }
+          controller.getNews(1);
         },
         itemBuilder: (context, index) {
           return controller.isLoading.value
@@ -239,16 +241,9 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen>
                                     width: size.width,
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(12.0),
-                                      child: Image.network(
-                                        post.imageUrl,
+                                      child: CachedNetworkImage(
+                                        imageUrl: post.imageUrl,
                                         fit: BoxFit.fill,
-                                        errorBuilder:
-                                            (context, error, stackTrace) {
-                                          return Image.asset(
-                                            Assets.imagesLogo,
-                                            fit: BoxFit.fill,
-                                          );
-                                        },
                                       ),
                                     ),
                                   ),
@@ -444,15 +439,14 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen>
                         width: size.height * 0.028,
                         child: GestureDetector(
                           onTap: () {
-                            controller.toggleLike(post.id, context);
+                            toggleLike();
                           },
                           child: Icon(
-                            controller.likedStatusMap[post.id] == true
+                            isLiked.value
                                 ? Icons.thumb_up
                                 : Icons.thumb_up_off_alt_outlined,
-                            color: controller.likedStatusMap[post.id] == true
-                                ? AppColors.primaryColor
-                                : null,
+                            color:
+                                isLiked.value ? AppColors.primaryColor : null,
                             size: size.height * 0.032,
                           ),
                         ),
@@ -462,9 +456,9 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen>
                       width: 7,
                     ),
                     Obx(() {
-                      // Sum the original `post.totallike` with the reactive like count
-                      int totalLikes = post.totallike +
-                          (controller.likeCountMap[post.id] ?? 0);
+                      int postId = post.id ?? 0;
+                      int totalLikes = (post.totallike ?? 0) +
+                          (controller.likeCountMap[postId] ?? 0);
 
                       return InkWell(
                         onTap: () {

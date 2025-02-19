@@ -148,13 +148,16 @@ class _ManageBlogCardState extends State<ManageBlogCard> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CachedNetworkImage(
-                  imageUrl:
-                      '${widget.postImage}?t=${DateTime.now().millisecondsSinceEpoch}',
-                  height: 97,
-                  width: 105,
-                  fit: BoxFit.fill,
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: CachedNetworkImage(
+                    imageUrl: widget.postImage,
+                    height: 97,
+                    width: 105,
+                    fit: BoxFit.fill,
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
+                  ),
                 ),
                 10.sbw,
                 Expanded(

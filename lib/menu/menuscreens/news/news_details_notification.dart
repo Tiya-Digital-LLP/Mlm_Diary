@@ -185,15 +185,9 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification>
                               width: size.width,
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(12.0),
-                                child: Image.network(
-                                  post.imageUrl.toString(),
+                                child: CachedNetworkImage(
+                                  imageUrl: post.imageUrl.toString(),
                                   fit: BoxFit.fill,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Image.asset(
-                                      Assets.imagesLogo,
-                                      fit: BoxFit.fill,
-                                    );
-                                  },
                                 ),
                               ),
                             ),

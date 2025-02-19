@@ -111,14 +111,16 @@ class _ManageClassifiedCardState extends State<ManageClassifiedCard>
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Replace Image.asset with CachedNetworkImage
-                CachedNetworkImage(
-                  imageUrl:
-                      '${widget.userImage}?t=${DateTime.now().millisecondsSinceEpoch}',
-                  height: 97,
-                  width: 105,
-                  fit: BoxFit.fill,
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: CachedNetworkImage(
+                    imageUrl: widget.userImage,
+                    height: 97,
+                    width: 105,
+                    fit: BoxFit.fill,
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
+                  ),
                 ),
                 10.sbw,
                 Expanded(

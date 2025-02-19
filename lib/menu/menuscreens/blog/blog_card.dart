@@ -226,15 +226,9 @@ class _BlogCardState extends State<BlogCard>
                 width: size.width,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12.0),
-                  child: Image.network(
-                    widget.userImage,
+                  child: CachedNetworkImage(
+                    imageUrl: widget.userImage,
                     fit: BoxFit.fill,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Image.asset(
-                        Assets.imagesLogo,
-                        fit: BoxFit.fill,
-                      );
-                    },
                   ),
                 ),
               ),

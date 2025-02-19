@@ -24,11 +24,11 @@ class ViewsNewsListEntity {
 class ViewsNewsListData {
 	int? id = 0;
 	int? nid = 0;
-	@JSONField(name: "user_id")
+	@JSONField(name: 'user_id')
 	int? userId = 0;
-	@JSONField(name: "created_at")
+	@JSONField(name: 'created_at')
 	String? createdAt = '';
-	@JSONField(name: "user_data")
+	@JSONField(name: 'user_data')
 	ViewsNewsListDataUserData? userData;
 
 	ViewsNewsListData();
@@ -45,13 +45,15 @@ class ViewsNewsListData {
 
 @JsonSerializable()
 class ViewsNewsListDataUserData {
+	dynamic id;
 	String? name = '';
-	String? userimage = '';
-	int? id = 0;
-	@JSONField(name: "image_path")
-	String? imagePath = '';
-	@JSONField(name: "image_thum_path")
-	String? imageThumPath = '';
+	dynamic userimage;
+	@JSONField(name: 'image_path')
+	dynamic imagePath;
+	dynamic immlm;
+	dynamic city;
+	dynamic state;
+	dynamic country;
 
 	ViewsNewsListDataUserData();
 

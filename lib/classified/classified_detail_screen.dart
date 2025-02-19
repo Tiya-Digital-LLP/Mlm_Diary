@@ -53,32 +53,22 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen>
 
   late TabController _tabController;
 
-  void initializeLikes() {
-    isLiked = RxBool(controller.classifiedList[0].likedByUser ?? false);
-    likeCount = RxInt(controller.classifiedList[0].totallike ?? 0);
+  void initializeLikes(int index) {
+    isLiked = RxBool(controller.classifiedList[index].likedByUser ?? false);
+    likeCount = RxInt(controller.classifiedList[index].totallike ?? 0);
   }
 
-  void initializeBookmarks() {
+  void initializeBookmarks(int index) {
     isBookmarked =
-        RxBool(controller.classifiedList[0].bookmarkedByUser ?? false);
-    bookmarkCount = RxInt(controller.classifiedList[0].totalbookmark ?? 0);
+        RxBool(controller.classifiedList[index].bookmarkedByUser ?? false);
+    bookmarkCount = RxInt(controller.classifiedList[index].totalbookmark ?? 0);
   }
 
   void toggleLike() async {
-    bool newLikedValue = !isLiked.value;
-    isLiked.value = newLikedValue;
+    bool newLikeValue = !isLiked.value;
+    isLiked.value = newLikeValue;
+    likeCount.value = newLikeValue ? likeCount.value + 1 : likeCount.value - 1;
 
-    // Update the local like count immediately
-    if (newLikedValue) {
-      post.totallike += 1; // Increase the total like count
-    } else {
-      post.totallike -= 1; // Decrease the total like count
-    }
-
-    // Update the like count displayed on the UI
-    likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
-
-    // Call the controller to sync with the backend
     await controller.toggleLike(post.id ?? 0, context);
   }
 
@@ -102,10 +92,15 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen>
     if (post != null && post.id != null) {
       controller.getClassified(1);
     }
-    controller.fetchClassifiedDetail(post.id ?? 0, context);
+    // Find index of the post in classifiedList
+    int postIndex =
+        controller.classifiedList.indexWhere((item) => item.id == post.id);
 
-    initializeLikes();
-    initializeBookmarks();
+    // Ensure the index is valid before calling the methods
+    if (postIndex != -1) {
+      initializeLikes(postIndex);
+      initializeBookmarks(postIndex);
+    }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.countViewClassified(post.id ?? 0, context);
@@ -129,18 +124,19 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen>
         onPageChanged: (index) {
           setState(() {
             currentPage = index;
+            post = controller.classifiedList[index];
+
+            // Update isLiked and likeCount for the new post
+            initializeLikes(index);
+            initializeBookmarks(index);
           });
 
           if (kDebugMode) {
             print("Page changed to: $index");
+            print("Selected post: ${post.id}");
           }
-          if (index >= 0 && index < controller.classifiedList.length) {
-            post = controller.classifiedList[index];
-            if (kDebugMode) {
-              print("Selected post: ${post.id}");
-            }
-            controller.getClassified(post.id ?? 0);
-          }
+
+          controller.getClassified(1);
         },
         itemBuilder: (context, index) {
           return controller.isLoading.value
@@ -235,9 +231,6 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen>
                               SizedBox(
                                 height: size.height * 0.012,
                               ),
-                              // if (post.imageUrl.isNotEmpty &&
-                              //     Uri.tryParse(post.imageUrl)?.hasAbsolutePath ==
-                              //         true)
                               Padding(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 16),
@@ -250,16 +243,9 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen>
                                     width: size.width,
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(12.0),
-                                      child: Image.network(
-                                        post.imageUrl,
+                                      child: CachedNetworkImage(
+                                        imageUrl: post.imageUrl,
                                         fit: BoxFit.fill,
-                                        errorBuilder:
-                                            (context, error, stackTrace) {
-                                          return Image.asset(
-                                            Assets.imagesLogo,
-                                            fit: BoxFit.fill,
-                                          );
-                                        },
                                       ),
                                     ),
                                   ),
@@ -381,7 +367,6 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen>
                                   ],
                                 ),
                               ),
-
                               5.sbh,
                               Container(
                                 decoration: BoxDecoration(
@@ -528,15 +513,14 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen>
                         width: size.height * 0.028,
                         child: GestureDetector(
                           onTap: () {
-                            controller.toggleLike(post.id, context);
+                            toggleLike();
                           },
                           child: Icon(
-                            controller.likedStatusMap[post.id] == true
+                            isLiked.value
                                 ? Icons.thumb_up
                                 : Icons.thumb_up_off_alt_outlined,
-                            color: controller.likedStatusMap[post.id] == true
-                                ? AppColors.primaryColor
-                                : null,
+                            color:
+                                isLiked.value ? AppColors.primaryColor : null,
                             size: size.height * 0.032,
                           ),
                         ),
@@ -546,9 +530,9 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen>
                       width: 7,
                     ),
                     Obx(() {
-                      // Sum the original `post.totallike` with the reactive like count
-                      int totalLikes = post.totallike +
-                          (controller.likeCountMap[post.id] ?? 0);
+                      int postId = post.id ?? 0;
+                      int totalLikes = (post.totallike ?? 0) +
+                          (controller.likeCountMap[postId] ?? 0);
 
                       return InkWell(
                         onTap: () {

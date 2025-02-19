@@ -1,4 +1,5 @@
 import 'dart:io' as io;
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
@@ -375,14 +376,14 @@ class _ManageClassifiedPlusIconState extends State<ManageClassifiedPlusIcon> {
                                     fit: BoxFit.cover,
                                   )
                                 : controller.userImage.value.isNotEmpty
-                                    ? Image.network(
-                                        '${controller.userImage.value}?t=${DateTime.now().millisecondsSinceEpoch}',
+                                    ? CachedNetworkImage(
+                                        imageUrl: controller.userImage.value,
                                         height: 100,
                                         width: double.infinity,
                                         fit: BoxFit.cover,
                                       )
                                     : Image.asset(
-                                        Assets.imagesLogo,
+                                        Assets.svgUploadImage,
                                         height: 100,
                                         width: double.infinity,
                                         fit: BoxFit.cover,

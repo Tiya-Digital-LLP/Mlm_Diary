@@ -2,6 +2,7 @@
 
 import 'dart:core';
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -195,15 +196,9 @@ class _moreState extends State<MoreOptionScreen> {
                                 borderRadius: BorderRadius.circular(15),
                               ),
                               child: ClipOval(
-                                child: Image.network(
-                                  '${userProfile.imagePath.toString()}?${DateTime.now().millisecondsSinceEpoch}',
+                                child: CachedNetworkImage(
+                                  imageUrl: userProfile.imagePath.toString(),
                                   fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Image.asset(
-                                      Assets.imagesAdminlogo,
-                                      fit: BoxFit.fill,
-                                    );
-                                  },
                                 ),
                               ),
                             ),

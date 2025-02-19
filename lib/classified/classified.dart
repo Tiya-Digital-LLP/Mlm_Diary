@@ -197,7 +197,8 @@ class _ClassifiedScreenState extends State<ClassifiedScreen> {
                                     dateTime: post.createdate ?? '',
                                     updatedateTime: post.datemodified ?? '',
                                     classifiedId: post.id ?? 0,
-                                    userImage: post.imageUrl ?? '',
+                                    userImage:
+                                        post.imageUrl ?? Assets.imagesAdminlogo,
                                     userName: post.userData?.name ?? '',
                                     postTitle: post.title ?? '',
                                     postCaption: post.description ?? '',

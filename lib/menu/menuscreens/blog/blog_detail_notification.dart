@@ -190,9 +190,6 @@ class _BlogDetailScreenState extends State<BlogDetailNotification>
                           SizedBox(
                             height: size.height * 0.012,
                           ),
-                          // if (data.imageUrl!.isNotEmpty &&
-                          //     Uri.tryParse(data.imageUrl!)?.hasAbsolutePath ==
-                          //         true)
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             child: InkWell(
@@ -210,15 +207,9 @@ class _BlogDetailScreenState extends State<BlogDetailNotification>
                                 width: size.width,
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(12.0),
-                                  child: Image.network(
-                                    post.imageUrl.toString(),
+                                  child: CachedNetworkImage(
+                                    imageUrl: post.imageUrl.toString(),
                                     fit: BoxFit.fill,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Image.asset(
-                                        Assets.imagesLogo,
-                                        fit: BoxFit.fill,
-                                      );
-                                    },
                                   ),
                                 ),
                               ),
@@ -248,7 +239,6 @@ class _BlogDetailScreenState extends State<BlogDetailNotification>
                               ),
                             ),
                           ),
-
                           SizedBox(
                             height: size.height * 0.01,
                           ),
@@ -277,9 +267,7 @@ class _BlogDetailScreenState extends State<BlogDetailNotification>
                                   bottom: BorderSide(color: Colors.grey)),
                             ),
                           ),
-
                           5.sbh,
-
                           Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 16,
@@ -368,7 +356,6 @@ class _BlogDetailScreenState extends State<BlogDetailNotification>
                               ),
                             ),
                           ),
-
                           SizedBox(
                             height: size.height * 0.017,
                           ),

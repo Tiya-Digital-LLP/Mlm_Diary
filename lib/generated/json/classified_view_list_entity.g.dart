@@ -96,6 +96,10 @@ extension ClassifiedViewListDataExtension on ClassifiedViewListData {
 ClassifiedViewListDataUserData $ClassifiedViewListDataUserDataFromJson(
     Map<String, dynamic> json) {
   final ClassifiedViewListDataUserData classifiedViewListDataUserData = ClassifiedViewListDataUserData();
+  final int? id = jsonConvert.convert<int>(json['id']);
+  if (id != null) {
+    classifiedViewListDataUserData.id = id;
+  }
   final String? name = jsonConvert.convert<String>(json['name']);
   if (name != null) {
     classifiedViewListDataUserData.name = name;
@@ -104,9 +108,21 @@ ClassifiedViewListDataUserData $ClassifiedViewListDataUserDataFromJson(
   if (userimage != null) {
     classifiedViewListDataUserData.userimage = userimage;
   }
-  final int? id = jsonConvert.convert<int>(json['id']);
-  if (id != null) {
-    classifiedViewListDataUserData.id = id;
+  final String? immlm = jsonConvert.convert<String>(json['immlm']);
+  if (immlm != null) {
+    classifiedViewListDataUserData.immlm = immlm;
+  }
+  final String? city = jsonConvert.convert<String>(json['city']);
+  if (city != null) {
+    classifiedViewListDataUserData.city = city;
+  }
+  final String? state = jsonConvert.convert<String>(json['state']);
+  if (state != null) {
+    classifiedViewListDataUserData.state = state;
+  }
+  final String? country = jsonConvert.convert<String>(json['country']);
+  if (country != null) {
+    classifiedViewListDataUserData.country = country;
   }
   final String? imagePath = jsonConvert.convert<String>(json['image_path']);
   if (imagePath != null) {
@@ -123,9 +139,13 @@ ClassifiedViewListDataUserData $ClassifiedViewListDataUserDataFromJson(
 Map<String, dynamic> $ClassifiedViewListDataUserDataToJson(
     ClassifiedViewListDataUserData entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
+  data['id'] = entity.id;
   data['name'] = entity.name;
   data['userimage'] = entity.userimage;
-  data['id'] = entity.id;
+  data['immlm'] = entity.immlm;
+  data['city'] = entity.city;
+  data['state'] = entity.state;
+  data['country'] = entity.country;
   data['image_path'] = entity.imagePath;
   data['image_thum_path'] = entity.imageThumPath;
   return data;
@@ -133,16 +153,24 @@ Map<String, dynamic> $ClassifiedViewListDataUserDataToJson(
 
 extension ClassifiedViewListDataUserDataExtension on ClassifiedViewListDataUserData {
   ClassifiedViewListDataUserData copyWith({
+    int? id,
     String? name,
     String? userimage,
-    int? id,
+    String? immlm,
+    String? city,
+    String? state,
+    String? country,
     String? imagePath,
     String? imageThumPath,
   }) {
     return ClassifiedViewListDataUserData()
+      ..id = id ?? this.id
       ..name = name ?? this.name
       ..userimage = userimage ?? this.userimage
-      ..id = id ?? this.id
+      ..immlm = immlm ?? this.immlm
+      ..city = city ?? this.city
+      ..state = state ?? this.state
+      ..country = country ?? this.country
       ..imagePath = imagePath ?? this.imagePath
       ..imageThumPath = imageThumPath ?? this.imageThumPath;
   }
