@@ -62,13 +62,11 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
     Future.delayed(const Duration(seconds: 1), () {
       showShimmer.value = false;
     });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _fetchUserIdAndRefreshViews();
-    });
-  }
 
-  Future<void> _fetchUserIdAndRefreshViews() async {
-    _refreshViews();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _refreshViews();
+    });
+
     _viewersScrollController.addListener(() {
       if (_viewersScrollController.position.pixels ==
           _viewersScrollController.position.maxScrollExtent) {
@@ -78,13 +76,20 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
   }
 
   Future<void> _loadMoreViewers() async {
-    if (!isFetchingViewrs) {
+    if (!isFetchingViewrs && !userProfileController.isEndOfData.value) {
       isFetchingViewrs = true;
-      int nextPage = (userProfileController.views.length ~/ 10) +
-          1; // Assuming 10 items per page
+      int nextPage = (userProfileController.views.length ~/ 10) + 1;
+
       await userProfileController.getViews(nextPage, widget.userId);
+
       isFetchingViewrs = false;
     }
+  }
+
+  @override
+  void dispose() {
+    _viewersScrollController.dispose();
+    super.dispose();
   }
 
   void deletePost(int index) async {
@@ -154,7 +159,7 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                   }
                 },
                 tabs: [
-                  Obx(() => Tab(text: 'Posts ${profileController.post}')),
+                  Obx(() => Tab(text: 'Posts (${profileController.post})')),
                   const Tab(text: 'About Me'),
                 ],
                 children: [
@@ -770,116 +775,127 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
           ),
           3.sbh,
           Expanded(
-            child: Obx(() {
-              if (userProfileController.views.isEmpty) {
-                return const Center(child: Text('No Views'));
-              }
-
-              return ListView.builder(
-                controller: _viewersScrollController,
-                itemCount: userProfileController.views.length,
-                itemBuilder: (context, index) {
-                  var viewers = userProfileController.views[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: InkWell(
-                      onTap: () async {
-                        Get.toNamed(Routes.userprofilescreen, arguments: {
-                          'user_id': viewers.id,
-                        })!
-                            .then((_) {
-                          _refreshViews();
-                        });
-
-                        await userProfileController.fetchUserAllPost(
-                          1,
-                          viewers.id.toString(),
+              child: Obx(
+            () => userProfileController.views.isEmpty
+                ? const Center(child: Text('No Views'))
+                : ListView.builder(
+                    controller: _viewersScrollController,
+                    itemCount: userProfileController.views.length +
+                        (isFetchingViewrs ? 1 : 0),
+                    itemBuilder: (context, index) {
+                      if (index == userProfileController.views.length) {
+                        return const Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(16),
+                            child: CircularProgressIndicator(),
+                          ),
                         );
-                      },
-                      child: Card(
-                        color: Colors.white,
-                        elevation: 9,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    width: 50,
-                                    height: 50,
-                                    decoration: ShapeDecoration(
-                                      image: DecorationImage(
-                                        image: viewers
-                                                    .userimageUrl.isNotEmpty ==
-                                                true
-                                            ? NetworkImage(viewers.userimageUrl)
-                                            : const AssetImage(
-                                                    'assets/more.png')
-                                                as ImageProvider,
-                                        fit: BoxFit.cover,
-                                      ),
-                                      shape: const OvalBorder(),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        viewers.name,
-                                        style: const TextStyle(
-                                          fontSize: 14.0,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                      2.sbh,
-                                      Text(
-                                        () {
-                                          final addressParts = [
-                                            viewers.city.trim(),
-                                            viewers.state.trim(),
-                                            viewers.country.trim(),
-                                          ].where((e) => e.isNotEmpty).toList();
+                      }
 
-                                          return addressParts.isNotEmpty
-                                              ? addressParts.join(', ')
-                                              : 'Not Type Address';
-                                        }(),
-                                        style: TextStyle(
-                                          color: AppColors.blackText,
-                                          fontSize: 12.0,
+                      var viewers = userProfileController.views[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: InkWell(
+                          onTap: () async {
+                            Get.toNamed(Routes.userprofilescreen, arguments: {
+                              'user_id': viewers.id,
+                            })!
+                                .then((_) {
+                              _refreshViews();
+                            });
+
+                            await userProfileController.fetchUserAllPost(
+                              1,
+                              viewers.id.toString(),
+                            );
+                          },
+                          child: Card(
+                            color: Colors.white,
+                            elevation: 9,
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Container(
+                                        width: 50,
+                                        height: 50,
+                                        decoration: ShapeDecoration(
+                                          image: DecorationImage(
+                                            image: viewers.userimageUrl
+                                                        .isNotEmpty ==
+                                                    true
+                                                ? NetworkImage(
+                                                    viewers.userimageUrl)
+                                                : const AssetImage(
+                                                        'assets/more.png')
+                                                    as ImageProvider,
+                                            fit: BoxFit.cover,
+                                          ),
+                                          shape: const OvalBorder(),
                                         ),
                                       ),
-                                      2.sbh,
-                                      Text(
-                                        viewers.immlm,
-                                        style: TextStyle(
-                                          color: AppColors.blackText,
-                                          fontSize: 12.0,
-                                        ),
+                                      const SizedBox(width: 8),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            viewers.name,
+                                            style: const TextStyle(
+                                              fontSize: 14.0,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          2.sbh,
+                                          Text(
+                                            () {
+                                              final addressParts = [
+                                                viewers.city.trim(),
+                                                viewers.state.trim(),
+                                                viewers.country.trim(),
+                                              ]
+                                                  .where((e) => e.isNotEmpty)
+                                                  .toList();
+
+                                              return addressParts.isNotEmpty
+                                                  ? addressParts.join(', ')
+                                                  : 'Not Type Address';
+                                            }(),
+                                            style: TextStyle(
+                                              color: AppColors.blackText,
+                                              fontSize: 12.0,
+                                            ),
+                                          ),
+                                          2.sbh,
+                                          Text(
+                                            viewers.immlm,
+                                            style: TextStyle(
+                                              color: AppColors.blackText,
+                                              fontSize: 12.0,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
+                                  const Icon(
+                                    Icons.arrow_right,
+                                    size: 30,
+                                  ),
                                 ],
                               ),
-                              const Icon(
-                                Icons.arrow_right,
-                                size: 30,
-                              ),
-                            ],
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  );
-                },
-              );
-            }),
-          ),
+                      );
+                    },
+                  ),
+          )),
         ],
       ),
     );

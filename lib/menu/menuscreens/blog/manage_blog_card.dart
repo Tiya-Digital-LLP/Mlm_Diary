@@ -1,7 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -281,16 +280,13 @@ class _ManageBlogCardState extends State<ManageBlogCard> {
                   children: [
                     Material(
                       child: InkWell(
-                        onTap: () async {
+                        onTap: () {
                           Get.toNamed(
                             Routes.blogplusicon,
                             arguments: widget.blogId,
                           );
-                          await widget.controller
-                              .fetchMyBlog(articleId: widget.blogId);
-                          if (kDebugMode) {
-                            print('BlogId: ${widget.blogId}');
-                          }
+                          widget.controller.fetchBlogDetailforManagePlusBlog(
+                              widget.blogId, context);
                         },
                         child: Ink(
                           height: size.height * 0.030,

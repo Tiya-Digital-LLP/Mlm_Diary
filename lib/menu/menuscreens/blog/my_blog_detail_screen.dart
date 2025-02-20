@@ -75,7 +75,7 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen>
     isLiked.value = newLikedValue;
     likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
 
-    await controller.toggleLike(post.articleId ?? 0, context);
+    await controller.toggleLike(post.id ?? 0, context);
   }
 
   void toggleBookmark() async {
@@ -84,7 +84,7 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen>
     bookmarkCount.value =
         newBookmarkedValue ? bookmarkCount.value + 1 : bookmarkCount.value - 1;
 
-    await controller.toggleBookMark(post.articleId ?? 0, context);
+    await controller.toggleBookMark(post.id ?? 0, context);
   }
 
   @override
@@ -117,11 +117,11 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen>
                       child: InkWell(
                         onTap: () async {
                           Get.toNamed(Routes.userprofilescreen, arguments: {
-                            'user_id': post.userData!.id ?? 0,
+                            'user_id': post.userData ?? 0,
                           });
                           await userProfileController.fetchUserAllPost(
                             1,
-                            post.userData!.id.toString(),
+                            post.userData.toString(),
                           );
                         },
                         child: Row(
@@ -160,10 +160,10 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen>
                                 ),
                                 Text(
                                   postTimeFormatter.formatPostTime(
-                                    DateTime.parse(post.createdDate ?? '')
+                                    DateTime.parse(post.createdate ?? '')
                                             .isAtSameMomentAs(DateTime.parse(
                                                 post.datemodified ?? ''))
-                                        ? post.createdDate ?? ''
+                                        ? post.createdate ?? ''
                                         : post.datemodified ?? '',
                                   ),
                                   style: textStyleW400(
@@ -240,7 +240,7 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen>
                       child: Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          '${post.categoryName} | ${post.subcategoryName}',
+                          '${post.category} | ${post.subcategory}',
                           style: TextStyle(
                             fontWeight: FontWeight.w400,
                             color: AppColors.blackText,
@@ -378,16 +378,15 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen>
                       width: size.height * 0.028,
                       child: GestureDetector(
                         onTap: () {
-                          controller.toggleLike(post.articleId!, context);
+                          controller.toggleLike(post.id!, context);
                         },
                         child: Icon(
-                          controller.likedStatusMap[post.articleId] == true
+                          controller.likedStatusMap[post.id] == true
                               ? Icons.thumb_up
                               : Icons.thumb_up_off_alt_outlined,
-                          color:
-                              controller.likedStatusMap[post.articleId] == true
-                                  ? AppColors.primaryColor
-                                  : null,
+                          color: controller.likedStatusMap[post.id] == true
+                              ? AppColors.primaryColor
+                              : null,
                           size: size.height * 0.032,
                         ),
                       ),
@@ -398,7 +397,7 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen>
                   ),
                   Obx(() {
                     int totalLikes = post.totallike! +
-                        (controller.likeCountMap[post.articleId] ?? 0);
+                        (controller.likeCountMap[post.id] ?? 0);
 
                     return InkWell(
                       onTap: () {
@@ -419,7 +418,7 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen>
                       GestureDetector(
                         onTap: () => showFullScreenDialogBlog(
                           context,
-                          post.articleId!,
+                          post.id!,
                         ),
                         child: SizedBox(
                           height: size.height * 0.028,
@@ -499,7 +498,7 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen>
                         final dynamicLink = await createDynamicLink(
                           post.fullUrl!,
                           'Blog',
-                          post.articleId.toString(),
+                          post.id.toString(),
                         );
 
                         debugPrint('Generated Dynamic Link: $dynamicLink');
@@ -591,8 +590,8 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen>
             body: TabBarView(
               controller: _tabController,
               children: [
-                BlogLikedListContent(blogId: post.articleId ?? 0),
-                BlogViewListContent(blogId: post.articleId ?? 0),
+                BlogLikedListContent(blogId: post.id ?? 0),
+                BlogViewListContent(blogId: post.id ?? 0),
               ],
             ),
           ),

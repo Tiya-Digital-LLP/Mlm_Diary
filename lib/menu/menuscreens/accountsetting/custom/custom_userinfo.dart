@@ -107,7 +107,6 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                                     height: 120,
                                     width: 120,
                                     fit: BoxFit.cover,
-                                    key: ValueKey<DateTime>(DateTime.now()),
                                   ),
                                 )
                               : controller.userImage.value.isNotEmpty
@@ -117,7 +116,6 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                                         height: 120,
                                         width: 120,
                                         fit: BoxFit.cover,
-                                        key: ValueKey<DateTime>(DateTime.now()),
                                       ),
                                     )
                                   : ClipOval(
@@ -126,7 +124,6 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                                         height: 120,
                                         width: 120,
                                         fit: BoxFit.cover,
-                                        key: ValueKey<DateTime>(DateTime.now()),
                                       ),
                                     ),
                         ),
@@ -740,8 +737,7 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
 
   Future<io.File?> _compressImage(io.File imageFile) async {
     final dir = await getTemporaryDirectory();
-    final targetPath =
-        '${dir.path}/temp_${DateTime.now().millisecondsSinceEpoch}.jpg'; // Unique temp file
+    final targetPath = '${dir.path}/temp.jpg';
 
     int quality = 90;
     io.File? compressedFile;

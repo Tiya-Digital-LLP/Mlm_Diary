@@ -42,7 +42,6 @@ class ClasifiedController extends GetxController {
   Rx<TextEditingController> state = TextEditingController().obs;
   Rx<TextEditingController> lat = TextEditingController().obs;
   Rx<TextEditingController> lng = TextEditingController().obs;
-
   Rx<TextEditingController> pincode = TextEditingController().obs;
   Rx<TextEditingController> country = TextEditingController().obs;
   RxList<GetClassifiedData> classifiedList = <GetClassifiedData>[].obs;
@@ -179,13 +178,20 @@ class ClasifiedController extends GetxController {
         city.value.text = userProfileEntity.userProfile?.city ?? '';
         state.value.text = userProfileEntity.userProfile?.state ?? '';
         country.value.text = userProfileEntity.userProfile?.country ?? '';
+        lat.value.text = userProfileEntity.userProfile?.lat ?? '';
+        lng.value.text = userProfileEntity.userProfile?.lng ?? '';
 
-        // Combine city, state, and country to form location
         location.value.text = _formatLocation(
           city.value.text,
           state.value.text,
           country.value.text,
+          lat.value.text,
+          lng.value.text,
         );
+
+        if (kDebugMode) {
+          print('Formatted Location: ${location.value.text}');
+        }
 
         if (kDebugMode) {
           print('Account Settings Data: $responseData');
@@ -204,16 +210,26 @@ class ClasifiedController extends GetxController {
     }
   }
 
-  String _formatLocation(String city, String state, String country) {
-    final parts =
-        [city, state, country].where((part) => part.isNotEmpty).toList();
+  String _formatLocation(
+      String city, String state, String country, String lat, String lng) {
+    final parts = [city, state, country, lat, lng]
+        .where((part) => part.isNotEmpty)
+        .toList();
     return parts.join(', ');
   }
 
   void resetSelections() {
-    // Reset category and subcategory selections
-    selectedCategoryId.value = 0;
-    selectedSubCategoryId.value = 0;
+    title.value.clear();
+    discription.value.clear();
+    url.value.clear();
+    getSelectedCategoryTextController().text = "";
+    getSelectedSubCategoryTextController().text = "";
+
+    companyName.value.clear();
+    location.value.clear();
+    isCategorySelectedList.fillRange(0, isCategorySelectedList.length, false);
+    isSubCategorySelectedList.fillRange(
+        0, isSubCategorySelectedList.length, false);
 
     getClassified(1);
   }
@@ -332,17 +348,14 @@ class ClasifiedController extends GetxController {
   }
 
   void toggleCategorySelected(int index, BuildContext context) {
-    // Unselect all categories
     for (int i = 0; i < isCategorySelectedList.length; i++) {
       isCategorySelectedList[i] = false;
     }
 
-    // Select the current category
     isCategorySelectedList[index] = true;
     selectedCountCategory.value = 1;
     selectedCategoryId.value = categorylist[index].id!;
 
-    // Fetch subcategory list for the selected category
     fetchSubCategoryList(categorylist[index].id!);
 
     // ignore: unrelated_type_equality_checks
@@ -730,7 +743,7 @@ class ClasifiedController extends GetxController {
     }
   }
 
-  Future<void> addClassifiedDetails({required File? imageFile, context}) async {
+  Future<void> addClassified({required File? imageFile, context}) async {
     isLoading(true);
     String device = Platform.isAndroid ? 'android' : 'ios';
 
@@ -762,6 +775,10 @@ class ClasifiedController extends GetxController {
         request.fields['companys'] = companyName.value.text;
         request.fields['website'] = url.value.text;
         request.fields['api_token'] = apiToken ?? '';
+
+        if (kDebugMode) {
+          print('addClassifiedDetails: ${request.fields}');
+        }
 
         if (imageFile != null) {
           request.files.add(
@@ -860,17 +877,6 @@ class ClasifiedController extends GetxController {
     } finally {
       isLoading(false);
     }
-  }
-
-  void clearFormFields() {
-    companyName.value.clear();
-    title.value.clear();
-    discription.value.clear();
-    location.value.clear();
-    city.value.clear();
-    state.value.clear();
-    country.value.clear();
-    url.value.clear();
   }
 
   // Fetch company names

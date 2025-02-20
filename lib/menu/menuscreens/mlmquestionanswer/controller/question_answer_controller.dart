@@ -1305,8 +1305,14 @@ class QuestionAnswerController extends GetxController {
   }
 
   void clearFormFields() {
-    selectedCategoryId.value = 0;
-    selectedSubCategoryId.value = 0;
+    title.value.clear();
+    answer.value.clear();
+    getSelectedCategoryTextController().text = "";
+    getSelectedSubCategoryTextController().text = "";
+
+    isCategorySelectedList.fillRange(0, isCategorySelectedList.length, false);
+    isSubCategorySelectedList.fillRange(
+        0, isSubCategorySelectedList.length, false);
   }
 
   // like_list_question

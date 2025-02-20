@@ -23,7 +23,7 @@ class _MlmnewsState extends State<ManageNews> {
   @override
   void initState() {
     super.initState();
-    controller.fetchMyNews();
+    _refreshData();
   }
 
   void deletePost(int index) async {

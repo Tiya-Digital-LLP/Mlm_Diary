@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:flutter_svg/svg.dart';
 
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -213,42 +214,48 @@ class _ManageBlogPlusIconState extends State<ManageBlogPlusIcon> {
                                         width: double.infinity,
                                         fit: BoxFit.cover,
                                       )
-                                    : Image.asset(
-                                        Assets.svgUploadImage,
-                                        height: 100,
-                                        width: double.infinity,
-                                        fit: BoxFit.cover,
-                                      ),
+                                    : SvgPicture.asset(Assets.svgUploadImage),
                             onTap: () {
-                              showModalBottomSheet(
-                                  backgroundColor: Colors.white,
-                                  context: context,
-                                  builder: (context) => bottomsheet(context));
+                              if (file.value == null) {
+                                showModalBottomSheet(
+                                    backgroundColor: Colors.white,
+                                    context: context,
+                                    builder: (context) => bottomsheet(context));
+                              }
                             },
                           ),
                           Visibility(
-                            visible: file.value != null,
+                            visible: file.value != null ||
+                                controller.userImage.value.isNotEmpty,
                             child: Positioned(
-                                top: 0,
-                                right: 0,
-                                child: Container(
-                                  width: 40,
-                                  height: 40,
-                                  margin: const EdgeInsets.all(2.0),
-                                  child: Card(
-                                      shape: const CircleBorder(),
-                                      child: GestureDetector(
-                                        child: Icon(Icons.delete,
-                                            color: AppColors.redText),
-                                        onTap: () {
-                                          setState(() {
-                                            imagesList.remove(file.value);
-                                            file.value = null;
-                                          });
-                                        },
-                                      )),
-                                )),
-                          )
+                              top: 0,
+                              right: 0,
+                              child: Container(
+                                width: 40,
+                                height: 40,
+                                margin: const EdgeInsets.all(2.0),
+                                child: Card(
+                                  shape: const CircleBorder(),
+                                  child: GestureDetector(
+                                    child: Icon(
+                                      Icons.delete,
+                                      color: AppColors.redText,
+                                    ),
+                                    onTap: () {
+                                      if (file.value != null) {
+                                        imagesList.remove(file.value);
+                                        file.value = null;
+                                        file.refresh();
+                                      } else if (controller
+                                          .userImage.value.isNotEmpty) {
+                                        controller.userImage.value = '';
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -339,7 +346,7 @@ class _ManageBlogPlusIconState extends State<ManageBlogPlusIcon> {
             children: <Widget>[
               TextButton.icon(
                 onPressed: () {
-                  _pickImage(ImageSource.camera);
+                  takephoto(ImageSource.camera);
                 },
                 icon: Icon(Icons.camera, color: AppColors.primaryColor),
                 label: Text(
@@ -349,7 +356,7 @@ class _ManageBlogPlusIconState extends State<ManageBlogPlusIcon> {
               ),
               TextButton.icon(
                 onPressed: () {
-                  _pickImage(ImageSource.gallery);
+                  takephoto(ImageSource.gallery);
                 },
                 icon: Icon(Icons.image, color: AppColors.primaryColor),
                 label: Text(
@@ -364,68 +371,55 @@ class _ManageBlogPlusIconState extends State<ManageBlogPlusIcon> {
     );
   }
 
-  Future<void> _pickImage(ImageSource source) async {
-    final pickedFile =
-        await _picker.pickImage(source: source, imageQuality: 100);
-    if (pickedFile != null) {
-      if (kDebugMode) {
-        print('Picked image path: ${pickedFile.path}');
-      }
-      io.File imageFile = io.File(pickedFile.path);
+  void takephoto(ImageSource imageSource) async {
+    final pickedfile =
+        await _picker.pickImage(source: imageSource, imageQuality: 100);
+    if (pickedfile != null) {
+      io.File imageFile = io.File(pickedfile.path);
+      int fileSizeInBytes = imageFile.lengthSync();
+      double fileSizeInKB = fileSizeInBytes / 1024;
 
-      if (imageFile.lengthSync() / 1024 > 5000) {
+      if (kDebugMode) {
+        print('Original image size: $fileSizeInKB KB');
+      }
+
+      if (fileSizeInKB > 5000) {
         // ignore: use_build_context_synchronously
-        showToasterrorborder('Please select an image below 5 MB', context);
+        showToasterrorborder('Please Select an image below 5 MB', context);
         return;
       }
 
-      // Crop image
-      io.File? croppedFile = await _cropImage(imageFile);
-      if (croppedFile == null || croppedFile.lengthSync() == 0) {
+      io.File? processedFile = imageFile;
+
+      processedFile = await _cropImage(imageFile);
+      if (processedFile == null) {
         // ignore: use_build_context_synchronously
-        showToasterrorborder('Image cropping failed', context);
-        return;
-      }
-      if (kDebugMode) {
-        print('Cropped image path: ${croppedFile.path}');
-      }
-
-      // Compress image
-      io.File? compressedFile = await _compressImage(croppedFile);
-      if (compressedFile == null || compressedFile.lengthSync() == 0) {
-        // ignore: use_build_context_synchronously
-        showToasterrorborder('Image compression failed', context);
-        return;
-      }
-      if (kDebugMode) {
-        print('Compressed image path: ${compressedFile.path}');
-      }
-
-      // Save to temporary file
-      final tempDir = await getTemporaryDirectory();
-      final tempFile = io.File(
-          '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg');
-      await compressedFile.copy(tempFile.path);
-
-      if (tempFile.existsSync() && tempFile.lengthSync() > 0) {
-        file.value = tempFile;
+        showToasterrorborder('Please select an image', context);
         if (kDebugMode) {
-          print('Updated file observable: ${file.value?.path}');
+          print('failed to compress image');
         }
-        Get.back();
-      } else {
-        if (kDebugMode) {
-          print('Temporary file saving failed');
-        }
-        showToasterrorborder(
-            // ignore: use_build_context_synchronously
-            'Failed to save the image. Please try again.',
-            // ignore: use_build_context_synchronously
-            context);
+        return;
       }
+      processedFile = await _compressImage(processedFile);
+
+      double processedFileSizeInKB = processedFile!.lengthSync() / 1024;
+      if (kDebugMode) {
+        print('Processed image size: $processedFileSizeInKB KB');
+      }
+
+      setState(() {
+        file.value = processedFile;
+      });
+
+      if (file.value != null) {
+        imagesList.add(file.value!);
+      }
+
+      Get.back();
     } else {
       // ignore: use_build_context_synchronously
       showToasterrorborder('Please select an image', context);
+      return; // Exit function if no image is selected
     }
   }
 
@@ -447,15 +441,35 @@ class _ManageBlogPlusIconState extends State<ManageBlogPlusIcon> {
         ),
       ],
     );
-    return croppedFile != null ? io.File(croppedFile.path) : null;
+
+    if (croppedFile != null) {
+      return io.File(croppedFile.path);
+    } else {
+      return null;
+    }
   }
 
   Future<io.File?> _compressImage(io.File imageFile) async {
+    if (kDebugMode) {
+      print('Step 9a: Starting image compression');
+    }
+
     final dir = await getTemporaryDirectory();
     final targetPath = '${dir.path}/temp.jpg';
+    if (kDebugMode) {
+      print('Step 9b: Temporary directory path set: $targetPath');
+    }
+
     int quality = 90;
     io.File? compressedFile;
-    while (true) {
+    double fileSizeInKB;
+
+    const maxIterations = 10;
+    int currentIteration = 0;
+
+    while (currentIteration < maxIterations) {
+      currentIteration++;
+
       final result = await FlutterImageCompress.compressAndGetFile(
         imageFile.absolute.path,
         targetPath,
@@ -463,108 +477,298 @@ class _ManageBlogPlusIconState extends State<ManageBlogPlusIcon> {
       );
 
       if (result == null) {
+        if (kDebugMode) {
+          print('Step 9c: Compression failed, returning null');
+        }
         return null;
       }
 
       compressedFile = io.File(result.path);
-      double fileSizeInKB = compressedFile.lengthSync() / 1024;
-
-      if (fileSizeInKB <= 250 && fileSizeInKB >= 200) {
-        break;
+      fileSizeInKB = compressedFile.lengthSync() / 1024;
+      if (kDebugMode) {
+        print(
+            'Step 9d: Compressed image size: $fileSizeInKB KB at quality $quality');
       }
 
-      quality = fileSizeInKB < 200 ? quality + 5 : quality - 5;
-      if (quality <= 0 || quality > 100) {
+      if (fileSizeInKB <= 100) {
+        if (fileSizeInKB <= 30) {
+          if (kDebugMode) {
+            print(
+                'Step 9e: Image size within acceptable range, stopping compression');
+          }
+          break;
+        } else {
+          quality = (quality - 10).clamp(0, 100);
+          if (kDebugMode) {
+            print('Step 9f: Decreasing quality to $quality');
+          }
+        }
+      } else {
+        if (fileSizeInKB <= 100) {
+          if (kDebugMode) {
+            print(
+                'Step 9g: Image size within acceptable range, stopping compression');
+          }
+          break;
+        } else {
+          quality = (quality - 10).clamp(0, 100);
+          if (kDebugMode) {
+            print('Step 9h: Decreasing quality to $quality');
+          }
+        }
+      }
+
+      if (quality <= 0 || quality >= 100) {
+        if (kDebugMode) {
+          print('Step 9i: Quality out of range, breaking loop');
+        }
         break;
       }
     }
+
+    if (currentIteration == maxIterations) {
+      if (kDebugMode) {
+        print('Step 9j: Max iterations reached, stopping compression');
+      }
+    }
+
     return compressedFile;
   }
-}
 
 //category
 
-void showSelectCategory(
-  BuildContext context,
-  Size size,
-  ManageBlogController controller,
-  List<GetCategoryCategory> categorylist,
-) {
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(30.0)),
-    ),
-    builder: (BuildContext context) {
-      return Obx(() {
-        if (controller.isLoading.value && categorylist.isEmpty) {
-          return Center(
-            child: CustomLottieAnimation(
-              child: Lottie.asset(
-                Assets.lottieLottie,
+  void showSelectCategory(
+    BuildContext context,
+    Size size,
+    ManageBlogController controller,
+    List<GetCategoryCategory> categorylist,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30.0)),
+      ),
+      builder: (BuildContext context) {
+        return Obx(() {
+          if (controller.isLoading.value && categorylist.isEmpty) {
+            return Center(
+              child: CustomLottieAnimation(
+                child: Lottie.asset(
+                  Assets.lottieLottie,
+                ),
               ),
-            ),
-          );
-        }
+            );
+          }
 
-        if (categorylist.isEmpty) {
-          return const Center(
-            child: Text(
-              'Data not found',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
+          if (categorylist.isEmpty) {
+            return const Center(
+              child: Text(
+                'Data not found',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+            );
+          }
+          return FractionallySizedBox(
+            heightFactor: 0.9,
+            child: Container(
+              padding: const EdgeInsets.all(16.0),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30.0),
+                  topRight: Radius.circular(30.0),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: AppColors.grey,
+                      ),
+                      width: 80,
+                      height: 5,
+                    ),
+                  ),
+                  5.sbh,
+                  Center(
+                    child: Text(
+                      'Select Category',
+                      style: textStyleW600(
+                          size.width * 0.045, AppColors.blackText),
+                    ),
+                  ),
+                  20.sbh,
+                  Flexible(
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        itemCount: categorylist.length,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  controller.toggleCategorySelected(
+                                      index, context);
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 8, horizontal: 16),
+                                  child: Row(
+                                    children: [
+                                      Obx(
+                                        () => GestureDetector(
+                                          onTap: () {
+                                            controller.toggleCategorySelected(
+                                                index, context);
+                                          },
+                                          child: Image.asset(
+                                            controller.isCategorySelectedList[
+                                                    index]
+                                                ? Assets.imagesTrueCircle
+                                                : Assets.imagesCircle,
+                                          ),
+                                        ),
+                                      ),
+                                      15.sbw,
+                                      Text(
+                                        categorylist[index].name ?? '',
+                                        style: textStyleW500(size.width * 0.041,
+                                            AppColors.blackText),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              20.sbh,
+                            ],
+                          );
+                        }),
+                  ),
+                  Center(
+                    child: CustomButton(
+                      title: "Continue",
+                      btnColor: AppColors.primaryColor,
+                      titleColor: AppColors.white,
+                      onTap: () {
+                        if (controller.selectedCountCategory > 0) {
+                          Get.back();
+                        } else {
+                          showToasterrorborder(
+                            "Please select at least one field.",
+                            context,
+                          );
+                        }
+                      },
+                      isLoading: controller.isLoading,
+                    ),
+                  ),
+                ],
               ),
             ),
           );
-        }
-        return FractionallySizedBox(
-          heightFactor: 0.9,
-          child: Container(
-            padding: const EdgeInsets.all(16.0),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(30.0),
-                topRight: Radius.circular(30.0),
+        });
+      },
+    );
+  }
+
+// SubCatagory
+  void showSelectSubCategory(
+    BuildContext context,
+    Size size,
+    ManageBlogController controller,
+    List<GetSubCategoryCategory> subcategoryList,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30.0)),
+      ),
+      builder: (BuildContext context) {
+        return Obx(() {
+          if (controller.isLoading.value && subcategoryList.isEmpty) {
+            return Center(
+              child: CustomLottieAnimation(
+                child: Lottie.asset(
+                  Assets.lottieLottie,
+                ),
               ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: AppColors.grey,
+            );
+          }
+
+          if (subcategoryList.isEmpty) {
+            return const Center(
+              child: Text(
+                'Data not found',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+            );
+          }
+          return FractionallySizedBox(
+            heightFactor: 0.9,
+            child: Container(
+              padding: const EdgeInsets.all(16.0),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30.0),
+                  topRight: Radius.circular(30.0),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: AppColors.grey,
+                      ),
+                      width: 80,
+                      height: 5,
                     ),
-                    width: 80,
-                    height: 5,
                   ),
-                ),
-                5.sbh,
-                Center(
-                  child: Text(
-                    'Select Category',
-                    style:
-                        textStyleW600(size.width * 0.045, AppColors.blackText),
+                  5.sbh,
+                  Center(
+                    child: Text(
+                      'Select Sub Category',
+                      style: textStyleW600(
+                          size.width * 0.045, AppColors.blackText),
+                    ),
                   ),
-                ),
-                20.sbh,
-                Flexible(
-                  child: ListView.builder(
+                  20.sbh,
+                  Flexible(
+                    child: ListView.builder(
                       shrinkWrap: true,
                       physics: const AlwaysScrollableScrollPhysics(),
-                      itemCount: categorylist.length,
+                      itemCount: subcategoryList.length,
                       itemBuilder: (context, index) {
                         return Column(
                           children: [
                             GestureDetector(
                               onTap: () {
-                                controller.toggleCategorySelected(
-                                    index, context);
+                                if (!controller
+                                    .isSubCategorySelectedList[index]) {
+                                  controller.toggleSubCategorySelected(index);
+                                } else {
+                                  showToasterrorborder(
+                                    "Please select only one Sub category.",
+                                    context,
+                                  );
+                                }
                               },
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
@@ -574,12 +778,22 @@ void showSelectCategory(
                                     Obx(
                                       () => GestureDetector(
                                         onTap: () {
-                                          controller.toggleCategorySelected(
-                                              index, context);
+                                          if (!controller
+                                                  .isSubCategorySelectedList[
+                                              index]) {
+                                            controller
+                                                .toggleSubCategorySelected(
+                                                    index);
+                                          } else {
+                                            showToasterrorborder(
+                                              "Please select only one Sub category.",
+                                              context,
+                                            );
+                                          }
                                         },
                                         child: Image.asset(
-                                          controller
-                                                  .isCategorySelectedList[index]
+                                          (controller.isSubCategorySelectedList[
+                                                  index])
                                               ? Assets.imagesTrueCircle
                                               : Assets.imagesCircle,
                                         ),
@@ -587,7 +801,7 @@ void showSelectCategory(
                                     ),
                                     15.sbw,
                                     Text(
-                                      categorylist[index].name ?? '',
+                                      subcategoryList[index].name ?? '',
                                       style: textStyleW500(size.width * 0.041,
                                           AppColors.blackText),
                                     ),
@@ -598,191 +812,33 @@ void showSelectCategory(
                             20.sbh,
                           ],
                         );
-                      }),
-                ),
-                Center(
-                  child: CustomButton(
-                    title: "Continue",
-                    btnColor: AppColors.primaryColor,
-                    titleColor: AppColors.white,
-                    onTap: () {
-                      if (controller.selectedCountCategory > 0) {
-                        Get.back();
-                      } else {
-                        showToasterrorborder(
-                          "Please select at least one field.",
-                          context,
-                        );
-                      }
-                    },
-                    isLoading: controller.isLoading,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      });
-    },
-  );
-}
-
-// SubCatagory
-void showSelectSubCategory(
-  BuildContext context,
-  Size size,
-  ManageBlogController controller,
-  List<GetSubCategoryCategory> subcategoryList,
-) {
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(30.0)),
-    ),
-    builder: (BuildContext context) {
-      return Obx(() {
-        if (controller.isLoading.value && subcategoryList.isEmpty) {
-          return Center(
-            child: CustomLottieAnimation(
-              child: Lottie.asset(
-                Assets.lottieLottie,
-              ),
-            ),
-          );
-        }
-
-        if (subcategoryList.isEmpty) {
-          return const Center(
-            child: Text(
-              'Data not found',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-            ),
-          );
-        }
-        return FractionallySizedBox(
-          heightFactor: 0.9,
-          child: Container(
-            padding: const EdgeInsets.all(16.0),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(30.0),
-                topRight: Radius.circular(30.0),
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: AppColors.grey,
+                      },
                     ),
-                    width: 80,
-                    height: 5,
                   ),
-                ),
-                5.sbh,
-                Center(
-                  child: Text(
-                    'Select Sub Category',
-                    style:
-                        textStyleW600(size.width * 0.045, AppColors.blackText),
+                  Center(
+                    child: CustomButton(
+                      title: "Continue",
+                      btnColor: AppColors.primaryColor,
+                      titleColor: AppColors.white,
+                      onTap: () {
+                        if (controller.selectedCountSubCategory > 0) {
+                          Get.back();
+                        } else {
+                          showToasterrorborder(
+                            "Please select at least one field.",
+                            context,
+                          );
+                        }
+                      },
+                      isLoading: controller.isLoading,
+                    ),
                   ),
-                ),
-                20.sbh,
-                Flexible(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    itemCount: subcategoryList.length,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              if (!controller
-                                  .isSubCategorySelectedList[index]) {
-                                controller.toggleSubCategorySelected(index);
-                              } else {
-                                showToasterrorborder(
-                                  "Please select only one Sub category.",
-                                  context,
-                                );
-                              }
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 16),
-                              child: Row(
-                                children: [
-                                  Obx(
-                                    () => GestureDetector(
-                                      onTap: () {
-                                        if (!controller
-                                            .isSubCategorySelectedList[index]) {
-                                          controller
-                                              .toggleSubCategorySelected(index);
-                                        } else {
-                                          showToasterrorborder(
-                                            "Please select only one Sub category.",
-                                            context,
-                                          );
-                                        }
-                                      },
-                                      child: Image.asset(
-                                        (controller.isSubCategorySelectedList[
-                                                index])
-                                            ? Assets.imagesTrueCircle
-                                            : Assets.imagesCircle,
-                                      ),
-                                    ),
-                                  ),
-                                  15.sbw,
-                                  Text(
-                                    subcategoryList[index].name ?? '',
-                                    style: textStyleW500(size.width * 0.041,
-                                        AppColors.blackText),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          20.sbh,
-                        ],
-                      );
-                    },
-                  ),
-                ),
-                Center(
-                  child: CustomButton(
-                    title: "Continue",
-                    btnColor: AppColors.primaryColor,
-                    titleColor: AppColors.white,
-                    onTap: () {
-                      if (controller.selectedCountSubCategory > 0) {
-                        Get.back();
-                      } else {
-                        showToasterrorborder(
-                          "Please select at least one field.",
-                          context,
-                        );
-                      }
-                    },
-                    isLoading: controller.isLoading,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        );
-      });
-    },
-  );
+          );
+        });
+      },
+    );
+  }
 }

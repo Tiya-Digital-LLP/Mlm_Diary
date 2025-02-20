@@ -146,7 +146,7 @@ class _AddPostState extends State<EditPost> {
                       if (file.value != null)
                         Image.file(
                           file.value!,
-                          height: 150,
+                          height: 100,
                           width: double.infinity,
                           fit: BoxFit.cover,
                         ),
@@ -154,14 +154,15 @@ class _AddPostState extends State<EditPost> {
                           controller.userImage.value.isNotEmpty)
                         CachedNetworkImage(
                           imageUrl: controller.userImage.value,
-                          height: 150,
+                          height: 100,
                           width: double.infinity,
                           fit: BoxFit.cover,
                         ),
                       Visibility(
-                        visible: file.value != null,
+                        visible: file.value != null ||
+                            controller.userImage.value.isNotEmpty,
                         child: Positioned(
-                          top: 10,
+                          top: 0,
                           right: 0,
                           child: Container(
                             width: 40,
@@ -183,10 +184,14 @@ class _AddPostState extends State<EditPost> {
                                 ),
                               ),
                               onTap: () {
-                                setState(() {
+                                if (file.value != null) {
                                   imagesList.remove(file.value);
                                   file.value = null;
-                                });
+                                  file.refresh();
+                                } else if (controller
+                                    .userImage.value.isNotEmpty) {
+                                  controller.userImage.value = '';
+                                }
                               },
                             ),
                           ),
@@ -359,18 +364,16 @@ class _AddPostState extends State<EditPost> {
 
       io.File? processedFile = imageFile;
 
-      if (fileSizeInKB > 250) {
-        processedFile = await _cropImage(imageFile);
-        if (processedFile == null) {
-          // ignore: use_build_context_synchronously
-          showToasterrorborder('Please select an image', context);
-          if (kDebugMode) {
-            print('failed to compress image');
-          }
-          return;
+      processedFile = await _cropImage(imageFile);
+      if (processedFile == null) {
+        // ignore: use_build_context_synchronously
+        showToasterrorborder('Please select an image', context);
+        if (kDebugMode) {
+          print('failed to compress image');
         }
-        processedFile = await _compressImage(processedFile);
+        return;
       }
+      processedFile = await _compressImage(processedFile);
 
       double processedFileSizeInKB = processedFile!.lengthSync() / 1024;
       if (kDebugMode) {
@@ -389,7 +392,7 @@ class _AddPostState extends State<EditPost> {
     } else {
       // ignore: use_build_context_synchronously
       showToasterrorborder('Please select an image', context);
-      return; // Exit function if no image is selected
+      return;
     }
   }
 
@@ -420,12 +423,26 @@ class _AddPostState extends State<EditPost> {
   }
 
   Future<io.File?> _compressImage(io.File imageFile) async {
+    if (kDebugMode) {
+      print('Step 9a: Starting image compression');
+    }
+
     final dir = await getTemporaryDirectory();
     final targetPath = '${dir.path}/temp.jpg';
+    if (kDebugMode) {
+      print('Step 9b: Temporary directory path set: $targetPath');
+    }
 
     int quality = 90;
     io.File? compressedFile;
-    while (true) {
+    double fileSizeInKB;
+
+    const maxIterations = 10;
+    int currentIteration = 0;
+
+    while (currentIteration < maxIterations) {
+      currentIteration++;
+
       final result = await FlutterImageCompress.compressAndGetFile(
         imageFile.absolute.path,
         targetPath,
@@ -433,52 +450,61 @@ class _AddPostState extends State<EditPost> {
       );
 
       if (result == null) {
+        if (kDebugMode) {
+          print('Step 9c: Compression failed, returning null');
+        }
         return null;
       }
 
       compressedFile = io.File(result.path);
-      double fileSizeInKB = compressedFile.lengthSync() / 1024;
-
-      if (fileSizeInKB <= 250 && fileSizeInKB >= 200) {
-        break;
+      fileSizeInKB = compressedFile.lengthSync() / 1024;
+      if (kDebugMode) {
+        print(
+            'Step 9d: Compressed image size: $fileSizeInKB KB at quality $quality');
       }
 
-      if (fileSizeInKB < 200) {
-        quality += 5;
+      if (fileSizeInKB <= 100) {
+        if (fileSizeInKB <= 30) {
+          if (kDebugMode) {
+            print(
+                'Step 9e: Image size within acceptable range, stopping compression');
+          }
+          break;
+        } else {
+          quality = (quality - 10).clamp(0, 100);
+          if (kDebugMode) {
+            print('Step 9f: Decreasing quality to $quality');
+          }
+        }
       } else {
-        quality -= 5;
+        if (fileSizeInKB <= 100) {
+          if (kDebugMode) {
+            print(
+                'Step 9g: Image size within acceptable range, stopping compression');
+          }
+          break;
+        } else {
+          quality = (quality - 10).clamp(0, 100);
+          if (kDebugMode) {
+            print('Step 9h: Decreasing quality to $quality');
+          }
+        }
       }
 
-      if (quality <= 0 || quality > 100) {
+      if (quality <= 0 || quality >= 100) {
+        if (kDebugMode) {
+          print('Step 9i: Quality out of range, breaking loop');
+        }
         break;
+      }
+    }
+
+    if (currentIteration == maxIterations) {
+      if (kDebugMode) {
+        print('Step 9j: Max iterations reached, stopping compression');
       }
     }
 
     return compressedFile;
   }
-
-  // void _selectVideo() async {
-  //   final pickedFile = await _picker.pickVideo(source: ImageSource.gallery);
-
-  //   if (pickedFile != null) {
-  //     io.File video = io.File(pickedFile.path);
-  //     setState(() {
-  //       videoFile.value = video;
-  //       _videoPlayerController = VideoPlayerController.file(video)
-  //         ..initialize().then((_) {
-  //           // Play the video immediately after initialization
-  //           _videoPlayerController.play();
-  //           // Listen for video playback status changes
-  //           _videoPlayerController.addListener(() {
-  //             if (_videoPlayerController.value.position ==
-  //                 _videoPlayerController.value.duration) {
-  //               // If the video reaches the end, seek to the beginning and play again
-  //               _videoPlayerController.seekTo(Duration.zero);
-  //               _videoPlayerController.play();
-  //             }
-  //           });
-  //         });
-  //     });
-  //   }
-  // }
 }

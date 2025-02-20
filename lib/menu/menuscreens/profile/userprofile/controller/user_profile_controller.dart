@@ -67,11 +67,16 @@ class UserProfileController extends GetxController {
           var getViewsEntity = GetViewsEntity.fromJson(data);
 
           if (getViewsEntity.data.isNotEmpty) {
-            views.addAll(getViewsEntity.data);
+            // Avoid duplicate entries
+            final newData = getViewsEntity.data
+                .where((newItem) =>
+                    !views.any((existingItem) => existingItem.id == newItem.id))
+                .toList();
 
-            isEndOfData(false); // More data is available
-          } else {
-            isEndOfData(true); // No more data available
+            views.addAll(newData);
+
+            isEndOfData(
+                newData.isEmpty); // Set end of data only if new data is empty
           }
 
           if (kDebugMode) {

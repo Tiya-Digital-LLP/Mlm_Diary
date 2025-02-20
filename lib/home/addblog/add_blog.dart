@@ -205,7 +205,7 @@ class _ManageBlogPlusIconState extends State<AddBlog> {
                           child: file.value != null
                               ? Image.file(
                                   file.value!,
-                                  height: 200,
+                                  height: 100,
                                   width: double.infinity,
                                   fit: BoxFit.cover,
                                 )
@@ -222,8 +222,7 @@ class _ManageBlogPlusIconState extends State<AddBlog> {
                         Visibility(
                           visible: file.value == null ? false : true,
                           child: Positioned(
-                              top: 10,
-                              left: 320,
+                              top: 0,
                               right: 0,
                               child: Container(
                                 width: 40,
@@ -395,19 +394,17 @@ class _ManageBlogPlusIconState extends State<AddBlog> {
 
       io.File? processedFile = imageFile;
 
-      if (fileSizeInKB > 250) {
-        processedFile = await _cropImage(imageFile);
-        if (processedFile == null) {
-          // ignore: use_build_context_synchronously
-          showToasterrorborder('Please select an image', context);
+      processedFile = await _cropImage(imageFile);
+      if (processedFile == null) {
+        // ignore: use_build_context_synchronously
+        showToasterrorborder('Please select an image', context);
 
-          if (kDebugMode) {
-            print('failed to compress image');
-          }
-          return;
+        if (kDebugMode) {
+          print('failed to compress image');
         }
-        processedFile = await _compressImage(processedFile);
+        return;
       }
+      processedFile = await _compressImage(processedFile);
 
       double processedFileSizeInKB = processedFile!.lengthSync() / 1024;
       if (kDebugMode) {
@@ -457,12 +454,26 @@ class _ManageBlogPlusIconState extends State<AddBlog> {
   }
 
   Future<io.File?> _compressImage(io.File imageFile) async {
+    if (kDebugMode) {
+      print('Step 9a: Starting image compression');
+    }
+
     final dir = await getTemporaryDirectory();
     final targetPath = '${dir.path}/temp.jpg';
+    if (kDebugMode) {
+      print('Step 9b: Temporary directory path set: $targetPath');
+    }
 
     int quality = 90;
     io.File? compressedFile;
-    while (true) {
+    double fileSizeInKB;
+
+    const maxIterations = 10;
+    int currentIteration = 0;
+
+    while (currentIteration < maxIterations) {
+      currentIteration++;
+
       final result = await FlutterImageCompress.compressAndGetFile(
         imageFile.absolute.path,
         targetPath,
@@ -470,114 +481,306 @@ class _ManageBlogPlusIconState extends State<AddBlog> {
       );
 
       if (result == null) {
+        if (kDebugMode) {
+          print('Step 9c: Compression failed, returning null');
+        }
         return null;
       }
 
       compressedFile = io.File(result.path);
-      double fileSizeInKB = compressedFile.lengthSync() / 1024;
-
-      if (fileSizeInKB <= 250 && fileSizeInKB >= 200) {
-        break;
+      fileSizeInKB = compressedFile.lengthSync() / 1024;
+      if (kDebugMode) {
+        print(
+            'Step 9d: Compressed image size: $fileSizeInKB KB at quality $quality');
       }
 
-      if (fileSizeInKB < 200) {
-        quality += 5;
+      if (fileSizeInKB <= 100) {
+        if (fileSizeInKB <= 30) {
+          if (kDebugMode) {
+            print(
+                'Step 9e: Image size within acceptable range, stopping compression');
+          }
+          break;
+        } else {
+          quality = (quality - 10).clamp(0, 100);
+          if (kDebugMode) {
+            print('Step 9f: Decreasing quality to $quality');
+          }
+        }
       } else {
-        quality -= 5;
+        if (fileSizeInKB <= 100) {
+          if (kDebugMode) {
+            print(
+                'Step 9g: Image size within acceptable range, stopping compression');
+          }
+          break;
+        } else {
+          quality = (quality - 10).clamp(0, 100);
+          if (kDebugMode) {
+            print('Step 9h: Decreasing quality to $quality');
+          }
+        }
       }
 
-      if (quality <= 0 || quality > 100) {
+      if (quality <= 0 || quality >= 100) {
+        if (kDebugMode) {
+          print('Step 9i: Quality out of range, breaking loop');
+        }
         break;
+      }
+    }
+
+    if (currentIteration == maxIterations) {
+      if (kDebugMode) {
+        print('Step 9j: Max iterations reached, stopping compression');
       }
     }
 
     return compressedFile;
   }
-}
 
 // Catagory
-void showSelectCategory(
-  BuildContext context,
-  Size size,
-  AddBlogController controller,
-  List<GetCategoryCategory> categorylist,
-) {
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(30.0)),
-    ),
-    builder: (BuildContext context) {
-      return Obx(() {
-        if (controller.isLoading.value && categorylist.isEmpty) {
-          return Center(
-            child: CustomLottieAnimation(
-              child: Lottie.asset(
-                Assets.lottieLottie,
+  void showSelectCategory(
+    BuildContext context,
+    Size size,
+    AddBlogController controller,
+    List<GetCategoryCategory> categorylist,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30.0)),
+      ),
+      builder: (BuildContext context) {
+        return Obx(() {
+          if (controller.isLoading.value && categorylist.isEmpty) {
+            return Center(
+              child: CustomLottieAnimation(
+                child: Lottie.asset(
+                  Assets.lottieLottie,
+                ),
               ),
-            ),
-          );
-        }
+            );
+          }
 
-        if (categorylist.isEmpty) {
-          return const Center(
-            child: Text(
-              'Data not found',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
+          if (categorylist.isEmpty) {
+            return const Center(
+              child: Text(
+                'Data not found',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+            );
+          }
+          return FractionallySizedBox(
+            heightFactor: 0.9,
+            child: Container(
+              padding: const EdgeInsets.all(16.0),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30.0),
+                  topRight: Radius.circular(30.0),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: AppColors.grey,
+                      ),
+                      width: 80,
+                      height: 5,
+                    ),
+                  ),
+                  5.sbh,
+                  Center(
+                    child: Text(
+                      'Select Category',
+                      style: textStyleW600(
+                          size.width * 0.045, AppColors.blackText),
+                    ),
+                  ),
+                  20.sbh,
+                  Flexible(
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        itemCount: categorylist.length,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  if (!controller
+                                      .isCategorySelectedList[index]) {
+                                    controller.toggleCategorySelected(
+                                        index, context);
+                                  } else {}
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 8, horizontal: 16),
+                                  child: Row(
+                                    children: [
+                                      Obx(
+                                        () => GestureDetector(
+                                          onTap: () {
+                                            if (!controller
+                                                    .isCategorySelectedList[
+                                                index]) {
+                                              controller.toggleCategorySelected(
+                                                  index, context);
+                                            } else {
+                                              showToasterrorborder(
+                                                  'Please select only one category.',
+                                                  context);
+                                            }
+                                          },
+                                          child: Image.asset(
+                                            controller.isCategorySelectedList[
+                                                    index]
+                                                ? Assets.imagesTrueCircle
+                                                : Assets.imagesCircle,
+                                          ),
+                                        ),
+                                      ),
+                                      15.sbw,
+                                      Text(
+                                        categorylist[index].name ?? '',
+                                        style: textStyleW500(size.width * 0.041,
+                                            AppColors.blackText),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              20.sbh,
+                            ],
+                          );
+                        }),
+                  ),
+                  Center(
+                    child: CustomButton(
+                      title: "Continue",
+                      btnColor: AppColors.primaryColor,
+                      titleColor: AppColors.white,
+                      onTap: () {
+                        if (controller.selectedCountCategory > 0) {
+                          Get.back();
+                        } else {
+                          showToasterrorborder(
+                              'PlPlease select at least one field.', context);
+                        }
+                      },
+                      isLoading: controller.isLoading,
+                    ),
+                  ),
+                ],
               ),
             ),
           );
-        }
-        return FractionallySizedBox(
-          heightFactor: 0.9,
-          child: Container(
-            padding: const EdgeInsets.all(16.0),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(30.0),
-                topRight: Radius.circular(30.0),
+        });
+      },
+    );
+  }
+
+// SubCatagory
+  void showSelectSubCategory(
+    BuildContext context,
+    Size size,
+    AddBlogController controller,
+    List<GetSubCategoryCategory> subcategoryList,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30.0)),
+      ),
+      builder: (BuildContext context) {
+        return Obx(() {
+          if (controller.isLoading.value && subcategoryList.isEmpty) {
+            return Center(
+              child: CustomLottieAnimation(
+                child: Lottie.asset(
+                  Assets.lottieLottie,
+                ),
               ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: AppColors.grey,
+            );
+          }
+
+          if (subcategoryList.isEmpty) {
+            return const Center(
+              child: Text(
+                'Data not found',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+            );
+          }
+          return FractionallySizedBox(
+            heightFactor: 0.9,
+            child: Container(
+              padding: const EdgeInsets.all(16.0),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30.0),
+                  topRight: Radius.circular(30.0),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: AppColors.grey,
+                      ),
+                      width: 80,
+                      height: 5,
                     ),
-                    width: 80,
-                    height: 5,
                   ),
-                ),
-                5.sbh,
-                Center(
-                  child: Text(
-                    'Select Category',
-                    style:
-                        textStyleW600(size.width * 0.045, AppColors.blackText),
+                  5.sbh,
+                  Center(
+                    child: Text(
+                      'Select Sub Category',
+                      style: textStyleW600(
+                          size.width * 0.045, AppColors.blackText),
+                    ),
                   ),
-                ),
-                20.sbh,
-                Flexible(
-                  child: ListView.builder(
+                  20.sbh,
+                  Flexible(
+                    child: ListView.builder(
                       shrinkWrap: true,
                       physics: const AlwaysScrollableScrollPhysics(),
-                      itemCount: categorylist.length,
+                      itemCount: subcategoryList.length,
                       itemBuilder: (context, index) {
                         return Column(
                           children: [
                             GestureDetector(
                               onTap: () {
-                                if (!controller.isCategorySelectedList[index]) {
-                                  controller.toggleCategorySelected(index);
-                                } else {}
+                                if (!controller
+                                    .isSubCategorySelectedList[index]) {
+                                  controller.toggleSubCategorySelected(index);
+                                } else {
+                                  showToasterrorborder(
+                                    "Please select only one Sub category.",
+                                    context,
+                                  );
+                                }
                               },
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
@@ -588,18 +791,21 @@ void showSelectCategory(
                                       () => GestureDetector(
                                         onTap: () {
                                           if (!controller
-                                              .isCategorySelectedList[index]) {
+                                                  .isSubCategorySelectedList[
+                                              index]) {
                                             controller
-                                                .toggleCategorySelected(index);
+                                                .toggleSubCategorySelected(
+                                                    index);
                                           } else {
                                             showToasterrorborder(
-                                                'Please select only one category.',
-                                                context);
+                                              "Please select only one Sub category.",
+                                              context,
+                                            );
                                           }
                                         },
                                         child: Image.asset(
-                                          controller
-                                                  .isCategorySelectedList[index]
+                                          (controller.isSubCategorySelectedList[
+                                                  index])
                                               ? Assets.imagesTrueCircle
                                               : Assets.imagesCircle,
                                         ),
@@ -607,7 +813,7 @@ void showSelectCategory(
                                     ),
                                     15.sbw,
                                     Text(
-                                      categorylist[index].name ?? '',
+                                      subcategoryList[index].name ?? '',
                                       style: textStyleW500(size.width * 0.041,
                                           AppColors.blackText),
                                     ),
@@ -618,189 +824,33 @@ void showSelectCategory(
                             20.sbh,
                           ],
                         );
-                      }),
-                ),
-                Center(
-                  child: CustomButton(
-                    title: "Continue",
-                    btnColor: AppColors.primaryColor,
-                    titleColor: AppColors.white,
-                    onTap: () {
-                      if (controller.selectedCountCategory > 0) {
-                        Get.back();
-                      } else {
-                        showToasterrorborder(
-                            'PlPlease select at least one field.', context);
-                      }
-                    },
-                    isLoading: controller.isLoading,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      });
-    },
-  );
-}
-
-// SubCatagory
-void showSelectSubCategory(
-  BuildContext context,
-  Size size,
-  AddBlogController controller,
-  List<GetSubCategoryCategory> subcategoryList,
-) {
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(30.0)),
-    ),
-    builder: (BuildContext context) {
-      return Obx(() {
-        if (controller.isLoading.value && subcategoryList.isEmpty) {
-          return Center(
-            child: CustomLottieAnimation(
-              child: Lottie.asset(
-                Assets.lottieLottie,
-              ),
-            ),
-          );
-        }
-
-        if (subcategoryList.isEmpty) {
-          return const Center(
-            child: Text(
-              'Data not found',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-            ),
-          );
-        }
-        return FractionallySizedBox(
-          heightFactor: 0.9,
-          child: Container(
-            padding: const EdgeInsets.all(16.0),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(30.0),
-                topRight: Radius.circular(30.0),
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: AppColors.grey,
+                      },
                     ),
-                    width: 80,
-                    height: 5,
                   ),
-                ),
-                5.sbh,
-                Center(
-                  child: Text(
-                    'Select Sub Category',
-                    style:
-                        textStyleW600(size.width * 0.045, AppColors.blackText),
+                  Center(
+                    child: CustomButton(
+                      title: "Continue",
+                      btnColor: AppColors.primaryColor,
+                      titleColor: AppColors.white,
+                      onTap: () {
+                        if (controller.selectedCountSubCategory > 0) {
+                          Navigator.pop(context);
+                        } else {
+                          showToasterrorborder(
+                            "Please select at least one field.",
+                            context,
+                          );
+                        }
+                      },
+                      isLoading: controller.isLoading,
+                    ),
                   ),
-                ),
-                20.sbh,
-                Flexible(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    itemCount: subcategoryList.length,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              if (!controller
-                                  .isSubCategorySelectedList[index]) {
-                                controller.toggleSubCategorySelected(index);
-                              } else {
-                                showToasterrorborder(
-                                  "Please select only one Sub category.",
-                                  context,
-                                );
-                              }
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 16),
-                              child: Row(
-                                children: [
-                                  Obx(
-                                    () => GestureDetector(
-                                      onTap: () {
-                                        if (!controller
-                                            .isSubCategorySelectedList[index]) {
-                                          controller
-                                              .toggleSubCategorySelected(index);
-                                        } else {
-                                          showToasterrorborder(
-                                            "Please select only one Sub category.",
-                                            context,
-                                          );
-                                        }
-                                      },
-                                      child: Image.asset(
-                                        (controller.isSubCategorySelectedList[
-                                                index])
-                                            ? Assets.imagesTrueCircle
-                                            : Assets.imagesCircle,
-                                      ),
-                                    ),
-                                  ),
-                                  15.sbw,
-                                  Text(
-                                    subcategoryList[index].name ?? '',
-                                    style: textStyleW500(size.width * 0.041,
-                                        AppColors.blackText),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          20.sbh,
-                        ],
-                      );
-                    },
-                  ),
-                ),
-                Center(
-                  child: CustomButton(
-                    title: "Continue",
-                    btnColor: AppColors.primaryColor,
-                    titleColor: AppColors.white,
-                    onTap: () {
-                      if (controller.selectedCountSubCategory > 0) {
-                        Navigator.pop(context);
-                      } else {
-                        showToasterrorborder(
-                          "Please select at least one field.",
-                          context,
-                        );
-                      }
-                    },
-                    isLoading: controller.isLoading,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        );
-      });
-    },
-  );
+          );
+        });
+      },
+    );
+  }
 }

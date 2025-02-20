@@ -293,9 +293,8 @@ class _ManageNewsCardState extends State<ManageNewsCard>
                           Routes.newsplusicon,
                           arguments: widget.newsId,
                         );
-                        await widget.controller.fetchMyNews(
-                          newsId: widget.newsId,
-                        );
+                        await widget.controller
+                            .fetchmyNewsDetail(widget.newsId, context);
                       },
                       child: Ink(
                         height: size.height * 0.030,

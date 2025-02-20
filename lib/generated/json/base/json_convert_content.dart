@@ -93,7 +93,9 @@ import 'package:mlmdiary/generated/like_list_company_entity.dart';
 import 'package:mlmdiary/generated/liked_news_entity.dart';
 import 'package:mlmdiary/generated/liked_user_entity.dart';
 import 'package:mlmdiary/generated/login_entity.dart';
+import 'package:mlmdiary/generated/manage_blog_list_entity.dart';
 import 'package:mlmdiary/generated/manage_classified_entity.dart';
+import 'package:mlmdiary/generated/manage_news_list_entity.dart';
 import 'package:mlmdiary/generated/mlm_like_company_entity.dart';
 import 'package:mlmdiary/generated/mlm_social_media_entity.dart';
 import 'package:mlmdiary/generated/mutual_friends_entity.dart';
@@ -1003,6 +1005,18 @@ class JsonConvert {
       return data.map<LoginEntity>((Map<String, dynamic> e) =>
           LoginEntity.fromJson(e)).toList() as M;
     }
+    if (<ManageBlogListEntity>[] is M) {
+      return data.map<ManageBlogListEntity>((Map<String, dynamic> e) =>
+          ManageBlogListEntity.fromJson(e)).toList() as M;
+    }
+    if (<ManageBlogListData>[] is M) {
+      return data.map<ManageBlogListData>((Map<String, dynamic> e) =>
+          ManageBlogListData.fromJson(e)).toList() as M;
+    }
+    if (<ManageBlogListDataUserData>[] is M) {
+      return data.map<ManageBlogListDataUserData>((Map<String, dynamic> e) =>
+          ManageBlogListDataUserData.fromJson(e)).toList() as M;
+    }
     if (<ManageClassifiedEntity>[] is M) {
       return data.map<ManageClassifiedEntity>((Map<String, dynamic> e) =>
           ManageClassifiedEntity.fromJson(e)).toList() as M;
@@ -1014,6 +1028,18 @@ class JsonConvert {
     if (<ManageClassifiedDataUserData>[] is M) {
       return data.map<ManageClassifiedDataUserData>((Map<String, dynamic> e) =>
           ManageClassifiedDataUserData.fromJson(e)).toList() as M;
+    }
+    if (<ManageNewsListEntity>[] is M) {
+      return data.map<ManageNewsListEntity>((Map<String, dynamic> e) =>
+          ManageNewsListEntity.fromJson(e)).toList() as M;
+    }
+    if (<ManageNewsListData>[] is M) {
+      return data.map<ManageNewsListData>((Map<String, dynamic> e) =>
+          ManageNewsListData.fromJson(e)).toList() as M;
+    }
+    if (<ManageNewsListDataUserData>[] is M) {
+      return data.map<ManageNewsListDataUserData>((Map<String, dynamic> e) =>
+          ManageNewsListDataUserData.fromJson(e)).toList() as M;
     }
     if (<MlmLikeCompanyEntity>[] is M) {
       return data.map<MlmLikeCompanyEntity>((Map<String, dynamic> e) =>
@@ -1559,9 +1585,17 @@ class JsonConvertClassCollection {
     (LikedNewsEntity).toString(): LikedNewsEntity.fromJson,
     (LikedUserEntity).toString(): LikedUserEntity.fromJson,
     (LoginEntity).toString(): LoginEntity.fromJson,
+    (ManageBlogListEntity).toString(): ManageBlogListEntity.fromJson,
+    (ManageBlogListData).toString(): ManageBlogListData.fromJson,
+    (ManageBlogListDataUserData).toString(): ManageBlogListDataUserData
+        .fromJson,
     (ManageClassifiedEntity).toString(): ManageClassifiedEntity.fromJson,
     (ManageClassifiedData).toString(): ManageClassifiedData.fromJson,
     (ManageClassifiedDataUserData).toString(): ManageClassifiedDataUserData
+        .fromJson,
+    (ManageNewsListEntity).toString(): ManageNewsListEntity.fromJson,
+    (ManageNewsListData).toString(): ManageNewsListData.fromJson,
+    (ManageNewsListDataUserData).toString(): ManageNewsListDataUserData
         .fromJson,
     (MlmLikeCompanyEntity).toString(): MlmLikeCompanyEntity.fromJson,
     (MlmSocialMediaEntity).toString(): MlmSocialMediaEntity.fromJson,

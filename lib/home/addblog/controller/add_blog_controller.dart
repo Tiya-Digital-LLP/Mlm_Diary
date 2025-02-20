@@ -42,8 +42,8 @@ class AddBlogController extends GetxController {
   RxBool isDiscriptionTyping = false.obs;
   RxBool isUrlTyping = false.obs;
   RxBool isLocationTyping = false.obs;
-  RxInt selectedCountCategory = 0.obs;
 
+  RxInt selectedCountCategory = 0.obs;
   RxInt selectedCountSubCategory = 0.obs;
   //category
   RxList<GetCategoryCategory> categorylist = RxList<GetCategoryCategory>();
@@ -66,10 +66,25 @@ class AddBlogController extends GetxController {
 
   var isLoading = false.obs;
 
+  var selectedCategoryId = 0.obs;
+  var selectedSubCategoryId = 0.obs;
+
   @override
   void onInit() {
     super.onInit();
     fetchCategoryList();
+  }
+
+  void resetSelections() {
+    title.value.clear();
+    discription.value.clear();
+    url.value.clear();
+    getSelectedCategoryTextController().text = "";
+    getSelectedSubCategoryTextController().text = "";
+
+    isCategorySelectedList.fillRange(0, isCategorySelectedList.length, false);
+    isSubCategorySelectedList.fillRange(
+        0, isSubCategorySelectedList.length, false);
   }
 
   Future<void> addBlog({required File? imageFile, context}) async {
@@ -90,7 +105,6 @@ class AddBlogController extends GetxController {
       var connectivityResult = await Connectivity().checkConnectivity();
       // ignore: unrelated_type_equality_checks
       if (connectivityResult != ConnectivityResult.none) {
-        // Create a multipart request
         var request = http.MultipartRequest(
           'POST',
           Uri.parse('${Constants.baseUrl}${Constants.addblog}'),
@@ -100,13 +114,15 @@ class AddBlogController extends GetxController {
         request.fields['device'] = device;
         request.fields['title'] = title.value.text;
         request.fields['description'] = discription.value.text;
-        request.fields['category'] = getSelectedCategoryTextController().text;
-        request.fields['subcategory'] =
-            getSelectedSubCategoryTextController().text;
+        request.fields['category'] = selectedCategoryId.value.toString();
+        request.fields['subcategory'] = selectedSubCategoryId.value.toString();
         request.fields['website'] = url.value.text;
         request.fields['api_token'] = apiToken ?? '';
 
-        // Add image file if provided, or dummy image if not
+        if (kDebugMode) {
+          print('addBlog: ${request.fields}');
+        }
+
         if (imageFile != null) {
           request.files.add(
             http.MultipartFile(
@@ -118,7 +134,6 @@ class AddBlogController extends GetxController {
             ),
           );
         } else {
-          // Provide a dummy image or placeholder
           request.files.add(
             http.MultipartFile.fromString(
               'image',
@@ -156,6 +171,7 @@ class AddBlogController extends GetxController {
               primaryColor: Colors.green,
               title: const Text('Your Blog is Successfully Submitted'),
             );
+            resetSelections();
             Get.back();
           } else if (jsonBody['status'] == 0) {
             toastification.show(
@@ -222,7 +238,9 @@ class AddBlogController extends GetxController {
                 .assignAll(List<bool>.filled(categorylist.length, false));
             if (categorylist.isNotEmpty) {
               // Fetch subcategories for the first category by default
-              fetchSubCategoryList(categorylist[0].id!);
+              fetchSubCategoryList(
+                categorylist[0].id!,
+              );
             }
             if (kDebugMode) {
               print("category list: $categorylist");
@@ -246,7 +264,9 @@ class AddBlogController extends GetxController {
     }
   }
 
-  Future<void> fetchSubCategoryList(int categoryId) async {
+  Future<void> fetchSubCategoryList(
+    int categoryId,
+  ) async {
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
       // ignore: unrelated_type_equality_checks
@@ -299,39 +319,33 @@ class AddBlogController extends GetxController {
     }
   }
 
-// Category
-  void toggleCategorySelected(int index) {
-    // Deselect all categories first
+  void toggleCategorySelected(int index, BuildContext context) {
     for (int i = 0; i < isCategorySelectedList.length; i++) {
       isCategorySelectedList[i] = false;
     }
 
-    // Select the current category
     isCategorySelectedList[index] = true;
-
-    // Update the selected count
     selectedCountCategory.value = 1;
+    selectedCategoryId.value = categorylist[index].id!;
 
-    // Fetch subcategory list for the selected category
-    fetchSubCategoryList(
-      categorylist[index].id!,
-    );
+    fetchSubCategoryList(categorylist[index].id!);
 
     // ignore: unrelated_type_equality_checks
     categoryError.value = selectedCountCategory == 0;
+
     isCategoryTyping.value = true;
   }
 
   TextEditingController getSelectedCategoryTextController() {
-    List<String> selectedCategoryOptions = [];
+    List<String> selectedCategoryNames = [];
 
     for (int i = 0; i < isCategorySelectedList.length; i++) {
       if (isCategorySelectedList[i]) {
-        selectedCategoryOptions.add(categorylist[i].name.toString());
+        selectedCategoryNames.add(categorylist[i].name ?? '');
       }
     }
 
-    return TextEditingController(text: selectedCategoryOptions.join(', '));
+    return TextEditingController(text: selectedCategoryNames.join(', '));
   }
 
   void mlmCategoryValidation() {
@@ -343,33 +357,34 @@ class AddBlogController extends GetxController {
     }
   }
 
-  // sub Category
   void toggleSubCategorySelected(int index) {
     bool isCurrentlySelected = isSubCategorySelectedList[index];
 
-    // Unselect all sub-categories first
+    // Unselect all subcategories
     for (int i = 0; i < isSubCategorySelectedList.length; i++) {
       isSubCategorySelectedList[i] = false;
     }
 
+    // Toggle the selected state of the current subcategory
     isSubCategorySelectedList[index] = !isCurrentlySelected;
-
     selectedCountSubCategory.value = isSubCategorySelectedList[index] ? 1 : 0;
+    selectedSubCategoryId.value = subcategoryList[index].id!;
 
     // ignore: unrelated_type_equality_checks
     subCategoryError.value = selectedCountSubCategory == 0;
+
     isSubCategoryTyping.value = true;
   }
 
   TextEditingController getSelectedSubCategoryTextController() {
-    List<String> selectedSubCategoryOptions = [];
+    List<String> selectedSubCategoryNames = [];
     for (int i = 0; i < isSubCategorySelectedList.length; i++) {
       if (isSubCategorySelectedList[i]) {
-        selectedSubCategoryOptions.add(subcategoryList[i].name.toString());
+        selectedSubCategoryNames.add(subcategoryList[i].name ?? '');
       }
     }
 
-    return TextEditingController(text: selectedSubCategoryOptions.join(', '));
+    return TextEditingController(text: selectedSubCategoryNames.join(', '));
   }
 
   void mlmsubCategoryValidation() {

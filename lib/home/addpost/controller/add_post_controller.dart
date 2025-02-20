@@ -82,8 +82,7 @@ class AddPostController extends GetxController {
     }
   }
 
-  Future<void> addPost(
-      {required File? imageFile, required File? videoFile, context}) async {
+  Future<void> addPost({required File? imageFile, context}) async {
     isLoading(true);
     String device = Platform.isAndroid ? 'android' : 'ios';
 
@@ -104,24 +103,30 @@ class AddPostController extends GetxController {
         request.fields['api_token'] = apiToken ?? '';
         request.fields['comments'] = comments.value.text;
 
-        if (imageFile != null && videoFile != null) {
+        if (imageFile != null) {
           request.fields['comtype'] = 'Photo';
           request.fields['attachment'] = 'Photo';
         } else if (imageFile != null) {
           request.fields['comtype'] = 'Photo';
           request.fields['attachment'] = 'Photo';
-        } else if (videoFile != null) {
-          request.fields['comtype'] = 'Video';
-          request.fields['attachment'] = 'Video';
         } else {
           request.fields['comtype'] = 'Status';
           request.fields['attachment'] = 'Status';
         }
+        if (kDebugMode) {
+          print('Device: $device');
+          print('API Token: $apiToken');
+          print('Comments: ${comments.value.text}');
+          print('Comtype: Photo');
+        }
 
         if (imageFile != null) {
+          if (kDebugMode) {
+            print('Attaching new image file: ${imageFile.path}');
+          }
           request.files.add(
             http.MultipartFile(
-              'attechment',
+              'attachment',
               imageFile.readAsBytes().asStream(),
               imageFile.lengthSync(),
               filename: 'image.jpg',
@@ -129,19 +134,9 @@ class AddPostController extends GetxController {
             ),
           );
         }
-
-        if (videoFile != null) {
-          request.files.add(
-            http.MultipartFile(
-              'attechment',
-              videoFile.readAsBytes().asStream(),
-              videoFile.lengthSync(),
-              filename: 'video.mp4',
-              contentType: MediaType('video', 'mp4'),
-            ),
-          );
+        if (kDebugMode) {
+          print('Add Post: ${request.fields}');
         }
-
         var streamedResponse = await request.send();
         var response = await http.Response.fromStream(streamedResponse);
 

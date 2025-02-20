@@ -273,7 +273,6 @@ class ManageClasifiedController extends GetxController {
   }
 
   Future<void> fetchClassifiedDetail(int classfiedId, context) async {
-    // Clear all previous data before fetching new data
     title.value.text = "";
     companyName.value.text = "";
     discription.value.text = "";
@@ -340,7 +339,6 @@ class ManageClasifiedController extends GetxController {
             '${firstPost.city}, ${firstPost.state}, ${firstPost.country}'
                 .trim()
                 .replaceAll(RegExp(r',\s*$'), '');
-        // Handle category selection (using categoryId as int)
         int? categoryId = int.tryParse(firstPost.category!);
 
         if (categoryId != null) {
@@ -373,7 +371,6 @@ class ManageClasifiedController extends GetxController {
           }
         }
 
-        // Handle subcategory selection (using subcategoryId as int)
         int? subcategoryId = int.tryParse(firstPost.subcategory!);
 
         if (subcategoryId != null) {
@@ -510,15 +507,12 @@ class ManageClasifiedController extends GetxController {
         'page': page.toString(),
       };
 
-      // Build URL
       Uri uri = Uri.parse(Constants.baseUrl + Constants.manageclassified)
           .replace(queryParameters: queryParams);
 
-      // Make HTTP GET request
       final response = await http.post(uri);
 
       if (response.statusCode == 200) {
-        // Parse JSON data
         final Map<String, dynamic> responseData = json.decode(response.body);
         final ManageClassifiedEntity classifiedEntity =
             ManageClassifiedEntity.fromJson(responseData);
@@ -527,14 +521,12 @@ class ManageClasifiedController extends GetxController {
           print('manage classified data: $responseData');
         }
 
-        // Combine city, state, and country to form location
         location.value.text = _formatLocation(
           city.value.text,
           state.value.text,
           country.value.text,
         );
 
-        // Update state with fetched data
         if (page == 1) {
           classifiedList.assignAll(classifiedEntity.data!);
         } else {
@@ -608,25 +600,21 @@ class ManageClasifiedController extends GetxController {
 
   void toggleCategorySelected(int index, BuildContext context) {
     if (!isCategorySelectedList[index]) {
-      // Deselect all categories first
       for (int i = 0; i < isCategorySelectedList.length; i++) {
         isCategorySelectedList[i] = false;
       }
 
-      // Select the category at the specified index
       isCategorySelectedList[index] = true;
 
-      // Update the selected count and category ID
       selectedCountCategory.value = 1;
       selectedCategoryId.value = categorylist[index].id!;
 
-      // Fetch subcategories for the selected category
       fetchSubCategoryList(categorylist[index].id!);
     } else {}
   }
 
   TextEditingController getSelectedCategoryTextController() {
-    selectedCategoryNames.clear(); // Clear the list before adding new values
+    selectedCategoryNames.clear();
     for (int i = 0; i < isCategorySelectedList.length; i++) {
       if (isCategorySelectedList[i]) {
         selectedCategoryNames.add(categorylist[i].name ?? '');

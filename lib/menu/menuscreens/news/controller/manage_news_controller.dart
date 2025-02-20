@@ -20,6 +20,7 @@ import 'package:mlmdiary/generated/get_news_detail_entity.dart';
 import 'package:mlmdiary/generated/get_news_list_entity.dart';
 import 'package:mlmdiary/generated/get_sub_category_entity.dart';
 import 'package:mlmdiary/generated/liked_news_entity.dart';
+import 'package:mlmdiary/generated/manage_news_list_entity.dart';
 import 'package:mlmdiary/generated/my_news_entity.dart';
 import 'package:mlmdiary/generated/news_count_view_entity.dart';
 import 'package:mlmdiary/generated/news_like_list_entity.dart';
@@ -46,6 +47,8 @@ class ManageNewsController extends GetxController {
   final RxList<bool> isSubCategorySelectedList = RxList<bool>([]);
 
   RxList<MyNewsData> myNewsList = <MyNewsData>[].obs;
+  RxList<MyNewsData> manageNewsList = <MyNewsData>[].obs;
+
   RxList<GetNewsListData> newsList = <GetNewsListData>[].obs;
   RxList<GetNewsDetailData> newsDetailList = <GetNewsDetailData>[].obs;
 
@@ -86,6 +89,8 @@ class ManageNewsController extends GetxController {
   RxInt selectedCountCategory = 0.obs;
 
   RxInt selectedCountSubCategory = 0.obs;
+
+  List<String> selectedCategoryNames = [];
 
   final search = TextEditingController();
 
@@ -242,11 +247,147 @@ class ManageNewsController extends GetxController {
     }
   }
 
+  Future<void> fetchmyNewsDetail(int newsId, context) async {
+    title.value.text = "";
+    discription.value.text = "";
+    url.value.text = "";
+    userImage.value = "";
+
+    isLoading.value = true;
+    String device =
+        Platform.isAndroid ? 'android' : (Platform.isIOS ? 'ios' : '');
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+
+    try {
+      var connectivityResult = await (Connectivity().checkConnectivity());
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult == ConnectivityResult.none) {
+        showToasterrorborder("No internet connection", context);
+        isLoading.value = false;
+        return;
+      }
+
+      Map<String, String> queryParams = {
+        'api_token': apiToken ?? '',
+        'device': device,
+        'news_id': newsId.toString(),
+      };
+
+      if (kDebugMode) {
+        print('api_token: $apiToken');
+        print('device: $device');
+        print('news_id: $newsId');
+      }
+
+      Uri uri = Uri.parse(Constants.baseUrl + Constants.newsdetail)
+          .replace(queryParameters: queryParams);
+
+      final response = await http.post(uri);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        if (kDebugMode) {
+          print(json.encode(responseData));
+        }
+
+        final ManageNewsListEntity classifiedDetailEntity =
+            ManageNewsListEntity.fromJson(responseData);
+
+        final ManageNewsListData firstPost = classifiedDetailEntity.data!;
+
+        // Update fields with new data
+        title.value.text = firstPost.title.toString();
+        discription.value.text = firstPost.description!;
+        url.value.text = firstPost.website!;
+        userImage.value = firstPost.imagePath!;
+
+        int? categoryId = int.tryParse(firstPost.category!);
+
+        if (categoryId != null) {
+          if (kDebugMode) {
+            print('Category ID selected: $categoryId');
+          }
+
+          isCategorySelectedList.fillRange(
+              0, isCategorySelectedList.length, false);
+          int index = categorylist.indexWhere((item) => item.id == categoryId);
+
+          if (kDebugMode) {
+            print('Category index by ID: $index');
+          }
+
+          if (index != -1) {
+            isCategorySelectedList[index] = true;
+            selectedCountCategory.value = 1;
+            selectedCategoryId.value = categorylist[index].id!;
+
+            if (kDebugMode) {
+              print('Category selected, ID: ${selectedCategoryId.value}');
+            }
+
+            await fetchSubCategoryList(categorylist[index].id!);
+          }
+        } else {
+          if (kDebugMode) {
+            print('Invalid categoryId');
+          }
+        }
+
+        int? subcategoryId = int.tryParse(firstPost.subcategory!);
+
+        if (subcategoryId != null) {
+          if (kDebugMode) {
+            print('Subcategory ID selected: $subcategoryId');
+          }
+
+          isSubCategorySelectedList.fillRange(
+              0, isSubCategorySelectedList.length, false);
+
+          int subcategoryIndex =
+              subcategoryList.indexWhere((item) => item.id == subcategoryId);
+
+          if (kDebugMode) {
+            print('Subcategory index by ID: $subcategoryIndex');
+          }
+
+          if (subcategoryIndex != -1) {
+            isSubCategorySelectedList[subcategoryIndex] = true;
+            selectedCountSubCategory.value = 1;
+            selectedSubCategoryId.value = subcategoryList[subcategoryIndex].id!;
+
+            if (kDebugMode) {
+              print('Subcategory selected, ID: ${selectedSubCategoryId.value}');
+            }
+          } else {
+            if (kDebugMode) {
+              print('Subcategory not found in the list');
+            }
+          }
+        } else {
+          if (kDebugMode) {
+            print('Invalid subcategoryId');
+          }
+        }
+      } else {
+        if (kDebugMode) {
+          print("Error: ${response.body}");
+        }
+      }
+    } catch (error) {
+      if (kDebugMode) {
+        print("Error: $error");
+      }
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   // Method to fetch data from API
   Future<void> fetchMyNews({
     int page = 1,
-    BuildContext? context,
-    int? newsId,
+    context,
   }) async {
     isLoading(true);
     String device = '';
@@ -268,7 +409,6 @@ class ManageNewsController extends GetxController {
       // ignore: unrelated_type_equality_checks
       if (connectivityResult == ConnectivityResult.none) {
         if (context != null) {
-          // ignore: use_build_context_synchronously
           showToasterrorborder("No internet connection", context);
         }
 
@@ -282,11 +422,6 @@ class ManageNewsController extends GetxController {
         'device': device,
         'page': page.toString(),
       };
-
-      // If articleId is provided, add it to formData
-      if (newsId != null) {
-        formData['news_id'] = newsId.toString();
-      }
 
       Uri uri = Uri.parse(Constants.baseUrl + Constants.mynews);
       final response = await http.post(uri, body: formData);
@@ -307,8 +442,6 @@ class ManageNewsController extends GetxController {
         } else {
           myNewsList.addAll(myNewsData);
         }
-
-        updateUIWithBlogData(myNewsData.first);
       } else {
         // Show error message if response status code is not 200
         if (context != null) {
@@ -325,92 +458,6 @@ class ManageNewsController extends GetxController {
     } finally {
       isLoading(false);
     }
-  }
-
-  Future<void> updateUIWithBlogData(MyNewsData blogData) async {
-    title.value.text = blogData.title ?? '';
-    discription.value.text = blogData.description ?? '';
-    url.value.text = blogData.website ?? '';
-    userImage.value = blogData.imagePath ?? '';
-
-// Handle category selection (using categoryId as int)
-    int? categoryId = int.tryParse(blogData.category ?? '');
-
-    if (categoryId != null) {
-      if (kDebugMode) {
-        print('Category ID selected: $categoryId');
-      }
-
-      isCategorySelectedList.fillRange(0, isCategorySelectedList.length, false);
-      int index = categorylist.indexWhere((item) => item.id == categoryId);
-
-      if (kDebugMode) {
-        print('Category index by ID: $index');
-      }
-
-      if (index != -1) {
-        isCategorySelectedList[index] = true;
-        selectedCountCategory.value = 1;
-        selectedCategoryId.value = categorylist[index].id!;
-
-        if (kDebugMode) {
-          print('Category selected, ID: ${selectedCategoryId.value}');
-        }
-
-        await fetchSubCategoryList(categorylist[index].id!);
-      }
-    } else {
-      if (kDebugMode) {
-        print('Invalid categoryId');
-      }
-    }
-
-    // Handle subcategory selection (using subcategoryId as int)
-    int? subcategoryId = int.tryParse(blogData.subcategory ?? '');
-
-    if (subcategoryId != null) {
-      if (kDebugMode) {
-        print('Subcategory ID selected: $subcategoryId');
-      }
-
-      isSubCategorySelectedList.fillRange(
-          0, isSubCategorySelectedList.length, false);
-
-      int subcategoryIndex =
-          subcategoryList.indexWhere((item) => item.id == subcategoryId);
-
-      if (kDebugMode) {
-        print('Subcategory index by ID: $subcategoryIndex');
-      }
-
-      if (subcategoryIndex != -1) {
-        isSubCategorySelectedList[subcategoryIndex] = true;
-        selectedCountSubCategory.value = 1;
-        selectedSubCategoryId.value = subcategoryList[subcategoryIndex].id!;
-
-        if (kDebugMode) {
-          print('Subcategory selected, ID: ${selectedSubCategoryId.value}');
-        }
-      } else {
-        if (kDebugMode) {
-          print('Subcategory not found in the list');
-        }
-      }
-    } else {
-      if (kDebugMode) {
-        print('Invalid subcategoryId');
-      }
-    }
-  }
-
-  String getSelectedSubCategoryText() {
-    List<String> selectedSubCategories = [];
-    for (int i = 0; i < isSubCategorySelectedList.length; i++) {
-      if (isSubCategorySelectedList[i]) {
-        selectedSubCategories.add(subcategoryList[i].name ?? '');
-      }
-    }
-    return selectedSubCategories.join(', ');
   }
 
   Future<void> fetchCategoryList() async {
@@ -445,7 +492,9 @@ class ManageNewsController extends GetxController {
               print("category list: $categorylist");
             }
           } else {
-            // Handle error when status is not 1
+            if (kDebugMode) {
+              print("Error: ${response.body}");
+            }
           }
         } else {
           if (kDebugMode) {
@@ -463,7 +512,9 @@ class ManageNewsController extends GetxController {
     }
   }
 
-  Future<void> fetchSubCategoryList(int categoryId) async {
+  Future<void> fetchSubCategoryList(
+    int categoryId,
+  ) async {
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
       // ignore: unrelated_type_equality_checks
@@ -578,29 +629,23 @@ class ManageNewsController extends GetxController {
     }
   }
 
-// Category
   void toggleCategorySelected(int index, BuildContext context) {
-    // Unselect all categories
-    for (int i = 0; i < isCategorySelectedList.length; i++) {
-      isCategorySelectedList[i] = false;
-    }
+    if (!isCategorySelectedList[index]) {
+      for (int i = 0; i < isCategorySelectedList.length; i++) {
+        isCategorySelectedList[i] = false;
+      }
 
-    // Select the current category
-    isCategorySelectedList[index] = true;
-    selectedCountCategory.value = 1;
-    selectedCategoryId.value = categorylist[index].id!;
+      isCategorySelectedList[index] = true;
 
-    // Fetch subcategory list for the selected category
-    fetchSubCategoryList(categorylist[index].id!);
+      selectedCountCategory.value = 1;
+      selectedCategoryId.value = categorylist[index].id!;
 
-    // ignore: unrelated_type_equality_checks
-    categoryError.value = selectedCountCategory == 0;
-    isCategoryTyping.value = true;
+      fetchSubCategoryList(categorylist[index].id!);
+    } else {}
   }
 
   TextEditingController getSelectedCategoryTextController() {
-    List<String> selectedCategoryNames = [];
-
+    selectedCategoryNames.clear();
     for (int i = 0; i < isCategorySelectedList.length; i++) {
       if (isCategorySelectedList[i]) {
         selectedCategoryNames.add(categorylist[i].name ?? '');
@@ -613,29 +658,26 @@ class ManageNewsController extends GetxController {
   void mlmCategoryValidation() {
     // ignore: unrelated_type_equality_checks
     categoryError.value = selectedCountCategory == 0;
-
-    if (categoryError.value) {
-      isCategoryTyping.value = true;
-    }
   }
 
-  // sub Category
   void toggleSubCategorySelected(int index) {
-    bool isCurrentlySelected = isSubCategorySelectedList[index];
+    if (index >= 0 && index < isSubCategorySelectedList.length) {
+      bool isCurrentlySelected = isSubCategorySelectedList[index];
 
-    // Unselect all subcategories
-    for (int i = 0; i < isSubCategorySelectedList.length; i++) {
-      isSubCategorySelectedList[i] = false;
+      // Unselect all subcategories
+      for (int i = 0; i < isSubCategorySelectedList.length; i++) {
+        isSubCategorySelectedList[i] = false;
+      }
+
+      // Toggle the selected state of the current subcategory
+      isSubCategorySelectedList[index] = !isCurrentlySelected;
+      selectedCountSubCategory.value = isSubCategorySelectedList[index] ? 1 : 0;
+      selectedSubCategoryId.value = subcategoryList[index].id!;
+    } else {
+      if (kDebugMode) {
+        print("Invalid subcategory index: $index");
+      }
     }
-
-    // Toggle the selected state of the current subcategory
-    isSubCategorySelectedList[index] = !isCurrentlySelected;
-    selectedCountSubCategory.value = isSubCategorySelectedList[index] ? 1 : 0;
-    selectedSubCategoryId.value = subcategoryList[index].id!;
-
-    // ignore: unrelated_type_equality_checks
-    subCategoryError.value = selectedCountSubCategory == 0;
-    isSubCategoryTyping.value = true;
   }
 
   TextEditingController getSelectedSubCategoryTextController() {
@@ -652,10 +694,6 @@ class ManageNewsController extends GetxController {
   void mlmsubCategoryValidation() {
     // ignore: unrelated_type_equality_checks
     subCategoryError.value = selectedCountSubCategory == 0;
-
-    if (subCategoryError.value) {
-      isSubCategoryTyping.value = true;
-    }
   }
 
   //updateclassified

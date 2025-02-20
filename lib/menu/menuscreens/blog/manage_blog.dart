@@ -26,13 +26,13 @@ class _ManageBlogState extends State<ManageBlog> {
     _refreshData();
   }
 
-  Future<void> _refreshData() async {
-    await controller.fetchMyBlog();
+  void deletePost(int index) async {
+    int blogId = controller.manageBlogList[index].articleId ?? 0;
+    await controller.deleteBlog(blogId, index, context);
   }
 
-  void deletePost(int index) async {
-    int blogId = controller.myBlogList[index].articleId ?? 0;
-    await controller.deleteBlog(blogId, index, context);
+  Future<void> _refreshData() async {
+    await controller.fetchMyBlog();
   }
 
   @override
@@ -50,7 +50,8 @@ class _ManageBlogState extends State<ManageBlog> {
         child: Container(
           color: AppColors.background,
           child: Obx(() {
-            if (controller.isLoading.value && controller.myBlogList.isEmpty) {
+            if (controller.isLoading.value &&
+                controller.manageBlogList.isEmpty) {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: ListView.builder(
@@ -65,7 +66,7 @@ class _ManageBlogState extends State<ManageBlog> {
               );
             }
 
-            if (controller.myBlogList.isEmpty) {
+            if (controller.manageBlogList.isEmpty) {
               return Center(
                 child: Text(
                   controller.isLoading.value ? 'Loading...' : 'Data not found',
@@ -82,9 +83,9 @@ class _ManageBlogState extends State<ManageBlog> {
               padding: EdgeInsets.zero,
               physics: const AlwaysScrollableScrollPhysics(),
               shrinkWrap: true,
-              itemCount: controller.myBlogList.length,
+              itemCount: controller.manageBlogList.length,
               itemBuilder: (context, index) {
-                final post = controller.myBlogList[index];
+                final post = controller.manageBlogList[index];
 
                 return Padding(
                   padding:
@@ -93,7 +94,7 @@ class _ManageBlogState extends State<ManageBlog> {
                     onTap: () {
                       Get.toNamed(
                         Routes.myblogdetails,
-                        arguments: controller.myBlogList[index],
+                        arguments: controller.manageBlogList[index],
                       );
                     },
                     child: ManageBlogCard(

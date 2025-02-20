@@ -277,7 +277,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                         }
                       },
                       tabs: [
-                        Tab(text: 'Posts ${post.totalPost}'),
+                        Tab(text: 'Posts (${post.totalPost})'),
                         const Tab(text: 'About Me'),
                       ],
                       children: [
@@ -1258,12 +1258,10 @@ class _UserProfileScreenState extends State<UserProfileScreen>
             Obx(() => userProfileController.followers.isEmpty
                 ? const Center(child: Text('No followers'))
                 : ListView.builder(
-                    controller:
-                        _followersScrollController, // Set the controller here
+                    controller: _followersScrollController,
                     itemCount: userProfileController.followers.length,
                     itemBuilder: (context, index) {
                       if (index == userProfileController.followers.length) {
-                        // Show the loader at the bottom while loading more data
                         return const Center(
                           child: Padding(
                             padding: EdgeInsets.all(16),

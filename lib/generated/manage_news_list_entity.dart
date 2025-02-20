@@ -1,18 +1,18 @@
 import 'package:mlmdiary/generated/json/base/json_field.dart';
-import 'package:mlmdiary/generated/json/my_blog_list_entity.g.dart';
+import 'package:mlmdiary/generated/json/manage_news_list_entity.g.dart';
 import 'dart:convert';
-export 'package:mlmdiary/generated/json/my_blog_list_entity.g.dart';
+export 'package:mlmdiary/generated/json/manage_news_list_entity.g.dart';
 
 @JsonSerializable()
-class MyBlogListEntity {
+class ManageNewsListEntity {
 	int? status = 0;
-	MyBlogListData? data;
+	ManageNewsListData? data;
 
-	MyBlogListEntity();
+	ManageNewsListEntity();
 
-	factory MyBlogListEntity.fromJson(Map<String, dynamic> json) => $MyBlogListEntityFromJson(json);
+	factory ManageNewsListEntity.fromJson(Map<String, dynamic> json) => $ManageNewsListEntityFromJson(json);
 
-	Map<String, dynamic> toJson() => $MyBlogListEntityToJson(this);
+	Map<String, dynamic> toJson() => $ManageNewsListEntityToJson(this);
 
 	@override
 	String toString() {
@@ -21,19 +21,18 @@ class MyBlogListEntity {
 }
 
 @JsonSerializable()
-class MyBlogListData {
+class ManageNewsListData {
 	int? id = 0;
 	String? title = '';
-	String? image = '';
+	String? photo = '';
 	String? description = '';
 	int? pgcnt = 0;
 	String? createdate = '';
 	String? datemodified = '';
-	dynamic category;
-	@JSONField(name: 'user_id')
-	int? userId = 0;
-	dynamic subcategory;
+	String? category = '';
+	int? creatby = 0;
 	int? status = 0;
+	String? subcategory = '';
 	String? website = '';
 	String? urlcomponent = '';
 	int? totallike = 0;
@@ -48,15 +47,19 @@ class MyBlogListData {
 	@JSONField(name: 'bookmarked_by_user')
 	bool? bookmarkedByUser = false;
 	@JSONField(name: 'user_data')
-	MyBlogListDataUserData? userData;
+	ManageNewsListDataUserData? userData;
+	@JSONField(name: 'category_name')
+	String? categoryName = '';
+	@JSONField(name: 'subcategory_name')
+	String? subcategoryName = '';
 	@JSONField(name: 'image_path')
 	String? imagePath = '';
 
-	MyBlogListData();
+	ManageNewsListData();
 
-	factory MyBlogListData.fromJson(Map<String, dynamic> json) => $MyBlogListDataFromJson(json);
+	factory ManageNewsListData.fromJson(Map<String, dynamic> json) => $ManageNewsListDataFromJson(json);
 
-	Map<String, dynamic> toJson() => $MyBlogListDataToJson(this);
+	Map<String, dynamic> toJson() => $ManageNewsListDataToJson(this);
 
 	@override
 	String toString() {
@@ -65,7 +68,7 @@ class MyBlogListData {
 }
 
 @JsonSerializable()
-class MyBlogListDataUserData {
+class ManageNewsListDataUserData {
 	String? name = '';
 	String? userimage = '';
 	String? email = '';
@@ -76,11 +79,11 @@ class MyBlogListDataUserData {
 	@JSONField(name: 'image_thum_path')
 	String? imageThumPath = '';
 
-	MyBlogListDataUserData();
+	ManageNewsListDataUserData();
 
-	factory MyBlogListDataUserData.fromJson(Map<String, dynamic> json) => $MyBlogListDataUserDataFromJson(json);
+	factory ManageNewsListDataUserData.fromJson(Map<String, dynamic> json) => $ManageNewsListDataUserDataFromJson(json);
 
-	Map<String, dynamic> toJson() => $MyBlogListDataUserDataToJson(this);
+	Map<String, dynamic> toJson() => $ManageNewsListDataUserDataToJson(this);
 
 	@override
 	String toString() {

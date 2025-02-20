@@ -30,25 +30,30 @@ class GetBlogDetailData {
 	String? createdate = '';
 	String? datemodified = '';
 	String? category = '';
-	@JSONField(name: "user_id")
+	@JSONField(name: 'user_id')
 	int? userId = 0;
 	String? subcategory = '';
+	int? status = 0;
 	String? website = '';
 	String? urlcomponent = '';
 	int? totallike = 0;
 	int? totalbookmark = 0;
 	int? totalcomment = 0;
-	@JSONField(name: "full_url")
+	@JSONField(name: 'full_url')
 	String? fullUrl = '';
-	@JSONField(name: "image_url")
+	@JSONField(name: 'image_url')
 	String? imageUrl = '';
-	@JSONField(name: "liked_by_user")
+	@JSONField(name: 'liked_by_user')
 	bool? likedByUser = false;
-	@JSONField(name: "bookmarked_by_user")
+	@JSONField(name: 'bookmarked_by_user')
 	bool? bookmarkedByUser = false;
-	@JSONField(name: "user_data")
+	@JSONField(name: 'category_name')
+	String? categoryName = '';
+	@JSONField(name: 'subcategory_name')
+	String? subcategoryName = '';
+	@JSONField(name: 'user_data')
 	GetBlogDetailDataUserData? userData;
-	@JSONField(name: "image_path")
+	@JSONField(name: 'image_path')
 	String? imagePath = '';
 
 	GetBlogDetailData();
@@ -65,73 +70,14 @@ class GetBlogDetailData {
 
 @JsonSerializable()
 class GetBlogDetailDataUserData {
-	int? id = 0;
-	dynamic immlm;
-	dynamic username;
-	dynamic password;
-	String? sex = '';
 	String? name = '';
-	String? email = '';
-	dynamic mobile;
-	dynamic birthdate;
-	String? address = '';
-	String? country = '';
-	String? state = '';
-	String? city = '';
-	String? pincode = '';
-	dynamic employment;
 	String? userimage = '';
-	String? joindate = '';
-	String? ip = '';
-	String? lastip = '';
-	dynamic lastlogin;
-	dynamic aboutyou;
-	dynamic website;
-	@JSONField(name: "comp_website")
-	String? compWebsite = '';
-	String? company = '';
-	String? newregi = '';
-	int? status = 0;
-	int? points = 0;
-	int? views = 0;
-	dynamic emailvarify;
-	dynamic vemailcode;
-	dynamic vphonecode;
-	dynamic stepno;
-	String? token = '';
-	dynamic approve;
-	@JSONField(name: "verify_email")
-	dynamic verifyEmail;
-	String? blockeduser = '';
-	String? showindirctry = '';
-	dynamic blockdate;
-	String? plan = '';
-	String? blocktype = '';
-	int? paidno = 0;
-	String? isapprove = '';
-	String? passtoken = '';
-	String? tokendate = '';
-	String? urlcomponent = '';
-	String? aboutcompany = '';
-	String? fblink = '';
-	String? instalink = '';
-	dynamic twiterlink;
-	dynamic lilink;
-	dynamic youlink;
-	dynamic wplink;
-	dynamic telink;
-	String? proceedstatus = '';
-	dynamic device;
-	dynamic platform;
-	dynamic proceeddate;
-	@JSONField(name: "is_approved")
-	int? isApproved = 0;
-	dynamic countrycode1;
-	dynamic lat;
-	dynamic lng;
-	@JSONField(name: "image_path")
+	String? email = '';
+	String? mobile = '';
+	String? countrycode1 = '';
+	@JSONField(name: 'image_path')
 	String? imagePath = '';
-	@JSONField(name: "image_thum_path")
+	@JSONField(name: 'image_thum_path')
 	String? imageThumPath = '';
 
 	GetBlogDetailDataUserData();
