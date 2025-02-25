@@ -230,15 +230,13 @@ class _PlanandCompanyState extends State<PlanandCompany> {
                                               () => GestureDetector(
                                                 onTap: () {
                                                   controller.togglePlanSelected(
-                                                      index); // This will toggle the selection state
+                                                      index);
                                                 },
                                                 child: Image.asset(
                                                   controller.isPlanSelectedList[
                                                           index]
-                                                      ? Assets
-                                                          .imagesTrueCircle // Image when selected
-                                                      : Assets
-                                                          .imagesCircle, // Image when not selected
+                                                      ? Assets.imagesTrueCircle
+                                                      : Assets.imagesCircle,
                                                 ),
                                               ),
                                             ),

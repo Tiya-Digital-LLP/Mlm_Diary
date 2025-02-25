@@ -23,7 +23,7 @@ Map<String, dynamic> $GetViewsEntityToJson(GetViewsEntity entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
   data['status'] = entity.status;
   data['message'] = entity.message;
-  data['data'] = entity.data.map((v) => v.toJson()).toList();
+  data['data'] = entity.data?.map((v) => v.toJson()).toList();
   return data;
 }
 
@@ -74,7 +74,7 @@ GetViewsData $GetViewsDataFromJson(Map<String, dynamic> json) {
   if (mobile != null) {
     getViewsData.mobile = mobile;
   }
-  final dynamic birthdate = json['birthdate'];
+  final String? birthdate = jsonConvert.convert<String>(json['birthdate']);
   if (birthdate != null) {
     getViewsData.birthdate = birthdate;
   }
@@ -122,7 +122,7 @@ GetViewsData $GetViewsDataFromJson(Map<String, dynamic> json) {
   if (lastlogin != null) {
     getViewsData.lastlogin = lastlogin;
   }
-  final dynamic aboutyou = json['aboutyou'];
+  final String? aboutyou = jsonConvert.convert<String>(json['aboutyou']);
   if (aboutyou != null) {
     getViewsData.aboutyou = aboutyou;
   }
@@ -215,7 +215,7 @@ GetViewsData $GetViewsDataFromJson(Map<String, dynamic> json) {
   if (passtoken != null) {
     getViewsData.passtoken = passtoken;
   }
-  final dynamic tokendate = json['tokendate'];
+  final String? tokendate = jsonConvert.convert<String>(json['tokendate']);
   if (tokendate != null) {
     getViewsData.tokendate = tokendate;
   }
@@ -224,35 +224,36 @@ GetViewsData $GetViewsDataFromJson(Map<String, dynamic> json) {
   if (urlcomponent != null) {
     getViewsData.urlcomponent = urlcomponent;
   }
-  final dynamic aboutcompany = json['aboutcompany'];
+  final String? aboutcompany = jsonConvert.convert<String>(
+      json['aboutcompany']);
   if (aboutcompany != null) {
     getViewsData.aboutcompany = aboutcompany;
   }
-  final dynamic fblink = json['fblink'];
+  final String? fblink = jsonConvert.convert<String>(json['fblink']);
   if (fblink != null) {
     getViewsData.fblink = fblink;
   }
-  final dynamic instalink = json['instalink'];
+  final String? instalink = jsonConvert.convert<String>(json['instalink']);
   if (instalink != null) {
     getViewsData.instalink = instalink;
   }
-  final dynamic twiterlink = json['twiterlink'];
+  final String? twiterlink = jsonConvert.convert<String>(json['twiterlink']);
   if (twiterlink != null) {
     getViewsData.twiterlink = twiterlink;
   }
-  final dynamic lilink = json['lilink'];
+  final String? lilink = jsonConvert.convert<String>(json['lilink']);
   if (lilink != null) {
     getViewsData.lilink = lilink;
   }
-  final dynamic youlink = json['youlink'];
+  final String? youlink = jsonConvert.convert<String>(json['youlink']);
   if (youlink != null) {
     getViewsData.youlink = youlink;
   }
-  final dynamic wplink = json['wplink'];
+  final String? wplink = jsonConvert.convert<String>(json['wplink']);
   if (wplink != null) {
     getViewsData.wplink = wplink;
   }
-  final dynamic telink = json['telink'];
+  final String? telink = jsonConvert.convert<String>(json['telink']);
   if (telink != null) {
     getViewsData.telink = telink;
   }
@@ -269,7 +270,7 @@ GetViewsData $GetViewsDataFromJson(Map<String, dynamic> json) {
   if (platform != null) {
     getViewsData.platform = platform;
   }
-  final dynamic proceeddate = json['proceeddate'];
+  final String? proceeddate = jsonConvert.convert<String>(json['proceeddate']);
   if (proceeddate != null) {
     getViewsData.proceeddate = proceeddate;
   }
@@ -282,11 +283,11 @@ GetViewsData $GetViewsDataFromJson(Map<String, dynamic> json) {
   if (countrycode1 != null) {
     getViewsData.countrycode1 = countrycode1;
   }
-  final dynamic lat = json['lat'];
+  final String? lat = jsonConvert.convert<String>(json['lat']);
   if (lat != null) {
     getViewsData.lat = lat;
   }
-  final dynamic lng = json['lng'];
+  final String? lng = jsonConvert.convert<String>(json['lng']);
   if (lng != null) {
     getViewsData.lng = lng;
   }
@@ -375,7 +376,7 @@ extension GetViewsDataExtension on GetViewsData {
     String? name,
     String? email,
     String? mobile,
-    dynamic birthdate,
+    String? birthdate,
     String? address,
     String? country,
     String? state,
@@ -387,7 +388,7 @@ extension GetViewsDataExtension on GetViewsData {
     String? ip,
     String? lastip,
     String? lastlogin,
-    dynamic aboutyou,
+    String? aboutyou,
     dynamic website,
     dynamic compWebsite,
     String? company,
@@ -410,24 +411,24 @@ extension GetViewsDataExtension on GetViewsData {
     int? paidno,
     String? isapprove,
     String? passtoken,
-    dynamic tokendate,
+    String? tokendate,
     String? urlcomponent,
-    dynamic aboutcompany,
-    dynamic fblink,
-    dynamic instalink,
-    dynamic twiterlink,
-    dynamic lilink,
-    dynamic youlink,
-    dynamic wplink,
-    dynamic telink,
+    String? aboutcompany,
+    String? fblink,
+    String? instalink,
+    String? twiterlink,
+    String? lilink,
+    String? youlink,
+    String? wplink,
+    String? telink,
     String? proceedstatus,
     String? device,
     String? platform,
-    dynamic proceeddate,
+    String? proceeddate,
     int? isApproved,
     String? countrycode1,
-    dynamic lat,
-    dynamic lng,
+    String? lat,
+    String? lng,
     String? userimageUrl,
   }) {
     return GetViewsData()

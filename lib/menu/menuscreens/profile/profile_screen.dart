@@ -633,7 +633,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                           'user_id': viewers.id,
                         })!
                             .then((_) {
-                          _refreshViews(viewers.id);
+                          _refreshViews(viewers.id!);
                         });
 
                         await userProfileController.fetchUserAllPost(
@@ -656,13 +656,14 @@ class _ProfileScreenState extends State<ProfileScreen>
                                     height: 30,
                                     decoration: ShapeDecoration(
                                       image: DecorationImage(
-                                        image: viewers
-                                                    .userimageUrl.isNotEmpty ==
-                                                true
-                                            ? NetworkImage(viewers.userimageUrl)
-                                            : const AssetImage(
-                                                    'assets/more.png')
-                                                as ImageProvider,
+                                        image:
+                                            viewers.userimageUrl!.isNotEmpty ==
+                                                    true
+                                                ? NetworkImage(
+                                                    viewers.userimageUrl!)
+                                                : const AssetImage(
+                                                        'assets/more.png')
+                                                    as ImageProvider,
                                         fit: BoxFit.cover,
                                       ),
                                       shape: const OvalBorder(),
@@ -674,7 +675,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        viewers.name,
+                                        viewers.name!,
                                         style: const TextStyle(
                                           fontSize: 14.0,
                                           fontWeight: FontWeight.w600,
@@ -682,7 +683,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                         ),
                                       ),
                                       Text(
-                                        viewers.immlm,
+                                        viewers.immlm!,
                                         style: TextStyle(
                                           color: AppColors.blackText,
                                           fontSize: 12.0,

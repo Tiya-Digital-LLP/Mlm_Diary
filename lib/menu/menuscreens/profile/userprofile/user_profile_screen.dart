@@ -1513,10 +1513,10 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: InkWell(
                           onTap: () async {
-                            _refreshFollowers(viewers.id);
-                            _refreshFollowing(viewers.id);
-                            _refreshViews(viewers.id);
-                            controller.fetchUserPost(viewers.id, context);
+                            _refreshFollowers(viewers.id!);
+                            _refreshFollowing(viewers.id!);
+                            _refreshViews(viewers.id!);
+                            controller.fetchUserPost(viewers.id!, context);
                             await userProfileController.fetchUserAllPost(
                               1,
                               viewers.id.toString(),
@@ -1539,15 +1539,14 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                         height: 50,
                                         decoration: ShapeDecoration(
                                           image: DecorationImage(
-                                            // ignore: unnecessary_null_comparison
-                                            image: viewers.userimageUrl != null
-                                                ? NetworkImage(
-                                                    viewers.userimageUrl
-                                                        .toString(),
-                                                  )
-                                                : const AssetImage(
-                                                        'assets/more.png')
-                                                    as ImageProvider,
+                                            image:
+                                                viewers.userimageUrl!.isNotEmpty
+                                                    ? NetworkImage(viewers
+                                                        .userimageUrl
+                                                        .toString())
+                                                    : const AssetImage(
+                                                            'assets/more.png')
+                                                        as ImageProvider,
                                             fit: BoxFit.cover,
                                           ),
                                           shape: const OvalBorder(),
@@ -1559,7 +1558,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            viewers.name,
+                                            viewers.name!,
                                             style: const TextStyle(
                                                 fontSize: 14.0,
                                                 fontWeight: FontWeight.w600,
@@ -1571,9 +1570,9 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                           Text(
                                             () {
                                               final addressParts = [
-                                                viewers.city.trim(),
-                                                viewers.state.trim(),
-                                                viewers.country.trim(),
+                                                viewers.city!.trim(),
+                                                viewers.state!.trim(),
+                                                viewers.country!.trim(),
                                               ]
                                                   .where((e) => e.isNotEmpty)
                                                   .toList();
@@ -1589,7 +1588,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                           ),
                                           2.sbh,
                                           Text(
-                                            viewers.immlm,
+                                            viewers.immlm!,
                                             style: TextStyle(
                                               color: AppColors.blackText,
                                               fontSize: 12.0,

@@ -838,11 +838,11 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                                         height: 50,
                                         decoration: ShapeDecoration(
                                           image: DecorationImage(
-                                            image: viewers.userimageUrl
+                                            image: viewers.userimageUrl!
                                                         .isNotEmpty ==
                                                     true
                                                 ? NetworkImage(
-                                                    viewers.userimageUrl)
+                                                    viewers.userimageUrl!)
                                                 : const AssetImage(
                                                         'assets/more.png')
                                                     as ImageProvider,
@@ -857,7 +857,7 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            viewers.name,
+                                            viewers.name!,
                                             style: const TextStyle(
                                               fontSize: 14.0,
                                               fontWeight: FontWeight.w600,
@@ -868,9 +868,9 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                                           Text(
                                             () {
                                               final addressParts = [
-                                                viewers.city.trim(),
-                                                viewers.state.trim(),
-                                                viewers.country.trim(),
+                                                viewers.city!.trim(),
+                                                viewers.state!.trim(),
+                                                viewers.country!.trim(),
                                               ]
                                                   .where((e) => e.isNotEmpty)
                                                   .toList();
@@ -886,7 +886,7 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                                           ),
                                           2.sbh,
                                           Text(
-                                            viewers.immlm,
+                                            viewers.immlm!,
                                             style: TextStyle(
                                               color: AppColors.blackText,
                                               fontSize: 12.0,

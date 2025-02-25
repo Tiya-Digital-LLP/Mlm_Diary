@@ -5,9 +5,9 @@ export 'package:mlmdiary/generated/json/get_views_entity.g.dart';
 
 @JsonSerializable()
 class GetViewsEntity {
-	late int status;
-	late String message;
-	late List<GetViewsData> data;
+	int? status = 0;
+	String? message = '';
+	List<GetViewsData>? data = [];
 
 	GetViewsEntity();
 
@@ -23,72 +23,72 @@ class GetViewsEntity {
 
 @JsonSerializable()
 class GetViewsData {
-	late int id;
-	late String immlm;
-	late String username;
-	late String password;
-	late String sex;
-	late String name;
-	late String email;
-	late String mobile;
-	dynamic birthdate;
-	late String address;
-	late String country;
-	late String state;
-	late String city;
-	late String pincode;
+	int? id = 0;
+	String? immlm = '';
+	String? username = '';
+	String? password = '';
+	String? sex = '';
+	String? name = '';
+	String? email = '';
+	String? mobile = '';
+	String? birthdate = '';
+	String? address = '';
+	String? country = '';
+	String? state = '';
+	String? city = '';
+	String? pincode = '';
 	dynamic employment;
-	late String userimage;
-	late String joindate;
-	late String ip;
-	late String lastip;
-	late String lastlogin;
-	dynamic aboutyou;
+	String? userimage = '';
+	String? joindate = '';
+	String? ip = '';
+	String? lastip = '';
+	String? lastlogin = '';
+	String? aboutyou = '';
 	dynamic website;
-	@JSONField(name: "comp_website")
+	@JSONField(name: 'comp_website')
 	dynamic compWebsite;
-	late String company;
-	late String newregi;
-	late int status;
-	late int points;
-	late int views;
-	late String emailvarify;
-	late String vemailcode;
-	late String vphonecode;
+	String? company = '';
+	String? newregi = '';
+	int? status = 0;
+	int? points = 0;
+	int? views = 0;
+	String? emailvarify = '';
+	String? vemailcode = '';
+	String? vphonecode = '';
 	dynamic stepno;
-	late String token;
+	String? token = '';
 	dynamic approve;
-	@JSONField(name: "verify_email")
+	@JSONField(name: 'verify_email')
 	dynamic verifyEmail;
-	late String blockeduser;
-	late String showindirctry;
+	String? blockeduser = '';
+	String? showindirctry = '';
 	dynamic blockdate;
-	late String plan;
-	late String blocktype;
-	late int paidno;
-	late String isapprove;
-	late String passtoken;
-	dynamic tokendate;
-	late String urlcomponent;
-	dynamic aboutcompany;
-	dynamic fblink;
-	dynamic instalink;
-	dynamic twiterlink;
-	dynamic lilink;
-	dynamic youlink;
-	dynamic wplink;
-	dynamic telink;
-	late String proceedstatus;
-	late String device;
-	late String platform;
-	dynamic proceeddate;
-	@JSONField(name: "is_approved")
-	late int isApproved;
-	late String countrycode1;
-	dynamic lat;
-	dynamic lng;
-	@JSONField(name: "userimage_url")
-	late String userimageUrl;
+	String? plan = '';
+	String? blocktype = '';
+	int? paidno = 0;
+	String? isapprove = '';
+	String? passtoken = '';
+	String? tokendate = '';
+	String? urlcomponent = '';
+	String? aboutcompany = '';
+	String? fblink = '';
+	String? instalink = '';
+	String? twiterlink = '';
+	String? lilink = '';
+	String? youlink = '';
+	String? wplink = '';
+	String? telink = '';
+	String? proceedstatus = '';
+	String? device = '';
+	String? platform = '';
+	String? proceeddate = '';
+	@JSONField(name: 'is_approved')
+	int? isApproved = 0;
+	String? countrycode1 = '';
+	String? lat = '';
+	String? lng = '';
+	@JSONField(name: 'userimage_url')
+	String? userimageUrl = '';
 
 	GetViewsData();
 

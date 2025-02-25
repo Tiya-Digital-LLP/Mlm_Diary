@@ -66,9 +66,9 @@ class UserProfileController extends GetxController {
 
           var getViewsEntity = GetViewsEntity.fromJson(data);
 
-          if (getViewsEntity.data.isNotEmpty) {
+          if (getViewsEntity.data!.isNotEmpty) {
             // Avoid duplicate entries
-            final newData = getViewsEntity.data
+            final newData = getViewsEntity.data!
                 .where((newItem) =>
                     !views.any((existingItem) => existingItem.id == newItem.id))
                 .toList();

@@ -85,9 +85,24 @@ class _CustomSearchInputState extends State<CustomSearchAddCompany> {
             ),
             onSubmitted: widget.onSubmitted,
             onChanged: (value) {
-              widget.onChanged(value);
+              String formattedText = value
+                  .split(' ')
+                  .map((word) => word.isNotEmpty
+                      ? word[0].toUpperCase() + word.substring(1)
+                      : '')
+                  .join(' ');
+
+              if (formattedText != value) {
+                widget.controller.value = TextEditingValue(
+                  text: formattedText,
+                  selection:
+                      TextSelection.collapsed(offset: formattedText.length),
+                );
+              }
+
+              widget.onChanged(formattedText);
               setState(() {
-                showSuggestions = value.isNotEmpty;
+                showSuggestions = formattedText.isNotEmpty;
               });
             },
           ),

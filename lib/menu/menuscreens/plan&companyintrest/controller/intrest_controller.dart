@@ -329,17 +329,14 @@ class IntrestController extends GetxController {
   }
 
   void togglePlanSelected(int index) {
-    // Toggle the selection in isPlanSelectedList
     isPlanSelectedList[index] = !isPlanSelectedList[index];
 
-    // Update the selectedCountPlan based on the selection
     if (isPlanSelectedList[index]) {
       selectedCountPlan++;
     } else {
       selectedCountPlan--;
     }
 
-    // Update the selected field of the plan in planList
     planList[index].selected = isPlanSelectedList[index];
   }
 
