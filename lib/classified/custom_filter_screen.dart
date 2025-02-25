@@ -157,7 +157,7 @@ class _MyWidgetState extends State<ClassifiedBottomSheetContent> {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          controller.getClassified(1);
+                          controller.getTestClassified(1);
                           Get.back();
                         },
                         style: ElevatedButton.styleFrom(

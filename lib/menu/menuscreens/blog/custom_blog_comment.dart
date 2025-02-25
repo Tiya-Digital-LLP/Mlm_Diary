@@ -1,9 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mlmdiary/classified/custom/input_widget.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/generated/get_blog_comment_entity.dart';
@@ -12,6 +12,7 @@ import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_pr
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
+import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
@@ -41,6 +42,8 @@ class _CommentDialogState extends State<CommentDialogBlog> {
   bool isLimitExceeded = false;
   static const int maxCharacters = 500;
 
+  final FocusNode _focusNode = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -50,6 +53,27 @@ class _CommentDialogState extends State<CommentDialogBlog> {
       _getUserId();
     });
     _scrollController.addListener(_scrollListener);
+  }
+
+  void _openKeyboard(
+      {bool isEditing = false,
+      int? commentId,
+      String? existingText,
+      String? username}) {
+    controller.commment.value.text = existingText ?? '';
+
+    if (isEditing) {
+      controller.editingCommentId.value = commentId ?? 0;
+      controller.replyCommentId.value = 0;
+    } else {
+      controller.replyCommentId.value = commentId ?? 0;
+      controller.editingCommentId.value = 0;
+    }
+
+    controller.hintText.value =
+        username != null ? '@$username' : 'Write your answer here';
+
+    FocusScope.of(context).requestFocus(_focusNode);
   }
 
   Future<void> _refreshData() async {
@@ -102,228 +126,146 @@ class _CommentDialogState extends State<CommentDialogBlog> {
           ),
         ),
       ),
-      body: RefreshIndicator(
-        backgroundColor: AppColors.primaryColor,
-        color: AppColors.white,
-        onRefresh: _refreshData,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Obx(
-            () {
-              if (controller.isLoading.value &&
-                  controller.getCommentList.isEmpty) {
-                return const SizedBox();
+      body: Column(
+        children: [
+          Expanded(
+            child: RefreshIndicator(
+              backgroundColor: AppColors.primaryColor,
+              color: AppColors.white,
+              onRefresh: _refreshData,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Obx(
+                  () {
+                    if (controller.isLoading.value &&
+                        controller.getCommentList.isEmpty) {
+                      return const SizedBox();
+                    }
+
+                    if (controller.getCommentList.isEmpty) {
+                      return Center(
+                        child: Text(
+                          'No Any Comment Found',
+                          style: textStyleW700(
+                              size.width * 0.030, AppColors.blackText),
+                        ),
+                      );
+                    }
+
+                    return ListView.builder(
+                      itemCount: controller.getCommentList.length +
+                          (controller.isLoading.value ? 1 : 0),
+                      controller: _scrollController,
+                      itemBuilder: (context, index) {
+                        if (index < controller.getCommentList.length) {
+                          final comment = controller.getCommentList[index];
+
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 8,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _buildComment(comment, size),
+                                if (comment.commentsReplays != null &&
+                                    comment.commentsReplays!.isNotEmpty)
+                                  Column(
+                                    children:
+                                        comment.commentsReplays!.map((reply) {
+                                      return Column(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 32, top: 8),
+                                            child:
+                                                _buildSingleReply(reply, size),
+                                          ),
+                                          if (reply.commentsReplays != null &&
+                                              reply.commentsReplays!.isNotEmpty)
+                                            Column(
+                                              children: reply.commentsReplays!
+                                                  .map((replyToReply) {
+                                                return Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 48, top: 8),
+                                                  child: _buildNestedReply(
+                                                      replyToReply, size),
+                                                );
+                                              }).toList(),
+                                            ),
+                                        ],
+                                      );
+                                    }).toList(),
+                                  ),
+                              ],
+                            ),
+                          );
+                        } else {
+                          return Center(
+                              child: CustomLottieAnimation(
+                            child: Lottie.asset(
+                              Assets.lottieLottie,
+                            ),
+                          ));
+                        }
+                      },
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+          CommentInputWidget(
+            maxCharacters: maxCharacters,
+            textController: controller.commment.value,
+            onSend: () async {
+              if (controller.commment.value.text.isEmpty) {
+                showToasterrorborder('Please enter your reply', context);
+                return;
               }
 
-              if (controller.getCommentList.isEmpty) {
-                return Center(
-                  child: Text(
-                    'No Any Comment Found',
-                    style:
-                        textStyleW700(size.width * 0.030, AppColors.blackText),
-                  ),
+              controller.isLoading.value = true;
+
+              if (controller.editingCommentId.value > 0) {
+                // Editing existing comment
+                await controller.editComment(
+                  widget.blogId,
+                  controller.editingCommentId.value,
+                  controller.commment.value.text,
+                  'blog',
+                  context,
+                );
+              } else if (controller.replyCommentId.value > 0) {
+                // Adding a new reply
+                await controller.addReplyBlogComment(
+                  widget.blogId,
+                  controller.replyCommentId.value,
+                  context,
+                );
+              } else if (controller.replyCommentId.value == 0) {
+                // Adding a new comment
+                await controller.addReplyBlogComment(
+                  widget.blogId,
+                  0,
+                  context,
                 );
               }
+              controller.isLoading.value = false;
+              controller.commment.value.clear();
+              controller.editingCommentId.value = 0; // Reset editing mode
+              controller.replyCommentId.value = 0; // Reset reply mode
+              isLimitExceeded = false;
 
-              return ListView.builder(
-                itemCount: controller.getCommentList.length +
-                    (controller.isLoading.value ? 1 : 0),
-                controller: _scrollController,
-                itemBuilder: (context, index) {
-                  if (index < controller.getCommentList.length) {
-                    final comment = controller.getCommentList[index];
-
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildComment(comment, size),
-                          if (comment.commentsReplays != null &&
-                              comment.commentsReplays!.isNotEmpty)
-                            Column(
-                              children: comment.commentsReplays!.map((reply) {
-                                return Column(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 32, top: 8),
-                                      child: _buildSingleReply(reply, size),
-                                    ),
-                                    if (reply.commentsReplays != null &&
-                                        reply.commentsReplays!.isNotEmpty)
-                                      Column(
-                                        children: reply.commentsReplays!
-                                            .map((replyToReply) {
-                                          return Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 48, top: 8),
-                                            child: _buildNestedReply(
-                                                replyToReply, size),
-                                          );
-                                        }).toList(),
-                                      ),
-                                  ],
-                                );
-                              }).toList(),
-                            ),
-                        ],
-                      ),
-                    );
-                  } else {
-                    return Center(
-                        child: CustomLottieAnimation(
-                      child: Lottie.asset(
-                        Assets.lottieLottie,
-                      ),
-                    ));
-                  }
-                },
-              );
+              await _refreshData();
             },
+            isLoading: controller.isLoading,
+            hintText: controller.hintText,
+            focusNode: _focusNode,
           ),
-        ),
-      ),
-      bottomSheet: Container(
-        height: 160,
-        color: AppColors.white,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 8,
-          ),
-          child: Column(
-            children: [
-              Align(
-                alignment: Alignment.centerRight,
-                child: Obx(
-                  () => Text(
-                    '${maxCharacters - controller.commment.value.text.length} characters left',
-                    style: const TextStyle(
-                      color: Colors.grey,
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.searchbar,
-                          borderRadius: BorderRadius.circular(30),
-                          border: Border.all(
-                            color: isLimitExceeded
-                                ? Colors.red
-                                : Colors.transparent,
-                            width: 2.0,
-                          ),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16.0,
-                            vertical: 10,
-                          ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 16),
-                                  child: Obx(
-                                    () => TextField(
-                                      controller: controller.commment.value,
-                                      maxLines: 5,
-                                      maxLength: maxCharacters,
-                                      decoration: const InputDecoration(
-                                        hintText: 'Write your answer here',
-                                        border: InputBorder.none,
-                                        counterText:
-                                            '', // Hide the built-in counter
-                                      ),
-                                      onChanged: (text) {
-                                        controller.commment.refresh();
-                                        if (maxCharacters - text.length == 0) {
-                                          if (!isLimitExceeded) {
-                                            showToasterrorborder(
-                                                "Character limit exceed",
-                                                context);
-                                          }
-                                          setState(() {
-                                            isLimitExceeded = true;
-                                          });
-                                        } else {
-                                          setState(() {
-                                            isLimitExceeded = false;
-                                          });
-                                        }
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: GestureDetector(
-                                  onTap: () async {
-                                    if (controller
-                                        .commment.value.text.isEmpty) {
-                                      showToasterrorborder(
-                                        "Please enter your reply",
-                                        context,
-                                      );
-                                      return;
-                                    }
-
-                                    await controller.addReplyBlogComment(
-                                        widget.blogId, 0, context);
-                                    controller.commment.value.clear();
-                                    setState(() {
-                                      isLimitExceeded = false;
-                                    });
-                                  },
-                                  child: Obx(() => Container(
-                                        width: 40,
-                                        height: 40,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: AppColors.primaryColor,
-                                          boxShadow: [
-                                            customBoxShadow(),
-                                          ],
-                                        ),
-                                        child: controller.isLoading.value
-                                            ? const CircularProgressIndicator(
-                                                valueColor:
-                                                    AlwaysStoppedAnimation<
-                                                        Color>(
-                                                  Colors.white,
-                                                ),
-                                              )
-                                            : const Icon(
-                                                Icons.send_rounded,
-                                                color: Colors.white,
-                                                size: 22,
-                                              ),
-                                      )),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
+        ],
       ),
     );
   }
@@ -332,9 +274,7 @@ class _CommentDialogState extends State<CommentDialogBlog> {
     currentUserID = currentUserID ?? 0;
 
     bool isCurrentNewsUserComment = comment.userid == currentUserID;
-    if (kDebugMode) {
-      print('Current Blog User ID: $currentUserID');
-    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Column(
@@ -395,16 +335,11 @@ class _CommentDialogState extends State<CommentDialogBlog> {
                     Row(
                       children: [
                         InkWell(
-                          onTap: () {
-                            showModalBottomSheet(
-                              context: context,
-                              builder: (context) => _buildReplyBottomSheet(
-                                context,
-                                comment.id!,
-                                size,
-                              ),
-                            );
-                          },
+                          onTap: () => _openKeyboard(
+                            isEditing: false,
+                            commentId: comment.id,
+                            username: comment.name,
+                          ),
                           child: Text(
                             'Reply',
                             style: TextStyle(
@@ -417,7 +352,11 @@ class _CommentDialogState extends State<CommentDialogBlog> {
                         if (isCurrentNewsUserComment)
                           TextButton(
                             onPressed: () {
-                              _showEditCommentDialog(comment);
+                              _openKeyboard(
+                                isEditing: true,
+                                commentId: comment.id,
+                                existingText: comment.comment,
+                              );
                             },
                             child: Text(
                               'Edit',
@@ -457,519 +396,123 @@ class _CommentDialogState extends State<CommentDialogBlog> {
     );
   }
 
-  void _showEditDialog(dynamic data, bool isReply) {
-    Rx<TextEditingController> editController =
-        TextEditingController(text: data.comment ?? '').obs;
-
-    editController.value.addListener(() {
-      // Update Rx controller with the latest value
-      controller.commment.value.text = editController.value.text;
-    });
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) {
-        return FractionallySizedBox(
-          heightFactor: 0.2,
-          child: Container(
-            decoration: BoxDecoration(
-              color: AppColors.searchbar,
-              borderRadius: BorderRadius.circular(30),
-              border: Border.all(
-                color: isLimitExceeded ? Colors.red : Colors.transparent,
-                width: 2.0,
-              ),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            child: Column(
-              children: [
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Obx(
-                    () => Text(
-                      '${maxCharacters - editController.value.text.length} characters left',
-                      style: const TextStyle(
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Obx(
-                            () => TextField(
-                              controller: editController.value,
-                              maxLines: 5,
-                              maxLength: maxCharacters,
-                              decoration: const InputDecoration(
-                                hintText: 'Edit your comment here',
-                                border: InputBorder.none,
-                              ),
-                              onChanged: (text) {
-                                editController.refresh();
-                                if (maxCharacters - text.length == 0) {
-                                  if (!isLimitExceeded) {
-                                    showToasterrorborder(
-                                        "Character limit exceed", context);
-                                  }
-                                  setState(() {
-                                    isLimitExceeded = true;
-                                  });
-                                } else {
-                                  setState(() {
-                                    isLimitExceeded = false;
-                                  });
-                                }
-                              },
-                            ),
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () async {
-                          String editedComment = editController.value.text;
-                          Navigator.of(context).pop();
-                          if (isReply) {
-                            await controller.editComment(widget.blogId,
-                                data.id ?? 0, editedComment, 'blog', context);
-                          } else {
-                            await controller.editComment(widget.blogId,
-                                data.id ?? 0, editedComment, 'blog', context);
-                          }
-                          await _refreshData();
-                        },
-                        child: Obx(() => Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: AppColors.primaryColor,
-                                boxShadow: [
-                                  customBoxShadow(),
-                                ],
-                              ),
-                              child: controller.isLoading.value
-                                  ? const CircularProgressIndicator(
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                        Colors.white,
-                                      ),
-                                    )
-                                  : const Icon(
-                                      Icons.send_rounded,
-                                      color: Colors.white,
-                                      size: 22,
-                                    ),
-                            )),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  // Example usage:
-  void _showEditCommentDialog(GetBlogCommentData comment) {
-    _showEditDialog(comment, false);
-  }
-
-  void _showEditReplyDialog(GetBlogCommentDataCommentsReplays reply) {
-    _showEditDialog(reply, true);
-  }
-
-  void _showEditReplytoReplyDialog(
-      GetBlogCommentDataCommentsReplaysCommentsReplays reply) {
-    _showEditDialog(reply, true);
-  }
-
   Widget _buildSingleReply(
     GetBlogCommentDataCommentsReplays reply,
     Size size,
   ) {
-    return GetBuilder<ManageBlogController>(
-      builder: (controller) {
-        currentUserID = currentUserID ?? 0;
+    return GetBuilder<ManageBlogController>(builder: (controller) {
+      currentUserID = currentUserID ?? 0;
 
-        bool isCurrentUserReply = reply.userid == currentUserID;
+      bool isCurrentUserReply = reply.userid == currentUserID;
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              InkWell(
-                onTap: () async {
-                  Get.toNamed(Routes.userprofilescreen, arguments: {
-                    'user_id': reply.userid ?? 0,
-                  });
-                  await userProfileController.fetchUserAllPost(
-                    1,
-                    reply.userid.toString(),
-                  );
-                },
-                child: ClipOval(
-                  child: CachedNetworkImage(
-                    imageUrl: reply.userimage ?? Assets.imagesAdminlogo,
-                    fit: BoxFit.cover,
-                    height: 50,
-                    width: 50,
-                    errorWidget: (context, url, error) => Image.asset(
-                      Assets.imagesAdminlogo,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      reply.name ?? '',
-                      style: TextStyle(
-                        fontSize: size.width * 0.035,
-                        color: AppColors.blackText,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    Text(
-                      postTimeFormatter.formatPostTime(reply.createdate ?? ''),
-                      style: TextStyle(
-                        fontSize: size.width * 0.022,
-                        color: AppColors.grey,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    _buildHtmlContent(reply.comment ?? '', size),
-                    const SizedBox(height: 4),
-                    InkWell(
-                      onTap: () {
-                        showModalBottomSheet(
-                          context: context,
-                          builder: (context) => _buildReplyBottomSheet(
-                            context,
-                            reply.id!,
-                            size,
-                          ),
-                        );
-                      },
-                      child: Row(
-                        children: [
-                          Text(
-                            'Reply',
-                            style: TextStyle(
-                              fontSize: size.width * 0.028,
-                              color: Colors.blueAccent,
-                            ),
-                          ),
-                          if (isCurrentUserReply)
-                            TextButton(
-                              onPressed: () {
-                                _showEditReplyDialog(reply);
-                              },
-                              child: Text(
-                                'Edit',
-                                style: TextStyle(
-                                  fontSize: size.width * 0.028,
-                                  color: Colors.green,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-                          if (isCurrentUserReply)
-                            TextButton(
-                              onPressed: () =>
-                                  LogoutDialog.show(context, () async {
-                                await controller.deleteComment(
-                                    widget.blogId, reply.id ?? 0, context);
-                                await _refreshData();
-                              }),
-                              child: Text(
-                                'Delete',
-                                style: TextStyle(
-                                  fontSize: size.width * 0.028,
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildNestedReply(
-    GetBlogCommentDataCommentsReplaysCommentsReplays reply,
-    Size size,
-  ) {
-    return GetBuilder<ManageBlogController>(
-      builder: (controller) {
-        currentUserID = currentUserID ?? 0; // Use the stored user ID
-
-        bool isCurrentUserReply = reply.userid == currentUserID;
-
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              InkWell(
-                onTap: () async {
-                  Get.toNamed(Routes.userprofilescreen, arguments: {
-                    'user_id': reply.userid ?? 0,
-                  });
-                  await userProfileController.fetchUserAllPost(
-                    1,
-                    reply.userid.toString(),
-                  );
-                },
-                child: ClipOval(
-                  child: CachedNetworkImage(
-                    imageUrl: reply.userimage ?? Assets.imagesAdminlogo,
-                    fit: BoxFit.cover,
-                    height: 50,
-                    width: 50,
-                    errorWidget: (context, url, error) => Image.asset(
-                      Assets.imagesAdminlogo,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      reply.name ?? '',
-                      style: TextStyle(
-                        fontSize: size.width * 0.035,
-                        color: AppColors.blackText,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    Text(
-                      postTimeFormatter.formatPostTime(reply.createdate ?? ''),
-                      style: TextStyle(
-                        fontSize: size.width * 0.022,
-                        color: AppColors.grey,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    _buildHtmlContent(reply.comment ?? '', size),
-                    const SizedBox(height: 4),
-                    InkWell(
-                      onTap: () {
-                        showModalBottomSheet(
-                          context: context,
-                          builder: (context) => _buildReplyBottomSheet(
-                            context,
-                            reply.id!,
-                            size,
-                          ),
-                        );
-                      },
-                      child: Row(
-                        children: [
-                          Text(
-                            'Reply',
-                            style: TextStyle(
-                              fontSize: size.width * 0.028,
-                              color: Colors.blueAccent,
-                            ),
-                          ),
-                          if (isCurrentUserReply)
-                            TextButton(
-                              onPressed: () {
-                                _showEditReplytoReplyDialog(reply);
-                              },
-                              child: Text(
-                                'Edit',
-                                style: TextStyle(
-                                  fontSize: size.width * 0.028,
-                                  color: Colors.green,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-                          if (isCurrentUserReply)
-                            TextButton(
-                              onPressed: () =>
-                                  LogoutDialog.show(context, () async {
-                                await controller.deleteComment(
-                                    widget.blogId, reply.id ?? 0, context);
-                                await _refreshData();
-                              }),
-                              child: Text(
-                                'Delete',
-                                style: TextStyle(
-                                  fontSize: size.width * 0.028,
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildReplyBottomSheet(
-    BuildContext context,
-    int commentId,
-    Size size,
-  ) {
-    return FractionallySizedBox(
-      heightFactor: 0.3,
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.searchbar,
-          borderRadius: BorderRadius.circular(30),
-          border: Border.all(
-            color: isLimitExceeded ? Colors.red : Colors.transparent,
-            width: 2.0,
-          ),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        child: Column(
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Align(
-              alignment: Alignment.centerRight,
-              child: Obx(
-                () => Text(
-                  '${maxCharacters - controller.commment.value.text.length} characters left',
-                  style: const TextStyle(
-                    color: Colors.grey,
+            InkWell(
+              onTap: () async {
+                Get.toNamed(Routes.userprofilescreen, arguments: {
+                  'user_id': reply.userid ?? 0,
+                });
+                await userProfileController.fetchUserAllPost(
+                  1,
+                  reply.userid.toString(),
+                );
+              },
+              child: ClipOval(
+                child: CachedNetworkImage(
+                  imageUrl: reply.userimage ?? Assets.imagesAdminlogo,
+                  fit: BoxFit.cover,
+                  height: 50,
+                  width: 50,
+                  errorWidget: (context, url, error) => Image.asset(
+                    Assets.imagesAdminlogo,
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
             ),
+            const SizedBox(width: 10),
             Expanded(
-              child: Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: AppColors.searchbar,
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0,
-                          vertical: 10,
+                  Text(
+                    reply.name ?? '',
+                    style: TextStyle(
+                      fontSize: size.width * 0.035,
+                      color: AppColors.blackText,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  Text(
+                    postTimeFormatter.formatPostTime(reply.createdate ?? ''),
+                    style: TextStyle(
+                      fontSize: size.width * 0.022,
+                      color: AppColors.grey,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  4.sbh,
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: _buildHtmlContent(reply.comment ?? '', size),
+                  ),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Row(
+                      children: [
+                        InkWell(
+                          onTap: () => _openKeyboard(
+                            isEditing: false,
+                            commentId: reply.id,
+                            username: reply.name,
+                          ),
+                          child: Text(
+                            'Reply',
+                            style: TextStyle(
+                              fontSize: size.width * 0.028,
+                              color: Colors.blueAccent,
+                            ),
+                          ),
                         ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                child: Obx(
-                                  () => TextField(
-                                    controller: controller.commment.value,
-                                    maxLines: 5,
-                                    maxLength: maxCharacters,
-                                    decoration: const InputDecoration(
-                                      hintText: 'Write your answer here',
-                                      border: InputBorder.none,
-                                    ),
-                                    onChanged: (text) {
-                                      controller.commment.refresh();
-                                      if (maxCharacters - text.length == 0) {
-                                        if (!isLimitExceeded) {
-                                          showToasterrorborder(
-                                              "Character limit exceed",
-                                              context);
-                                        }
-                                        setState(() {
-                                          isLimitExceeded = true;
-                                        });
-                                      } else {
-                                        setState(() {
-                                          isLimitExceeded = false;
-                                        });
-                                      }
-                                    },
-                                  ),
-                                ),
+                        if (isCurrentUserReply)
+                          TextButton(
+                            onPressed: () {
+                              _openKeyboard(
+                                isEditing: true,
+                                commentId: reply.id,
+                                existingText: reply.comment,
+                              );
+                            },
+                            child: Text(
+                              'Edit',
+                              style: TextStyle(
+                                fontSize: size.width * 0.028,
+                                color: Colors.green,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: GestureDetector(
-                                onTap: () async {
-                                  if (controller.commment.value.text.isEmpty) {
-                                    showToasterrorborder(
-                                      "Please enter your reply",
-                                      context,
-                                    );
-                                    return;
-                                  }
-
-                                  await controller.addReplyBlogComment(
-                                      widget.blogId, commentId, context);
-                                  controller.commment.value.clear();
-                                  Get.back();
-                                },
-                                child: Obx(() => Container(
-                                      width: 40,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: AppColors.primaryColor,
-                                        boxShadow: [
-                                          customBoxShadow(),
-                                        ],
-                                      ),
-                                      child: controller.isLoading.value
-                                          ? const CircularProgressIndicator(
-                                              valueColor:
-                                                  AlwaysStoppedAnimation<Color>(
-                                                Colors.white,
-                                              ),
-                                            )
-                                          : const Icon(
-                                              Icons.send_rounded,
-                                              color: Colors.white,
-                                              size: 22,
-                                            ),
-                                    )),
+                          ),
+                        if (isCurrentUserReply)
+                          TextButton(
+                            onPressed: () =>
+                                LogoutDialog.show(context, () async {
+                              await controller.deleteComment(
+                                  widget.blogId, reply.id ?? 0, context);
+                              await _refreshData();
+                            }),
+                            child: Text(
+                              'Delete',
+                              style: TextStyle(
+                                fontSize: size.width * 0.028,
+                                color: Colors.red,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
-                          ],
-                        ),
-                      ),
+                          ),
+                      ],
                     ),
                   ),
                 ],
@@ -977,8 +520,135 @@ class _CommentDialogState extends State<CommentDialogBlog> {
             ),
           ],
         ),
-      ),
-    );
+      );
+    });
+  }
+
+  Widget _buildNestedReply(
+    GetBlogCommentDataCommentsReplaysCommentsReplays reply,
+    Size size,
+  ) {
+    return GetBuilder<ManageBlogController>(builder: (controller) {
+      currentUserID = currentUserID ?? 0;
+      bool isCurrentUserReply = reply.userid == currentUserID;
+
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            InkWell(
+              onTap: () async {
+                Get.toNamed(Routes.userprofilescreen, arguments: {
+                  'user_id': reply.userid ?? 0,
+                });
+                await userProfileController.fetchUserAllPost(
+                  1,
+                  reply.userid.toString(),
+                );
+              },
+              child: ClipOval(
+                child: CachedNetworkImage(
+                  imageUrl: reply.userimage ?? Assets.imagesAdminlogo,
+                  fit: BoxFit.cover,
+                  height: 50,
+                  width: 50,
+                  errorWidget: (context, url, error) => Image.asset(
+                    Assets.imagesAdminlogo,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    reply.name ?? '',
+                    style: TextStyle(
+                      fontSize: size.width * 0.035,
+                      color: AppColors.blackText,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  Text(
+                    postTimeFormatter.formatPostTime(reply.createdate ?? ''),
+                    style: TextStyle(
+                      fontSize: size.width * 0.022,
+                      color: AppColors.grey,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  4.sbh,
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: _buildHtmlContent(reply.comment ?? '', size),
+                  ),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Row(
+                      children: [
+                        InkWell(
+                          onTap: () => _openKeyboard(
+                            isEditing: false,
+                            commentId: reply.id,
+                            username: reply.name,
+                          ),
+                          child: Text(
+                            'Reply',
+                            style: TextStyle(
+                              fontSize: size.width * 0.028,
+                              color: Colors.blueAccent,
+                            ),
+                          ),
+                        ),
+                        if (isCurrentUserReply)
+                          TextButton(
+                            onPressed: () {
+                              _openKeyboard(
+                                isEditing: true,
+                                commentId: reply.id,
+                                existingText: reply.comment,
+                              );
+                            },
+                            child: Text(
+                              'Edit',
+                              style: TextStyle(
+                                fontSize: size.width * 0.028,
+                                color: Colors.green,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        if (isCurrentUserReply)
+                          TextButton(
+                            onPressed: () =>
+                                LogoutDialog.show(context, () async {
+                              await controller.deleteComment(
+                                  widget.blogId, reply.id ?? 0, context);
+                              await _refreshData();
+                            }),
+                            child: Text(
+                              'Delete',
+                              style: TextStyle(
+                                fontSize: size.width * 0.028,
+                                color: Colors.red,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    });
   }
 
   Widget _buildHtmlContent(String htmlContent, Size size) {

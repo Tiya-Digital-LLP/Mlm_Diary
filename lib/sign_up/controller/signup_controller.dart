@@ -399,6 +399,7 @@ class SignupController extends GetxController {
           final resentOtpEntity = ResentOtpRegisterEntity.fromJson(jsonBody);
 
           if (jsonBody['status'] == 1) {
+            mobileOtp.value.clear();
             if (kDebugMode) {
               print("OTP verification successful: ${resentOtpEntity.message}");
             }
@@ -577,6 +578,7 @@ class SignupController extends GetxController {
           final emailOtpEntity = EmailOtpEntity.fromJson(jsonBody);
 
           if (emailOtpEntity.status == 1) {
+            emailOtp.value.clear();
             showToastverifedborder(
                 'Email OTP sent successfully for email', context);
             emailOtpSend.value = true;
@@ -750,7 +752,7 @@ class SignupController extends GetxController {
             emailReadOnly.value = true;
             showPasswordField.value = true;
           } else {
-            showToastverifedborder('${jsonBody['message']}', context);
+            showToasterrorborder('${jsonBody['message']}', context);
             if (kDebugMode) {
               print("Failed to verify email: ${emailVerifyEntity.message}");
             }

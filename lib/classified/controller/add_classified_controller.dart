@@ -79,6 +79,11 @@ class ClasifiedController extends GetxController {
   RxList<GetCommentClassifiedData> getCommentList =
       <GetCommentClassifiedData>[].obs;
 
+  var replyCommentId = 0.obs;
+  final editingCommentId = 0.obs;
+
+  RxString hintText = "Write your answer here".obs;
+
 // FIELDS ERROR
 
   RxBool titleError = false.obs;
@@ -137,13 +142,13 @@ class ClasifiedController extends GetxController {
   void onInit() {
     super.onInit();
     fetchCategoryList();
-    getClassified(1);
+    getTestClassified(1);
     scrollController.addListener(() {
       if (scrollController.position.pixels ==
               scrollController.position.maxScrollExtent &&
           !isEndOfData.value) {
         int nextPage = (classifiedList.length ~/ 10) + 1;
-        getClassified(
+        getTestClassified(
           nextPage,
         );
       }
@@ -231,7 +236,7 @@ class ClasifiedController extends GetxController {
     isSubCategorySelectedList.fillRange(
         0, isSubCategorySelectedList.length, false);
 
-    getClassified(1);
+    getTestClassified(1);
   }
 
   Future<void> fetchClassifiedDetail(int classfiedId, context) async {
@@ -476,87 +481,6 @@ class ClasifiedController extends GetxController {
 
     if (subCategoryError.value) {
       isSubCategoryTyping.value = true;
-    }
-  }
-
-  Future<void> getClassified(
-    int page,
-  ) async {
-    isLoading(true);
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? apiToken = prefs.getString(Constants.accessToken);
-    String device = '';
-    if (Platform.isAndroid) {
-      device = 'android';
-    } else if (Platform.isIOS) {
-      device = 'ios';
-    }
-    if (kDebugMode) {
-      print('Device Name: $device');
-    }
-
-    try {
-      var connectivityResult = await Connectivity().checkConnectivity();
-      // ignore: unrelated_type_equality_checks
-      if (connectivityResult != ConnectivityResult.none) {
-        var uri = Uri.parse('${Constants.baseUrl}${Constants.getclassified}');
-        var request = http.MultipartRequest('POST', uri);
-
-        request.fields['api_token'] = apiToken ?? '';
-        request.fields['device'] = device;
-        request.fields['page'] = page.toString();
-        request.fields['search'] = search.value.text;
-        request.fields['category'] = selectedCategoryId.value.toString();
-        request.fields['subcategory'] = selectedSubCategoryId.value.toString();
-
-        if (kDebugMode) {
-          print('Request Fields: ${request.fields}');
-        }
-
-        final streamedResponse = await request.send();
-        final response = await http.Response.fromStream(streamedResponse);
-
-        if (response.statusCode == 200) {
-          var data = jsonDecode(response.body);
-          var getClassifiedEntity = GetClassifiedEntity.fromJson(data);
-
-          if (kDebugMode) {
-            print('getClassified Data: ${response.body}');
-          }
-
-          if (kDebugMode) {
-            print('getClassified Data: ${getClassifiedEntity.data}');
-          }
-
-          if (getClassifiedEntity.data != null &&
-              getClassifiedEntity.data!.isNotEmpty) {
-            if (page == 1) {
-              classifiedList.value = getClassifiedEntity.data!;
-            } else {
-              classifiedList.addAll(getClassifiedEntity.data!);
-            }
-            isEndOfData(false);
-          } else {
-            if (page == 1) {
-              classifiedList.clear();
-            }
-            isEndOfData(true);
-          }
-        } else {
-          if (kDebugMode) {
-            print("Response body: ${response.body}");
-          }
-        }
-      } else {
-        //
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error: $e');
-      }
-    } finally {
-      isLoading(false);
     }
   }
 
@@ -1242,6 +1166,10 @@ class ClasifiedController extends GetxController {
         request.fields['comment_id'] = commentId.toString();
         request.fields['comment'] = commment.value.text;
 
+        if (kDebugMode) {
+          print('Request fields: ${request.fields}');
+        }
+
         final streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);
 
@@ -1338,6 +1266,10 @@ class ClasifiedController extends GetxController {
         request.fields['comment_id'] = commentId.toString();
         request.fields['type'] = type;
         request.fields['comment'] = commment.value.text;
+
+        if (kDebugMode) {
+          print('Request fields editComment: ${request.fields}');
+        }
 
         final streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);

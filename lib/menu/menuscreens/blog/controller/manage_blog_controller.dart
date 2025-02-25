@@ -96,6 +96,11 @@ class ManageBlogController extends GetxController {
   var isEndOfBlogLikeListData = false.obs;
   var isEndOfBlogViewListData = false.obs;
 
+  var replyCommentId = 0.obs;
+  final editingCommentId = 0.obs;
+
+  RxString hintText = "Write your answer here".obs;
+
   //scrollercontroller
   final ScrollController scrollController = ScrollController();
 
@@ -1313,6 +1318,10 @@ class ManageBlogController extends GetxController {
         request.fields['comment_id'] = commentId.toString();
         request.fields['comment'] = commment.value.text;
 
+        if (kDebugMode) {
+          print('addReplyBlogComment: ${request.fields}');
+        }
+
         final streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);
 
@@ -1412,6 +1421,10 @@ class ManageBlogController extends GetxController {
         request.fields['comment_id'] = commentId.toString();
         request.fields['type'] = type;
         request.fields['comment'] = commment.value.text;
+
+        if (kDebugMode) {
+          print('editComment: ${request.fields}');
+        }
 
         final streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);

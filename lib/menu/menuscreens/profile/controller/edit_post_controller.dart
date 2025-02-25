@@ -76,6 +76,11 @@ class EditPostController extends GetxController {
   var isEndOfPostLikeListData = false.obs;
   var isEndOfPostViewListData = false.obs;
 
+  var replyCommentId = 0.obs;
+  final editingCommentId = 0.obs;
+
+  RxString hintText = "Write your answer here".obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -1289,6 +1294,10 @@ class EditPostController extends GetxController {
         request.fields['comment_id'] = commentId.toString();
         request.fields['comment'] = commment.value.text;
 
+        if (kDebugMode) {
+          print('addReplyPostComment ${request.fields}');
+        }
+
         final streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);
 
@@ -1388,6 +1397,10 @@ class EditPostController extends GetxController {
         request.fields['comment_id'] = commentId.toString();
         request.fields['type'] = type;
         request.fields['comment'] = commment.value.text;
+
+        if (kDebugMode) {
+          print('editComment ${request.fields}');
+        }
 
         final streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);

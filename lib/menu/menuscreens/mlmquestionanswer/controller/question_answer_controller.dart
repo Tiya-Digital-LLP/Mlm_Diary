@@ -30,7 +30,6 @@ import 'package:toastification/toastification.dart';
 
 class QuestionAnswerController extends GetxController {
   Rx<TextEditingController> title = TextEditingController().obs;
-  Rx<TextEditingController> answer = TextEditingController().obs;
 
   //category
   RxList<GetCategoryCategory> categorylist = RxList<GetCategoryCategory>();
@@ -57,6 +56,9 @@ class QuestionAnswerController extends GetxController {
   var isEndOfQuestionAnswerViewListData = false.obs;
 
   final search = TextEditingController();
+
+  var replyCommentId = 0.obs;
+  final editingCommentId = 0.obs;
 
   //error
   RxBool titleError = false.obs;
@@ -94,6 +96,8 @@ class QuestionAnswerController extends GetxController {
 
   var selectedCategoryId = 0.obs;
   var selectedSubCategoryId = 0.obs;
+
+  RxString hintText = "Write your answer here".obs;
 
   @override
   void onInit() {
@@ -289,8 +293,6 @@ class QuestionAnswerController extends GetxController {
   }
 
   Future<void> getAnswers(int page, int answerId) async {
-    answerList.clear();
-
     isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -519,6 +521,10 @@ class QuestionAnswerController extends GetxController {
         request.fields['type'] = type;
         request.fields['comment'] = commment.value.text;
 
+        if (kDebugMode) {
+          print('addReplyAnswerComment: ${request.fields}');
+        }
+
         final streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);
 
@@ -674,7 +680,11 @@ class QuestionAnswerController extends GetxController {
         request.fields['api_token'] = apiToken ?? '';
         request.fields['device'] = device;
         request.fields['question_id'] = answerId.toString();
-        request.fields['answer'] = answer.value.text;
+        request.fields['answer'] = commment.value.text;
+
+        if (kDebugMode) {
+          print('addAnswers: ${request.fields}');
+        }
 
         final streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);
@@ -709,7 +719,7 @@ class QuestionAnswerController extends GetxController {
       }
     } finally {
       isLoading(false);
-      answer.value.clear();
+      commment.value.clear();
     }
   }
 
@@ -739,6 +749,10 @@ class QuestionAnswerController extends GetxController {
         request.fields['answer_id'] = answerId.toString();
         request.fields['comment_id'] = commentId.toString();
         request.fields['comment'] = commment.value.text;
+
+        if (kDebugMode) {
+          print('addReplyAnswerComment: ${request.fields}');
+        }
 
         final streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);
@@ -1234,7 +1248,7 @@ class QuestionAnswerController extends GetxController {
         // Add fields
         request.fields['device'] = device;
         request.fields['title'] = title.value.text;
-        request.fields['description'] = answer.value.text;
+        request.fields['description'] = commment.value.text;
         request.fields['category'] = selectedCategoryId.value.toString();
         request.fields['subcategory'] = selectedSubCategoryId.value.toString();
         request.fields['api_token'] = apiToken ?? '';
@@ -1306,7 +1320,7 @@ class QuestionAnswerController extends GetxController {
 
   void clearFormFields() {
     title.value.clear();
-    answer.value.clear();
+    commment.value.clear();
     getSelectedCategoryTextController().text = "";
     getSelectedSubCategoryTextController().text = "";
 
@@ -1687,7 +1701,7 @@ class QuestionAnswerController extends GetxController {
   }
 
   void answerValidation(context) {
-    String enteredDiscription = answer.value.text;
+    String enteredDiscription = commment.value.text;
     if (enteredDiscription.isEmpty ||
         hasSpecialTextOrNumbers(enteredDiscription)) {
       showToasterrorborder("Please Enter Answer", context);

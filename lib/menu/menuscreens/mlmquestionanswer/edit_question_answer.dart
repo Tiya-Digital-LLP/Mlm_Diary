@@ -83,7 +83,7 @@ class _EditQuestionAnswerState extends State<EditQuestionAnswer> {
                       keyboard: TextInputType.multiline,
                       textInputType: const [],
                       hint: "Enter answer",
-                      controller: controller.answer.value,
+                      controller: controller.commment.value,
                       isError: controller.answerError.value,
                       byDefault: !controller.isAnswerTyping.value,
                       onChanged: (value) {

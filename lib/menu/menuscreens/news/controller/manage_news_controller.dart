@@ -59,6 +59,11 @@ class ManageNewsController extends GetxController {
   RxList<GetCommentNewsData> getCommentList = <GetCommentNewsData>[].obs;
   Rx<TextEditingController> commment = TextEditingController().obs;
 
+  var replyCommentId = 0.obs;
+  final editingCommentId = 0.obs;
+
+  RxString hintText = "Write your answer here".obs;
+
   int page = 1;
   var isEndOfData = false.obs;
 

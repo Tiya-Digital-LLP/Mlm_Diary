@@ -208,12 +208,12 @@ class Signup2Controller extends GetxController {
         var response = await http.Response.fromStream(streamedResponse);
 
         if (response.statusCode == 200) {
+          showToastverifedborder('Business Profile is Added', context);
           final Map<String, dynamic> jsonBody = jsonDecode(response.body);
           if (kDebugMode) {
             print("Response body: $jsonBody");
           }
           Get.offAllNamed(Routes.mainscreen);
-          showToasterrorborder('Business Profile is Added', context);
         } else {
           if (kDebugMode) {
             print(

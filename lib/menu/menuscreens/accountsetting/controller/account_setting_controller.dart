@@ -55,6 +55,10 @@ class AccountSeetingController extends GetxController {
   Rx<TextEditingController> perwebsite = TextEditingController().obs;
   Rx<TextEditingController> compwebsite = TextEditingController().obs;
 
+  final RxBool isChanging = false.obs;
+  final RxBool isChangingEmail = false.obs;
+  final RxBool isChangingPassword = false.obs;
+
   RxString userImage = ''.obs;
   var aboutCharCount = 0.obs;
   var aboutCompanyCount = 0.obs;
@@ -554,6 +558,7 @@ class AccountSeetingController extends GetxController {
         final otpEntity = UpdatePhoneNoEntity.fromJson(jsonBody);
 
         if (otpEntity.status == 1) {
+          mobileOtp.value.clear();
           if (kDebugMode) {
             print("OTP sent successfully: ${otpEntity.message}");
           }
@@ -641,6 +646,9 @@ class AccountSeetingController extends GetxController {
             UpdatePhoneVerifyOtpEntity.fromJson(jsonBody);
 
         if (verifyPhoneOtpEntity.status == 1) {
+          isChanging.value = false;
+          resetValuesMobile();
+          fetchUserProfile();
           stopTimer();
           if (kDebugMode) {
             print(
@@ -756,6 +764,9 @@ class AccountSeetingController extends GetxController {
           final otpemailEntity = ChangeEmailEntity.fromJson(jsonBody);
 
           if (otpemailEntity.result == 1) {
+            isChangingEmail.value = false;
+            resetValuesEmail();
+            fetchUserProfile();
             startTimer();
 
             showToastverifedborder(
@@ -979,6 +990,9 @@ class AccountSeetingController extends GetxController {
 
         final responseData = json.decode(response.body);
         if (responseData['result'] == 1) {
+          resetValuesPassword();
+          isChangingPassword.value = false;
+          fetchUserProfile();
           if (kDebugMode) {
             print('Password changed successfully.');
           }

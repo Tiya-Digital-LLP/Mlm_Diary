@@ -45,6 +45,7 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
   late ScrollController _viewersScrollController;
 
   bool isFetchingViewrs = false;
+  RxBool isExpanded = true.obs;
 
   final RxBool showShimmer = true.obs;
   final UserProfileController userProfileController =
@@ -605,6 +606,18 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                       post.company ?? 'N/A',
                       style: textStyleW500(
                           size.width * 0.035, AppColors.blackText),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        isExpanded.value = !isExpanded.value;
+                      },
+                      child: Obx(() => Text(
+                            post.plan ?? 'N/A',
+                            style: textStyleW500(
+                                size.width * 0.035, AppColors.blackText),
+                            maxLines: isExpanded.value ? null : 10,
+                            overflow: TextOverflow.ellipsis,
+                          )),
                     ),
                     Text(
                       '${post.city ?? 'N/A'}, ${post.state ?? 'N/A'}, ${post.country ?? 'N/A'}',

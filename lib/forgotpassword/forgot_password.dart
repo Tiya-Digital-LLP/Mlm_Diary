@@ -86,7 +86,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                 height: size.height * 0.015,
               ),
               Text(
-                "Enter your email for verification process,\nwe will send 6 digits code to your email",
+                "Enter your email for verification process,\nwe will send 4 digits code to your email",
                 maxLines: 2,
                 textAlign: TextAlign.center,
                 style: textStyleW500(size.width * 0.040, AppColors.blackText),
@@ -147,7 +147,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                                   controller.sendForgotPasswordRequest(
                                     context,
                                     getFormattedCountryCode(),
-                                    
                                   );
 
                                   controller.startTimer();

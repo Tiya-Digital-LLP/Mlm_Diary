@@ -30,10 +30,6 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
   final AccountSeetingController controller =
       Get.put(AccountSeetingController());
 
-  final RxBool isChanging = false.obs;
-  final RxBool isChangingEmail = false.obs;
-  final RxBool isChangingPassword = false.obs;
-
   int? userId;
 
   final smartAuth = SmartAuth();
@@ -117,16 +113,18 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                             ),
                             InkWell(
                               onTap: () {
-                                isChanging.toggle();
-                                if (!isChanging.value) {
+                                controller.isChanging.toggle();
+                                if (!controller.isChanging.value) {
                                   controller.resetValuesMobile();
                                 }
                               },
                               child: Obx(() => Text(
-                                    isChanging.value ? 'Cancel' : 'Change',
+                                    controller.isChanging.value
+                                        ? 'Cancel'
+                                        : 'Change',
                                     style: textStyleW700(
                                         size.width * 0.032,
-                                        isChanging.value
+                                        controller.isChanging.value
                                             ? AppColors.redText
                                             : AppColors.primaryColor),
                                   )),
@@ -163,7 +161,7 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                       ),
                       16.sbh,
                       Obx(() {
-                        if (isChanging.value) {
+                        if (controller.isChanging.value) {
                           return Column(
                             children: [
                               Row(
@@ -509,16 +507,18 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                             ),
                             InkWell(
                               onTap: () {
-                                isChangingEmail.toggle();
-                                if (!isChangingEmail.value) {
+                                controller.isChangingEmail.toggle();
+                                if (!controller.isChangingEmail.value) {
                                   controller.resetValuesEmail();
                                 }
                               },
                               child: Obx(() => Text(
-                                    isChangingEmail.value ? 'Cancel' : 'Change',
+                                    controller.isChangingEmail.value
+                                        ? 'Cancel'
+                                        : 'Change',
                                     style: textStyleW700(
                                         size.width * 0.032,
-                                        isChangingEmail.value
+                                        controller.isChangingEmail.value
                                             ? AppColors.redText
                                             : AppColors.primaryColor),
                                   )),
@@ -539,7 +539,7 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                       ),
                       16.sbh,
                       Obx(() {
-                        if (isChangingEmail.value) {
+                        if (controller.isChangingEmail.value) {
                           return Column(
                             children: [
                               Obx(
@@ -668,7 +668,9 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                                                 "Please Enter Valid Email",
                                                 context);
                                           } else {
-                                            controller.updateEmail(context);
+                                            controller.updateVerifyEmailOtp(
+                                                controller.emailOtp.value.text,
+                                                context);
                                           }
                                         },
                                         text: 'Verify',
@@ -751,19 +753,19 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                             ),
                             InkWell(
                               onTap: () {
-                                isChangingPassword.toggle();
-                                if (!isChangingPassword.value) {
+                                controller.isChangingPassword.toggle();
+                                if (!controller.isChangingPassword.value) {
                                   controller.resetValuesPassword();
                                 }
                               },
                               child: Obx(
                                 () => Text(
-                                  isChangingPassword.value
+                                  controller.isChangingPassword.value
                                       ? 'Cancel'
                                       : 'Change',
                                   style: textStyleW700(
                                       size.width * 0.032,
-                                      isChangingPassword.value
+                                      controller.isChangingPassword.value
                                           ? AppColors.redText
                                           : AppColors.primaryColor),
                                 ),
@@ -785,7 +787,7 @@ class _LoginPageState extends State<CustomLoginDetailsScreen> {
                       ),
                       16.sbh,
                       Obx(() {
-                        if (isChangingPassword.value) {
+                        if (controller.isChangingPassword.value) {
                           return Column(
                             children: [
                               Obx(

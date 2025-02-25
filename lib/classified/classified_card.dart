@@ -238,8 +238,6 @@ class _ClassifiedCardState extends State<ClassifiedCard>
                 },
               ),
             ),
-            // if (widget.userImage.isNotEmpty &&
-            //     Uri.tryParse(widget.userImage)?.hasAbsolutePath == true)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 6),
               child: SizedBox(

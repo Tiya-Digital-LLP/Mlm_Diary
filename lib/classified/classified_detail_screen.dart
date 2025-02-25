@@ -90,7 +90,7 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen>
 
     post = Get.arguments;
     if (post != null && post.id != null) {
-      controller.getClassified(1);
+      controller.getTestClassified(1);
     }
     // Find index of the post in classifiedList
     int postIndex =
@@ -136,7 +136,7 @@ class _ClassidiedDetailsScreenState extends State<ClassidiedDetailsScreen>
             print("Selected post: ${post.id}");
           }
 
-          controller.getClassified(1);
+          controller.getTestClassified(1);
         },
         itemBuilder: (context, index) {
           return controller.isLoading.value

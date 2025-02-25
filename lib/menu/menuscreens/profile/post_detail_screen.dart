@@ -296,8 +296,7 @@ class _PostDetailsScreenState extends State<PostDetailScreen>
                                   } else {
                                     final Uri phoneUri = Uri(
                                       scheme: 'tel',
-                                      path:
-                                          '+$countryCode$mobileNumber', // Combine country code and mobile
+                                      path: '+$countryCode$mobileNumber',
                                     );
                                     launchUrl(phoneUri);
                                     if (kDebugMode) {
