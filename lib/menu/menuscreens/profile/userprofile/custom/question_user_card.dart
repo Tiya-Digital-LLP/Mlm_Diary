@@ -141,189 +141,69 @@ class _FavouritrCardState extends State<QuestionUserCard>
         borderRadius: BorderRadius.circular(14),
         color: AppColors.white,
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(100),
-                  child: CachedNetworkImage(
-                    imageUrl: widget.userImage,
-                    height: 40,
-                    width: 40,
-                    fit: BoxFit.fill,
-                    errorWidget: (context, url, error) =>
-                        Image.asset(Assets.imagesAdminlogo),
-                  ),
-                ),
-                10.sbw,
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.userName,
-                        style: textStyleW700(
-                            size.width * 0.038, AppColors.blackText),
-                      ),
-                      Text(
-                        postTimeFormatter.formatPostTime(
-                          DateTime.parse(widget.dateTime).isAtSameMomentAs(
-                                  DateTime.parse(widget.updatedateTime))
-                              ? widget.dateTime
-                              : widget.updatedateTime,
-                        ),
-                        style: textStyleW400(
-                          size.width * 0.035,
-                          // ignore: deprecated_member_use
-                          AppColors.blackText.withOpacity(0.5),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Row(
-                  children: [
-                    Container(
-                      width: 70,
-                      height: 25,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(40),
-                        color: AppColors.primaryColor,
-                      ),
-                      child: Center(
-                        child: Text(
-                          widget.type,
-                          style: textStyleW700(
-                            size.width * 0.026,
-                            AppColors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            Align(
-              alignment: Alignment.topLeft,
-              child: Html(
-                data: widget.postTitle,
-                style: {
-                  "html": Style(
-                    maxLines: 2,
-                    fontFamily: fontFamily,
-                    fontWeight: FontWeight.w700,
-                    fontSize: FontSize.medium,
-                    color: AppColors.blackText,
-                  ),
-                },
-              ),
-            ),
-            10.sbh,
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Card(
+        color: Colors.white,
+        elevation: 4,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Obx(
-                    () => Row(
-                      children: [
-                        SizedBox(
-                          height: size.height * 0.028,
-                          width: size.height * 0.028,
-                          child: InkWell(
-                            onTap: toggleLike,
-                            child: Icon(
-                              isLiked.value
-                                  ? Icons.thumb_up_off_alt_sharp
-                                  : Icons.thumb_up_off_alt_outlined,
-                              color:
-                                  isLiked.value ? AppColors.primaryColor : null,
-                            ),
-                          ),
-                        ),
-                        8.sbw,
-                        likeCount.value == 0
-                            ? const SizedBox.shrink()
-                            : InkWell(
-                                onTap: () {
-                                  showLikeAndViewList(context, 0);
-                                },
-                                child: Text(
-                                  '${likeCount.value}',
-                                  style: textStyleW600(
-                                      size.width * 0.038, AppColors.blackText),
-                                ),
-                              ),
-                      ],
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: CachedNetworkImage(
+                      imageUrl: widget.userImage,
+                      height: 40,
+                      width: 40,
+                      fit: BoxFit.fill,
+                      errorWidget: (context, url, error) =>
+                          Image.asset(Assets.imagesAdminlogo),
                     ),
                   ),
-                  InkWell(
-                    onTap: () {
-                      showLikeAndViewList(context, 1);
-                    },
-                    child: Row(
+                  10.sbw,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(
-                          height: size.height * 0.028,
-                          width: size.height * 0.028,
-                          child: SvgPicture.asset(Assets.svgView),
+                        Text(
+                          widget.userName,
+                          style: textStyleW700(
+                              size.width * 0.038, AppColors.blackText),
                         ),
-                        6.sbw,
-                        widget.viewcounts == 0
-                            ? const SizedBox.shrink()
-                            : InkWell(
-                                onTap: () {
-                                  showLikeAndViewList(context, 1);
-                                },
-                                child: Text(
-                                  '${widget.viewcounts}',
-                                  style: TextStyle(
-                                    fontFamily: "Metropolis",
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: size.width * 0.038,
-                                  ),
-                                ),
-                              ),
-                      ],
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      Obx(
-                        () => SizedBox(
-                          height: size.height * 0.028,
-                          width: size.height * 0.028,
-                          child: GestureDetector(
-                            onTap: toggleBookmark,
-                            child: SvgPicture.asset(
-                              isBookmarked.value
-                                  ? Assets.svgCheckBookmark
-                                  : Assets.svgSavePost,
-                              height: size.height * 0.032,
-                            ),
+                        Text(
+                          postTimeFormatter.formatPostTime(
+                            DateTime.parse(widget.dateTime).isAtSameMomentAs(
+                                    DateTime.parse(widget.updatedateTime))
+                                ? widget.dateTime
+                                : widget.updatedateTime,
                           ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          Share.share(widget.url);
-                        },
-                        child: SizedBox(
-                          height: size.height * 0.028,
-                          width: size.height * 0.028,
-                          child: SvgPicture.asset(
-                            Assets.svgSend,
+                          style: textStyleW400(
+                            size.width * 0.035,
                             // ignore: deprecated_member_use
-                            color: AppColors.blackText,
+                            AppColors.blackText.withOpacity(0.5),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        width: 70,
+                        height: 25,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(40),
+                          color: AppColors.primaryColor,
+                        ),
+                        child: Center(
+                          child: Text(
+                            widget.type,
+                            style: textStyleW700(
+                              size.width * 0.026,
+                              AppColors.white,
+                            ),
                           ),
                         ),
                       ),
@@ -331,8 +211,133 @@ class _FavouritrCardState extends State<QuestionUserCard>
                   ),
                 ],
               ),
-            ),
-          ],
+              Align(
+                alignment: Alignment.topLeft,
+                child: Html(
+                  data: widget.postTitle,
+                  style: {
+                    "html": Style(
+                      maxLines: 2,
+                      fontFamily: fontFamily,
+                      fontWeight: FontWeight.w700,
+                      fontSize: FontSize.medium,
+                      color: AppColors.blackText,
+                    ),
+                  },
+                ),
+              ),
+              10.sbh,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Obx(
+                      () => Row(
+                        children: [
+                          SizedBox(
+                            height: size.height * 0.028,
+                            width: size.height * 0.028,
+                            child: InkWell(
+                              onTap: toggleLike,
+                              child: Icon(
+                                isLiked.value
+                                    ? Icons.thumb_up_off_alt_sharp
+                                    : Icons.thumb_up_off_alt_outlined,
+                                color: isLiked.value
+                                    ? AppColors.primaryColor
+                                    : null,
+                              ),
+                            ),
+                          ),
+                          8.sbw,
+                          likeCount.value == 0
+                              ? const SizedBox.shrink()
+                              : InkWell(
+                                  onTap: () {
+                                    showLikeAndViewList(context, 0);
+                                  },
+                                  child: Text(
+                                    '${likeCount.value}',
+                                    style: textStyleW600(size.width * 0.038,
+                                        AppColors.blackText),
+                                  ),
+                                ),
+                        ],
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        showLikeAndViewList(context, 1);
+                      },
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            height: size.height * 0.028,
+                            width: size.height * 0.028,
+                            child: SvgPicture.asset(Assets.svgView),
+                          ),
+                          6.sbw,
+                          widget.viewcounts == 0
+                              ? const SizedBox.shrink()
+                              : InkWell(
+                                  onTap: () {
+                                    showLikeAndViewList(context, 1);
+                                  },
+                                  child: Text(
+                                    '${widget.viewcounts}',
+                                    style: TextStyle(
+                                      fontFamily: "Metropolis",
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: size.width * 0.038,
+                                    ),
+                                  ),
+                                ),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Obx(
+                          () => SizedBox(
+                            height: size.height * 0.028,
+                            width: size.height * 0.028,
+                            child: GestureDetector(
+                              onTap: toggleBookmark,
+                              child: SvgPicture.asset(
+                                isBookmarked.value
+                                    ? Assets.svgCheckBookmark
+                                    : Assets.svgSavePost,
+                                height: size.height * 0.032,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            Share.share(widget.url);
+                          },
+                          child: SizedBox(
+                            height: size.height * 0.028,
+                            width: size.height * 0.028,
+                            child: SvgPicture.asset(
+                              Assets.svgSend,
+                              // ignore: deprecated_member_use
+                              color: AppColors.blackText,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

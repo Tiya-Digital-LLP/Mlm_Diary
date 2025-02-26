@@ -135,7 +135,7 @@ class _ClassidiedDetailsScreenState extends State<ManageClassifiedDetailsScreen>
                                 width: 60,
                                 fit: BoxFit.fill,
                                 errorWidget: (context, url, error) =>
-                                    const Icon(Icons.error),
+                                    Image.asset(Assets.imagesAdminlogo),
                               ),
                             ),
                             const SizedBox(
@@ -198,7 +198,7 @@ class _ClassidiedDetailsScreenState extends State<ManageClassifiedDetailsScreen>
                             width: 105,
                             fit: BoxFit.fill,
                             errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
+                                Image.asset(Assets.imagesLogo),
                           ),
                         ),
                       ),

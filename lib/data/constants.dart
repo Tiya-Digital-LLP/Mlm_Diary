@@ -101,6 +101,8 @@ class Constants {
   static const String bookmarkmlmcompany = "/bookmark_mlmcompany";
   static const String mlmdatabase = "/getdatabase";
   static const String countviewuserprofile = "/countview_database";
+  static const String countviewpost = "/countview_userpost";
+
   static const String getcommentCompany = "/getcompany_comment";
   static const String addcommentcompanyreply = "/add_company_comment";
 

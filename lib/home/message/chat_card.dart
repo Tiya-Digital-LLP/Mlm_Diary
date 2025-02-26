@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:mlmdiary/generated/assets.dart';
 
 import 'package:mlmdiary/home/message/controller/message_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
@@ -66,6 +67,8 @@ class _ChatCardState extends State<ChatCard> {
                   height: 60.0,
                   width: 60.0,
                   fit: BoxFit.cover,
+                  errorWidget: (context, url, error) =>
+                      Image.asset(Assets.imagesAdminlogo),
                 ),
               ),
               10.sbw,

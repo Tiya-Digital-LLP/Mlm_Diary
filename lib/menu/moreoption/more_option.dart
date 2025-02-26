@@ -157,12 +157,8 @@ class _moreState extends State<MoreOptionScreen> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      // Get.toNamed(
-                      //   Routes.profilescreen,
-                      //   arguments: controller.userProfile.value.userProfile,
-                      // );
                       Get.toNamed(
-                        Routes.userprofilescreencopy,
+                        Routes.profilescreen,
                         arguments:
                             controller.userProfile.value.userProfile!.id ?? 0,
                       );
@@ -199,6 +195,8 @@ class _moreState extends State<MoreOptionScreen> {
                                 child: CachedNetworkImage(
                                   imageUrl: userProfile.imagePath.toString(),
                                   fit: BoxFit.cover,
+                                  errorWidget: (context, url, error) =>
+                                      Image.asset(Assets.imagesAdminlogo),
                                 ),
                               ),
                             ),

@@ -94,7 +94,7 @@ class _PostDetailsScreenState extends State<PostDetailScreen>
     // ignore: unrelated_type_equality_checks
     controller.bookmarkCountMap == 0;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.countViewUserProfile(post.id ?? 0, context);
+      controller.countViewUserPost(post.id ?? 0, context);
     });
   }
 
@@ -203,6 +203,8 @@ class _PostDetailsScreenState extends State<PostDetailScreen>
                               child: CachedNetworkImage(
                                 imageUrl: post.imageUrl,
                                 fit: BoxFit.fill,
+                                errorWidget: (context, url, error) =>
+                                    Image.asset(Assets.imagesLogo),
                               ),
                             ),
                           ),

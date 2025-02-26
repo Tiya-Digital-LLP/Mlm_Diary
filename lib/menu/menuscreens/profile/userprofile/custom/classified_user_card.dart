@@ -154,96 +154,26 @@ class _FavouritrCardState extends State<ClassifiedUserCard>
           width: 3.0,
         ),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(100),
-                  child: CachedNetworkImage(
-                    imageUrl: widget.userImage,
-                    height: 40,
-                    width: 40,
-                    fit: BoxFit.fill,
-                    errorWidget: (context, url, error) =>
-                        Image.asset(Assets.imagesAdminlogo),
-                  ),
-                ),
-                10.sbw,
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.userName,
-                        style: textStyleW700(
-                            size.width * 0.038, AppColors.blackText),
-                      ),
-                      Text(
-                        postTimeFormatter.formatPostTime(
-                          DateTime.parse(widget.dateTime).isAtSameMomentAs(
-                                  DateTime.parse(widget.updatedateTime))
-                              ? widget.dateTime
-                              : widget.updatedateTime,
-                        ),
-                        style: textStyleW400(
-                          size.width * 0.035,
-                          // ignore: deprecated_member_use
-                          AppColors.blackText.withOpacity(0.5),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Row(
-                  children: [
-                    Container(
-                      width: 70,
-                      height: 25,
-                      decoration: BoxDecoration(
-                        color: widget.isPopular
-                            ? Colors.yellow
-                            : AppColors.primaryColor,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: widget.isPopular
-                              ? Colors.yellow
-                              : AppColors.primaryColor,
-                        ),
-                      ),
-                      child: Center(
-                        child: Text(widget.type,
-                            style: TextStyle(
-                              color: widget.isPopular
-                                  ? Colors.black
-                                  : AppColors.white,
-                              fontSize: 11,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: Assets.fontsSatoshiRegular,
-                            )),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
+      child: Card(
+        color: Colors.white,
+        elevation: 4,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(100),
                     child: CachedNetworkImage(
-                        imageUrl: widget.postImage,
-                        height: 105,
-                        width: 105,
-                        fit: BoxFit.fill,
-                        errorWidget: (context, url, error) =>
-                            Image.asset(Assets.imagesLogo)),
+                      imageUrl: widget.userImage,
+                      height: 40,
+                      width: 40,
+                      fit: BoxFit.fill,
+                      errorWidget: (context, url, error) =>
+                          Image.asset(Assets.imagesAdminlogo),
+                    ),
                   ),
                   10.sbw,
                   Expanded(
@@ -251,180 +181,256 @@ class _FavouritrCardState extends State<ClassifiedUserCard>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.postTitle,
-                          style: TextStyle(
-                            fontFamily: fontFamily,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.blackText,
-                          ),
-                          maxLines: 2,
-                          textAlign: TextAlign.left,
+                          widget.userName,
+                          style: textStyleW700(
+                              size.width * 0.038, AppColors.blackText),
                         ),
-                        Html(
-                          data: widget.postCaption,
-                          style: {
-                            "html": Style(
-                              maxLines: 2,
+                        Text(
+                          postTimeFormatter.formatPostTime(
+                            DateTime.parse(widget.dateTime).isAtSameMomentAs(
+                                    DateTime.parse(widget.updatedateTime))
+                                ? widget.dateTime
+                                : widget.updatedateTime,
+                          ),
+                          style: textStyleW400(
+                            size.width * 0.035,
+                            // ignore: deprecated_member_use
+                            AppColors.blackText.withOpacity(0.5),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        width: 70,
+                        height: 25,
+                        decoration: BoxDecoration(
+                          color: widget.isPopular
+                              ? Colors.yellow
+                              : AppColors.primaryColor,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: widget.isPopular
+                                ? Colors.yellow
+                                : AppColors.primaryColor,
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(widget.type,
+                              style: TextStyle(
+                                color: widget.isPopular
+                                    ? Colors.black
+                                    : AppColors.white,
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: Assets.fontsSatoshiRegular,
+                              )),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: CachedNetworkImage(
+                          imageUrl: widget.postImage,
+                          height: 105,
+                          width: 105,
+                          fit: BoxFit.fill,
+                          errorWidget: (context, url, error) =>
+                              Image.asset(Assets.imagesLogo)),
+                    ),
+                    10.sbw,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.postTitle,
+                            style: TextStyle(
                               fontFamily: fontFamily,
                               fontWeight: FontWeight.w700,
-                              fontSize: FontSize.medium,
                               color: AppColors.blackText,
                             ),
-                          },
-                        ),
-                      ],
+                            maxLines: 2,
+                            textAlign: TextAlign.left,
+                          ),
+                          Html(
+                            data: widget.postCaption,
+                            style: {
+                              "html": Style(
+                                maxLines: 2,
+                                fontFamily: fontFamily,
+                                fontWeight: FontWeight.w700,
+                                fontSize: FontSize.medium,
+                                color: AppColors.blackText,
+                              ),
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Obx(
-                    () => Row(
-                      children: [
-                        SizedBox(
-                          height: size.height * 0.028,
-                          width: size.height * 0.028,
-                          child: InkWell(
-                            onTap: toggleLike,
-                            child: Icon(
-                              isLiked.value
-                                  ? Icons.thumb_up_off_alt_sharp
-                                  : Icons.thumb_up_off_alt_outlined,
-                              color:
-                                  isLiked.value ? AppColors.primaryColor : null,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Obx(
+                      () => Row(
+                        children: [
+                          SizedBox(
+                            height: size.height * 0.028,
+                            width: size.height * 0.028,
+                            child: InkWell(
+                              onTap: toggleLike,
+                              child: Icon(
+                                isLiked.value
+                                    ? Icons.thumb_up_off_alt_sharp
+                                    : Icons.thumb_up_off_alt_outlined,
+                                color: isLiked.value
+                                    ? AppColors.primaryColor
+                                    : null,
+                              ),
                             ),
                           ),
-                        ),
-                        8.sbw,
-                        likeCount.value == 0
-                            ? const SizedBox.shrink()
-                            : InkWell(
-                                onTap: () {
-                                  showLikeAndViewList(context, 0);
-                                },
-                                child: Text(
-                                  '${likeCount.value}',
-                                  style: textStyleW600(
-                                      size.width * 0.038, AppColors.blackText),
-                                ),
-                              ),
-                      ],
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () => showFullScreenDialog(
-                          context,
-                          widget.classifiedId,
-                        ),
-                        child: SizedBox(
-                          height: size.height * 0.028,
-                          width: size.height * 0.028,
-                          child: SvgPicture.asset(Assets.svgComment),
-                        ),
-                      ),
-                      5.sbw,
-                      Text(
-                        '${widget.commentcount}',
-                        style: TextStyle(
-                          fontFamily: "Metropolis",
-                          fontWeight: FontWeight.w600,
-                          fontSize: size.width * 0.038,
-                        ),
-                      ),
-                    ],
-                  ),
-                  InkWell(
-                    onTap: () {
-                      showLikeAndViewList(context, 1);
-                    },
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          height: size.height * 0.028,
-                          width: size.height * 0.028,
-                          child: SvgPicture.asset(Assets.svgView),
-                        ),
-                        6.sbw,
-                        widget.viewcounts == 0
-                            ? const SizedBox.shrink()
-                            : InkWell(
-                                onTap: () {
-                                  showLikeAndViewList(context, 1);
-                                },
-                                child: Text(
-                                  '${widget.viewcounts}',
-                                  style: TextStyle(
-                                    fontFamily: "Metropolis",
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: size.width * 0.038,
+                          8.sbw,
+                          likeCount.value == 0
+                              ? const SizedBox.shrink()
+                              : InkWell(
+                                  onTap: () {
+                                    showLikeAndViewList(context, 0);
+                                  },
+                                  child: Text(
+                                    '${likeCount.value}',
+                                    style: textStyleW600(size.width * 0.038,
+                                        AppColors.blackText),
                                   ),
                                 ),
-                              ),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () => showFullScreenDialog(
+                            context,
+                            widget.classifiedId,
+                          ),
+                          child: SizedBox(
+                            height: size.height * 0.028,
+                            width: size.height * 0.028,
+                            child: SvgPicture.asset(Assets.svgComment),
+                          ),
+                        ),
+                        5.sbw,
+                        Text(
+                          '${widget.commentcount}',
+                          style: TextStyle(
+                            fontFamily: "Metropolis",
+                            fontWeight: FontWeight.w600,
+                            fontSize: size.width * 0.038,
+                          ),
+                        ),
                       ],
                     ),
-                  ),
-                  Row(
-                    children: [
-                      Obx(
-                        () => SizedBox(
-                          height: size.height * 0.028,
-                          width: size.height * 0.028,
-                          child: GestureDetector(
-                            onTap: toggleBookmark,
-                            child: SvgPicture.asset(
-                              isBookmarked.value
-                                  ? Assets.svgCheckBookmark
-                                  : Assets.svgSavePost,
-                              height: size.height * 0.032,
+                    InkWell(
+                      onTap: () {
+                        showLikeAndViewList(context, 1);
+                      },
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            height: size.height * 0.028,
+                            width: size.height * 0.028,
+                            child: SvgPicture.asset(Assets.svgView),
+                          ),
+                          6.sbw,
+                          widget.viewcounts == 0
+                              ? const SizedBox.shrink()
+                              : InkWell(
+                                  onTap: () {
+                                    showLikeAndViewList(context, 1);
+                                  },
+                                  child: Text(
+                                    '${widget.viewcounts}',
+                                    style: TextStyle(
+                                      fontFamily: "Metropolis",
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: size.width * 0.038,
+                                    ),
+                                  ),
+                                ),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Obx(
+                          () => SizedBox(
+                            height: size.height * 0.028,
+                            width: size.height * 0.028,
+                            child: GestureDetector(
+                              onTap: toggleBookmark,
+                              child: SvgPicture.asset(
+                                isBookmarked.value
+                                    ? Assets.svgCheckBookmark
+                                    : Assets.svgSavePost,
+                                height: size.height * 0.032,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      10.sbw,
-                      InkWell(
-                        onTap: () async {
-                          try {
-                            final dynamicLink = await createDynamicLink(
-                              widget.url,
-                              'Classified',
-                              widget.classifiedId.toString(),
-                            );
+                        10.sbw,
+                        InkWell(
+                          onTap: () async {
+                            try {
+                              final dynamicLink = await createDynamicLink(
+                                widget.url,
+                                'Classified',
+                                widget.classifiedId.toString(),
+                              );
 
-                            debugPrint('Generated Dynamic Link: $dynamicLink');
-                            await Share.share(dynamicLink);
-                          } catch (e) {
-                            debugPrint('Error sharing link: $e');
-                            // ignore: use_build_context_synchronously
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                  content: Text(
-                                      "Error creating or sharing link: $e")),
-                            );
-                          }
-                        },
-                        child: SizedBox(
-                          height: size.height * 0.028,
-                          width: size.height * 0.028,
-                          child: SvgPicture.asset(
-                            Assets.svgSend,
-                            // ignore: deprecated_member_use
-                            color: AppColors.blackText,
+                              debugPrint(
+                                  'Generated Dynamic Link: $dynamicLink');
+                              await Share.share(dynamicLink);
+                            } catch (e) {
+                              debugPrint('Error sharing link: $e');
+                              // ignore: use_build_context_synchronously
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content: Text(
+                                        "Error creating or sharing link: $e")),
+                              );
+                            }
+                          },
+                          child: SizedBox(
+                            height: size.height * 0.028,
+                            width: size.height * 0.028,
+                            child: SvgPicture.asset(
+                              Assets.svgSend,
+                              // ignore: deprecated_member_use
+                              color: AppColors.blackText,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

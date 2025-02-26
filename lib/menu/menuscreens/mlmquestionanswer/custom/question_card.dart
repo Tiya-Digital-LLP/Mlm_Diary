@@ -147,6 +147,8 @@ class _QuestionCardState extends State<QuestionCard>
                         child: CachedNetworkImage(
                           imageUrl: widget.userImage,
                           fit: BoxFit.cover,
+                          errorWidget: (context, url, error) =>
+                              Image.asset(Assets.imagesAdminlogo),
                         ),
                       ),
                     ),

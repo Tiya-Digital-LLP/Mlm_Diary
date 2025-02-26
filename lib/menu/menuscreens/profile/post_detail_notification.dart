@@ -67,7 +67,7 @@ class _PostDetailsScreenState extends State<PostDetailNotification>
         widget.postId,
         context,
       );
-      controller.countViewUserProfile(widget.postId, context);
+      controller.countViewUserPost(widget.postId, context);
     });
 
     // ignore: unrelated_type_equality_checks

@@ -136,7 +136,7 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen>
                                   width: 105,
                                   fit: BoxFit.fill,
                                   errorWidget: (context, url, error) =>
-                                      const Icon(Icons.error),
+                                      Image.asset(Assets.imagesAdminlogo),
                                 ),
                               ),
                             ),
@@ -201,7 +201,7 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen>
                             width: 105,
                             fit: BoxFit.fill,
                             errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
+                                Image.asset(Assets.imagesLogo),
                           ),
                         ),
                       ),

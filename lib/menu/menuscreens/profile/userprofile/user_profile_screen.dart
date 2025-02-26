@@ -60,7 +60,6 @@ class _UserProfileScreenState extends State<UserProfileScreen>
   final ProfileController profileController = Get.put(ProfileController());
   RxBool isExpanded = true.obs;
 
-  RxBool isBookmarked = false.obs;
   late ScrollController _viewersScrollController;
   late ScrollController _followersScrollController;
   late ScrollController _followingScrollController;
@@ -69,7 +68,6 @@ class _UserProfileScreenState extends State<UserProfileScreen>
   bool isFetchingFollowers = false;
   bool isFetchingFollowing = false;
   final RxBool showShimmer = true.obs;
-  RxBool isFollowing = false.obs;
 
   @override
   void initState() {
@@ -114,22 +112,10 @@ class _UserProfileScreenState extends State<UserProfileScreen>
   }
 
   void _toggleFollow(int userId) async {
-    try {
-      bool followStatus = await _fetchFollowStatus(userId);
+    bool newBookmarkedValue = !controller.isFollowing.value;
+    controller.isFollowing.value = newBookmarkedValue;
 
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        isFollowing.value = !followStatus;
-      });
-
-      // ignore: use_build_context_synchronously
-      await editPostController.toggleProfileFollow(userId, context);
-    } catch (e) {
-      // Handle API errors
-    }
-  }
-
-  Future<bool> _fetchFollowStatus(int userId) async {
-    return false;
+    await editPostController.toggleProfileFollow(userId, context);
   }
 
   Future<void> _refreshFollowers(int userId) async {
@@ -209,7 +195,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
             child: Obx(
               () => IconButton(
                 icon: SvgPicture.asset(
-                  isBookmarked.value
+                  controller.isBookmarked.value
                       ? Assets.svgCheckBookmark
                       : Assets.svgSavePost,
                   height: size.height * 0.028,
@@ -218,8 +204,8 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                   final bookmark = controller.mlmDetailsDatabaseList[0];
                   final userId = bookmark.id ?? 0;
 
-                  bool originalState = isBookmarked.value;
-                  isBookmarked.value = !originalState;
+                  bool originalState = controller.isBookmarked.value;
+                  controller.isBookmarked.value = !originalState;
 
                   try {
                     await editPostController.toggleProfileBookMark(
@@ -228,7 +214,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                       context,
                     );
                   } catch (e) {
-                    isBookmarked.value = originalState;
+                    controller.isBookmarked.value = originalState;
                   }
                 },
               ),
@@ -859,6 +845,8 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                   imageUrl: post.imageUrl.toString(),
                                   fit: BoxFit.contain,
                                   width: MediaQuery.of(context).size.width,
+                                  errorWidget: (context, url, error) =>
+                                      Image.asset(Assets.imagesAdminlogo),
                                 ),
                               ),
                             ),
@@ -978,9 +966,9 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                           _toggleFollow(post.id ?? 0);
                         },
                         child: Text(
-                          isFollowing.value ? 'Unfollow' : 'Follow',
+                          controller.isFollowing.value ? 'Unfollow' : 'Follow',
                           style: textStyleW700(
-                              size.width * 0.030, AppColors.white),
+                              size.width * 0.035, AppColors.white),
                         ),
                       ),
                     ),

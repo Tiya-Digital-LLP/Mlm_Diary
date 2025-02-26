@@ -80,19 +80,31 @@ class _UserQuestionState extends State<UserQuestionCopy>
 
   late TabController _tabController;
 
-  void _openKeyboard(
-      {bool isEditing = false,
-      int? commentId,
-      String? existingText,
-      String? username}) {
+  void openKeyboard({
+    bool isEditing = false,
+    int? commentId,
+    String? existingText,
+    String? username,
+    bool isAnswer = false,
+    bool isReply = false,
+  }) {
     controller.commment.value.text = existingText ?? '';
 
     if (isEditing) {
       controller.editingCommentId.value = commentId ?? 0;
       controller.replyCommentId.value = 0;
-    } else {
+      controller.isEditingAnswer.value = isAnswer;
+      controller.isReplyAnswer.value = false;
+    } else if (isReply) {
       controller.replyCommentId.value = commentId ?? 0;
       controller.editingCommentId.value = 0;
+      controller.isEditingAnswer.value = false;
+      controller.isReplyAnswer.value = true;
+    } else {
+      controller.replyCommentId.value = 0;
+      controller.editingCommentId.value = 0;
+      controller.isEditingAnswer.value = false;
+      controller.isReplyAnswer.value = false;
     }
 
     controller.hintText.value =
@@ -243,10 +255,11 @@ class _UserQuestionState extends State<UserQuestionCopy>
                     Row(
                       children: [
                         InkWell(
-                          onTap: () => _openKeyboard(
+                          onTap: () => openKeyboard(
                             isEditing: false,
                             commentId: comment.id,
                             username: comment.name,
+                            isReply: true,
                           ),
                           child: Text(
                             'Reply',
@@ -298,10 +311,11 @@ class _UserQuestionState extends State<UserQuestionCopy>
                         if (isCurrentNewsUserComment)
                           TextButton(
                             onPressed: () {
-                              _openKeyboard(
+                              openKeyboard(
                                 isEditing: true,
                                 commentId: comment.id,
                                 existingText: comment.ansTitle,
+                                isAnswer: true,
                               );
                             },
                             child: Text(
@@ -428,10 +442,11 @@ class _UserQuestionState extends State<UserQuestionCopy>
                     Row(
                       children: [
                         InkWell(
-                          onTap: () => _openKeyboard(
+                          onTap: () => openKeyboard(
                             isEditing: false,
                             commentId: comment.id,
                             username: comment.name,
+                            isReply: false,
                           ),
                           child: Text(
                             'Reply',
@@ -483,10 +498,11 @@ class _UserQuestionState extends State<UserQuestionCopy>
                         if (isCurrentNewsUserComment)
                           TextButton(
                             onPressed: () {
-                              _openKeyboard(
+                              openKeyboard(
                                 isEditing: true,
                                 commentId: comment.id,
                                 existingText: comment.comment,
+                                isReply: false,
                               );
                             },
                             child: Text(
@@ -595,10 +611,11 @@ class _UserQuestionState extends State<UserQuestionCopy>
                     Row(
                       children: [
                         InkWell(
-                          onTap: () => _openKeyboard(
+                          onTap: () => openKeyboard(
                             isEditing: false,
                             commentId: comment.id,
                             username: comment.name,
+                            isReply: false,
                           ),
                           child: Text(
                             'Reply',
@@ -650,10 +667,11 @@ class _UserQuestionState extends State<UserQuestionCopy>
                         if (isCurrentNewsUserComment)
                           TextButton(
                             onPressed: () {
-                              _openKeyboard(
+                              openKeyboard(
                                 isEditing: true,
                                 commentId: comment.id,
                                 existingText: comment.comment,
+                                isReply: false,
                               );
                             },
                             child: Text(
@@ -760,7 +778,7 @@ class _UserQuestionState extends State<UserQuestionCopy>
                               width: 105,
                               fit: BoxFit.fill,
                               errorWidget: (context, url, error) =>
-                                  const Icon(Icons.error),
+                                  Image.asset(Assets.imagesAdminlogo),
                             ),
                           ),
                         ),
@@ -1102,32 +1120,54 @@ class _UserQuestionState extends State<UserQuestionCopy>
                     controller.isLoading.value = true;
 
                     if (controller.editingCommentId.value > 0) {
-                      // Editing existing comment
-                      await controller.editComment(
-                        post.id ?? 0,
-                        controller.editingCommentId.value,
-                        controller.commment.value.text,
-                        'answer',
-                        context,
-                      );
+                      // Check if it's Answer or Comment
+                      if (controller.isEditingAnswer.value) {
+                        // API Call for Editing Answer
+                        await controller.editAnswer(
+                          post.id ?? 0,
+                          controller.editingCommentId.value,
+                          controller.commment.value.text,
+                          context,
+                        );
+                      } else {
+                        // API Call for Editing Comment
+                        await controller.editComment(
+                          post.id ?? 0,
+                          controller.editingCommentId.value,
+                          controller.commment.value.text,
+                          'answer',
+                          context,
+                        );
+                      }
                     } else if (controller.replyCommentId.value > 0) {
-                      // Adding a new reply
-                      await controller.addReplyAnswerComment(
-                        post.id ?? 0,
-                        controller.replyCommentId.value,
-                        context,
-                      );
+                      // API Call for Reply First Time using addReplyAnswer
+                      if (controller.isReplyAnswer.value) {
+                        await controller.addReplyAnswer(
+                          controller.replyCommentId.value,
+                          context,
+                        );
+                      } else {
+                        // API Call for Multiple Replies
+                        await controller.addReplyAnswerComment(
+                          post.id ?? 0,
+                          controller.replyCommentId.value,
+                          context,
+                        );
+                      }
                     } else if (controller.replyCommentId.value == 0) {
-                      // Adding a new comment
+                      // API Call for Adding New Comment
                       await controller.addAnswers(
                         post.id ?? 0,
                         context,
                       );
                     }
+
                     controller.isLoading.value = false;
                     controller.commment.value.clear();
-                    controller.editingCommentId.value = 0; // Reset editing mode
-                    controller.replyCommentId.value = 0; // Reset reply mode
+                    controller.editingCommentId.value = 0;
+                    controller.replyCommentId.value = 0;
+                    controller.isEditingAnswer.value = false;
+                    controller.isReplyAnswer.value = false;
                     isLimitExceeded = false;
 
                     await _refreshData();

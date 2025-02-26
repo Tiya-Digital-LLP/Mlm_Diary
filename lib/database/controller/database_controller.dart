@@ -28,6 +28,8 @@ class DatabaseController extends GetxController {
   final ClasifiedController clasifiedController =
       Get.put(ClasifiedController());
   final SignupController signupController = Get.put(SignupController());
+  RxBool isFollowing = false.obs;
+  RxBool isBookmarked = false.obs;
 
   @override
   void onInit() {
@@ -193,6 +195,16 @@ class DatabaseController extends GetxController {
         if (firstPost != null) {
           mlmDetailsDatabaseList.clear();
           mlmDetailsDatabaseList.add(firstPost);
+          // Update follow status
+          isFollowing.value = firstPost.followStatus ?? false;
+
+          // Update bookmark status
+          isBookmarked.value = firstPost.favStatus ?? false;
+
+          if (kDebugMode) {
+            print('isFollowing: ${isFollowing.value}');
+            print('isBookmarked: ${isBookmarked.value}');
+          }
         } else {
           showToasterrorborder("No data found", context);
           if (kDebugMode) {

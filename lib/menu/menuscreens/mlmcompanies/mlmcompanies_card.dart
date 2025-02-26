@@ -124,7 +124,7 @@ class _MlmcompaniesCardState extends State<MlmCompaniesCard>
                     width: 60.0,
                     fit: BoxFit.cover,
                     errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
+                        Image.asset(Assets.imagesAdminlogo),
                   ),
                 ),
               ),

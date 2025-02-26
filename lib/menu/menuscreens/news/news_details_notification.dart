@@ -188,6 +188,8 @@ class _MyNewsDetailScreenState extends State<NewsDetailsNotification>
                                 child: CachedNetworkImage(
                                   imageUrl: post.imageUrl.toString(),
                                   fit: BoxFit.fill,
+                                  errorWidget: (context, url, error) =>
+                                      Image.asset(Assets.imagesLogo),
                                 ),
                               ),
                             ),

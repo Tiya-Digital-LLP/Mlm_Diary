@@ -213,7 +213,7 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
                                   height: 50,
                                   width: 50,
                                   errorWidget: (context, url, error) =>
-                                      const Icon(Icons.error),
+                                      Image.asset(Assets.imagesAdminlogo),
                                 ),
                               ),
                               20.sbw,
@@ -359,7 +359,7 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
                                   height: 50,
                                   width: 50,
                                   errorWidget: (context, url, error) =>
-                                      const Icon(Icons.error),
+                                      Image.asset(Assets.imagesAdminlogo),
                                 ),
                               ),
                               20.sbw,

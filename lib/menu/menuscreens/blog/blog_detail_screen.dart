@@ -253,6 +253,8 @@ class _BlogDetailScreenState extends State<BlogDetailScreen>
                                         child: CachedNetworkImage(
                                           imageUrl: post.imageUrl,
                                           fit: BoxFit.fill,
+                                          errorWidget: (context, url, error) =>
+                                              Image.asset(Assets.imagesLogo),
                                         ),
                                       ),
                                     ),

@@ -142,6 +142,8 @@ class _FavouritrCardState extends State<DatabaseHomeCard> {
                       child: CachedNetworkImage(
                         imageUrl: widget.postImage,
                         fit: BoxFit.fill,
+                        errorWidget: (context, url, error) =>
+                            Image.asset(Assets.imagesAdminlogo),
                       ),
                     ),
                   ),

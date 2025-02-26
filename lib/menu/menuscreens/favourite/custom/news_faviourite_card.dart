@@ -164,8 +164,6 @@ class _FavouritrCardState extends State<NewsFaviouriteCard>
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // if (widget.userImage.isNotEmpty &&
-                //     Uri.tryParse(widget.userImage)?.hasAbsolutePath == true)
                 ClipRRect(
                   borderRadius: BorderRadius.circular(100),
                   child: CachedNetworkImage(
@@ -272,6 +270,8 @@ class _FavouritrCardState extends State<NewsFaviouriteCard>
                   child: CachedNetworkImage(
                     imageUrl: widget.postImage,
                     fit: BoxFit.fill,
+                    errorWidget: (context, url, error) =>
+                        Image.asset(Assets.imagesLogo),
                   ),
                 ),
               ),

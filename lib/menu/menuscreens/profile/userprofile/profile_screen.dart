@@ -28,15 +28,15 @@ import 'dart:io' as io;
 
 import 'package:url_launcher/url_launcher.dart';
 
-class UserProfileScreenCopy extends StatefulWidget {
+class ProfileScreen extends StatefulWidget {
   final int userId;
-  const UserProfileScreenCopy({super.key, required this.userId});
+  const ProfileScreen({super.key, required this.userId});
 
   @override
-  State<UserProfileScreenCopy> createState() => _UserProfileScreenState();
+  State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _UserProfileScreenState extends State<UserProfileScreenCopy>
+class _ProfileScreenState extends State<ProfileScreen>
     with SingleTickerProviderStateMixin {
   final ProfileController profileController = Get.put(ProfileController());
   final EditPostController editPostController = Get.put(EditPostController());
@@ -554,6 +554,8 @@ class _UserProfileScreenState extends State<UserProfileScreenCopy>
                                   imageUrl: post.imagePath.toString(),
                                   fit: BoxFit.contain,
                                   width: MediaQuery.of(context).size.width,
+                                  errorWidget: (context, url, error) =>
+                                      Image.asset(Assets.imagesAdminlogo),
                                 ),
                               ),
                             ),

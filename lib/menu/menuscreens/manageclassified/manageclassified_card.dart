@@ -119,7 +119,7 @@ class _ManageClassifiedCardState extends State<ManageClassifiedCard>
                     width: 105,
                     fit: BoxFit.fill,
                     errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
+                        Image.asset(Assets.imagesAdminlogo),
                   ),
                 ),
                 10.sbw,

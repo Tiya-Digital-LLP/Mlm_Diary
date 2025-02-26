@@ -204,7 +204,7 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen>
                             width: 105,
                             fit: BoxFit.fill,
                             errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
+                                Image.asset(Assets.imagesLogo),
                           ),
                         ),
                       ),

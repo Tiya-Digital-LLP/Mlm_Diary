@@ -54,7 +54,8 @@ class MyProfileCard extends StatefulWidget {
   State<MyProfileCard> createState() => _MyProfileCardState();
 }
 
-class _MyProfileCardState extends State<MyProfileCard> {
+class _MyProfileCardState extends State<MyProfileCard>
+    with SingleTickerProviderStateMixin {
   late PostTimeFormatter postTimeFormatter;
 
   late RxBool isLiked;
@@ -67,6 +68,8 @@ class _MyProfileCardState extends State<MyProfileCard> {
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+
     postTimeFormatter = PostTimeFormatter();
     initializeLikes();
     initializeBookmarks();
@@ -132,7 +135,7 @@ class _MyProfileCardState extends State<MyProfileCard> {
                             width: 105,
                             fit: BoxFit.fill,
                             errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
+                                Image.asset(Assets.imagesAdminlogo),
                           ),
                         ),
                       ),
@@ -208,7 +211,7 @@ class _MyProfileCardState extends State<MyProfileCard> {
                             width: 105,
                             fit: BoxFit.fill,
                             errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
+                                Image.asset(Assets.imagesLogo),
                           ),
                         )
                       : const SizedBox.shrink(),

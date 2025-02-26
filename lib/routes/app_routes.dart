@@ -37,7 +37,6 @@ abstract class Routes {
 
   static const profilescreen = '/profileScreen';
   static const userprofilescreen = '/userProfileScreen';
-  static const userprofilescreencopy = '/userProfileScreenCopy';
 
   static const accountsettingscreen = '/accountSettingScreen';
   static const mlmclassified = '/mlmClassified';

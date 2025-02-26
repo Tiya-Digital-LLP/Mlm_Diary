@@ -176,6 +176,8 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard>
                       child: CachedNetworkImage(
                         imageUrl: widget.userImage,
                         fit: BoxFit.fill,
+                        errorWidget: (context, url, error) =>
+                            Image.asset(Assets.imagesAdminlogo),
                       ),
                     ),
                   ),
@@ -245,6 +247,8 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard>
                         child: CachedNetworkImage(
                           imageUrl: widget.postImage,
                           fit: BoxFit.fill,
+                          errorWidget: (context, url, error) =>
+                              Image.asset(Assets.imagesLogo),
                         ),
                       ),
                     ),

@@ -229,6 +229,8 @@ class _BlogCardState extends State<BlogCard>
                   child: CachedNetworkImage(
                     imageUrl: widget.userImage,
                     fit: BoxFit.fill,
+                    errorWidget: (context, url, error) =>
+                        Image.asset(Assets.imagesLogo),
                   ),
                 ),
               ),

@@ -123,7 +123,7 @@ class _ManageQuestionCardState extends State<ManageQuestionCard>
                       width: 60,
                       fit: BoxFit.cover,
                       errorWidget: (context, url, error) =>
-                          const Icon(Icons.error),
+                          Image.asset(Assets.imagesAdminlogo),
                     ),
                   ),
                 ),

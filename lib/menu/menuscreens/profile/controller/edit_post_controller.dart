@@ -771,6 +771,65 @@ class EditPostController extends GetxController {
     }
   }
 
+// Countviewpost
+  Future<void> countViewUserPost(int postId, context) async {
+    isLoading(true);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? apiToken = prefs.getString(Constants.accessToken);
+    String device = '';
+    if (Platform.isAndroid) {
+      device = 'android';
+    } else if (Platform.isIOS) {
+      device = 'ios';
+    }
+    if (kDebugMode) {
+      print('Device Name: $device');
+    }
+
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      // ignore: unrelated_type_equality_checks
+      if (connectivityResult != ConnectivityResult.none) {
+        var uri = Uri.parse('${Constants.baseUrl}${Constants.countviewpost}');
+        var request = http.MultipartRequest('POST', uri);
+
+        request.fields['api_token'] = apiToken ?? '';
+        request.fields['device'] = device;
+        request.fields['user_id'] = postId.toString();
+
+        if (kDebugMode) {
+          print("post view api token: $apiToken");
+          print("post view device: $device");
+          print("post view user_id: $postId");
+        }
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          var countViewUserProfileEntity =
+              UserProfileCountViewEntity.fromJson(data);
+
+          if (kDebugMode) {
+            print('countViewUserPost: $countViewUserProfileEntity');
+          }
+        } else {
+          //
+        }
+      } else {
+        showToasterrorborder("No internet connection", context);
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error: $e");
+      }
+    } finally {
+      isLoading(false);
+    }
+  }
+
   //like
   Future<void> likedPost(int postId, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

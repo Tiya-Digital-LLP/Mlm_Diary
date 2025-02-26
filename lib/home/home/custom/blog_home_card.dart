@@ -276,6 +276,8 @@ class _FavouritrCardState extends State<BlogHomeCard>
                     child: CachedNetworkImage(
                       imageUrl: widget.postImage,
                       fit: BoxFit.fill,
+                      errorWidget: (context, url, error) =>
+                          Image.asset(Assets.imagesLogo),
                     ),
                   ),
                 ),

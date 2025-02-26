@@ -245,8 +245,6 @@ class _FavouritrCardState extends State<PostFavouriteCard>
                 },
               ),
             ),
-            // if (widget.postImage.isNotEmpty &&
-            //     Uri.tryParse(widget.postImage)?.hasAbsolutePath == true)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 6),
               child: SizedBox(
@@ -257,6 +255,8 @@ class _FavouritrCardState extends State<PostFavouriteCard>
                   child: CachedNetworkImage(
                     imageUrl: widget.postImage,
                     fit: BoxFit.fill,
+                    errorWidget: (context, url, error) =>
+                        Image.asset(Assets.imagesLogo),
                   ),
                 ),
               ),

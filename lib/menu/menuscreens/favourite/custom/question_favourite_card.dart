@@ -167,7 +167,7 @@ class _FavouritrCardState extends State<QuestionFavouriteCard>
                     width: 60,
                     fit: BoxFit.fill,
                     errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
+                        Image.asset(Assets.imagesAdminlogo),
                   ),
                 ),
                 10.sbw,

@@ -141,6 +141,8 @@ class _ManageNewsCardState extends State<ManageNewsCard>
                     height: 97,
                     width: 105,
                     fit: BoxFit.fill,
+                    errorWidget: (context, url, error) =>
+                        Image.asset(Assets.imagesAdminlogo),
                   ),
                 ),
                 10.sbw,

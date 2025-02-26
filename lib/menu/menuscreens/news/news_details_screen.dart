@@ -227,8 +227,6 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen>
                               SizedBox(
                                 height: size.height * 0.012,
                               ),
-                              // if (post.imageUrl.isNotEmpty &&
-                              //     Uri.tryParse(post.imageUrl)?.hasAbsolutePath == true)
                               Padding(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 16),
@@ -244,6 +242,8 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen>
                                       child: CachedNetworkImage(
                                         imageUrl: post.imageUrl,
                                         fit: BoxFit.fill,
+                                        errorWidget: (context, url, error) =>
+                                            Image.asset(Assets.imagesLogo),
                                       ),
                                     ),
                                   ),
@@ -298,9 +298,7 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen>
                                       bottom: BorderSide(color: Colors.grey)),
                                 ),
                               ),
-
                               5.sbh,
-
                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 16,

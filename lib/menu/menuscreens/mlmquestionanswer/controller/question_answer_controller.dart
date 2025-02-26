@@ -96,6 +96,8 @@ class QuestionAnswerController extends GetxController {
 
   var selectedCategoryId = 0.obs;
   var selectedSubCategoryId = 0.obs;
+  var isEditingAnswer = false.obs;
+  var isReplyAnswer = false.obs;
 
   RxString hintText = "Write your answer here".obs;
 
@@ -391,6 +393,10 @@ class QuestionAnswerController extends GetxController {
         request.fields['device'] = device;
         request.fields['type'] = 'answer';
         request.fields['comment_id'] = commentId.toString();
+
+        if (kDebugMode) {
+          print('deleteComment: ${request.fields}');
+        }
 
         final streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);
@@ -806,6 +812,10 @@ class QuestionAnswerController extends GetxController {
         request.fields['device'] = device;
         request.fields['answer_id'] = answerId.toString();
         request.fields['comment'] = commment.value.text;
+
+        if (kDebugMode) {
+          print('addReplyAnswer: ${request.fields}');
+        }
 
         final streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);
