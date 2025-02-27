@@ -39,7 +39,11 @@ class VideoHomeCard extends StatelessWidget {
               width: double.infinity,
               child: VideoPlayerWidget(url: postVideo),
             ),
-            Html(data: postTitle),
+            Row(
+              children: [
+                Html(data: postTitle),
+              ],
+            ),
             Align(
               alignment: Alignment.topRight,
               child: GestureDetector(

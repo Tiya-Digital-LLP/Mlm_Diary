@@ -44,6 +44,7 @@ class HomeController extends GetxController {
   var isLoading = false.obs;
   String type = '';
   RxInt notificationCount = RxInt(0);
+  RxBool isFollowing = false.obs;
 
   @override
   void onInit() {

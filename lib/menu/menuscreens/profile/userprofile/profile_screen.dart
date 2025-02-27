@@ -43,6 +43,16 @@ class _ProfileScreenState extends State<ProfileScreen>
   final DatabaseController controller = Get.put(DatabaseController());
 
   late ScrollController _viewersScrollController;
+  late ScrollController _scrollController;
+
+  void _scrollListener(String userId) {
+    if (_scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent &&
+        !controller.isEndOfData.value) {
+      int nextPage = (userProfileController.postallList.length ~/ 10) + 1;
+      userProfileController.fetchUserAllPost(nextPage, userId);
+    }
+  }
 
   bool isFetchingViewrs = false;
   RxBool isExpanded = true.obs;
@@ -59,6 +69,7 @@ class _ProfileScreenState extends State<ProfileScreen>
   void initState() {
     super.initState();
     _viewersScrollController = ScrollController();
+    _scrollController = ScrollController();
 
     Future.delayed(const Duration(seconds: 1), () {
       showShimmer.value = false;
@@ -74,6 +85,8 @@ class _ProfileScreenState extends State<ProfileScreen>
         _loadMoreViewers();
       }
     });
+    _scrollController
+        .addListener(() => _scrollListener(widget.userId.toString()));
   }
 
   Future<void> _loadMoreViewers() async {
@@ -84,6 +97,25 @@ class _ProfileScreenState extends State<ProfileScreen>
       await userProfileController.getViews(nextPage, widget.userId);
 
       isFetchingViewrs = false;
+    }
+  }
+
+  Future<void> _refreshData(String userId) async {
+    try {
+      controller.isEndOfData.value = false;
+      editPostController.myPostList.clear();
+      editPostController.fetchMyPost();
+      editPostController.fetchPost(1);
+      editPostController.fetchUserProfile();
+      editPostController.fetchTestMyPost(
+        1,
+        context,
+        profileController.userProfile.value.userProfile!.id ?? 0,
+      );
+    } catch (error) {
+      if (kDebugMode) {
+        print('Error fetching Home data: $error');
+      }
     }
   }
 
@@ -126,46 +158,53 @@ class _ProfileScreenState extends State<ProfileScreen>
           ],
         ),
       ),
-      body: Obx(
-        () => SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                color: AppColors.white,
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    showShimmer.value
-                        ? const PersonalInfoShimmer()
-                        : personlaInfo(),
-                    5.sbh,
-                    showShimmer.value
-                        ? AxisScrollShimmer(
-                            width: size.width,
-                          )
-                        : axisScroll(),
-                  ],
+      body: RefreshIndicator(
+        backgroundColor: AppColors.primaryColor,
+        color: AppColors.white,
+        onRefresh: () async {
+          _refreshData(widget.userId.toString());
+        },
+        child: Obx(
+          () => SingleChildScrollView(
+            controller: _scrollController,
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Column(
+              children: [
+                Container(
+                  color: AppColors.white,
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      showShimmer.value
+                          ? const PersonalInfoShimmer()
+                          : personlaInfo(),
+                      5.sbh,
+                      showShimmer.value
+                          ? AxisScrollShimmer(
+                              width: size.width,
+                            )
+                          : axisScroll(),
+                    ],
+                  ),
                 ),
-              ),
-              const Divider(color: Colors.black26, height: 2.0),
-              ScrollableTab(
-                indicatorSize: TabBarIndicatorSize.tab,
-                indicatorColor: AppColors.primaryColor,
-                indicatorWeight: 1.5,
-                labelColor: AppColors.primaryColor,
-                dividerColor: Colors.grey,
-                onTap: (value) {
-                  if (kDebugMode) {
-                    print('index $value');
-                  }
-                },
-                tabs: [
-                  Obx(() => Tab(text: 'Posts (${profileController.post})')),
-                  const Tab(text: 'About Me'),
-                ],
-                children: [
-                  SingleChildScrollView(
-                    child: Column(
+                const Divider(color: Colors.black26, height: 2.0),
+                ScrollableTab(
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  indicatorColor: AppColors.primaryColor,
+                  indicatorWeight: 1.5,
+                  labelColor: AppColors.primaryColor,
+                  dividerColor: Colors.grey,
+                  onTap: (value) {
+                    if (kDebugMode) {
+                      print('index $value');
+                    }
+                  },
+                  tabs: [
+                    Obx(() => Tab(text: 'Posts (${profileController.post})')),
+                    const Tab(text: 'About Me'),
+                  ],
+                  children: [
+                    Column(
                       children: [
                         posts(),
                         8.sbh,
@@ -233,19 +272,19 @@ class _ProfileScreenState extends State<ProfileScreen>
                         }),
                       ],
                     ),
-                  ),
-                  SingleChildScrollView(
-                    padding:
-                        const EdgeInsets.only(top: 20, left: 16, right: 16),
-                    child: Column(
-                      children: [
-                        aboutMe(),
-                      ],
+                    SingleChildScrollView(
+                      padding:
+                          const EdgeInsets.only(top: 20, left: 16, right: 16),
+                      child: Column(
+                        children: [
+                          aboutMe(),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

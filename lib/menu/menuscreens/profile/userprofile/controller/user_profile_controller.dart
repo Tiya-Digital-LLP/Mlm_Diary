@@ -378,7 +378,6 @@ class UserProfileController extends GetxController {
 
   Future<void> fetchUserAllPost(int page, String userId) async {
     isLoading.value = true;
-    postallList.clear();
 
     String device = Platform.isAndroid
         ? 'android'

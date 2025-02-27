@@ -91,6 +91,10 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       controller.isEndOfData.value = false;
       controller.homeList.clear();
+      controller.mutualFriendList.clear();
+      controller.isLoading.value = true;
+      controller.mutualFriend(1);
+      controller.banners.clear();
       await controller.getHome(
         1,
       );
@@ -427,7 +431,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8),
                             child: ListView.builder(
-                              physics: const AlwaysScrollableScrollPhysics(),
+                              physics: const NeverScrollableScrollPhysics(),
                               itemCount: 4,
                               shrinkWrap: true,
                               itemBuilder: (context, index) {
@@ -443,7 +447,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8),
                             child: ListView.builder(
-                              physics: const AlwaysScrollableScrollPhysics(),
+                              physics: const NeverScrollableScrollPhysics(),
                               itemCount: 4,
                               shrinkWrap: true,
                               itemBuilder: (context, index) {
@@ -1044,9 +1048,10 @@ class _HomeScreenState extends State<HomeScreen> {
       case 'database':
         if (kDebugMode) {
           print('database');
+          print('database UserId:${post.id}');
         }
         Get.toNamed(Routes.userprofilescreen, arguments: {'user_id': post.id});
-        await userProfileController.fetchUserAllPost(1, post.id ?? 0);
+        await userProfileController.fetchUserAllPost(1, post.id.toString());
         break;
 
       case 'question':

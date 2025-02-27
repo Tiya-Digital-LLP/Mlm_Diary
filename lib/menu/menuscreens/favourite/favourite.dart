@@ -414,14 +414,10 @@ class _FavouriteState extends State<Favourite> {
       case 'database':
         if (kDebugMode) {
           print('database');
+          print('database UserId:${post.id}');
         }
-        Get.toNamed(Routes.userprofilescreen, arguments: {
-          'user_id': post.userId ?? 0,
-        });
-        await userProfileController.fetchUserAllPost(
-          1,
-          post.userId.toString(),
-        );
+        Get.toNamed(Routes.userprofilescreen, arguments: {'user_id': post.id});
+        await userProfileController.fetchUserAllPost(1, post.id.toString());
         break;
       case 'question':
         if (kDebugMode) {

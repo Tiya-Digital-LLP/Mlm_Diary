@@ -58,16 +58,15 @@ GetUserAllPostData $GetUserAllPostDataFromJson(Map<String, dynamic> json) {
   if (urlcomponent != null) {
     getUserAllPostData.urlcomponent = urlcomponent;
   }
-  final String? company = jsonConvert.convert<String>(json['company']);
+  final dynamic company = json['company'];
   if (company != null) {
     getUserAllPostData.company = company;
   }
-  final String? popular = jsonConvert.convert<String>(json['popular']);
+  final dynamic popular = json['popular'];
   if (popular != null) {
     getUserAllPostData.popular = popular;
   }
-  final String? premiumsdate = jsonConvert.convert<String>(
-      json['premiumsdate']);
+  final dynamic premiumsdate = json['premiumsdate'];
   if (premiumsdate != null) {
     getUserAllPostData.premiumsdate = premiumsdate;
   }
@@ -83,7 +82,7 @@ GetUserAllPostData $GetUserAllPostDataFromJson(Map<String, dynamic> json) {
   if (description != null) {
     getUserAllPostData.description = description;
   }
-  final String? website = jsonConvert.convert<String>(json['website']);
+  final dynamic website = json['website'];
   if (website != null) {
     getUserAllPostData.website = website;
   }
@@ -107,7 +106,7 @@ GetUserAllPostData $GetUserAllPostDataFromJson(Map<String, dynamic> json) {
   if (pgcnt != null) {
     getUserAllPostData.pgcnt = pgcnt;
   }
-  final String? location = jsonConvert.convert<String>(json['location']);
+  final dynamic location = json['location'];
   if (location != null) {
     getUserAllPostData.location = location;
   }
@@ -159,6 +158,11 @@ GetUserAllPostData $GetUserAllPostDataFromJson(Map<String, dynamic> json) {
       json['is_popular_classified']);
   if (isPopularClassified != null) {
     getUserAllPostData.isPopularClassified = isPopularClassified;
+  }
+  final int? totalquestionAnswer = jsonConvert.convert<int>(
+      json['totalquestion_answer']);
+  if (totalquestionAnswer != null) {
+    getUserAllPostData.totalquestionAnswer = totalquestionAnswer;
   }
   final bool? bookmarkByUser = jsonConvert.convert<bool>(
       json['bookmark_by_user']);
@@ -216,6 +220,7 @@ Map<String, dynamic> $GetUserAllPostDataToJson(GetUserAllPostData entity) {
   data['totallike'] = entity.totallike;
   data['totalcomment'] = entity.totalcomment;
   data['is_popular_classified'] = entity.isPopularClassified;
+  data['totalquestion_answer'] = entity.totalquestionAnswer;
   data['bookmark_by_user'] = entity.bookmarkByUser;
   data['liked_by_user'] = entity.likedByUser;
   data['image_url'] = entity.imageUrl;
@@ -229,19 +234,19 @@ extension GetUserAllPostDataExtension on GetUserAllPostData {
     int? id,
     String? title,
     String? urlcomponent,
-    String? company,
-    String? popular,
-    String? premiumsdate,
+    dynamic company,
+    dynamic popular,
+    dynamic premiumsdate,
     String? category,
     String? subcategory,
     String? description,
-    String? website,
+    dynamic website,
     dynamic email,
     dynamic phone,
     String? createdate,
     String? updatedAt,
     int? pgcnt,
-    String? location,
+    dynamic location,
     String? image,
     int? userId,
     String? type,
@@ -254,6 +259,7 @@ extension GetUserAllPostDataExtension on GetUserAllPostData {
     int? totallike,
     int? totalcomment,
     int? isPopularClassified,
+    int? totalquestionAnswer,
     bool? bookmarkByUser,
     bool? likedByUser,
     String? imageUrl,
@@ -289,6 +295,7 @@ extension GetUserAllPostDataExtension on GetUserAllPostData {
       ..totallike = totallike ?? this.totallike
       ..totalcomment = totalcomment ?? this.totalcomment
       ..isPopularClassified = isPopularClassified ?? this.isPopularClassified
+      ..totalquestionAnswer = totalquestionAnswer ?? this.totalquestionAnswer
       ..bookmarkByUser = bookmarkByUser ?? this.bookmarkByUser
       ..likedByUser = likedByUser ?? this.likedByUser
       ..imageUrl = imageUrl ?? this.imageUrl

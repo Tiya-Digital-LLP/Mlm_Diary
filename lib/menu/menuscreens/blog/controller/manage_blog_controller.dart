@@ -967,6 +967,7 @@ class ManageBlogController extends GetxController {
               title: const Text('Blog Updated Successfully'),
             );
             Get.back();
+            fetchMyBlog(context: context);
           } else if (jsonBody['status'] == 0) {
             toastification.show(
               context: context,

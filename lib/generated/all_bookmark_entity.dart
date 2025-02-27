@@ -34,12 +34,12 @@ class AllBookmarkData {
 	dynamic email;
 	dynamic phone;
 	String? createdate = '';
-	@JSONField(name: "updated_at")
+	@JSONField(name: 'updated_at')
 	String? updatedAt = '';
 	int? pgcnt = 0;
 	String? location = '';
 	String? image = '';
-	@JSONField(name: "user_id")
+	@JSONField(name: 'user_id')
 	int? userId = 0;
 	String? type = '';
 	String? immlm = '';
@@ -47,15 +47,17 @@ class AllBookmarkData {
 	String? city = '';
 	String? state = '';
 	String? country = '';
-	@JSONField(name: "bookmark_date")
+	@JSONField(name: 'bookmark_date')
 	String? bookmarkDate = '';
 	int? totallike = 0;
 	int? totalcomment = 0;
-	@JSONField(name: "liked_by_user")
+	@JSONField(name: 'totalquestion_answer')
+	int? totalquestionAnswer = 0;
+	@JSONField(name: 'liked_by_user')
 	bool? likedByUser = false;
-	@JSONField(name: "image_url")
+	@JSONField(name: 'image_url')
 	String? imageUrl = '';
-	@JSONField(name: "user_data")
+	@JSONField(name: 'user_data')
 	AllBookmarkDataUserData? userData;
 	String? datemodified = '';
 
@@ -77,11 +79,11 @@ class AllBookmarkDataUserData {
 	String? name = '';
 	String? email = '';
 	String? userimage = '';
-	dynamic countrycode1;
-	dynamic mobile;
-	@JSONField(name: "image_path")
+	String? countrycode1 = '';
+	String? mobile = '';
+	@JSONField(name: 'image_path')
 	String? imagePath = '';
-	@JSONField(name: "image_thum_path")
+	@JSONField(name: 'image_thum_path')
 	String? imageThumPath = '';
 
 	AllBookmarkDataUserData();

@@ -433,9 +433,10 @@ class _SearchBarAppState extends State<SearchBarApp> {
       case 'database':
         if (kDebugMode) {
           print('Navigating to UserProfileScreenCopy with post: $post');
+          print('database UserId:${post.id}');
         }
         Get.toNamed(Routes.userprofilescreen, arguments: {'user_id': post.id});
-        await userProfileController.fetchUserAllPost(1, post.id ?? 0);
+        await userProfileController.fetchUserAllPost(1, post.id.toString());
         break;
       case 'question':
         if (kDebugMode) {

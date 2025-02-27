@@ -59,11 +59,12 @@ GetHomeData $GetHomeDataFromJson(Map<String, dynamic> json) {
   if (company != null) {
     getHomeData.company = company;
   }
-  final dynamic popular = json['popular'];
+  final String? popular = jsonConvert.convert<String>(json['popular']);
   if (popular != null) {
     getHomeData.popular = popular;
   }
-  final dynamic premiumsdate = json['premiumsdate'];
+  final String? premiumsdate = jsonConvert.convert<String>(
+      json['premiumsdate']);
   if (premiumsdate != null) {
     getHomeData.premiumsdate = premiumsdate;
   }
@@ -79,7 +80,7 @@ GetHomeData $GetHomeDataFromJson(Map<String, dynamic> json) {
   if (description != null) {
     getHomeData.description = description;
   }
-  final dynamic website = json['website'];
+  final String? website = jsonConvert.convert<String>(json['website']);
   if (website != null) {
     getHomeData.website = website;
   }
@@ -165,6 +166,11 @@ GetHomeData $GetHomeDataFromJson(Map<String, dynamic> json) {
   if (likedByUser != null) {
     getHomeData.likedByUser = likedByUser;
   }
+  final int? totalquestionAnswer = jsonConvert.convert<int>(
+      json['totalquestion_answer']);
+  if (totalquestionAnswer != null) {
+    getHomeData.totalquestionAnswer = totalquestionAnswer;
+  }
   final String? imageUrl = jsonConvert.convert<String>(json['image_url']);
   if (imageUrl != null) {
     getHomeData.imageUrl = imageUrl;
@@ -214,6 +220,7 @@ Map<String, dynamic> $GetHomeDataToJson(GetHomeData entity) {
   data['is_popular_classified'] = entity.isPopularClassified;
   data['bookmark_by_user'] = entity.bookmarkByUser;
   data['liked_by_user'] = entity.likedByUser;
+  data['totalquestion_answer'] = entity.totalquestionAnswer;
   data['image_url'] = entity.imageUrl;
   data['user_data'] = entity.userData?.toJson();
   data['datemodified'] = entity.datemodified;
@@ -226,12 +233,12 @@ extension GetHomeDataExtension on GetHomeData {
     String? title,
     String? urlcomponent,
     String? company,
-    dynamic popular,
-    dynamic premiumsdate,
+    String? popular,
+    String? premiumsdate,
     String? category,
     String? subcategory,
     String? description,
-    dynamic website,
+    String? website,
     dynamic email,
     dynamic phone,
     String? createdate,
@@ -252,6 +259,7 @@ extension GetHomeDataExtension on GetHomeData {
     int? isPopularClassified,
     bool? bookmarkByUser,
     bool? likedByUser,
+    int? totalquestionAnswer,
     String? imageUrl,
     GetHomeDataUserData? userData,
     String? datemodified,
@@ -287,6 +295,7 @@ extension GetHomeDataExtension on GetHomeData {
       ..isPopularClassified = isPopularClassified ?? this.isPopularClassified
       ..bookmarkByUser = bookmarkByUser ?? this.bookmarkByUser
       ..likedByUser = likedByUser ?? this.likedByUser
+      ..totalquestionAnswer = totalquestionAnswer ?? this.totalquestionAnswer
       ..imageUrl = imageUrl ?? this.imageUrl
       ..userData = userData ?? this.userData
       ..datemodified = datemodified ?? this.datemodified;
@@ -311,11 +320,12 @@ GetHomeDataUserData $GetHomeDataUserDataFromJson(Map<String, dynamic> json) {
   if (userimage != null) {
     getHomeDataUserData.userimage = userimage;
   }
-  final dynamic countrycode1 = json['countrycode1'];
+  final String? countrycode1 = jsonConvert.convert<String>(
+      json['countrycode1']);
   if (countrycode1 != null) {
     getHomeDataUserData.countrycode1 = countrycode1;
   }
-  final dynamic mobile = json['mobile'];
+  final String? mobile = jsonConvert.convert<String>(json['mobile']);
   if (mobile != null) {
     getHomeDataUserData.mobile = mobile;
   }
@@ -350,8 +360,8 @@ extension GetHomeDataUserDataExtension on GetHomeDataUserData {
     String? name,
     String? email,
     String? userimage,
-    dynamic countrycode1,
-    dynamic mobile,
+    String? countrycode1,
+    String? mobile,
     String? imagePath,
     String? imageThumPath,
   }) {

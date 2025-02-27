@@ -219,6 +219,8 @@ class _CommentDialogState extends State<CommentDialogNews> {
             maxCharacters: maxCharacters,
             textController: controller.commment.value,
             onSend: () async {
+              FocusScope.of(context).unfocus();
+
               if (controller.commment.value.text.isEmpty) {
                 showToasterrorborder('Please enter your reply', context);
                 return;

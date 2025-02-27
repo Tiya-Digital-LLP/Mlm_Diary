@@ -41,16 +41,16 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen>
   PostTimeFormatter postTimeFormatter = PostTimeFormatter();
   final UserProfileController userProfileController =
       Get.put(UserProfileController());
-// like
-  late RxBool isLiked;
-  late RxInt likeCount;
+// Like
+  late RxBool isLiked = false.obs;
+  late RxInt likeCount = 0.obs;
+// Bookmark
+  late RxBool isBookmarked = false.obs;
+  late RxInt bookmarkCount = 0.obs;
 
   late PageController pageController;
   int currentPage = 0;
   int totalItems = 0;
-// bookmark
-  late RxBool isBookmarked;
-  late RxInt bookmarkCount;
 
   void initializeLikes(int index) {
     isLiked = RxBool(controller.newsList[index].likedByUser ?? false);
@@ -227,6 +227,8 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen>
                               SizedBox(
                                 height: size.height * 0.012,
                               ),
+                              // if (post.imageUrl.isNotEmpty &&
+                              //     Uri.tryParse(post.imageUrl)?.hasAbsolutePath == true)
                               Padding(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 16),
@@ -242,8 +244,6 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen>
                                       child: CachedNetworkImage(
                                         imageUrl: post.imageUrl,
                                         fit: BoxFit.fill,
-                                        errorWidget: (context, url, error) =>
-                                            Image.asset(Assets.imagesLogo),
                                       ),
                                     ),
                                   ),
@@ -298,7 +298,9 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen>
                                       bottom: BorderSide(color: Colors.grey)),
                                 ),
                               ),
+
                               5.sbh,
+
                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 16,

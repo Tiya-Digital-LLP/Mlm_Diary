@@ -146,6 +146,11 @@ AllBookmarkData $AllBookmarkDataFromJson(Map<String, dynamic> json) {
   if (totalcomment != null) {
     allBookmarkData.totalcomment = totalcomment;
   }
+  final int? totalquestionAnswer = jsonConvert.convert<int>(
+      json['totalquestion_answer']);
+  if (totalquestionAnswer != null) {
+    allBookmarkData.totalquestionAnswer = totalquestionAnswer;
+  }
   final bool? likedByUser = jsonConvert.convert<bool>(json['liked_by_user']);
   if (likedByUser != null) {
     allBookmarkData.likedByUser = likedByUser;
@@ -194,6 +199,7 @@ Map<String, dynamic> $AllBookmarkDataToJson(AllBookmarkData entity) {
   data['bookmark_date'] = entity.bookmarkDate;
   data['totallike'] = entity.totallike;
   data['totalcomment'] = entity.totalcomment;
+  data['totalquestion_answer'] = entity.totalquestionAnswer;
   data['liked_by_user'] = entity.likedByUser;
   data['image_url'] = entity.imageUrl;
   data['user_data'] = entity.userData?.toJson();
@@ -228,6 +234,7 @@ extension AllBookmarkDataExtension on AllBookmarkData {
     String? bookmarkDate,
     int? totallike,
     int? totalcomment,
+    int? totalquestionAnswer,
     bool? likedByUser,
     String? imageUrl,
     AllBookmarkDataUserData? userData,
@@ -259,6 +266,7 @@ extension AllBookmarkDataExtension on AllBookmarkData {
       ..bookmarkDate = bookmarkDate ?? this.bookmarkDate
       ..totallike = totallike ?? this.totallike
       ..totalcomment = totalcomment ?? this.totalcomment
+      ..totalquestionAnswer = totalquestionAnswer ?? this.totalquestionAnswer
       ..likedByUser = likedByUser ?? this.likedByUser
       ..imageUrl = imageUrl ?? this.imageUrl
       ..userData = userData ?? this.userData
@@ -285,11 +293,12 @@ AllBookmarkDataUserData $AllBookmarkDataUserDataFromJson(
   if (userimage != null) {
     allBookmarkDataUserData.userimage = userimage;
   }
-  final dynamic countrycode1 = json['countrycode1'];
+  final String? countrycode1 = jsonConvert.convert<String>(
+      json['countrycode1']);
   if (countrycode1 != null) {
     allBookmarkDataUserData.countrycode1 = countrycode1;
   }
-  final dynamic mobile = json['mobile'];
+  final String? mobile = jsonConvert.convert<String>(json['mobile']);
   if (mobile != null) {
     allBookmarkDataUserData.mobile = mobile;
   }
@@ -325,8 +334,8 @@ extension AllBookmarkDataUserDataExtension on AllBookmarkDataUserData {
     String? name,
     String? email,
     String? userimage,
-    dynamic countrycode1,
-    dynamic mobile,
+    String? countrycode1,
+    String? mobile,
     String? imagePath,
     String? imageThumPath,
   }) {

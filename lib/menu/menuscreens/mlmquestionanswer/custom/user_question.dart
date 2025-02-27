@@ -1009,9 +1009,14 @@ class _UserQuestionState extends State<UserQuestion>
                       padding: const EdgeInsets.all(16.0),
                       child: Obx(
                         () {
-                          if (controller.isLoading.value &&
-                              controller.answerList.isEmpty) {
-                            return const SizedBox();
+                          if (controller.isLoading.value) {
+                            return Center(
+                              child: CustomLottieAnimation(
+                                child: Lottie.asset(
+                                  Assets.lottieLottie,
+                                ),
+                              ),
+                            );
                           }
                           if (controller.answerList.isEmpty) {
                             return Center(
@@ -1099,6 +1104,8 @@ class _UserQuestionState extends State<UserQuestion>
                   maxCharacters: maxCharacters,
                   textController: controller.commment.value,
                   onSend: () async {
+                    FocusScope.of(context).unfocus();
+
                     if (controller.commment.value.text.isEmpty) {
                       showToasterrorborder('Please enter your reply', context);
                       return;

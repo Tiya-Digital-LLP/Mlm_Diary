@@ -45,12 +45,12 @@ class _BlogDetailScreenState extends State<BlogDetailScreen>
       Get.put(UserProfileController());
   PostTimeFormatter postTimeFormatter = PostTimeFormatter();
 
-  // like
-  late RxBool isLiked;
-  late RxInt likeCount;
-// bookmark
-  late RxBool isBookmarked;
-  late RxInt bookmarkCount;
+// Like
+  late RxBool isLiked = false.obs;
+  late RxInt likeCount = 0.obs;
+// Bookmark
+  late RxBool isBookmarked = false.obs;
+  late RxInt bookmarkCount = 0.obs;
 
   late PageController pageController;
   int currentPage = 0;
@@ -130,7 +130,6 @@ class _BlogDetailScreenState extends State<BlogDetailScreen>
             currentPage = index;
             post = controller.blogList[index];
 
-            // Update isLiked and likeCount for the new post
             initializeLikes(index);
             initializeBookmarks(index);
           });
