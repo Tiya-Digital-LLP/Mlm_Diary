@@ -133,7 +133,7 @@ class NotificationHandler {
 
           // Chat
           case 'chat':
-            Get.toNamed(Routes.usermessagedetailscreen, arguments: {
+            Get.toNamed(Routes.messagedetailscreen, arguments: {
               "chatId": chatId,
               "username": username,
               "imageUrl": imageUrl,

@@ -1224,26 +1224,23 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                 const SizedBox(width: 10),
                 InkWell(
                   onTap: () async {
-                    final dummyPost = {
-                      "chatId": null,
-                      "toid": post.id,
-                      "username": post.name,
-                      "imageUrl": post.imageUrl,
+                    final arguments = {
+                      'chatId': post.chatId,
+                      'toId': post.id.toString(),
+                      'userName': post.name,
+                      'userImage': post.imageUrl,
                     };
 
-                    if (dummyPost['chatId'] == null) {
-                      messageController
-                          .fetchMyChatDetail(post.chatId.toString());
-                      Get.toNamed(
-                        Routes.usermessagedetailscreen,
-                        arguments: dummyPost,
-                      );
-                    } else {
-                      Get.toNamed(
-                        Routes.messagedetailscreen,
-                        arguments: post,
-                      );
+                    if (kDebugMode) {
+                      print("Arguments: $arguments");
                     }
+
+                    Get.toNamed(
+                      Routes.messagedetailscreen,
+                      arguments: arguments,
+                    );
+
+                    messageController.fetchMyChatDetail(post.chatId.toString());
                   },
                   child: const SocialButton(
                       icon: Assets.svgChat, label: 'Message'),

@@ -20,7 +20,6 @@ abstract class Routes {
 
   static const messagescreen = '/messageScreen';
   static const messagedetailscreen = '/messageDetailScreen';
-  static const usermessagedetailscreen = '/userMessageDetailScreen';
 
   static const aboutus = '/aboutUs';
   static const contactus = '/contactUs';

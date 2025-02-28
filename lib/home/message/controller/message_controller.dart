@@ -86,14 +86,9 @@ class MessageController extends GetxController {
   }
 
   Future<void> fetchMyChatDetail(String? chatId) async {
-    // Clear list and stop execution if chatId is null
-    if (chatId == null) {
-      chatdetailsList.clear();
-      if (kDebugMode) {
-        print('Chat ID is null, clearing chat details list');
-      }
-      return;
-    }
+    isLoading.value = true;
+
+    chatdetailsList.clear();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
@@ -129,16 +124,9 @@ class MessageController extends GetxController {
 
           if (getMyChatHistoryEntity.mychatoverview != null &&
               getMyChatHistoryEntity.mychatoverview!.data != null) {
-            // Clear the old chat details list before adding new data
-            profileController.fetchUserProfile();
-
             chatdetailsList.clear();
             chatdetailsList
                 .assignAll(getMyChatHistoryEntity.mychatoverview!.data!);
-
-            if (kDebugMode) {
-              print('Fetched ${chatdetailsList.length} posts');
-            }
           } else {
             if (kDebugMode) {
               print(
@@ -161,12 +149,14 @@ class MessageController extends GetxController {
       if (kDebugMode) {
         print('Error: $e');
       }
+    } finally {
+      isLoading.value = false;
     }
   }
 
   Future<void> sendChat({
     required String toId,
-    String? chatId,
+    required String chatId,
   }) async {
     isLoading(true);
 
@@ -179,14 +169,14 @@ class MessageController extends GetxController {
       request.fields['api_token'] = apiToken.toString();
       request.fields['toid'] = toId;
       request.fields['msg'] = msg.value.text;
-      request.fields['chat_id'] = chatId ?? '';
+      request.fields['chat_id'] = chatId.toString();
 
       if (kDebugMode) {
         print('Request payload:');
         print('api_token: $apiToken');
         print('toid: $toId');
         print('msg: ${msg.value.text}');
-        print('chat_id: ${chatId ?? ''}');
+        print('chat_id: ${chatId.toString()}');
       }
 
       final streamedResponse = await request.send();
@@ -205,12 +195,8 @@ class MessageController extends GetxController {
           if (kDebugMode) {
             print('Chat sent successfully');
           }
-          // Fetch the updated chat details
-          final String updatedChatId =
-              jsonBody['record']['chat_id']?.toString() ?? '';
-          this.chatId.value = updatedChatId; // Store the updated chatId
 
-          await fetchMyChatDetail(updatedChatId);
+          await fetchMyChatDetail(chatId.toString());
 
           // Clear the message input field after sending the message
           msg.value.clear();
@@ -297,7 +283,7 @@ class MessageController extends GetxController {
     }
   }
 
-  Future<void> fetchNewChat(int lastId, String chatId) async {
+  Future<void> fetchNewChat(String chatId, int lastId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
     String device = Platform.isAndroid ? 'android' : 'ios';
@@ -305,87 +291,69 @@ class MessageController extends GetxController {
     try {
       var uri = Uri.parse('${Constants.baseUrl}${Constants.sendnewchat}');
       var request = http.MultipartRequest('POST', uri);
-      request.fields['api_token'] = apiToken.toString();
+      request.fields['api_token'] = apiToken ?? '';
       request.fields['device'] = device;
-      request.fields['chat_id'] = chatId.toString();
+      request.fields['chat_id'] = chatId;
       request.fields['last_id'] = lastId.toString();
 
       if (kDebugMode) {
-        print('api_token: $apiToken');
-        print('device: $device');
-        print('chat_id: $chatId');
-        print('last_id: $lastId');
+        print('Fetching new chat messages...');
       }
 
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
 
       if (kDebugMode) {
-        print('fetchNewChat: ${response.body}');
+        print('fetchNewChat Response: ${response.body}');
       }
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonBody = json.decode(response.body);
 
-        if (jsonBody.containsKey('success')) {
-          if (kDebugMode) {
-            print('Chat sent successfully');
-          }
-        } else if (jsonBody.containsKey('error')) {
-          if (kDebugMode) {
-            print('Failed to send chat: ${jsonBody['error']}');
-          }
-        } else {
-          try {
-            // Check if mychatoverview is a Map or List and handle accordingly
-            if (jsonBody['mychatoverview'] is Map<String, dynamic>) {
-              GetMyChatDetailEntity chatDetailEntity =
-                  GetMyChatDetailEntity.fromJson(jsonBody);
+        if (jsonBody['status'] == 1 && jsonBody.containsKey('mychatoverview')) {
+          List<dynamic> chatDataList = jsonBody['mychatoverview'];
+
+          if (chatDataList.isNotEmpty) {
+            // Convert JSON data to model
+            List<GetMyChatDetailMychatoverviewData> newChats = chatDataList
+                .map((chat) => GetMyChatDetailMychatoverviewData.fromJson(chat))
+                .toList();
+
+            // Filter duplicates
+            newChats.removeWhere((newChat) => chatdetailsList
+                .any((existingChat) => existingChat.id == newChat.id));
+
+            if (newChats.isNotEmpty) {
+              // Add new messages to the **bottom** of the list
+              chatdetailsList.insertAll(0, newChats);
+              chatdetailsList.refresh(); // Refresh list if using GetX
+
+              // Update lastId to prevent fetching the same messages again
+              lastId = newChats.last.id ?? lastId;
 
               if (kDebugMode) {
-                print('Fetched Chat Details: ${chatDetailEntity.toString()}');
+                print('New chat messages added: ${newChats.length}');
               }
-
-              var chatOverview = chatDetailEntity.mychatoverview;
-              if (chatOverview != null && chatOverview.data != null) {
-                // Add new chats to the list and ensure UI is updated
-                chatdetailsList.addAll(chatOverview.data!);
-                if (kDebugMode) {
-                  print('Chat Data Added: ${chatOverview.data}');
-                }
-              }
-            } else if (jsonBody['mychatoverview'] is List) {
-              List<dynamic> chatOverviewList = jsonBody['mychatoverview'];
-              if (chatOverviewList.isNotEmpty) {
-                for (var chat in chatOverviewList) {
-                  GetMyChatDetailEntity chatDetailEntity =
-                      GetMyChatDetailEntity.fromJson(
-                          chat as Map<String, dynamic>);
-
-                  if (chatDetailEntity.mychatoverview?.data != null) {
-                    chatdetailsList
-                        .addAll(chatDetailEntity.mychatoverview!.data!);
-                  }
-                }
-                if (kDebugMode) {
-                  print('Multiple Chat Data Added');
-                }
+            } else {
+              if (kDebugMode) {
+                print('No new unique chat messages.');
               }
             }
-          } catch (e) {
-            if (kDebugMode) {
-              print('Error parsing chat details: $e');
-            }
+          }
+        } else {
+          if (kDebugMode) {
+            print('No chat data found or status is not 1.');
           }
         }
       } else {
         if (kDebugMode) {
-          print('Failed to send chat. Status Code: ${response.statusCode}');
+          print(
+              'Failed to fetch new chat. Status Code: ${response.statusCode}');
         }
       }
     } catch (e) {
       if (kDebugMode) {
-        print('Error sending chat: $e');
+        print('Error fetching new chat: $e');
       }
     }
   }

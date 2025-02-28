@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -98,8 +99,7 @@ class _MessageState extends State<Message> {
                   ),
                 ),
                 Obx(() {
-                  if (messageController.isLoading.value &&
-                      messageController.chatList.isEmpty) {
+                  if (messageController.isLoading.value) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 8,
@@ -159,10 +159,19 @@ class _MessageState extends State<Message> {
                               horizontal: 16, vertical: 6),
                           child: GestureDetector(
                             onTap: () async {
-                              final post = messageController.chatList[index];
-
-                              Get.toNamed(Routes.messagedetailscreen,
-                                  arguments: post);
+                              final arguments = {
+                                'chatId': post.chatId,
+                                'toId': post.toid.toString(),
+                                'userName': post.username,
+                                'userImage': post.imageUrl,
+                              };
+                              if (kDebugMode) {
+                                print("Arguments: $arguments");
+                              }
+                              Get.toNamed(
+                                Routes.messagedetailscreen,
+                                arguments: arguments,
+                              );
                               await messageController
                                   .fetchMyChatDetail(post.chatId.toString());
                             },

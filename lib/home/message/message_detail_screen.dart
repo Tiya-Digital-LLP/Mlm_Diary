@@ -18,7 +18,17 @@ import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:mlmdiary/widgets/logout_dialog/custom_logout_dialog.dart';
 
 class MessageDetailsScreen extends StatefulWidget {
-  const MessageDetailsScreen({super.key});
+  final String chatId;
+  final int toId;
+  final String userName;
+  final String userImage;
+
+  const MessageDetailsScreen(
+      {super.key,
+      required this.chatId,
+      required this.toId,
+      required this.userName,
+      required this.userImage});
 
   @override
   State<MessageDetailsScreen> createState() => _MessageDetailsScreenState();
@@ -30,29 +40,22 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
       Get.put(UserProfileController());
   final ProfileController profileController = Get.put(ProfileController());
   late PostTimeFormatter postTimeFormatter;
-  dynamic post;
   final ScrollController _scrollController = ScrollController();
   Timer? _timer;
 
   @override
   void initState() {
     super.initState();
-    post = Get.arguments;
-    if (post != null && post.chatId != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        messageController.fetchMyChatDetail(post.chatId.toString());
-      });
-      postTimeFormatter = PostTimeFormatter();
+    postTimeFormatter = PostTimeFormatter();
 
-      _startFetchingNewMessages();
-    }
-  }
+    // Initial chat fetch
+    messageController.fetchMyChatDetail(widget.chatId);
 
-  // Timer function to fetch new messages
-  void _startFetchingNewMessages() {
+    // Set up polling to fetch new messages every 5 seconds
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (messageController.chatdetailsList.isNotEmpty) {
-        messageController.fetchMyChatDetail(post.chatId.toString());
+        int lastId = messageController.chatdetailsList[0].id ?? 0;
+        messageController.fetchNewChat(widget.chatId, lastId);
       }
     });
   }
@@ -85,28 +88,27 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
             Get.toNamed(
               Routes.userprofilescreen,
               arguments: {
-                'user_id': post.fromid,
+                'user_id': widget.toId,
               },
             );
             await userProfileController.fetchUserAllPost(
               1,
-              post.fromid.toString(),
+              widget.toId.toString(),
             );
           },
           child: Row(
             children: [
-              if (post != null && post.imageUrl != null)
-                ClipOval(
-                  child: CachedNetworkImage(
-                    imageUrl: post.imageUrl,
-                    height: 30.0,
-                    width: 30.0,
-                    fit: BoxFit.cover,
-                  ),
+              ClipOval(
+                child: CachedNetworkImage(
+                  imageUrl: widget.userImage,
+                  height: 30.0,
+                  width: 30.0,
+                  fit: BoxFit.cover,
                 ),
+              ),
               10.sbw,
               Text(
-                post.username ?? 'Unknown',
+                widget.userName,
                 style: textStyleW700(16, Colors.black),
               ),
             ],
@@ -122,7 +124,8 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
             onSelected: (value) {
               if (value == 1) {
                 LogoutDialog.show(context, () async {
-                  messageController.deleteChat(chatId: post.chatId.toString());
+                  messageController.deleteChat(
+                      chatId: widget.chatId.toString());
                 });
               }
             },
@@ -155,116 +158,114 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
                     fit: BoxFit.cover,
                   ),
                 ),
-                // Show the loader if data is being fetched
                 Obx(() {
-                  return messageController.isLoading.value
-                      ? Center(
-                          child: CustomLottieAnimation(
-                            child: Lottie.asset(
-                              Assets.lottieLottie,
-                            ),
-                          ),
-                        )
-                      : ListView.builder(
-                          controller: _scrollController,
-                          padding: const EdgeInsetsDirectional.symmetric(
-                            horizontal: 16,
-                          ),
-                          reverse: true,
-                          itemCount: messageController.chatdetailsList.length,
-                          itemBuilder: (_, index) {
-                            final message =
-                                messageController.chatdetailsList[index];
-                            final isSender = message.fromid.toString() ==
-                                profileController.userId.toString();
-                            final userImage = isSender
-                                ? profileController.userImage
-                                : post.imageUrl;
+                  if (messageController.isLoading.value) {
+                    return Center(
+                      child: CustomLottieAnimation(
+                        child: Lottie.asset(Assets.lottieLottie),
+                      ),
+                    );
+                  }
+                  if (messageController.chatdetailsList.isEmpty) {
+                    return Center(
+                      child: Text("No messages found",
+                          style: textStyleW400(16, Colors.grey)),
+                    );
+                  }
+                  return ListView.builder(
+                    controller: _scrollController,
+                    padding:
+                        const EdgeInsetsDirectional.symmetric(horizontal: 16),
+                    reverse: true,
+                    itemCount: messageController.chatdetailsList.length,
+                    itemBuilder: (_, index) {
+                      final message = messageController.chatdetailsList[index];
+                      final isSender = message.fromid.toString() ==
+                          profileController.userId.toString();
+                      final userImage = isSender
+                          ? profileController.userImage
+                          : widget.userImage;
 
-                            return Align(
-                              alignment: isSender
-                                  ? Alignment.centerRight
-                                  : Alignment.centerLeft,
-                              child: Row(
-                                mainAxisAlignment: isSender
-                                    ? MainAxisAlignment.end
-                                    : MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  if (!isSender)
-                                    ClipOval(
-                                      child: CachedNetworkImage(
-                                        imageUrl: userImage ?? '',
-                                        height: 30.0,
-                                        width: 30.0,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  Flexible(
-                                    child: Container(
-                                      margin: const EdgeInsets.symmetric(
-                                          horizontal: 12, vertical: 8),
-                                      padding: const EdgeInsets.all(12),
-                                      decoration: BoxDecoration(
-                                        color: isSender
-                                            ? AppColors.primaryColor
-                                            // ignore: deprecated_member_use
-                                            : AppColors.grey.withOpacity(0.8),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment: isSender
-                                            ? CrossAxisAlignment.end
-                                            : CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            message.msg ?? '',
-                                            style: textStyleW400(
-                                                14, AppColors.white),
-                                          ),
-                                          5.sbh,
-                                          Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Text(
-                                                postTimeFormatter
-                                                    .formatPostTime(
-                                                        message.updatedAt!),
-                                                style: textStyleW400(
-                                                  12,
-                                                  AppColors.white
-                                                      // ignore: deprecated_member_use
-                                                      .withOpacity(0.7),
-                                                ),
-                                              ),
-                                              6.sbw,
-                                              Icon(
-                                                message.readStatus == 0
-                                                    ? Icons.check
-                                                    : Icons.done_all,
-                                                size: 16,
-                                                color: AppColors.white,
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  if (isSender)
-                                    ClipOval(
-                                      child: CachedNetworkImage(
-                                        imageUrl: userImage ?? '',
-                                        height: 30.0,
-                                        width: 30.0,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                ],
+                      return Align(
+                        alignment: isSender
+                            ? Alignment.centerRight
+                            : Alignment.centerLeft,
+                        child: Row(
+                          mainAxisAlignment: isSender
+                              ? MainAxisAlignment.end
+                              : MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (!isSender)
+                              ClipOval(
+                                child: CachedNetworkImage(
+                                  imageUrl: userImage,
+                                  height: 30.0,
+                                  width: 30.0,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
-                            );
-                          },
-                        );
+                            Flexible(
+                              child: Container(
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 8),
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: isSender
+                                      ? AppColors.primaryColor
+                                      // ignore: deprecated_member_use
+                                      : AppColors.grey.withOpacity(0.8),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: isSender
+                                      ? CrossAxisAlignment.end
+                                      : CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      message.msg ?? '',
+                                      style: textStyleW400(14, AppColors.white),
+                                    ),
+                                    5.sbh,
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          postTimeFormatter.formatPostTime(
+                                              message.updatedAt!),
+                                          style: textStyleW400(
+                                              12,
+                                              // ignore: deprecated_member_use
+                                              AppColors.white.withOpacity(0.7)),
+                                        ),
+                                        6.sbw,
+                                        Icon(
+                                          message.readStatus == 0
+                                              ? Icons.check
+                                              : Icons.done_all,
+                                          size: 16,
+                                          color: AppColors.white,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            if (isSender)
+                              ClipOval(
+                                child: CachedNetworkImage(
+                                  imageUrl: userImage,
+                                  height: 30.0,
+                                  width: 30.0,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
                 }),
               ],
             ),
@@ -298,8 +299,8 @@ class _MessageDetailsScreenState extends State<MessageDetailsScreen> {
                   ),
                   onPressed: () {
                     messageController.sendChat(
-                      toId: post.toid.toString(),
-                      chatId: post.chatId ?? '',
+                      toId: widget.toId.toString(),
+                      chatId: widget.chatId,
                     );
                   },
                 ),

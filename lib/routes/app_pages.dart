@@ -57,7 +57,6 @@ import 'package:mlmdiary/menu/menuscreens/profile/my_post_detail_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/post_detail_notification.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/post_detail_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/managequationanswer.dart';
-import 'package:mlmdiary/menu/menuscreens/profile/userprofile/custom/user_message_detail_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/profile_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/userprofile/user_profile_screen.dart';
 import 'package:mlmdiary/menu/menuscreens/referandearn/referand_earn.dart';
@@ -157,11 +156,21 @@ class AppPages {
     ),
     GetPage(
       name: Routes.messagedetailscreen,
-      page: () => const MessageDetailsScreen(),
-    ),
-    GetPage(
-      name: Routes.usermessagedetailscreen,
-      page: () => const UserMessageDetailScreen(),
+      page: () {
+        final arguments = Get.arguments as Map<String, dynamic>;
+
+        final String chatId = arguments['chatId'] ?? '';
+        final int toId = int.tryParse(arguments['toId'].toString()) ?? 0;
+        final String userName = arguments['userName'] ?? '';
+        final String userImage = arguments['userImage'] ?? '';
+
+        return MessageDetailsScreen(
+          chatId: chatId,
+          toId: toId,
+          userName: userName,
+          userImage: userImage,
+        );
+      },
     ),
     GetPage(
       name: Routes.aboutus,

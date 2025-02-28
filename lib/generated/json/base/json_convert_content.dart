@@ -29,6 +29,7 @@ import 'package:mlmdiary/generated/boost_on_top_classified_entity.dart';
 import 'package:mlmdiary/generated/boost_on_top_classified_premium_entity.dart';
 import 'package:mlmdiary/generated/change_email_entity.dart';
 import 'package:mlmdiary/generated/change_password_entity.dart';
+import 'package:mlmdiary/generated/chat_new_message_entity.dart';
 import 'package:mlmdiary/generated/classified_count_view_entity.dart';
 import 'package:mlmdiary/generated/classified_like_list_entity.dart';
 import 'package:mlmdiary/generated/classified_view_list_entity.dart';
@@ -434,6 +435,14 @@ class JsonConvert {
     if (<ChangePasswordEntity>[] is M) {
       return data.map<ChangePasswordEntity>((Map<String, dynamic> e) =>
           ChangePasswordEntity.fromJson(e)).toList() as M;
+    }
+    if (<ChatNewMessageEntity>[] is M) {
+      return data.map<ChatNewMessageEntity>((Map<String, dynamic> e) =>
+          ChatNewMessageEntity.fromJson(e)).toList() as M;
+    }
+    if (<ChatNewMessageMychatoverview>[] is M) {
+      return data.map<ChatNewMessageMychatoverview>((Map<String, dynamic> e) =>
+          ChatNewMessageMychatoverview.fromJson(e)).toList() as M;
     }
     if (<ClassifiedCountViewEntity>[] is M) {
       return data.map<ClassifiedCountViewEntity>((Map<String, dynamic> e) =>
@@ -1418,6 +1427,9 @@ class JsonConvertClassCollection {
         .toString(): BoostOnTopClassifiedPremiumEntity.fromJson,
     (ChangeEmailEntity).toString(): ChangeEmailEntity.fromJson,
     (ChangePasswordEntity).toString(): ChangePasswordEntity.fromJson,
+    (ChatNewMessageEntity).toString(): ChatNewMessageEntity.fromJson,
+    (ChatNewMessageMychatoverview).toString(): ChatNewMessageMychatoverview
+        .fromJson,
     (ClassifiedCountViewEntity).toString(): ClassifiedCountViewEntity.fromJson,
     (ClassifiedLikeListEntity).toString(): ClassifiedLikeListEntity.fromJson,
     (ClassifiedLikeListData).toString(): ClassifiedLikeListData.fromJson,
