@@ -7,6 +7,7 @@ import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/manage_quation_answer_card.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_shimmer_question.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
@@ -39,6 +40,8 @@ class _ManageQuationAnswerState extends State<ManageQuationAnswer> {
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: CustomAppBar(
@@ -46,8 +49,8 @@ class _ManageQuationAnswerState extends State<ManageQuationAnswer> {
         titleText: 'Manage Question Answer',
       ),
       body: RefreshIndicator(
+        color: AppColors.background,
         backgroundColor: AppColors.primaryColor,
-        color: AppColors.white,
         onRefresh: _refreshData,
         child: Column(
           children: [
@@ -85,10 +88,10 @@ class _ManageQuationAnswerState extends State<ManageQuationAnswer> {
                             controller.isLoading.value
                                 ? 'Loading...'
                                 : 'Data not found',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
+                            style: textStyleW600(
+                              size.width * 0.030,
+                              AppColors.blackText,
+                              isMetropolis: true,
                             ),
                           ),
                         );

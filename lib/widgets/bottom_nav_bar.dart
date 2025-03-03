@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:mlmdiary/firstscreen/home_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/lists.dart';
+import 'package:mlmdiary/utils/text_style.dart';
 
 class BottomNavBar extends StatefulWidget {
   final Function onTap;
@@ -56,12 +57,12 @@ class _BottomNavBarState extends State<BottomNavBar> {
                       ),
                       Text(
                         bottomBarTexts[index],
-                        style: TextStyle(
-                          fontSize: 8,
-                          color: (controller.tappedIndex.value == index)
+                        style: textStyleW600(
+                          size.width * 0.020,
+                          (controller.tappedIndex.value == index)
                               ? AppColors.primaryColor
                               : AppColors.bottomIcon,
-                          fontWeight: FontWeight.bold,
+                          isMetropolis: true,
                         ),
                       ),
                     ],

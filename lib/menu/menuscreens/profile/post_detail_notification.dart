@@ -16,9 +16,6 @@ import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 import 'package:mlmdiary/widgets/dynamiclink/dynamic_link.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:text_link/text_link.dart';
-// ignore: library_prefixes
-import 'package:html/parser.dart' as htmlParser;
 
 class PostDetailNotification extends StatefulWidget {
   final int postId;
@@ -156,18 +153,10 @@ class _PostDetailsScreenState extends State<PostDetailNotification>
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Row(
-                                      children: [
-                                        Text(
-                                          post.userData!.name ?? '',
-                                          style: textStyleW700(
-                                              size.width * 0.043,
-                                              AppColors.blackText),
-                                        ),
-                                        const SizedBox(
-                                          width: 07,
-                                        ),
-                                      ],
+                                    Text(
+                                      post.userData!.name ?? '',
+                                      style: textStyleW700(size.width * 0.043,
+                                          AppColors.blackText),
                                     ),
                                     Text(
                                       postTimeFormatter.formatPostTime(
@@ -212,28 +201,6 @@ class _PostDetailsScreenState extends State<PostDetailNotification>
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                          ),
-                          child: Align(
-                            alignment: Alignment.topLeft,
-                            child: _buildHtmlContent(post.comments ?? '', size),
-                          ),
-                        ),
-                        SizedBox(
-                          height: size.height * 0.01,
-                        ),
-                        5.sbh,
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(14),
-                            color: AppColors.white,
-                            border: const Border(
-                                bottom: BorderSide(color: Colors.grey)),
-                          ),
-                        ),
-                        5.sbh,
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
                             horizontal: 16,
                           ),
                           child: Column(
@@ -243,16 +210,18 @@ class _PostDetailsScreenState extends State<PostDetailNotification>
                                 children: [
                                   Text(
                                     'Location',
-                                    style: textStyleW400(
-                                        size.width * 0.035, AppColors.grey),
+                                    style: textStyleW400(size.width * 0.032,
+                                        AppColors.blackText),
                                   ),
                                 ],
                               ),
                               3.sbh,
                               Text(
                                 '${post.userData!.city},${post.userData!.state},${post.userData!.country}',
-                                style: textStyleW400(
-                                    size.width * 0.035, AppColors.blackText),
+                                style: textStyleW700(
+                                  size.width * 0.035,
+                                  AppColors.blackText,
+                                ),
                               ),
                             ],
                           ),
@@ -281,16 +250,18 @@ class _PostDetailsScreenState extends State<PostDetailNotification>
                                     children: [
                                       Text(
                                         'Phone',
-                                        style: textStyleW400(
-                                            size.width * 0.035, AppColors.grey),
+                                        style: textStyleW400(size.width * 0.032,
+                                            AppColors.blackText),
                                       ),
                                     ],
                                   ),
                                   3.sbh,
                                   Text(
                                     '${post.userData!.countrycode1} - ${post.userData!.mobile}',
-                                    style: textStyleW400(size.width * 0.032,
-                                        AppColors.blackText),
+                                    style: textStyleW700(
+                                      size.width * 0.035,
+                                      AppColors.blackText,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -308,16 +279,18 @@ class _PostDetailsScreenState extends State<PostDetailNotification>
                                         Text(
                                           'Email',
                                           style: textStyleW400(
-                                              size.width * 0.035,
-                                              AppColors.grey),
+                                              size.width * 0.032,
+                                              AppColors.blackText),
                                         ),
                                       ],
                                     ),
                                     3.sbh,
                                     Text(
                                       '${post.userData!.email}',
-                                      style: textStyleW400(size.width * 0.032,
-                                          AppColors.blackText),
+                                      style: textStyleW700(
+                                        size.width * 0.035,
+                                        AppColors.blackText,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -434,11 +407,8 @@ class _PostDetailsScreenState extends State<PostDetailNotification>
                             5.sbw,
                             Text(
                               '${post.totalcomment}',
-                              style: TextStyle(
-                                fontFamily: "Metropolis",
-                                fontWeight: FontWeight.w600,
-                                fontSize: size.width * 0.038,
-                              ),
+                              style: textStyleW600(
+                                  size.width * 0.038, AppColors.blackText),
                             ),
                           ],
                         ),
@@ -465,11 +435,8 @@ class _PostDetailsScreenState extends State<PostDetailNotification>
                                       },
                                       child: Text(
                                         '${post.pgcnt}',
-                                        style: TextStyle(
-                                          fontFamily: "Metropolis",
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: size.width * 0.038,
-                                        ),
+                                        style: textStyleW600(size.width * 0.038,
+                                            AppColors.blackText),
                                       ),
                                     ),
                             ],
@@ -552,6 +519,8 @@ class _PostDetailsScreenState extends State<PostDetailNotification>
   }
 
   void showLikeAndViewList(BuildContext context, int index) {
+    final Size size = MediaQuery.of(context).size;
+
     _tabController.index = index;
     showModalBottomSheet(
       context: context,
@@ -565,10 +534,12 @@ class _PostDetailsScreenState extends State<PostDetailNotification>
               backgroundColor: Colors.white,
               title: TabBar(
                 indicatorColor: Colors.transparent,
-                dividerColor: AppColors.grey,
-                labelStyle: TextStyle(
-                  color: AppColors.primaryColor,
-                ),
+                labelColor: AppColors.primaryColor,
+                unselectedLabelColor: Colors.grey,
+                labelStyle:
+                    textStyleW700(size.width * 0.041, AppColors.primaryColor),
+                unselectedLabelStyle:
+                    textStyleW400(size.width * 0.041, AppColors.blackText),
                 controller: _tabController,
                 tabs: const [
                   Tab(text: "Likes"),
@@ -586,24 +557,6 @@ class _PostDetailsScreenState extends State<PostDetailNotification>
           ),
         );
       },
-    );
-  }
-
-  Widget _buildHtmlContent(String htmlContent, Size size) {
-    final parsedHtml = htmlParser.parse(htmlContent);
-    final text = parsedHtml.body?.text ?? '';
-
-    return LinkText(
-      text: text,
-      style: textStyleW400(
-        size.width * 0.035,
-        // ignore: deprecated_member_use
-        AppColors.blackText.withOpacity(0.5),
-      ),
-      linkStyle: const TextStyle(
-        color: Colors.blue,
-        decoration: TextDecoration.underline,
-      ),
     );
   }
 }

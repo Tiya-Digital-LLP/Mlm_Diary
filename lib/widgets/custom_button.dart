@@ -32,6 +32,7 @@ class CustomButton extends StatelessWidget {
       },
       child: Container(
         width: size.width,
+        height: 55,
         alignment: Alignment.center,
         padding: EdgeInsets.symmetric(vertical: size.height * 0.015),
         decoration: BoxDecoration(
@@ -50,7 +51,7 @@ class CustomButton extends StatelessWidget {
                     size.width * 0.044,
                     titleColor,
                   ).copyWith(
-                    fontFamily: Assets.fontsSatoshiRegular,
+                    fontFamily: metropolisFontFamily,
                   ),
                 );
         }),

@@ -164,18 +164,10 @@ class _ClassidiedDetailsScreenState extends State<ClassifiedDetailTestScreen>
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Row(
-                                        children: [
-                                          Text(
-                                            post.userData!.name!,
-                                            style: textStyleW700(
-                                                size.width * 0.043,
-                                                AppColors.blackText),
-                                          ),
-                                          const SizedBox(
-                                            width: 07,
-                                          ),
-                                        ],
+                                      Text(
+                                        post.userData!.name!,
+                                        style: textStyleW700(size.width * 0.043,
+                                            AppColors.blackText),
                                       ),
                                       Text(
                                         postTimeFormatter.formatPostTime(
@@ -202,9 +194,6 @@ class _ClassidiedDetailsScreenState extends State<ClassifiedDetailTestScreen>
                           SizedBox(
                             height: size.height * 0.012,
                           ),
-                          // if (post.imageUrl.isNotEmpty &&
-                          //     Uri.tryParse(post.imageUrl)?.hasAbsolutePath ==
-                          //         true)
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             child: InkWell(
@@ -241,9 +230,9 @@ class _ClassidiedDetailsScreenState extends State<ClassifiedDetailTestScreen>
                                   "html": Style(
                                     lineHeight: const LineHeight(1),
                                     maxLines: 1,
-                                    fontFamily: fontFamily,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: FontSize.medium,
+                                    fontFamily: satoshiFontFamily,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: FontSize.large,
                                     color: AppColors.blackText,
                                   ),
                                 },
@@ -260,12 +249,9 @@ class _ClassidiedDetailsScreenState extends State<ClassifiedDetailTestScreen>
                             child: Align(
                               alignment: Alignment.topLeft,
                               child: Text(
-                                '${post.category} | ${post.subcategory}',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  color: AppColors.blackText,
-                                  fontSize: size.width * 0.035,
-                                ),
+                                '${post.categoryName} | ${post.subcategoryName}',
+                                style: textStyleW600(
+                                    size.width * 0.038, AppColors.blackText),
                               ),
                             ),
                           ),
@@ -290,8 +276,8 @@ class _ClassidiedDetailsScreenState extends State<ClassifiedDetailTestScreen>
                                   children: [
                                     Text(
                                       'Company',
-                                      style: textStyleW400(
-                                          size.width * 0.035, AppColors.grey),
+                                      style: textStyleW400(size.width * 0.032,
+                                          AppColors.blackText),
                                     ),
                                   ],
                                 ),
@@ -300,8 +286,8 @@ class _ClassidiedDetailsScreenState extends State<ClassifiedDetailTestScreen>
                                   post.company!.isNotEmpty == true
                                       ? post.company!
                                       : 'N/A',
-                                  style: textStyleW400(
-                                      size.width * 0.032, AppColors.blackText),
+                                  style: textStyleW700(
+                                      size.width * 0.035, AppColors.blackText),
                                 ),
                               ],
                             ),
@@ -327,8 +313,8 @@ class _ClassidiedDetailsScreenState extends State<ClassifiedDetailTestScreen>
                                   children: [
                                     Text(
                                       'Location',
-                                      style: textStyleW400(
-                                          size.width * 0.035, AppColors.grey),
+                                      style: textStyleW400(size.width * 0.032,
+                                          AppColors.blackText),
                                     ),
                                   ],
                                 ),
@@ -337,13 +323,12 @@ class _ClassidiedDetailsScreenState extends State<ClassifiedDetailTestScreen>
                                   post.location!.isNotEmpty == true
                                       ? post.location!
                                       : 'N/A',
-                                  style: textStyleW400(
+                                  style: textStyleW700(
                                       size.width * 0.035, AppColors.blackText),
                                 ),
                               ],
                             ),
                           ),
-
                           5.sbh,
                           Container(
                             decoration: BoxDecoration(
@@ -365,8 +350,8 @@ class _ClassidiedDetailsScreenState extends State<ClassifiedDetailTestScreen>
                                   children: [
                                     Text(
                                       'Website',
-                                      style: textStyleW400(
-                                          size.width * 0.035, AppColors.grey),
+                                      style: textStyleW400(size.width * 0.032,
+                                          AppColors.blackText),
                                     ),
                                   ],
                                 ),
@@ -379,7 +364,7 @@ class _ClassidiedDetailsScreenState extends State<ClassifiedDetailTestScreen>
                                     text: post.website!.isNotEmpty == true
                                         ? post.website!
                                         : 'N/A',
-                                    style: textStyleW400(
+                                    style: textStyleW700(
                                       size.width * 0.035,
                                       // ignore: deprecated_member_use
                                       AppColors.blackText.withOpacity(0.5),
@@ -519,7 +504,10 @@ class _ClassidiedDetailsScreenState extends State<ClassifiedDetailTestScreen>
                         child: Text(
                           totalLikes.toString(),
                           style: textStyleW600(
-                              size.width * 0.038, AppColors.blackText),
+                            size.width * 0.038,
+                            AppColors.blackText,
+                            isMetropolis: true,
+                          ),
                         ),
                       );
                     }),
@@ -540,10 +528,10 @@ class _ClassidiedDetailsScreenState extends State<ClassifiedDetailTestScreen>
                         5.sbw,
                         Text(
                           '${post.totalcomment}',
-                          style: TextStyle(
-                            fontFamily: "Metropolis",
-                            fontWeight: FontWeight.w600,
-                            fontSize: size.width * 0.038,
+                          style: textStyleW600(
+                            size.width * 0.038,
+                            AppColors.blackText,
+                            isMetropolis: true,
                           ),
                         ),
                       ],
@@ -569,10 +557,10 @@ class _ClassidiedDetailsScreenState extends State<ClassifiedDetailTestScreen>
                                   },
                                   child: Text(
                                     '${post.pgcnt}',
-                                    style: TextStyle(
-                                      fontFamily: "Metropolis",
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: size.width * 0.038,
+                                    style: textStyleW600(
+                                      size.width * 0.038,
+                                      AppColors.blackText,
+                                      isMetropolis: true,
                                     ),
                                   ),
                                 ),
@@ -651,6 +639,8 @@ class _ClassidiedDetailsScreenState extends State<ClassifiedDetailTestScreen>
   }
 
   void showLikeAndViewList(BuildContext context, int index) {
+    final Size size = MediaQuery.of(context).size;
+
     _tabController.index = index;
     showModalBottomSheet(
       context: context,
@@ -664,10 +654,12 @@ class _ClassidiedDetailsScreenState extends State<ClassifiedDetailTestScreen>
               backgroundColor: Colors.white,
               title: TabBar(
                 indicatorColor: Colors.transparent,
-                dividerColor: AppColors.grey,
-                labelStyle: TextStyle(
-                  color: AppColors.primaryColor,
-                ),
+                labelColor: AppColors.primaryColor,
+                unselectedLabelColor: Colors.grey,
+                labelStyle:
+                    textStyleW700(size.width * 0.041, AppColors.primaryColor),
+                unselectedLabelStyle:
+                    textStyleW400(size.width * 0.041, AppColors.blackText),
                 controller: _tabController,
                 tabs: const [
                   Tab(text: "Likes"),

@@ -25,6 +25,7 @@ import 'package:mlmdiary/menu/menuscreens/profile/userprofile/controller/user_pr
 import 'package:mlmdiary/menu/menuscreens/video/controller/video_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/first_word_capital.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
 import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_shimmer_classified.dart';
@@ -101,8 +102,8 @@ class _FavouriteState extends State<Favourite> {
         ),
       ),
       body: RefreshIndicator(
+        color: AppColors.background,
         backgroundColor: AppColors.primaryColor,
-        color: AppColors.white,
         onRefresh: _refreshData,
         child: CustomScrollView(
           controller: controller.scrollController,
@@ -139,10 +140,10 @@ class _FavouriteState extends State<Favourite> {
                       controller.isLoading.value
                           ? 'Loading...'
                           : 'Data not found',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                      style: textStyleW600(
+                        size.width * 0.030,
+                        AppColors.blackText,
+                        isMetropolis: true,
                       ),
                     ),
                   ),
@@ -186,7 +187,7 @@ class _FavouriteState extends State<Favourite> {
                           controller: controller,
                           bookmarkId: post.id ?? 0,
                           url: post.urlcomponent ?? '',
-                          type: post.type ?? '',
+                          type: capitalizeFirstLetter(post.type),
                           manageBlogController: manageBlogController,
                           manageNewsController: manageNewsController,
                           clasifiedController: clasifiedController,
@@ -210,7 +211,7 @@ class _FavouriteState extends State<Favourite> {
                           controller: controller,
                           bookmarkId: post.id ?? 0,
                           url: post.urlcomponent ?? '',
-                          type: post.type ?? '',
+                          type: capitalizeFirstLetter(post.type),
                           manageBlogController: manageBlogController,
                           manageNewsController: manageNewsController,
                           clasifiedController: clasifiedController,
@@ -236,7 +237,7 @@ class _FavouriteState extends State<Favourite> {
                           controller: controller,
                           bookmarkId: post.id ?? 0,
                           url: post.urlcomponent ?? '',
-                          type: post.type ?? '',
+                          type: capitalizeFirstLetter(post.type),
                           manageBlogController: manageBlogController,
                           manageNewsController: manageNewsController,
                           clasifiedController: clasifiedController,
@@ -261,7 +262,7 @@ class _FavouriteState extends State<Favourite> {
                           controller: controller,
                           bookmarkId: post.id ?? 0,
                           url: post.urlcomponent ?? '',
-                          type: post.type ?? '',
+                          type: capitalizeFirstLetter(post.type),
                           manageBlogController: manageBlogController,
                           manageNewsController: manageNewsController,
                           clasifiedController: clasifiedController,
@@ -294,7 +295,7 @@ class _FavouriteState extends State<Favourite> {
                           dateTime: post.bookmarkDate ?? '',
                           controller: controller,
                           bookmarkId: post.id ?? 0,
-                          type: post.type ?? '',
+                          type: capitalizeFirstLetter(post.type),
                           manageBlogController: manageBlogController,
                           manageNewsController: manageNewsController,
                           clasifiedController: clasifiedController,
@@ -315,7 +316,7 @@ class _FavouriteState extends State<Favourite> {
                           controller: controller,
                           bookmarkId: post.id ?? 0,
                           url: post.urlcomponent ?? '',
-                          type: post.type ?? '',
+                          type: capitalizeFirstLetter(post.type),
                           manageBlogController: manageBlogController,
                           manageNewsController: manageNewsController,
                           clasifiedController: clasifiedController,
@@ -339,7 +340,7 @@ class _FavouriteState extends State<Favourite> {
                           controller: controller,
                           bookmarkId: post.id ?? 0,
                           url: post.urlcomponent ?? '',
-                          type: post.type ?? '',
+                          type: capitalizeFirstLetter(post.type),
                           manageBlogController: manageBlogController,
                           manageNewsController: manageNewsController,
                           clasifiedController: clasifiedController,
@@ -439,6 +440,8 @@ class _FavouriteState extends State<Favourite> {
   }
 
   Widget horiztallist() {
+    final Size size = MediaQuery.of(context).size;
+
     return SizedBox(
         height: 50,
         child: ListView.builder(
@@ -467,16 +470,14 @@ class _FavouriteState extends State<Favourite> {
                         },
                         backgroundColor: AppColors.grey.withOpacity(0.3),
                         side: BorderSide.none,
-                        labelStyle: TextStyle(
-                                fontSize: 12.0,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.blackText,
-                                fontFamily: 'assets/fonst/Metropolis-Black.otf')
-                            .copyWith(
-                                color: controller.selectedType.value ==
-                                        controller.types[index]
-                                    ? Colors.white
-                                    : Colors.black),
+                        labelStyle: textStyleW600(
+                          size.width * 0.035,
+                          AppColors.white,
+                        ).copyWith(
+                            color: controller.selectedType.value ==
+                                    controller.types[index]
+                                ? Colors.white
+                                : Colors.black),
                         showCheckmark: false,
                         // checkmarkColor: AppColors.backgroundColor,
                       ),

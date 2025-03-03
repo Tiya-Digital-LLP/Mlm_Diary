@@ -110,14 +110,13 @@ class _AddClassifiedState extends State<AddClassified> {
                           );
                           controller.mlmCategoryValidation();
                         },
-                        style: textStyleW500(
-                            size.width * 0.04, AppColors.blackText),
+                        style: textStyleW700(
+                            size.width * 0.038, AppColors.blackText),
                         cursorColor: AppColors.blackText,
                         decoration: InputDecoration(
                           labelText: "Select Category",
-                          labelStyle: const TextStyle(
-                            color: Colors.black,
-                          ),
+                          labelStyle: textStyleW400(
+                              size.width * 0.038, AppColors.blackText),
                           contentPadding: const EdgeInsets.symmetric(
                             vertical: 5,
                             horizontal: 2,
@@ -150,14 +149,13 @@ class _AddClassifiedState extends State<AddClassified> {
                           );
                           controller.mlmsubCategoryValidation();
                         },
-                        style: textStyleW500(
-                            size.width * 0.04, AppColors.blackText),
+                        style: textStyleW700(
+                            size.width * 0.038, AppColors.blackText),
                         cursorColor: AppColors.blackText,
                         decoration: InputDecoration(
                             labelText: "Select Sub Category",
-                            labelStyle: const TextStyle(
-                              color: Colors.black,
-                            ),
+                            labelStyle: textStyleW400(
+                                size.width * 0.038, AppColors.blackText),
                             contentPadding: const EdgeInsets.symmetric(
                               vertical: 5,
                               horizontal: 2,
@@ -229,113 +227,110 @@ class _AddClassifiedState extends State<AddClassified> {
                   ),
                   10.sbh,
                   Obx(
-                    () => TextFormField(
-                      controller: controller.location.value,
-                      readOnly: true,
-                      style: const TextStyle(
-                          fontSize: 15.0,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black,
-                          fontFamily: 'assets/fonts/Metropolis-Black.otf'),
-                      onTap: () async {
-                        var place = await PlacesAutocomplete.show(
-                          context: context,
-                          apiKey: googleApikey,
-                          mode: Mode.fullscreen,
-                          hint: 'Search and Save Location.',
-                          cursorColor: AppColors.primaryColor,
-                          types: ['geocode', 'establishment'],
-                          strictbounds: false,
-                          onError: (err) {},
-                        );
-
-                        if (place != null) {
-                          setState(() {
-                            controller.location.value.text =
-                                place.description.toString();
-                            _loc.text = controller.location.value.text;
-                            controller.isLocationTyping.value = true;
-                            controller.locationValidation();
-                          });
-                          final plist = GoogleMapsPlaces(
+                    () => Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12.0),
+                        color: AppColors.white,
+                        border: Border.all(
+                          color: Colors.grey,
+                          width: 1.0,
+                        ),
+                      ),
+                      height: 58,
+                      child: TextFormField(
+                        controller: controller.location.value,
+                        readOnly: true,
+                        style: textStyleW700(
+                            size.width * 0.038, AppColors.blackText),
+                        onTap: () async {
+                          var place = await PlacesAutocomplete.show(
+                            context: context,
                             apiKey: googleApikey,
-                            apiHeaders:
-                                await const GoogleApiHeaders().getHeaders(),
+                            mode: Mode.fullscreen,
+                            hint: 'Search and Save Location.',
+                            cursorColor: AppColors.primaryColor,
+                            types: ['geocode', 'establishment'],
+                            strictbounds: false,
+                            onError: (err) {},
                           );
-                          String placeid = place.placeId ?? "0";
-                          final detail =
-                              await plist.getDetailsByPlaceId(placeid);
-                          for (var component
-                              in detail.result.addressComponents) {
-                            for (var type in component.types) {
-                              if (type == "administrative_area_level_1") {
-                                controller.state.value.text =
-                                    component.longName;
-                              } else if (type == "locality") {
-                                controller.city.value.text = component.longName;
-                              } else if (type == "country") {
-                                controller.country.value.text =
-                                    component.longName;
+
+                          if (place != null) {
+                            setState(() {
+                              controller.location.value.text =
+                                  place.description.toString();
+                              _loc.text = controller.location.value.text;
+                              controller.isLocationTyping.value = true;
+                              controller.locationValidation();
+                            });
+                            final plist = GoogleMapsPlaces(
+                              apiKey: googleApikey,
+                              apiHeaders:
+                                  await const GoogleApiHeaders().getHeaders(),
+                            );
+                            String placeid = place.placeId ?? "0";
+                            final detail =
+                                await plist.getDetailsByPlaceId(placeid);
+                            for (var component
+                                in detail.result.addressComponents) {
+                              for (var type in component.types) {
+                                if (type == "administrative_area_level_1") {
+                                  controller.state.value.text =
+                                      component.longName;
+                                } else if (type == "locality") {
+                                  controller.city.value.text =
+                                      component.longName;
+                                } else if (type == "country") {
+                                  controller.country.value.text =
+                                      component.longName;
+                                }
                               }
                             }
-                          }
 
-                          final geometry = detail.result.geometry!;
-                          setState(() {
-                            controller.lat.value.text =
-                                geometry.location.lat.toString();
-                            controller.lng.value.text =
-                                geometry.location.lng.toString();
-                          });
-                        }
-                      },
-                      decoration: InputDecoration(
-                        hintText: "Location/ Address / City *",
-                        labelStyle: const TextStyle(
-                          color: Colors.black,
+                            final geometry = detail.result.geometry!;
+                            setState(() {
+                              controller.lat.value.text =
+                                  geometry.location.lat.toString();
+                              controller.lng.value.text =
+                                  geometry.location.lng.toString();
+                            });
+                          }
+                        },
+                        decoration: InputDecoration(
+                          labelText: "Location / Address / City *",
+                          labelStyle: textStyleW400(
+                              size.width * 0.038, AppColors.blackText),
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 5,
+                            horizontal: 2,
+                          ),
+                          border: InputBorder.none,
                         ),
-                        filled: true,
-                        fillColor: AppColors.white,
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                width: 1,
-                                color: controller.addressValidationColor.value),
-                            borderRadius: BorderRadius.circular(10.0)),
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                width: 1,
-                                color: controller.addressValidationColor.value),
-                            borderRadius: BorderRadius.circular(10.0)),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                width: 1,
-                                color: controller.addressValidationColor.value),
-                            borderRadius: BorderRadius.circular(10.0)),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            setState(() {
+                              controller.locationValidation();
+                            });
+                          } else {
+                            //
+                          }
+                          return null;
+                        },
+                        onFieldSubmitted: (value) {
+                          if (value.isEmpty) {
+                            showToasterrorborder(
+                                'Please Search and Save your Business Location',
+                                context);
+                            setState(() {
+                              controller.locationValidation();
+                            });
+                          } else if (value.isNotEmpty) {
+                            setState(() {
+                              controller.locationValidation();
+                            });
+                          }
+                        },
                       ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          setState(() {
-                            controller.locationValidation();
-                          });
-                        } else {
-                          //
-                        }
-                        return null;
-                      },
-                      onFieldSubmitted: (value) {
-                        if (value.isEmpty) {
-                          showToasterrorborder(
-                              'Please Search and Save your Business Location',
-                              context);
-                          setState(() {
-                            controller.locationValidation();
-                          });
-                        } else if (value.isNotEmpty) {
-                          setState(() {
-                            controller.locationValidation();
-                          });
-                        }
-                      },
                     ),
                   ),
                   10.sbh,
@@ -408,15 +403,17 @@ class _AddClassifiedState extends State<AddClassified> {
                         children: [
                           TextSpan(
                             text:
-                                "If you keep editing your Classified, it will be the first show. You can Add only One Classified and if you want to Add more than One Classified then you have to Pay.",
-                            style: textStyleW500(
-                                size.width * 0.030, AppColors.blackText),
+                                "If you keep editing your Classified, it will be the first show. You can Add only One Classified and if you want to Add more than One Classified then you have to Pay. ",
+                            style: textStyleW600(
+                              size.width * 0.030,
+                              AppColors.blackText,
+                            ),
                           ),
                           TextSpan(
                             text: "Read More",
-                            style: TextStyle(
-                              decoration: TextDecoration.none,
-                              color: AppColors.primaryColor,
+                            style: textStyleW700(
+                              size.width * 0.038,
+                              AppColors.primaryColor,
                             ),
                           ),
                         ],
@@ -754,8 +751,10 @@ class _AddClassifiedState extends State<AddClassified> {
                   Center(
                     child: Text(
                       'Select Category',
-                      style: textStyleW600(
-                          size.width * 0.045, AppColors.blackText),
+                      style: textStyleW700(
+                        size.width * 0.048,
+                        AppColors.blackText,
+                      ),
                     ),
                   ),
                   20.sbh,
@@ -794,7 +793,7 @@ class _AddClassifiedState extends State<AddClassified> {
                                     15.sbw,
                                     Text(
                                       categorylist[index].name ?? '',
-                                      style: textStyleW500(size.width * 0.041,
+                                      style: textStyleW600(size.width * 0.038,
                                           AppColors.blackText),
                                     ),
                                   ],
@@ -897,8 +896,10 @@ class _AddClassifiedState extends State<AddClassified> {
                   Center(
                     child: Text(
                       'Select Sub Category',
-                      style: textStyleW600(
-                          size.width * 0.045, AppColors.blackText),
+                      style: textStyleW700(
+                        size.width * 0.048,
+                        AppColors.blackText,
+                      ),
                     ),
                   ),
                   20.sbh,
@@ -952,7 +953,7 @@ class _AddClassifiedState extends State<AddClassified> {
                                     15.sbw,
                                     Text(
                                       subcategoryList[index].name ?? '',
-                                      style: textStyleW500(size.width * 0.041,
+                                      style: textStyleW600(size.width * 0.038,
                                           AppColors.blackText),
                                     ),
                                   ],

@@ -227,8 +227,6 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen>
                               SizedBox(
                                 height: size.height * 0.012,
                               ),
-                              // if (post.imageUrl.isNotEmpty &&
-                              //     Uri.tryParse(post.imageUrl)?.hasAbsolutePath == true)
                               Padding(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 16),
@@ -261,9 +259,9 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen>
                                       "html": Style(
                                         lineHeight: const LineHeight(1),
                                         maxLines: 1,
-                                        fontFamily: fontFamily,
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: FontSize.medium,
+                                        fontFamily: satoshiFontFamily,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: FontSize.large,
                                         color: AppColors.blackText,
                                       ),
                                     },
@@ -281,11 +279,8 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen>
                                   alignment: Alignment.topLeft,
                                   child: Text(
                                     '${post.category} | ${post.subcategory}',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      color: AppColors.blackText,
-                                      fontSize: size.width * 0.035,
-                                    ),
+                                    style: textStyleW600(size.width * 0.038,
+                                        AppColors.blackText),
                                   ),
                                 ),
                               ),
@@ -298,9 +293,7 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen>
                                       bottom: BorderSide(color: Colors.grey)),
                                 ),
                               ),
-
                               5.sbh,
-
                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 16,
@@ -308,18 +301,10 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen>
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Row(
-                                      children: [
-                                        Text(
-                                          'Website',
-                                          style: textStyleW400(
-                                              size.width * 0.035,
-                                              AppColors.grey),
-                                        ),
-                                        const SizedBox(
-                                          width: 07,
-                                        ),
-                                      ],
+                                    Text(
+                                      'Website',
+                                      style: textStyleW400(size.width * 0.032,
+                                          AppColors.blackText),
                                     ),
                                     InkWell(
                                       onTap: () {
@@ -329,7 +314,7 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen>
                                         text: post.website?.isNotEmpty == true
                                             ? post.website
                                             : 'N/A',
-                                        style: textStyleW400(
+                                        style: textStyleW700(
                                           size.width * 0.035,
                                           // ignore: deprecated_member_use
                                           AppColors.blackText.withOpacity(0.5),
@@ -467,7 +452,10 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen>
                         child: Text(
                           totalLikes.toString(),
                           style: textStyleW600(
-                              size.width * 0.038, AppColors.blackText),
+                            size.width * 0.038,
+                            AppColors.blackText,
+                            isMetropolis: true,
+                          ),
                         ),
                       );
                     }),
@@ -490,10 +478,10 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen>
                         5.sbw,
                         Text(
                           '${post.totalcomment}',
-                          style: TextStyle(
-                            fontFamily: "Metropolis",
-                            fontWeight: FontWeight.w600,
-                            fontSize: size.width * 0.038,
+                          style: textStyleW600(
+                            size.width * 0.038,
+                            AppColors.blackText,
+                            isMetropolis: true,
                           ),
                         ),
                       ],
@@ -521,10 +509,10 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen>
                                   },
                                   child: Text(
                                     '${post.pgcnt}',
-                                    style: TextStyle(
-                                      fontFamily: "Metropolis",
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: size.width * 0.038,
+                                    style: textStyleW600(
+                                      size.width * 0.038,
+                                      AppColors.blackText,
+                                      isMetropolis: true,
                                     ),
                                   ),
                                 ),
@@ -625,6 +613,8 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen>
 
   void showLikeAndViewList(BuildContext context, int index) {
     _tabController.index = index;
+    final Size size = MediaQuery.of(context).size;
+
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -637,10 +627,12 @@ class _MyNewsDetailScreenState extends State<NewsDetailScreen>
               backgroundColor: Colors.white,
               title: TabBar(
                 indicatorColor: Colors.transparent,
-                dividerColor: AppColors.grey,
-                labelStyle: TextStyle(
-                  color: AppColors.primaryColor,
-                ),
+                labelColor: AppColors.primaryColor,
+                unselectedLabelColor: Colors.grey,
+                labelStyle:
+                    textStyleW700(size.width * 0.041, AppColors.primaryColor),
+                unselectedLabelStyle:
+                    textStyleW400(size.width * 0.041, AppColors.blackText),
                 controller: _tabController,
                 tabs: const [
                   Tab(text: "Likes"),

@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/classified/add_classified.dart';
 import 'package:mlmdiary/classified/classified_detail_screen.dart';
-import 'package:mlmdiary/classified/classified_detail_notification.dart';
 import 'package:mlmdiary/classified/classified_detail_test_screen.dart';
 import 'package:mlmdiary/classified/custom/add_comapany_classfied.dart';
 import 'package:mlmdiary/database/database.dart';
@@ -141,12 +140,6 @@ class AppPages {
     GetPage(
       name: Routes.mlmclassifieddetail,
       page: () => ClassidiedDetailsScreen(
-        key: UniqueKey(),
-      ),
-    ),
-    GetPage(
-      name: Routes.mlmclassifieddetailcopy,
-      page: () => ClassifiedDetailNotification(
         key: UniqueKey(),
       ),
     ),

@@ -24,11 +24,11 @@ class ViewQuestionListEntity {
 class ViewQuestionListData {
 	int? id = 0;
 	int? qid = 0;
-	@JSONField(name: "user_id")
+	@JSONField(name: 'user_id')
 	int? userId = 0;
-	@JSONField(name: "created_at")
+	@JSONField(name: 'created_at')
 	String? createdAt = '';
-	@JSONField(name: "user_data")
+	@JSONField(name: 'user_data')
 	ViewQuestionListDataUserData? userData;
 
 	ViewQuestionListData();
@@ -45,12 +45,16 @@ class ViewQuestionListData {
 
 @JsonSerializable()
 class ViewQuestionListDataUserData {
+	int? id = 0;
 	String? name = '';
 	String? userimage = '';
-	int? id = 0;
-	@JSONField(name: "image_path")
+	String? immlm = '';
+	String? city = '';
+	String? state = '';
+	String? country = '';
+	@JSONField(name: 'image_path')
 	String? imagePath = '';
-	@JSONField(name: "image_thum_path")
+	@JSONField(name: 'image_thum_path')
 	String? imageThumPath = '';
 
 	ViewQuestionListDataUserData();

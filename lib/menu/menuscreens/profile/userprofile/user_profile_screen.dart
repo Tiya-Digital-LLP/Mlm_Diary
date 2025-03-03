@@ -25,6 +25,7 @@ import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
+import 'package:mlmdiary/utils/first_word_capital.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
 import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_shimmer_classified.dart';
@@ -250,8 +251,8 @@ class _UserProfileScreenState extends State<UserProfileScreen>
           ],
         ),
         body: RefreshIndicator(
+          color: AppColors.background,
           backgroundColor: AppColors.primaryColor,
-          color: AppColors.white,
           onRefresh: () async {
             _refreshData(Get.arguments['user_id'].toString());
           },
@@ -326,19 +327,21 @@ class _UserProfileScreenState extends State<UserProfileScreen>
               controller: _scrollController,
               physics: const AlwaysScrollableScrollPhysics(),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    color: AppColors.white,
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        personlaInfo(),
-                        5.sbh,
-                        axisScroll(),
-                        15.sbh,
-                        axisScrollsocial(),
-                      ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 16),
+                    child: Container(
+                      color: AppColors.white,
+                      child: Column(
+                        children: [
+                          personlaInfo(),
+                          5.sbh,
+                          axisScroll(),
+                          15.sbh,
+                          axisScrollsocial(),
+                        ],
+                      ),
                     ),
                   ),
                   const Divider(color: Colors.black26, height: 2.0),
@@ -347,6 +350,11 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                     indicatorColor: AppColors.primaryColor,
                     indicatorWeight: 1.5,
                     labelColor: AppColors.primaryColor,
+                    labelStyle: textStyleW600(
+                      size.width * 0.035,
+                      AppColors.blackText,
+                      isMetropolis: true,
+                    ),
                     dividerColor: Colors.grey,
                     onTap: (value) {
                       if (kDebugMode) {
@@ -420,7 +428,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                             userProfileController,
                                         bookmarkId: post.id ?? 0,
                                         url: post.urlcomponent ?? '',
-                                        type: post.type ?? '',
+                                        type: capitalizeFirstLetter(post.type),
                                         manageBlogController:
                                             manageBlogController,
                                         manageNewsController:
@@ -455,7 +463,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                             userProfileController,
                                         bookmarkId: post.id ?? 0,
                                         url: post.urlcomponent ?? '',
-                                        type: post.type ?? '',
+                                        type: capitalizeFirstLetter(post.type),
                                         manageBlogController:
                                             manageBlogController,
                                         manageNewsController:
@@ -487,7 +495,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                             userProfileController,
                                         bookmarkId: post.id ?? 0,
                                         url: post.urlcomponent ?? '',
-                                        type: post.type ?? '',
+                                        type: capitalizeFirstLetter(post.type),
                                         manageBlogController:
                                             manageBlogController,
                                         manageNewsController:
@@ -520,7 +528,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                             userProfileController,
                                         bookmarkId: post.id ?? 0,
                                         url: post.urlcomponent ?? '',
-                                        type: post.type ?? '',
+                                        type: capitalizeFirstLetter(post.type),
                                         manageBlogController:
                                             manageBlogController,
                                         manageNewsController:
@@ -551,7 +559,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                             userProfileController,
                                         bookmarkId: post.id ?? 0,
                                         url: post.urlcomponent ?? '',
-                                        type: post.type ?? '',
+                                        type: capitalizeFirstLetter(post.type),
                                         manageBlogController:
                                             manageBlogController,
                                         manageNewsController:
@@ -603,272 +611,281 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                             borderRadius: BorderRadius.circular(14),
                             color: AppColors.white,
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 6,
+                          child: Card(
+                            elevation: 6,
+                            color: Colors.white,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 6,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Follow me on',
+                                        style: textStyleW400(
+                                            size.width * 0.035, AppColors.grey),
+                                      ),
+                                      10.sbh,
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: InkWell(
+                                              onTap: () {
+                                                if (post.website == null ||
+                                                    post.website!.isEmpty) {
+                                                  showToasterrorborder(
+                                                      'No Any Url Found',
+                                                      context);
+                                                } else {
+                                                  launchUrl(
+                                                    Uri.parse(post.website
+                                                        .toString()),
+                                                    mode: LaunchMode
+                                                        .externalApplication,
+                                                  );
+                                                }
+                                              },
+                                              child: SvgPicture.asset(
+                                                Assets.svgWebsite,
+                                                height: 28,
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: InkWell(
+                                              onTap: () {
+                                                if (post.compWebsite == null ||
+                                                    post.compWebsite!.isEmpty) {
+                                                  showToasterrorborder(
+                                                      'No Any Url Found',
+                                                      context);
+                                                } else {
+                                                  launchUrl(
+                                                    Uri.parse(post.compWebsite
+                                                        .toString()),
+                                                    mode: LaunchMode
+                                                        .externalApplication,
+                                                  );
+                                                }
+                                              },
+                                              child: SvgPicture.asset(
+                                                Assets.svgCompany,
+                                                height: 28,
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: InkWell(
+                                              onTap: () {
+                                                if (post.wplink == null ||
+                                                    post.wplink!.isEmpty) {
+                                                  showToasterrorborder(
+                                                      'No Any Url Found',
+                                                      context);
+                                                } else {
+                                                  launchUrl(
+                                                    Uri.parse(
+                                                        post.wplink.toString()),
+                                                    mode: LaunchMode
+                                                        .externalApplication,
+                                                  );
+                                                }
+                                              },
+                                              child: SvgPicture.asset(
+                                                Assets.svgLogosWhatsappIcon,
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: InkWell(
+                                              onTap: () {
+                                                if (post.fblink == null ||
+                                                    post.fblink!.isEmpty) {
+                                                  showToasterrorborder(
+                                                      'No Any Url Found',
+                                                      context);
+                                                } else {
+                                                  launchUrl(
+                                                    Uri.parse(
+                                                        post.fblink.toString()),
+                                                    mode: LaunchMode
+                                                        .externalApplication,
+                                                  );
+                                                }
+                                              },
+                                              child: SvgPicture.asset(
+                                                Assets.svgLogosFacebook,
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: InkWell(
+                                              onTap: () {
+                                                if (post.instalink == null ||
+                                                    post.instalink!.isEmpty) {
+                                                  showToasterrorborder(
+                                                      'No Any Url Found',
+                                                      context);
+                                                } else {
+                                                  launchUrl(
+                                                    Uri.parse(post.instalink
+                                                        .toString()),
+                                                    mode: LaunchMode
+                                                        .externalApplication,
+                                                  );
+                                                }
+                                              },
+                                              child: SvgPicture.asset(
+                                                Assets.svgInstagram,
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: InkWell(
+                                              onTap: () {
+                                                if (post.lilink == null ||
+                                                    post.lilink!.isEmpty) {
+                                                  showToasterrorborder(
+                                                      'No Any Url Found',
+                                                      context);
+                                                } else {
+                                                  launchUrl(
+                                                    Uri.parse(
+                                                        post.lilink.toString()),
+                                                    mode: LaunchMode
+                                                        .externalApplication,
+                                                  );
+                                                }
+                                              },
+                                              child: SvgPicture.asset(
+                                                Assets.svgLogosLinkedinIcon,
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: InkWell(
+                                              onTap: () {
+                                                if (post.youlink == null ||
+                                                    post.youlink!.isEmpty) {
+                                                  showToasterrorborder(
+                                                      'No Any Url Found',
+                                                      context);
+                                                } else {
+                                                  launchUrl(
+                                                    Uri.parse(post.youlink
+                                                        .toString()),
+                                                    mode: LaunchMode
+                                                        .externalApplication,
+                                                  );
+                                                }
+                                              },
+                                              child: SvgPicture.asset(
+                                                Assets.svgYoutube,
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: InkWell(
+                                              onTap: () {
+                                                if (post.telink == null ||
+                                                    post.telink!.isEmpty) {
+                                                  showToasterrorborder(
+                                                      'No Any Url Found',
+                                                      context);
+                                                } else {
+                                                  launchUrl(
+                                                    Uri.parse(
+                                                        post.telink.toString()),
+                                                    mode: LaunchMode
+                                                        .externalApplication,
+                                                  );
+                                                }
+                                              },
+                                              child: SvgPicture.asset(
+                                                Assets.svgTelegram,
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: InkWell(
+                                              onTap: () {
+                                                if (post.twiterlink == null ||
+                                                    post.twiterlink!.isEmpty) {
+                                                  showToasterrorborder(
+                                                      'No Any Url Found',
+                                                      context);
+                                                } else {
+                                                  launchUrl(
+                                                    Uri.parse(post.twiterlink
+                                                        .toString()),
+                                                    mode: LaunchMode
+                                                        .externalApplication,
+                                                  );
+                                                }
+                                              },
+                                              child: SvgPicture.asset(
+                                                Assets.svgTwitter,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Follow me on',
-                                      style: textStyleW400(
-                                          size.width * 0.035, AppColors.grey),
-                                    ),
-                                    10.sbh,
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: InkWell(
-                                            onTap: () {
-                                              if (post.website == null ||
-                                                  post.website!.isEmpty) {
-                                                showToasterrorborder(
-                                                    'No Any Url Found',
-                                                    context);
-                                              } else {
-                                                launchUrl(
-                                                  Uri.parse(
-                                                      post.website.toString()),
-                                                  mode: LaunchMode
-                                                      .externalApplication,
-                                                );
-                                              }
-                                            },
-                                            child: SvgPicture.asset(
-                                              Assets.svgWebsite,
-                                              height: 28,
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: InkWell(
-                                            onTap: () {
-                                              if (post.compWebsite == null ||
-                                                  post.compWebsite!.isEmpty) {
-                                                showToasterrorborder(
-                                                    'No Any Url Found',
-                                                    context);
-                                              } else {
-                                                launchUrl(
-                                                  Uri.parse(post.compWebsite
-                                                      .toString()),
-                                                  mode: LaunchMode
-                                                      .externalApplication,
-                                                );
-                                              }
-                                            },
-                                            child: SvgPicture.asset(
-                                              Assets.svgCompany,
-                                              height: 28,
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: InkWell(
-                                            onTap: () {
-                                              if (post.wplink == null ||
-                                                  post.wplink!.isEmpty) {
-                                                showToasterrorborder(
-                                                    'No Any Url Found',
-                                                    context);
-                                              } else {
-                                                launchUrl(
-                                                  Uri.parse(
-                                                      post.wplink.toString()),
-                                                  mode: LaunchMode
-                                                      .externalApplication,
-                                                );
-                                              }
-                                            },
-                                            child: SvgPicture.asset(
-                                              Assets.svgLogosWhatsappIcon,
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: InkWell(
-                                            onTap: () {
-                                              if (post.fblink == null ||
-                                                  post.fblink!.isEmpty) {
-                                                showToasterrorborder(
-                                                    'No Any Url Found',
-                                                    context);
-                                              } else {
-                                                launchUrl(
-                                                  Uri.parse(
-                                                      post.fblink.toString()),
-                                                  mode: LaunchMode
-                                                      .externalApplication,
-                                                );
-                                              }
-                                            },
-                                            child: SvgPicture.asset(
-                                              Assets.svgLogosFacebook,
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: InkWell(
-                                            onTap: () {
-                                              if (post.instalink == null ||
-                                                  post.instalink!.isEmpty) {
-                                                showToasterrorborder(
-                                                    'No Any Url Found',
-                                                    context);
-                                              } else {
-                                                launchUrl(
-                                                  Uri.parse(post.instalink
-                                                      .toString()),
-                                                  mode: LaunchMode
-                                                      .externalApplication,
-                                                );
-                                              }
-                                            },
-                                            child: SvgPicture.asset(
-                                              Assets.svgInstagram,
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: InkWell(
-                                            onTap: () {
-                                              if (post.lilink == null ||
-                                                  post.lilink!.isEmpty) {
-                                                showToasterrorborder(
-                                                    'No Any Url Found',
-                                                    context);
-                                              } else {
-                                                launchUrl(
-                                                  Uri.parse(
-                                                      post.lilink.toString()),
-                                                  mode: LaunchMode
-                                                      .externalApplication,
-                                                );
-                                              }
-                                            },
-                                            child: SvgPicture.asset(
-                                              Assets.svgLogosLinkedinIcon,
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: InkWell(
-                                            onTap: () {
-                                              if (post.youlink == null ||
-                                                  post.youlink!.isEmpty) {
-                                                showToasterrorborder(
-                                                    'No Any Url Found',
-                                                    context);
-                                              } else {
-                                                launchUrl(
-                                                  Uri.parse(
-                                                      post.youlink.toString()),
-                                                  mode: LaunchMode
-                                                      .externalApplication,
-                                                );
-                                              }
-                                            },
-                                            child: SvgPicture.asset(
-                                              Assets.svgYoutube,
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: InkWell(
-                                            onTap: () {
-                                              if (post.telink == null ||
-                                                  post.telink!.isEmpty) {
-                                                showToasterrorborder(
-                                                    'No Any Url Found',
-                                                    context);
-                                              } else {
-                                                launchUrl(
-                                                  Uri.parse(
-                                                      post.telink.toString()),
-                                                  mode: LaunchMode
-                                                      .externalApplication,
-                                                );
-                                              }
-                                            },
-                                            child: SvgPicture.asset(
-                                              Assets.svgTelegram,
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: InkWell(
-                                            onTap: () {
-                                              if (post.twiterlink == null ||
-                                                  post.twiterlink!.isEmpty) {
-                                                showToasterrorborder(
-                                                    'No Any Url Found',
-                                                    context);
-                                              } else {
-                                                launchUrl(
-                                                  Uri.parse(post.twiterlink
-                                                      .toString()),
-                                                  mode: LaunchMode
-                                                      .externalApplication,
-                                                );
-                                              }
-                                            },
-                                            child: SvgPicture.asset(
-                                              Assets.svgTwitter,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                10.sbh,
+                                const Divider(color: Colors.grey),
+                                10.sbh,
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text('About me',
+                                          style: textStyleW400(
+                                              size.width * 0.035,
+                                              AppColors.grey)),
+                                      Text(
+                                        post.aboutyou ?? 'N/A',
+                                        style: textStyleW700(size.width * 0.035,
+                                            AppColors.blackText),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              10.sbh,
-                              const Divider(color: Colors.grey),
-                              10.sbh,
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('About me',
-                                        style: textStyleW400(size.width * 0.035,
-                                            AppColors.grey)),
-                                    Text(
-                                      post.aboutyou ?? 'N/A',
-                                      style: textStyleW500(size.width * 0.035,
-                                          AppColors.blackText),
-                                    ),
-                                  ],
+                                10.sbh,
+                                const Divider(color: Colors.grey),
+                                10.sbh,
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text('About Company',
+                                          style: textStyleW400(
+                                              size.width * 0.035,
+                                              AppColors.grey)),
+                                      Text(
+                                        post.aboutcompany ?? 'N/A',
+                                        style: textStyleW700(size.width * 0.035,
+                                            AppColors.blackText),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              10.sbh,
-                              const Divider(color: Colors.grey),
-                              10.sbh,
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('About Company',
-                                        style: textStyleW400(size.width * 0.035,
-                                            AppColors.grey)),
-                                    Text(
-                                      post.aboutcompany ?? 'N/A',
-                                      style: textStyleW500(size.width * 0.035,
-                                          AppColors.blackText),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(height: size.height * 0.017),
-                            ],
+                                SizedBox(height: size.height * 0.017),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -965,16 +982,18 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                     Text(
                       post.name ?? 'N/A',
                       style: textStyleW700(
-                          size.width * 0.045, AppColors.blackText),
+                        size.width * 0.045,
+                        AppColors.blackText,
+                      ),
                     ),
                     Text(
                       post.immlm ?? 'N/A',
-                      style: textStyleW500(
+                      style: textStyleW600(
                           size.width * 0.035, AppColors.blackText),
                     ),
                     Text(
                       post.company ?? 'N/A',
-                      style: textStyleW500(
+                      style: textStyleW600(
                           size.width * 0.035, AppColors.blackText),
                     ),
                     GestureDetector(
@@ -983,7 +1002,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                       },
                       child: Obx(() => Text(
                             post.plan ?? 'N/A',
-                            style: textStyleW500(
+                            style: textStyleW600(
                                 size.width * 0.035, AppColors.blackText),
                             maxLines: isExpanded.value ? null : 10,
                             overflow: TextOverflow.ellipsis,
@@ -991,7 +1010,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                     ),
                     Text(
                       '${post.city ?? 'N/A'}, ${post.state ?? 'N/A'}, ${post.country ?? 'N/A'}',
-                      style: textStyleW500(
+                      style: textStyleW600(
                         size.width * 0.035,
                         AppColors.blackText,
                       ),
@@ -1045,7 +1064,10 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                         child: Text(
                           controller.isFollowing.value ? 'Unfollow' : 'Follow',
                           style: textStyleW700(
-                              size.width * 0.035, AppColors.white),
+                            size.width * 0.035,
+                            AppColors.white,
+                            isMetropolis: true,
+                          ),
                         ),
                       ),
                     ),
@@ -1068,12 +1090,18 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                 Text(
                                   post.followersCount.toString(),
                                   style: textStyleW700(
-                                      size.width * 0.045, AppColors.blackText),
+                                    size.width * 0.045,
+                                    AppColors.blackText,
+                                    isMetropolis: true,
+                                  ),
                                 ),
                                 Text(
                                   'Followers',
                                   style: textStyleW500(
-                                      size.width * 0.035, AppColors.blackText),
+                                    size.width * 0.035,
+                                    AppColors.blackText,
+                                    isMetropolis: true,
+                                  ),
                                 ),
                               ],
                             ),
@@ -1096,12 +1124,18 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                 Text(
                                   post.followingCount.toString(),
                                   style: textStyleW700(
-                                      size.width * 0.045, AppColors.blackText),
+                                    size.width * 0.045,
+                                    AppColors.blackText,
+                                    isMetropolis: true,
+                                  ),
                                 ),
                                 Text(
                                   'Following',
                                   style: textStyleW500(
-                                      size.width * 0.035, AppColors.blackText),
+                                    size.width * 0.035,
+                                    AppColors.blackText,
+                                    isMetropolis: true,
+                                  ),
                                 ),
                               ],
                             ),
@@ -1122,12 +1156,18 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                             Text(
                               post.views.toString(),
                               style: textStyleW700(
-                                  size.width * 0.045, AppColors.blackText),
+                                size.width * 0.045,
+                                AppColors.blackText,
+                                isMetropolis: true,
+                              ),
                             ),
                             Text(
                               'Profile Visits',
                               style: textStyleW500(
-                                  size.width * 0.035, AppColors.blackText),
+                                size.width * 0.035,
+                                AppColors.blackText,
+                                isMetropolis: true,
+                              ),
                             ),
                           ],
                         ),

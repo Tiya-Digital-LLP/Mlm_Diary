@@ -73,12 +73,17 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
     final Size size = MediaQuery.of(context).size;
     return Obx(() {
       if (controller.isLoading.value) {
-        return Center(
+        return SizedBox(
+          height: size.height * 0.8,
+          width: size.width,
+          child: Center(
             child: CustomLottieAnimation(
-          child: Lottie.asset(
-            Assets.lottieLottie,
+              child: Lottie.asset(
+                Assets.lottieLottie,
+              ),
+            ),
           ),
-        ));
+        );
       } else {
         return Padding(
           padding: const EdgeInsets.all(16),
@@ -155,12 +160,11 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                       controller.mlmCategoryValidation();
                     },
                     style:
-                        textStyleW500(size.width * 0.04, AppColors.blackText),
+                        textStyleW700(size.width * 0.038, AppColors.blackText),
                     cursorColor: AppColors.blackText,
                     decoration: InputDecoration(
-                      labelStyle: const TextStyle(
-                        color: Colors.black,
-                      ),
+                      labelStyle: textStyleW400(
+                          size.width * 0.038, AppColors.blackText),
                       labelText: "I am a MLM *",
                       contentPadding: const EdgeInsets.symmetric(
                         vertical: 5,
@@ -197,9 +201,9 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                     Text(
                       "Gender",
                       style: textStyleW400(
-                          size.width * 0.045,
+                          size.width * 0.038,
                           // ignore: deprecated_member_use
-                          AppColors.blackText.withOpacity(0.5)),
+                          AppColors.blackText),
                     ),
                     20.sbw,
                     InkWell(
@@ -214,8 +218,7 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                                 Assets.imagesCircle,
                                 color: (controller.isGenderToggle.value == true)
                                     ? AppColors.primaryColor
-                                    // ignore: deprecated_member_use
-                                    : AppColors.blackText.withOpacity(0.5),
+                                    : AppColors.blackText,
                               ),
                               if (controller.isGenderToggle.value == true)
                                 Positioned(
@@ -230,12 +233,10 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                           Text(
                             "Male",
                             style: (controller.isGenderToggle.value == true)
-                                ? textStyleW500(
-                                    size.width * 0.045, AppColors.primaryColor)
+                                ? textStyleW600(
+                                    size.width * 0.040, AppColors.primaryColor)
                                 : textStyleW400(
-                                    size.width * 0.045,
-                                    // ignore: deprecated_member_use
-                                    AppColors.blackText.withOpacity(0.5)),
+                                    size.width * 0.038, AppColors.blackText),
                           ),
                         ],
                       ),
@@ -254,8 +255,7 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                                 color:
                                     (controller.isGenderToggle.value == false)
                                         ? AppColors.primaryColor
-                                        // ignore: deprecated_member_use
-                                        : AppColors.blackText.withOpacity(0.5),
+                                        : AppColors.blackText,
                               ),
                               if (controller.isGenderToggle.value == false)
                                 Positioned(
@@ -270,12 +270,10 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                           Text(
                             "Female",
                             style: (controller.isGenderToggle.value == false)
-                                ? textStyleW500(
-                                    size.width * 0.045, AppColors.primaryColor)
+                                ? textStyleW600(
+                                    size.width * 0.040, AppColors.primaryColor)
                                 : textStyleW400(
-                                    size.width * 0.045,
-                                    // ignore: deprecated_member_use
-                                    AppColors.blackText.withOpacity(0.5)),
+                                    size.width * 0.038, AppColors.blackText),
                           ),
                         ],
                       ),
@@ -326,13 +324,12 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                       controller.planCategoryValidation();
                     },
                     style:
-                        textStyleW500(size.width * 0.04, AppColors.blackText),
+                        textStyleW700(size.width * 0.038, AppColors.blackText),
                     cursorColor: AppColors.blackText,
                     decoration: InputDecoration(
                         labelText: "Select Plan",
-                        labelStyle: const TextStyle(
-                          color: Colors.black,
-                        ),
+                        labelStyle: textStyleW400(
+                            size.width * 0.038, AppColors.blackText),
                         contentPadding: const EdgeInsets.symmetric(
                           vertical: 5,
                           horizontal: 2,
@@ -350,11 +347,7 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                 () => TextFormField(
                   controller: controller.location.value,
                   readOnly: true,
-                  style: const TextStyle(
-                      fontSize: 15.0,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black,
-                      fontFamily: 'assets/fonst/Metropolis-Black.otf'),
+                  style: textStyleW700(size.width * 0.038, AppColors.blackText),
                   onTap: () async {
                     var place = await PlacesAutocomplete.show(
                       context: context,
@@ -401,12 +394,8 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                     filled: true,
                     fillColor: AppColors.white,
                     hintText: "Location/ Address / City *",
-                    hintStyle: const TextStyle(
-                            fontSize: 15.0,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black,
-                            fontFamily: 'assets/fonst/Metropolis-Black.otf')
-                        .copyWith(color: Colors.black45),
+                    hintStyle:
+                        textStyleW400(size.width * 0.038, AppColors.blackText),
                     enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
                             width: 1,
@@ -475,9 +464,10 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                   alignment: Alignment.topRight,
                   child: Text(
                     "${controller.aboutCharCount.value}/2000",
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 12,
+                    style: textStyleW400(
+                      size.width * 0.025,
+                      AppColors.blackText,
+                      isMetropolis: true,
                     ),
                   ),
                 ),
@@ -511,9 +501,10 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                   alignment: Alignment.topRight,
                   child: Text(
                     "${controller.aboutCompanyCount.value}/4000",
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 12,
+                    style: textStyleW400(
+                      size.width * 0.025,
+                      AppColors.blackText,
+                      isMetropolis: true,
                     ),
                   ),
                 ),
@@ -849,8 +840,8 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                                 15.sbw,
                                 Text(
                                   userTypes[index].name ?? '',
-                                  style: textStyleW500(
-                                    size.width * 0.041,
+                                  style: textStyleW600(
+                                    size.width * 0.038,
                                     controller.isTypeSelectedList[
                                             index] // Highlight selected MLM type
                                         ? AppColors

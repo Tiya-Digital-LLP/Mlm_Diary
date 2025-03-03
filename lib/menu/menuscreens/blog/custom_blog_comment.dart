@@ -130,8 +130,8 @@ class _CommentDialogState extends State<CommentDialogBlog> {
         children: [
           Expanded(
             child: RefreshIndicator(
+              color: AppColors.background,
               backgroundColor: AppColors.primaryColor,
-              color: AppColors.white,
               onRefresh: _refreshData,
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -315,20 +315,20 @@ class _CommentDialogState extends State<CommentDialogBlog> {
                   children: [
                     Text(
                       comment.name ?? '',
-                      style: TextStyle(
-                        fontSize: size.width * 0.043,
-                        color: AppColors.blackText,
-                        fontWeight: FontWeight.w700,
+                      style: textStyleW700(
+                        size.width * 0.038,
+                        AppColors.blackText,
+                        isMetropolis: true,
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       postTimeFormatter
                           .formatPostTime(comment.createdate ?? ''),
-                      style: TextStyle(
-                        fontSize: size.width * 0.022,
-                        color: AppColors.grey,
-                        fontWeight: FontWeight.w700,
+                      style: textStyleW400(
+                        size.width * 0.022,
+                        AppColors.blackText,
+                        isMetropolis: true,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -344,10 +344,10 @@ class _CommentDialogState extends State<CommentDialogBlog> {
                           ),
                           child: Text(
                             'Reply',
-                            style: TextStyle(
-                              fontSize: size.width * 0.028,
-                              color: Colors.blueAccent,
-                              fontWeight: FontWeight.w700,
+                            style: textStyleW600(
+                              size.width * 0.032,
+                              AppColors.primaryColor,
+                              isMetropolis: true,
                             ),
                           ),
                         ),
@@ -362,10 +362,10 @@ class _CommentDialogState extends State<CommentDialogBlog> {
                             },
                             child: Text(
                               'Edit',
-                              style: TextStyle(
-                                fontSize: size.width * 0.028,
-                                color: Colors.green,
-                                fontWeight: FontWeight.w700,
+                              style: textStyleW600(
+                                size.width * 0.032,
+                                AppColors.greenBorder,
+                                isMetropolis: true,
                               ),
                             ),
                           ),
@@ -379,10 +379,10 @@ class _CommentDialogState extends State<CommentDialogBlog> {
                             }),
                             child: Text(
                               'Delete',
-                              style: TextStyle(
-                                fontSize: size.width * 0.028,
-                                color: Colors.red,
-                                fontWeight: FontWeight.w700,
+                              style: textStyleW600(
+                                size.width * 0.032,
+                                AppColors.redText,
+                                isMetropolis: true,
                               ),
                             ),
                           ),
@@ -442,18 +442,18 @@ class _CommentDialogState extends State<CommentDialogBlog> {
                 children: [
                   Text(
                     reply.name ?? '',
-                    style: TextStyle(
-                      fontSize: size.width * 0.035,
-                      color: AppColors.blackText,
-                      fontWeight: FontWeight.w700,
+                    style: textStyleW700(
+                      size.width * 0.038,
+                      AppColors.blackText,
+                      isMetropolis: true,
                     ),
                   ),
                   Text(
                     postTimeFormatter.formatPostTime(reply.createdate ?? ''),
-                    style: TextStyle(
-                      fontSize: size.width * 0.022,
-                      color: AppColors.grey,
-                      fontWeight: FontWeight.w700,
+                    style: textStyleW400(
+                      size.width * 0.022,
+                      AppColors.blackText,
+                      isMetropolis: true,
                     ),
                   ),
                   4.sbh,
@@ -473,9 +473,10 @@ class _CommentDialogState extends State<CommentDialogBlog> {
                           ),
                           child: Text(
                             'Reply',
-                            style: TextStyle(
-                              fontSize: size.width * 0.028,
-                              color: Colors.blueAccent,
+                            style: textStyleW600(
+                              size.width * 0.032,
+                              AppColors.primaryColor,
+                              isMetropolis: true,
                             ),
                           ),
                         ),
@@ -490,10 +491,10 @@ class _CommentDialogState extends State<CommentDialogBlog> {
                             },
                             child: Text(
                               'Edit',
-                              style: TextStyle(
-                                fontSize: size.width * 0.028,
-                                color: Colors.green,
-                                fontWeight: FontWeight.w700,
+                              style: textStyleW600(
+                                size.width * 0.032,
+                                AppColors.greenBorder,
+                                isMetropolis: true,
                               ),
                             ),
                           ),
@@ -507,10 +508,10 @@ class _CommentDialogState extends State<CommentDialogBlog> {
                             }),
                             child: Text(
                               'Delete',
-                              style: TextStyle(
-                                fontSize: size.width * 0.028,
-                                color: Colors.red,
-                                fontWeight: FontWeight.w700,
+                              style: textStyleW600(
+                                size.width * 0.032,
+                                AppColors.redText,
+                                isMetropolis: true,
                               ),
                             ),
                           ),
@@ -569,18 +570,18 @@ class _CommentDialogState extends State<CommentDialogBlog> {
                 children: [
                   Text(
                     reply.name ?? '',
-                    style: TextStyle(
-                      fontSize: size.width * 0.035,
-                      color: AppColors.blackText,
-                      fontWeight: FontWeight.w700,
+                    style: textStyleW700(
+                      size.width * 0.038,
+                      AppColors.blackText,
+                      isMetropolis: true,
                     ),
                   ),
                   Text(
                     postTimeFormatter.formatPostTime(reply.createdate ?? ''),
-                    style: TextStyle(
-                      fontSize: size.width * 0.022,
-                      color: AppColors.grey,
-                      fontWeight: FontWeight.w700,
+                    style: textStyleW400(
+                      size.width * 0.022,
+                      AppColors.blackText,
+                      isMetropolis: true,
                     ),
                   ),
                   4.sbh,
@@ -600,9 +601,10 @@ class _CommentDialogState extends State<CommentDialogBlog> {
                           ),
                           child: Text(
                             'Reply',
-                            style: TextStyle(
-                              fontSize: size.width * 0.028,
-                              color: Colors.blueAccent,
+                            style: textStyleW600(
+                              size.width * 0.032,
+                              AppColors.primaryColor,
+                              isMetropolis: true,
                             ),
                           ),
                         ),
@@ -617,10 +619,10 @@ class _CommentDialogState extends State<CommentDialogBlog> {
                             },
                             child: Text(
                               'Edit',
-                              style: TextStyle(
-                                fontSize: size.width * 0.028,
-                                color: Colors.green,
-                                fontWeight: FontWeight.w700,
+                              style: textStyleW600(
+                                size.width * 0.032,
+                                AppColors.greenBorder,
+                                isMetropolis: true,
                               ),
                             ),
                           ),
@@ -634,10 +636,10 @@ class _CommentDialogState extends State<CommentDialogBlog> {
                             }),
                             child: Text(
                               'Delete',
-                              style: TextStyle(
-                                fontSize: size.width * 0.028,
-                                color: Colors.red,
-                                fontWeight: FontWeight.w700,
+                              style: textStyleW600(
+                                size.width * 0.032,
+                                AppColors.redText,
+                                isMetropolis: true,
                               ),
                             ),
                           ),
@@ -663,6 +665,7 @@ class _CommentDialogState extends State<CommentDialogBlog> {
         size.width * 0.028,
         // ignore: deprecated_member_use
         AppColors.blackText.withOpacity(0.8),
+        isMetropolis: true,
       ),
       linkStyle: const TextStyle(
         color: Colors.blue,

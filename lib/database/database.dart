@@ -17,6 +17,7 @@ import 'package:mlmdiary/menu/menuscreens/tutorialvideo/controller/tutorial_vide
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
+import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_shimmer_database.dart';
 import 'package:mlmdiary/widgets/customfilter/custom_filter.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
@@ -77,8 +78,8 @@ class _DatabaseState extends State<DatabaseScreen> {
         homeScreenController: homeScreenController,
       ),
       body: RefreshIndicator(
+        color: AppColors.background,
         backgroundColor: AppColors.primaryColor,
-        color: AppColors.white,
         onRefresh: _refreshData,
         child: Container(
           height: double.infinity,
@@ -102,9 +103,9 @@ class _DatabaseState extends State<DatabaseScreen> {
                             controller:
                                 controller.clasifiedController.location.value,
                             readOnly: true,
-                            style: TextStyle(
-                              color: AppColors.blackText,
-                              fontSize: 14,
+                            style: textStyleW600(
+                              size.width * 0.035,
+                              AppColors.blackText,
                             ),
                             textAlign: TextAlign.start,
                             onTap: () async {
@@ -168,10 +169,11 @@ class _DatabaseState extends State<DatabaseScreen> {
                                   },
                                   child: const Icon(Icons.clear_sharp)),
                               hintText: "Location",
-                              hintStyle: TextStyle(
-                                fontSize: 14.0,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.blackText,
+                              contentPadding:
+                                  const EdgeInsets.symmetric(vertical: 5),
+                              hintStyle: textStyleW600(
+                                size.width * 0.035,
+                                AppColors.blackText,
                               ),
                             ),
                             validator: (value) {
@@ -284,13 +286,13 @@ class _DatabaseState extends State<DatabaseScreen> {
                     }
 
                     if (controller.mlmDatabaseList.isEmpty) {
-                      return const Center(
+                      return Center(
                         child: Text(
                           'Data not found',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                          style: textStyleW600(
+                            size.width * 0.030,
+                            AppColors.blackText,
+                            isMetropolis: true,
                           ),
                         ),
                       );

@@ -83,21 +83,30 @@ class _ClassifiedCardState extends State<UserNotificationCard> {
                       Text(
                         widget.userName,
                         style: textStyleW700(
-                            size.width * 0.034, AppColors.blackText),
+                          size.width * 0.038,
+                          AppColors.blackText,
+                          isMetropolis: true,
+                        ),
                       ),
                       3.sbw,
                       Text(
                         postTimeFormatter.formatPostTime(widget.dateTime),
-                        style: textStyleW500(
-                            size.width * 0.030, AppColors.blackText),
+                        style: textStyleW400(
+                          size.width * 0.028,
+                          AppColors.blackText,
+                          isMetropolis: true,
+                        ),
                       ),
                     ],
                   ),
                   3.sbh,
                   Text(
                     widget.userNametype,
-                    style:
-                        textStyleW700(size.width * 0.030, AppColors.blackText),
+                    style: textStyleW700(
+                      size.width * 0.028,
+                      AppColors.blackText,
+                      isMetropolis: true,
+                    ),
                     maxLines: 2,
                   ),
                   Row(
@@ -115,7 +124,10 @@ class _ClassifiedCardState extends State<UserNotificationCard> {
                           child: Text(
                             widget.name,
                             style: textStyleW700(
-                                size.width * 0.032, AppColors.blackText),
+                              size.width * 0.032,
+                              AppColors.blackText,
+                              isMetropolis: true,
+                            ),
                             maxLines: 1,
                           ),
                         ),

@@ -72,32 +72,25 @@ class _AccountSettingState extends State<AccountSetting>
                           color: AppColors.primaryColor),
                       labelColor: Colors.white,
                       unselectedLabelColor: Colors.black,
-                      tabs: [
+                      labelStyle: textStyleW600(
+                        size.width * 0.035,
+                        AppColors.blackText,
+                        isMetropolis: true,
+                      ),
+                      tabs: const [
                         Tab(
                           child: Text(
                             'User Info',
-                            style: textStyleW400(
-                              size.width * 0.032,
-                              AppColors.blackText,
-                            ),
                           ),
                         ),
                         Tab(
                           child: Text(
                             'Social Media',
-                            style: textStyleW400(
-                              size.width * 0.032,
-                              AppColors.blackText,
-                            ),
                           ),
                         ),
                         Tab(
                           child: Text(
                             'Login Details',
-                            style: textStyleW400(
-                              size.width * 0.032,
-                              AppColors.blackText,
-                            ),
                           ),
                         ),
                       ],

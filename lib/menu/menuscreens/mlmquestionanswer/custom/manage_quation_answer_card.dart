@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
@@ -163,19 +164,25 @@ class _ManageQuestionCardState extends State<ManageQuestionCard>
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Column(
               children: [
                 Align(
                   alignment: Alignment.topLeft,
-                  child: Text(
-                    widget.postCaption,
-                    style: textStyleW400(
-                        size.width * 0.035,
-                        // ignore: deprecated_member_use
-                        AppColors.blackText.withOpacity(0.8)),
+                  child: Html(
+                    data: widget.postCaption,
+                    style: {
+                      "html": Style(
+                        lineHeight: const LineHeight(1),
+                        maxLines: 2,
+                        fontFamily: satoshiFontFamily,
+                        fontWeight: FontWeight.w700,
+                        fontSize: FontSize.medium,
+                        color: AppColors.blackText,
+                      ),
+                    },
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -219,8 +226,11 @@ class _ManageQuestionCardState extends State<ManageQuestionCard>
                                   },
                                   child: Text(
                                     '${likeCount.value}',
-                                    style: textStyleW600(size.width * 0.038,
-                                        AppColors.blackText),
+                                    style: textStyleW600(
+                                      size.width * 0.038,
+                                      AppColors.blackText,
+                                      isMetropolis: true,
+                                    ),
                                   ),
                                 ),
                         ],
@@ -239,10 +249,11 @@ class _ManageQuestionCardState extends State<ManageQuestionCard>
                     ),
                     Text(
                       widget.totalreply.toString(),
-                      style: TextStyle(
-                          fontFamily: "Metropolis",
-                          fontWeight: FontWeight.w600,
-                          fontSize: size.width * 0.045),
+                      style: textStyleW600(
+                        size.width * 0.038,
+                        AppColors.blackText,
+                        isMetropolis: true,
+                      ),
                     ),
                     const SizedBox(
                       width: 15,
@@ -267,10 +278,10 @@ class _ManageQuestionCardState extends State<ManageQuestionCard>
                                   },
                                   child: Text(
                                     '${widget.viewcounts}',
-                                    style: TextStyle(
-                                      fontFamily: "Metropolis",
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: size.width * 0.038,
+                                    style: textStyleW600(
+                                      size.width * 0.038,
+                                      AppColors.blackText,
+                                      isMetropolis: true,
                                     ),
                                   ),
                                 ),
@@ -362,6 +373,8 @@ class _ManageQuestionCardState extends State<ManageQuestionCard>
   }
 
   void showLikeAndViewList(BuildContext context, int index) {
+    final Size size = MediaQuery.of(context).size;
+
     _tabController.index = index;
     showModalBottomSheet(
       context: context,
@@ -375,10 +388,12 @@ class _ManageQuestionCardState extends State<ManageQuestionCard>
               backgroundColor: Colors.white,
               title: TabBar(
                 indicatorColor: Colors.transparent,
-                dividerColor: AppColors.grey,
-                labelStyle: TextStyle(
-                  color: AppColors.primaryColor,
-                ),
+                labelColor: AppColors.primaryColor,
+                unselectedLabelColor: Colors.grey,
+                labelStyle:
+                    textStyleW700(size.width * 0.041, AppColors.primaryColor),
+                unselectedLabelStyle:
+                    textStyleW400(size.width * 0.041, AppColors.blackText),
                 controller: _tabController,
                 tabs: const [
                   Tab(text: "Likes"),

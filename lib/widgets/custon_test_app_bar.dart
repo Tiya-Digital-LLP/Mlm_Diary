@@ -5,6 +5,8 @@ import 'package:mlmdiary/generated/assets.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/menu/menuscreens/tutorialvideo/controller/tutorial_video_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
+import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/text_style.dart';
 
 class CustonTestAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Size size;
@@ -51,11 +53,9 @@ class CustonTestAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       title: Text(
         titleText,
-        style: TextStyle(
-          fontWeight: FontWeight.w700,
-          fontSize: size.width * 0.048,
-          color: Colors.black,
-          fontFamily: Assets.fontsSatoshiRegular,
+        style: textStyleW700(
+          size.width * 0.048,
+          AppColors.blackText,
         ),
       ),
       actions: [

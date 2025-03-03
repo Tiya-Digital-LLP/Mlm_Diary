@@ -12,6 +12,7 @@ import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_button.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
+import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_shimmer_plan_company.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 
 class PlanandCompany extends StatefulWidget {
@@ -85,13 +86,17 @@ class _PlanandCompanyState extends State<PlanandCompany> {
       ),
       body: isNextStep
           ? Obx(() {
-              if (controller.isLoading.value &&
-                  controller.companyList.isEmpty) {
-                return Center(
-                  child: CustomLottieAnimation(
-                    child: Lottie.asset(
-                      Assets.lottieLottie,
-                    ),
+              if (controller.isLoading.value) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: ListView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: 15,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return const CustomShimmerPlanCompany(
+                          width: 175, height: 60);
+                    },
                   ),
                 );
               }
@@ -116,6 +121,8 @@ class _PlanandCompanyState extends State<PlanandCompany> {
                     ),
                     Expanded(
                       child: RefreshIndicator(
+                        color: AppColors.background,
+                        backgroundColor: AppColors.primaryColor,
                         onRefresh: _refreshDataCompany,
                         child: ListView.builder(
                           itemCount: controller.filterdcompanyList.length +
@@ -159,7 +166,7 @@ class _PlanandCompanyState extends State<PlanandCompany> {
                                             child: Text(
                                               post.name ?? '',
                                               style: textStyleW700(
-                                                  size.width * 0.036,
+                                                  size.width * 0.038,
                                                   AppColors.blackText),
                                             ),
                                           ),
@@ -180,9 +187,16 @@ class _PlanandCompanyState extends State<PlanandCompany> {
             })
           : Obx(() {
               if (controller.isLoading.value) {
-                return Center(
-                  child: CustomLottieAnimation(
-                    child: Lottie.asset(Assets.lottieLottie),
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: ListView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: 15,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return const CustomShimmerPlanCompany(
+                          width: 175, height: 60);
+                    },
                   ),
                 );
               }
@@ -202,6 +216,8 @@ class _PlanandCompanyState extends State<PlanandCompany> {
                   ),
                   Expanded(
                     child: RefreshIndicator(
+                      color: AppColors.background,
+                      backgroundColor: AppColors.primaryColor,
                       onRefresh: controller.fetchSelectedPlanList,
                       child: ListView.builder(
                         itemCount: controller.filteredPlanList.length,
@@ -244,7 +260,7 @@ class _PlanandCompanyState extends State<PlanandCompany> {
                                             Text(
                                               plan.name ?? '',
                                               style: textStyleW700(
-                                                  size.width * 0.036,
+                                                  size.width * 0.038,
                                                   AppColors.blackText),
                                             ),
                                           ],

@@ -11,6 +11,7 @@ import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/custom/question_card
 import 'package:mlmdiary/menu/menuscreens/tutorialvideo/controller/tutorial_video_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
 import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_shimmer_question.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
@@ -76,11 +77,9 @@ class _QuationAnswerState extends State<QuationAnswer> {
         elevation: 0,
         title: Text(
           'Question Answer',
-          style: TextStyle(
-            fontWeight: FontWeight.w700,
-            fontSize: size.width * 0.048,
-            color: Colors.black,
-            fontFamily: Assets.fontsSatoshiRegular,
+          style: textStyleW700(
+            size.width * 0.048,
+            AppColors.blackText,
           ),
         ),
         actions: [
@@ -105,8 +104,8 @@ class _QuationAnswerState extends State<QuationAnswer> {
         ],
       ),
       body: RefreshIndicator(
+        color: AppColors.background,
         backgroundColor: AppColors.primaryColor,
-        color: AppColors.white,
         onRefresh: _refreshData,
         child: Column(
           children: [
@@ -161,13 +160,13 @@ class _QuationAnswerState extends State<QuationAnswer> {
                       }
 
                       if (controller.questionList.isEmpty) {
-                        return const Center(
+                        return Center(
                           child: Text(
                             'Data not found',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
+                            style: textStyleW600(
+                              size.width * 0.030,
+                              AppColors.blackText,
+                              isMetropolis: true,
                             ),
                           ),
                         );

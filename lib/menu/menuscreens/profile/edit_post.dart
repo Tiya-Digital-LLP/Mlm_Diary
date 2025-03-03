@@ -122,15 +122,16 @@ class _AddPostState extends State<EditPost> {
                     controller: controller.editcomments.value,
                     minLines: 10,
                     maxLines: null,
+                    style:
+                        textStyleW700(size.width * 0.038, AppColors.blackText),
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       counterText: "",
                       labelText: "Add Description",
                       filled: true,
                       fillColor: Colors.transparent,
-                      labelStyle: TextStyle(
-                        color: Colors.grey[600],
-                      ),
+                      labelStyle: textStyleW400(
+                          size.width * 0.038, AppColors.blackText),
                       floatingLabelBehavior: FloatingLabelBehavior.always,
                     ),
                     onChanged: (value) {

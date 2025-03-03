@@ -57,16 +57,15 @@ class DiscriptionTextField extends StatelessWidget {
               inputFormatters: textInputType,
               onChanged: onChanged,
               controller: controller,
-              style: textStyleW500(size.width * 0.04, AppColors.blackText),
+              style: textStyleW700(size.width * 0.038, AppColors.blackText),
               cursorColor: AppColors.blackText,
               minLines: 3,
               maxLines: null,
               decoration: InputDecoration(
                 counterText: "",
                 labelText: hint,
-                labelStyle: const TextStyle(
-                  color: Colors.black,
-                ),
+                labelStyle:
+                    textStyleW400(size.width * 0.038, AppColors.blackText),
                 contentPadding: const EdgeInsets.symmetric(
                   vertical: 10,
                 ),

@@ -134,15 +134,16 @@ class _AddPostState extends State<AddPost> {
                       maxLines: null,
                       keyboardType: TextInputType.multiline,
                       textInputAction: TextInputAction.done,
+                      style: textStyleW700(
+                          size.width * 0.038, AppColors.blackText),
                       decoration: InputDecoration(
                         border: InputBorder.none,
                         counterText: "",
                         labelText: "Add Description",
                         filled: true,
                         fillColor: Colors.transparent,
-                        labelStyle: TextStyle(
-                          color: Colors.grey[600],
-                        ),
+                        labelStyle: textStyleW400(
+                            size.width * 0.038, AppColors.blackText),
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                       ),
                       onChanged: (value) {

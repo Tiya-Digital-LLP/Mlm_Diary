@@ -142,11 +142,7 @@ class _moreState extends State<MoreOptionScreen> {
             return Center(
               child: Text(
                 controller.isLoading.value ? 'Loading...' : 'Data not found',
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
+                style: textStyleW700(size.width * 0.038, AppColors.blackText),
               ),
             );
           }
@@ -946,7 +942,10 @@ class _moreState extends State<MoreOptionScreen> {
                                 child: Text(
                                   'Cancel',
                                   style: textStyleW700(
-                                      size.width * 0.035, AppColors.blackText),
+                                    size.width * 0.035,
+                                    AppColors.blackText,
+                                    isMetropolis: true,
+                                  ),
                                 ))),
                         5.sbw,
                         Expanded(

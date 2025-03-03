@@ -79,21 +79,31 @@ class _ClassifiedCardState extends State<AdminNotificationCard> {
                 children: [
                   Text(
                     widget.userNametype,
-                    style:
-                        textStyleW700(size.width * 0.034, AppColors.blackText),
+                    style: textStyleW700(
+                      size.width * 0.038,
+                      AppColors.blackText,
+                      isMetropolis: true,
+                    ),
                     maxLines: 2,
                   ),
                   Text(
                     postTimeFormatter.formatPostTime(widget.dateTime),
-                    style:
-                        textStyleW500(size.width * 0.030, AppColors.blackText),
+                    style: textStyleW400(
+                      size.width * 0.028,
+                      AppColors.blackText,
+                      isMetropolis: true,
+                    ),
                   ),
                 ],
               ),
               3.sbh,
               Text(
                 widget.userName,
-                style: textStyleW700(size.width * 0.034, AppColors.blackText),
+                style: textStyleW600(
+                  size.width * 0.028,
+                  AppColors.blackText,
+                  isMetropolis: true,
+                ),
                 maxLines: 2,
               ),
               Row(
@@ -111,7 +121,10 @@ class _ClassifiedCardState extends State<AdminNotificationCard> {
                       child: Text(
                         widget.name,
                         style: textStyleW700(
-                            size.width * 0.032, AppColors.blackText),
+                          size.width * 0.032,
+                          AppColors.blackText,
+                          isMetropolis: true,
+                        ),
                         maxLines: 1,
                       ),
                     ),

@@ -177,15 +177,12 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                                 const SizedBox(width: 10),
                                 Text(
                                   "Male",
-                                  style: (controller.isGenderToggle.value ==
-                                          true)
-                                      ? textStyleW500(size.width * 0.045,
-                                          AppColors.primaryColor)
-                                      : textStyleW400(
-                                          size.width * 0.045,
-                                          // ignore: deprecated_member_use
-                                          AppColors.blackText.withOpacity(0.5),
-                                        ),
+                                  style:
+                                      (controller.isGenderToggle.value == true)
+                                          ? textStyleW600(size.width * 0.040,
+                                              AppColors.primaryColor)
+                                          : textStyleW400(size.width * 0.038,
+                                              AppColors.blackText),
                                 ),
                               ],
                             ),
@@ -222,15 +219,12 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                                 const SizedBox(width: 10),
                                 Text(
                                   "Female",
-                                  style: (controller.isGenderToggle.value ==
-                                          false)
-                                      ? textStyleW500(size.width * 0.045,
-                                          AppColors.primaryColor)
-                                      : textStyleW400(
-                                          size.width * 0.045,
-                                          // ignore: deprecated_member_use
-                                          AppColors.blackText.withOpacity(0.5),
-                                        ),
+                                  style:
+                                      (controller.isGenderToggle.value == false)
+                                          ? textStyleW600(size.width * 0.040,
+                                              AppColors.primaryColor)
+                                          : textStyleW400(size.width * 0.038,
+                                              AppColors.blackText),
                                 ),
                               ],
                             ),
@@ -264,7 +258,6 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                             controller.companyName.value.text =
                                 selectedCompanies.join(", ");
                           }
-                          // Ensure the field is editable after returning from AddCompanyClassified
                           controller.companyNameOnly.value = false;
                         },
                       ),
@@ -274,7 +267,7 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                       () => BorderContainer(
                         isError: controller.planTypeError.value,
                         byDefault: !controller.isPlanTyping.value,
-                        height: 68,
+                        height: 58,
                         child: TextField(
                           controller:
                               controller.getSelectedPlanOptionsTextController(),
@@ -284,14 +277,13 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                                 context, size, controller, controller.planList);
                             controller.planCategoryValidation();
                           },
-                          style: textStyleW500(
-                              size.width * 0.04, AppColors.blackText),
+                          style: textStyleW700(
+                              size.width * 0.038, AppColors.blackText),
                           cursorColor: AppColors.blackText,
                           decoration: InputDecoration(
                             labelText: "Select Plan *",
-                            labelStyle: const TextStyle(
-                              color: Colors.black,
-                            ),
+                            labelStyle: textStyleW400(
+                                size.width * 0.038, AppColors.blackText),
                             border: InputBorder.none,
                             contentPadding: const EdgeInsets.symmetric(
                               vertical: 5.5,
@@ -307,117 +299,105 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                     ),
                     const SizedBox(height: 10),
                     Obx(
-                      () => TextFormField(
-                        controller: controller.location.value,
-                        readOnly: true,
-                        style: const TextStyle(
-                            fontSize: 15.0,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black,
-                            fontFamily: 'assets/fonts/Metropolis-Black.otf'),
-                        onTap: () async {
-                          var place = await PlacesAutocomplete.show(
-                            context: context,
-                            apiKey: googleApikey,
-                            mode: Mode.fullscreen,
-                            hint: 'Search and Save Location.',
-                            cursorColor: AppColors.primaryColor,
-                            types: ['geocode', 'establishment'],
-                            strictbounds: false,
-                            onError: (err) {},
-                          );
-
-                          if (place != null) {
-                            setState(() {
-                              controller.location.value.text =
-                                  place.description.toString();
-                              _loc.text = controller.location.value.text;
-                              controller.isLocationTyping.value = true;
-                              controller.locationValidation();
-                            });
-                            final plist = GoogleMapsPlaces(
+                      () => Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12.0),
+                          color: AppColors.white,
+                          border: Border.all(
+                            color: Colors.grey,
+                            width: 1.0,
+                          ),
+                        ),
+                        child: TextFormField(
+                          controller: controller.location.value,
+                          readOnly: true,
+                          style: textStyleW700(
+                              size.width * 0.038, AppColors.blackText),
+                          onTap: () async {
+                            var place = await PlacesAutocomplete.show(
+                              context: context,
                               apiKey: googleApikey,
-                              apiHeaders:
-                                  await const GoogleApiHeaders().getHeaders(),
+                              mode: Mode.fullscreen,
+                              hint: 'Search and Save Location.',
+                              cursorColor: AppColors.primaryColor,
+                              types: ['geocode', 'establishment'],
+                              strictbounds: false,
+                              onError: (err) {},
                             );
-                            String placeid = place.placeId ?? "0";
-                            final detail =
-                                await plist.getDetailsByPlaceId(placeid);
-                            for (var component
-                                in detail.result.addressComponents) {
-                              for (var type in component.types) {
-                                if (type == "administrative_area_level_1") {
-                                  controller.state.value.text =
-                                      component.longName;
-                                } else if (type == "locality") {
-                                  controller.city.value.text =
-                                      component.longName;
-                                } else if (type == "country") {
-                                  controller.country.value.text =
-                                      component.longName;
+
+                            if (place != null) {
+                              setState(() {
+                                controller.location.value.text =
+                                    place.description.toString();
+                                _loc.text = controller.location.value.text;
+                                controller.isLocationTyping.value = true;
+                                controller.locationValidation();
+                              });
+                              final plist = GoogleMapsPlaces(
+                                apiKey: googleApikey,
+                                apiHeaders:
+                                    await const GoogleApiHeaders().getHeaders(),
+                              );
+                              String placeid = place.placeId ?? "0";
+                              final detail =
+                                  await plist.getDetailsByPlaceId(placeid);
+                              for (var component
+                                  in detail.result.addressComponents) {
+                                for (var type in component.types) {
+                                  if (type == "administrative_area_level_1") {
+                                    controller.state.value.text =
+                                        component.longName;
+                                  } else if (type == "locality") {
+                                    controller.city.value.text =
+                                        component.longName;
+                                  } else if (type == "country") {
+                                    controller.country.value.text =
+                                        component.longName;
+                                  }
                                 }
                               }
-                            }
 
-                            final geometry = detail.result.geometry!;
-                            setState(() {
-                              lat = geometry.location.lat;
-                              log = geometry.location.lng;
-                            });
-                          }
-                        },
-                        decoration: InputDecoration(
-                          hintText: "Location/ Address / City *",
-                          hintStyle: const TextStyle(
-                                  fontSize: 15.0,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                  fontFamily:
-                                      'assets/fonts/Metropolis-Black.otf')
-                              .copyWith(color: Colors.black45),
-                          filled: true,
-                          fillColor: AppColors.white,
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  width: 1,
-                                  color:
-                                      controller.addressValidationColor.value),
-                              borderRadius: BorderRadius.circular(10.0)),
-                          border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  width: 1,
-                                  color:
-                                      controller.addressValidationColor.value),
-                              borderRadius: BorderRadius.circular(10.0)),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  width: 1,
-                                  color:
-                                      controller.addressValidationColor.value),
-                              borderRadius: BorderRadius.circular(10.0)),
+                              final geometry = detail.result.geometry!;
+                              setState(() {
+                                lat = geometry.location.lat;
+                                log = geometry.location.lng;
+                              });
+                            }
+                          },
+                          decoration: InputDecoration(
+                            labelText: "Location / Address / City *",
+                            labelStyle: textStyleW400(
+                                size.width * 0.038, AppColors.blackText),
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 5,
+                              horizontal: 2,
+                            ),
+                            border: InputBorder.none,
+                          ),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              setState(() {
+                                controller.locationValidation();
+                              });
+                            } else {}
+                            return null;
+                          },
+                          onFieldSubmitted: (value) {
+                            if (value.isEmpty) {
+                              showToasterrorborder(
+                                  'Please Search and Save your Business Location',
+                                  context);
+                              setState(() {
+                                controller.locationValidation();
+                              });
+                            } else if (value.isNotEmpty) {
+                              setState(() {
+                                controller.locationValidation();
+                              });
+                            }
+                          },
                         ),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            setState(() {
-                              controller.locationValidation();
-                            });
-                          } else {}
-                          return null;
-                        },
-                        onFieldSubmitted: (value) {
-                          if (value.isEmpty) {
-                            showToasterrorborder(
-                                'Please Search and Save your Business Location',
-                                context);
-                            setState(() {
-                              controller.locationValidation();
-                            });
-                          } else if (value.isNotEmpty) {
-                            setState(() {
-                              controller.locationValidation();
-                            });
-                          }
-                        },
                       ),
                     ),
                     100.sbh,
@@ -442,13 +422,13 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                                 "Please Enter Company Name", context);
                           } else {
                             if (controller.selectedCountPlan > 0) {
-                              // Retrieve city information from the location text field
                               if (controller.city.value.text.isEmpty) {
                                 showToasterrorborder(
                                     "Please select a valid location.", context);
                               } else {
                                 controller.saveCompanyDetails(
                                   imageFile: file.value,
+                                  context: context,
                                 );
                               }
                             } else {
@@ -551,7 +531,7 @@ class _AddMoreDetailsState extends State<AddMoreDetails> {
                                   15.sbw,
                                   Text(
                                     planList[index].name ?? '',
-                                    style: textStyleW500(size.width * 0.041,
+                                    style: textStyleW600(size.width * 0.038,
                                         AppColors.blackText),
                                   ),
                                 ],

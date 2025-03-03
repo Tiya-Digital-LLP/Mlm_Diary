@@ -12,6 +12,7 @@ import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_
 import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/profile/controller/edit_post_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_shimmer_followers.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 
@@ -41,6 +42,8 @@ class _AllNotificationState extends State<UserNotification> {
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       body: Container(
         color: AppColors.background,
@@ -67,13 +70,13 @@ class _AllNotificationState extends State<UserNotification> {
                 }
 
                 if (controller.notificationList.isEmpty) {
-                  return const Center(
+                  return Center(
                     child: Text(
                       'Data not found',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                      style: textStyleW600(
+                        size.width * 0.030,
+                        AppColors.blackText,
+                        isMetropolis: true,
                       ),
                     ),
                   );

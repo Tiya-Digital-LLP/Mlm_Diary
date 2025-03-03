@@ -10,6 +10,7 @@ import 'package:mlmdiary/menu/menuscreens/tutorialvideo/controller/tutorial_vide
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
+import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 
@@ -64,11 +65,9 @@ class _MlmCompaniesState extends State<MlmCompanies> {
         elevation: 0,
         title: Text(
           'MLM Companies',
-          style: TextStyle(
-            fontWeight: FontWeight.w700,
-            fontSize: size.width * 0.048,
-            color: Colors.black,
-            fontFamily: Assets.fontsSatoshiRegular,
+          style: textStyleW700(
+            size.width * 0.048,
+            AppColors.blackText,
           ),
         ),
         actions: [
@@ -93,8 +92,8 @@ class _MlmCompaniesState extends State<MlmCompanies> {
         ],
       ),
       body: RefreshIndicator(
+        color: AppColors.background,
         backgroundColor: AppColors.primaryColor,
-        color: AppColors.white,
         onRefresh: _refreshData,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
@@ -130,13 +129,13 @@ class _MlmCompaniesState extends State<MlmCompanies> {
                 }
 
                 if (controller.companyAdminList.isEmpty) {
-                  return const Center(
+                  return Center(
                     child: Text(
                       'Data not found',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                      style: textStyleW600(
+                        size.width * 0.030,
+                        AppColors.blackText,
+                        isMetropolis: true,
                       ),
                     ),
                   );

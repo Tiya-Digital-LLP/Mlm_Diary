@@ -201,18 +201,20 @@ class _FavouritrCardState extends State<NewsUserCard>
                   Row(
                     children: [
                       Container(
-                        width: 70,
-                        height: 25,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(40),
                           color: AppColors.primaryColor,
                         ),
-                        child: Center(
-                          child: Text(
-                            widget.type,
-                            style: textStyleW700(
-                              size.width * 0.026,
-                              AppColors.white,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 4, horizontal: 10),
+                          child: Center(
+                            child: Text(
+                              widget.type,
+                              style: textStyleW600(
+                                size.width * 0.035,
+                                AppColors.white,
+                              ),
                             ),
                           ),
                         ),
@@ -224,11 +226,12 @@ class _FavouritrCardState extends State<NewsUserCard>
               Align(
                 alignment: Alignment.topLeft,
                 child: Html(
-                  data: widget.postCaption,
+                  data: widget.postTitle,
                   style: {
                     "html": Style(
+                      lineHeight: const LineHeight(1),
                       maxLines: 1,
-                      fontFamily: fontFamily,
+                      fontFamily: satoshiFontFamily,
                       fontWeight: FontWeight.w700,
                       fontSize: FontSize.medium,
                       color: AppColors.blackText,
@@ -236,19 +239,33 @@ class _FavouritrCardState extends State<NewsUserCard>
                   },
                 ),
               ),
-              SizedBox(
-                height: size.height * 0.26,
+              Align(
+                alignment: Alignment.topLeft,
+                child: Html(
+                  data: widget.postCaption,
+                  style: {
+                    "html": Style(
+                      lineHeight: const LineHeight(1.2),
+                      maxLines: 2,
+                      fontFamily: satoshiFontFamily,
+                      fontWeight: FontWeight.w400,
+                      fontSize: FontSize.small,
+                      color: AppColors.blackText,
+                    ),
+                  },
+                ),
+              ),
+              Container(
+                height: size.height * 0.28,
                 width: size.width,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12.0),
-                  child: CachedNetworkImage(
-                    imageUrl: widget.postImage,
-                    height: 100.0,
-                    width: 60.0,
-                    fit: BoxFit.fill,
-                    errorWidget: (context, url, error) =>
-                        Image.asset(Assets.imagesLogo),
-                  ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: CachedNetworkImage(
+                  imageUrl: widget.postImage,
+                  fit: BoxFit.fill,
+                  errorWidget: (context, url, error) =>
+                      Image.asset(Assets.imagesLogo),
                 ),
               ),
               10.sbh,
@@ -284,8 +301,11 @@ class _FavouritrCardState extends State<NewsUserCard>
                                   },
                                   child: Text(
                                     '${likeCount.value}',
-                                    style: textStyleW600(size.width * 0.038,
-                                        AppColors.blackText),
+                                    style: textStyleW600(
+                                      size.width * 0.038,
+                                      AppColors.blackText,
+                                      isMetropolis: true,
+                                    ),
                                   ),
                                 ),
                         ],
@@ -307,10 +327,10 @@ class _FavouritrCardState extends State<NewsUserCard>
                         5.sbw,
                         Text(
                           '${widget.commentcount}',
-                          style: TextStyle(
-                            fontFamily: "Metropolis",
-                            fontWeight: FontWeight.w600,
-                            fontSize: size.width * 0.038,
+                          style: textStyleW600(
+                            size.width * 0.038,
+                            AppColors.blackText,
+                            isMetropolis: true,
                           ),
                         ),
                       ],
@@ -335,10 +355,10 @@ class _FavouritrCardState extends State<NewsUserCard>
                                   },
                                   child: Text(
                                     '${widget.viewcounts}',
-                                    style: TextStyle(
-                                      fontFamily: "Metropolis",
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: size.width * 0.038,
+                                    style: textStyleW600(
+                                      size.width * 0.038,
+                                      AppColors.blackText,
+                                      isMetropolis: true,
                                     ),
                                   ),
                                 ),
@@ -408,6 +428,8 @@ class _FavouritrCardState extends State<NewsUserCard>
   }
 
   void showLikeAndViewList(BuildContext context, int index) {
+    final Size size = MediaQuery.of(context).size;
+
     _tabController.index = index;
     showModalBottomSheet(
       context: context,
@@ -421,10 +443,12 @@ class _FavouritrCardState extends State<NewsUserCard>
               backgroundColor: Colors.white,
               title: TabBar(
                 indicatorColor: Colors.transparent,
-                dividerColor: AppColors.grey,
-                labelStyle: TextStyle(
-                  color: AppColors.primaryColor,
-                ),
+                labelColor: AppColors.primaryColor,
+                unselectedLabelColor: Colors.grey,
+                labelStyle:
+                    textStyleW700(size.width * 0.041, AppColors.primaryColor),
+                unselectedLabelStyle:
+                    textStyleW400(size.width * 0.041, AppColors.blackText),
                 controller: _tabController,
                 tabs: const [
                   Tab(text: "Likes"),

@@ -297,10 +297,6 @@ class QuestionAnswerController extends GetxController {
   Future<void> getAnswers(int page, int answerId) async {
     isLoading.value = true;
 
-    await Future.delayed(const Duration(milliseconds: 500));
-
-    answerList.clear();
-
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
     String device = '';

@@ -6,6 +6,7 @@ import 'package:mlmdiary/menu/menuscreens/news/controller/manage_news_controller
 import 'package:mlmdiary/menu/menuscreens/news/manage_news_card.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_shimmer_classified.dart';
 import 'package:mlmdiary/widgets/remimaining_count_controller./remaining_count.dart';
@@ -37,6 +38,8 @@ class _MlmnewsState extends State<ManageNews> {
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: CustomAppBar(
@@ -44,8 +47,8 @@ class _MlmnewsState extends State<ManageNews> {
         titleText: 'Manage News',
       ),
       body: RefreshIndicator(
+        color: AppColors.background,
         backgroundColor: AppColors.primaryColor,
-        color: AppColors.white,
         onRefresh: _refreshData,
         child: Container(
           color: AppColors.background,
@@ -69,10 +72,10 @@ class _MlmnewsState extends State<ManageNews> {
               return Center(
                 child: Text(
                   controller.isLoading.value ? 'Loading...' : 'Data not found',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                  style: textStyleW600(
+                    size.width * 0.030,
+                    AppColors.blackText,
+                    isMetropolis: true,
                   ),
                 ),
               );

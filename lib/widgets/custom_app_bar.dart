@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
+import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/text_style.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Size size;
@@ -40,11 +42,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       title: Text(
         titleText,
-        style: TextStyle(
-          fontWeight: FontWeight.w700,
-          fontSize: size.width * 0.048,
-          color: Colors.black,
-          fontFamily: Assets.fontsSatoshiRegular,
+        style: textStyleW700(
+          size.width * 0.048,
+          AppColors.blackText,
         ),
       ),
       actions: [

@@ -167,7 +167,10 @@ class CustomFloatingActionButtonController extends GetxController {
                               child: Text(
                                 'Cancel',
                                 style: textStyleW700(
-                                    size.width * 0.035, AppColors.blackText),
+                                  size.width * 0.035,
+                                  AppColors.blackText,
+                                  isMetropolis: true,
+                                ),
                               ),
                             ),
                           ),
@@ -185,7 +188,10 @@ class CustomFloatingActionButtonController extends GetxController {
                               child: Text(
                                 'Pay Now',
                                 style: textStyleW700(
-                                    size.width * 0.035, AppColors.white),
+                                  size.width * 0.035,
+                                  AppColors.white,
+                                  isMetropolis: true,
+                                ),
                               ),
                             ),
                           ),

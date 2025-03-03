@@ -61,7 +61,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
           ],
         ),
         child: SizedBox(
-          height: 75,
+          height: 70,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -77,13 +77,12 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
                   },
                   obscureText: textFieldController.obscureText.value,
                   obscuringCharacter: "●",
-                  style: textStyleW400(size.width * 0.038, AppColors.blackText),
+                  style: textStyleW700(size.width * 0.038, AppColors.blackText),
                   decoration: InputDecoration(
                     counterText: "",
                     labelText: widget.hint,
-                    labelStyle: TextStyle(
-                      color: Colors.grey[600],
-                    ),
+                    labelStyle:
+                        textStyleW400(size.width * 0.038, AppColors.blackText),
                     border: InputBorder.none,
                     contentPadding:
                         const EdgeInsets.only(top: 16, left: 8, right: 8),

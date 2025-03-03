@@ -171,7 +171,7 @@ class _ManageBlogCardState extends State<ManageBlogCard> {
                             "html": Style(
                               lineHeight: const LineHeight(1),
                               maxLines: 1,
-                              fontFamily: fontFamily,
+                              fontFamily: satoshiFontFamily,
                               fontWeight: FontWeight.w700,
                               fontSize: FontSize.medium,
                               color: AppColors.blackText,
@@ -187,11 +187,10 @@ class _ManageBlogCardState extends State<ManageBlogCard> {
                             "html": Style(
                               lineHeight: const LineHeight(1.2),
                               maxLines: 2,
-                              fontFamily: fontFamily,
-                              fontWeight: FontWeight.w500,
+                              fontFamily: satoshiFontFamily,
+                              fontWeight: FontWeight.w400,
                               fontSize: FontSize.small,
                               color: AppColors.blackText,
-                              textOverflow: TextOverflow.ellipsis,
                             ),
                           },
                         ),
@@ -229,7 +228,10 @@ class _ManageBlogCardState extends State<ManageBlogCard> {
                     Text(
                       '${likeCount.value}',
                       style: textStyleW600(
-                          size.width * 0.038, AppColors.blackText),
+                        size.width * 0.038,
+                        AppColors.blackText,
+                        isMetropolis: true,
+                      ),
                     ),
                     15.sbw,
                     Row(
@@ -248,10 +250,10 @@ class _ManageBlogCardState extends State<ManageBlogCard> {
                         5.sbw,
                         Text(
                           '${widget.commentcount}',
-                          style: TextStyle(
-                            fontFamily: "Metropolis",
-                            fontWeight: FontWeight.w600,
-                            fontSize: size.width * 0.038,
+                          style: textStyleW600(
+                            size.width * 0.038,
+                            AppColors.blackText,
+                            isMetropolis: true,
                           ),
                         ),
                       ],
@@ -269,10 +271,11 @@ class _ManageBlogCardState extends State<ManageBlogCard> {
                     ),
                     Text(
                       '${widget.viewcounts}',
-                      style: TextStyle(
-                          fontFamily: "Metropolis",
-                          fontWeight: FontWeight.w600,
-                          fontSize: size.width * 0.038),
+                      style: textStyleW600(
+                        size.width * 0.038,
+                        AppColors.blackText,
+                        isMetropolis: true,
+                      ),
                     ),
                   ],
                 ),
@@ -337,8 +340,11 @@ class _ManageBlogCardState extends State<ManageBlogCard> {
                   child: Center(
                     child: Text(
                       getStatusText(widget.blogstatus),
-                      style: textStyleW500(
-                          size.width * 0.035, AppColors.blackText),
+                      style: textStyleW700(
+                        size.width * 0.035,
+                        AppColors.blackText,
+                        isMetropolis: true,
+                      ),
                     ),
                   ),
                 ),

@@ -106,12 +106,10 @@ class _YourWidgetState extends State<Video> {
                               Expanded(
                                 child: Text(
                                   decodedTitle,
-                                  style: const TextStyle(
-                                    fontSize: 13.0,
-                                    fontWeight: FontWeight.w500,
-                                    fontFamily:
-                                        'assets/fonst/Metropolis-Black.otf',
-                                  ).copyWith(fontSize: 15),
+                                  style: textStyleW700(
+                                    size.width * 0.038,
+                                    AppColors.blackText,
+                                  ),
                                 ),
                               ),
                               GestureDetector(
@@ -227,6 +225,8 @@ class _YoutubeViewerState extends State<YoutubeViewer>
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+
     super.build(context);
 
     return Column(
@@ -263,7 +263,10 @@ class _YoutubeViewerState extends State<YoutubeViewer>
               5.sbw,
               Text(
                 "Watch on YouTube",
-                style: TextStyle(color: AppColors.primaryColor, fontSize: 16),
+                style: textStyleW700(
+                  size.width * 0.034,
+                  AppColors.blackText,
+                ),
               ),
             ],
           ),

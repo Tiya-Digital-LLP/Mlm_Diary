@@ -91,9 +91,9 @@ class _EnterOTPScreenState extends State<EnterOTPScreen> {
               defaultPinTheme: PinTheme(
                 width: 56,
                 height: 56,
-                textStyle: const TextStyle(
-                  fontSize: 22,
-                  color: Colors.black,
+                textStyle: textStyleW700(
+                  size.width * 0.036,
+                  AppColors.blackText,
                 ),
                 decoration: BoxDecoration(
                   color: Colors.grey[200],
@@ -103,9 +103,9 @@ class _EnterOTPScreenState extends State<EnterOTPScreen> {
               focusedPinTheme: PinTheme(
                 width: 56,
                 height: 56,
-                textStyle: const TextStyle(
-                  fontSize: 22,
-                  color: Colors.blue,
+                textStyle: textStyleW700(
+                  size.width * 0.036,
+                  AppColors.primaryColor,
                 ),
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -185,12 +185,12 @@ class _EnterOTPScreenState extends State<EnterOTPScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   8.sbw,
-                                  const Text(
+                                  Text(
                                     'Verify',
                                     style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.w700,
-                                        fontFamily: Assets.fontsSatoshiRegular,
+                                        fontFamily: metropolisFontFamily,
                                         color: Colors.white),
                                   ),
                                 ],

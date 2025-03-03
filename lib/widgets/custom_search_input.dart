@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/text_style.dart';
 
 class CustomSearchInput extends StatelessWidget {
   final TextEditingController controller;
@@ -15,6 +16,8 @@ class CustomSearchInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12.0),
@@ -26,11 +29,14 @@ class CustomSearchInput extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(left: 5.0, right: 5.0),
         child: TextField(
-          style: TextStyle(color: AppColors.blackText, fontSize: 14),
+          style: textStyleW600(
+            size.width * 0.035,
+            AppColors.blackText,
+          ),
           controller: controller,
           textInputAction: TextInputAction.search,
           decoration: InputDecoration(
-            contentPadding: const EdgeInsets.only(top: -4),
+            contentPadding: const EdgeInsets.only(top: -5),
             border: InputBorder.none,
             prefixIconConstraints: const BoxConstraints(minWidth: 24),
             prefixIcon: Padding(
@@ -42,10 +48,9 @@ class CustomSearchInput extends StatelessWidget {
               ),
             ),
             hintText: 'Search',
-            hintStyle: TextStyle(
-              fontSize: 14.0,
-              fontWeight: FontWeight.w500,
-              color: AppColors.blackText,
+            hintStyle: textStyleW600(
+              size.width * 0.035,
+              AppColors.blackText,
             ),
           ),
           onSubmitted: onSubmitted,

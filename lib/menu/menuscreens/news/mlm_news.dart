@@ -13,6 +13,7 @@ import 'package:mlmdiary/menu/menuscreens/tutorialvideo/controller/tutorial_vide
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
+import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
 import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_shimmer_classified.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
@@ -75,11 +76,9 @@ class _MlmNewsScreenState extends State<MlmNews> {
         elevation: 0,
         title: Text(
           'MLM News',
-          style: TextStyle(
-            fontWeight: FontWeight.w700,
-            fontSize: size.width * 0.048,
-            color: Colors.black,
-            fontFamily: Assets.fontsSatoshiRegular,
+          style: textStyleW700(
+            size.width * 0.048,
+            AppColors.blackText,
           ),
         ),
         actions: [
@@ -104,8 +103,8 @@ class _MlmNewsScreenState extends State<MlmNews> {
         ],
       ),
       body: RefreshIndicator(
+        color: AppColors.background,
         backgroundColor: AppColors.primaryColor,
-        color: AppColors.white,
         onRefresh: _refreshData,
         child: Container(
           color: AppColors.background,
@@ -184,13 +183,13 @@ class _MlmNewsScreenState extends State<MlmNews> {
                       }
 
                       if (controller.newsList.isEmpty) {
-                        return const Center(
+                        return Center(
                           child: Text(
                             'Data not found',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
+                            style: textStyleW600(
+                              size.width * 0.030,
+                              AppColors.blackText,
+                              isMetropolis: true,
                             ),
                           ),
                         );

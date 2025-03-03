@@ -7,6 +7,7 @@ import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/home/message/controller/message_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
 import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_shimmer_followers.dart';
 
@@ -51,10 +52,9 @@ class _MessageState extends State<Message> {
         elevation: 0,
         title: Text(
           'Message',
-          style: TextStyle(
-            fontWeight: FontWeight.w700,
-            fontSize: size.width * 0.048,
-            color: Colors.black,
+          style: textStyleW700(
+            size.width * 0.048,
+            AppColors.blackText,
           ),
         ),
       ),
@@ -117,13 +117,13 @@ class _MessageState extends State<Message> {
                   }
 
                   if (messageController.chatList.isEmpty) {
-                    return const Center(
+                    return Center(
                       child: Text(
                         'Chat not found',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                        style: textStyleW600(
+                          size.width * 0.030,
+                          AppColors.blackText,
+                          isMetropolis: true,
                         ),
                       ),
                     );

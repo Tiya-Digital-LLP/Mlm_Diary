@@ -124,7 +124,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                                 hint: "Enter Your Email",
                                 textInputType: const [],
                                 isError: controller.emailError.value,
-                                keyboard: TextInputType.name,
+                                keyboard: TextInputType.emailAddress,
                                 byDefault: !controller.isEmailTyping.value,
                                 onChanged: (value) {
                                   controller.emailValidation();
@@ -199,9 +199,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                                                           .value!.callingCode,
                                                       textAlign:
                                                           TextAlign.center,
-                                                      style: TextStyle(
-                                                        fontSize:
-                                                            size.width * 0.045,
+                                                      style: textStyleW400(
+                                                        size.width * 0.038,
+                                                        AppColors.blackText,
+                                                        isMetropolis: true,
                                                       ),
                                                     ),
                                                   ],

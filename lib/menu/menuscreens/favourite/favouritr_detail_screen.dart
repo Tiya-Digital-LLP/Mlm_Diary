@@ -1,7 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -159,11 +158,8 @@ class _FavouritrDetailScreenState extends State<FavouritrDetailScreen> {
                         alignment: Alignment.topLeft,
                         child: Text(
                           '${post.category} | ${post.subcategory}',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            color: AppColors.blackText,
-                            fontSize: size.width * 0.035,
-                          ),
+                          style: textStyleW600(
+                              size.width * 0.038, AppColors.blackText),
                         ),
                       ),
                     ),
@@ -288,33 +284,36 @@ class _FavouritrDetailScreenState extends State<FavouritrDetailScreen> {
                         horizontal: 16,
                       ),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                'Website',
-                                style: textStyleW400(
-                                    size.width * 0.035, AppColors.grey),
-                              ),
-                            ],
-                          ),
-                          Text.rich(
-                            TextSpan(
-                              text: post.urlcomponent ?? '',
-                              style: const TextStyle(
-                                color: Colors.blue,
-                                decorationColor: Colors.blue,
-                                decoration: TextDecoration.underline,
-                              ),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  _launchURL(post.urlcomponent ?? '');
-                                },
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  'Website',
+                                  style: textStyleW400(
+                                      size.width * 0.035, AppColors.grey),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
-                      ),
+                            InkWell(
+                              onTap: () {
+                                _launchURL(post.website.toString());
+                              },
+                              child: LinkText(
+                                text: post.website!.isNotEmpty == true
+                                    ? post.website!
+                                    : 'N/A',
+                                style: textStyleW700(
+                                  size.width * 0.035,
+                                  AppColors.blackText.withOpacity(0.5),
+                                ),
+                                linkStyle: const TextStyle(
+                                  color: Colors.blue,
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            ),
+                          ]),
                     ),
                     5.sbh,
                     SizedBox(

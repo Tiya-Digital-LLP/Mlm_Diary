@@ -51,10 +51,10 @@ class _MobileEmailFieldState extends State<MobileEmailField> {
           ],
         ),
         child: SizedBox(
-          height: 75,
+          height: 70,
           child: TextFormField(
             cursorHeight: 20,
-            style: textStyleW400(size.width * 0.038, AppColors.blackText),
+            style: textStyleW700(size.width * 0.038, AppColors.blackText),
             cursorColor: AppColors.blackText,
             controller: controller.email.value,
             onChanged: (value) {
@@ -66,9 +66,8 @@ class _MobileEmailFieldState extends State<MobileEmailField> {
             decoration: InputDecoration(
               counterText: "",
               labelText: widget.hint,
-              labelStyle: TextStyle(
-                color: Colors.grey[600],
-              ),
+              labelStyle:
+                  textStyleW400(size.width * 0.038, AppColors.blackText),
               border: InputBorder.none,
               contentPadding: const EdgeInsets.only(top: 16, left: 8, right: 8),
             ),

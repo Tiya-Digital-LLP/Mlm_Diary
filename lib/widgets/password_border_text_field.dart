@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/text_style.dart';
 
 class PasswordBorderTextField extends StatefulWidget {
   final TextEditingController controller;
@@ -73,17 +74,17 @@ class _PasswordBorderTextFieldState extends State<PasswordBorderTextField> {
                 controller: widget.controller,
                 obscureText: obscureText.value,
                 obscuringCharacter: "●",
-                style: TextStyle(
-                  fontSize: size.width * 0.04,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
+                style: textStyleW600(
+                  size.width * 0.035,
+                  AppColors.blackText,
                 ),
                 cursorColor: Colors.black,
                 decoration: InputDecoration(
                   counterText: "",
                   labelText: widget.hint,
-                  labelStyle: const TextStyle(
-                    color: Colors.black,
+                  labelStyle: textStyleW600(
+                    size.width * 0.035,
+                    AppColors.blackText,
                   ),
                   border: InputBorder.none,
                 ),

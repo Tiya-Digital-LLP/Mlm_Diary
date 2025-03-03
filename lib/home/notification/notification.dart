@@ -73,10 +73,9 @@ class _NotificationState extends State<NotificationScreen>
         title: Text(
           'Notifications',
           softWrap: false,
-          style: TextStyle(
-            fontWeight: FontWeight.w700,
-            fontSize: size.width * 0.048,
-            color: Colors.black,
+          style: textStyleW700(
+            size.width * 0.048,
+            AppColors.blackText,
           ),
         ),
         leading: const Padding(
@@ -109,7 +108,7 @@ class _NotificationState extends State<NotificationScreen>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
-                    width: MediaQuery.of(context).size.width / 1.8,
+                    width: MediaQuery.of(context).size.width / 1.7,
                     height: 45,
                     margin: const EdgeInsets.only(bottom: 15.0),
                     decoration: BoxDecoration(
@@ -131,32 +130,25 @@ class _NotificationState extends State<NotificationScreen>
                       indicatorSize: TabBarIndicatorSize.tab,
                       labelColor: Colors.white,
                       unselectedLabelColor: Colors.black,
-                      tabs: [
+                      labelStyle: textStyleW600(
+                        size.width * 0.035,
+                        AppColors.blackText,
+                        isMetropolis: true,
+                      ),
+                      tabs: const [
                         Tab(
                           child: Text(
                             'All',
-                            style: textStyleW400(
-                              size.width * 0.032,
-                              AppColors.blackText,
-                            ),
                           ),
                         ),
                         Tab(
                           child: Text(
                             'User',
-                            style: textStyleW400(
-                              size.width * 0.032,
-                              AppColors.blackText,
-                            ),
                           ),
                         ),
                         Tab(
                           child: Text(
                             'Admin',
-                            style: textStyleW400(
-                              size.width * 0.032,
-                              AppColors.blackText,
-                            ),
                           ),
                         ),
                       ],
@@ -174,6 +166,7 @@ class _NotificationState extends State<NotificationScreen>
                               style: textStyleW700(
                                 size.width * 0.035,
                                 AppColors.primaryColor,
+                                isMetropolis: true,
                               ),
                             ),
                           ))
@@ -187,24 +180,24 @@ class _NotificationState extends State<NotificationScreen>
                 controller: _tabController,
                 children: [
                   RefreshIndicator(
+                    color: AppColors.background,
                     backgroundColor: AppColors.primaryColor,
-                    color: AppColors.white,
                     onRefresh: _refreshData,
                     child: const SizedBox(
                       child: Center(child: AllNotification()),
                     ),
                   ),
                   RefreshIndicator(
+                    color: AppColors.background,
                     backgroundColor: AppColors.primaryColor,
-                    color: AppColors.white,
                     onRefresh: _refreshData,
                     child: const SizedBox(
                       child: Center(child: UserNotification()),
                     ),
                   ),
                   RefreshIndicator(
+                    color: AppColors.background,
                     backgroundColor: AppColors.primaryColor,
-                    color: AppColors.white,
                     onRefresh: _refreshData,
                     child: const SizedBox(
                       child: Center(child: AdminNotification()),

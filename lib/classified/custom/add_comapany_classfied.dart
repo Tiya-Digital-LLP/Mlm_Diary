@@ -122,7 +122,7 @@ class _AddCompanyClassifiedState extends State<AddCompanyClassified> {
                           children: [
                             Text(
                               selectedCompanies[index],
-                              style: textStyleW500(
+                              style: textStyleW600(
                                 size.width * 0.03,
                                 AppColors.white,
                               ),
@@ -164,9 +164,9 @@ class _AddCompanyClassifiedState extends State<AddCompanyClassified> {
                           child: buildHighlightedText(
                             controller.companyNames[index],
                             controller.companyName.value.text,
-                            size.width * 0.03,
+                            size.width * 0.032,
                             // ignore: deprecated_member_use
-                            AppColors.blackText.withOpacity(0.6),
+                            AppColors.blackText.withOpacity(0.8),
                           ),
                         ),
                       ),
@@ -209,7 +209,7 @@ class _AddCompanyClassifiedState extends State<AddCompanyClassified> {
     if (highlight.isEmpty) {
       return Text(
         text,
-        style: textStyleW500(fontSize, color),
+        style: textStyleW600(fontSize, color),
       );
     }
 
@@ -244,11 +244,7 @@ class _AddCompanyClassifiedState extends State<AddCompanyClassified> {
       spans.add(
         TextSpan(
           text: matchText,
-          style: TextStyle(
-            fontSize: fontSize,
-            fontWeight: FontWeight.bold,
-            color: AppColors.blackText,
-          ),
+          style: textStyleW700(16, color),
         ),
       );
 

@@ -6,6 +6,7 @@ import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/favourite/controller/favourite_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/video/controller/video_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/text_style.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class VideoHomeCard extends StatelessWidget {
@@ -39,10 +40,16 @@ class VideoHomeCard extends StatelessWidget {
               width: double.infinity,
               child: VideoPlayerWidget(url: postVideo),
             ),
-            Row(
-              children: [
-                Html(data: postTitle),
-              ],
+            Html(
+              data: postTitle,
+              style: {
+                "html": Style(
+                  fontFamily: satoshiFontFamily,
+                  fontWeight: FontWeight.w700,
+                  fontSize: FontSize.medium,
+                  color: AppColors.blackText,
+                ),
+              },
             ),
             Align(
               alignment: Alignment.topRight,

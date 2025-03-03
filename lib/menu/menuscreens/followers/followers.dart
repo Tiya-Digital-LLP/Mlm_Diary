@@ -115,6 +115,11 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
                 ),
                 labelColor: Colors.white,
                 unselectedLabelColor: Colors.black,
+                labelStyle: textStyleW600(
+                  size.width * 0.035,
+                  AppColors.blackText,
+                  isMetropolis: true,
+                ),
                 tabs: [
                   Obx(() => Tab(
                       text: 'Followers (${controller.followersCount.value})')),
@@ -172,13 +177,20 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
         5.sbh,
         Expanded(
           child: RefreshIndicator(
+            color: AppColors.background,
+            backgroundColor: AppColors.primaryColor,
             onRefresh: _refreshFollowers,
             child: Obx(() {
               if (controller.isLoading.value) {
                 return FollowerWithShimmerLoader(context);
               }
               if (controller.followers.isEmpty) {
-                return FollowerWithShimmerLoader(context);
+                return const Center(
+                  child: Text(
+                    "No Followers found.",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  ),
+                );
               } else {
                 return ListView.builder(
                   controller: controller.scrollController,
@@ -223,30 +235,26 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
                                   children: [
                                     Text(
                                       follower.name ?? 'Unknown',
-                                      style: textStyleW700(size.width * 0.030,
+                                      style: textStyleW700(size.width * 0.038,
                                           AppColors.blackText),
                                       maxLines: 1,
                                     ),
                                     Text(
                                       '${follower.city ?? 'Unknown'}, ${follower.state ?? 'Unknown'}, ${follower.country ?? 'Unknown'}',
-                                      style: textStyleW500(size.width * 0.030,
+                                      style: textStyleW400(size.width * 0.032,
                                           AppColors.blackText),
                                       maxLines: 1,
                                     ),
                                     Text(
                                       follower.immlm ?? 'Unknown',
-                                      style: textStyleW700(
-                                        size.width * 0.030,
-                                        AppColors.blackText,
-                                      ),
+                                      style: textStyleW600(size.width * 0.032,
+                                          AppColors.blackText),
                                       maxLines: 1,
                                     ),
                                     Text(
                                       follower.plan ?? 'Unknown',
-                                      style: textStyleW500(
-                                        size.width * 0.030,
-                                        AppColors.blackText,
-                                      ),
+                                      style: textStyleW400(size.width * 0.032,
+                                          AppColors.blackText),
                                       maxLines: 1,
                                     ),
                                   ],
@@ -273,15 +281,15 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
                                     },
                                     child: Text(
                                       isFollowing ? 'Following' : 'Follow',
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w800,
-                                        fontSize: 10,
+                                      style: textStyleW700(
+                                        size.width * 0.026,
+                                        AppColors.white,
+                                        isMetropolis: true,
                                       ),
                                     ),
                                   );
                                 }),
-                              )
+                              ),
                             ],
                           ),
                         ),
@@ -318,13 +326,20 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
         5.sbh,
         Expanded(
           child: RefreshIndicator(
+            color: AppColors.background,
+            backgroundColor: AppColors.primaryColor,
             onRefresh: _refreshFollowing,
             child: Obx(() {
               if (controller.isLoading.value) {
                 return FollowerWithShimmerLoader(context);
               }
-              if (controller.following.isEmpty) {
-                return FollowerWithShimmerLoader(context);
+              if (controller.followers.isEmpty) {
+                return const Center(
+                  child: Text(
+                    "No Following found.",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  ),
+                );
               } else {
                 return ListView.builder(
                   controller: controller.scrollController,
@@ -369,30 +384,26 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
                                   children: [
                                     Text(
                                       following.name ?? 'Unknown',
-                                      style: textStyleW700(size.width * 0.030,
+                                      style: textStyleW700(size.width * 0.038,
                                           AppColors.blackText),
                                       maxLines: 1,
                                     ),
                                     Text(
                                       '${following.city ?? 'Unknown'}, ${following.state ?? 'Unknown'}, ${following.country ?? 'Unknown'}',
-                                      style: textStyleW500(size.width * 0.030,
+                                      style: textStyleW400(size.width * 0.032,
                                           AppColors.blackText),
                                       maxLines: 1,
                                     ),
                                     Text(
                                       following.immlm ?? 'Unknown',
-                                      style: textStyleW700(
-                                        size.width * 0.030,
-                                        AppColors.blackText,
-                                      ),
+                                      style: textStyleW600(size.width * 0.032,
+                                          AppColors.blackText),
                                       maxLines: 1,
                                     ),
                                     Text(
                                       following.plan ?? 'Unknown',
-                                      style: textStyleW500(
-                                        size.width * 0.030,
-                                        AppColors.blackText,
-                                      ),
+                                      style: textStyleW400(size.width * 0.032,
+                                          AppColors.blackText),
                                       maxLines: 1,
                                     ),
                                   ],
@@ -420,10 +431,10 @@ class _FollowersState extends State<Followers> with TickerProviderStateMixin {
                                     },
                                     child: Text(
                                       isFollowing ? 'Following' : 'Follow',
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w800,
-                                        fontSize: 10,
+                                      style: textStyleW700(
+                                        size.width * 0.026,
+                                        AppColors.white,
+                                        isMetropolis: true,
                                       ),
                                     ),
                                   );

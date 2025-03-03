@@ -147,21 +147,19 @@ class _SignupPageState extends State<SignupPage> {
                                 controller.getSelectedOptionsTextController(),
                             readOnly: true,
                             onTap: () async {
-                              // ignore: use_build_context_synchronously
                               showBottomSheetFunc(context, size, controller,
                                   controller.userTypes);
                               controller.mlmCategoryValidation();
                             },
-                            style: textStyleW500(
-                                size.width * 0.04, AppColors.blackText),
+                            style: textStyleW700(
+                                size.width * 0.038, AppColors.blackText),
                             cursorColor: AppColors.blackText,
                             decoration: InputDecoration(
                               labelText: "I am a MLM *",
-                              labelStyle: const TextStyle(
-                                color: Colors.black,
-                              ),
+                              labelStyle: textStyleW400(
+                                  size.width * 0.038, AppColors.blackText),
                               contentPadding: const EdgeInsets.symmetric(
-                                vertical: 5.5,
+                                vertical: 5,
                                 horizontal: 2,
                               ),
                               border: InputBorder.none,
@@ -417,7 +415,7 @@ class _SignupPageState extends State<SignupPage> {
                                                           },
                                                           child: Text(
                                                             "Terms & Conditions",
-                                                            style: textStyleW500(
+                                                            style: textStyleW600(
                                                                 size.width *
                                                                     0.045,
                                                                 const Color(
@@ -531,16 +529,11 @@ class _SignupPageState extends State<SignupPage> {
                                                           },
                                                           child: Text(
                                                             "Login",
-                                                            style: TextStyle(
-                                                              decoration:
-                                                                  TextDecoration
-                                                                      .underline,
-                                                              fontSize:
-                                                                  size.width *
-                                                                      0.045,
-                                                              color: AppColors
-                                                                  .redText,
-                                                            ),
+                                                            style: textStyleW600(
+                                                                size.width *
+                                                                    0.045,
+                                                                AppColors
+                                                                    .redText),
                                                           ),
                                                         ),
                                                       ],
@@ -611,11 +604,11 @@ class _SignupPageState extends State<SignupPage> {
                                                                   width: 56,
                                                                   height: 56,
                                                                   textStyle:
-                                                                      const TextStyle(
-                                                                    fontSize:
-                                                                        22,
-                                                                    color: Colors
-                                                                        .black,
+                                                                      textStyleW700(
+                                                                    size.width *
+                                                                        0.036,
+                                                                    AppColors
+                                                                        .blackText,
                                                                   ),
                                                                   decoration:
                                                                       BoxDecoration(
@@ -632,11 +625,11 @@ class _SignupPageState extends State<SignupPage> {
                                                                   width: 56,
                                                                   height: 56,
                                                                   textStyle:
-                                                                      const TextStyle(
-                                                                    fontSize:
-                                                                        22,
-                                                                    color: Colors
-                                                                        .blue,
+                                                                      textStyleW700(
+                                                                    size.width *
+                                                                        0.036,
+                                                                    AppColors
+                                                                        .primaryColor,
                                                                   ),
                                                                   decoration:
                                                                       BoxDecoration(
@@ -779,19 +772,16 @@ class _SignupPageState extends State<SignupPage> {
                                                                       0.015,
                                                             ),
                                                             Text(
-                                                              "Please check your email, and enter verification code below. You may need to check your Spam or Junk folder as well.",
-                                                              maxLines: 3,
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              style: TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w400,
-                                                                  fontSize: size
-                                                                          .width *
-                                                                      0.042),
-                                                            )
+                                                                "Please check your email, and enter verification code below. You may need to check your Spam or Junk folder as well.",
+                                                                maxLines: 3,
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                style: textStyleW600(
+                                                                    size.width *
+                                                                        0.032,
+                                                                    AppColors
+                                                                        .blackText))
                                                           ],
                                                         )
                                                       : const SizedBox.shrink();
@@ -870,9 +860,9 @@ class _SignupPageState extends State<SignupPage> {
                                                   defaultPinTheme: PinTheme(
                                                     width: 56,
                                                     height: 56,
-                                                    textStyle: const TextStyle(
-                                                      fontSize: 22,
-                                                      color: Colors.black,
+                                                    textStyle: textStyleW700(
+                                                      size.width * 0.036,
+                                                      AppColors.blackText,
                                                     ),
                                                     decoration: BoxDecoration(
                                                       color: Colors.grey[200],
@@ -884,9 +874,9 @@ class _SignupPageState extends State<SignupPage> {
                                                   focusedPinTheme: PinTheme(
                                                     width: 56,
                                                     height: 56,
-                                                    textStyle: const TextStyle(
-                                                      fontSize: 22,
-                                                      color: Colors.blue,
+                                                    textStyle: textStyleW700(
+                                                      size.width * 0.036,
+                                                      AppColors.primaryColor,
                                                     ),
                                                     decoration: BoxDecoration(
                                                       color: Colors.white,
@@ -1160,8 +1150,12 @@ class _SignupPageState extends State<SignupPage> {
                                   const SizedBox(width: 15),
                                   Text(
                                     userTypes[index].name ?? '',
-                                    style: textStyleW500(size.width * 0.041,
-                                        AppColors.blackText),
+                                    style: textStyleW600(
+                                      size.width * 0.038,
+                                      controller.isTypeSelectedList[index]
+                                          ? AppColors.primaryColor
+                                          : AppColors.blackText,
+                                    ),
                                   ),
                                 ],
                               ),

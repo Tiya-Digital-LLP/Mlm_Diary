@@ -2,10 +2,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/accountsetting/controller/account_setting_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
+import 'package:mlmdiary/utils/text_style.dart';
+import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 import 'package:mlmdiary/widgets/normal_button.dart';
 
 class CustomSocial extends StatefulWidget {
@@ -29,78 +32,93 @@ class _CustomSocialState extends State<CustomSocial> {
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+
     return SizedBox(
       height: MediaQuery.of(context).size.height,
       child: Scaffold(
-          backgroundColor: AppColors.background,
-          body: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Obx(
-              () => Column(
-                children: [
-                  buildSocialInput(
-                    controller: controller.perwebsite.value,
-                    asset: Assets.svgWebsite,
-                    hintText: "Copy & Paste Personal URL",
+        backgroundColor: AppColors.background,
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Obx(() {
+            if (controller.isLoading.value) {
+              return SizedBox(
+                height: size.height * 0.8,
+                width: size.width,
+                child: Center(
+                  child: CustomLottieAnimation(
+                    child: Lottie.asset(
+                      Assets.lottieLottie,
+                    ),
                   ),
-                  15.sbh,
-                  buildSocialInput(
-                    controller: controller.compwebsite.value,
-                    asset: Assets.svgCompany,
-                    hintText: "Copy & Paste Company URL",
-                  ),
-                  15.sbh,
-                  buildSocialInput(
-                    controller: controller.instat.value,
-                    asset: Assets.svgInstagram,
-                    hintText: "Copy & Paste Instagram URL",
-                  ),
-                  15.sbh,
-                  buildSocialInput(
-                    controller: controller.youtube.value,
-                    asset: Assets.svgYoutube,
-                    hintText: "Copy & Paste YouTube URL",
-                  ),
-                  15.sbh,
-                  buildSocialInput(
-                    controller: controller.facebook.value,
-                    asset: Assets.svgLogosFacebook,
-                    hintText: "Copy & Paste Facebook URL",
-                  ),
-                  15.sbh,
-                  buildSocialInput(
-                    controller: controller.linkdn.value,
-                    asset: Assets.svgLogosLinkedinIcon,
-                    hintText: "Copy & Paste LinkedIn URL",
-                  ),
-                  15.sbh,
-                  buildSocialInput(
-                    controller: controller.twitter.value,
-                    asset: Assets.svgTwitter,
-                    hintText: "Copy & Paste Twitter URL",
-                  ),
-                  15.sbh,
-                  buildSocialInput(
-                    controller: controller.telegram.value,
-                    asset: Assets.svgTelegram,
-                    hintText: "Copy & Paste Telegram URL",
-                  ),
-                  45.sbh,
-                  NormalButton(
-                    onPressed: () async {
-                      FocusScope.of(context).unfocus();
-                      if (kDebugMode) {
-                        print('tap');
-                      }
-                      await controller.updateSocialMedia(context);
-                    },
-                    text: 'Save & Update',
-                    isLoading: controller.isLoading,
-                  ),
-                ],
-              ),
-            ),
-          )),
+                ),
+              );
+            } else {
+              return Column(children: [
+                buildSocialInput(
+                  controller: controller.perwebsite.value,
+                  asset: Assets.svgWebsite,
+                  hintText: "Copy & Paste Personal URL",
+                ),
+                15.sbh,
+                buildSocialInput(
+                  controller: controller.compwebsite.value,
+                  asset: Assets.svgCompany,
+                  hintText: "Copy & Paste Company URL",
+                ),
+                15.sbh,
+                buildSocialInput(
+                  controller: controller.instat.value,
+                  asset: Assets.svgInstagram,
+                  hintText: "Copy & Paste Instagram URL",
+                ),
+                15.sbh,
+                buildSocialInput(
+                  controller: controller.youtube.value,
+                  asset: Assets.svgYoutube,
+                  hintText: "Copy & Paste YouTube URL",
+                ),
+                15.sbh,
+                buildSocialInput(
+                  controller: controller.facebook.value,
+                  asset: Assets.svgLogosFacebook,
+                  hintText: "Copy & Paste Facebook URL",
+                ),
+                15.sbh,
+                buildSocialInput(
+                  controller: controller.linkdn.value,
+                  asset: Assets.svgLogosLinkedinIcon,
+                  hintText: "Copy & Paste LinkedIn URL",
+                ),
+                15.sbh,
+                buildSocialInput(
+                  controller: controller.twitter.value,
+                  asset: Assets.svgTwitter,
+                  hintText: "Copy & Paste Twitter URL",
+                ),
+                15.sbh,
+                buildSocialInput(
+                  controller: controller.telegram.value,
+                  asset: Assets.svgTelegram,
+                  hintText: "Copy & Paste Telegram URL",
+                ),
+                45.sbh,
+                NormalButton(
+                  onPressed: () async {
+                    FocusScope.of(context).unfocus();
+                    if (kDebugMode) {
+                      print('tap');
+                    }
+                    await controller.updateSocialMedia(context);
+                  },
+                  text: 'Save & Update',
+                  isLoading: controller.isLoading,
+                ),
+              ]);
+            }
+          }),
+        ),
+      ),
     );
   }
 
@@ -109,6 +127,8 @@ class _CustomSocialState extends State<CustomSocial> {
     required String asset,
     required String hintText,
   }) {
+    final Size size = MediaQuery.of(context).size;
+
     return Container(
       height: 60,
       decoration: BoxDecoration(
@@ -131,11 +151,7 @@ class _CustomSocialState extends State<CustomSocial> {
             width: MediaQuery.of(context).size.width - 115,
             child: TextFormField(
               controller: controller,
-              style: TextStyle(
-                fontSize: 15.0,
-                fontWeight: FontWeight.w400,
-                color: AppColors.blackText,
-              ),
+              style: textStyleW700(size.width * 0.038, AppColors.blackText),
               keyboardType: TextInputType.text,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               textInputAction: TextInputAction.next,
@@ -143,11 +159,8 @@ class _CustomSocialState extends State<CustomSocial> {
                 filled: true,
                 fillColor: AppColors.background,
                 hintText: hintText,
-                hintStyle: TextStyle(
-                  fontSize: 15.0,
-                  fontWeight: FontWeight.w400,
-                  color: AppColors.blackText,
-                ),
+                hintStyle:
+                    textStyleW400(size.width * 0.038, AppColors.blackText),
                 border: InputBorder.none,
               ),
             ),

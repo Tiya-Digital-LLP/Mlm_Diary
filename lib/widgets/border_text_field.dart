@@ -68,14 +68,13 @@ class BorderTextField extends StatelessWidget {
                   onChanged: onChanged,
                   controller: controller,
                   maxLength: maxLength,
-                  style: textStyleW500(size.width * 0.04, AppColors.blackText),
+                  style: textStyleW700(size.width * 0.038, AppColors.blackText),
                   cursorColor: AppColors.blackText,
                   decoration: InputDecoration(
                     counterText: "",
                     labelText: hint,
-                    labelStyle: const TextStyle(
-                      color: Colors.black,
-                    ),
+                    labelStyle:
+                        textStyleW400(size.width * 0.038, AppColors.blackText),
                     contentPadding: const EdgeInsets.symmetric(
                       vertical: 12,
                     ),

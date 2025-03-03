@@ -140,23 +140,41 @@ class _QuestionLikedListContentState extends State<QuestionLikeListContent> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        item.userData?.name ?? 'Unknown',
-                                        style: textStyleW500(size.width * 0.034,
+                                        (item.userData?.name?.isNotEmpty ??
+                                                false)
+                                            ? item.userData!.name!
+                                            : 'Not Type Name',
+                                        style: textStyleW700(size.width * 0.038,
                                             AppColors.blackText),
                                       ),
                                       2.sbh,
                                       Text(
-                                        'Ahemdabad, Gujarat, India',
-                                        style: textStyleW500(
-                                            size.width * 0.030,
-                                            AppColors.blackText
-                                                // ignore: deprecated_member_use
-                                                .withOpacity(0.6)),
+                                        () {
+                                          final addressParts = [
+                                            item.userData?.city?.trim(),
+                                            item.userData?.state?.trim(),
+                                            item.userData?.country?.trim(),
+                                          ]
+                                              .where((e) =>
+                                                  e != null && e.isNotEmpty)
+                                              .toList();
+
+                                          return addressParts.isNotEmpty
+                                              ? addressParts.join(', ')
+                                              : 'Not Type Address';
+                                        }(),
+                                        style: textStyleW400(size.width * 0.032,
+                                            AppColors.blackText),
                                       ),
                                       2.sbh,
                                       Text(
-                                        'Leader',
-                                        style: textStyleW500(size.width * 0.030,
+                                        (item.userData?.immlm
+                                                    ?.trim()
+                                                    .isNotEmpty ??
+                                                false)
+                                            ? item.userData!.immlm!.trim()
+                                            : 'Not Type IMMLM',
+                                        style: textStyleW600(size.width * 0.032,
                                             AppColors.blackText),
                                       ),
                                     ],
@@ -193,7 +211,10 @@ class _QuestionLikedListContentState extends State<QuestionLikeListContent> {
                         child: Text(
                           'Cancel',
                           style: textStyleW700(
-                              size.width * 0.04, AppColors.redText),
+                            size.width * 0.04,
+                            AppColors.redText,
+                            isMetropolis: true,
+                          ),
                         ),
                       ),
                     ),

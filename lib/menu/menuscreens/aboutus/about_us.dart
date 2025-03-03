@@ -54,7 +54,10 @@ class _AboutUsState extends State<AboutUs> {
           children: [
             Text(
               'About us',
-              style: textStyleW700(size.width * 0.048, AppColors.blackText),
+              style: textStyleW700(
+                size.width * 0.048,
+                AppColors.blackText,
+              ),
             ),
           ],
         ),
@@ -89,6 +92,8 @@ class _AboutUsState extends State<AboutUs> {
   }
 
   Widget _buildSection(String title, String description) {
+    final Size size = MediaQuery.of(context).size;
+
     return Card(
       color: Colors.white,
       elevation: 9,
@@ -100,10 +105,19 @@ class _AboutUsState extends State<AboutUs> {
           children: [
             Text(
               title,
-              style: textStyleW700(16, AppColors.blackText),
+              style: textStyleW700(
+                size.width * 0.038,
+                AppColors.blackText,
+              ),
             ),
             8.sbh,
-            HtmlWidget(description),
+            HtmlWidget(
+              description,
+              textStyle: textStyleW400(
+                size.width * 0.032,
+                AppColors.blackText,
+              ),
+            ),
           ],
         ),
       ),

@@ -58,7 +58,10 @@ class _MyWidgetState extends State<BottomSheetContent> {
             Center(
               child: Text(
                 'Filter',
-                style: textStyleW700(size.width * 0.043, AppColors.blackText),
+                style: textStyleW700(
+                  size.width * 0.048,
+                  AppColors.blackText,
+                ),
               ),
             ),
             10.sbh,
@@ -66,33 +69,36 @@ class _MyWidgetState extends State<BottomSheetContent> {
               () => BorderContainer(
                 isError:
                     controller.accountSeetingController.planTypeError.value,
-                height: 65,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: TextField(
-                    controller: controller.accountSeetingController
-                        .getSelectedPlanOptionsTextController(),
-                    readOnly: true,
-                    onTap: () {
-                      showBottomSheetFuncPlan(
-                        context,
-                        size,
-                        controller.accountSeetingController,
-                        controller.accountSeetingController.planList,
-                      );
-                      controller.accountSeetingController
-                          .planCategoryValidation();
-                    },
-                    style:
-                        textStyleW500(size.width * 0.04, AppColors.blackText),
-                    cursorColor: AppColors.blackText,
-                    decoration: InputDecoration(
-                        hintText: "Select Plan Name",
-                        border: InputBorder.none,
-                        suffixIcon: Icon(
-                          Icons.arrow_drop_down,
-                          color: AppColors.blackText,
-                        )),
+                height: 58,
+                child: TextField(
+                  controller: controller.accountSeetingController
+                      .getSelectedPlanOptionsTextController(),
+                  readOnly: true,
+                  onTap: () {
+                    showBottomSheetFuncPlan(
+                      context,
+                      size,
+                      controller.accountSeetingController,
+                      controller.accountSeetingController.planList,
+                    );
+                    controller.accountSeetingController
+                        .planCategoryValidation();
+                  },
+                  style: textStyleW700(size.width * 0.038, AppColors.blackText),
+                  cursorColor: AppColors.blackText,
+                  decoration: InputDecoration(
+                    labelText: "Select Plan Name",
+                    labelStyle:
+                        textStyleW400(size.width * 0.038, AppColors.blackText),
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 5,
+                      horizontal: 2,
+                    ),
+                    border: InputBorder.none,
+                    suffixIcon: Icon(
+                      Icons.arrow_drop_down,
+                      color: AppColors.blackText,
+                    ),
                   ),
                 ),
               ),
@@ -100,7 +106,7 @@ class _MyWidgetState extends State<BottomSheetContent> {
             10.sbh,
             Obx(
               () => CompanyBorderTextfield(
-                height: 65,
+                height: 58,
                 keyboard: TextInputType.multiline,
                 textInputType: const [],
                 hint: "Company Name",
@@ -128,22 +134,21 @@ class _MyWidgetState extends State<BottomSheetContent> {
             ),
             10.sbh,
             Obx(() => Container(
+                  padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12.0),
                     color: AppColors.white,
                     border: Border.all(
-                      color: Colors.grey, // Adjust border color as needed
-                      width: 1.0, // Adjust border width as needed
+                      color: Colors.grey,
+                      width: 1.0,
                     ),
                   ),
-                  height: 65,
+                  height: 58,
                   child: TextFormField(
                     controller: controller.clasifiedController.location.value,
                     readOnly: true,
-                    style: TextStyle(
-                      color: AppColors.blackText,
-                      fontSize: 14,
-                    ),
+                    style:
+                        textStyleW700(size.width * 0.038, AppColors.blackText),
                     onTap: () async {
                       var place = await PlacesAutocomplete.show(
                         context: context,
@@ -195,18 +200,14 @@ class _MyWidgetState extends State<BottomSheetContent> {
                       }
                     },
                     decoration: InputDecoration(
-                      hintText: "Search Location",
-                      hintStyle: TextStyle(
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w600,
-                        // ignore: deprecated_member_use
-                        color: AppColors.blackText.withOpacity(0.6),
+                      labelText: "Search Location",
+                      labelStyle: textStyleW400(
+                          size.width * 0.038, AppColors.blackText),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 5,
+                        horizontal: 2,
                       ),
                       border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: 20.0,
-                        horizontal: 20.0,
-                      ),
                     ),
                     onFieldSubmitted: (value) {
                       if (value.isEmpty) {
@@ -224,43 +225,45 @@ class _MyWidgetState extends State<BottomSheetContent> {
             Obx(
               () => BorderContainer(
                 isError: controller.signupController.mlmTypeError.value,
-                height: 65,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: TextField(
-                    controller: controller.signupController
-                        .getSelectedOptionsTextController(),
-                    readOnly: true,
-                    onTap: () async {
-                      // ignore: use_build_context_synchronously
-                      showBottomSheetFunc(
-                          context,
-                          size,
-                          controller.signupController,
-                          controller.signupController.userTypes);
-                      controller.signupController.mlmCategoryValidation();
-                    },
-                    style:
-                        textStyleW500(size.width * 0.04, AppColors.blackText),
-                    cursorColor: AppColors.blackText,
-                    decoration: InputDecoration(
-                      hintText: "User Type",
-                      border: InputBorder.none,
-                      suffixIcon: Icon(
-                        Icons.arrow_drop_down,
-                        color: AppColors.blackText,
-                      ),
+                height: 58,
+                child: TextField(
+                  controller: controller.signupController
+                      .getSelectedOptionsTextController(),
+                  readOnly: true,
+                  onTap: () async {
+                    showBottomSheetFunc(
+                        context,
+                        size,
+                        controller.signupController,
+                        controller.signupController.userTypes);
+                    controller.signupController.mlmCategoryValidation();
+                  },
+                  style: textStyleW700(size.width * 0.038, AppColors.blackText),
+                  cursorColor: AppColors.blackText,
+                  decoration: InputDecoration(
+                    labelText: "User Type",
+                    labelStyle:
+                        textStyleW400(size.width * 0.038, AppColors.blackText),
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 5,
+                      horizontal: 2,
+                    ),
+                    border: InputBorder.none,
+                    suffixIcon: Icon(
+                      Icons.arrow_drop_down,
+                      color: AppColors.blackText,
                     ),
                   ),
                 ),
               ),
             ),
+            10.sbh,
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: SizedBox(
                       width: double.infinity,
                       child: OutlinedButton(
@@ -277,7 +280,10 @@ class _MyWidgetState extends State<BottomSheetContent> {
                         child: Text(
                           'Cancel',
                           style: textStyleW700(
-                              size.width * 0.04, AppColors.redText),
+                            size.width * 0.04,
+                            AppColors.redText,
+                            isMetropolis: true,
+                          ),
                         ),
                       ),
                     ),
@@ -285,7 +291,7 @@ class _MyWidgetState extends State<BottomSheetContent> {
                 ),
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
@@ -301,8 +307,11 @@ class _MyWidgetState extends State<BottomSheetContent> {
                         ),
                         child: Text(
                           'Apply',
-                          style:
-                              textStyleW700(size.width * 0.04, AppColors.white),
+                          style: textStyleW700(
+                            size.width * 0.04,
+                            AppColors.white,
+                            isMetropolis: true,
+                          ),
                         ),
                       ),
                     ),
@@ -358,7 +367,10 @@ void showBottomSheetFuncPlan(
               Center(
                 child: Text(
                   'Select Plan',
-                  style: textStyleW600(size.width * 0.045, AppColors.blackText),
+                  style: textStyleW700(
+                    size.width * 0.048,
+                    AppColors.blackText,
+                  ),
                 ),
               ),
               20.sbh,
@@ -394,8 +406,8 @@ void showBottomSheetFuncPlan(
                                 15.sbw,
                                 Text(
                                   planList[index].name ?? '',
-                                  style: textStyleW500(
-                                      size.width * 0.041, AppColors.blackText),
+                                  style: textStyleW600(
+                                      size.width * 0.038, AppColors.blackText),
                                 ),
                               ],
                             ),
@@ -473,7 +485,10 @@ void showBottomSheetFunc(
               Center(
                 child: Text(
                   'I am a MLM*',
-                  style: textStyleW600(size.width * 0.045, AppColors.blackText),
+                  style: textStyleW700(
+                    size.width * 0.048,
+                    AppColors.blackText,
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
@@ -508,8 +523,8 @@ void showBottomSheetFunc(
                               const SizedBox(width: 15),
                               Text(
                                 userTypes[index].name ?? '',
-                                style: textStyleW500(
-                                    size.width * 0.041, AppColors.blackText),
+                                style: textStyleW600(
+                                    size.width * 0.038, AppColors.blackText),
                               ),
                             ],
                           ),

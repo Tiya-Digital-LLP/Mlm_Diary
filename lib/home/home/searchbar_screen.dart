@@ -25,6 +25,7 @@ import 'package:mlmdiary/menu/menuscreens/video/controller/video_controller.dart
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
+import 'package:mlmdiary/utils/first_word_capital.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_back_button.dart';
 import 'package:mlmdiary/widgets/custom_search_input.dart';
@@ -152,13 +153,13 @@ class _SearchBarAppState extends State<SearchBarApp> {
                     );
                   }
                   if (searchbarController.homeList.isEmpty) {
-                    return const Center(
+                    return Center(
                       child: Text(
                         'Data not found',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                        style: textStyleW600(
+                          size.width * 0.030,
+                          AppColors.blackText,
+                          isMetropolis: true,
                         ),
                       ),
                     );
@@ -200,7 +201,7 @@ class _SearchBarAppState extends State<SearchBarApp> {
                             controller: controller,
                             bookmarkId: post.id ?? 0,
                             url: post.urlcomponent ?? '',
-                            type: post.type ?? '',
+                            type: capitalizeFirstLetter(post.type),
                             manageBlogController: manageBlogController,
                             manageNewsController: manageNewsController,
                             clasifiedController: clasifiedController,
@@ -227,7 +228,7 @@ class _SearchBarAppState extends State<SearchBarApp> {
                             controller: controller,
                             bookmarkId: post.id ?? 0,
                             url: post.urlcomponent ?? '',
-                            type: post.type ?? '',
+                            type: capitalizeFirstLetter(post.type),
                             manageBlogController: manageBlogController,
                             manageNewsController: manageNewsController,
                             clasifiedController: clasifiedController,
@@ -254,7 +255,7 @@ class _SearchBarAppState extends State<SearchBarApp> {
                             controller: controller,
                             bookmarkId: post.id ?? 0,
                             url: post.urlcomponent ?? '',
-                            type: post.type ?? '',
+                            type: capitalizeFirstLetter(post.type),
                             manageBlogController: manageBlogController,
                             manageNewsController: manageNewsController,
                             clasifiedController: clasifiedController,
@@ -280,7 +281,7 @@ class _SearchBarAppState extends State<SearchBarApp> {
                             controller: controller,
                             bookmarkId: post.id ?? 0,
                             url: post.urlcomponent ?? '',
-                            type: post.type ?? '',
+                            type: capitalizeFirstLetter(post.type),
                             manageBlogController: manageBlogController,
                             manageNewsController: manageNewsController,
                             clasifiedController: clasifiedController,
@@ -313,7 +314,7 @@ class _SearchBarAppState extends State<SearchBarApp> {
                             dateTime: post.createdate ?? '',
                             controller: controller,
                             bookmarkId: post.id ?? 0,
-                            type: post.type ?? '',
+                            type: capitalizeFirstLetter(post.type),
                             manageBlogController: manageBlogController,
                             manageNewsController: manageNewsController,
                             clasifiedController: clasifiedController,
@@ -335,7 +336,7 @@ class _SearchBarAppState extends State<SearchBarApp> {
                             controller: controller,
                             bookmarkId: post.id ?? 0,
                             url: post.urlcomponent ?? '',
-                            type: post.type ?? '',
+                            type: capitalizeFirstLetter(post.type),
                             manageBlogController: manageBlogController,
                             manageNewsController: manageNewsController,
                             clasifiedController: clasifiedController,
@@ -360,7 +361,7 @@ class _SearchBarAppState extends State<SearchBarApp> {
                             controller: controller,
                             bookmarkId: post.id ?? 0,
                             url: post.urlcomponent ?? '',
-                            type: post.type ?? '',
+                            type: capitalizeFirstLetter(post.type),
                             manageBlogController: manageBlogController,
                             manageNewsController: manageNewsController,
                             clasifiedController: clasifiedController,
@@ -459,6 +460,8 @@ class _SearchBarAppState extends State<SearchBarApp> {
   }
 
   Widget horiztallist() {
+    final Size size = MediaQuery.of(context).size;
+
     return SizedBox(
       height: 50,
       child: ListView.builder(
@@ -490,11 +493,9 @@ class _SearchBarAppState extends State<SearchBarApp> {
                     // ignore: deprecated_member_use
                     backgroundColor: AppColors.grey.withOpacity(0.3),
                     side: BorderSide.none,
-                    labelStyle: TextStyle(
-                      fontSize: 12.0,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.blackText,
-                      fontFamily: 'assets/fonst/Metropolis-Black.otf',
+                    labelStyle: textStyleW600(
+                      size.width * 0.035,
+                      AppColors.white,
                     ).copyWith(
                       color: searchbarController.selectedType.value ==
                               searchbarController.types[index]

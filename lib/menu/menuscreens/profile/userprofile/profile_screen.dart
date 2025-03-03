@@ -159,8 +159,8 @@ class _ProfileScreenState extends State<ProfileScreen>
         ),
       ),
       body: RefreshIndicator(
+        color: AppColors.background,
         backgroundColor: AppColors.primaryColor,
-        color: AppColors.white,
         onRefresh: () async {
           _refreshData(widget.userId.toString());
         },
@@ -192,6 +192,11 @@ class _ProfileScreenState extends State<ProfileScreen>
                   indicatorSize: TabBarIndicatorSize.tab,
                   indicatorColor: AppColors.primaryColor,
                   indicatorWeight: 1.5,
+                  labelStyle: textStyleW600(
+                    size.width * 0.035,
+                    AppColors.blackText,
+                    isMetropolis: true,
+                  ),
                   labelColor: AppColors.primaryColor,
                   dividerColor: Colors.grey,
                   onTap: (value) {
@@ -312,244 +317,249 @@ class _ProfileScreenState extends State<ProfileScreen>
               borderRadius: BorderRadius.circular(14),
               color: AppColors.white,
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 6,
+            child: Card(
+              elevation: 6,
+              color: Colors.white,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 6,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Follow me on',
+                          style:
+                              textStyleW400(size.width * 0.035, AppColors.grey),
+                        ),
+                        10.sbh,
+                        Row(
+                          children: [
+                            Expanded(
+                              child: InkWell(
+                                onTap: () {
+                                  if (userProfile.website == null ||
+                                      userProfile.website!.isEmpty) {
+                                    showToasterrorborder(
+                                        'No Any Url Found', context);
+                                  } else {
+                                    launchUrl(
+                                      Uri.parse(userProfile.website.toString()),
+                                      mode: LaunchMode.externalApplication,
+                                    );
+                                  }
+                                },
+                                child: SvgPicture.asset(
+                                  Assets.svgWebsite,
+                                  height: 28,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: InkWell(
+                                onTap: () {
+                                  if (userProfile.compWebsite == null ||
+                                      userProfile.compWebsite!.isEmpty) {
+                                    showToasterrorborder(
+                                        'No Any Url Found', context);
+                                  } else {
+                                    launchUrl(
+                                      Uri.parse(
+                                          userProfile.compWebsite.toString()),
+                                      mode: LaunchMode.externalApplication,
+                                    );
+                                  }
+                                },
+                                child: SvgPicture.asset(
+                                  Assets.svgCompany,
+                                  height: 28,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: InkWell(
+                                onTap: () {
+                                  if (userProfile.wplink == null ||
+                                      userProfile.wplink!.isEmpty) {
+                                    showToasterrorborder(
+                                        'No Any Url Found', context);
+                                  } else {
+                                    launchUrl(
+                                      Uri.parse(userProfile.wplink.toString()),
+                                      mode: LaunchMode.externalApplication,
+                                    );
+                                  }
+                                },
+                                child: SvgPicture.asset(
+                                  Assets.svgLogosWhatsappIcon,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: InkWell(
+                                onTap: () {
+                                  if (userProfile.fblink == null ||
+                                      userProfile.fblink!.isEmpty) {
+                                    showToasterrorborder(
+                                        'No Any Url Found', context);
+                                  } else {
+                                    launchUrl(
+                                      Uri.parse(userProfile.fblink.toString()),
+                                      mode: LaunchMode.externalApplication,
+                                    );
+                                  }
+                                },
+                                child: SvgPicture.asset(
+                                  Assets.svgLogosFacebook,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: InkWell(
+                                onTap: () {
+                                  if (userProfile.instalink == null ||
+                                      userProfile.instalink!.isEmpty) {
+                                    showToasterrorborder(
+                                        'No Any Url Found', context);
+                                  } else {
+                                    launchUrl(
+                                      Uri.parse(
+                                          userProfile.instalink.toString()),
+                                      mode: LaunchMode.externalApplication,
+                                    );
+                                  }
+                                },
+                                child: SvgPicture.asset(
+                                  Assets.svgInstagram,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: InkWell(
+                                onTap: () {
+                                  if (userProfile.lilink == null ||
+                                      userProfile.lilink!.isEmpty) {
+                                    showToasterrorborder(
+                                        'No Any Url Found', context);
+                                  } else {
+                                    launchUrl(
+                                      Uri.parse(userProfile.lilink.toString()),
+                                      mode: LaunchMode.externalApplication,
+                                    );
+                                  }
+                                },
+                                child: SvgPicture.asset(
+                                  Assets.svgLogosLinkedinIcon,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: InkWell(
+                                onTap: () {
+                                  if (userProfile.youlink == null ||
+                                      userProfile.youlink!.isEmpty) {
+                                    showToasterrorborder(
+                                        'No Any Url Found', context);
+                                  } else {
+                                    launchUrl(
+                                      Uri.parse(userProfile.youlink.toString()),
+                                      mode: LaunchMode.externalApplication,
+                                    );
+                                  }
+                                },
+                                child: SvgPicture.asset(
+                                  Assets.svgYoutube,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: InkWell(
+                                onTap: () {
+                                  if (userProfile.telink == null ||
+                                      userProfile.telink!.isEmpty) {
+                                    showToasterrorborder(
+                                        'No Any Url Found', context);
+                                  } else {
+                                    launchUrl(
+                                      Uri.parse(userProfile.telink.toString()),
+                                      mode: LaunchMode.externalApplication,
+                                    );
+                                  }
+                                },
+                                child: SvgPicture.asset(
+                                  Assets.svgTelegram,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: InkWell(
+                                onTap: () {
+                                  if (userProfile.twiterlink == null ||
+                                      userProfile.twiterlink!.isEmpty) {
+                                    showToasterrorborder(
+                                        'No Any Url Found', context);
+                                  } else {
+                                    launchUrl(
+                                      Uri.parse(
+                                          userProfile.twiterlink.toString()),
+                                      mode: LaunchMode.externalApplication,
+                                    );
+                                  }
+                                },
+                                child: SvgPicture.asset(
+                                  Assets.svgTwitter,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Follow me on',
-                        style:
-                            textStyleW400(size.width * 0.035, AppColors.grey),
-                      ),
-                      10.sbh,
-                      Row(
-                        children: [
-                          Expanded(
-                            child: InkWell(
-                              onTap: () {
-                                if (userProfile.website == null ||
-                                    userProfile.website!.isEmpty) {
-                                  showToasterrorborder(
-                                      'No Any Url Found', context);
-                                } else {
-                                  launchUrl(
-                                    Uri.parse(userProfile.website.toString()),
-                                    mode: LaunchMode.externalApplication,
-                                  );
-                                }
-                              },
-                              child: SvgPicture.asset(
-                                Assets.svgWebsite,
-                                height: 28,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: InkWell(
-                              onTap: () {
-                                if (userProfile.compWebsite == null ||
-                                    userProfile.compWebsite!.isEmpty) {
-                                  showToasterrorborder(
-                                      'No Any Url Found', context);
-                                } else {
-                                  launchUrl(
-                                    Uri.parse(
-                                        userProfile.compWebsite.toString()),
-                                    mode: LaunchMode.externalApplication,
-                                  );
-                                }
-                              },
-                              child: SvgPicture.asset(
-                                Assets.svgCompany,
-                                height: 28,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: InkWell(
-                              onTap: () {
-                                if (userProfile.wplink == null ||
-                                    userProfile.wplink!.isEmpty) {
-                                  showToasterrorborder(
-                                      'No Any Url Found', context);
-                                } else {
-                                  launchUrl(
-                                    Uri.parse(userProfile.wplink.toString()),
-                                    mode: LaunchMode.externalApplication,
-                                  );
-                                }
-                              },
-                              child: SvgPicture.asset(
-                                Assets.svgLogosWhatsappIcon,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: InkWell(
-                              onTap: () {
-                                if (userProfile.fblink == null ||
-                                    userProfile.fblink!.isEmpty) {
-                                  showToasterrorborder(
-                                      'No Any Url Found', context);
-                                } else {
-                                  launchUrl(
-                                    Uri.parse(userProfile.fblink.toString()),
-                                    mode: LaunchMode.externalApplication,
-                                  );
-                                }
-                              },
-                              child: SvgPicture.asset(
-                                Assets.svgLogosFacebook,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: InkWell(
-                              onTap: () {
-                                if (userProfile.instalink == null ||
-                                    userProfile.instalink!.isEmpty) {
-                                  showToasterrorborder(
-                                      'No Any Url Found', context);
-                                } else {
-                                  launchUrl(
-                                    Uri.parse(userProfile.instalink.toString()),
-                                    mode: LaunchMode.externalApplication,
-                                  );
-                                }
-                              },
-                              child: SvgPicture.asset(
-                                Assets.svgInstagram,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: InkWell(
-                              onTap: () {
-                                if (userProfile.lilink == null ||
-                                    userProfile.lilink!.isEmpty) {
-                                  showToasterrorborder(
-                                      'No Any Url Found', context);
-                                } else {
-                                  launchUrl(
-                                    Uri.parse(userProfile.lilink.toString()),
-                                    mode: LaunchMode.externalApplication,
-                                  );
-                                }
-                              },
-                              child: SvgPicture.asset(
-                                Assets.svgLogosLinkedinIcon,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: InkWell(
-                              onTap: () {
-                                if (userProfile.youlink == null ||
-                                    userProfile.youlink!.isEmpty) {
-                                  showToasterrorborder(
-                                      'No Any Url Found', context);
-                                } else {
-                                  launchUrl(
-                                    Uri.parse(userProfile.youlink.toString()),
-                                    mode: LaunchMode.externalApplication,
-                                  );
-                                }
-                              },
-                              child: SvgPicture.asset(
-                                Assets.svgYoutube,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: InkWell(
-                              onTap: () {
-                                if (userProfile.telink == null ||
-                                    userProfile.telink!.isEmpty) {
-                                  showToasterrorborder(
-                                      'No Any Url Found', context);
-                                } else {
-                                  launchUrl(
-                                    Uri.parse(userProfile.telink.toString()),
-                                    mode: LaunchMode.externalApplication,
-                                  );
-                                }
-                              },
-                              child: SvgPicture.asset(
-                                Assets.svgTelegram,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: InkWell(
-                              onTap: () {
-                                if (userProfile.twiterlink == null ||
-                                    userProfile.twiterlink!.isEmpty) {
-                                  showToasterrorborder(
-                                      'No Any Url Found', context);
-                                } else {
-                                  launchUrl(
-                                    Uri.parse(
-                                        userProfile.twiterlink.toString()),
-                                    mode: LaunchMode.externalApplication,
-                                  );
-                                }
-                              },
-                              child: SvgPicture.asset(
-                                Assets.svgTwitter,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                  const Divider(color: Colors.grey),
+                  10.sbh,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('About me',
+                            style: textStyleW400(
+                                size.width * 0.035, AppColors.grey)),
+                        Text(
+                          userProfile.aboutyou ?? 'N/A',
+                          style: textStyleW700(
+                              size.width * 0.035, AppColors.blackText),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                const Divider(color: Colors.grey),
-                10.sbh,
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('About me',
-                          style: textStyleW400(
-                              size.width * 0.035, AppColors.grey)),
-                      Text(
-                        userProfile.aboutyou ?? 'N/A',
-                        style: textStyleW500(
-                            size.width * 0.035, AppColors.blackText),
-                      ),
-                    ],
+                  10.sbh,
+                  const Divider(color: Colors.grey),
+                  10.sbh,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('About Company',
+                            style: textStyleW400(
+                                size.width * 0.035, AppColors.grey)),
+                        Text(
+                          userProfile.aboutcompany ?? 'N/A',
+                          style: textStyleW700(
+                              size.width * 0.035, AppColors.blackText),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                10.sbh,
-                const Divider(color: Colors.grey),
-                10.sbh,
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('About Company',
-                          style: textStyleW400(
-                              size.width * 0.035, AppColors.grey)),
-                      Text(
-                        userProfile.aboutcompany ?? 'N/A',
-                        style: textStyleW500(
-                            size.width * 0.035, AppColors.blackText),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: size.height * 0.017),
-              ],
+                  SizedBox(height: size.height * 0.017),
+                ],
+              ),
             ),
           );
         },
@@ -640,12 +650,12 @@ class _ProfileScreenState extends State<ProfileScreen>
                     ),
                     Text(
                       post.immlm ?? 'N/A',
-                      style: textStyleW500(
+                      style: textStyleW600(
                           size.width * 0.035, AppColors.blackText),
                     ),
                     Text(
                       post.company ?? 'N/A',
-                      style: textStyleW500(
+                      style: textStyleW600(
                           size.width * 0.035, AppColors.blackText),
                     ),
                     GestureDetector(
@@ -654,7 +664,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                       },
                       child: Obx(() => Text(
                             post.plan ?? 'N/A',
-                            style: textStyleW500(
+                            style: textStyleW600(
                                 size.width * 0.035, AppColors.blackText),
                             maxLines: isExpanded.value ? null : 10,
                             overflow: TextOverflow.ellipsis,
@@ -662,7 +672,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                     ),
                     Text(
                       '${post.city ?? 'N/A'}, ${post.state ?? 'N/A'}, ${post.country ?? 'N/A'}',
-                      style: textStyleW500(
+                      style: textStyleW600(
                         size.width * 0.035,
                         AppColors.blackText,
                       ),
@@ -709,8 +719,11 @@ class _ProfileScreenState extends State<ProfileScreen>
                       },
                       child: Text(
                         'Edit Profile',
-                        style:
-                            textStyleW700(size.width * 0.030, AppColors.white),
+                        style: textStyleW700(
+                          size.width * 0.035,
+                          AppColors.white,
+                          isMetropolis: true,
+                        ),
                       ),
                     ),
                   ),
@@ -729,12 +742,18 @@ class _ProfileScreenState extends State<ProfileScreen>
                                 Text(
                                   post.followersCount.toString(),
                                   style: textStyleW700(
-                                      size.width * 0.045, AppColors.blackText),
+                                    size.width * 0.045,
+                                    AppColors.blackText,
+                                    isMetropolis: true,
+                                  ),
                                 ),
                                 Text(
                                   'Followers',
                                   style: textStyleW500(
-                                      size.width * 0.035, AppColors.blackText),
+                                    size.width * 0.035,
+                                    AppColors.blackText,
+                                    isMetropolis: true,
+                                  ),
                                 ),
                               ],
                             ),
@@ -754,12 +773,18 @@ class _ProfileScreenState extends State<ProfileScreen>
                                 Text(
                                   post.followingCount.toString(),
                                   style: textStyleW700(
-                                      size.width * 0.045, AppColors.blackText),
+                                    size.width * 0.045,
+                                    AppColors.blackText,
+                                    isMetropolis: true,
+                                  ),
                                 ),
                                 Text(
                                   'Following',
                                   style: textStyleW500(
-                                      size.width * 0.035, AppColors.blackText),
+                                    size.width * 0.035,
+                                    AppColors.blackText,
+                                    isMetropolis: true,
+                                  ),
                                 ),
                               ],
                             ),
@@ -779,12 +804,18 @@ class _ProfileScreenState extends State<ProfileScreen>
                             Text(
                               post.views.toString(),
                               style: textStyleW700(
-                                  size.width * 0.045, AppColors.blackText),
+                                size.width * 0.045,
+                                AppColors.blackText,
+                                isMetropolis: true,
+                              ),
                             ),
                             Text(
                               'Profile Visits',
                               style: textStyleW500(
-                                  size.width * 0.035, AppColors.blackText),
+                                size.width * 0.035,
+                                AppColors.blackText,
+                                isMetropolis: true,
+                              ),
                             ),
                           ],
                         ),
@@ -899,11 +930,9 @@ class _ProfileScreenState extends State<ProfileScreen>
                                         children: [
                                           Text(
                                             viewers.name!,
-                                            style: const TextStyle(
-                                              fontSize: 14.0,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.black,
-                                            ),
+                                            style: textStyleW700(
+                                                size.width * 0.038,
+                                                AppColors.blackText),
                                           ),
                                           2.sbh,
                                           Text(
@@ -920,18 +949,16 @@ class _ProfileScreenState extends State<ProfileScreen>
                                                   ? addressParts.join(', ')
                                                   : 'Not Type Address';
                                             }(),
-                                            style: TextStyle(
-                                              color: AppColors.blackText,
-                                              fontSize: 12.0,
-                                            ),
+                                            style: textStyleW400(
+                                                size.width * 0.032,
+                                                AppColors.blackText),
                                           ),
                                           2.sbh,
                                           Text(
                                             viewers.immlm!,
-                                            style: TextStyle(
-                                              color: AppColors.blackText,
-                                              fontSize: 12.0,
-                                            ),
+                                            style: textStyleW600(
+                                                size.width * 0.032,
+                                                AppColors.blackText),
                                           ),
                                         ],
                                       ),
@@ -956,6 +983,8 @@ class _ProfileScreenState extends State<ProfileScreen>
   }
 
   Widget posts() {
+    final Size size = MediaQuery.of(context).size;
+
     return Padding(
       padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
       child: SizedBox(
@@ -1087,11 +1116,9 @@ class _ProfileScreenState extends State<ProfileScreen>
                                         )
                                       : Text(
                                           'Post',
-                                          style: TextStyle(
-                                            fontSize: 16.0,
-                                            fontWeight: FontWeight.bold,
-                                            color: AppColors.blackText,
-                                          ),
+                                          style: textStyleW700(
+                                              size.width * 0.035,
+                                              AppColors.blackText),
                                         ),
                                   const Icon(Icons.arrow_right),
                                 ],
@@ -1102,11 +1129,10 @@ class _ProfileScreenState extends State<ProfileScreen>
                       ),
                     ),
                     hintText: 'Write Something',
-                    hintStyle: TextStyle(
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.w500,
+                    hintStyle: textStyleW400(
+                      size.width * 0.035,
                       // ignore: deprecated_member_use
-                      color: AppColors.blackText.withOpacity(0.5),
+                      AppColors.blackText.withOpacity(0.5),
                     ),
                   ),
                 );

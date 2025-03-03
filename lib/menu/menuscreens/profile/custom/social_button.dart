@@ -16,7 +16,10 @@ class SocialButton extends StatelessWidget {
     return Container(
       height: 40,
       decoration: BoxDecoration(
-        border: Border.all(color: AppColors.primaryColor, width: 1),
+        border: Border.all(
+            // ignore: deprecated_member_use
+            color: AppColors.primaryColor.withOpacity(0.3),
+            width: 1),
         borderRadius: BorderRadius.circular(60),
       ),
       child: Padding(
@@ -26,8 +29,11 @@ class SocialButton extends StatelessWidget {
             SvgPicture.asset(icon, height: 20),
             10.sbw,
             Text(label,
-                style:
-                    textStyleW700(size.width * 0.035, AppColors.primaryColor)),
+                style: textStyleW700(
+                  size.width * 0.035,
+                  AppColors.primaryColor,
+                  isMetropolis: true,
+                )),
           ],
         ),
       ),

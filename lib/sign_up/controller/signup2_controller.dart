@@ -156,21 +156,29 @@ class Signup2Controller extends GetxController {
   }
 
   // Save company details with the stored API token
-  Future<void> saveCompanyDetails({required File? imageFile, context}) async {
+  Future<void> saveCompanyDetails(
+      {required File? imageFile, BuildContext? context}) async {
     isLoading(true);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
+
+    if (apiToken == null || apiToken.isEmpty) {
+      if (kDebugMode) {
+        print("API Token is missing!");
+      }
+      isLoading(false);
+      return;
+    }
+
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
       // ignore: unrelated_type_equality_checks
       if (connectivityResult != ConnectivityResult.none) {
-        // Create a multipart request
         var request = http.MultipartRequest(
           'POST',
           Uri.parse('${Constants.baseUrl}${Constants.savecompany}'),
         );
 
-        // Add fields
         request.fields['company'] = companyName.value.text;
         request.fields['plan'] = getSelectedPlanOptionsTextController().text;
         request.fields['city'] = city.value.text;
@@ -178,10 +186,10 @@ class Signup2Controller extends GetxController {
         request.fields['country'] = country.value.text;
         request.fields['sex'] = isGenderToggle.value ? 'Male' : 'Female';
         request.fields['location'] = location.value.text;
-        request.fields['api_token'] = apiToken ?? '';
+        request.fields['api_token'] = apiToken;
 
-        // Add image file if provided, or dummy image if not
-        if (imageFile != null) {
+        // Ensure imageFile is not null before accessing its properties
+        if (imageFile != null && await imageFile.exists()) {
           request.files.add(
             http.MultipartFile(
               'image',
@@ -192,7 +200,7 @@ class Signup2Controller extends GetxController {
             ),
           );
         } else {
-          // Provide a dummy image or placeholder
+          // Dummy image handling
           request.files.add(
             http.MultipartFile.fromString(
               'image',
@@ -203,16 +211,19 @@ class Signup2Controller extends GetxController {
           );
         }
 
-        // Send request
         var streamedResponse = await request.send();
         var response = await http.Response.fromStream(streamedResponse);
 
         if (response.statusCode == 200) {
-          showToastverifedborder('Business Profile is Added', context);
-          final Map<String, dynamic> jsonBody = jsonDecode(response.body);
-          if (kDebugMode) {
-            print("Response body: $jsonBody");
+          if (context != null) {
+            // ignore: use_build_context_synchronously
+            showToastverifedborder('Business Profile is Added', context);
+          } else {
+            if (kDebugMode) print("Context is null, skipping toast message.");
           }
+          final Map<String, dynamic> jsonBody = jsonDecode(response.body);
+          if (kDebugMode) print("Response body: $jsonBody");
+
           Get.offAllNamed(Routes.mainscreen);
         } else {
           if (kDebugMode) {
@@ -222,14 +233,14 @@ class Signup2Controller extends GetxController {
           }
         }
       } else {
-        if (kDebugMode) {
-          print("No internet connection available.");
-        }
+        if (kDebugMode) print("No internet connection available.");
       }
     } catch (e) {
       if (kDebugMode) {
         print("An error occurred while saving company details: $e");
       }
+    } finally {
+      isLoading(false);
     }
   }
 

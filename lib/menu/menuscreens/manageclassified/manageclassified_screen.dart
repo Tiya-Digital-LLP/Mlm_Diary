@@ -6,6 +6,7 @@ import 'package:mlmdiary/menu/menuscreens/manageclassified/controller/manage_cla
 import 'package:mlmdiary/menu/menuscreens/manageclassified/manageclassified_card.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_app_bar.dart';
 import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_shimmer_classified.dart';
 import 'package:mlmdiary/widgets/remimaining_count_controller./remaining_count.dart';
@@ -38,6 +39,8 @@ class _MlmClassifiedState extends State<ManageClassified> {
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: CustomAppBar(
@@ -45,8 +48,8 @@ class _MlmClassifiedState extends State<ManageClassified> {
         titleText: 'Manage Classified',
       ),
       body: RefreshIndicator(
+        color: AppColors.background,
         backgroundColor: AppColors.primaryColor,
-        color: AppColors.white,
         onRefresh: _refreshData,
         child: Container(
           color: AppColors.background,
@@ -71,10 +74,10 @@ class _MlmClassifiedState extends State<ManageClassified> {
               return Center(
                 child: Text(
                   controller.isLoading.value ? 'Loading...' : 'Data not found',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                  style: textStyleW600(
+                    size.width * 0.030,
+                    AppColors.blackText,
+                    isMetropolis: true,
                   ),
                 ),
               );

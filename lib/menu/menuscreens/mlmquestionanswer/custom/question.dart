@@ -213,20 +213,20 @@ class _QuestionState extends State<Question>
                   children: [
                     Text(
                       comment.name ?? '',
-                      style: TextStyle(
-                        fontSize: size.width * 0.043,
-                        color: AppColors.blackText,
-                        fontWeight: FontWeight.w700,
+                      style: textStyleW700(
+                        size.width * 0.038,
+                        AppColors.blackText,
+                        isMetropolis: true,
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       postTimeFormatter
                           .formatPostTime(comment.createdate ?? ''),
-                      style: TextStyle(
-                        fontSize: size.width * 0.022,
-                        color: AppColors.grey,
-                        fontWeight: FontWeight.w700,
+                      style: textStyleW400(
+                        size.width * 0.022,
+                        AppColors.blackText,
+                        isMetropolis: true,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -243,10 +243,10 @@ class _QuestionState extends State<Question>
                           ),
                           child: Text(
                             'Reply',
-                            style: TextStyle(
-                              fontSize: size.width * 0.028,
-                              color: Colors.blueAccent,
-                              fontWeight: FontWeight.w700,
+                            style: textStyleW600(
+                              size.width * 0.032,
+                              AppColors.primaryColor,
+                              isMetropolis: true,
                             ),
                           ),
                         ),
@@ -280,10 +280,11 @@ class _QuestionState extends State<Question>
                                 controller.answerlikeCountMap[comment.id ?? 0]
                                         ?.toString() ??
                                     '0',
-                                style: TextStyle(
-                                    fontFamily: "Metropolis",
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: size.width * 0.035),
+                                style: textStyleW600(
+                                  size.width * 0.038,
+                                  AppColors.blackText,
+                                  isMetropolis: true,
+                                ),
                               )
                             ],
                           ),
@@ -300,10 +301,10 @@ class _QuestionState extends State<Question>
                             },
                             child: Text(
                               'Edit',
-                              style: TextStyle(
-                                fontSize: size.width * 0.028,
-                                color: Colors.green,
-                                fontWeight: FontWeight.w700,
+                              style: textStyleW600(
+                                size.width * 0.032,
+                                AppColors.greenBorder,
+                                isMetropolis: true,
                               ),
                             ),
                           ),
@@ -317,10 +318,10 @@ class _QuestionState extends State<Question>
                             }),
                             child: Text(
                               'Delete',
-                              style: TextStyle(
-                                fontSize: size.width * 0.028,
-                                color: Colors.red,
-                                fontWeight: FontWeight.w700,
+                              style: textStyleW600(
+                                size.width * 0.032,
+                                AppColors.redText,
+                                isMetropolis: true,
                               ),
                             ),
                           ),
@@ -346,6 +347,7 @@ class _QuestionState extends State<Question>
         size.width * 0.028,
         // ignore: deprecated_member_use
         AppColors.blackText.withOpacity(0.8),
+        isMetropolis: true,
       ),
       linkStyle: const TextStyle(
         color: Colors.blue,
@@ -400,20 +402,20 @@ class _QuestionState extends State<Question>
                   children: [
                     Text(
                       comment.name ?? '',
-                      style: TextStyle(
-                        fontSize: size.width * 0.043,
-                        color: AppColors.blackText,
-                        fontWeight: FontWeight.w700,
+                      style: textStyleW700(
+                        size.width * 0.038,
+                        AppColors.blackText,
+                        isMetropolis: true,
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       postTimeFormatter
                           .formatPostTime(comment.createdate ?? ''),
-                      style: TextStyle(
-                        fontSize: size.width * 0.022,
-                        color: AppColors.grey,
-                        fontWeight: FontWeight.w700,
+                      style: textStyleW400(
+                        size.width * 0.022,
+                        AppColors.blackText,
+                        isMetropolis: true,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -430,10 +432,10 @@ class _QuestionState extends State<Question>
                           ),
                           child: Text(
                             'Reply',
-                            style: TextStyle(
-                              fontSize: size.width * 0.028,
-                              color: Colors.blueAccent,
-                              fontWeight: FontWeight.w700,
+                            style: textStyleW600(
+                              size.width * 0.032,
+                              AppColors.primaryColor,
+                              isMetropolis: true,
                             ),
                           ),
                         ),
@@ -487,10 +489,10 @@ class _QuestionState extends State<Question>
                             },
                             child: Text(
                               'Edit',
-                              style: TextStyle(
-                                fontSize: size.width * 0.028,
-                                color: Colors.green,
-                                fontWeight: FontWeight.w700,
+                              style: textStyleW600(
+                                size.width * 0.032,
+                                AppColors.greenBorder,
+                                isMetropolis: true,
                               ),
                             ),
                           ),
@@ -504,10 +506,10 @@ class _QuestionState extends State<Question>
                             }),
                             child: Text(
                               'Delete',
-                              style: TextStyle(
-                                fontSize: size.width * 0.028,
-                                color: Colors.red,
-                                fontWeight: FontWeight.w700,
+                              style: textStyleW600(
+                                size.width * 0.032,
+                                AppColors.redText,
+                                isMetropolis: true,
                               ),
                             ),
                           ),
@@ -569,20 +571,20 @@ class _QuestionState extends State<Question>
                   children: [
                     Text(
                       comment.name ?? '',
-                      style: TextStyle(
-                        fontSize: size.width * 0.043,
-                        color: AppColors.blackText,
-                        fontWeight: FontWeight.w700,
+                      style: textStyleW700(
+                        size.width * 0.038,
+                        AppColors.blackText,
+                        isMetropolis: true,
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       postTimeFormatter
                           .formatPostTime(comment.createdate ?? ''),
-                      style: TextStyle(
-                        fontSize: size.width * 0.022,
-                        color: AppColors.grey,
-                        fontWeight: FontWeight.w700,
+                      style: textStyleW400(
+                        size.width * 0.022,
+                        AppColors.blackText,
+                        isMetropolis: true,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -599,10 +601,10 @@ class _QuestionState extends State<Question>
                           ),
                           child: Text(
                             'Reply',
-                            style: TextStyle(
-                              fontSize: size.width * 0.028,
-                              color: Colors.blueAccent,
-                              fontWeight: FontWeight.w700,
+                            style: textStyleW600(
+                              size.width * 0.032,
+                              AppColors.primaryColor,
+                              isMetropolis: true,
                             ),
                           ),
                         ),
@@ -636,10 +638,11 @@ class _QuestionState extends State<Question>
                                 controller.answerlikeCountMap[comment.id ?? 0]
                                         ?.toString() ??
                                     '0',
-                                style: TextStyle(
-                                    fontFamily: "Metropolis",
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: size.width * 0.035),
+                                style: textStyleW600(
+                                  size.width * 0.038,
+                                  AppColors.blackText,
+                                  isMetropolis: true,
+                                ),
                               )
                             ],
                           ),
@@ -656,10 +659,10 @@ class _QuestionState extends State<Question>
                             },
                             child: Text(
                               'Edit',
-                              style: TextStyle(
-                                fontSize: size.width * 0.028,
-                                color: Colors.green,
-                                fontWeight: FontWeight.w700,
+                              style: textStyleW600(
+                                size.width * 0.032,
+                                AppColors.greenBorder,
+                                isMetropolis: true,
                               ),
                             ),
                           ),
@@ -673,10 +676,10 @@ class _QuestionState extends State<Question>
                             }),
                             child: Text(
                               'Delete',
-                              style: TextStyle(
-                                fontSize: size.width * 0.028,
-                                color: Colors.red,
-                                fontWeight: FontWeight.w700,
+                              style: textStyleW600(
+                                size.width * 0.032,
+                                AppColors.redText,
+                                isMetropolis: true,
                               ),
                             ),
                           ),
@@ -706,23 +709,23 @@ class _QuestionState extends State<Question>
         onTap: () {
           FocusScope.of(context).unfocus();
         },
-        child: Column(
-          children: [
-            InkWell(
-              onTap: () async {
-                Get.toNamed(
-                  Routes.userprofilescreen,
-                  arguments: {
-                    'user_id': post.userId,
-                  },
-                );
-                await userProfileController.fetchUserAllPost(
-                  1,
-                  post.userId.toString(),
-                );
-              },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            children: [
+              InkWell(
+                onTap: () async {
+                  Get.toNamed(
+                    Routes.userprofilescreen,
+                    arguments: {
+                      'user_id': post.userId,
+                    },
+                  );
+                  await userProfileController.fetchUserAllPost(
+                    1,
+                    post.userId.toString(),
+                  );
+                },
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -776,11 +779,8 @@ class _QuestionState extends State<Question>
                   ],
                 ),
               ),
-            ),
-            10.sbh,
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
+              10.sbh,
+              Column(
                 children: [
                   Align(
                     alignment: Alignment.topLeft,
@@ -792,11 +792,8 @@ class _QuestionState extends State<Question>
                   ),
                 ],
               ),
-            ),
-            20.sbh,
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Row(
+              20.sbh,
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
@@ -839,7 +836,10 @@ class _QuestionState extends State<Question>
                               child: Text(
                                 totalLikes.toString(),
                                 style: textStyleW600(
-                                    size.width * 0.038, AppColors.blackText),
+                                  size.width * 0.038,
+                                  AppColors.blackText,
+                                  isMetropolis: true,
+                                ),
                               ),
                             );
                           }),
@@ -854,10 +854,10 @@ class _QuestionState extends State<Question>
                       const SizedBox(width: 7),
                       Text(
                         post.totalquestionAnswer.toString(),
-                        style: TextStyle(
-                          fontFamily: "Metropolis",
-                          fontWeight: FontWeight.w600,
-                          fontSize: size.width * 0.045,
+                        style: textStyleW600(
+                          size.width * 0.038,
+                          AppColors.blackText,
+                          isMetropolis: true,
                         ),
                       ),
                       const SizedBox(width: 15),
@@ -881,10 +881,10 @@ class _QuestionState extends State<Question>
                                     },
                                     child: Text(
                                       '${post.pgcnt}',
-                                      style: TextStyle(
-                                        fontFamily: "Metropolis",
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: size.width * 0.038,
+                                      style: textStyleW600(
+                                        size.width * 0.038,
+                                        AppColors.blackText,
+                                        isMetropolis: true,
                                       ),
                                     ),
                                   ),
@@ -947,197 +947,206 @@ class _QuestionState extends State<Question>
                   ),
                 ],
               ),
-            ),
-            20.sbh,
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(14),
-                color: AppColors.white,
-                border: const Border(
-                  bottom: BorderSide(color: Colors.grey),
-                ),
-              ),
-            ),
-            20.sbh,
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: Text(
-                  'Answer(${post.totalquestionAnswer})',
-                  style: textStyleW700(size.width * 0.038, AppColors.blackText),
-                ),
-              ),
-            ),
-            10.sbh,
-            Expanded(
-              child: RefreshIndicator(
-                onRefresh: _refreshData,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Obx(
-                    () {
-                      if (controller.isLoading.value) {
-                        return Center(
-                          child: CustomLottieAnimation(
-                            child: Lottie.asset(
-                              Assets.lottieLottie,
-                            ),
-                          ),
-                        );
-                      }
-                      if (controller.answerList.isEmpty) {
-                        return Center(
-                          child: Text(
-                            'No Answers Found',
-                            style: textStyleW700(
-                                size.width * 0.030, AppColors.blackText),
-                          ),
-                        );
-                      }
-
-                      return ListView.builder(
-                        itemCount: controller.answerList.length +
-                            (controller.isLoading.value ? 1 : 0),
-                        controller: _scrollController,
-                        itemBuilder: (context, index) {
-                          if (index < controller.answerList.length) {
-                            final comment = controller.answerList[index];
-
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 8,
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  _buildComment(comment, size),
-                                  if (comment.comments != null &&
-                                      comment.comments!.isNotEmpty)
-                                    Column(
-                                      children: comment.comments!.map((reply) {
-                                        return Column(
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 32, top: 8),
-                                              child: _buildSingleReply(
-                                                  reply, size),
-                                            ),
-                                            if (reply.replies != null &&
-                                                reply.replies!.isNotEmpty)
-                                              Column(
-                                                children: reply.replies!
-                                                    .map((replyToReply) {
-                                                  return Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 48, top: 8),
-                                                    child: _buildNestedReply(
-                                                        replyToReply, size),
-                                                  );
-                                                }).toList(),
-                                              ),
-                                          ],
-                                        );
-                                      }).toList(),
-                                    ),
-                                ],
-                              ),
-                            );
-                          } else {
-                            return Center(
-                                child: CustomLottieAnimation(
-                              child: Lottie.asset(
-                                Assets.lottieLottie,
-                              ),
-                            ));
-                          }
-                        },
-                      );
-                    },
+              20.sbh,
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(14),
+                  color: AppColors.white,
+                  border: const Border(
+                    bottom: BorderSide(color: Colors.grey),
                   ),
                 ),
               ),
-            ),
-            CommentInputWidget(
-              maxCharacters: maxCharacters,
-              textController: controller.commment.value,
-              onSend: () async {
-                FocusScope.of(context).unfocus();
+              20.sbh,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    'Answer(${post.totalquestionAnswer})',
+                    style: textStyleW700(
+                      size.width * 0.038,
+                      AppColors.blackText,
+                      isMetropolis: true,
+                    ),
+                  ),
+                ),
+              ),
+              10.sbh,
+              Expanded(
+                child: RefreshIndicator(
+                  color: AppColors.background,
+                  backgroundColor: AppColors.primaryColor,
+                  onRefresh: _refreshData,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Obx(
+                      () {
+                        if (controller.isLoading.value) {
+                          return Center(
+                            child: CustomLottieAnimation(
+                              child: Lottie.asset(
+                                Assets.lottieLottie,
+                              ),
+                            ),
+                          );
+                        }
+                        if (controller.answerList.isEmpty) {
+                          return Center(
+                            child: Text(
+                              'No Answers Found',
+                              style: textStyleW700(
+                                  size.width * 0.030, AppColors.blackText),
+                            ),
+                          );
+                        }
 
-                if (controller.commment.value.text.isEmpty) {
-                  showToasterrorborder('Please enter your reply', context);
-                  return;
-                }
+                        return ListView.builder(
+                          itemCount: controller.answerList.length +
+                              (controller.isLoading.value ? 1 : 0),
+                          controller: _scrollController,
+                          itemBuilder: (context, index) {
+                            if (index < controller.answerList.length) {
+                              final comment = controller.answerList[index];
 
-                controller.isLoading.value = true;
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 8,
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    _buildComment(comment, size),
+                                    if (comment.comments != null &&
+                                        comment.comments!.isNotEmpty)
+                                      Column(
+                                        children:
+                                            comment.comments!.map((reply) {
+                                          return Column(
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 32, top: 8),
+                                                child: _buildSingleReply(
+                                                    reply, size),
+                                              ),
+                                              if (reply.replies != null &&
+                                                  reply.replies!.isNotEmpty)
+                                                Column(
+                                                  children: reply.replies!
+                                                      .map((replyToReply) {
+                                                    return Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 48, top: 8),
+                                                      child: _buildNestedReply(
+                                                          replyToReply, size),
+                                                    );
+                                                  }).toList(),
+                                                ),
+                                            ],
+                                          );
+                                        }).toList(),
+                                      ),
+                                  ],
+                                ),
+                              );
+                            } else {
+                              return Center(
+                                  child: CustomLottieAnimation(
+                                child: Lottie.asset(
+                                  Assets.lottieLottie,
+                                ),
+                              ));
+                            }
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              CommentInputWidget(
+                maxCharacters: maxCharacters,
+                textController: controller.commment.value,
+                onSend: () async {
+                  FocusScope.of(context).unfocus();
 
-                if (controller.editingCommentId.value > 0) {
-                  // Check if it's Answer or Comment
-                  if (controller.isEditingAnswer.value) {
-                    // API Call for Editing Answer
-                    await controller.editAnswer(
+                  if (controller.commment.value.text.isEmpty) {
+                    showToasterrorborder('Please enter your reply', context);
+                    return;
+                  }
+
+                  controller.isLoading.value = true;
+
+                  if (controller.editingCommentId.value > 0) {
+                    // Check if it's Answer or Comment
+                    if (controller.isEditingAnswer.value) {
+                      // API Call for Editing Answer
+                      await controller.editAnswer(
+                        post.id ?? 0,
+                        controller.editingCommentId.value,
+                        controller.commment.value.text,
+                        context,
+                      );
+                    } else {
+                      // API Call for Editing Comment
+                      await controller.editComment(
+                        post.id ?? 0,
+                        controller.editingCommentId.value,
+                        controller.commment.value.text,
+                        'answer',
+                        context,
+                      );
+                    }
+                  } else if (controller.replyCommentId.value > 0) {
+                    // API Call for Reply First Time using addReplyAnswer
+                    if (controller.isReplyAnswer.value) {
+                      await controller.addReplyAnswer(
+                        controller.replyCommentId.value,
+                        context,
+                      );
+                    } else {
+                      // API Call for Multiple Replies
+                      await controller.addReplyAnswerComment(
+                        post.id ?? 0,
+                        controller.replyCommentId.value,
+                        context,
+                      );
+                    }
+                  } else if (controller.replyCommentId.value == 0) {
+                    // API Call for Adding New Comment
+                    await controller.addAnswers(
                       post.id ?? 0,
-                      controller.editingCommentId.value,
-                      controller.commment.value.text,
-                      context,
-                    );
-                  } else {
-                    // API Call for Editing Comment
-                    await controller.editComment(
-                      post.id ?? 0,
-                      controller.editingCommentId.value,
-                      controller.commment.value.text,
-                      'answer',
                       context,
                     );
                   }
-                } else if (controller.replyCommentId.value > 0) {
-                  // API Call for Reply First Time using addReplyAnswer
-                  if (controller.isReplyAnswer.value) {
-                    await controller.addReplyAnswer(
-                      controller.replyCommentId.value,
-                      context,
-                    );
-                  } else {
-                    // API Call for Multiple Replies
-                    await controller.addReplyAnswerComment(
-                      post.id ?? 0,
-                      controller.replyCommentId.value,
-                      context,
-                    );
-                  }
-                } else if (controller.replyCommentId.value == 0) {
-                  // API Call for Adding New Comment
-                  await controller.addAnswers(
-                    post.id ?? 0,
-                    context,
-                  );
-                }
 
-                controller.isLoading.value = false;
-                controller.commment.value.clear();
-                controller.editingCommentId.value = 0;
-                controller.replyCommentId.value = 0;
-                controller.isEditingAnswer.value = false;
-                controller.isReplyAnswer.value = false;
-                isLimitExceeded = false;
+                  controller.isLoading.value = false;
+                  controller.commment.value.clear();
+                  controller.editingCommentId.value = 0;
+                  controller.replyCommentId.value = 0;
+                  controller.isEditingAnswer.value = false;
+                  controller.isReplyAnswer.value = false;
+                  isLimitExceeded = false;
 
-                await _refreshData();
-              },
-              isLoading: controller.isLoading,
-              hintText: controller.hintText,
-              focusNode: _focusNode,
-            ),
-          ],
+                  await _refreshData();
+                },
+                isLoading: controller.isLoading,
+                hintText: controller.hintText,
+                focusNode: _focusNode,
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
   void showLikeAndViewList(BuildContext context, int index) {
+    final Size size = MediaQuery.of(context).size;
+
     _tabController.index = index;
     showModalBottomSheet(
       context: context,
@@ -1151,10 +1160,12 @@ class _QuestionState extends State<Question>
               backgroundColor: Colors.white,
               title: TabBar(
                 indicatorColor: Colors.transparent,
-                dividerColor: AppColors.grey,
-                labelStyle: TextStyle(
-                  color: AppColors.primaryColor,
-                ),
+                labelColor: AppColors.primaryColor,
+                unselectedLabelColor: Colors.grey,
+                labelStyle:
+                    textStyleW700(size.width * 0.041, AppColors.primaryColor),
+                unselectedLabelStyle:
+                    textStyleW400(size.width * 0.041, AppColors.blackText),
                 controller: _tabController,
                 tabs: const [
                   Tab(text: "Likes"),

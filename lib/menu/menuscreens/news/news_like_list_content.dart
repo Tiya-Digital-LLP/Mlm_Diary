@@ -143,7 +143,7 @@ class _ClassifiedLikedListContentState extends State<NewsLikeListContent> {
                                                 false)
                                             ? post.userData!.name!
                                             : 'Not Type Name',
-                                        style: textStyleW500(size.width * 0.034,
+                                        style: textStyleW700(size.width * 0.038,
                                             AppColors.blackText),
                                       ),
                                       2.sbh,
@@ -162,11 +162,8 @@ class _ClassifiedLikedListContentState extends State<NewsLikeListContent> {
                                               ? addressParts.join(', ')
                                               : 'Not Type Address';
                                         }(),
-                                        style: textStyleW500(
-                                          size.width * 0.030,
-                                          // ignore: deprecated_member_use
-                                          AppColors.blackText.withOpacity(0.6),
-                                        ),
+                                        style: textStyleW400(size.width * 0.032,
+                                            AppColors.blackText),
                                       ),
                                       2.sbh,
                                       Text(
@@ -176,10 +173,8 @@ class _ClassifiedLikedListContentState extends State<NewsLikeListContent> {
                                                 false)
                                             ? post.userData!.immlm!.trim()
                                             : 'Not Type IMMLM',
-                                        style: textStyleW500(
-                                          size.width * 0.030,
-                                          AppColors.blackText,
-                                        ),
+                                        style: textStyleW600(size.width * 0.032,
+                                            AppColors.blackText),
                                       ),
                                     ],
                                   ),
@@ -215,7 +210,10 @@ class _ClassifiedLikedListContentState extends State<NewsLikeListContent> {
                         child: Text(
                           'Cancel',
                           style: textStyleW700(
-                              size.width * 0.04, AppColors.redText),
+                            size.width * 0.04,
+                            AppColors.redText,
+                            isMetropolis: true,
+                          ),
                         ),
                       ),
                     ),

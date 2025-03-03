@@ -86,7 +86,7 @@ class _ChatCardState extends State<ChatCard> {
                               Text(
                                 widget.userName,
                                 style: textStyleW700(
-                                    size.width * 0.035, AppColors.blackText),
+                                    size.width * 0.038, AppColors.blackText),
                               ),
                               5.sbw,
                               if (widget.countUnread > 0)
@@ -98,7 +98,8 @@ class _ChatCardState extends State<ChatCard> {
                                   ),
                                   child: Text(
                                     widget.countUnread.toString(),
-                                    style: textStyleW700(12, AppColors.white),
+                                    style: textStyleW700(
+                                        size.width * 0.028, AppColors.white),
                                   ),
                                 ),
                             ],
@@ -135,7 +136,6 @@ class _ChatCardState extends State<ChatCard> {
                               widget.readStatus == 0
                                   // ignore: deprecated_member_use
                                   ? AppColors.blackText.withOpacity(0.5)
-                                  // ignore: deprecated_member_use
                                   : AppColors.blackText,
                             ),
                           ),

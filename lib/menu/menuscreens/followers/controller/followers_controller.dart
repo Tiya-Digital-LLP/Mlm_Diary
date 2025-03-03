@@ -111,10 +111,15 @@ class FollowersController extends GetxController {
   Future<void> toggleProfileFollow(int userId, context) async {
     bool isFollow = followProfileStatusMap[userId] ?? false;
     isFollow = !isFollow;
+
     followProfileStatusMap[userId] = isFollow;
+    followProfileStatusMap.refresh();
+
     followProfileCountMap.update(
-        userId, (value) => isFollow ? value + 1 : value - 1,
-        ifAbsent: () => isFollow ? 1 : 0);
+      userId,
+      (value) => isFollow ? value + 1 : (value > 0 ? value - 1 : 0),
+      ifAbsent: () => isFollow ? 1 : 0,
+    );
 
     await profileFollow(userId, context);
   }
@@ -145,50 +150,52 @@ class FollowersController extends GetxController {
 
         if (kDebugMode) {
           print('Sending request to: ${uri.toString()}');
-        } // Print request URL
+        }
 
         final streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);
 
         if (kDebugMode) {
           print('Response status code: ${response.statusCode}');
-        } // Print status code
+        }
 
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
           if (kDebugMode) {
             print('Response data: $data');
-          } // Print response data
+          }
 
           var getFollowerEntity = GetFollowersEntity.fromJson(data);
+
+          if (page == 1) {
+            followers.clear(); // Clear the list on first page load
+          }
 
           if (getFollowerEntity.data != null &&
               getFollowerEntity.data!.isNotEmpty) {
             followers.addAll(getFollowerEntity.data!);
             followersCount.value = getFollowerEntity.followersCount ?? 0;
             followingCount.value = getFollowerEntity.followingCount ?? 0;
-            isEndOfData(false); // More data is available
+            isEndOfData(false);
           } else {
-            isEndOfData(true); // No more data available
+            isEndOfData(true);
           }
 
           if (kDebugMode) {
             print('Followers: ${getFollowerEntity.data}');
-          } // Print followers
+          }
         } else {
           if (kDebugMode) {
             print('Error: ${response.body}');
-          } // Print error message
+          }
         }
-      } else {
-        //
       }
     } catch (e) {
       if (kDebugMode) {
         print('Error: $e');
       }
     } finally {
-      isLoading(false);
+      isLoading.value = false;
     }
   }
 
@@ -200,7 +207,7 @@ class FollowersController extends GetxController {
     String device = Platform.isAndroid ? 'android' : 'ios';
 
     if (kDebugMode) {
-      print('Fetching followers for user ID: $userId');
+      print('Fetching following for user ID: $userId');
     }
 
     try {
@@ -218,48 +225,50 @@ class FollowersController extends GetxController {
 
         if (kDebugMode) {
           print('Sending request to: ${uri.toString()}');
-        } // Print request URL
+        }
 
         final streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);
 
         if (kDebugMode) {
           print('Response status code: ${response.statusCode}');
-        } // Print status code
+        }
 
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
           if (kDebugMode) {
             print('Response data: $data');
-          } // Print response data
+          }
 
           var getFollowingEntity = GetFollowingEntity.fromJson(data);
+
+          if (page == 1) {
+            following.clear(); // Clear the list on first page load
+          }
 
           if (getFollowingEntity.data != null &&
               getFollowingEntity.data!.isNotEmpty) {
             following.addAll(getFollowingEntity.data!);
-            isEndOfData(false); // More data is available
+            isEndOfData(false);
           } else {
-            isEndOfData(true); // No more data available
+            isEndOfData(true);
           }
 
           if (kDebugMode) {
             print('Following: ${getFollowingEntity.data}');
-          } // Print followers
+          }
         } else {
           if (kDebugMode) {
             print('Error: ${response.body}');
-          } // Print error message
+          }
         }
-      } else {
-        //
       }
     } catch (e) {
       if (kDebugMode) {
         print('Error: $e');
-      } // Print exception
+      }
     } finally {
-      isLoading(false);
+      isLoading.value = false;
     }
   }
 }

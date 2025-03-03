@@ -4,7 +4,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
-import 'package:html_unescape/html_unescape.dart';
+
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/company_like_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmcompanies/company_view_list_content.dart';
@@ -94,7 +94,7 @@ class _MlmcompaniesCardState extends State<MlmCompaniesCard>
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    String decodedPostDescription = HtmlUnescape().convert(widget.postCaption);
+
     return Container(
       padding: EdgeInsets.symmetric(
           horizontal: size.width * 0.035, vertical: size.height * 0.01),
@@ -159,22 +159,21 @@ class _MlmcompaniesCardState extends State<MlmCompaniesCard>
               )
             ],
           ),
-          SizedBox(
-            height: size.height * 0.01,
-          ),
           Align(
             alignment: Alignment.topLeft,
             child: Html(
-              data: decodedPostDescription,
+              data: widget.postCaption,
               style: {
                 "html": Style(
+                  lineHeight: const LineHeight(1),
                   maxLines: 2,
+                  fontFamily: satoshiFontFamily,
+                  fontWeight: FontWeight.w400,
+                  fontSize: FontSize.small,
+                  color: AppColors.blackText,
                 ),
               },
             ),
-          ),
-          SizedBox(
-            height: size.height * 0.010,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -211,7 +210,10 @@ class _MlmcompaniesCardState extends State<MlmCompaniesCard>
                                 child: Text(
                                   '${likeCount.value}',
                                   style: textStyleW600(
-                                      size.width * 0.038, AppColors.blackText),
+                                    size.width * 0.038,
+                                    AppColors.blackText,
+                                    isMetropolis: true,
+                                  ),
                                 ),
                               ),
                       ],
@@ -236,10 +238,10 @@ class _MlmcompaniesCardState extends State<MlmCompaniesCard>
                       5.sbw,
                       Text(
                         '${widget.commentcount}',
-                        style: TextStyle(
-                          fontFamily: "Metropolis",
-                          fontWeight: FontWeight.w600,
-                          fontSize: size.width * 0.038,
+                        style: textStyleW600(
+                          size.width * 0.038,
+                          AppColors.blackText,
+                          isMetropolis: true,
                         ),
                       ),
                     ],
@@ -267,10 +269,10 @@ class _MlmcompaniesCardState extends State<MlmCompaniesCard>
                                 },
                                 child: Text(
                                   '${widget.viewcounts}',
-                                  style: TextStyle(
-                                    fontFamily: "Metropolis",
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: size.width * 0.038,
+                                  style: textStyleW600(
+                                    size.width * 0.038,
+                                    AppColors.blackText,
+                                    isMetropolis: true,
                                   ),
                                 ),
                               ),
@@ -343,6 +345,8 @@ class _MlmcompaniesCardState extends State<MlmCompaniesCard>
   }
 
   void showLikeAndViewList(BuildContext context, int index) {
+    final Size size = MediaQuery.of(context).size;
+
     _tabController.index = index;
     showModalBottomSheet(
       context: context,
@@ -356,10 +360,12 @@ class _MlmcompaniesCardState extends State<MlmCompaniesCard>
               backgroundColor: Colors.white,
               title: TabBar(
                 indicatorColor: Colors.transparent,
-                dividerColor: AppColors.grey,
-                labelStyle: TextStyle(
-                  color: AppColors.primaryColor,
-                ),
+                labelColor: AppColors.primaryColor,
+                unselectedLabelColor: Colors.grey,
+                labelStyle:
+                    textStyleW700(size.width * 0.041, AppColors.primaryColor),
+                unselectedLabelStyle:
+                    textStyleW400(size.width * 0.041, AppColors.blackText),
                 controller: _tabController,
                 tabs: const [
                   Tab(text: "Likes"),

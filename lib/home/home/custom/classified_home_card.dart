@@ -222,35 +222,31 @@ class _FavouritrCardState extends State<ClassifiedHomeCard>
                     ],
                   ),
                 ),
-                Row(
-                  children: [
-                    Container(
-                      width: 70,
-                      height: 25,
-                      decoration: BoxDecoration(
-                        color: widget.isPopular
-                            ? Colors.yellow
-                            : AppColors.primaryColor,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: widget.isPopular
-                              ? Colors.yellow
-                              : AppColors.primaryColor,
+                Container(
+                  decoration: BoxDecoration(
+                    color: widget.isPopular
+                        ? Colors.yellow
+                        : AppColors.primaryColor,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: widget.isPopular
+                          ? Colors.yellow
+                          : AppColors.primaryColor,
+                    ),
+                  ),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
+                    child: Center(
+                      child: Text(
+                        widget.type,
+                        style: textStyleW600(
+                          size.width * 0.035,
+                          widget.isPopular ? Colors.black : AppColors.white,
                         ),
                       ),
-                      child: Center(
-                          child: Text(
-                        '${widget.type[0].toUpperCase()}${widget.type.substring(1)}',
-                        style: TextStyle(
-                          color:
-                              widget.isPopular ? Colors.black : AppColors.white,
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: Assets.fontsSatoshiRegular,
-                        ),
-                      )),
                     ),
-                  ],
+                  ),
                 ),
               ],
             ),
@@ -262,7 +258,7 @@ class _FavouritrCardState extends State<ClassifiedHomeCard>
                   "html": Style(
                     lineHeight: const LineHeight(1),
                     maxLines: 1,
-                    fontFamily: fontFamily,
+                    fontFamily: satoshiFontFamily,
                     fontWeight: FontWeight.w700,
                     fontSize: FontSize.medium,
                     color: AppColors.blackText,
@@ -276,10 +272,10 @@ class _FavouritrCardState extends State<ClassifiedHomeCard>
                 data: widget.postCaption,
                 style: {
                   "html": Style(
-                    lineHeight: const LineHeight(1.2),
+                    lineHeight: const LineHeight(1),
                     maxLines: 2,
-                    fontFamily: fontFamily,
-                    fontWeight: FontWeight.w500,
+                    fontFamily: satoshiFontFamily,
+                    fontWeight: FontWeight.w600,
                     fontSize: FontSize.small,
                     color: AppColors.blackText,
                     textOverflow: TextOverflow.ellipsis,
@@ -287,24 +283,22 @@ class _FavouritrCardState extends State<ClassifiedHomeCard>
                 },
               ),
             ),
-            if (widget.postImage.isNotEmpty &&
-                Uri.tryParse(widget.postImage)?.hasAbsolutePath == true)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 6),
-                child: SizedBox(
-                  height: size.height * 0.26,
-                  width: size.width,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12.0),
-                    child: CachedNetworkImage(
-                      imageUrl: widget.postImage,
-                      fit: BoxFit.fill,
-                      errorWidget: (context, url, error) =>
-                          Image.asset(Assets.imagesLogo),
-                    ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              child: SizedBox(
+                height: size.height * 0.26,
+                width: size.width,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12.0),
+                  child: CachedNetworkImage(
+                    imageUrl: widget.postImage,
+                    fit: BoxFit.fill,
+                    errorWidget: (context, url, error) =>
+                        Image.asset(Assets.imagesLogo),
                   ),
                 ),
               ),
+            ),
             10.sbh,
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -338,7 +332,10 @@ class _FavouritrCardState extends State<ClassifiedHomeCard>
                                 child: Text(
                                   '${likeCount.value}',
                                   style: textStyleW600(
-                                      size.width * 0.038, AppColors.blackText),
+                                    size.width * 0.038,
+                                    AppColors.blackText,
+                                    isMetropolis: true,
+                                  ),
                                 ),
                               ),
                       ],
@@ -360,10 +357,10 @@ class _FavouritrCardState extends State<ClassifiedHomeCard>
                       5.sbw,
                       Text(
                         '${widget.commentcount}',
-                        style: TextStyle(
-                          fontFamily: "Metropolis",
-                          fontWeight: FontWeight.w600,
-                          fontSize: size.width * 0.038,
+                        style: textStyleW600(
+                          size.width * 0.038,
+                          AppColors.blackText,
+                          isMetropolis: true,
                         ),
                       ),
                     ],
@@ -388,10 +385,10 @@ class _FavouritrCardState extends State<ClassifiedHomeCard>
                                 },
                                 child: Text(
                                   '${widget.viewcounts}',
-                                  style: TextStyle(
-                                    fontFamily: "Metropolis",
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: size.width * 0.038,
+                                  style: textStyleW600(
+                                    size.width * 0.038,
+                                    AppColors.blackText,
+                                    isMetropolis: true,
                                   ),
                                 ),
                               ),
@@ -459,6 +456,8 @@ class _FavouritrCardState extends State<ClassifiedHomeCard>
   }
 
   void showLikeAndViewList(BuildContext context, int index) {
+    final Size size = MediaQuery.of(context).size;
+
     _tabController.index = index;
     showModalBottomSheet(
       context: context,
@@ -472,10 +471,12 @@ class _FavouritrCardState extends State<ClassifiedHomeCard>
               backgroundColor: Colors.white,
               title: TabBar(
                 indicatorColor: Colors.transparent,
-                dividerColor: AppColors.grey,
-                labelStyle: TextStyle(
-                  color: AppColors.primaryColor,
-                ),
+                labelColor: AppColors.primaryColor,
+                unselectedLabelColor: Colors.grey,
+                labelStyle:
+                    textStyleW700(size.width * 0.041, AppColors.primaryColor),
+                unselectedLabelStyle:
+                    textStyleW400(size.width * 0.041, AppColors.blackText),
                 controller: _tabController,
                 tabs: const [
                   Tab(text: "Likes"),

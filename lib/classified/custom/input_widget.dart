@@ -41,6 +41,8 @@ class _CommentInputWidgetState extends State<CommentInputWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+
     return Container(
       height: 160,
       color: AppColors.white,
@@ -52,7 +54,11 @@ class _CommentInputWidgetState extends State<CommentInputWidget> {
               alignment: Alignment.centerRight,
               child: Text(
                 '${widget.maxCharacters - widget.textController.text.length} characters left',
-                style: const TextStyle(color: Colors.grey),
+                style: textStyleW400(
+                  size.width * 0.025,
+                  AppColors.blackText,
+                  isMetropolis: true,
+                ),
               ),
             ),
             Expanded(
@@ -85,11 +91,14 @@ class _CommentInputWidgetState extends State<CommentInputWidget> {
                                       maxLength: widget.maxCharacters,
                                       focusNode: widget.focusNode,
                                       textInputAction: TextInputAction.done,
+                                      style: textStyleW700(size.width * 0.038,
+                                          AppColors.blackText),
                                       decoration: InputDecoration(
                                         hintText: widget.hintText?.value ??
                                             "Write your comment...",
-                                        hintStyle:
-                                            const TextStyle(color: Colors.grey),
+                                        hintStyle: textStyleW400(
+                                            size.width * 0.038,
+                                            AppColors.blackText),
                                         border: InputBorder.none,
                                         counterText: '',
                                       ),

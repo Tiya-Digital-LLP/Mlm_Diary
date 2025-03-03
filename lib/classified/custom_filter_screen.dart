@@ -47,42 +47,44 @@ class _MyWidgetState extends State<ClassifiedBottomSheetContent> {
             Center(
               child: Text(
                 'Filter',
-                style: textStyleW700(size.width * 0.043, AppColors.blackText),
+                style: textStyleW700(
+                  size.width * 0.048,
+                  AppColors.blackText,
+                ),
               ),
             ),
             10.sbh,
             Obx(
               () => BorderContainer(
                 isError: controller.categoryError.value,
-                height: 60,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: TextField(
-                    controller: controller.getSelectedCategoryTextController(),
-                    readOnly: true,
-                    onTap: () {
-                      showSelectCategory(
-                        context,
-                        size,
-                        controller,
-                        controller.categorylist,
-                      );
-                      controller.mlmCategoryValidation();
-                    },
-                    style:
-                        textStyleW500(size.width * 0.04, AppColors.blackText),
-                    cursorColor: AppColors.blackText,
-                    decoration: InputDecoration(
-                        hintText: "Select Category",
-                        contentPadding: const EdgeInsets.only(
-                          top: 3,
-                        ),
-                        border: InputBorder.none,
-                        suffixIcon: Icon(
-                          Icons.arrow_drop_down,
-                          color: AppColors.blackText,
-                        )),
-                  ),
+                height: 58,
+                child: TextField(
+                  controller: controller.getSelectedCategoryTextController(),
+                  readOnly: true,
+                  onTap: () {
+                    showSelectCategory(
+                      context,
+                      size,
+                      controller,
+                      controller.categorylist,
+                    );
+                    controller.mlmCategoryValidation();
+                  },
+                  style: textStyleW700(size.width * 0.038, AppColors.blackText),
+                  cursorColor: AppColors.blackText,
+                  decoration: InputDecoration(
+                      labelText: "Select Category",
+                      labelStyle: textStyleW400(
+                          size.width * 0.038, AppColors.blackText),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 5,
+                        horizontal: 2,
+                      ),
+                      border: InputBorder.none,
+                      suffixIcon: Icon(
+                        Icons.arrow_drop_down,
+                        color: AppColors.blackText,
+                      )),
                 ),
               ),
             ),
@@ -90,34 +92,34 @@ class _MyWidgetState extends State<ClassifiedBottomSheetContent> {
             Obx(
               () => BorderContainer(
                 isError: controller.subCategoryError.value,
-                height: 60,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: TextField(
-                    controller:
-                        controller.getSelectedSubCategoryTextController(),
-                    readOnly: true,
-                    onTap: () {
-                      showSelectSubCategory(
-                        context,
-                        size,
-                        controller,
-                        controller.subcategoryList,
-                      );
-                      controller.mlmsubCategoryValidation();
-                    },
-                    style:
-                        textStyleW500(size.width * 0.04, AppColors.blackText),
-                    cursorColor: AppColors.blackText,
-                    decoration: InputDecoration(
-                        hintText: "Select Sub Category",
-                        contentPadding: const EdgeInsets.only(top: 3),
-                        border: InputBorder.none,
-                        suffixIcon: Icon(
-                          Icons.arrow_drop_down,
-                          color: AppColors.blackText,
-                        )),
-                  ),
+                height: 58,
+                child: TextField(
+                  controller: controller.getSelectedSubCategoryTextController(),
+                  readOnly: true,
+                  onTap: () {
+                    showSelectSubCategory(
+                      context,
+                      size,
+                      controller,
+                      controller.subcategoryList,
+                    );
+                    controller.mlmsubCategoryValidation();
+                  },
+                  style: textStyleW700(size.width * 0.038, AppColors.blackText),
+                  cursorColor: AppColors.blackText,
+                  decoration: InputDecoration(
+                      labelText: "Select Sub Category",
+                      labelStyle: textStyleW400(
+                          size.width * 0.038, AppColors.blackText),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 5,
+                        horizontal: 2,
+                      ),
+                      border: InputBorder.none,
+                      suffixIcon: Icon(
+                        Icons.arrow_drop_down,
+                        color: AppColors.blackText,
+                      )),
                 ),
               ),
             ),
@@ -144,7 +146,10 @@ class _MyWidgetState extends State<ClassifiedBottomSheetContent> {
                         child: Text(
                           'Cancel',
                           style: textStyleW700(
-                              size.width * 0.04, AppColors.redText),
+                            size.width * 0.04,
+                            AppColors.redText,
+                            isMetropolis: true,
+                          ),
                         ),
                       ),
                     ),
@@ -168,8 +173,11 @@ class _MyWidgetState extends State<ClassifiedBottomSheetContent> {
                         ),
                         child: Text(
                           'Apply',
-                          style:
-                              textStyleW700(size.width * 0.04, AppColors.white),
+                          style: textStyleW700(
+                            size.width * 0.04,
+                            AppColors.white,
+                            isMetropolis: true,
+                          ),
                         ),
                       ),
                     ),
@@ -227,7 +235,10 @@ void showSelectCategory(
               Center(
                 child: Text(
                   'Select Category',
-                  style: textStyleW600(size.width * 0.045, AppColors.blackText),
+                  style: textStyleW700(
+                    size.width * 0.048,
+                    AppColors.blackText,
+                  ),
                 ),
               ),
               20.sbh,
@@ -278,7 +289,7 @@ void showSelectCategory(
                                   15.sbw,
                                   Text(
                                     categorylist[index].name ?? '',
-                                    style: textStyleW500(size.width * 0.041,
+                                    style: textStyleW600(size.width * 0.038,
                                         AppColors.blackText),
                                   ),
                                 ],
@@ -356,7 +367,10 @@ void showSelectSubCategory(
               Center(
                 child: Text(
                   'Select Sub Category',
-                  style: textStyleW600(size.width * 0.045, AppColors.blackText),
+                  style: textStyleW700(
+                    size.width * 0.048,
+                    AppColors.blackText,
+                  ),
                 ),
               ),
               20.sbh,
@@ -407,8 +421,8 @@ void showSelectSubCategory(
                                 15.sbw,
                                 Text(
                                   subcategoryList[index].name ?? '',
-                                  style: textStyleW500(
-                                      size.width * 0.041, AppColors.blackText),
+                                  style: textStyleW600(
+                                      size.width * 0.038, AppColors.blackText),
                                 ),
                               ],
                             ),

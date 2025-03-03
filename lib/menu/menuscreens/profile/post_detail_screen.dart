@@ -187,41 +187,30 @@ class _PostDetailsScreenState extends State<PostDetailScreen>
                     SizedBox(
                       height: size.height * 0.012,
                     ),
-                    if (post.imageUrl.isNotEmpty &&
-                        Uri.tryParse(post.imageUrl)?.hasAbsolutePath == true)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: InkWell(
-                          onTap: () {
-                            _showFullScreenImageDialog(context);
-                          },
-                          child: SizedBox(
-                            height: size.height * 0.26,
-                            width: size.width,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(12.0),
-                              child: CachedNetworkImage(
-                                imageUrl: post.imageUrl,
-                                fit: BoxFit.fill,
-                                errorWidget: (context, url, error) =>
-                                    Image.asset(Assets.imagesLogo),
-                              ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: InkWell(
+                        onTap: () {
+                          _showFullScreenImageDialog(context);
+                        },
+                        child: SizedBox(
+                          height: size.height * 0.26,
+                          width: size.width,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12.0),
+                            child: CachedNetworkImage(
+                              imageUrl: post.imageUrl,
+                              fit: BoxFit.fill,
+                              errorWidget: (context, url, error) =>
+                                  Image.asset(Assets.imagesLogo),
                             ),
                           ),
                         ),
                       ),
+                    ),
                     SizedBox(
                       height: size.height * 0.01,
                     ),
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        color: AppColors.white,
-                        border: const Border(
-                            bottom: BorderSide(color: Colors.grey)),
-                      ),
-                    ),
-                    5.sbh,
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 16,
@@ -234,7 +223,7 @@ class _PostDetailsScreenState extends State<PostDetailScreen>
                               Text(
                                 'Location',
                                 style: textStyleW400(
-                                    size.width * 0.035, AppColors.grey),
+                                    size.width * 0.032, AppColors.blackText),
                               ),
                             ],
                           ),
@@ -243,7 +232,7 @@ class _PostDetailsScreenState extends State<PostDetailScreen>
                             '${post.city?.isNotEmpty == true ? post.city : 'N/A'}, '
                             '${post.state?.isNotEmpty == true ? post.state : 'N/A'}, '
                             '${post.country?.isNotEmpty == true ? post.country : 'N/A'}',
-                            style: textStyleW400(
+                            style: textStyleW700(
                               size.width * 0.035,
                               AppColors.blackText,
                             ),
@@ -275,8 +264,8 @@ class _PostDetailsScreenState extends State<PostDetailScreen>
                                 children: [
                                   Text(
                                     'Phone',
-                                    style: textStyleW400(
-                                        size.width * 0.035, AppColors.grey),
+                                    style: textStyleW400(size.width * 0.032,
+                                        AppColors.blackText),
                                   ),
                                 ],
                               ),
@@ -309,8 +298,10 @@ class _PostDetailsScreenState extends State<PostDetailScreen>
                                 },
                                 child: Text(
                                   '+${post.userData?.countrycode1 ?? 'N/A'} - ${post.userData?.mobile ?? 'N/A'}',
-                                  style: textStyleW400(
-                                      size.width * 0.032, AppColors.blackText),
+                                  style: textStyleW700(
+                                    size.width * 0.035,
+                                    AppColors.blackText,
+                                  ),
                                 ),
                               )
                             ],
@@ -328,8 +319,8 @@ class _PostDetailsScreenState extends State<PostDetailScreen>
                                   children: [
                                     Text(
                                       'Email',
-                                      style: textStyleW400(
-                                          size.width * 0.035, AppColors.grey),
+                                      style: textStyleW400(size.width * 0.032,
+                                          AppColors.blackText),
                                     ),
                                   ],
                                 ),
@@ -359,8 +350,10 @@ class _PostDetailsScreenState extends State<PostDetailScreen>
                                     post.userData!.email?.isNotEmpty == true
                                         ? post.userData!.email!
                                         : 'N/A',
-                                    style: textStyleW400(size.width * 0.032,
-                                        AppColors.blackText),
+                                    style: textStyleW700(
+                                      size.width * 0.035,
+                                      AppColors.blackText,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -391,7 +384,7 @@ class _PostDetailsScreenState extends State<PostDetailScreen>
                               Text(
                                 'Website',
                                 style: textStyleW400(
-                                    size.width * 0.035, AppColors.grey),
+                                    size.width * 0.032, AppColors.blackText),
                               ),
                             ],
                           ),
@@ -404,9 +397,9 @@ class _PostDetailsScreenState extends State<PostDetailScreen>
                               text: post.website?.isNotEmpty == true
                                   ? post.website
                                   : 'N/A',
-                              style: textStyleW400(
+                              style: textStyleW700(
                                 size.width * 0.035,
-                                AppColors.blackText.withOpacity(0.5),
+                                AppColors.blackText,
                               ),
                               linkStyle: const TextStyle(
                                 color: Colors.blue,
@@ -517,13 +510,10 @@ class _PostDetailsScreenState extends State<PostDetailScreen>
                         ),
                       ),
                     ),
-
                     const SizedBox(
                       width: 7,
                     ),
-                    // ignore: unrelated_type_equality_checks
                     Obx(() {
-                      // Sum the original `post.totallike` with the reactive like count
                       int totalLikes = post.totallike +
                           (controller.likeCountMap[post.id] ?? 0);
 
@@ -557,10 +547,10 @@ class _PostDetailsScreenState extends State<PostDetailScreen>
                         5.sbw,
                         Text(
                           '${post.totalcomment}',
-                          style: TextStyle(
-                            fontFamily: "Metropolis",
-                            fontWeight: FontWeight.w600,
-                            fontSize: size.width * 0.038,
+                          style: textStyleW600(
+                            size.width * 0.038,
+                            AppColors.blackText,
+                            isMetropolis: true,
                           ),
                         ),
                       ],
@@ -588,10 +578,10 @@ class _PostDetailsScreenState extends State<PostDetailScreen>
                                   },
                                   child: Text(
                                     '${post.pgcnt}',
-                                    style: TextStyle(
-                                      fontFamily: "Metropolis",
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: size.width * 0.038,
+                                    style: textStyleW600(
+                                      size.width * 0.038,
+                                      AppColors.blackText,
+                                      isMetropolis: true,
                                     ),
                                   ),
                                 ),
@@ -689,6 +679,8 @@ class _PostDetailsScreenState extends State<PostDetailScreen>
   }
 
   void showLikeAndViewList(BuildContext context, int index) {
+    final Size size = MediaQuery.of(context).size;
+
     _tabController.index = index;
     showModalBottomSheet(
       context: context,
@@ -702,10 +694,12 @@ class _PostDetailsScreenState extends State<PostDetailScreen>
               backgroundColor: Colors.white,
               title: TabBar(
                 indicatorColor: Colors.transparent,
-                dividerColor: AppColors.grey,
-                labelStyle: TextStyle(
-                  color: AppColors.primaryColor,
-                ),
+                labelColor: AppColors.primaryColor,
+                unselectedLabelColor: Colors.grey,
+                labelStyle:
+                    textStyleW700(size.width * 0.041, AppColors.primaryColor),
+                unselectedLabelStyle:
+                    textStyleW400(size.width * 0.041, AppColors.blackText),
                 controller: _tabController,
                 tabs: const [
                   Tab(text: "Likes"),

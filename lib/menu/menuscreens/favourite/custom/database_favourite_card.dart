@@ -117,28 +117,26 @@ class _FavouritrCardState extends State<DatabaseFavouriteCard> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (widget.postImage.isNotEmpty &&
-                    Uri.tryParse(widget.postImage)?.hasAbsolutePath == true)
-                  Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(100),
-                        border: Border.all(
-                            color: AppColors.primaryColor, width: 1)),
-                    child: ClipOval(
-                      child: CachedNetworkImage(
-                        imageUrl: widget.postImage,
+                Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(100),
+                      border:
+                          Border.all(color: AppColors.primaryColor, width: 1)),
+                  child: ClipOval(
+                    child: CachedNetworkImage(
+                      imageUrl: widget.postImage,
+                      height: 60.0,
+                      width: 60.0,
+                      fit: BoxFit.cover,
+                      errorWidget: (context, url, error) => Image.asset(
+                        Assets.imagesAdminlogo,
                         height: 60.0,
                         width: 60.0,
                         fit: BoxFit.cover,
-                        errorWidget: (context, url, error) => Image.asset(
-                          Assets.imagesAdminlogo,
-                          height: 60.0,
-                          width: 60.0,
-                          fit: BoxFit.cover,
-                        ),
                       ),
                     ),
                   ),
+                ),
                 10.sbw,
                 Expanded(
                   child: Column(
@@ -153,18 +151,20 @@ class _FavouritrCardState extends State<DatabaseFavouriteCard> {
                                 maxLines: 1),
                           ),
                           Container(
-                            width: 70,
-                            height: 25,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(40),
                               color: AppColors.primaryColor,
                             ),
-                            child: Center(
-                              child: Text(
-                                '${widget.type[0].toUpperCase()}${widget.type.substring(1)}',
-                                style: textStyleW700(
-                                  size.width * 0.026,
-                                  AppColors.white,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 4, horizontal: 10),
+                              child: Center(
+                                child: Text(
+                                  widget.type,
+                                  style: textStyleW600(
+                                    size.width * 0.035,
+                                    AppColors.white,
+                                  ),
                                 ),
                               ),
                             ),
@@ -174,12 +174,12 @@ class _FavouritrCardState extends State<DatabaseFavouriteCard> {
                       Text(
                         widget.postLocation,
                         style: textStyleW400(
-                            size.width * 0.035, AppColors.blackText),
+                            size.width * 0.032, AppColors.blackText),
                       ),
                       Text(
                         widget.immlm,
                         style: textStyleW600(
-                            size.width * 0.034, AppColors.blackText),
+                            size.width * 0.032, AppColors.blackText),
                       ),
                       Row(
                         children: [

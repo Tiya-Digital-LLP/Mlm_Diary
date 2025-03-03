@@ -1,40 +1,44 @@
 import 'package:flutter/material.dart';
-import 'package:mlmdiary/generated/assets.dart';
+
 import 'package:mlmdiary/utils/app_colors.dart';
 
-String fontFamily = Assets.fontsSatoshiRegular;
+String satoshiFontFamily = "Satoshi";
+String metropolisFontFamily = "Metropolis";
 
-TextStyle textStyleW700(double size, Color color) {
+TextStyle textStyleW700(double size, Color color, {bool isMetropolis = false}) {
   return TextStyle(
-    fontFamily: fontFamily,
-    fontWeight: FontWeight.w700,
+    fontFamily: isMetropolis ? metropolisFontFamily : satoshiFontFamily,
+    fontWeight: FontWeight.bold,
     fontSize: size,
     color: color,
   );
 }
 
-TextStyle textStyleW600(double size, Color color) {
+TextStyle textStyleW600(double size, Color color, {bool isMetropolis = false}) {
   return TextStyle(
-      fontFamily: fontFamily,
-      fontWeight: FontWeight.w600,
-      fontSize: size,
-      color: color);
+    fontFamily: isMetropolis ? metropolisFontFamily : satoshiFontFamily,
+    fontWeight: FontWeight.w600,
+    fontSize: size,
+    color: color,
+  );
 }
 
-TextStyle textStyleW500(double size, Color color) {
+TextStyle textStyleW500(double size, Color color, {bool isMetropolis = false}) {
   return TextStyle(
-      fontFamily: fontFamily,
-      fontWeight: FontWeight.w500,
-      fontSize: size,
-      color: color);
+    fontFamily: isMetropolis ? metropolisFontFamily : satoshiFontFamily,
+    fontWeight: FontWeight.w500,
+    fontSize: size,
+    color: color,
+  );
 }
 
-TextStyle textStyleW400(double size, Color color) {
+TextStyle textStyleW400(double size, Color color, {bool isMetropolis = false}) {
   return TextStyle(
-      fontFamily: fontFamily,
-      fontWeight: FontWeight.w400,
-      fontSize: size,
-      color: color);
+    fontFamily: isMetropolis ? metropolisFontFamily : satoshiFontFamily,
+    fontWeight: FontWeight.w400,
+    fontSize: size,
+    color: color,
+  );
 }
 
 BoxShadow customBoxShadow() {

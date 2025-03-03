@@ -196,7 +196,7 @@ class _NewsCardState extends State<NewsCard>
                   "html": Style(
                     lineHeight: const LineHeight(1),
                     maxLines: 1,
-                    fontFamily: fontFamily,
+                    fontFamily: satoshiFontFamily,
                     fontWeight: FontWeight.w700,
                     fontSize: FontSize.medium,
                     color: AppColors.blackText,
@@ -212,7 +212,7 @@ class _NewsCardState extends State<NewsCard>
                   "html": Style(
                     lineHeight: const LineHeight(1.2),
                     maxLines: 2,
-                    fontFamily: fontFamily,
+                    fontFamily: satoshiFontFamily,
                     fontWeight: FontWeight.w500,
                     fontSize: FontSize.small,
                     color: AppColors.blackText,
@@ -299,10 +299,10 @@ class _NewsCardState extends State<NewsCard>
                         5.sbw,
                         Text(
                           '${widget.commentcount}',
-                          style: TextStyle(
-                            fontFamily: "Metropolis",
-                            fontWeight: FontWeight.w600,
-                            fontSize: size.width * 0.038,
+                          style: textStyleW600(
+                            size.width * 0.038,
+                            AppColors.blackText,
+                            isMetropolis: true,
                           ),
                         ),
                       ],
@@ -328,10 +328,10 @@ class _NewsCardState extends State<NewsCard>
                                   },
                                   child: Text(
                                     '${widget.viewcounts}',
-                                    style: TextStyle(
-                                      fontFamily: "Metropolis",
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: size.width * 0.038,
+                                    style: textStyleW600(
+                                      size.width * 0.038,
+                                      AppColors.blackText,
+                                      isMetropolis: true,
                                     ),
                                   ),
                                 ),
@@ -403,6 +403,8 @@ class _NewsCardState extends State<NewsCard>
   }
 
   void showLikeAndViewList(BuildContext context, int index) {
+    final Size size = MediaQuery.of(context).size;
+
     _tabController.index = index;
     showModalBottomSheet(
       context: context,
@@ -416,10 +418,12 @@ class _NewsCardState extends State<NewsCard>
               backgroundColor: Colors.white,
               title: TabBar(
                 indicatorColor: Colors.transparent,
-                dividerColor: AppColors.grey,
-                labelStyle: TextStyle(
-                  color: AppColors.primaryColor,
-                ),
+                labelColor: AppColors.primaryColor,
+                unselectedLabelColor: Colors.grey,
+                labelStyle:
+                    textStyleW700(size.width * 0.041, AppColors.primaryColor),
+                unselectedLabelStyle:
+                    textStyleW400(size.width * 0.041, AppColors.blackText),
                 controller: _tabController,
                 tabs: const [
                   Tab(text: "Likes"),

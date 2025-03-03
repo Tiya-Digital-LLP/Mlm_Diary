@@ -111,14 +111,13 @@ class _EditQuestionAnswerState extends State<EditQuestionAnswer> {
                           );
                           controller.mlmCategoryValidation();
                         },
-                        style: textStyleW500(
-                            size.width * 0.04, AppColors.blackText),
+                        style: textStyleW700(
+                            size.width * 0.038, AppColors.blackText),
                         cursorColor: AppColors.blackText,
                         decoration: InputDecoration(
                             labelText: "Select Category",
-                            labelStyle: const TextStyle(
-                              color: Colors.black,
-                            ),
+                            labelStyle: textStyleW400(
+                                size.width * 0.038, AppColors.blackText),
                             contentPadding: const EdgeInsets.symmetric(
                               vertical: 5.5,
                               horizontal: 2,
@@ -150,14 +149,13 @@ class _EditQuestionAnswerState extends State<EditQuestionAnswer> {
                           );
                           controller.mlmsubCategoryValidation();
                         },
-                        style: textStyleW500(
-                            size.width * 0.04, AppColors.blackText),
+                        style: textStyleW700(
+                            size.width * 0.038, AppColors.blackText),
                         cursorColor: AppColors.blackText,
                         decoration: InputDecoration(
                             labelText: "Select Sub Category",
-                            labelStyle: const TextStyle(
-                              color: Colors.black,
-                            ),
+                            labelStyle: textStyleW400(
+                                size.width * 0.038, AppColors.blackText),
                             contentPadding: const EdgeInsets.symmetric(
                               vertical: 5.5,
                               horizontal: 2,
@@ -241,13 +239,13 @@ class _EditQuestionAnswerState extends State<EditQuestionAnswer> {
           }
 
           if (categorylist.isEmpty) {
-            return const Center(
+            return Center(
               child: Text(
                 'Data not found',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                style: textStyleW600(
+                  size.width * 0.030,
+                  AppColors.blackText,
+                  isMetropolis: true,
                 ),
               ),
             );
@@ -280,8 +278,10 @@ class _EditQuestionAnswerState extends State<EditQuestionAnswer> {
                   Center(
                     child: Text(
                       'Select Category',
-                      style: textStyleW600(
-                          size.width * 0.045, AppColors.blackText),
+                      style: textStyleW700(
+                        size.width * 0.048,
+                        AppColors.blackText,
+                      ),
                     ),
                   ),
                   20.sbh,
@@ -320,7 +320,7 @@ class _EditQuestionAnswerState extends State<EditQuestionAnswer> {
                                     15.sbw,
                                     Text(
                                       categorylist[index].name ?? '',
-                                      style: textStyleW500(size.width * 0.041,
+                                      style: textStyleW600(size.width * 0.038,
                                           AppColors.blackText),
                                     ),
                                   ],
@@ -386,13 +386,13 @@ class _EditQuestionAnswerState extends State<EditQuestionAnswer> {
           }
 
           if (subcategoryList.isEmpty) {
-            return const Center(
+            return Center(
               child: Text(
                 'Data not found',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                style: textStyleW600(
+                  size.width * 0.030,
+                  AppColors.blackText,
+                  isMetropolis: true,
                 ),
               ),
             );
@@ -425,8 +425,10 @@ class _EditQuestionAnswerState extends State<EditQuestionAnswer> {
                   Center(
                     child: Text(
                       'Select Sub Category',
-                      style: textStyleW600(
-                          size.width * 0.045, AppColors.blackText),
+                      style: textStyleW700(
+                        size.width * 0.048,
+                        AppColors.blackText,
+                      ),
                     ),
                   ),
                   20.sbh,
@@ -482,7 +484,7 @@ class _EditQuestionAnswerState extends State<EditQuestionAnswer> {
                                     15.sbw,
                                     Text(
                                       subcategoryList[index].name ?? '',
-                                      style: textStyleW500(size.width * 0.041,
+                                      style: textStyleW600(size.width * 0.038,
                                           AppColors.blackText),
                                     ),
                                   ],

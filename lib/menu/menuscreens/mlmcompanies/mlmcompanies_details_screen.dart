@@ -182,11 +182,8 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails>
                                       alignment: Alignment.topLeft,
                                       child: Text(
                                         post.title ?? 'N/A',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w700,
-                                          color: AppColors.blackText,
-                                          fontSize: size.width * 0.040,
-                                        ),
+                                        style: textStyleW700(size.width * 0.041,
+                                            AppColors.blackText),
                                       ),
                                     ),
                                   ),
@@ -199,22 +196,15 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails>
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Row(
-                                          children: [
-                                            Text(
-                                              'Location',
-                                              style: textStyleW400(
-                                                  size.width * 0.035,
-                                                  AppColors.grey),
-                                            ),
-                                            const SizedBox(
-                                              width: 07,
-                                            ),
-                                          ],
+                                        Text(
+                                          'Location',
+                                          style: textStyleW400(
+                                              size.width * 0.032,
+                                              AppColors.blackText),
                                         ),
                                         Text(
                                           post.location ?? 'N/A',
-                                          style: textStyleW400(
+                                          style: textStyleW700(
                                               size.width * 0.035,
                                               AppColors.blackText),
                                         ),
@@ -245,18 +235,11 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails>
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Row(
-                                                children: [
-                                                  Text(
-                                                    'Phone',
-                                                    style: textStyleW400(
-                                                        size.width * 0.035,
-                                                        AppColors.grey),
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 07,
-                                                  ),
-                                                ],
+                                              Text(
+                                                'Phone',
+                                                style: textStyleW400(
+                                                    size.width * 0.032,
+                                                    AppColors.blackText),
                                               ),
                                               InkWell(
                                                 onTap: () {
@@ -286,8 +269,8 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails>
                                                 },
                                                 child: Text(
                                                   '${post.phone ?? 'N/A'}',
-                                                  style: textStyleW400(
-                                                      size.width * 0.032,
+                                                  style: textStyleW700(
+                                                      size.width * 0.035,
                                                       AppColors.blackText),
                                                 ),
                                               )
@@ -303,18 +286,11 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails>
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  'Email',
-                                                  style: textStyleW400(
-                                                      size.width * 0.035,
-                                                      AppColors.grey),
-                                                ),
-                                                const SizedBox(
-                                                  width: 07,
-                                                ),
-                                              ],
+                                            Text(
+                                              'Email',
+                                              style: textStyleW400(
+                                                  size.width * 0.032,
+                                                  AppColors.blackText),
                                             ),
                                             InkWell(
                                               onTap: () {
@@ -345,8 +321,8 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails>
                                                 post.email?.isNotEmpty == true
                                                     ? post.email!
                                                     : 'N/A',
-                                                style: textStyleW400(
-                                                    size.width * 0.032,
+                                                style: textStyleW700(
+                                                    size.width * 0.035,
                                                     AppColors.blackText),
                                               ),
                                             ),
@@ -378,18 +354,11 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails>
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Row(
-                                                children: [
-                                                  Text(
-                                                    'Website',
-                                                    style: textStyleW400(
-                                                        size.width * 0.035,
-                                                        AppColors.grey),
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 07,
-                                                  ),
-                                                ],
+                                              Text(
+                                                'Website',
+                                                style: textStyleW400(
+                                                    size.width * 0.032,
+                                                    AppColors.blackText),
                                               ),
                                               LinkText(
                                                 text:
@@ -397,7 +366,7 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails>
                                                             true
                                                         ? post.website
                                                         : 'N/A',
-                                                style: textStyleW400(
+                                                style: textStyleW700(
                                                   size.width * 0.035,
                                                   AppColors.blackText
                                                       .withOpacity(0.5),
@@ -563,8 +532,8 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails>
                                         Text(
                                           'About Your Business',
                                           style: textStyleW400(
-                                              size.width * 0.035,
-                                              AppColors.grey),
+                                              size.width * 0.032,
+                                              AppColors.blackText),
                                         ),
                                         5.sbh,
                                         Padding(
@@ -685,7 +654,10 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails>
                       child: Text(
                         totalLikes.toString(),
                         style: textStyleW600(
-                            size.width * 0.038, AppColors.blackText),
+                          size.width * 0.038,
+                          AppColors.blackText,
+                          isMetropolis: true,
+                        ),
                       ),
                     );
                   }),
@@ -708,10 +680,10 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails>
                       5.sbw,
                       Text(
                         '${post.totalcomment}',
-                        style: TextStyle(
-                          fontFamily: "Metropolis",
-                          fontWeight: FontWeight.w600,
-                          fontSize: size.width * 0.038,
+                        style: textStyleW600(
+                          size.width * 0.038,
+                          AppColors.blackText,
+                          isMetropolis: true,
                         ),
                       ),
                     ],
@@ -739,10 +711,10 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails>
                                 },
                                 child: Text(
                                   '${post.pgcnt}',
-                                  style: TextStyle(
-                                    fontFamily: "Metropolis",
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: size.width * 0.038,
+                                  style: textStyleW600(
+                                    size.width * 0.038,
+                                    AppColors.blackText,
+                                    isMetropolis: true,
                                   ),
                                 ),
                               ),
@@ -831,6 +803,8 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails>
   }
 
   void showLikeAndViewList(BuildContext context, int index) {
+    final Size size = MediaQuery.of(context).size;
+
     _tabController.index = index;
     showModalBottomSheet(
       context: context,
@@ -844,10 +818,12 @@ class _MlmCompaniesDetailsState extends State<MlmCompaniesDetails>
               backgroundColor: Colors.white,
               title: TabBar(
                 indicatorColor: Colors.transparent,
-                dividerColor: AppColors.grey,
-                labelStyle: TextStyle(
-                  color: AppColors.primaryColor,
-                ),
+                labelColor: AppColors.primaryColor,
+                unselectedLabelColor: Colors.grey,
+                labelStyle:
+                    textStyleW700(size.width * 0.041, AppColors.primaryColor),
+                unselectedLabelStyle:
+                    textStyleW400(size.width * 0.041, AppColors.blackText),
                 controller: _tabController,
                 tabs: const [
                   Tab(text: "Likes"),

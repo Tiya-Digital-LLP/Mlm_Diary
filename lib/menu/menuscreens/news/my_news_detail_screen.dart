@@ -224,7 +224,7 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen>
                             "html": Style(
                               lineHeight: const LineHeight(1),
                               maxLines: 1,
-                              fontFamily: fontFamily,
+                              fontFamily: satoshiFontFamily,
                               fontWeight: FontWeight.w700,
                               fontSize: FontSize.medium,
                               color: AppColors.blackText,
@@ -244,11 +244,8 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen>
                         alignment: Alignment.topLeft,
                         child: Text(
                           '${post.categoryName} | ${post.subcategoryName}',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            color: AppColors.blackText,
-                            fontSize: size.width * 0.035,
-                          ),
+                          style: textStyleW600(
+                              size.width * 0.038, AppColors.blackText),
                         ),
                       ),
                     ),
@@ -434,10 +431,10 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen>
                         5.sbw,
                         Text(
                           '${post.totalcomment}',
-                          style: TextStyle(
-                            fontFamily: "Metropolis",
-                            fontWeight: FontWeight.w600,
-                            fontSize: size.width * 0.038,
+                          style: textStyleW600(
+                            size.width * 0.038,
+                            AppColors.blackText,
+                            isMetropolis: true,
                           ),
                         ),
                       ],
@@ -465,10 +462,10 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen>
                                   },
                                   child: Text(
                                     '${post.pgcnt ?? 0}',
-                                    style: TextStyle(
-                                      fontFamily: "Metropolis",
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: size.width * 0.038,
+                                    style: textStyleW600(
+                                      size.width * 0.038,
+                                      AppColors.blackText,
+                                      isMetropolis: true,
                                     ),
                                   ),
                                 ),
@@ -568,6 +565,8 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen>
   }
 
   void showLikeAndViewList(BuildContext context, int index) {
+    final Size size = MediaQuery.of(context).size;
+
     _tabController.index = index;
     showModalBottomSheet(
       context: context,
@@ -581,10 +580,12 @@ class _NewsDetailScreenState extends State<MyNewsDetailScreen>
               backgroundColor: Colors.white,
               title: TabBar(
                 indicatorColor: Colors.transparent,
-                dividerColor: AppColors.grey,
-                labelStyle: TextStyle(
-                  color: AppColors.primaryColor,
-                ),
+                labelColor: AppColors.primaryColor,
+                unselectedLabelColor: Colors.grey,
+                labelStyle:
+                    textStyleW700(size.width * 0.041, AppColors.primaryColor),
+                unselectedLabelStyle:
+                    textStyleW400(size.width * 0.041, AppColors.blackText),
                 controller: _tabController,
                 tabs: const [
                   Tab(text: "Likes"),

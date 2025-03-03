@@ -37,6 +37,7 @@ import 'package:mlmdiary/splash/controller/version_controller.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
+import 'package:mlmdiary/utils/first_word_capital.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_shimmer_classified.dart';
 import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_shimmer_user_card.dart';
@@ -213,10 +214,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                   child: Text(
                                     '${controller.notificationCount}',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                    ),
+                                    style: textStyleW400(
+                                        size.width * 0.030, AppColors.white),
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
@@ -248,8 +247,8 @@ class _HomeScreenState extends State<HomeScreen> {
           }
         },
         child: RefreshIndicator(
+          color: AppColors.background,
           backgroundColor: AppColors.primaryColor,
-          color: AppColors.white,
           onRefresh: _refreshData,
           child: Container(
             height: double.infinity,
@@ -387,8 +386,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                           Text(
                                             'view all',
                                             style: textStyleW700(
-                                                size.width * 0.036,
-                                                AppColors.blackText),
+                                              size.width * 0.036,
+                                              AppColors.blackText,
+                                              isMetropolis: true,
+                                            ),
                                           ),
                                           const Icon(
                                             Icons.arrow_right,
@@ -495,7 +496,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   controller: controller,
                                   bookmarkId: post.id ?? 0,
                                   url: post.urlcomponent ?? '',
-                                  type: post.type ?? '',
+                                  type: capitalizeFirstLetter(post.type),
                                   manageBlogController: manageBlogController,
                                   manageNewsController: manageNewsController,
                                   clasifiedController: clasifiedController,
@@ -524,7 +525,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   controller: controller,
                                   bookmarkId: post.id ?? 0,
                                   url: post.urlcomponent ?? '',
-                                  type: post.type ?? '',
+                                  type: capitalizeFirstLetter(post.type),
                                   manageBlogController: manageBlogController,
                                   manageNewsController: manageNewsController,
                                   clasifiedController: clasifiedController,
@@ -553,7 +554,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   controller: controller,
                                   bookmarkId: post.id ?? 0,
                                   url: post.urlcomponent ?? '',
-                                  type: post.type ?? '',
+                                  type: capitalizeFirstLetter(post.type),
                                   manageBlogController: manageBlogController,
                                   manageNewsController: manageNewsController,
                                   clasifiedController: clasifiedController,
@@ -581,7 +582,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   controller: controller,
                                   bookmarkId: post.id ?? 0,
                                   url: post.urlcomponent ?? '',
-                                  type: post.type ?? '',
+                                  type: capitalizeFirstLetter(post.type),
                                   manageBlogController: manageBlogController,
                                   manageNewsController: manageNewsController,
                                   clasifiedController: clasifiedController,
@@ -616,7 +617,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   dateTime: post.createdate ?? '',
                                   controller: controller,
                                   bookmarkId: post.id ?? 0,
-                                  type: post.type ?? '',
+                                  type: capitalizeFirstLetter(post.type),
                                   manageBlogController: manageBlogController,
                                   manageNewsController: manageNewsController,
                                   clasifiedController: clasifiedController,
@@ -639,7 +640,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   controller: controller,
                                   bookmarkId: post.id ?? 0,
                                   url: post.urlcomponent ?? '',
-                                  type: post.type ?? '',
+                                  type: capitalizeFirstLetter(post.type),
                                   manageBlogController: manageBlogController,
                                   manageNewsController: manageNewsController,
                                   clasifiedController: clasifiedController,
@@ -666,7 +667,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   controller: controller,
                                   bookmarkId: post.id ?? 0,
                                   url: post.urlcomponent ?? '',
-                                  type: post.type ?? '',
+                                  type: capitalizeFirstLetter(post.type),
                                   manageBlogController: manageBlogController,
                                   manageNewsController: manageNewsController,
                                   clasifiedController: clasifiedController,
@@ -724,7 +725,14 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 SvgPicture.asset(Assets.svgClipboardText),
                 3.sbw,
-                const Text('Add Post'),
+                Text(
+                  'Add Post',
+                  style: textStyleW700(
+                    size.width * 0.032,
+                    AppColors.blackText,
+                    isMetropolis: true,
+                  ),
+                ),
               ],
             ),
           ),
@@ -742,7 +750,14 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 SvgPicture.asset(Assets.svgGrid3),
                 3.sbw,
-                const Text('Add Classified'),
+                Text(
+                  'Add Classified',
+                  style: textStyleW700(
+                    size.width * 0.032,
+                    AppColors.blackText,
+                    isMetropolis: true,
+                  ),
+                ),
               ],
             ),
           ),
@@ -757,7 +772,14 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 SvgPicture.asset(Assets.svgMessageQuestion),
                 3.sbw,
-                const Text('Add Question'),
+                Text(
+                  'Add Question',
+                  style: textStyleW700(
+                    size.width * 0.032,
+                    AppColors.blackText,
+                    isMetropolis: true,
+                  ),
+                ),
               ],
             ),
           ),
@@ -775,7 +797,14 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 SvgPicture.asset(Assets.svgDocumentText),
                 3.sbw,
-                const Text('Add Blog'),
+                Text(
+                  'Add Blog',
+                  style: textStyleW700(
+                    size.width * 0.032,
+                    AppColors.blackText,
+                    isMetropolis: true,
+                  ),
+                ),
               ],
             ),
           ),
@@ -793,7 +822,14 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 SvgPicture.asset(Assets.svgClipboardText),
                 3.sbw,
-                const Text('Add News'),
+                Text(
+                  'Add News',
+                  style: textStyleW700(
+                    size.width * 0.032,
+                    AppColors.blackText,
+                    isMetropolis: true,
+                  ),
+                ),
               ],
             ),
           ),
@@ -911,6 +947,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _showUpdateDialog(context) {
+    final Size size = MediaQuery.of(context).size;
+
     const String androidLink =
         'https://play.google.com/store/apps/details?id=com.mlm.mlmdiary';
     const String iosLink =
@@ -938,28 +976,26 @@ class _HomeScreenState extends State<HomeScreen> {
                       fit: BoxFit.fill,
                     ),
                   ),
-                  const Column(
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Align(
                         alignment: Alignment.center,
                         child: Text(
                           'Update Available!',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                              fontSize: 22),
+                          style: textStyleW700(
+                              size.width * 0.038, AppColors.blackText),
                         ),
                       ),
-                      SizedBox(height: 10),
+                      10.sbh,
                       Align(
                         alignment: Alignment.center,
                         child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Text(
                             'A new version of the app is available. Please update to continue.',
-                            style:
-                                TextStyle(color: Colors.black45, fontSize: 16),
+                            style: textStyleW400(
+                                size.width * 0.030, AppColors.blackText),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -977,11 +1013,13 @@ class _HomeScreenState extends State<HomeScreen> {
                             Get.back();
                             exit(0);
                           },
-                          child: const Text(
+                          child: Text(
                             'Cancel',
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
+                            style: textStyleW700(
+                              size.width * 0.04,
+                              AppColors.blackText,
+                              isMetropolis: true,
+                            ),
                           ),
                         ),
                       ),
@@ -994,11 +1032,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           onPressed: () {
                             launchUrl(Uri.parse(link));
                           },
-                          child: const Text(
+                          child: Text(
                             'Update',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
+                            style: textStyleW700(
+                              size.width * 0.04,
+                              AppColors.white,
+                              isMetropolis: true,
+                            ),
                           ),
                         ),
                       ),

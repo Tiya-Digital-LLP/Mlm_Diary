@@ -48,104 +48,119 @@ class _AllNotificationCardState extends State<AllNotificationCard> {
     final Size size = MediaQuery.of(context).size;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14),
-        color: AppColors.white,
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: CachedNetworkImage(
-              imageUrl: widget.image,
-              fit: BoxFit.cover,
-              height: 75,
-              width: 75,
-              errorWidget: (context, url, error) => Image.asset(
-                Assets.imagesAdminlogo,
-                fit: BoxFit.cover,
+        padding: EdgeInsets.symmetric(
+            horizontal: size.width * 0.035, vertical: size.height * 0.01),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(14),
+          color: AppColors.white,
+        ),
+        child: Column(
+          children: [
+            Row(children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: CachedNetworkImage(
+                  imageUrl: widget.image,
+                  fit: BoxFit.cover,
+                  height: 75,
+                  width: 75,
+                  errorWidget: (context, url, error) => Image.asset(
+                    Assets.imagesAdminlogo,
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
-            ),
-          ),
-          10.sbw,
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      widget.userName,
-                      style: textStyleW700(
-                          size.width * 0.034, AppColors.blackText),
-                    ),
-                    3.sbw,
-                    Text(
-                      postTimeFormatter.formatPostTime(widget.dateTime),
-                      style: textStyleW500(
-                          size.width * 0.030, AppColors.blackText),
-                    ),
-                  ],
-                ),
-                3.sbh,
-                Text(
-                  widget.userNametype,
-                  style: textStyleW700(size.width * 0.030, AppColors.blackText),
-                  maxLines: 2,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(children: [
-                      Image.asset(
-                        Assets.imagesAdminlogo,
-                        height: 30,
-                        width: 30,
+              10.sbw,
+              Expanded(
+                  child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        widget.userName,
+                        style: textStyleW700(
+                          size.width * 0.038,
+                          AppColors.blackText,
+                          isMetropolis: true,
+                        ),
                       ),
                       3.sbw,
-                      SizedBox(
-                        width: size.width * 0.30,
-                        child: Text(
-                          widget.name,
-                          style: textStyleW700(
-                              size.width * 0.032, AppColors.blackText),
-                          maxLines: 1,
+                      Text(
+                        postTimeFormatter.formatPostTime(widget.dateTime),
+                        style: textStyleW400(
+                          size.width * 0.028,
+                          AppColors.blackText,
+                          isMetropolis: true,
                         ),
                       ),
-                    ]),
-                    Row(
-                      children: [
-                        Container(
-                          height: 10,
-                          width: 10,
-                          decoration: BoxDecoration(
-                            color: AppColors.primaryColor,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        IconButton(
-                          icon: Icon(
-                            Icons.delete,
-                            color: AppColors.redText,
-                          ),
-                          onPressed: () => LogoutDialog.show(context, () async {
-                            widget.controller.deleteNotification(
-                                widget.classifiedId, context, widget.type);
-                            widget.controller.fetchNotification(1, widget.type);
-                          }),
-                        ),
-                      ],
+                    ],
+                  ),
+                  3.sbh,
+                  Text(
+                    widget.userNametype,
+                    style: textStyleW700(
+                      size.width * 0.028,
+                      AppColors.blackText,
+                      isMetropolis: true,
                     ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+                    maxLines: 2,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(children: [
+                        Image.asset(
+                          Assets.imagesAdminlogo,
+                          height: 30,
+                          width: 30,
+                        ),
+                        3.sbw,
+                        SizedBox(
+                          width: size.width * 0.30,
+                          child: Text(
+                            widget.name,
+                            style: textStyleW700(
+                              size.width * 0.032,
+                              AppColors.blackText,
+                              isMetropolis: true,
+                            ),
+                            maxLines: 1,
+                          ),
+                        ),
+                      ]),
+                      Row(
+                        children: [
+                          Container(
+                            height: 10,
+                            width: 10,
+                            decoration: BoxDecoration(
+                              color: AppColors.primaryColor,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              Icons.delete,
+                              color: AppColors.redText,
+                            ),
+                            onPressed: () =>
+                                LogoutDialog.show(context, () async {
+                              widget.controller.deleteNotification(
+                                  widget.classifiedId, context, widget.type);
+                              widget.controller
+                                  .fetchNotification(1, widget.type);
+                            }),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ))
+            ])
+          ],
+        ));
   }
 }

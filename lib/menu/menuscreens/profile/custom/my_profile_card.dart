@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
@@ -184,19 +185,17 @@ class _MyProfileCardState extends State<MyProfileCard>
                       )
                     ],
                   ),
-                  SizedBox(
-                    height: size.height * 0.01,
-                  ),
-                  Text(
-                    widget.postCaption,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.blackText,
-                      fontSize: size.width * 0.045,
-                    ),
-                  ),
-                  SizedBox(
-                    height: size.height * 0.012,
+                  Html(
+                    data: widget.postCaption.trim(),
+                    style: {
+                      "html": Style(
+                        maxLines: 1,
+                        fontFamily: satoshiFontFamily,
+                        fontWeight: FontWeight.w600,
+                        fontSize: FontSize.medium,
+                        color: AppColors.blackText,
+                      ),
+                    },
                   ),
                   widget.postImage.isNotEmpty
                       ? Container(
@@ -215,9 +214,7 @@ class _MyProfileCardState extends State<MyProfileCard>
                           ),
                         )
                       : const SizedBox.shrink(),
-                  SizedBox(
-                    height: size.height * 0.017,
-                  ),
+                  10.sbh,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -252,8 +249,11 @@ class _MyProfileCardState extends State<MyProfileCard>
                                   },
                                   child: Text(
                                     '${likeCount.value}',
-                                    style: textStyleW600(size.width * 0.038,
-                                        AppColors.blackText),
+                                    style: textStyleW600(
+                                      size.width * 0.038,
+                                      AppColors.blackText,
+                                      isMetropolis: true,
+                                    ),
                                   ),
                                 ),
                           const SizedBox(
@@ -275,10 +275,10 @@ class _MyProfileCardState extends State<MyProfileCard>
                               5.sbw,
                               Text(
                                 '${widget.commentcount}',
-                                style: TextStyle(
-                                  fontFamily: "Metropolis",
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: size.width * 0.038,
+                                style: textStyleW600(
+                                  size.width * 0.038,
+                                  AppColors.blackText,
+                                  isMetropolis: true,
                                 ),
                               ),
                             ],
@@ -306,10 +306,10 @@ class _MyProfileCardState extends State<MyProfileCard>
                                         },
                                         child: Text(
                                           '${widget.viewCount}',
-                                          style: TextStyle(
-                                            fontFamily: "Metropolis",
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: size.width * 0.038,
+                                          style: textStyleW600(
+                                            size.width * 0.038,
+                                            AppColors.blackText,
+                                            isMetropolis: true,
                                           ),
                                         ),
                                       ),
@@ -431,6 +431,8 @@ class _MyProfileCardState extends State<MyProfileCard>
   }
 
   void showLikeAndViewList(BuildContext context, int index) {
+    final Size size = MediaQuery.of(context).size;
+
     _tabController.index = index;
     showModalBottomSheet(
       context: context,
@@ -444,10 +446,12 @@ class _MyProfileCardState extends State<MyProfileCard>
               backgroundColor: Colors.white,
               title: TabBar(
                 indicatorColor: Colors.transparent,
-                dividerColor: AppColors.grey,
-                labelStyle: TextStyle(
-                  color: AppColors.primaryColor,
-                ),
+                labelColor: AppColors.primaryColor,
+                unselectedLabelColor: Colors.grey,
+                labelStyle:
+                    textStyleW700(size.width * 0.041, AppColors.primaryColor),
+                unselectedLabelStyle:
+                    textStyleW400(size.width * 0.041, AppColors.blackText),
                 controller: _tabController,
                 tabs: const [
                   Tab(text: "Likes"),

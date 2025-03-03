@@ -104,14 +104,13 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
 
                           log("AFTER == ${controller.categoryError.value}");
                         },
-                        style: textStyleW500(
-                            size.width * 0.04, AppColors.blackText),
+                        style: textStyleW700(
+                            size.width * 0.038, AppColors.blackText),
                         cursorColor: AppColors.blackText,
                         decoration: InputDecoration(
                             labelText: "Select Category",
-                            labelStyle: const TextStyle(
-                              color: Colors.black,
-                            ),
+                            labelStyle: textStyleW400(
+                                size.width * 0.038, AppColors.blackText),
                             contentPadding: const EdgeInsets.symmetric(
                               vertical: 5.5,
                               horizontal: 2,
@@ -146,14 +145,13 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
 
                           log("AFTER == ${controller.subCategoryError.value}");
                         },
-                        style: textStyleW500(
-                            size.width * 0.04, AppColors.blackText),
+                        style: textStyleW700(
+                            size.width * 0.038, AppColors.blackText),
                         cursorColor: AppColors.blackText,
                         decoration: InputDecoration(
                             labelText: "Select Sub Category",
-                            labelStyle: const TextStyle(
-                              color: Colors.black,
-                            ),
+                            labelStyle: textStyleW400(
+                                size.width * 0.038, AppColors.blackText),
                             border: InputBorder.none,
                             contentPadding: const EdgeInsets.symmetric(
                               vertical: 5.5,
@@ -274,14 +272,16 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
                           TextSpan(
                             text:
                                 "News will be displayed after reviewing by admin it may be chargeable   ",
-                            style: textStyleW500(
-                                size.width * 0.030, AppColors.blackText),
+                            style: textStyleW600(
+                              size.width * 0.030,
+                              AppColors.blackText,
+                            ),
                           ),
                           TextSpan(
                             text: "Read More",
-                            style: TextStyle(
-                              decoration: TextDecoration.none,
-                              color: AppColors.primaryColor,
+                            style: textStyleW700(
+                              size.width * 0.038,
+                              AppColors.primaryColor,
                             ),
                           ),
                         ],
@@ -562,13 +562,13 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
           }
 
           if (categorylist.isEmpty) {
-            return const Center(
+            return Center(
               child: Text(
                 'Data not found',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                style: textStyleW600(
+                  size.width * 0.030,
+                  AppColors.blackText,
+                  isMetropolis: true,
                 ),
               ),
             );
@@ -601,8 +601,10 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
                   Center(
                     child: Text(
                       'Select Category',
-                      style: textStyleW600(
-                          size.width * 0.045, AppColors.blackText),
+                      style: textStyleW700(
+                        size.width * 0.048,
+                        AppColors.blackText,
+                      ),
                     ),
                   ),
                   20.sbh,
@@ -641,7 +643,7 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
                                       15.sbw,
                                       Text(
                                         categorylist[index].name ?? '',
-                                        style: textStyleW500(size.width * 0.041,
+                                        style: textStyleW600(size.width * 0.038,
                                             AppColors.blackText),
                                       ),
                                     ],
@@ -706,13 +708,13 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
           }
 
           if (subcategoryList.isEmpty) {
-            return const Center(
+            return Center(
               child: Text(
                 'Data not found',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                style: textStyleW600(
+                  size.width * 0.030,
+                  AppColors.blackText,
+                  isMetropolis: true,
                 ),
               ),
             );
@@ -745,8 +747,10 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
                   Center(
                     child: Text(
                       'Select Sub Category',
-                      style: textStyleW600(
-                          size.width * 0.045, AppColors.blackText),
+                      style: textStyleW700(
+                        size.width * 0.048,
+                        AppColors.blackText,
+                      ),
                     ),
                   ),
                   20.sbh,
@@ -802,7 +806,7 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
                                     15.sbw,
                                     Text(
                                       subcategoryList[index].name ?? '',
-                                      style: textStyleW500(size.width * 0.041,
+                                      style: textStyleW600(size.width * 0.038,
                                           AppColors.blackText),
                                     ),
                                   ],

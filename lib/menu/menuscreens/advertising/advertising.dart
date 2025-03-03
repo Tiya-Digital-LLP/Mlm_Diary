@@ -10,6 +10,7 @@ import 'package:mlmdiary/menu/menuscreens/tutorialvideo/controller/tutorial_vide
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
+import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/normal_button.dart';
 
 class Advertising extends StatefulWidget {
@@ -137,10 +138,10 @@ class _AdwithusState extends State<Advertising>
         title: Text(
           'Advertising',
           style: TextStyle(
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.w800,
             fontSize: size.width * 0.048,
             color: Colors.black,
-            fontFamily: Assets.fontsSatoshiRegular,
+            fontFamily: metropolisFontFamily,
           ),
         ),
         actions: [
@@ -260,9 +261,10 @@ class _AdwithusState extends State<Advertising>
                                 record.title,
                                 style: TextStyle(
                                   color: AppColors.blackText,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w800,
                                   letterSpacing: -0.24,
+                                  fontFamily: metropolisFontFamily,
                                 ),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
@@ -279,6 +281,7 @@ class _AdwithusState extends State<Advertising>
                                             fontSize: 12,
                                             fontWeight: FontWeight.w400,
                                             letterSpacing: -0.24,
+                                            fontFamily: metropolisFontFamily,
                                           ),
                                           maxLines: 2,
                                           softWrap: false))
@@ -290,12 +293,14 @@ class _AdwithusState extends State<Advertising>
                                         fontSize: 16.0,
                                         fontWeight: FontWeight.w600,
                                         color: AppColors.blackText,
+                                        fontFamily: metropolisFontFamily,
                                       )
                                     : TextStyle(
                                         color: AppColors.blackText,
                                         fontSize: 9,
                                         fontWeight: FontWeight.w400,
                                         letterSpacing: -0.24,
+                                        fontFamily: metropolisFontFamily,
                                       ),
                                 textAlign: TextAlign.justify,
                               ),
@@ -306,12 +311,12 @@ class _AdwithusState extends State<Advertising>
                                   ? Text(
                                       'Size:',
                                       style: TextStyle(
-                                          color: AppColors.blackText,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w400,
-                                          letterSpacing: -0.24,
-                                          fontFamily:
-                                              'assets/fonst/Metropolis-Black.otf'),
+                                        color: AppColors.blackText,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400,
+                                        letterSpacing: -0.24,
+                                        fontFamily: metropolisFontFamily,
+                                      ),
                                     )
                                   : const SizedBox(),
                               record.size.isNotEmpty
@@ -321,6 +326,7 @@ class _AdwithusState extends State<Advertising>
                                         fontSize: 15,
                                         fontWeight: FontWeight.w600,
                                         letterSpacing: -0.24,
+                                        fontFamily: metropolisFontFamily,
                                       ))
                                   : const SizedBox(),
                               const SizedBox(
@@ -333,6 +339,7 @@ class _AdwithusState extends State<Advertising>
                                   fontSize: 12,
                                   fontWeight: FontWeight.w400,
                                   letterSpacing: -0.24,
+                                  fontFamily: metropolisFontFamily,
                                 ),
                               ),
                               record.app.isNotEmpty
@@ -342,6 +349,7 @@ class _AdwithusState extends State<Advertising>
                                         fontSize: 14,
                                         fontWeight: FontWeight.w600,
                                         letterSpacing: -0.24,
+                                        fontFamily: metropolisFontFamily,
                                       ))
                                   : const SizedBox(),
                               3.sbh,
@@ -352,6 +360,7 @@ class _AdwithusState extends State<Advertising>
                                         fontSize: 14,
                                         fontWeight: FontWeight.w600,
                                         letterSpacing: -0.24,
+                                        fontFamily: metropolisFontFamily,
                                       ))
                                   : const SizedBox(),
                               3.sbh,
@@ -362,6 +371,7 @@ class _AdwithusState extends State<Advertising>
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
                                   letterSpacing: -0.24,
+                                  fontFamily: metropolisFontFamily,
                                 ),
                               ),
                             ],
@@ -372,6 +382,7 @@ class _AdwithusState extends State<Advertising>
                 Padding(
                   padding: const EdgeInsets.all(16),
                   child: NormalButton(
+                    height: 55,
                     onPressed: () {
                       Get.toNamed(Routes.contactus);
                     },

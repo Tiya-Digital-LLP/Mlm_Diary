@@ -4,6 +4,7 @@ import 'package:lottie/lottie.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
+import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/loader/custom_three_dot_animation.dart';
 
 class NormalButton extends StatelessWidget {
@@ -65,9 +66,11 @@ class NormalButton extends StatelessWidget {
                       ? Text(
                           text,
                           style: TextStyle(
-                              fontSize: fontSize,
-                              fontWeight: fontWeight,
-                              color: Colors.white),
+                            fontSize: fontSize,
+                            fontWeight: fontWeight,
+                            color: Colors.white,
+                            fontFamily: metropolisFontFamily,
+                          ),
                         )
                       : Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -77,10 +80,11 @@ class NormalButton extends StatelessWidget {
                             Text(
                               text,
                               style: TextStyle(
-                                  fontSize: fontSize,
-                                  fontWeight: fontWeight,
-                                  fontFamily: Assets.fontsSatoshiRegular,
-                                  color: Colors.white),
+                                fontSize: fontSize,
+                                fontWeight: fontWeight,
+                                fontFamily: metropolisFontFamily,
+                                color: Colors.white,
+                              ),
                             ),
                           ],
                         ),

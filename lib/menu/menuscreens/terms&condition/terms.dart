@@ -11,6 +11,7 @@ import 'package:mlmdiary/menu/menuscreens/terms&condition/controller/terms_contr
 import 'package:mlmdiary/menu/menuscreens/tutorialvideo/controller/tutorial_video_controller.dart';
 import 'package:mlmdiary/routes/app_pages.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/loader/custom_lottie_animation.dart';
 
 class Terms extends StatefulWidget {
@@ -60,11 +61,9 @@ class _TermsState extends State<Terms> with SingleTickerProviderStateMixin {
         elevation: 0,
         title: Text(
           'Terms & Condition',
-          style: TextStyle(
-            fontWeight: FontWeight.w700,
-            fontSize: size.width * 0.048,
-            color: Colors.black,
-            fontFamily: Assets.fontsSatoshiRegular,
+          style: textStyleW700(
+            size.width * 0.048,
+            AppColors.blackText,
           ),
         ),
         actions: [
@@ -97,14 +96,19 @@ class _TermsState extends State<Terms> with SingleTickerProviderStateMixin {
                 builder: (context) {
                   return Obx(() {
                     if (termsController.isLoading.value) {
-                      return Center(
-                        child: CustomLottieAnimation(
-                          child: Lottie.asset(Assets.lottieLottie),
+                      return SizedBox(
+                        height: size.height * 0.8,
+                        width: size.width,
+                        child: Center(
+                          child: CustomLottieAnimation(
+                            child: Lottie.asset(
+                              Assets.lottieLottie,
+                            ),
+                          ),
                         ),
                       );
                     } else if (termsController.termsAndConditions.value !=
                         null) {
-                      // Directly accessing the policy field
                       return Card(
                         color: Colors.white,
                         elevation: 9,
@@ -113,15 +117,18 @@ class _TermsState extends State<Terms> with SingleTickerProviderStateMixin {
                             child: HtmlWidget(
                               termsController.termsAndConditions.value.policy
                                   .toString(),
+                              textStyle: textStyleW700(
+                                size.width * 0.032,
+                                AppColors.blackText,
+                              ),
                             )),
                       );
                     } else {
-                      return const Text(
+                      return Text(
                         'Failed to load terms and conditions',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.0,
-                          color: Colors.red,
+                        style: textStyleW400(
+                          size.width * 0.032,
+                          AppColors.blackText,
                         ),
                       );
                     }

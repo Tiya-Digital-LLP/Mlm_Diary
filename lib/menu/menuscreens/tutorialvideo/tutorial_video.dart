@@ -8,6 +8,7 @@ import 'package:mlmdiary/menu/menuscreens/tutorialvideo/controller/tutorial_vide
 import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/custom_toast.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
+import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_shimmer_loader/custom_video_shimmer.dart';
 import 'package:mlmdiary/widgets/custon_test_app_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -96,11 +97,9 @@ class _TutorialVideoState extends State<TutorialVideo> {
                               Expanded(
                                 child: Text(
                                   decodedTitle,
-                                  style: const TextStyle(
-                                    fontSize: 15.0,
-                                    fontWeight: FontWeight.w500,
-                                    fontFamily:
-                                        'assets/fonts/Metropolis-Black.otf',
+                                  style: textStyleW700(
+                                    size.width * 0.038,
+                                    AppColors.blackText,
                                   ),
                                 ),
                               ),
@@ -192,6 +191,8 @@ class _YoutubeViewerState extends State<YoutubeViewer>
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+
     super.build(context);
 
     return Column(
@@ -228,7 +229,10 @@ class _YoutubeViewerState extends State<YoutubeViewer>
               5.sbw,
               Text(
                 "Watch on YouTube",
-                style: TextStyle(color: AppColors.primaryColor, fontSize: 16),
+                style: textStyleW700(
+                  size.width * 0.034,
+                  AppColors.blackText,
+                ),
               ),
             ],
           ),

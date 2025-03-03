@@ -137,7 +137,11 @@ class _UserCardState extends State<UserCard> {
                 children: [
                   Text(
                     "View Profile",
-                    style: TextStyle(color: AppColors.primaryColor),
+                    style: textStyleW700(
+                      size.width * 0.036,
+                      AppColors.primaryColor,
+                      isMetropolis: true,
+                    ),
                   ),
                   3.sbw,
                   Icon(

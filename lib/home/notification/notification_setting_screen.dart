@@ -56,10 +56,9 @@ class _NotificationsettingState extends State<Notificationsetting> {
             title: Text(
               'Notification Settings',
               softWrap: true,
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                fontSize: size.width * 0.048,
-                color: Colors.black,
+              style: textStyleW700(
+                size.width * 0.048,
+                AppColors.blackText,
               ),
             ),
             leading: const Padding(
@@ -113,8 +112,8 @@ class _NotificationsettingState extends State<Notificationsetting> {
                         Expanded(
                             child: Text(
                           record.title,
-                          style: textStyleW600(
-                              size.width * 0.035, AppColors.blackText),
+                          style: textStyleW700(
+                              size.width * 0.038, AppColors.blackText),
                         )),
                         Padding(
                           padding: const EdgeInsets.only(right: 10),

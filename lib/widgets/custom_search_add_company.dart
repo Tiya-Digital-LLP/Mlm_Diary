@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mlmdiary/utils/app_colors.dart';
+import 'package:mlmdiary/utils/text_style.dart';
 
 class CustomSearchAddCompany extends StatefulWidget {
   final TextEditingController controller;
@@ -41,6 +42,8 @@ class _CustomSearchInputState extends State<CustomSearchAddCompany> {
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12.0),
@@ -51,7 +54,10 @@ class _CustomSearchInputState extends State<CustomSearchAddCompany> {
       child: Stack(
         children: [
           TextField(
-            style: TextStyle(color: AppColors.blackText, fontSize: 14),
+            style: textStyleW600(
+              size.width * 0.035,
+              AppColors.blackText,
+            ),
             controller: widget.controller,
             textInputAction: TextInputAction.search,
             decoration: InputDecoration(
@@ -77,10 +83,9 @@ class _CustomSearchInputState extends State<CustomSearchAddCompany> {
                     )
                   : null,
               hintText: 'Search',
-              hintStyle: TextStyle(
-                fontSize: 14.0,
-                fontWeight: FontWeight.w500,
-                color: AppColors.blackText,
+              hintStyle: textStyleW600(
+                size.width * 0.035,
+                AppColors.blackText,
               ),
             ),
             onSubmitted: widget.onSubmitted,
@@ -140,10 +145,9 @@ class _CustomSearchInputState extends State<CustomSearchAddCompany> {
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
                                 suggestion,
-                                style: TextStyle(
-                                  fontSize: 14.0,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.blackText,
+                                style: textStyleW600(
+                                  size.width * 0.035,
+                                  AppColors.blackText,
                                 ),
                               ),
                             ),

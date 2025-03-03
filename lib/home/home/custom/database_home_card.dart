@@ -130,23 +130,21 @@ class _FavouritrCardState extends State<DatabaseHomeCard> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (widget.postImage.isNotEmpty &&
-                    Uri.tryParse(widget.postImage)?.hasAbsolutePath == true)
-                  Container(
-                    height: 60,
-                    width: 60,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: ClipOval(
-                      child: CachedNetworkImage(
-                        imageUrl: widget.postImage,
-                        fit: BoxFit.fill,
-                        errorWidget: (context, url, error) =>
-                            Image.asset(Assets.imagesAdminlogo),
-                      ),
+                Container(
+                  height: 60,
+                  width: 60,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: ClipOval(
+                    child: CachedNetworkImage(
+                      imageUrl: widget.postImage,
+                      fit: BoxFit.fill,
+                      errorWidget: (context, url, error) =>
+                          Image.asset(Assets.imagesAdminlogo),
                     ),
                   ),
+                ),
                 10.sbw,
                 Expanded(
                   child: Column(
@@ -162,18 +160,20 @@ class _FavouritrCardState extends State<DatabaseHomeCard> {
                             ),
                           ),
                           Container(
-                            width: 70,
-                            height: 25,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(40),
                               color: AppColors.primaryColor,
                             ),
-                            child: Center(
-                              child: Text(
-                                '${widget.type[0].toUpperCase()}${widget.type.substring(1)}',
-                                style: textStyleW700(
-                                  size.width * 0.026,
-                                  AppColors.white,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 4, horizontal: 10),
+                              child: Center(
+                                child: Text(
+                                  widget.type,
+                                  style: textStyleW600(
+                                    size.width * 0.035,
+                                    AppColors.white,
+                                  ),
                                 ),
                               ),
                             ),
@@ -182,12 +182,12 @@ class _FavouritrCardState extends State<DatabaseHomeCard> {
                       ),
                       Text(
                         widget.postLocation,
-                        style: textStyleW500(
+                        style: textStyleW400(
                             size.width * 0.032, AppColors.blackText),
                       ),
                       Text(
                         widget.immlm,
-                        style: textStyleW700(
+                        style: textStyleW600(
                             size.width * 0.032, AppColors.blackText),
                       ),
                       Row(
@@ -195,7 +195,7 @@ class _FavouritrCardState extends State<DatabaseHomeCard> {
                           Expanded(
                             child: Text(
                               widget.plan,
-                              style: textStyleW500(
+                              style: textStyleW400(
                                   size.width * 0.032, AppColors.blackText),
                               maxLines: 1,
                             ),

@@ -250,10 +250,11 @@ class _QuestionCardState extends State<QuestionCard>
                       ),
                       Text(
                         widget.answerCount.toString(),
-                        style: TextStyle(
-                            fontFamily: "Metropolis",
-                            fontWeight: FontWeight.w600,
-                            fontSize: size.width * 0.045),
+                        style: textStyleW600(
+                          size.width * 0.038,
+                          AppColors.blackText,
+                          isMetropolis: true,
+                        ),
                       ),
                       const SizedBox(
                         width: 15,
@@ -278,10 +279,10 @@ class _QuestionCardState extends State<QuestionCard>
                                     },
                                     child: Text(
                                       '${widget.viewcounts}',
-                                      style: TextStyle(
-                                        fontFamily: "Metropolis",
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: size.width * 0.038,
+                                      style: textStyleW600(
+                                        size.width * 0.038,
+                                        AppColors.blackText,
+                                        isMetropolis: true,
                                       ),
                                     ),
                                   ),
@@ -354,6 +355,8 @@ class _QuestionCardState extends State<QuestionCard>
   }
 
   void showLikeAndViewList(BuildContext context, int index) {
+    final Size size = MediaQuery.of(context).size;
+
     _tabController.index = index;
     showModalBottomSheet(
       context: context,
@@ -367,10 +370,12 @@ class _QuestionCardState extends State<QuestionCard>
               backgroundColor: Colors.white,
               title: TabBar(
                 indicatorColor: Colors.transparent,
-                dividerColor: AppColors.grey,
-                labelStyle: TextStyle(
-                  color: AppColors.primaryColor,
-                ),
+                labelColor: AppColors.primaryColor,
+                unselectedLabelColor: Colors.grey,
+                labelStyle:
+                    textStyleW700(size.width * 0.041, AppColors.primaryColor),
+                unselectedLabelStyle:
+                    textStyleW400(size.width * 0.041, AppColors.blackText),
                 controller: _tabController,
                 tabs: const [
                   Tab(text: "Likes"),
