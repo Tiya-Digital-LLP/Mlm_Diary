@@ -155,18 +155,10 @@ class _BlogDetailScreenState extends State<BlogDetailNotification>
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Row(
-                                        children: [
-                                          Text(
-                                            post.userData!.name!,
-                                            style: textStyleW700(
-                                                size.width * 0.043,
-                                                AppColors.blackText),
-                                          ),
-                                          const SizedBox(
-                                            width: 07,
-                                          ),
-                                        ],
+                                      Text(
+                                        post.userData!.name!,
+                                        style: textStyleW700(size.width * 0.043,
+                                            AppColors.blackText),
                                       ),
                                       Text(
                                         postTimeFormatter.formatPostTime(
@@ -182,36 +174,42 @@ class _BlogDetailScreenState extends State<BlogDetailNotification>
                               ),
                             ),
                           ),
-                          SizedBox(
-                            height: size.height * 0.012,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: InkWell(
-                              onTap: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return FullScreenImageDialog(
-                                        imageUrl: post.imageUrl.toString());
+                          15.sbh,
+                          if (post.imageUrl!.isNotEmpty)
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              child: InkWell(
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return FullScreenImageDialog(
+                                          imageUrl: post.imageUrl.toString());
+                                    },
+                                  );
+                                },
+                                child: CachedNetworkImage(
+                                  imageUrl: post.imageUrl!,
+                                  fit: BoxFit.fill,
+                                  imageBuilder: (context, imageProvider) {
+                                    return SizedBox(
+                                      height: size.height * 0.30,
+                                      width: size.width,
+                                      child: ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(12.0),
+                                        child: Image(
+                                            image: imageProvider,
+                                            fit: BoxFit.fill),
+                                      ),
+                                    );
                                   },
-                                );
-                              },
-                              child: SizedBox(
-                                height: size.height * 0.26,
-                                width: size.width,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  child: CachedNetworkImage(
-                                    imageUrl: post.imageUrl.toString(),
-                                    fit: BoxFit.fill,
-                                    errorWidget: (context, url, error) =>
-                                        Image.asset(Assets.imagesLogo),
-                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      const SizedBox.shrink(),
                                 ),
                               ),
                             ),
-                          ),
                           SizedBox(
                             height: size.height * 0.01,
                           ),

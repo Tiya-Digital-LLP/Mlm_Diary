@@ -198,38 +198,6 @@ class _AddPostState extends State<EditPost> {
                           ),
                         ),
                       ),
-                      Visibility(
-                        visible: controller.userImage.value.isNotEmpty &&
-                            file.value == null,
-                        child: Positioned(
-                          top: 10,
-                          right: 0,
-                          child: Container(
-                            width: 40,
-                            height: 40,
-                            margin: const EdgeInsets.all(2.0),
-                            child: GestureDetector(
-                              child: Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  color: AppColors.white,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Center(
-                                  child: Icon(
-                                    Icons.delete,
-                                    color: AppColors.redText,
-                                  ),
-                                ),
-                              ),
-                              onTap: () {
-                                controller.userImage.value = '';
-                              },
-                            ),
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -300,6 +268,8 @@ class _AddPostState extends State<EditPost> {
   }
 
   Widget bottomsheet() {
+    final Size size = MediaQuery.of(context).size;
+
     return Container(
       height: 100.0,
       width: MediaQuery.of(context).size.width,
@@ -308,7 +278,10 @@ class _AddPostState extends State<EditPost> {
         children: <Widget>[
           Text(
             "Choose Profile Photo",
-            style: TextStyle(fontSize: 18.0, color: AppColors.blackText),
+            style: textStyleW700(
+              size.width * 0.048,
+              AppColors.blackText,
+            ),
           ),
           const SizedBox(
             height: 20,
@@ -325,7 +298,11 @@ class _AddPostState extends State<EditPost> {
                   icon: Icon(Icons.camera, color: AppColors.primaryColor),
                   label: Text(
                     'Camera',
-                    style: TextStyle(color: AppColors.primaryColor),
+                    style: textStyleW600(
+                      size.width * 0.038,
+                      AppColors.primaryColor,
+                      isMetropolis: true,
+                    ),
                   )),
               TextButton.icon(
                   onPressed: () {
@@ -336,7 +313,11 @@ class _AddPostState extends State<EditPost> {
                   icon: Icon(Icons.image, color: AppColors.primaryColor),
                   label: Text(
                     'Gallary',
-                    style: TextStyle(color: AppColors.primaryColor),
+                    style: textStyleW600(
+                      size.width * 0.038,
+                      AppColors.primaryColor,
+                      isMetropolis: true,
+                    ),
                   )),
             ],
           )

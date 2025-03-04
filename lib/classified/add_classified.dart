@@ -475,6 +475,8 @@ class _AddClassifiedState extends State<AddClassified> {
   }
 
   Widget bottomsheet() {
+    final Size size = MediaQuery.of(context).size;
+
     return Container(
       height: 100.0,
       width: MediaQuery.of(context).size.width,
@@ -483,7 +485,10 @@ class _AddClassifiedState extends State<AddClassified> {
         children: <Widget>[
           Text(
             "Choose Profile Photo",
-            style: TextStyle(fontSize: 18.0, color: AppColors.blackText),
+            style: textStyleW700(
+              size.width * 0.048,
+              AppColors.blackText,
+            ),
           ),
           const SizedBox(
             height: 20,
@@ -500,7 +505,11 @@ class _AddClassifiedState extends State<AddClassified> {
                   icon: Icon(Icons.camera, color: AppColors.primaryColor),
                   label: Text(
                     'Camera',
-                    style: TextStyle(color: AppColors.primaryColor),
+                    style: textStyleW600(
+                      size.width * 0.038,
+                      AppColors.primaryColor,
+                      isMetropolis: true,
+                    ),
                   )),
               TextButton.icon(
                   onPressed: () {
@@ -511,7 +520,11 @@ class _AddClassifiedState extends State<AddClassified> {
                   icon: Icon(Icons.image, color: AppColors.primaryColor),
                   label: Text(
                     'Gallary',
-                    style: TextStyle(color: AppColors.primaryColor),
+                    style: textStyleW600(
+                      size.width * 0.038,
+                      AppColors.primaryColor,
+                      isMetropolis: true,
+                    ),
                   )),
             ],
           )
@@ -711,13 +724,13 @@ class _AddClassifiedState extends State<AddClassified> {
           }
 
           if (categorylist.isEmpty) {
-            return const Center(
+            return Center(
               child: Text(
                 'Data not found',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                style: textStyleW600(
+                  size.width * 0.030,
+                  AppColors.blackText,
+                  isMetropolis: true,
                 ),
               ),
             );
@@ -857,13 +870,13 @@ class _AddClassifiedState extends State<AddClassified> {
           }
 
           if (subcategoryList.isEmpty) {
-            return const Center(
+            return Center(
               child: Text(
                 'Data not found',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                style: textStyleW600(
+                  size.width * 0.030,
+                  AppColors.blackText,
+                  isMetropolis: true,
                 ),
               ),
             );

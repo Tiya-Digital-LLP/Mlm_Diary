@@ -173,32 +173,33 @@ class _PostDetailsScreenState extends State<PostDetailNotification>
                             ),
                           ),
                         ),
-                        SizedBox(
-                          height: size.height * 0.012,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                          ),
-                          child: Container(
-                            height: size.height * 0.28,
-                            width: size.width,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
+                        15.sbh,
+                        if (post.attachmentPath!.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: InkWell(
+                              onTap: () {},
+                              child: CachedNetworkImage(
+                                imageUrl: post.attachmentPath!,
+                                fit: BoxFit.fill,
+                                imageBuilder: (context, imageProvider) {
+                                  return SizedBox(
+                                    height: size.height * 0.30,
+                                    width: size.width,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(12.0),
+                                      child: Image(
+                                          image: imageProvider,
+                                          fit: BoxFit.fill),
+                                    ),
+                                  );
+                                },
+                                errorWidget: (context, url, error) =>
+                                    const SizedBox.shrink(),
+                              ),
                             ),
-                            child: CachedNetworkImage(
-                              imageUrl: post.attachmentPath ?? '',
-                              height: 97,
-                              width: 105,
-                              fit: BoxFit.fill,
-                              errorWidget: (context, url, error) =>
-                                  Image.asset(Assets.imagesLogo),
-                            ),
                           ),
-                        ),
-                        SizedBox(
-                          height: size.height * 0.01,
-                        ),
+                        15.sbh,
                         Padding(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 16,

@@ -201,9 +201,7 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                     Text(
                       "Gender",
                       style: textStyleW400(
-                          size.width * 0.038,
-                          // ignore: deprecated_member_use
-                          AppColors.blackText),
+                          size.width * 0.038, AppColors.blackText),
                     ),
                     20.sbw,
                     InkWell(
@@ -344,96 +342,99 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
               ),
               10.sbh,
               Obx(
-                () => TextFormField(
-                  controller: controller.location.value,
-                  readOnly: true,
-                  style: textStyleW700(size.width * 0.038, AppColors.blackText),
-                  onTap: () async {
-                    var place = await PlacesAutocomplete.show(
-                      context: context,
-                      apiKey: googleApikey,
-                      mode: Mode.fullscreen,
-                      types: ['geocode', 'establishment'],
-                      strictbounds: false,
-                      onError: (err) {},
-                    );
-
-                    if (place != null) {
-                      setState(() {
-                        controller.location.value.text =
-                            place.description.toString();
-                        _loc.text = controller.location.value.text;
-                        controller.validateAddress();
-                      });
-                      final plist = GoogleMapsPlaces(
+                () => Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12.0),
+                    color: AppColors.white,
+                    border: Border.all(
+                      color: Colors.grey,
+                      width: 1.0,
+                    ),
+                  ),
+                  height: 58,
+                  child: TextFormField(
+                    controller: controller.location.value,
+                    readOnly: true,
+                    style:
+                        textStyleW700(size.width * 0.038, AppColors.blackText),
+                    onTap: () async {
+                      var place = await PlacesAutocomplete.show(
+                        context: context,
                         apiKey: googleApikey,
-                        apiHeaders: await const GoogleApiHeaders().getHeaders(),
+                        mode: Mode.fullscreen,
+                        types: ['geocode', 'establishment'],
+                        strictbounds: false,
+                        onError: (err) {},
                       );
-                      String placeid = place.placeId ?? "0";
-                      final detail = await plist.getDetailsByPlaceId(placeid);
-                      for (var component in detail.result.addressComponents) {
-                        for (var type in component.types) {
-                          if (type == "administrative_area_level_1") {
-                            controller.state.value.text = component.longName;
-                          } else if (type == "locality") {
-                            controller.city.value.text = component.longName;
-                          } else if (type == "country") {
-                            controller.country.value.text = component.longName;
+
+                      if (place != null) {
+                        setState(() {
+                          controller.location.value.text =
+                              place.description.toString();
+                          _loc.text = controller.location.value.text;
+                          controller.validateAddress();
+                        });
+                        final plist = GoogleMapsPlaces(
+                          apiKey: googleApikey,
+                          apiHeaders:
+                              await const GoogleApiHeaders().getHeaders(),
+                        );
+                        String placeid = place.placeId ?? "0";
+                        final detail = await plist.getDetailsByPlaceId(placeid);
+                        for (var component in detail.result.addressComponents) {
+                          for (var type in component.types) {
+                            if (type == "administrative_area_level_1") {
+                              controller.state.value.text = component.longName;
+                            } else if (type == "locality") {
+                              controller.city.value.text = component.longName;
+                            } else if (type == "country") {
+                              controller.country.value.text =
+                                  component.longName;
+                            }
                           }
                         }
-                      }
 
-                      final geometry = detail.result.geometry!;
-                      setState(() {
-                        lat = geometry.location.lat;
-                        log = geometry.location.lng;
-                      });
-                    }
-                  },
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: AppColors.white,
-                    hintText: "Location/ Address / City *",
-                    hintStyle:
-                        textStyleW400(size.width * 0.038, AppColors.blackText),
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            width: 1,
-                            color: controller.addressValidationColor.value),
-                        borderRadius: BorderRadius.circular(10.0)),
-                    border: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            width: 1,
-                            color: controller.addressValidationColor.value),
-                        borderRadius: BorderRadius.circular(10.0)),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            width: 1,
-                            color: controller.addressValidationColor.value),
-                        borderRadius: BorderRadius.circular(10.0)),
+                        final geometry = detail.result.geometry!;
+                        setState(() {
+                          lat = geometry.location.lat;
+                          log = geometry.location.lng;
+                        });
+                      }
+                    },
+                    decoration: InputDecoration(
+                      labelText: "Location / Address / City *",
+                      labelStyle: textStyleW400(
+                          size.width * 0.038, AppColors.blackText),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 5,
+                        horizontal: 2,
+                      ),
+                      border: InputBorder.none,
+                    ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        setState(() {
+                          controller.validateAddress();
+                        });
+                      } else {}
+                      return null;
+                    },
+                    onFieldSubmitted: (value) {
+                      if (value.isEmpty) {
+                        showToastverifedborder(
+                            'Please Search and Save your Business Location',
+                            context);
+                        setState(() {
+                          controller.validateAddress();
+                        });
+                      } else if (value.isNotEmpty) {
+                        setState(() {
+                          controller.validateAddress();
+                        });
+                      }
+                    },
                   ),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      setState(() {
-                        controller.validateAddress();
-                      });
-                    } else {}
-                    return null;
-                  },
-                  onFieldSubmitted: (value) {
-                    if (value.isEmpty) {
-                      showToastverifedborder(
-                          'Please Search and Save your Business Location',
-                          context);
-                      setState(() {
-                        controller.validateAddress();
-                      });
-                    } else if (value.isNotEmpty) {
-                      setState(() {
-                        controller.validateAddress();
-                      });
-                    }
-                  },
                 ),
               ),
               10.sbh,
@@ -565,6 +566,8 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
   }
 
   Widget bottomsheet() {
+    final Size size = MediaQuery.of(context).size;
+
     return Container(
       height: 100.0,
       width: MediaQuery.of(context).size.width,
@@ -573,7 +576,10 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
         children: <Widget>[
           Text(
             "Choose Profile Photo",
-            style: TextStyle(fontSize: 18.0, color: AppColors.blackText),
+            style: textStyleW700(
+              size.width * 0.048,
+              AppColors.blackText,
+            ),
           ),
           const SizedBox(
             height: 20,
@@ -590,7 +596,11 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                   icon: Icon(Icons.camera, color: AppColors.primaryColor),
                   label: Text(
                     'Camera',
-                    style: TextStyle(color: AppColors.primaryColor),
+                    style: textStyleW600(
+                      size.width * 0.038,
+                      AppColors.primaryColor,
+                      isMetropolis: true,
+                    ),
                   )),
               TextButton.icon(
                   onPressed: () {
@@ -600,8 +610,12 @@ class _CustomUserinfoState extends State<CustomUserinfo> {
                   },
                   icon: Icon(Icons.image, color: AppColors.primaryColor),
                   label: Text(
-                    'Gallery',
-                    style: TextStyle(color: AppColors.primaryColor),
+                    'Gallary',
+                    style: textStyleW600(
+                      size.width * 0.038,
+                      AppColors.primaryColor,
+                      isMetropolis: true,
+                    ),
                   )),
             ],
           )

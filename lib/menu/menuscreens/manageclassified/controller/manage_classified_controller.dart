@@ -57,6 +57,7 @@ class ManageClasifiedController extends GetxController {
   RxBool companyNameOnly = false.obs;
   Rx<TextEditingController> companyName = TextEditingController().obs;
   RxList<String> companyNames = <String>[].obs;
+  RxList<String> selectedCompanies = <String>[].obs;
 
   //category
   RxList<GetCategoryCategory> categorylist = RxList<GetCategoryCategory>();

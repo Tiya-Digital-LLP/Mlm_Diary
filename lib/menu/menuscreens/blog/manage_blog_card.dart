@@ -2,7 +2,6 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
@@ -13,6 +12,7 @@ import 'package:mlmdiary/utils/app_colors.dart';
 import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
+import 'package:mlmdiary/widgets/html_text_widget.dart';
 import 'package:mlmdiary/widgets/logout_dialog/custom_logout_dialog.dart';
 
 class ManageBlogCard extends StatefulWidget {
@@ -165,34 +165,19 @@ class _ManageBlogCardState extends State<ManageBlogCard> {
                     children: [
                       Align(
                         alignment: Alignment.topLeft,
-                        child: Html(
-                          data: widget.postTitle,
-                          style: {
-                            "html": Style(
-                              lineHeight: const LineHeight(1),
-                              maxLines: 1,
-                              fontFamily: satoshiFontFamily,
-                              fontWeight: FontWeight.w700,
-                              fontSize: FontSize.medium,
-                              color: AppColors.blackText,
-                            ),
-                          },
+                        child: Text(
+                          widget.postTitle,
+                          style: textStyleW700(
+                            size.width * 0.035,
+                            AppColors.blackText,
+                          ),
+                          maxLines: 2,
                         ),
                       ),
                       Align(
                         alignment: Alignment.topLeft,
-                        child: Html(
-                          data: widget.postCaption,
-                          style: {
-                            "html": Style(
-                              lineHeight: const LineHeight(1.2),
-                              maxLines: 2,
-                              fontFamily: satoshiFontFamily,
-                              fontWeight: FontWeight.w400,
-                              fontSize: FontSize.small,
-                              color: AppColors.blackText,
-                            ),
-                          },
+                        child: HtmlTextWidget(
+                          htmlData: widget.postCaption,
                         ),
                       ),
                     ],

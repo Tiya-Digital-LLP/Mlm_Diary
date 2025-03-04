@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
@@ -15,6 +14,7 @@ import 'package:mlmdiary/utils/extension_classes.dart';
 import 'package:mlmdiary/utils/text_style.dart';
 import 'package:mlmdiary/widgets/custom_dateandtime.dart';
 import 'package:mlmdiary/widgets/dynamiclink/dynamic_link.dart';
+import 'package:mlmdiary/widgets/html_text_widget.dart';
 import 'package:mlmdiary/widgets/logout_dialog/custom_logout_dialog.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -125,46 +125,32 @@ class _MyProfileCardState extends State<MyProfileCard>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      CircleAvatar(
-                        backgroundColor: const Color(0XFFCCC9C9),
-                        radius: size.width * 0.07,
-                        child: ClipOval(
-                          child: CachedNetworkImage(
-                            imageUrl: widget.userImage,
-                            height: 97,
-                            width: 105,
-                            fit: BoxFit.fill,
-                            errorWidget: (context, url, error) =>
-                                Image.asset(Assets.imagesAdminlogo),
-                          ),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: CachedNetworkImage(
+                          imageUrl: widget.userImage,
+                          height: 60,
+                          width: 60,
+                          fit: BoxFit.fill,
+                          errorWidget: (context, url, error) =>
+                              Image.asset(Assets.imagesAdminlogo),
                         ),
                       ),
-                      const SizedBox(
-                        width: 10,
-                      ),
+                      10.sbw,
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              children: [
-                                Text(
-                                  widget.userName,
-                                  style: textStyleW700(
-                                      size.width * 0.043, AppColors.blackText),
-                                ),
-                                const SizedBox(
-                                  width: 7,
-                                ),
-                                Text(
-                                  "Added Post",
-                                  style: textStyleW400(
-                                      size.width * 0.037,
-                                      // ignore: deprecated_member_use
-                                      AppColors.blackText.withOpacity(0.5)),
-                                ),
-                              ],
+                            Text(
+                              widget.userName.isNotEmpty
+                                  ? widget.userName.toString()
+                                  : 'N/A',
+                              style: textStyleW700(
+                                size.width * 0.038,
+                                AppColors.blackText,
+                              ),
                             ),
                             Text(
                               postTimeFormatter.formatPostTime(
@@ -182,39 +168,36 @@ class _MyProfileCardState extends State<MyProfileCard>
                             ),
                           ],
                         ),
-                      )
+                      ),
                     ],
                   ),
-                  Html(
-                    data: widget.postCaption.trim(),
-                    style: {
-                      "html": Style(
-                        maxLines: 1,
-                        fontFamily: satoshiFontFamily,
-                        fontWeight: FontWeight.w600,
-                        fontSize: FontSize.medium,
-                        color: AppColors.blackText,
-                      ),
-                    },
-                  ),
-                  widget.postImage.isNotEmpty
-                      ? Container(
-                          height: size.height * 0.28,
-                          width: size.width,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: CachedNetworkImage(
-                            imageUrl: widget.postImage,
-                            height: 97,
-                            width: 105,
-                            fit: BoxFit.fill,
-                            errorWidget: (context, url, error) =>
-                                Image.asset(Assets.imagesLogo),
-                          ),
-                        )
-                      : const SizedBox.shrink(),
                   10.sbh,
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: HtmlTextWidget(
+                      htmlData: widget.postCaption,
+                    ),
+                  ),
+                  10.sbh,
+                  if (widget.postImage.isNotEmpty)
+                    CachedNetworkImage(
+                      imageUrl: widget.postImage,
+                      fit: BoxFit.fill,
+                      imageBuilder: (context, imageProvider) {
+                        return SizedBox(
+                          height: size.height * 0.30,
+                          width: size.width,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12.0),
+                            child:
+                                Image(image: imageProvider, fit: BoxFit.fill),
+                          ),
+                        );
+                      },
+                      errorWidget: (context, url, error) =>
+                          const SizedBox.shrink(),
+                    ),
+                  15.sbh,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

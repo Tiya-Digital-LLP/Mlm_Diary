@@ -388,13 +388,13 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                               );
                             }
                             if (userProfileController.postallList.isEmpty) {
-                              return const Center(
+                              return Center(
                                 child: Text(
                                   'Data not found',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
+                                  style: textStyleW600(
+                                    size.width * 0.030,
+                                    AppColors.blackText,
+                                    isMetropolis: true,
                                   ),
                                 ),
                               );
@@ -1338,6 +1338,8 @@ class _UserProfileScreenState extends State<UserProfileScreen>
   }
 
   Widget buildTabBarView({int initialIndex = 0}) {
+    final Size size = MediaQuery.of(context).size;
+
     return DefaultTabController(
       length: 3,
       initialIndex: initialIndex,
@@ -1423,12 +1425,9 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                         children: [
                                           Text(
                                             follower.name ?? "Unknown",
-                                            style: const TextStyle(
-                                                fontSize: 14.0,
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.black,
-                                                fontFamily:
-                                                    'assets/fonst/Metropolis-Black.otf'),
+                                            style: textStyleW700(
+                                                size.width * 0.038,
+                                                AppColors.blackText),
                                           ),
                                           2.sbh,
                                           Text(
@@ -1446,18 +1445,16 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                                   ? addressParts.join(', ')
                                                   : 'Not Type Address';
                                             }(),
-                                            style: TextStyle(
-                                              color: AppColors.blackText,
-                                              fontSize: 12.0,
-                                            ),
+                                            style: textStyleW400(
+                                                size.width * 0.032,
+                                                AppColors.blackText),
                                           ),
                                           2.sbh,
                                           Text(
                                             follower.immlm ?? "Unknown",
-                                            style: TextStyle(
-                                              color: AppColors.blackText,
-                                              fontSize: 12.0,
-                                            ),
+                                            style: textStyleW600(
+                                                size.width * 0.032,
+                                                AppColors.blackText),
                                           ),
                                         ],
                                       ),
@@ -1542,12 +1539,9 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                         children: [
                                           Text(
                                             follow.name ?? "Unknown",
-                                            style: const TextStyle(
-                                                fontSize: 14.0,
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.black,
-                                                fontFamily:
-                                                    'assets/fonst/Metropolis-Black.otf'),
+                                            style: textStyleW700(
+                                                size.width * 0.038,
+                                                AppColors.blackText),
                                           ),
                                           2.sbh,
                                           Text(
@@ -1565,18 +1559,16 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                                   ? addressParts.join(', ')
                                                   : 'Not Type Address';
                                             }(),
-                                            style: TextStyle(
-                                              color: AppColors.blackText,
-                                              fontSize: 12.0,
-                                            ),
+                                            style: textStyleW400(
+                                                size.width * 0.032,
+                                                AppColors.blackText),
                                           ),
                                           2.sbh,
                                           Text(
                                             follow.immlm ?? "Unknown",
-                                            style: TextStyle(
-                                              color: AppColors.blackText,
-                                              fontSize: 12.0,
-                                            ),
+                                            style: textStyleW600(
+                                                size.width * 0.032,
+                                                AppColors.blackText),
                                           ),
                                         ],
                                       ),
@@ -1661,12 +1653,9 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                         children: [
                                           Text(
                                             viewers.name!,
-                                            style: const TextStyle(
-                                                fontSize: 14.0,
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.black,
-                                                fontFamily:
-                                                    'assets/fonst/Metropolis-Black.otf'),
+                                            style: textStyleW700(
+                                                size.width * 0.038,
+                                                AppColors.blackText),
                                           ),
                                           2.sbh,
                                           Text(
@@ -1683,18 +1672,16 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                                   ? addressParts.join(', ')
                                                   : 'Not Type Address';
                                             }(),
-                                            style: TextStyle(
-                                              color: AppColors.blackText,
-                                              fontSize: 12.0,
-                                            ),
+                                            style: textStyleW400(
+                                                size.width * 0.032,
+                                                AppColors.blackText),
                                           ),
                                           2.sbh,
                                           Text(
                                             viewers.immlm!,
-                                            style: TextStyle(
-                                              color: AppColors.blackText,
-                                              fontSize: 12.0,
-                                            ),
+                                            style: textStyleW600(
+                                                size.width * 0.032,
+                                                AppColors.blackText),
                                           ),
                                         ],
                                       ),

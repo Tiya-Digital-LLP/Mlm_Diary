@@ -276,13 +276,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: size.width * 0.04),
-                            child: Text(
-                              "People You May Know",
-                              style: textStyleW700(
-                                  size.width * 0.048, AppColors.blackText),
+                          Obx(
+                            () => Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: size.width * 0.04),
+                              child: controller.mutualFriendList.isEmpty
+                                  ? const SizedBox.shrink()
+                                  : Text(
+                                      "People You May Know",
+                                      style: textStyleW700(size.width * 0.048,
+                                          AppColors.blackText),
+                                    ),
                             ),
                           ),
                           SizedBox(height: size.height * 0.01),

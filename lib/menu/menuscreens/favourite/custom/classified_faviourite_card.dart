@@ -2,13 +2,13 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/classified/classified_like_list_content.dart';
 import 'package:mlmdiary/classified/classified_view_list_content.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/classified/custom/custom_commment.dart';
+import 'package:mlmdiary/widgets/html_text_widget.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/favourite/controller/favourite_controller.dart';
@@ -164,32 +164,30 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard>
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                if (widget.userImage.isNotEmpty &&
-                    Uri.tryParse(widget.userImage)?.hasAbsolutePath == true)
-                  Container(
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(100),
+                  child: CachedNetworkImage(
+                    imageUrl: widget.userImage,
                     height: 60,
                     width: 60,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: ClipOval(
-                      child: CachedNetworkImage(
-                        imageUrl: widget.userImage,
-                        fit: BoxFit.fill,
-                        errorWidget: (context, url, error) =>
-                            Image.asset(Assets.imagesAdminlogo),
-                      ),
-                    ),
+                    fit: BoxFit.fill,
+                    errorWidget: (context, url, error) =>
+                        Image.asset(Assets.imagesAdminlogo),
                   ),
+                ),
                 10.sbw,
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.userName,
+                        widget.userName.isNotEmpty
+                            ? widget.userName.toString()
+                            : 'N/A',
                         style: textStyleW700(
-                            size.width * 0.038, AppColors.blackText),
+                          size.width * 0.038,
+                          AppColors.blackText,
+                        ),
                       ),
                       Text(
                         postTimeFormatter.formatPostTime(
@@ -227,197 +225,165 @@ class _FavouritrCardState extends State<ClassifiedFavouriteCard>
                 ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    height: 105,
-                    width: 105,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12.0),
-                      child: CachedNetworkImage(
-                        imageUrl: widget.postImage,
-                        fit: BoxFit.fill,
-                        errorWidget: (context, url, error) =>
-                            Image.asset(Assets.imagesLogo),
-                      ),
-                    ),
-                  ),
-                  10.sbw,
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Align(
-                          alignment: Alignment.topLeft,
-                          child: Html(
-                            data: widget.postTitle,
-                            style: {
-                              "html": Style(
-                                lineHeight: const LineHeight(1),
-                                maxLines: 1,
-                                fontFamily: satoshiFontFamily,
-                                fontWeight: FontWeight.w700,
-                                fontSize: FontSize.medium,
-                                color: AppColors.blackText,
-                              ),
-                            },
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.topLeft,
-                          child: Html(
-                            data: widget.postCaption,
-                            style: {
-                              "html": Style(
-                                lineHeight: const LineHeight(1),
-                                maxLines: 2,
-                                fontFamily: satoshiFontFamily,
-                                fontWeight: FontWeight.w600,
-                                fontSize: FontSize.small,
-                                color: AppColors.blackText,
-                                textOverflow: TextOverflow.ellipsis,
-                              ),
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+            15.sbh,
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                widget.postTitle,
+                style: textStyleW700(
+                  size.width * 0.035,
+                  AppColors.blackText,
+                ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Obx(
-                    () => Row(
-                      children: [
-                        SizedBox(
-                          height: size.height * 0.028,
-                          width: size.height * 0.028,
-                          child: InkWell(
-                            onTap: toggleLike,
-                            child: Icon(
-                              isLiked.value
-                                  ? Icons.thumb_up_off_alt_sharp
-                                  : Icons.thumb_up_off_alt_outlined,
-                              color:
-                                  isLiked.value ? AppColors.primaryColor : null,
-                            ),
-                          ),
-                        ),
-                        8.sbw,
-                        likeCount.value == 0
-                            ? const SizedBox.shrink()
-                            : InkWell(
-                                onTap: () {
-                                  showLikeAndViewList(context, 0);
-                                },
-                                child: Text(
-                                  '${likeCount.value}',
-                                  style: textStyleW600(
-                                    size.width * 0.038,
-                                    AppColors.blackText,
-                                    isMetropolis: true,
-                                  ),
-                                ),
-                              ),
-                      ],
+            10.sbh,
+            Align(
+              alignment: Alignment.topLeft,
+              child: HtmlTextWidget(
+                htmlData: widget.postCaption,
+              ),
+            ),
+            15.sbh,
+            if (widget.postImage.isNotEmpty)
+              CachedNetworkImage(
+                imageUrl: widget.postImage,
+                fit: BoxFit.fill,
+                imageBuilder: (context, imageProvider) {
+                  return SizedBox(
+                    height: size.height * 0.30,
+                    width: size.width,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12.0),
+                      child: Image(image: imageProvider, fit: BoxFit.fill),
                     ),
-                  ),
-                  Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () => showFullScreenDialog(
-                          context,
-                          widget.bookmarkId,
-                        ),
-                        child: SizedBox(
-                          height: size.height * 0.028,
-                          width: size.height * 0.028,
-                          child: SvgPicture.asset(Assets.svgComment),
-                        ),
-                      ),
-                      5.sbw,
-                      Text(
-                        '${widget.commentcount}',
-                        style: textStyleW600(
-                          size.width * 0.038,
-                          AppColors.blackText,
-                          isMetropolis: true,
-                        ),
-                      ),
-                    ],
-                  ),
-                  InkWell(
-                    onTap: () {
-                      showLikeAndViewList(context, 1);
-                    },
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          height: size.height * 0.028,
-                          width: size.height * 0.028,
-                          child: SvgPicture.asset(Assets.svgView),
-                        ),
-                        6.sbw,
-                        widget.viewcounts == 0
-                            ? const SizedBox.shrink()
-                            : InkWell(
-                                onTap: () {
-                                  showLikeAndViewList(context, 1);
-                                },
-                                child: Text(
-                                  '${widget.viewcounts}',
-                                  style: textStyleW600(
-                                    size.width * 0.038,
-                                    AppColors.blackText,
-                                    isMetropolis: true,
-                                  ),
-                                ),
-                              ),
-                      ],
-                    ),
-                  ),
-                  Row(
+                  );
+                },
+                errorWidget: (context, url, error) => const SizedBox.shrink(),
+              ),
+            15.sbh,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Obx(
+                  () => Row(
                     children: [
                       SizedBox(
                         height: size.height * 0.028,
                         width: size.height * 0.028,
-                        child: GestureDetector(
-                          onTap: togleBookmark,
-                          child: SvgPicture.asset(
-                            Assets.svgCheckBookmark,
-                            height: size.height * 0.032,
+                        child: InkWell(
+                          onTap: toggleLike,
+                          child: Icon(
+                            isLiked.value
+                                ? Icons.thumb_up_off_alt_sharp
+                                : Icons.thumb_up_off_alt_outlined,
+                            color:
+                                isLiked.value ? AppColors.primaryColor : null,
                           ),
                         ),
                       ),
-                      10.sbw,
-                      InkWell(
-                        onTap: () {
-                          Share.share(widget.url);
-                        },
-                        child: SizedBox(
-                          height: size.height * 0.028,
-                          width: size.height * 0.028,
-                          child: SvgPicture.asset(
-                            Assets.svgSend,
-                            color: AppColors.blackText,
-                          ),
-                        ),
-                      ),
+                      8.sbw,
+                      likeCount.value == 0
+                          ? const SizedBox.shrink()
+                          : InkWell(
+                              onTap: () {
+                                showLikeAndViewList(context, 0);
+                              },
+                              child: Text(
+                                '${likeCount.value}',
+                                style: textStyleW600(
+                                  size.width * 0.038,
+                                  AppColors.blackText,
+                                  isMetropolis: true,
+                                ),
+                              ),
+                            ),
                     ],
                   ),
-                ],
-              ),
+                ),
+                Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () => showFullScreenDialog(
+                        context,
+                        widget.bookmarkId,
+                      ),
+                      child: SizedBox(
+                        height: size.height * 0.028,
+                        width: size.height * 0.028,
+                        child: SvgPicture.asset(Assets.svgComment),
+                      ),
+                    ),
+                    5.sbw,
+                    Text(
+                      '${widget.commentcount}',
+                      style: textStyleW600(
+                        size.width * 0.038,
+                        AppColors.blackText,
+                        isMetropolis: true,
+                      ),
+                    ),
+                  ],
+                ),
+                InkWell(
+                  onTap: () {
+                    showLikeAndViewList(context, 1);
+                  },
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        height: size.height * 0.028,
+                        width: size.height * 0.028,
+                        child: SvgPicture.asset(Assets.svgView),
+                      ),
+                      6.sbw,
+                      widget.viewcounts == 0
+                          ? const SizedBox.shrink()
+                          : InkWell(
+                              onTap: () {
+                                showLikeAndViewList(context, 1);
+                              },
+                              child: Text(
+                                '${widget.viewcounts}',
+                                style: textStyleW600(
+                                  size.width * 0.038,
+                                  AppColors.blackText,
+                                  isMetropolis: true,
+                                ),
+                              ),
+                            ),
+                    ],
+                  ),
+                ),
+                Row(
+                  children: [
+                    SizedBox(
+                      height: size.height * 0.028,
+                      width: size.height * 0.028,
+                      child: GestureDetector(
+                        onTap: togleBookmark,
+                        child: SvgPicture.asset(
+                          Assets.svgCheckBookmark,
+                          height: size.height * 0.032,
+                        ),
+                      ),
+                    ),
+                    10.sbw,
+                    InkWell(
+                      onTap: () {
+                        Share.share(widget.url);
+                      },
+                      child: SizedBox(
+                        height: size.height * 0.028,
+                        width: size.height * 0.028,
+                        child: SvgPicture.asset(
+                          Assets.svgSend,
+                          color: AppColors.blackText,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ],
         ),

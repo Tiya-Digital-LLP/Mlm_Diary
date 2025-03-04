@@ -383,7 +383,7 @@ class _ManageClassifiedPlusIconState extends State<ManageClassifiedPlusIcon> {
                                 showModalBottomSheet(
                                   backgroundColor: Colors.white,
                                   context: context,
-                                  builder: (context) => bottomsheet(context),
+                                  builder: (context) => bottomsheet(),
                                 );
                               }
                             },
@@ -500,34 +500,60 @@ class _ManageClassifiedPlusIconState extends State<ManageClassifiedPlusIcon> {
     }
   }
 
-  Widget bottomsheet(BuildContext context) {
+  Widget bottomsheet() {
+    final Size size = MediaQuery.of(context).size;
+
     return Container(
       height: 100.0,
+      width: MediaQuery.of(context).size.width,
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Column(
         children: <Widget>[
-          const Text(
+          Text(
             "Choose Profile Photo",
-            style: TextStyle(fontSize: 18.0),
+            style: textStyleW700(
+              size.width * 0.048,
+              AppColors.blackText,
+            ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(
+            height: 20,
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               TextButton.icon(
-                onPressed: () => takephoto(ImageSource.camera),
-                icon: Icon(Icons.camera, color: AppColors.primaryColor),
-                label: Text('Camera',
-                    style: TextStyle(color: AppColors.primaryColor)),
-              ),
+                  onPressed: () {
+                    takephoto(
+                      ImageSource.camera,
+                    );
+                  },
+                  icon: Icon(Icons.camera, color: AppColors.primaryColor),
+                  label: Text(
+                    'Camera',
+                    style: textStyleW600(
+                      size.width * 0.038,
+                      AppColors.primaryColor,
+                      isMetropolis: true,
+                    ),
+                  )),
               TextButton.icon(
-                onPressed: () => takephoto(ImageSource.gallery),
-                icon: Icon(Icons.image, color: AppColors.primaryColor),
-                label: Text('Gallery',
-                    style: TextStyle(color: AppColors.primaryColor)),
-              ),
+                  onPressed: () {
+                    takephoto(
+                      ImageSource.gallery,
+                    );
+                  },
+                  icon: Icon(Icons.image, color: AppColors.primaryColor),
+                  label: Text(
+                    'Gallary',
+                    style: textStyleW600(
+                      size.width * 0.038,
+                      AppColors.primaryColor,
+                      isMetropolis: true,
+                    ),
+                  )),
             ],
-          ),
+          )
         ],
       ),
     );

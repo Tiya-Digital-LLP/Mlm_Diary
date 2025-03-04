@@ -1,10 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
+import 'package:mlmdiary/widgets/html_text_widget.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/home/home/controller/homescreen_controller.dart';
@@ -169,262 +169,249 @@ class _FavouritrCardState extends State<PostHomeCard>
     final Size size = MediaQuery.of(context).size;
 
     return Container(
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
         color: AppColors.white,
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(100),
-                  child: CachedNetworkImage(
-                    imageUrl: widget.userImage,
-                    height: 60,
-                    width: 60,
-                    fit: BoxFit.fill,
-                    errorWidget: (context, url, error) =>
-                        Image.asset(Assets.imagesAdminlogo),
-                  ),
-                ),
-                10.sbw,
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.userName,
-                        style: textStyleW700(
-                            size.width * 0.038, AppColors.blackText),
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            postTimeFormatter.formatPostTime(
-                              DateTime.parse(widget.dateTime).isAtSameMomentAs(
-                                      DateTime.parse(widget.updatedateTime))
-                                  ? widget.dateTime
-                                  : widget.updatedateTime,
-                            ),
-                            style: textStyleW400(
-                              size.width * 0.035,
-                              // ignore: deprecated_member_use
-                              AppColors.blackText.withOpacity(0.5),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(40),
-                    color: AppColors.primaryColor,
-                  ),
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
-                    child: Center(
-                      child: Text(
-                        widget.type,
-                        style: textStyleW600(
-                          size.width * 0.035,
-                          AppColors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Align(
-              alignment: Alignment.topLeft,
-              child: Html(
-                data: widget.postCaption,
-                style: {
-                  "html": Style(
-                    maxLines: 1,
-                    fontFamily: satoshiFontFamily,
-                    fontWeight: FontWeight.w600,
-                    fontSize: FontSize.medium,
-                    color: AppColors.blackText,
-                  ),
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 6),
-              child: SizedBox(
-                height: size.height * 0.26,
-                width: size.width,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12.0),
-                  child: CachedNetworkImage(
-                    imageUrl: widget.postImage,
-                    fit: BoxFit.fill,
-                    errorWidget: (context, url, error) =>
-                        Image.asset(Assets.imagesLogo),
-                  ),
+      child: Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(100),
+                child: CachedNetworkImage(
+                  imageUrl: widget.userImage,
+                  height: 60,
+                  width: 60,
+                  fit: BoxFit.fill,
+                  errorWidget: (context, url, error) =>
+                      Image.asset(Assets.imagesAdminlogo),
                 ),
               ),
-            ),
-            10.sbh,
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Obx(
-                    () => Row(
-                      children: [
-                        SizedBox(
-                          height: size.height * 0.028,
-                          width: size.height * 0.028,
-                          child: InkWell(
-                            onTap: toggleLike,
-                            child: Icon(
-                              isLiked.value
-                                  ? Icons.thumb_up_off_alt_sharp
-                                  : Icons.thumb_up_off_alt_outlined,
-                              color:
-                                  isLiked.value ? AppColors.primaryColor : null,
-                            ),
-                          ),
-                        ),
-                        8.sbw,
-                        likeCount.value == 0
-                            ? const SizedBox.shrink()
-                            : InkWell(
-                                onTap: () {
-                                  showLikeAndViewList(context, 0);
-                                },
-                                child: Text(
-                                  '${likeCount.value}',
-                                  style: textStyleW600(
-                                    size.width * 0.038,
-                                    AppColors.blackText,
-                                    isMetropolis: true,
-                                  ),
-                                ),
-                              ),
-                      ],
+              10.sbw,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.userName,
+                      style: textStyleW700(
+                          size.width * 0.038, AppColors.blackText),
                     ),
-                  ),
-                  Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () => showFullScreenDialogPost(
-                          context,
-                          widget.bookmarkId,
-                        ),
-                        child: SizedBox(
-                          height: size.height * 0.028,
-                          width: size.height * 0.028,
-                          child: SvgPicture.asset(Assets.svgComment),
-                        ),
-                      ),
-                      5.sbw,
-                      Text(
-                        '${widget.commentcount}',
-                        style: textStyleW600(
-                          size.width * 0.038,
-                          AppColors.blackText,
-                          isMetropolis: true,
-                        ),
-                      ),
-                    ],
-                  ),
-                  InkWell(
-                    onTap: () {
-                      showLikeAndViewList(context, 1);
-                    },
-                    child: Row(
+                    Row(
                       children: [
-                        SizedBox(
-                          height: size.height * 0.028,
-                          width: size.height * 0.028,
-                          child: SvgPicture.asset(Assets.svgView),
-                        ),
-                        6.sbw,
-                        widget.viewcounts == 0
-                            ? const SizedBox.shrink()
-                            : InkWell(
-                                onTap: () {
-                                  showLikeAndViewList(context, 1);
-                                },
-                                child: Text(
-                                  '${widget.viewcounts}',
-                                  style: textStyleW600(
-                                    size.width * 0.038,
-                                    AppColors.blackText,
-                                    isMetropolis: true,
-                                  ),
-                                ),
-                              ),
-                      ],
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      Obx(
-                        () => SizedBox(
-                          height: size.height * 0.028,
-                          width: size.height * 0.028,
-                          child: GestureDetector(
-                            onTap: toggleBookmark,
-                            child: SvgPicture.asset(
-                              isBookmarked.value
-                                  ? Assets.svgCheckBookmark
-                                  : Assets.svgSavePost,
-                              height: size.height * 0.032,
-                            ),
+                        Text(
+                          postTimeFormatter.formatPostTime(
+                            DateTime.parse(widget.dateTime).isAtSameMomentAs(
+                                    DateTime.parse(widget.updatedateTime))
+                                ? widget.dateTime
+                                : widget.updatedateTime,
                           ),
-                        ),
-                      ),
-                      10.sbw,
-                      InkWell(
-                        onTap: () async {
-                          try {
-                            final dynamicLink = await createDynamicLink(
-                              widget.url,
-                              'Post',
-                              widget.bookmarkId.toString(),
-                            );
-
-                            debugPrint('Generated Dynamic Link: $dynamicLink');
-                            await Share.share(dynamicLink);
-                          } catch (e) {
-                            debugPrint('Error sharing link: $e');
-                            // ignore: use_build_context_synchronously
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                  content: Text(
-                                      "Error creating or sharing link: $e")),
-                            );
-                          }
-                        },
-                        child: SizedBox(
-                          height: size.height * 0.028,
-                          width: size.height * 0.028,
-                          child: SvgPicture.asset(
-                            Assets.svgSend,
+                          style: textStyleW400(
+                            size.width * 0.035,
                             // ignore: deprecated_member_use
-                            color: AppColors.blackText,
+                            AppColors.blackText.withOpacity(0.5),
                           ),
                         ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(40),
+                  color: AppColors.primaryColor,
+                ),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
+                  child: Center(
+                    child: Text(
+                      widget.type,
+                      style: textStyleW600(
+                        size.width * 0.035,
+                        AppColors.white,
                       ),
-                    ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          10.sbh,
+          Align(
+            alignment: Alignment.topLeft,
+            child: HtmlTextWidget(
+              htmlData: widget.postCaption,
+            ),
+          ),
+          10.sbh,
+          if (widget.postImage.isNotEmpty)
+            CachedNetworkImage(
+              imageUrl: widget.postImage,
+              fit: BoxFit.fill,
+              imageBuilder: (context, imageProvider) {
+                return SizedBox(
+                  height: size.height * 0.30,
+                  width: size.width,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12.0),
+                    child: Image(image: imageProvider, fit: BoxFit.fill),
+                  ),
+                );
+              },
+              errorWidget: (context, url, error) => const SizedBox.shrink(),
+            ),
+          15.sbh,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Obx(
+                () => Row(
+                  children: [
+                    SizedBox(
+                      height: size.height * 0.028,
+                      width: size.height * 0.028,
+                      child: InkWell(
+                        onTap: toggleLike,
+                        child: Icon(
+                          isLiked.value
+                              ? Icons.thumb_up_off_alt_sharp
+                              : Icons.thumb_up_off_alt_outlined,
+                          color: isLiked.value ? AppColors.primaryColor : null,
+                        ),
+                      ),
+                    ),
+                    8.sbw,
+                    likeCount.value == 0
+                        ? const SizedBox.shrink()
+                        : InkWell(
+                            onTap: () {
+                              showLikeAndViewList(context, 0);
+                            },
+                            child: Text(
+                              '${likeCount.value}',
+                              style: textStyleW600(
+                                size.width * 0.038,
+                                AppColors.blackText,
+                                isMetropolis: true,
+                              ),
+                            ),
+                          ),
+                  ],
+                ),
+              ),
+              Row(
+                children: [
+                  GestureDetector(
+                    onTap: () => showFullScreenDialogPost(
+                      context,
+                      widget.bookmarkId,
+                    ),
+                    child: SizedBox(
+                      height: size.height * 0.028,
+                      width: size.height * 0.028,
+                      child: SvgPicture.asset(Assets.svgComment),
+                    ),
+                  ),
+                  5.sbw,
+                  Text(
+                    '${widget.commentcount}',
+                    style: textStyleW600(
+                      size.width * 0.038,
+                      AppColors.blackText,
+                      isMetropolis: true,
+                    ),
                   ),
                 ],
               ),
-            ),
-          ],
-        ),
+              InkWell(
+                onTap: () {
+                  showLikeAndViewList(context, 1);
+                },
+                child: Row(
+                  children: [
+                    SizedBox(
+                      height: size.height * 0.028,
+                      width: size.height * 0.028,
+                      child: SvgPicture.asset(Assets.svgView),
+                    ),
+                    6.sbw,
+                    widget.viewcounts == 0
+                        ? const SizedBox.shrink()
+                        : InkWell(
+                            onTap: () {
+                              showLikeAndViewList(context, 1);
+                            },
+                            child: Text(
+                              '${widget.viewcounts}',
+                              style: textStyleW600(
+                                size.width * 0.038,
+                                AppColors.blackText,
+                                isMetropolis: true,
+                              ),
+                            ),
+                          ),
+                  ],
+                ),
+              ),
+              Row(
+                children: [
+                  Obx(
+                    () => SizedBox(
+                      height: size.height * 0.028,
+                      width: size.height * 0.028,
+                      child: GestureDetector(
+                        onTap: toggleBookmark,
+                        child: SvgPicture.asset(
+                          isBookmarked.value
+                              ? Assets.svgCheckBookmark
+                              : Assets.svgSavePost,
+                          height: size.height * 0.032,
+                        ),
+                      ),
+                    ),
+                  ),
+                  10.sbw,
+                  InkWell(
+                    onTap: () async {
+                      try {
+                        final dynamicLink = await createDynamicLink(
+                          widget.url,
+                          'Post',
+                          widget.bookmarkId.toString(),
+                        );
+
+                        debugPrint('Generated Dynamic Link: $dynamicLink');
+                        await Share.share(dynamicLink);
+                      } catch (e) {
+                        debugPrint('Error sharing link: $e');
+                        // ignore: use_build_context_synchronously
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content:
+                                  Text("Error creating or sharing link: $e")),
+                        );
+                      }
+                    },
+                    child: SizedBox(
+                      height: size.height * 0.028,
+                      width: size.height * 0.028,
+                      child: SvgPicture.asset(
+                        Assets.svgSend,
+                        // ignore: deprecated_member_use
+                        color: AppColors.blackText,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

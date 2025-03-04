@@ -222,33 +222,42 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
                                 showModalBottomSheet(
                                     backgroundColor: Colors.white,
                                     context: context,
-                                    builder: (context) => bottomsheet(context));
+                                    builder: (context) => bottomsheet());
                               }
                             },
                           ),
                           Visibility(
-                            visible: file.value != null,
+                            visible: file.value != null ||
+                                controller.userImage.value.isNotEmpty,
                             child: Positioned(
-                                top: 0,
-                                right: 0,
-                                child: Container(
-                                  width: 40,
-                                  height: 40,
-                                  margin: const EdgeInsets.all(2.0),
-                                  child: Card(
-                                      shape: const CircleBorder(),
-                                      child: GestureDetector(
-                                        child: Icon(Icons.delete,
-                                            color: AppColors.redText),
-                                        onTap: () {
-                                          setState(() {
-                                            imagesList.remove(file.value);
-                                            file.value = null;
-                                          });
-                                        },
-                                      )),
-                                )),
-                          )
+                              top: 0,
+                              right: 0,
+                              child: Container(
+                                width: 40,
+                                height: 40,
+                                margin: const EdgeInsets.all(2.0),
+                                child: Card(
+                                  shape: const CircleBorder(),
+                                  child: GestureDetector(
+                                    child: Icon(
+                                      Icons.delete,
+                                      color: AppColors.redText,
+                                    ),
+                                    onTap: () {
+                                      if (file.value != null) {
+                                        imagesList.remove(file.value);
+                                        file.value = null;
+                                        file.refresh();
+                                      } else if (controller
+                                          .userImage.value.isNotEmpty) {
+                                        controller.userImage.value = '';
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -328,15 +337,21 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
     }
   }
 
-  Widget bottomsheet(BuildContext context) {
+  Widget bottomsheet() {
+    final Size size = MediaQuery.of(context).size;
+
     return Container(
       height: 100.0,
+      width: MediaQuery.of(context).size.width,
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Column(
         children: <Widget>[
-          const Text(
+          Text(
             "Choose Profile Photo",
-            style: TextStyle(fontSize: 18.0),
+            style: textStyleW700(
+              size.width * 0.048,
+              AppColors.blackText,
+            ),
           ),
           const SizedBox(
             height: 20,
@@ -345,27 +360,37 @@ class _ManageNewsPlusIconState extends State<ManageNewsPlusIcon> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               TextButton.icon(
-                onPressed: () {
-                  takephoto(ImageSource.camera);
-                },
-                icon: Icon(Icons.camera, color: AppColors.primaryColor),
-                label: Text(
-                  'Camera',
-                  style: TextStyle(color: AppColors.primaryColor),
-                ),
-              ),
+                  onPressed: () {
+                    takephoto(
+                      ImageSource.camera,
+                    );
+                  },
+                  icon: Icon(Icons.camera, color: AppColors.primaryColor),
+                  label: Text(
+                    'Camera',
+                    style: textStyleW600(
+                      size.width * 0.038,
+                      AppColors.primaryColor,
+                      isMetropolis: true,
+                    ),
+                  )),
               TextButton.icon(
-                onPressed: () {
-                  takephoto(ImageSource.gallery);
-                },
-                icon: Icon(Icons.image, color: AppColors.primaryColor),
-                label: Text(
-                  'Gallery',
-                  style: TextStyle(color: AppColors.primaryColor),
-                ),
-              ),
+                  onPressed: () {
+                    takephoto(
+                      ImageSource.gallery,
+                    );
+                  },
+                  icon: Icon(Icons.image, color: AppColors.primaryColor),
+                  label: Text(
+                    'Gallary',
+                    style: textStyleW600(
+                      size.width * 0.038,
+                      AppColors.primaryColor,
+                      isMetropolis: true,
+                    ),
+                  )),
             ],
-          ),
+          )
         ],
       ),
     );

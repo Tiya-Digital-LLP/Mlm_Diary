@@ -295,7 +295,7 @@ class QuestionAnswerController extends GetxController {
   }
 
   Future<void> getAnswers(int page, int answerId) async {
-    isLoading.value = true;
+    isLoading(true);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? apiToken = prefs.getString(Constants.accessToken);
@@ -359,7 +359,7 @@ class QuestionAnswerController extends GetxController {
         print("Error: $e");
       }
     } finally {
-      isLoading.value = false;
+      isLoading(false);
     }
   }
 

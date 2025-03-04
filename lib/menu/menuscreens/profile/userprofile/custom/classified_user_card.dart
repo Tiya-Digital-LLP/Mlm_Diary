@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
@@ -8,6 +7,7 @@ import 'package:mlmdiary/classified/classified_like_list_content.dart';
 import 'package:mlmdiary/classified/classified_view_list_content.dart';
 import 'package:mlmdiary/classified/controller/add_classified_controller.dart';
 import 'package:mlmdiary/classified/custom/custom_commment.dart';
+import 'package:mlmdiary/widgets/html_text_widget.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
 import 'package:mlmdiary/menu/menuscreens/mlmquestionanswer/controller/question_answer_controller.dart';
@@ -162,14 +162,13 @@ class _FavouritrCardState extends State<ClassifiedUserCard>
           child: Column(
             children: [
               Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(100),
                     child: CachedNetworkImage(
                       imageUrl: widget.userImage,
-                      height: 40,
-                      width: 40,
+                      height: 60,
+                      width: 60,
                       fit: BoxFit.fill,
                       errorWidget: (context, url, error) =>
                           Image.asset(Assets.imagesAdminlogo),
@@ -183,7 +182,10 @@ class _FavouritrCardState extends State<ClassifiedUserCard>
                         Text(
                           widget.userName,
                           style: textStyleW700(
-                              size.width * 0.038, AppColors.blackText),
+                            size.width * 0.038,
+                            AppColors.blackText,
+                          ),
+                          maxLines: 1,
                         ),
                         Text(
                           postTimeFormatter.formatPostTime(
@@ -229,199 +231,187 @@ class _FavouritrCardState extends State<ClassifiedUserCard>
                   ),
                 ],
               ),
-              5.sbh,
+              15.sbh,
               Align(
                 alignment: Alignment.topLeft,
-                child: Html(
-                  data: widget.postTitle,
-                  style: {
-                    "html": Style(
-                      lineHeight: const LineHeight(1),
-                      maxLines: 1,
-                      fontFamily: satoshiFontFamily,
-                      fontWeight: FontWeight.w700,
-                      fontSize: FontSize.medium,
-                      color: AppColors.blackText,
-                    ),
-                  },
+                child: Text(
+                  widget.postTitle,
+                  style: textStyleW700(
+                    size.width * 0.035,
+                    AppColors.blackText,
+                  ),
                 ),
               ),
+              10.sbh,
               Align(
                 alignment: Alignment.topLeft,
-                child: Html(
-                  data: widget.postCaption.trim(),
-                  style: {
-                    "html": Style(
-                      lineHeight: const LineHeight(1),
-                      maxLines: 2,
-                      fontFamily: satoshiFontFamily,
-                      fontWeight: FontWeight.w600,
-                      fontSize: FontSize.medium,
-                      color: AppColors.blackText,
-                    ),
-                  },
+                child: HtmlTextWidget(
+                  htmlData: widget.postCaption,
                 ),
               ),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: CachedNetworkImage(
-                    imageUrl: widget.postImage,
-                    height: 200,
-                    width: double.infinity,
-                    fit: BoxFit.fill,
-                    errorWidget: (context, url, error) =>
-                        Image.asset(Assets.imagesLogo)),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Obx(
-                      () => Row(
-                        children: [
-                          SizedBox(
-                            height: size.height * 0.028,
-                            width: size.height * 0.028,
-                            child: InkWell(
-                              onTap: toggleLike,
-                              child: Icon(
-                                isLiked.value
-                                    ? Icons.thumb_up_off_alt_sharp
-                                    : Icons.thumb_up_off_alt_outlined,
-                                color: isLiked.value
-                                    ? AppColors.primaryColor
-                                    : null,
-                              ),
+              15.sbh,
+              if (widget.postImage.isNotEmpty)
+                CachedNetworkImage(
+                  imageUrl: widget.postImage,
+                  fit: BoxFit.fill,
+                  imageBuilder: (context, imageProvider) {
+                    return SizedBox(
+                      height: size.height * 0.30,
+                      width: size.width,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12.0),
+                        child: Image(image: imageProvider, fit: BoxFit.fill),
+                      ),
+                    );
+                  },
+                  errorWidget: (context, url, error) => const SizedBox.shrink(),
+                ),
+              15.sbh,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Obx(
+                    () => Row(
+                      children: [
+                        SizedBox(
+                          height: size.height * 0.028,
+                          width: size.height * 0.028,
+                          child: InkWell(
+                            onTap: toggleLike,
+                            child: Icon(
+                              isLiked.value
+                                  ? Icons.thumb_up_off_alt_sharp
+                                  : Icons.thumb_up_off_alt_outlined,
+                              color:
+                                  isLiked.value ? AppColors.primaryColor : null,
                             ),
                           ),
-                          8.sbw,
-                          likeCount.value == 0
-                              ? const SizedBox.shrink()
-                              : InkWell(
-                                  onTap: () {
-                                    showLikeAndViewList(context, 0);
-                                  },
-                                  child: Text(
-                                    '${likeCount.value}',
-                                    style: textStyleW600(
-                                      size.width * 0.038,
-                                      AppColors.blackText,
-                                      isMetropolis: true,
-                                    ),
+                        ),
+                        8.sbw,
+                        likeCount.value == 0
+                            ? const SizedBox.shrink()
+                            : InkWell(
+                                onTap: () {
+                                  showLikeAndViewList(context, 0);
+                                },
+                                child: Text(
+                                  '${likeCount.value}',
+                                  style: textStyleW600(
+                                    size.width * 0.038,
+                                    AppColors.blackText,
+                                    isMetropolis: true,
                                   ),
                                 ),
-                        ],
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () => showFullScreenDialog(
-                            context,
-                            widget.classifiedId,
-                          ),
-                          child: SizedBox(
-                            height: size.height * 0.028,
-                            width: size.height * 0.028,
-                            child: SvgPicture.asset(Assets.svgComment),
-                          ),
-                        ),
-                        5.sbw,
-                        Text(
-                          '${widget.commentcount}',
-                          style: textStyleW600(
-                            size.width * 0.038,
-                            AppColors.blackText,
-                            isMetropolis: true,
-                          ),
-                        ),
+                              ),
                       ],
                     ),
-                    InkWell(
-                      onTap: () {
-                        showLikeAndViewList(context, 1);
-                      },
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            height: size.height * 0.028,
-                            width: size.height * 0.028,
-                            child: SvgPicture.asset(Assets.svgView),
-                          ),
-                          6.sbw,
-                          widget.viewcounts == 0
-                              ? const SizedBox.shrink()
-                              : InkWell(
-                                  onTap: () {
-                                    showLikeAndViewList(context, 1);
-                                  },
-                                  child: Text(
-                                    '${widget.viewcounts}',
-                                    style: textStyleW600(
-                                      size.width * 0.038,
-                                      AppColors.blackText,
-                                      isMetropolis: true,
-                                    ),
+                  ),
+                  Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () => showFullScreenDialog(
+                          context,
+                          widget.classifiedId,
+                        ),
+                        child: SizedBox(
+                          height: size.height * 0.028,
+                          width: size.height * 0.028,
+                          child: SvgPicture.asset(Assets.svgComment),
+                        ),
+                      ),
+                      5.sbw,
+                      Text(
+                        '${widget.commentcount}',
+                        style: textStyleW600(
+                          size.width * 0.038,
+                          AppColors.blackText,
+                          isMetropolis: true,
+                        ),
+                      ),
+                    ],
+                  ),
+                  InkWell(
+                    onTap: () {
+                      showLikeAndViewList(context, 1);
+                    },
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          height: size.height * 0.028,
+                          width: size.height * 0.028,
+                          child: SvgPicture.asset(Assets.svgView),
+                        ),
+                        6.sbw,
+                        widget.viewcounts == 0
+                            ? const SizedBox.shrink()
+                            : InkWell(
+                                onTap: () {
+                                  showLikeAndViewList(context, 1);
+                                },
+                                child: Text(
+                                  '${widget.viewcounts}',
+                                  style: textStyleW600(
+                                    size.width * 0.038,
+                                    AppColors.blackText,
+                                    isMetropolis: true,
                                   ),
                                 ),
-                        ],
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Obx(
-                          () => SizedBox(
-                            height: size.height * 0.028,
-                            width: size.height * 0.028,
-                            child: GestureDetector(
-                              onTap: toggleBookmark,
-                              child: SvgPicture.asset(
-                                isBookmarked.value
-                                    ? Assets.svgCheckBookmark
-                                    : Assets.svgSavePost,
-                                height: size.height * 0.032,
                               ),
-                            ),
-                          ),
-                        ),
-                        10.sbw,
-                        InkWell(
-                          onTap: () async {
-                            try {
-                              final dynamicLink = await createDynamicLink(
-                                widget.url,
-                                'Classified',
-                                widget.classifiedId.toString(),
-                              );
-
-                              debugPrint(
-                                  'Generated Dynamic Link: $dynamicLink');
-                              await Share.share(dynamicLink);
-                            } catch (e) {
-                              debugPrint('Error sharing link: $e');
-                              // ignore: use_build_context_synchronously
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                    content: Text(
-                                        "Error creating or sharing link: $e")),
-                              );
-                            }
-                          },
-                          child: SizedBox(
-                            height: size.height * 0.028,
-                            width: size.height * 0.028,
+                      ],
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      Obx(
+                        () => SizedBox(
+                          height: size.height * 0.028,
+                          width: size.height * 0.028,
+                          child: GestureDetector(
+                            onTap: toggleBookmark,
                             child: SvgPicture.asset(
-                              Assets.svgSend,
-                              // ignore: deprecated_member_use
-                              color: AppColors.blackText,
+                              isBookmarked.value
+                                  ? Assets.svgCheckBookmark
+                                  : Assets.svgSavePost,
+                              height: size.height * 0.032,
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                  ],
-                ),
+                      ),
+                      10.sbw,
+                      InkWell(
+                        onTap: () async {
+                          try {
+                            final dynamicLink = await createDynamicLink(
+                              widget.url,
+                              'Classified',
+                              widget.classifiedId.toString(),
+                            );
+
+                            debugPrint('Generated Dynamic Link: $dynamicLink');
+                            await Share.share(dynamicLink);
+                          } catch (e) {
+                            debugPrint('Error sharing link: $e');
+                            // ignore: use_build_context_synchronously
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  content: Text(
+                                      "Error creating or sharing link: $e")),
+                            );
+                          }
+                        },
+                        child: SizedBox(
+                          height: size.height * 0.028,
+                          width: size.height * 0.028,
+                          child: SvgPicture.asset(
+                            Assets.svgSend,
+                            // ignore: deprecated_member_use
+                            color: AppColors.blackText,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ],
           ),

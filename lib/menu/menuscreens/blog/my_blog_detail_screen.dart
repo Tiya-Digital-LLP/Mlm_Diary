@@ -5,7 +5,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mlmdiary/generated/assets.dart';
-import 'package:mlmdiary/generated/my_blog_list_entity.dart';
+import 'package:mlmdiary/generated/manage_blog_list_entity.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/blog_liked_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/blog_view_list_content.dart';
 import 'package:mlmdiary/menu/menuscreens/blog/controller/manage_blog_controller.dart';
@@ -36,7 +36,7 @@ class MyBlogDetailScreen extends StatefulWidget {
 class _MyBlogDetailScreenState extends State<MyBlogDetailScreen>
     with SingleTickerProviderStateMixin {
   final ManageBlogController controller = Get.put(ManageBlogController());
-  final post = Get.arguments as MyBlogListData;
+  final post = Get.arguments as ManageBlogListData;
 
   PostTimeFormatter postTimeFormatter = PostTimeFormatter();
   final UserProfileController userProfileController =
@@ -61,13 +61,14 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen>
   late RxInt bookmarkCount;
 
   void initializeLikes() {
-    isLiked = RxBool(controller.myBlogList[0].likedByUser ?? false);
-    likeCount = RxInt(controller.myBlogList[0].totallike ?? 0);
+    isLiked = RxBool(controller.manageBlogList[0].likedByUser ?? false);
+    likeCount = RxInt(controller.manageBlogList[0].totallike ?? 0);
   }
 
   void initializeBookmarks() {
-    isBookmarked = RxBool(controller.myBlogList[0].bookmarkedByUser ?? false);
-    bookmarkCount = RxInt(controller.myBlogList[0].totalbookmark ?? 0);
+    isBookmarked =
+        RxBool(controller.manageBlogList[0].bookmarkedByUser ?? false);
+    bookmarkCount = RxInt(controller.manageBlogList[0].totalbookmark ?? 0);
   }
 
   void toggleLike() async {
@@ -75,7 +76,7 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen>
     isLiked.value = newLikedValue;
     likeCount.value = newLikedValue ? likeCount.value + 1 : likeCount.value - 1;
 
-    await controller.toggleLike(post.id ?? 0, context);
+    await controller.toggleLike(post.articleId ?? 0, context);
   }
 
   void toggleBookmark() async {
@@ -84,7 +85,7 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen>
     bookmarkCount.value =
         newBookmarkedValue ? bookmarkCount.value + 1 : bookmarkCount.value - 1;
 
-    await controller.toggleBookMark(post.id ?? 0, context);
+    await controller.toggleBookMark(post.articleId ?? 0, context);
   }
 
   @override
@@ -160,10 +161,10 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen>
                                 ),
                                 Text(
                                   postTimeFormatter.formatPostTime(
-                                    DateTime.parse(post.createdate ?? '')
+                                    DateTime.parse(post.createdDate ?? '')
                                             .isAtSameMomentAs(DateTime.parse(
                                                 post.datemodified ?? ''))
-                                        ? post.createdate ?? ''
+                                        ? post.createdDate ?? ''
                                         : post.datemodified ?? '',
                                   ),
                                   style: textStyleW400(
@@ -178,37 +179,36 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen>
                         ),
                       ),
                     ),
-                    SizedBox(
-                      height: size.height * 0.012,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                      ),
-                      child: InkWell(
-                        onTap: () {
-                          _showFullScreenImageDialog(context);
-                        },
-                        child: Container(
-                          height: size.height * 0.28,
-                          width: size.width,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
+                    15.sbh,
+                    if (post.imagePath!.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: InkWell(
+                          onTap: () {
+                            _showFullScreenImageDialog(
+                              context,
+                            );
+                          },
                           child: CachedNetworkImage(
-                            imageUrl: post.imagePath.toString(),
-                            height: 97,
-                            width: 105,
+                            imageUrl: post.imagePath!,
                             fit: BoxFit.fill,
+                            imageBuilder: (context, imageProvider) {
+                              return SizedBox(
+                                height: size.height * 0.30,
+                                width: size.width,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  child: Image(
+                                      image: imageProvider, fit: BoxFit.fill),
+                                ),
+                              );
+                            },
                             errorWidget: (context, url, error) =>
-                                Image.asset(Assets.imagesLogo),
+                                const SizedBox.shrink(),
                           ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: size.height * 0.01,
-                    ),
+                    15.sbh,
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 8,
@@ -240,7 +240,7 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen>
                       child: Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          '${post.category} | ${post.subcategory}',
+                          '${post.categoryName} | ${post.subcategoryName}',
                           style: textStyleW600(
                               size.width * 0.038, AppColors.blackText),
                         ),
@@ -375,15 +375,16 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen>
                       width: size.height * 0.028,
                       child: GestureDetector(
                         onTap: () {
-                          controller.toggleLike(post.id!, context);
+                          controller.toggleLike(post.articleId!, context);
                         },
                         child: Icon(
-                          controller.likedStatusMap[post.id] == true
+                          controller.likedStatusMap[post.articleId] == true
                               ? Icons.thumb_up
                               : Icons.thumb_up_off_alt_outlined,
-                          color: controller.likedStatusMap[post.id] == true
-                              ? AppColors.primaryColor
-                              : null,
+                          color:
+                              controller.likedStatusMap[post.articleId] == true
+                                  ? AppColors.primaryColor
+                                  : null,
                           size: size.height * 0.032,
                         ),
                       ),
@@ -394,7 +395,7 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen>
                   ),
                   Obx(() {
                     int totalLikes = post.totallike! +
-                        (controller.likeCountMap[post.id] ?? 0);
+                        (controller.likeCountMap[post.articleId] ?? 0);
 
                     return InkWell(
                       onTap: () {
@@ -415,7 +416,7 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen>
                       GestureDetector(
                         onTap: () => showFullScreenDialogBlog(
                           context,
-                          post.id!,
+                          post.articleId!,
                         ),
                         child: SizedBox(
                           height: size.height * 0.028,
@@ -495,7 +496,7 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen>
                         final dynamicLink = await createDynamicLink(
                           post.fullUrl!,
                           'Blog',
-                          post.id.toString(),
+                          post.articleId.toString(),
                         );
 
                         debugPrint('Generated Dynamic Link: $dynamicLink');
@@ -591,8 +592,8 @@ class _MyBlogDetailScreenState extends State<MyBlogDetailScreen>
             body: TabBarView(
               controller: _tabController,
               children: [
-                BlogLikedListContent(blogId: post.id ?? 0),
-                BlogViewListContent(blogId: post.id ?? 0),
+                BlogLikedListContent(blogId: post.articleId ?? 0),
+                BlogViewListContent(blogId: post.articleId ?? 0),
               ],
             ),
           ),

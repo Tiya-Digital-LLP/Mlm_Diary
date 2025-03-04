@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:mlmdiary/widgets/html_text_widget.dart';
 import 'package:mlmdiary/data/constants.dart';
 import 'package:mlmdiary/generated/assets.dart';
 import 'package:mlmdiary/home/home/custom/sign_up_dialog.dart';
@@ -132,8 +132,7 @@ class _NewsCardState extends State<NewsCard>
 
     return Obx(() {
       return Container(
-        padding: EdgeInsets.symmetric(
-            horizontal: size.width * 0.035, vertical: size.height * 0.01),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
           color: AppColors.white,
@@ -153,9 +152,7 @@ class _NewsCardState extends State<NewsCard>
                         Image.asset(Assets.imagesAdminlogo),
                   ),
                 ),
-                const SizedBox(
-                  width: 10,
-                ),
+                10.sbw,
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -185,69 +182,47 @@ class _NewsCardState extends State<NewsCard>
                 ),
               ],
             ),
-            SizedBox(
-              height: size.height * 0.01,
-            ),
+            15.sbh,
             Align(
               alignment: Alignment.topLeft,
-              child: Html(
-                data: widget.postTitle,
-                style: {
-                  "html": Style(
-                    lineHeight: const LineHeight(1),
-                    maxLines: 1,
-                    fontFamily: satoshiFontFamily,
-                    fontWeight: FontWeight.w700,
-                    fontSize: FontSize.medium,
-                    color: AppColors.blackText,
-                  ),
-                },
-              ),
-            ),
-            Align(
-              alignment: Alignment.topLeft,
-              child: Html(
-                data: widget.postCaption,
-                style: {
-                  "html": Style(
-                    lineHeight: const LineHeight(1.2),
-                    maxLines: 2,
-                    fontFamily: satoshiFontFamily,
-                    fontWeight: FontWeight.w500,
-                    fontSize: FontSize.small,
-                    color: AppColors.blackText,
-                    textOverflow: TextOverflow.ellipsis,
-                  ),
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 6),
-              child: SizedBox(
-                height: size.height * 0.26,
-                width: size.width,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12.0),
-                  child: CachedNetworkImage(
-                    imageUrl: widget.userImage,
-                    fit: BoxFit.fill,
-                    errorWidget: (context, url, error) =>
-                        Image.asset(Assets.imagesLogo),
-                  ),
+              child: Text(
+                widget.postTitle,
+                style: textStyleW700(
+                  size.width * 0.035,
+                  AppColors.blackText,
                 ),
               ),
             ),
-            SizedBox(
-              height: size.height * 0.017,
+            10.sbh,
+            Align(
+              alignment: Alignment.topLeft,
+              child: HtmlTextWidget(
+                htmlData: widget.postCaption,
+              ),
             ),
+            15.sbh,
+            if (widget.userImage.isNotEmpty)
+              CachedNetworkImage(
+                imageUrl: widget.userImage,
+                fit: BoxFit.fill,
+                imageBuilder: (context, imageProvider) {
+                  return SizedBox(
+                    height: size.height * 0.30,
+                    width: size.width,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12.0),
+                      child: Image(image: imageProvider, fit: BoxFit.fill),
+                    ),
+                  );
+                },
+                errorWidget: (context, url, error) => const SizedBox.shrink(),
+              ),
+            15.sbh,
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
                   children: [
-                    const SizedBox(
-                      width: 10,
-                    ),
                     SizedBox(
                       height: size.height * 0.028,
                       width: size.height * 0.028,
@@ -261,9 +236,7 @@ class _NewsCardState extends State<NewsCard>
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      width: 7,
-                    ),
+                    7.sbw,
                     likeCount.value == 0
                         ? const SizedBox.shrink()
                         : InkWell(
@@ -355,9 +328,7 @@ class _NewsCardState extends State<NewsCard>
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      width: 10,
-                    ),
+                    10.sbw,
                     InkWell(
                       onTap: () async {
                         try {
@@ -388,9 +359,6 @@ class _NewsCardState extends State<NewsCard>
                           color: AppColors.blackText,
                         ),
                       ),
-                    ),
-                    const SizedBox(
-                      width: 10,
                     ),
                   ],
                 ),

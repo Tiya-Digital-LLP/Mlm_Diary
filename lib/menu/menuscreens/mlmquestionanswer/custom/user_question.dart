@@ -1013,7 +1013,8 @@ class _UserQuestionState extends State<UserQuestion>
                         padding: const EdgeInsets.all(16.0),
                         child: Obx(
                           () {
-                            if (controller.isLoading.value) {
+                            if (controller.isLoading.value &&
+                                controller.answerList.isEmpty) {
                               return Center(
                                 child: CustomLottieAnimation(
                                   child: Lottie.asset(
